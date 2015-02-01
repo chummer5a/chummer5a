@@ -1,0 +1,1237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-492</version>
+  <powers>
+    <power>
+      <id>8caaadf4-75b4-4535-928a-5648d395c13a</id>
+      <name>Adrenaline Boost</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
+      <name>Astral Perception</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>ddcca815-d6fe-41ed-b174-2e7255320f17</id>
+      <name>Attribute Boost</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <selectattribute>
+          <attribute>AGI</attribute>
+          <attribute>BOD</attribute>
+          <attribute>REA</attribute>
+          <attribute>STR</attribute>
+        </selectattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>76337564-7688-497f-84f9-302c6ece10fe</id>
+      <name>Combat Sense</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>
+      <name>Critical Strike</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>no</limit>
+      <bonus>
+        <weaponcategorydv>
+          <selectskill skillcategory="Combat Active">
+          </selectskill>
+          <bonus>1</bonus>
+        </weaponcategorydv>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>980d6575-c28f-4076-9b36-881cea018335</id>
+      <name>Danger Sense</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>974d2aba-1772-474b-aaff-c84a12766e5f</id>
+      <name>Enhanced Perception</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>e009da31-0301-4604-b13f-49b071aa25a1</id>
+      <name>Enhanced Accuracy (skill)</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <bonus>
+        <selectskill skillcategory="Combat Active">
+          <val>0</val>
+          <applytoaccuracy>yes</applytoaccuracy>
+        </selectskill>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>75821fb7-a180-4012-aa16-daa92ac3bb63</id>
+      <name>Improved Ability (skill)</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>100</limit>
+      <bonus>
+        <selectskill>
+          <val>Rating</val>
+          <applytorating>yes</applytorating>
+        </selectskill>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>901d2af5-246a-447a-a8e2-b2e8c10593df</id>
+      <name>Improved Physical Attribute</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>yes</levels>
+      <limit>12</limit>
+      <bonus>
+        <selectattribute>
+          <attribute>BOD</attribute>
+          <attribute>AGI</attribute>
+          <attribute>REA</attribute>
+          <attribute>STR</attribute>
+          <val>Rating</val>
+          <affectbase>yes</affectbase>
+        </selectattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
+      <name>Improved Potential (limit)</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <selectlimit>
+          <limit>Physical</limit>
+          <limit>Mental</limit>
+          <limit>Social</limit>
+          <val>Rating</val>
+        </selectlimit>
+      </bonus>
+      <source>SR5</source>
+      <page>309</page>
+    </power>
+    <power>
+      <id>96d01fd7-abe8-495c-960e-a250d8e2dec0</id>
+      <name>Improved Reflexes 1</name>
+      <points>1.5</points>
+      <adeptway>.75</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <doublecost>no</doublecost>
+      <bonus>
+        <initiativepass>1</initiativepass>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>60eb2147-c131-4f2f-a3cf-d210453533ef</id>
+      <name>Improved Reflexes 2</name>
+      <points>2.5</points>
+      <adeptway>.75</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <doublecost>no</doublecost>
+      <bonus>
+        <initiativepass>2</initiativepass>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>2</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>669f249e-49fe-4870-89ba-475cfb027dfc</id>
+      <name>Improved Reflexes 3</name>
+      <points>3.5</points>
+      <adeptway>.75</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <doublecost>no</doublecost>
+      <bonus>
+        <initiativepass>3</initiativepass>
+        <specificattribute>
+          <name precedence="0">REA</name>
+          <val>3</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>1376c13b-9a01-4873-b935-5b7d91e03785</id>
+      <name>Improved Sense</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>23636777-44df-44f1-8742-db29dc3c4fdf</id>
+      <name>Killing Hands</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <bonus>
+        <unarmeddvphysical />
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>f1e8a618-ba12-4972-91f0-974500387893</id>
+      <name>Kinesics</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>ce7df757-792e-4fac-a86e-6b587586deb2</id>
+      <name>Light Body</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>c152dcba-8bb7-4a2a-86bb-6f854ea53b55</id>
+      <name>Missile Parry</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>da5f9389-a5fd-48ed-8825-8852ff5c56a8</id>
+      <name>Mystic Armor</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <source>SR5</source>
+      <page>310</page>
+    </power>
+    <power>
+      <id>98b59b41-6a91-4abc-a6d2-e8debaa3b5aa</id>
+      <name>Natural Immunity</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
+      <name>Pain Resistance</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <conditionmonitor>
+          <thresholdoffset>Rating</thresholdoffset>
+        </conditionmonitor>
+      </bonus>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>4676b6f7-120d-4344-81ac-5922445a521b</id>
+      <name>Rapid Healing</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
+      <name>Spell Resistance</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>3f3fcdbc-c046-4a95-bd46-511a76d75b56</id>
+      <name>Traceless Walk</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>71692391-e01f-4902-98f0-abbbf5431680</id>
+      <name>Voice Control</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>20</limit>
+      <bonus>
+        <sociallimit>Rating</sociallimit>
+      </bonus>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>bfd1e09c-5765-423b-b079-f5d8e794485a</id>
+      <name>Wall Running</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SR5</source>
+      <page>311</page>
+    </power>
+    <power>
+      <id>0099ad65-bcc1-47a5-a241-02f621e7c33a</id>
+      <name>Analytics</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>870edcf8-cb19-4e15-948c-1b3bf80ac651</id>
+      <name>Animal Empathy</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <bonus>
+        <specificskill>
+          <name>Animal Handling</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>80577dac-7697-4da9-87fd-d4442dc34560</id>
+      <name>Berserk</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>59455eae-beb5-45fc-b19d-dc3aff65335d</id>
+      <name>Berserker's Rage</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <required>
+        <oneof>
+          <power>Berserk</power>
+        </oneof>
+      </required>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>f3df89bb-71f6-41d8-a86d-4bde1ab74352</id>
+      <name>Blind Fighting</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>42baa818-50ca-4c6b-b316-780a51df9c97</id>
+      <name>Cloak</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
+      <name>Cool Resolve</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <bonus>
+        <specificskill>
+          <name>Con</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Impersonation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Instruction</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Intimidation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Leadership</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Negotiation</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Performance</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+      <source>SG</source>
+      <page>169</page>
+    </power>
+    <power>
+      <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
+      <name>Commanding Voice</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <maxlevel>3</maxlevel>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
+      <name>Counterstrike</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>1eb8d3fa-2a67-4b71-a9de-dfbf5236eeda</id>
+      <name>Elemental Body</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SG</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
+      <name>Elemental Strike</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SG</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>eb323003-4112-42ad-955a-00211e43e6d1</id>
+      <name>Elemental Weapon</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SG</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>6680b68d-77df-4fe4-a722-30464dd3c646</id>
+      <name>Empathic Healing</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>fbd06bae-b3ba-4514-8d90-870eff1c336b</id>
+      <name>Facial Sculpt</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <bonus>
+        <specificskill>
+          <name>Disguise</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>438fb5de-9c09-4421-a6a8-c3d68ba8aada</id>
+      <name>Flexibility</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <maxlevel>3</maxlevel>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>88bf5626-6cf8-4dcc-bfc0-8abc889cdf4e</id>
+      <name>Freefall</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
+      <name>Hang Time</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <bonus>
+        <specificskill>
+          <name>Climbing</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+      </bonus>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>da59618c-059d-4cc5-adb5-c61e6049378c</id>
+      <name>Inertia Strike</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>e1e242c3-cb63-476f-9868-90c311b36383</id>
+      <name>Kinesics Mastery</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <required>
+        <oneof>
+          <power>Kinesics</power>
+        </oneof>
+      </required>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
+      <name>Linguistics</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>d20f0441-a290-4732-829f-3138d446aad4</id>
+      <name>Magic Sense</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>2149818a-22b0-4267-83d6-7b3c27d4ee69</id>
+      <name>Melanin Control</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>ecd611b4-dda6-4683-b7a9-850a469a3274</id>
+      <name>Metabolic Control</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
+      <name>Missile Mastery</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <bonus>
+        <weaponcategorydv>
+          <name>Throwing Weapons</name>
+          <bonus>1</bonus>
+        </weaponcategorydv>
+        <specificskill>
+          <name>Throwing Weapons</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
+      <name>Motion Sense</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>d1279546-69a6-4c35-9b3d-0211138050e8</id>
+      <name>Nerve Strike</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>1ec402f1-6139-4f94-8e86-92aa463bf536</id>
+      <name>Nimble Fingers</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <bonus>
+        <specificskill>
+          <name>Palming</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>adda6c9c-703b-4361-a4dd-d7ebfd3c138d</id>
+      <name>Pain Relief</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>70311f5c-a019-47b9-be21-e9a8d270e32e</id>
+      <name>Penetrating Strike</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <maxlevel>4</maxlevel>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>941225f2-148b-484e-a2b2-0a32cc7debe1</id>
+      <name>Plague Cloud</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>832a418d-4d55-433c-8230-4b04f05ba6d9</id>
+      <name>Rapid Draw</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>11f3fa59-e06d-4816-87a9-b74664d1ae9a</id>
+      <name>Riposte</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>c0d647dd-4f66-42a6-9040-202b1bba4b71</id>
+      <name>Skate</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>1dc0b5c6-94a8-4598-a017-f6399d9175da</id>
+      <name>Smashing Blow</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>24bc482d-9ce3-4d0a-bd43-31311b6716d6</id>
+      <name>Spirit Claw</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>6145977c-5825-4358-b0db-1d189cd9d402</id>
+      <name>Spirit Ram</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>02eb1616-9361-47a8-acc8-030566d9a0ea</id>
+      <name>Stillness</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <maxlevel>3</maxlevel>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>772e0298-8abf-42b7-9734-359cadcb8d1e</id>
+      <name>Sustenance</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>174</page>
+    </power>
+    <power>
+      <id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
+      <name>Temperature Tolerance</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>175</page>
+    </power>
+    <power>
+      <id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
+      <name>Three-Dimensional Memory</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SG</source>
+      <page>175</page>
+    </power>
+    <power>
+      <id>6ed1a784-1097-4db8-b179-e4198493c2f0</id>
+      <name>Toxic Strike</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <source>SG</source>
+      <page>176</page>
+    </power>
+    <power>
+      <id>0f0a55a8-5c39-4568-a15d-219b3664b10f</id>
+      <name>Feign Illness</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>BB</source>
+      <page>22</page>
+    </power>
+    <power>
+      <id>ca35c065-86ab-4aa8-a52f-ae37cc69648c</id>
+      <name>Feign Death</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>BB</source>
+      <page>22</page>
+    </power>
+    <power>
+      <id>d890df94-b4f0-4b56-8289-7e1cfac2a95d</id>
+      <name>Transmit Damage</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>BB</source>
+      <page>22</page>
+    </power>
+    <power>
+      <id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
+      <name>Light Touch</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>100</limit>
+      <source>SS</source>
+      <page>191</page>
+    </power>
+    <power>
+      <id>60ac2e3a-d24a-459c-b8a4-cf648f0de447</id>
+      <name>Mimic</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>6</limit>
+      <source>SS</source>
+      <page>191</page>
+    </power>
+    <power>
+      <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
+      <name>Living Focus</name>
+      <points>1</points>
+      <adeptway>.5</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SFP1</source>
+      <page>1</page>
+    </power>
+    <power>
+      <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
+      <name>Keratin Control</name>
+      <points>.5</points>
+      <adeptway>.25</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SFP1</source>
+      <page>1</page>
+    </power>
+   <power>
+      <name>Demara</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Eidetic Sense Memory</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Enthralling Performance</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Heightened Concern</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Indomitable Will</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+	<power>
+      <name>Iron Gut</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Iron Lungs</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Iron Will</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Keratin Control</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>	
+	<power>
+      <name>Living Focus</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Maintain Warmth</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Memory Displacement</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Piercing Senses</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>	
+	<power>
+      <name>Power Swimming</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Rooting</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Supernatural Toughness</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+	  <bonus>
+		<conditionmonitor>
+			<physical>Rating</physical>
+			<stun>Rating</stun>
+		</conditionmonitor>
+		</bonus>
+      <source>SSP</source>
+      <page>24</page>
+    </power>	
+  </powers>
+  <enhancements>
+    <enhancement>
+      <id>8dc0a8e3-535a-4935-8c90-2079666e6a01</id>
+      <name>Air Walking</name>
+      <power>Light Body</power>
+      <required>
+        <allof>
+          <quality>The Athlete's Way</quality>
+          <power>Light Body</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>156</page>
+    </enhancement>
+    <enhancement>
+      <id>19bafb80-2f5a-4370-8cbe-875477ce7471</id>
+      <name>Pied Piper</name>
+      <power />
+      <required>
+        <allof>
+          <quality>The Artist's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>156</page>
+    </enhancement>
+    <enhancement>
+      <id>855a7a07-5def-4ec5-bb69-29273327b885</id>
+      <name>Skin Artist</name>
+      <power>Melanin Control</power>
+      <required>
+        <allof>
+          <quality>The Artist's Way</quality>
+          <power>Melanin Control</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>3f0a99c7-6524-46cb-b43e-070a978c5052</id>
+      <name>Claws</name>
+      <power>Keratin Control</power>
+      <required>
+        <allof>
+          <quality>The Beast's Way</quality>
+          <power>Keratin Control</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>2d2939f0-486c-4915-bbeb-084b857c2450</id>
+      <name>Hot Qi</name>
+      <power>Living Focus</power>
+      <required>
+        <allof>
+          <quality>The Burnout's Way</quality>
+          <power>Living Focus</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>25f6368f-21ef-4544-ac55-3c20d8a60374</id>
+      <name>Shadow Touch</name>
+      <power>Traceless Walk</power>
+      <required>
+        <allof>
+          <quality>The Invisible Way</quality>
+          <power>Traceless Walk</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>e5cf0578-be0f-4453-9223-118234d3e749</id>
+      <name>Digital Celerity</name>
+      <power>Nimble Fingers</power>
+      <required>
+        <allof>
+          <quality>The Magician's Way</quality>
+          <power>Nimble Fingers</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>e66fac54-39e4-4e3e-92c6-670485c28c25</id>
+      <name>Master of the Nine Chakras</name>
+      <power>Nerve Strike</power>
+      <required>
+        <allof>
+          <quality>The Magician's Way</quality>
+          <power>Nerve Strike</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
+      <name>Silver-Tongued Devil</name>
+      <power>Commanding Voice</power>
+      <required>
+        <allof>
+          <quality>The Speaker's Way</quality>
+          <power>Commanding Voice</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>215a5a0e-09fc-47ff-9a84-74c99f4f1a53</id>
+      <name>Barrage</name>
+      <power>Missile Mastery</power>
+      <required>
+        <allof>
+          <quality>The Warrior's Way</quality>
+          <power>Missile Mastery</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+    <enhancement>
+      <id>47cb80a1-a11b-4a60-a557-feada7114379</id>
+      <name>Master of Taijiquan</name>
+      <power>Counterstrike</power>
+      <required>
+        <allof>
+          <quality>The Warrior's Way</quality>
+          <power>Counterstrike</power>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </enhancement>
+  </enhancements>
+</chummer>

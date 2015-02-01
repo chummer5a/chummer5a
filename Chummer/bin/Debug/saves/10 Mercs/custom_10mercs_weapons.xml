@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<weapons>
+		<weapon>
+			<name>Colt Government 2066TC</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<reach>0</reach>
+			<damage>5P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>1</rc>
+			<ammo>14(c)</ammo>
+			<conceal>0</conceal>
+			<avail>36R</avail>
+			<cost>2700</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<mods>
+				<mod>Advanced Safety, Basic System</mod>
+				<mod>Barrel Extension</mod>
+				<mod>Melee Hardening</mod>
+				<mod>Personalized Grip</mod>
+				<mod>Skinlink</mod>
+				<mod>Smartgun System</mod>
+			</mods>
+			<source>10M</source>
+			<page>22</page>
+		</weapon>
+		<weapon>
+			<name>Blacktooth Dagger</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Knives</spec>
+			<reach>0</reach>
+			<damage>(STR/2+4)P</damage>
+			<ap>1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>2</conceal>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<source>10M</source>
+			<page>35</page>
+		</weapon>
+	</weapons>
+</chummer>

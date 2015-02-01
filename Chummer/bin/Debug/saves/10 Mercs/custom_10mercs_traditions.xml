@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<traditions>
+		<tradition>
+			<name>Rainwalker's Tradition</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Guardian Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Task Spirit</spirit>
+			</spirits>
+			<source>10M</source>
+			<page>37</page>
+		</tradition>
+	</traditions>
+</chummer>

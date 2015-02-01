@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<gears>
+		<gear>
+			<name>Vision Enhancement</name>
+			<category>Vision Enhancements</category>
+			<rating>3</rating>
+			<capacity>[Rating]</capacity>
+			<armorcapacity>[Rating]</armorcapacity>
+			<avail>+4</avail>
+			<cost>Rating * 100</cost>
+			<source>SR4</source>
+			<page>333</page>
+		</gear>
+	</gears>
+</chummer>

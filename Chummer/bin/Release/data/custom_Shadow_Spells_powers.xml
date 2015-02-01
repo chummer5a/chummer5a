@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-400</version>
+  <powers>
+    <power>
+      <name>Demara</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Eidetic Sense Memory</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Enthralling Performance</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>100</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Heightened Concern</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+    <power>
+      <name>Indomitable Will</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>
+	<power>
+      <name>Iron Gut</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Iron Lungs</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Iron Will</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>23</page>
+    </power>    
+	<power>
+      <name>Keratin Control</name>
+      <points>.5</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>	
+	<power>
+      <name>Living Focus</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Maintain Warmth</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Memory Displacement</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Piercing Senses</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>	
+	<power>
+      <name>Power Swimming</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>no</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Rooting</name>
+      <points>.25</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+	<power>
+      <name>Supernatural Toughness</name>
+      <points>1</points>
+      <adeptway>0</adeptway>
+      <levels>yes</levels>
+      <limit>1</limit>
+	  <bonus>
+		<conditionmonitor>
+			<physical>Rating</physical>
+			<stun>Rating</stun>
+		</conditionmonitor>
+		</bonus>
+      <source>SSP</source>
+      <page>24</page>
+    </power>
+  </powers>
+</chummer>

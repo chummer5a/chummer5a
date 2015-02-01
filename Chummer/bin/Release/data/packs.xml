@@ -1,0 +1,4729 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<version>-500</version>
+	<categories>
+		<category>Attribute Kits</category>
+		<category>Skill Kits</category>
+		<category>Adept Kits</category>
+		<category>Complex Form Kits</category>
+		<category>Spell Kits</category>
+		<category>Gear Kits</category>
+		<category>Custom</category>
+	</categories>
+	<packs>
+		<pack>
+			<name>Brawler</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>5</bod>
+				<agi>4</agi>
+				<rea>3</rea>
+				<str>5</str>
+				<cha>3</cha>
+				<int>3</int>
+				<log>2</log>
+				<wil>3</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Tank</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>6</bod>
+				<agi>4</agi>
+				<rea>3</rea>
+				<str>4</str>
+				<cha>3</cha>
+				<int>2</int>
+				<log>2</log>
+				<wil>2</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Heavy Weapons Expert</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>6</agi>
+				<rea>4</rea>
+				<str>4</str>
+				<cha>3</cha>
+				<int>2</int>
+				<log>2</log>
+				<wil>2</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Bladesman</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>2</bod>
+				<agi>5</agi>
+				<rea>4</rea>
+				<str>6</str>
+				<cha>3</cha>
+				<int>2</int>
+				<log>2</log>
+				<wil>2</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Unit Commander</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>4</agi>
+				<rea>3</rea>
+				<str>3</str>
+				<cha>5</cha>
+				<int>3</int>
+				<log>4</log>
+				<wil>3</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Combat Mage</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Magician</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>3</bod>
+				<agi>2</agi>
+				<rea>4</rea>
+				<str>2</str>
+				<cha>3</cha>
+				<int>3</int>
+				<log>3</log>
+				<wil>4</wil>
+				<mag>5</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>High Mage</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Magician</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>3</agi>
+				<rea>2</rea>
+				<str>2</str>
+				<cha>3</cha>
+				<int>4</int>
+				<log>4</log>
+				<wil>4</wil>
+				<mag>5</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Newly Awakened</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Magician</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>3</bod>
+				<agi>3</agi>
+				<rea>3</rea>
+				<str>3</str>
+				<cha>3</cha>
+				<int>3</int>
+				<log>3</log>
+				<wil>4</wil>
+				<mag>2</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Wise Shaman</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Magician</quality>
+					<quality>Mentor Spirit</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>2</agi>
+				<rea>3</rea>
+				<str>3</str>
+				<cha>5</cha>
+				<int>3</int>
+				<log>3</log>
+				<wil>4</wil>
+				<mag>4</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Faceman</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>2</agi>
+				<rea>3</rea>
+				<str>2</str>
+				<cha>5</cha>
+				<int>4</int>
+				<log>4</log>
+				<wil>5</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Wheelman</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>4</agi>
+				<rea>5</rea>
+				<str>2</str>
+				<cha>3</cha>
+				<int>5</int>
+				<log>3</log>
+				<wil>3</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Budding Technomancer</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Technomancer</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>3</bod>
+				<agi>3</agi>
+				<rea>4</rea>
+				<str>2</str>
+				<cha>3</cha>
+				<int>4</int>
+				<log>3</log>
+				<wil>3</wil>
+				<res>2</res>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Resonance Prophet</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Technomancer</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>2</agi>
+				<rea>2</rea>
+				<str>1</str>
+				<cha>4</cha>
+				<int>4</int>
+				<log>5</log>
+				<wil>4</wil>
+				<res>5</res>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Investigator</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>2</bod>
+				<agi>3</agi>
+				<rea>4</rea>
+				<str>2</str>
+				<cha>3</cha>
+				<int>4</int>
+				<log>5</log>
+				<wil>5</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Jack of All Trades</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>3</agi>
+				<rea>4</rea>
+				<str>4</str>
+				<cha>4</cha>
+				<int>3</int>
+				<log>3</log>
+				<wil>4</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Arcane Investigator</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Magician</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>3</agi>
+				<rea>2</rea>
+				<str>2</str>
+				<cha>4</cha>
+				<int>5</int>
+				<log>4</log>
+				<wil>3</wil>
+				<mag>4</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Ranged Adept</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Adept</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>4</agi>
+				<rea>4</rea>
+				<str>5</str>
+				<cha>3</cha>
+				<int>2</int>
+				<log>2</log>
+				<wil>2</wil>
+				<mag>5</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Melee Adept</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Adept</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>4</agi>
+				<rea>3</rea>
+				<str>5</str>
+				<cha>3</cha>
+				<int>3</int>
+				<log>2</log>
+				<wil>2</wil>
+				<mag>5</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Social Adept</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Adept</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>2</agi>
+				<rea>3</rea>
+				<str>2</str>
+				<cha>5</cha>
+				<int>5</int>
+				<log>3</log>
+				<wil>4</wil>
+				<mag>3</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Mystic Adept</name>
+			<category>Attribute Kits</category>
+			<qualities>
+				<positive>
+					<quality>Mystic Adept</quality>
+				</positive>
+			</qualities>
+			<attributes>
+				<bod>2</bod>
+				<agi>3</agi>
+				<rea>3</rea>
+				<str>3</str>
+				<cha>4</cha>
+				<int>4</int>
+				<log>2</log>
+				<wil>4</wil>
+				<mag>4</mag>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Covert Operative</name>
+			<category>Attribute Kits</category>
+			<attributes>
+				<bod>3</bod>
+				<agi>5</agi>
+				<rea>3</rea>
+				<str>3</str>
+				<cha>3</cha>
+				<int>4</int>
+				<log>4</log>
+				<wil>3</wil>
+			</attributes>
+		</pack>
+		<pack>
+			<name>Handgun Trainee</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Clubs</name>
+					<rating>1</rating>
+				</skill>
+				<skill>
+					<name>Pistols</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Handgun Veteran</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Armorer</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Automatics</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Medicine</name>
+					<rating>1</rating>
+				</skill>
+				<skill>
+					<name>Pistols</name>
+					<rating>4</rating>
+					<spec>Semi-Automatics</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Handgun Expert</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Armorer</name>
+					<rating>3</rating>
+					<spec>Firearms</spec>
+				</skill>
+				<skill>
+					<name>Automatics</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Medicine</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Pistols</name>
+					<rating>5</rating>
+					<spec>Semi-Automatics</spec>
+				</skill>
+			</skills>
+			<selectmartialart />
+		</pack>
+		<pack>
+			<name>Automatics Veteran</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Automatics</name>
+					<rating>4</rating>
+					<spec>Submachine guns</spec>
+				</skill>
+				<skill>
+					<name>Dodge</name>
+					<rating>2</rating>
+					<spec>Ranged Combat</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Automatics Expert</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Automatics</name>
+					<rating>5</rating>
+					<spec>Assault Rifles</spec>
+				</skill>
+				<skill>
+					<name>Dodge</name>
+					<rating>3</rating>
+					<spec>Ranged Combat</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Longarms Veteran</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Hawk Eye</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Longarms</name>
+					<rating>4</rating>
+					<spec>Shotguns</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Longarms Expert</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Hawk Eye</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Longarms</name>
+					<rating>5</rating>
+					<spec>Sniper Rifles</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Heavy Weapons Certified</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Heavy Weapons</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Armorer</name>
+					<rating>1</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Heavy Weapons Expert</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Heavy Weapons</name>
+					<rating>5</rating>
+				</skill>
+				<skill>
+					<name>Armorer</name>
+					<rating>3</rating>
+					<spec>Heavy Weapons</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Blade Trainee</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Blades</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>First Aid</name>
+					<rating>1</rating>
+				</skill>
+				<skill>
+					<name>Unarmed Combat</name>
+					<rating>1</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Blade Veteran</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Blades</name>
+					<rating>4</rating>
+					<spec>Cyber-Implant Blades</spec>
+				</skill>
+				<skill>
+					<name>Cybertechnology</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>First Aid</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Blade Expert</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Ambidextrous</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Blades</name>
+					<rating>5</rating>
+					<spec>Swords</spec>
+				</skill>
+				<skill>
+					<name>Cybertechnology</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>First Aid</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Unarmed Combat</name>
+					<rating>3</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Exotic Weapons Trainee</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Dodge</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Exotic Melee Weapon</name>
+					<rating>3</rating>
+					<spec>Cat o' Nine Tails Whip</spec>
+				</skill>
+				<skill>
+					<name>Exotic Ranged Weapon</name>
+					<rating>2</rating>
+					<spec>Flame Thrower</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Exotic Weapons Veteran</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Dodge</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Exotic Melee Weapon</name>
+					<rating>4</rating>
+					<spec>Kusarigama</spec>
+				</skill>
+				<skill>
+					<name>Exotic Melee Weapon</name>
+					<rating>2</rating>
+					<spec>Garrote</spec>
+				</skill>
+				<skill>
+					<name>Exotic Ranged Weapon</name>
+					<rating>4</rating>
+					<spec>Crossbow</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Exotic Weapons Expert</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Dodge</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Exotic Melee Weapon</name>
+					<rating>5</rating>
+					<spec>Sais</spec>
+				</skill>
+				<skill>
+					<name>Exotic Melee Weapon</name>
+					<rating>3</rating>
+					<spec>Foot Blades</spec>
+				</skill>
+				<skill>
+					<name>Exotic Ranged Weapon</name>
+					<rating>5</rating>
+					<spec>Net Gun</spec>
+				</skill>
+				<skill>
+					<name>Exotic Ranged Weapon</name>
+					<rating>5</rating>
+					<spec>Bolos</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Brown Belt</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Unarmed Combat</name>
+					<rating>3</rating>
+					<spec>Martial Arts</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Black Belt</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Unarmed Combat</name>
+					<rating>5</rating>
+				</skill>
+			</skills>
+			<selectmartialart />
+		</pack>
+		<pack>
+			<name>Explosives Hobbyist</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Demolitions</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Throwing Weapons</name>
+					<rating>2</rating>
+					<spec>Lobbed</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Explosives Expert</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Demolitions</name>
+					<rating>5</rating>
+					<spec>Improvised Explosives</spec>
+				</skill>
+				<skill>
+					<name>Artisan</name>
+					<rating>4</rating>
+					<spec>Bombs</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Countermage</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality select="Counterspelling">Aptitude</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Banishing</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Counterspelling</name>
+					<rating>6</rating>
+					<spec>Combat Spells</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Enchanter</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Arcana</name>
+					<rating>5</rating>
+					<spec>Focus Design</spec>
+				</skill>
+				<skill>
+					<name>Enchanting</name>
+					<rating>5</rating>
+					<spec>Artificing</spec>
+				</skill>
+				<skillgroup>
+					<name>Conjuring</name>
+					<rating>2</rating>
+				</skillgroup>
+				<skillgroup>
+					<name>Sorcery</name>
+					<rating>2</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Novice Summoner</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Astral Combat</name>
+					<rating>1</rating>
+				</skill>
+				<skillgroup>
+					<name>Conjuring</name>
+					<rating>2</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Veteran Summoner</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Focused Concentration (Rating 1)</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Astral Combat</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Banishing</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Binding</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Summoning</name>
+					<rating>4</rating>
+					<spec>Spirits of Air</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Master Summoner</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality select="Summoning">Aptitude</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Arcana</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Assensing</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Astral Combat</name>
+					<rating>4</rating>
+					<spec>Spirits</spec>
+				</skill>
+				<skill>
+					<name>Banishing</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Binding</name>
+					<rating>4</rating>
+					<spec>Spirits of Man</spec>
+				</skill>
+				<skill>
+					<name>Summoning</name>
+					<rating>6</rating>
+					<spec>Spirits of Man</spec>
+				</skill>
+				<skillgroup>
+					<name>Sorcery</name>
+					<rating>2</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Spell Dabbler</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Assensing</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Spellcasting</name>
+					<rating>4</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Spell Slinger</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality select="Spellcasting">Aptitude</quality>
+					<quality>Focused Concentration (Rating 1)</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Assensing</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Counterspelling</name>
+					<rating>4</rating>
+					<spec>Combat Spells</spec>
+				</skill>
+				<skill>
+					<name>Ritual Spellcasting</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Spellcasting</name>
+					<rating>6</rating>
+					<spec>Combat Spells</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Mage Extraordinaire</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Focused Concentration (Rating 2)</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Arcana</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Assensing</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Astral Combat</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Counterspelling</name>
+					<rating>5</rating>
+					<spec>Combat Spells</spec>
+				</skill>
+				<skill>
+					<name>Ritual Spellcasting</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Spellcasting</name>
+					<rating>5</rating>
+					<spec>Manipulation</spec>
+				</skill>
+				<skillgroup>
+					<name>Conjuring</name>
+					<rating>3</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Knack for Repairs</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Juryrigger</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Computer</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Hardware</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Perception</name>
+					<rating>2</rating>
+				</skill>
+				<skillgroup>
+					<name>Mechanic</name>
+					<rating>3</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Ace Mechanic</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Juryrigger</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Artisan</name>
+					<rating>3</rating>
+					<spec>Metal Fabrication</spec>
+				</skill>
+				<skill>
+					<name>Computer</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Cybertechnology</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Hardware</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Perception</name>
+					<rating>3</rating>
+				</skill>
+				<skillgroup>
+					<name>Mechanic</name>
+					<rating>5</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Outdoorsman</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Sense of Direction</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Climbing</name>
+					<rating>2</rating>
+					<spec>Rock Climbing</spec>
+				</skill>
+				<skill>
+					<name>First Aid</name>
+					<rating>1</rating>
+				</skill>
+				<skill>
+					<name>Perception</name>
+					<rating>3</rating>
+					<spec>Scent</spec>
+				</skill>
+				<skill>
+					<name>Running</name>
+					<rating>2</rating>
+					<spec>Wilderness</spec>
+				</skill>
+				<skill>
+					<name>Survival</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Swimming</name>
+					<rating>2</rating>
+				</skill>
+				<skillgroup>
+					<name>Outdoors</name>
+					<rating>4</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Matrix Savvy</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Computer</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Data Search</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Rookie Technomancer</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Compiling</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Decompiling</name>
+					<rating>1</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Veteran Technomancer</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skillgroup>
+					<name>Tasking</name>
+					<rating>4</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Ace Technomancer</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Compiling</name>
+					<rating>5</rating>
+				</skill>
+				<skill>
+					<name>Decompiling</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Registering</name>
+					<rating>5</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Hacking Dabbler</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Hacking</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Cybercombat</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Electronic Warfare</name>
+					<rating>1</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Hacking Ace</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Hacking</name>
+					<rating>5</rating>
+					<spec>Exploit</spec>
+				</skill>
+				<skill>
+					<name>Electronic Warfare</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Cybercombat</name>
+					<rating>5</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Matrix Power User</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Analytical Mind</quality>
+					<quality>Codeslinger</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Perception</name>
+					<rating>2</rating>
+				</skill>
+				<skillgroup>
+					<name>Cracking</name>
+					<rating>4</rating>
+				</skillgroup>
+				<skillgroup>
+					<name>Electronics</name>
+					<rating>4</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Medic</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>First Aid</name>
+					<rating>4</rating>
+					<spec>Combat Wounds</spec>
+				</skill>
+				<skill>
+					<name>Medicine</name>
+					<rating>4</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Athlete</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Running</name>
+					<rating>4</rating>
+					<spec>Urban</spec>
+				</skill>
+				<skill>
+					<name>Gymnastics</name>
+					<rating>3</rating>
+					<spec>Balance</spec>
+				</skill>
+				<skill>
+					<name>Swimming</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Climbing</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Superior Athlete</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Natural Athlete</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Climbing</name>
+					<rating>3</rating>
+					<spec>Freehand</spec>
+				</skill>
+				<skill>
+					<name>Diving</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Gymnastics</name>
+					<rating>5</rating>
+					<spec>Balance</spec>
+				</skill>
+				<skill>
+					<name>Running</name>
+					<rating>4</rating>
+					<spec>Urban</spec>
+				</skill>
+				<skill>
+					<name>Swimming</name>
+					<rating>3</rating>
+					<spec>Long Distance</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Skilled Driver</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Pilot Ground Craft</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Pilot Watercraft</name>
+					<rating>1</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Driving Ace</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Pilot Aircraft</name>
+					<rating>1</rating>
+				</skill>
+				<skill>
+					<name>Pilot Ground Craft</name>
+					<rating>5</rating>
+					<spec>Wheeled</spec>
+				</skill>
+				<skill>
+					<name>Pilot Watercraft</name>
+					<rating>3</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Master of Vehicles</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Aeronautics Mechanic</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Automotive Mechanic</name>
+					<rating>4</rating>
+					<spec>Wheeled</spec>
+				</skill>
+				<skill>
+					<name>Pilot Aircraft</name>
+					<rating>3</rating>
+					<spec>Rotary Wing</spec>
+				</skill>
+				<skill>
+					<name>Pilot Anthroform</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Pilot Ground Craft</name>
+					<rating>4</rating>
+					<spec>Remote Operation</spec>
+				</skill>
+				<skill>
+					<name>Pilot Watercraft</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Persuasive</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>First Impression</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skillgroup>
+					<name>Influence</name>
+					<rating>4</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Intimidator</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Guts</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Intimidation</name>
+					<rating>4</rating>
+					<spec>Mental</spec>
+				</skill>
+				<skill>
+					<name>Leadership</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Master of Disguise</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Blandness</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Con</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Disguise</name>
+					<rating>4</rating>
+					<spec>Cosmetic</spec>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Shadower</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Blandness</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Pilot Ground Craft</name>
+					<rating>3</rating>
+					<spec>Bike</spec>
+				</skill>
+				<skill>
+					<name>Perception</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Gymnastics</name>
+					<rating>1</rating>
+				</skill>
+				<skillgroup>
+					<name>Stealth</name>
+					<rating>4</rating>
+				</skillgroup>
+			</skills>
+		</pack>
+		<pack>
+			<name>Shifty</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Con</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Etiquette</name>
+					<rating>3</rating>
+					<spec>Shadowrunners</spec>
+				</skill>
+				<skill>
+					<name>Intimidation</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Negotiation</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Sneaky</name>
+			<category>Skill Kits</category>
+			<skills>
+				<skill>
+					<name>Hardware</name>
+					<rating>3</rating>
+					<spec>Maglocks</spec>
+				</skill>
+				<skill>
+					<name>Infiltration</name>
+					<rating>4</rating>
+				</skill>
+				<skill>
+					<name>Locksmith</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Palming</name>
+					<rating>3</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Ace Infiltrator</name>
+			<category>Skill Kits</category>
+			<qualities>
+				<positive>
+					<quality>Catlike</quality>
+				</positive>
+			</qualities>
+			<skills>
+				<skill>
+					<name>Chemistry</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Computer</name>
+					<rating>3</rating>
+					<spec>Surveillance Devices</spec>
+				</skill>
+				<skill>
+					<name>Forgery</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Gymnastics</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Hardware</name>
+					<rating>4</rating>
+					<spec>Maglocks</spec>
+				</skill>
+				<skill>
+					<name>Infiltration</name>
+					<rating>5</rating>
+					<spec>Urban</spec>
+				</skill>
+				<skill>
+					<name>Locksmith</name>
+					<rating>3</rating>
+				</skill>
+				<skill>
+					<name>Palming</name>
+					<rating>2</rating>
+				</skill>
+				<skill>
+					<name>Shadowing</name>
+					<rating>2</rating>
+				</skill>
+			</skills>
+		</pack>
+		<pack>
+			<name>Pistoleer</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="Pistols">Improved Ability (Combat)</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name select="AGI">Attribute Boost</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Improved Reflexes 1</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Adnisador</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="Blades">Improved Ability (Combat)</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Improved Reflexes 1</name>
+				</power>
+				<power>
+					<name>Quick Draw</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Punisher</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name>Critical Strike</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Improved Reflexes 1</name>
+				</power>
+				<power>
+					<name>Killing Hands</name>
+				</power>
+				<power>
+					<name>Penetrating Strike</name>
+					<rating>2</rating>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Assassin</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="REA">Attribute Boost</name>
+					<rating>1</rating>
+				</power>
+				<power>
+					<name>Critical Strike</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name select="Infiltration">Improved Ability (Non-Combat)</name>
+					<rating>1</rating>
+				</power>
+				<power>
+					<name>Improved Reflexes 2</name>
+				</power>
+				<power>
+					<name>Killing Hands</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Stealth</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="Infiltration">Improved Ability (Non-Combat)</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Traceless Walk</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Tracker</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name>Enhanced Perception</name>
+					<rating>3</rating>
+				</power>
+				<power>
+					<name>Improved Sense</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Multi-Tasking</name>
+				</power>
+				<power>
+					<name>Piercing Senses</name>
+					<rating>3</rating>
+				</power>
+				<power>
+					<name>Traceless Walk</name>
+					<rating>2</rating>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Core Defense</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name>Combat Sense</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Mystic Armor</name>
+					<rating>2</rating>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Peak Defense</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="Dodge">Improved Ability (Combat)</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name select="REA">Improved Physical Attribute</name>
+					<rating>1</rating>
+				</power>
+				<power>
+					<name>Mystic Armor</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Natural Immunity</name>
+					<rating>1</rating>
+				</power>
+				<power>
+					<name>Pain Resistance</name>
+					<rating>2</rating>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>First Blood</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name>Combat Sense</name>
+					<rating>1</rating>
+				</power>
+				<power>
+					<name>Critical Strike</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Improved Reflexes 2</name>
+				</power>
+				<power>
+					<name>Killing Hands</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Adept of All Trades</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name>Astral Perception</name>
+				</power>
+				<power>
+					<name>Improved Ability (Non-Combat)</name>
+					<rating>4</rating>
+				</power>
+				<power>
+					<name>Improved Sense</name>
+					<rating>2</rating>
+				</power>
+				<power>
+					<name>Killing Hands</name>
+					<rating>2</rating>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Convincer</name>
+			<category>Adept Kits</category>
+			<powers>
+				<power>
+					<name select="Con">Improved Ability (Non-Combat)</name>
+					<rating>4</rating>
+				</power>
+				<power>
+					<name>Kinesics</name>
+					<rating>3</rating>
+				</power>
+				<power>
+					<name>Voice Control</name>
+				</power>
+			</powers>
+		</pack>
+		<pack>
+			<name>Aggression</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Armor</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Attack</name>
+					<rating>5</rating>
+				</program>
+				<program>
+					<name>Black Hammer</name>
+					<rating>3</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Self Defense</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Armor</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Attack</name>
+					<rating>2</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Bare Essentials</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Analyze</name>
+					<rating>2</rating>
+				</program>
+				<program>
+					<name>Browse</name>
+					<rating>2</rating>
+				</program>
+				<program>
+					<name>Command</name>
+					<rating>1</rating>
+				</program>
+				<program>
+					<name>Edit</name>
+					<rating>2</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Solid Essentials</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Analyze</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Browse</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Command</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Edit</name>
+					<rating>4</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Basic Hacking</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Exploit</name>
+					<rating>2</rating>
+				</program>
+				<program>
+					<name>Stealth</name>
+					<rating>3</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Hacking Focus</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Exploit</name>
+					<rating>5</rating>
+				</program>
+				<program>
+					<name>Stealth</name>
+					<rating>5</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Data Defender</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Data Bomb</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Encrypt</name>
+					<rating>5</rating>
+				</program>
+				<program>
+					<name>Purge</name>
+					<rating>3</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Data Theft</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Decrypt</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Defuse</name>
+					<rating>3</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Wireless Warrior</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Scan</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Sniffer</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Track</name>
+					<rating>4</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Total Package</name>
+			<category>Complex Form Kits</category>
+			<programs>
+				<program>
+					<name>Analyze</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Armor</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Attack</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Browse</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Command</name>
+					<rating>2</rating>
+				</program>
+				<program>
+					<name>Decrypt</name>
+					<rating>3</rating>
+				</program>
+				<program>
+					<name>Defuse</name>
+					<rating>2</rating>
+				</program>
+				<program>
+					<name>Exploit</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Stealth</name>
+					<rating>4</rating>
+				</program>
+				<program>
+					<name>Track</name>
+					<rating>3</rating>
+				</program>
+			</programs>
+		</pack>
+		<pack>
+			<name>Light Mana Combat</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Death Touch</spell>
+				<spell>Manabolt</spell>
+				<spell>Stunbolt</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Heavy Mana Combat</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Manaball</spell>
+				<spell>Slaughter [Metatype/Species]</spell>
+				<spell>Stunball</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Light Physical Combat</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Acid Stream</spell>
+				<spell>Clout</spell>
+				<spell>Lightning Bolt</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Heavy Physical Combat</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Blast</spell>
+				<spell>Ball Lightning</spell>
+				<spell>Powerball</spell>
+				<spell>Toxic Wave</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Pyromaniac</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Fireball</spell>
+				<spell>Flamethrower</spell>
+				<spell>Ignite</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Master of the Air</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Blast</spell>
+				<spell>Clairaudience</spell>
+				<spell>Hush</spell>
+				<spell>Levitate</spell>
+				<spell>Silence</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Light Defense</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Armor</spell>
+				<spell>Deflection</spell>
+				<spell>Mana Barrier</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Moderate Defense</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Armor</spell>
+				<spell>Camouflage</spell>
+				<spell>Deflection</spell>
+				<spell>Detect Enemies</spell>
+				<spell>Mana Barrier</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Heavy Defense</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Armor</spell>
+				<spell>Deflection</spell>
+				<spell>Detect Enemies</spell>
+				<spell>Detect Magic</spell>
+				<spell>Invisibility</spell>
+				<spell>Mana Barrier</spell>
+				<spell>Physical Barrier</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Light Healer</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Detox</spell>
+				<spell>Heal</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Master Healer</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Antidote</spell>
+				<spell>Cure Disease</spell>
+				<spell>Detox</spell>
+				<spell>Heal</spell>
+				<spell>Stabilize</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Deceiver</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Analyze Truth</spell>
+				<spell>Detect Magic, Extended Area</spell>
+				<spell select="CHA">Increase [Attribute]</spell>
+				<spell>Influence</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Awakened Spy</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Clairvoyance</spell>
+				<spell>Clairaudience</spell>
+				<spell>Hush</spell>
+				<spell>Improved Invisibility</spell>
+				<spell>Levitate</spell>
+				<spell>Mind Probe</spell>
+				<spell>Silence</spell>
+				<spell>Stealth</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Spellbinder</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Control Emotions</spell>
+				<spell>Control Thoughts</spell>
+				<spell>Petrify</spell>
+				<spell>Turn to Goo</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Mass Spellbinder</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Control Pack</spell>
+				<spell>Mob Control</spell>
+				<spell>Mob Mind</spell>
+				<spell>Mob Mood</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Environment Shaper</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Alter Temperature</spell>
+				<spell>Animate</spell>
+				<spell>Ice Sheet</spell>
+				<spell>Interference</spell>
+				<spell>Mana Static</spell>
+				<spell select="Earth">Shape [Material]</spell>
+				<spell select="Fire">Shape [Material]</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Master Manipulator</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Calm Pack</spell>
+				<spell>Control Pack</spell>
+				<spell>Influence</spell>
+				<spell>Mana Net</spell>
+				<spell>Mob Control</spell>
+				<spell>Mob Mind</spell>
+				<spell>Mob Mood</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>Master Illusionist</name>
+			<category>Spell Kits</category>
+			<spells>
+				<spell>Chaos</spell>
+				<spell>Improved Invisibility</spell>
+				<spell>Mask</spell>
+				<spell>Physical Mask</spell>
+				<spell>Trid Phantasm</spell>
+			</spells>
+		</pack>
+		<pack>
+			<name>The Basics</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+			</armors>
+			<gears>
+				<gear>
+					<name>Grenade: Thermal Smoke</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Datachip</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Standard RFID Tags</name>
+					<qty>20</qty>
+				</gear>
+				<gear>
+					<name>Radio Signal Scanner</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>White Noise Generator</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Respirator</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Medkit</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Fake SIN</name>
+					<qty>3</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Emergency Identity</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<gears>
+				<gear>
+					<name>Sony Emperor</name>
+					<gears>
+						<gear>
+							<name>Vector Xim</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Nanopaste Disguise (Small Container)</name>
+				</gear>
+				<gear>
+					<name>Fake SIN</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>600</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 1 (Standard)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>6</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Reaction Enhancers</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>1</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>1500</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 1 (Alphaware)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>12</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Reaction Enhancers</name>
+					<rating>2</rating>
+					<grade>Alphaware</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>1</rating>
+					<grade>Alphaware</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>1500</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 2 (Standard)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>6</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Wired Reflexes</name>
+					<rating>1</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Wired Reflexes">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>2000</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 2 (Alphaware)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>11</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Wired Reflexes</name>
+					<rating>1</rating>
+					<grade>Alphaware</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>2</rating>
+					<grade>Alphaware</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Wired Reflexes">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>2000</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 3 (Standard)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>20</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Reaction Enhancers</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Synaptic Booster</name>
+					<rating>1</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 3 (Alphaware)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>40</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Reaction Enhancers</name>
+					<rating>2</rating>
+					<grade>Alphaware</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Synaptic Booster</name>
+					<rating>1</rating>
+					<grade>Alphaware</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 4 (Standard)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>14</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Move-by-Wire System</name>
+					<rating>1</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Move-by-Wire System">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>3000</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Augmented Speed Boost Option 4 (Alphaware)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>27</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Move-by-Wire System</name>
+					<rating>1</rating>
+					<grade>Alphaware</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>2</rating>
+					<grade>Alphaware</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name select="Move-by-Wire System">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name select="Muscle Toner">Fake License</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>3000</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Pistol Fighter</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Vest</name>
+				</armor>
+				<armor>
+					<name>Armor Vest</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Fichetti Security 600</name>
+				</weapon>
+				<weapon>
+					<name>Ares Predator IV</name>
+				</weapon>
+				<weapon>
+					<name>Ares Predator IV</name>
+				</weapon>
+				<weapon>
+					<name>Yamaha Sakura Fubuki</name>
+				</weapon>
+				<weapon>
+					<name>Ruger Super Warhawk</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name select="Light Pistols">Ammo: Explosive Rounds</name>
+					<qty>40</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Explosive Rounds</name>
+					<qty>40</qty>
+				</gear>
+				<gear>
+					<name select="Light Pistols">Ammo: EX-Explosive Rounds</name>
+					<qty>40</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: EX-Explosive Rounds</name>
+					<qty>40</qty>
+				</gear>
+				<gear>
+					<name select="Light Pistols">Ammo: Gel Rounds</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Gel Rounds</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Light Pistols">Ammo: Regular Ammo</name>
+					<qty>100</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Regular Ammo</name>
+					<qty>100</qty>
+				</gear>
+				<gear>
+					<name select="Light Pistols">Ammo: Stick-n-Shock</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Stick-n-Shock</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name>Spare Clip</name>
+					<qty>10</qty>
+				</gear>
+				<gear>
+					<name select="Gun">Fake License</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>3000</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Machine Gun Fighter</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Ingram White Knight</name>
+				</weapon>
+				<weapon>
+					<name>Ingram White Knight</name>
+				</weapon>
+				<weapon>
+					<name>Stoner-Ares M202</name>
+					<accessories>
+						<accessory>
+							<name>Gas-Vent 3 System</name>
+							<mount>Barrel</mount>
+						</accessory>
+						<accessory>
+							<name>Gyro Stabilization</name>
+							<mount>Under</mount>
+						</accessory>
+					</accessories>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name select="Light Machine Guns">Ammo: Explosive Rounds</name>
+					<qty>270</qty>
+				</gear>
+				<gear>
+					<name select="Medium Machine Guns">Ammo: Explosive Rounds</name>
+					<qty>270</qty>
+				</gear>
+				<gear>
+					<name select="Light Machine Guns">Ammo: Regular Ammo</name>
+					<qty>825</qty>
+				</gear>
+				<gear>
+					<name select="Medium Machine Guns">Ammo: Regular Ammo</name>
+					<qty>825</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Rifle Shooter</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Ares Alpha</name>
+				</weapon>
+				<weapon>
+					<name>Ares Alpha</name>
+				</weapon>
+				<weapon>
+					<name>FN HAR</name>
+				</weapon>
+				<weapon>
+					<name>AK-97</name>
+				</weapon>
+				<weapon>
+					<name>AK-97</name>
+				</weapon>
+				<weapon>
+					<name>Walther MA-2100</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name select="Assault Rifles">Ammo: Explosive Rounds</name>
+					<qty>30</qty>
+				</gear>
+				<gear>
+					<name select="Sniper Rifles">Ammo: Explosive Rounds</name>
+					<qty>30</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: EX-Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Sniper Rifles">Ammo: EX-Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: Gel Rounds</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Sniper Rifles">Ammo: Gel Rounds</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: Regular Ammo</name>
+					<qty>260</qty>
+				</gear>
+				<gear>
+					<name select="Sniper Rifles">Ammo: Regular Ammo</name>
+					<qty>260</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: Stick-n-Shock</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name select="Sniper Rifles">Ammo: Stick-n-Shock</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name>Minigrenade: Flash-Bang</name>
+					<qty>12</qty>
+				</gear>
+				<gear>
+					<name>Minigrenade: Gas</name>
+					<qty>12</qty>
+					<gears>
+						<gear>
+							<name>Pepper Punch</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Gas Mask</name>
+				</gear>
+				<gear>
+					<name select="Armorer">Tool Kit</name>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Brawler</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<armors>
+				<armor>
+					<name>Chain Shirt</name>
+				</armor>
+				<armor>
+					<name>Chain Shirt</name>
+				</armor>
+				<armor>
+					<name>Padded Leather Armor</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Shock Glove</name>
+				</weapon>
+				<weapon>
+					<name>Shock Glove</name>
+				</weapon>
+				<weapon>
+					<name>Hardliner Gloves</name>
+				</weapon>
+				<weapon>
+					<name>Hardliner Gloves</name>
+				</weapon>
+				<weapon>
+					<name>Club</name>
+				</weapon>
+				<weapon>
+					<name>Club</name>
+				</weapon>
+				<weapon>
+					<name>Extendable Baton</name>
+				</weapon>
+				<weapon>
+					<name>Sap</name>
+				</weapon>
+				<weapon>
+					<name>Stun Baton</name>
+				</weapon>
+				<weapon>
+					<name>Stun Baton</name>
+				</weapon>
+				<weapon>
+					<name>Tonfa</name>
+				</weapon>
+				<weapon>
+					<name>Tonfa</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name>Fake SIN</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Medkit</name>
+					<qty>4</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Medkit Supplies</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Stimulant Patch</name>
+					<qty>8</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Disposable Syringe</name>
+					<qty>6</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Blade Fighter</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<armors>
+				<armor>
+					<name>Lined Coat</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Combat Axe</name>
+				</weapon>
+				<weapon>
+					<name>Combat Axe</name>
+				</weapon>
+				<weapon>
+					<name>Forearm Snap-Blades</name>
+				</weapon>
+				<weapon>
+					<name>Forearm Snap-Blades</name>
+				</weapon>
+				<weapon>
+					<name>Katana</name>
+				</weapon>
+				<weapon>
+					<name>Katana</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Monofilament Sword</name>
+				</weapon>
+				<weapon>
+					<name>Monofilament Sword</name>
+				</weapon>
+			</weapons>
+			<cyberwares>
+				<cyberware>
+					<name>Hand Blade</name>
+					<grade>Standard</grade>
+				</cyberware>
+				<cyberware>
+					<name>Hand Blade</name>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<gears>
+				<gear>
+					<name>Biomonitor</name>
+				</gear>
+				<gear>
+					<name>Medkit</name>
+					<qty>2</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Medkit Supplies</name>
+					<qty>2</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Multi-Shooter</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+				<armor>
+					<name>Form-Fitting Full-Body Suit</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Colt Manhunter</name>
+				</weapon>
+				<weapon>
+					<name>Colt Manhunter</name>
+				</weapon>
+				<weapon>
+					<name>Colt Government 2066</name>
+				</weapon>
+				<weapon>
+					<name>Colt Government 2066</name>
+				</weapon>
+				<weapon>
+					<name>Savalette Guardian</name>
+				</weapon>
+				<weapon>
+					<name>Ingram Smartgun X</name>
+				</weapon>
+				<weapon>
+					<name>Ingram Smartgun X</name>
+				</weapon>
+				<weapon>
+					<name>HK MP-5 TX</name>
+				</weapon>
+				<weapon>
+					<name>AK-98</name>
+				</weapon>
+				<weapon>
+					<name>AK-98</name>
+				</weapon>
+				<weapon>
+					<name>Remington 990</name>
+				</weapon>
+				<weapon>
+					<name>Remington 990</name>
+				</weapon>
+				<weapon>
+					<name>Defiance EX Shocker</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Submachine Guns">Ammo: Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Shotguns">Ammo: Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: EX-Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Submachine Guns">Ammo: EX-Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: EX-Explosive Rounds</name>
+					<qty>25</qty>
+				</gear>
+				<gear>
+					<name select="Shotguns">Ammo: EX-Explosive Rounds</name>
+					<qty>15</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Regular Ammo</name>
+					<qty>175</qty>
+				</gear>
+				<gear>
+					<name select="Submachine Guns">Ammo: Regular Ammo</name>
+					<qty>175</qty>
+				</gear>
+				<gear>
+					<name select="Assault Rifles">Ammo: Regular Ammo</name>
+					<qty>150</qty>
+				</gear>
+				<gear>
+					<name select="Shotguns">Ammo: Regular Ammo</name>
+					<qty>150</qty>
+				</gear>
+				<gear>
+					<name select="Tasers">Ammo: Taser Dart</name>
+					<qty>150</qty>
+				</gear>
+				<gear>
+					<name>Minigrenade: Fragmentation</name>
+					<qty>12</qty>
+				</gear>
+				<gear>
+					<name>Minigrenade: Flash-Bang</name>
+					<qty>12</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Exotic Warrior</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<armors>
+				<armor>
+					<name>Lined Coat</name>
+					<mods>
+						<mod>
+							<name>Chemical Protection</name>
+							<rating>3</rating>
+						</mod>
+					</mods>
+				</armor>
+				<armor>
+					<name>Lined Coat</name>
+					<mods>
+						<mod>
+							<name>Chemical Protection</name>
+							<rating>3</rating>
+						</mod>
+					</mods>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Monofilament Whip</name>
+				</weapon>
+				<weapon>
+					<name>Pole Arm</name>
+				</weapon>
+				<weapon>
+					<name>Fichetti Pain Inducer</name>
+				</weapon>
+				<weapon>
+					<name>Parashield Dart Pistol</name>
+				</weapon>
+				<weapon>
+					<name>Parashield Dart Pistol</name>
+				</weapon>
+				<weapon>
+					<name>Parashield Dart Rifle</name>
+				</weapon>
+				<weapon>
+					<name>Parashield Dart Rifle</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name select="Special Weapons">Ammo: Injection Darts</name>
+					<qty>100</qty>
+				</gear>
+				<gear>
+					<name>Narcoject</name>
+					<qty>100</qty>
+				</gear>
+				<gear>
+					<name>Antidote Patch</name>
+					<qty>3</qty>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Weapon Augmentation</name>
+			<category>Gear Kits</category>
+			<nuyenbp>15</nuyenbp>
+			<armors>
+				<armor>
+					<name>Armor Jacket</name>
+				</armor>
+				<armor>
+					<name>Armor Vest</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Ares Predator IV</name>
+				</weapon>
+				<weapon>
+					<name>Ares Predator IV</name>
+				</weapon>
+			</weapons>
+			<cyberwares>
+				<cyberware>
+					<name>Obvious Full Arm</name>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Customized Agility</name>
+							<rating>5</rating>
+						</cyberware>
+						<cyberware>
+							<name>Customized Strength</name>
+							<rating>5</rating>
+						</cyberware>
+						<cyberware>
+							<name>Holdout Pistol</name>
+						</cyberware>
+						<cyberware>
+							<name>Shock Hand</name>
+						</cyberware>
+						<cyberware>
+							<name>Hand Razors</name>
+						</cyberware>
+						<cyberware>
+							<name>External Clip Port</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+				<cyberware>
+					<name>Obvious Full Arm</name>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Customized Agility</name>
+							<rating>5</rating>
+						</cyberware>
+						<cyberware>
+							<name>Customized Strength</name>
+							<rating>5</rating>
+						</cyberware>
+						<cyberware>
+							<name>Cyberarm Gyromount</name>
+						</cyberware>
+						<cyberware>
+							<name>Cyber Holster</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+				<cyberware>
+					<name>Obvious Full Leg</name>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Cyber Holster</name>
+						</cyberware>
+						<cyberware>
+							<name>Large Smuggling Compartment</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+			</cyberwares>
+			<gears>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Explosive Rounds</name>
+					<qty>60</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Regular Ammo</name>
+					<qty>230</qty>
+				</gear>
+				<gear>
+					<name select="Heavy Pistols">Ammo: Stick-n-Shock</name>
+					<qty>30</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Martial Artist</name>
+			<category>Gear Kits</category>
+			<nuyenbp>5</nuyenbp>
+			<armors>
+				<armor>
+					<name>Chameleon Suit</name>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Katana</name>
+				</weapon>
+				<weapon>
+					<name>Katana</name>
+				</weapon>
+				<weapon>
+					<name>Sword</name>
+				</weapon>
+				<weapon>
+					<name>Sword</name>
+				</weapon>
+				<weapon>
+					<name>Staff</name>
+				</weapon>
+				<weapon>
+					<name>Staff</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Knife</name>
+				</weapon>
+				<weapon>
+					<name>Bow (Rating 4)</name>
+				</weapon>
+				<weapon>
+					<name>Bow (Rating 4)</name>
+				</weapon>
+				<weapon>
+					<name>Bow (Rating 5)</name>
+				</weapon>
+				<weapon>
+					<name>Bow (Rating 6)</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name>Throwing: Shuriken</name>
+					<qty>20</qty>
+				</gear>
+				<gear>
+					<name>Throwing: Throwing Knife</name>
+					<qty>40</qty>
+				</gear>
+				<gear>
+					<name select="Bows">Ammo: Arrow</name>
+					<qty>238</qty>
+				</gear>
+				<gear>
+					<name select="Bows">Ammo: Injection Arrow</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name>Narcoject</name>
+					<qty>50</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Smartlinked Augmentation</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Cybereyes Basic System</name>
+					<rating>4</rating>
+					<grade>Alphaware</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Smartlink</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+			</cyberwares>
+		</pack>
+		<pack>
+			<name>Light Augmented Defense I</name>
+			<category>Gear Kits</category>
+			<nuyenbp>12</nuyenbp>
+			<biowares>
+				<bioware>
+					<name>Orthoskin</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Light Augmented Defense II</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Dermal Plating</name>
+					<rating>2</rating>
+					<grade>Alphaware</grade>
+				</cyberware>
+			</cyberwares>
+		</pack>
+		<pack>
+			<name>Heavy Augmented Defense</name>
+			<category>Gear Kits</category>
+			<nuyenbp>21</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Bone Lacing (Aluminum)</name>
+					<grade>Standard</grade>
+				</cyberware>
+				<cyberware>
+					<name>Dermal Sheath</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Damage Compensators</name>
+					<rating>3</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Platelet Factories</name>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Heavy Augmented Defense II</name>
+			<category>Gear Kits</category>
+			<nuyenbp>41</nuyenbp>
+			<biowares>
+				<bioware>
+					<name>Orthoskin</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Orthoskin Upgrade: Electroshock</name>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Pathogenic Defense</name>
+					<rating>3</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Toxin Extractor</name>
+					<rating>3</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Tracheal Filter</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Augmented Surveillance</name>
+			<category>Gear Kits</category>
+			<nuyenbp>5</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Cybereyes Basic System</name>
+					<rating>4</rating>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Low-Light Vision</name>
+						</cyberware>
+						<cyberware>
+							<name>Thermographic Vision</name>
+						</cyberware>
+						<cyberware>
+							<name>Vision Enhancement</name>
+							<rating>3</rating>
+						</cyberware>
+						<cyberware>
+							<name>Vision Magnification</name>
+						</cyberware>
+						<cyberware>
+							<name>Ocular Drone</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+				<cyberware>
+					<name>Cyberears</name>
+					<rating>4</rating>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Audio Enhancement</name>
+							<rating>3</rating>
+						</cyberware>
+						<cyberware>
+							<name>Select Sound Filter</name>
+							<rating>4</rating>
+						</cyberware>
+						<cyberware>
+							<name>Spatial Recognizer</name>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+			</cyberwares>
+			<gears>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>225</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Augmented Brawler</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<biowares>
+				<bioware>
+					<name>Bone Density Augmentation</name>
+					<rating>3</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Muscle Augmentation</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Muscle Toner</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+		</pack>
+		<pack>
+			<name>Brain Booster</name>
+			<category>Gear Kits</category>
+			<nuyenbp>9</nuyenbp>
+			<cyberwares>
+				<cyberware>
+					<name>Attention Coprocessor</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</cyberware>
+				<cyberware>
+					<name>Datajack</name>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>Cerebral Booster</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+				<bioware>
+					<name>Mnemonic Enhancer</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>3475</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Basic Covert Ops</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<armors>
+				<armor>
+					<name>Camouflage Suit</name>
+					<mods>
+						<mod>
+							<name>Thermal Damping</name>
+							<rating>6</rating>
+						</mod>
+					</mods>
+				</armor>
+			</armors>
+			<gears>
+				<gear>
+					<name>Jammer, Area</name>
+					<qty>2</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Jammer, Directional</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Micro-Transceiver</name>
+					<qty>2</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Tag Eraser</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>White Noise Generator</name>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Datachip</name>
+					<qty>50</qty>
+				</gear>
+				<gear>
+					<name>Lockpick Set</name>
+				</gear>
+				<gear>
+					<name>Endoscope</name>
+					<qty>2</qty>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Periscope</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Laser Microphone</name>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Microphone</name>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Radio Signal Scanner</name>
+					<qty>2</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Tool Kit</name>
+				</gear>
+				<gear>
+					<name>Nanopaste Disguise (Small Container)</name>
+					<qty>5</qty>
+				</gear>
+				<gear>
+					<name>Wire Clippers</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Climbing Gear</name>
+				</gear>
+				<gear>
+					<name>Rappelling Gloves</name>
+				</gear>
+				<gear>
+					<name>Grapple Gun</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Stealth Rope (100 m)</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Catalyst Stick</name>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>345</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Deluxe Covert Ops</name>
+			<category>Gear Kits</category>
+			<nuyenbp>16</nuyenbp>
+			<armors>
+				<armor>
+					<name>Chameleon Suit</name>
+					<mods>
+						<mod>
+							<name>Thermal Damping</name>
+							<rating>6</rating>
+						</mod>
+					</mods>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Ceramic Knife</name>
+				</weapon>
+				<weapon>
+					<name>Ceramic Knife</name>
+				</weapon>
+				<weapon>
+					<name>Ceramic Knife</name>
+				</weapon>
+			</weapons>
+			<cyberwares>
+				<cyberware>
+					<name>Cybereyes Basic System</name>
+					<rating>4</rating>
+					<grade>Standard</grade>
+					<cyberwares>
+						<cyberware>
+							<name>Eye Laser System</name>
+						</cyberware>
+						<cyberware>
+							<name>Eye Laser Microphone</name>
+							<rating>3</rating>
+						</cyberware>
+					</cyberwares>
+				</cyberware>
+				<cyberware>
+					<name>Cyberears</name>
+					<rating>4</rating>
+					<grade>Standard</grade>
+				</cyberware>
+				<cyberware>
+					<name>Dynamic Handprints</name>
+					<rating>4</rating>
+					<grade>Standard</grade>
+				</cyberware>
+			</cyberwares>
+			<biowares>
+				<bioware>
+					<name>False Front with Mimic Option</name>
+					<rating>2</rating>
+					<grade>Standard</grade>
+				</bioware>
+			</biowares>
+			<gears>
+				<gear>
+					<name>False Front Mimic Signal Drug</name>
+					<qty>10</qty>
+				</gear>
+				<gear>
+					<name>NanoSpy</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Autopicker</name>
+					<qty>2</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Keycard Copier</name>
+					<qty>2</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>1250</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>B&amp;E Goods</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<gears>
+				<gear>
+					<name>Autopicker</name>
+					<qty>2</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Cellular Glove Molder</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Chisel</name>
+				</gear>
+				<gear>
+					<name>Keycard Copier</name>
+					<qty>2</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Lockpick Set</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Maglock Passkey</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Maglock Sequencer</name>
+					<qty>2</qty>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Miniwelder</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Wire Clippers</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Flashlight</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Certified Credstick, Standard</name>
+					<rating>2505</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Light Mage Gear</name>
+			<category>Gear Kits</category>
+			<spirits>
+				<spirit>
+					<name>Air Spirit</name>
+					<force>3</force>
+					<services>2</services>
+				</spirit>
+				<spirit>
+					<name>Earth Spirit</name>
+					<force>3</force>
+					<services>3</services>
+				</spirit>
+				<spirit>
+					<name>Water Spirit</name>
+					<force>3</force>
+					<services>2</services>
+				</spirit>
+			</spirits>
+		</pack>
+		<pack>
+			<name>Deluxe Mage Gear</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<gears>
+				<gear>
+					<name>Combat Fetish</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Detection Fetish</name>
+					<qty>6</qty>
+				</gear>
+				<gear>
+					<name>Healing Fetish</name>
+					<qty>3</qty>
+				</gear>
+				<gear>
+					<name>Illusion Fetish</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Manipulation Fetish</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Spirit Binding Materials</name>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Magical Lodge Materials</name>
+					<rating>6</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus User (Combat)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<gears>
+				<gear>
+					<name>Spellcasting Focus (Combat)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Summoning Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus User (Detection)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<gears>
+				<gear>
+					<name>Spellcasting Focus (Detection)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Summoning Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus User (Health)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<gears>
+				<gear>
+					<name>Spellcasting Focus (Health)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Summoning Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus User (Illusion)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<gears>
+				<gear>
+					<name>Spellcasting Focus (Illusion)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Summoning Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus User (Manipulation)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>18</nuyenbp>
+			<gears>
+				<gear>
+					<name>Spellcasting Focus (Manipulation)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Summoning Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus Addict (Combat)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>22</nuyenbp>
+			<gears>
+				<gear>
+					<name>Counterspelling Focus (Combat)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Sustaining Focus (Combat)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Binding Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Power Focus</name>
+					<rating>2</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus Addict (Detection)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>22</nuyenbp>
+			<gears>
+				<gear>
+					<name>Counterspelling Focus (Detection)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Sustaining Focus (Detection)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Binding Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Power Focus</name>
+					<rating>2</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus Addict (Health)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>22</nuyenbp>
+			<gears>
+				<gear>
+					<name>Counterspelling Focus (Health)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Sustaining Focus (Health)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Binding Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Power Focus</name>
+					<rating>2</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus Addict (Illusion)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>22</nuyenbp>
+			<gears>
+				<gear>
+					<name>Counterspelling Focus (Illusion)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Sustaining Focus (Illusion)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Binding Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Power Focus</name>
+					<rating>2</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Focus Addict (Manipulation)</name>
+			<category>Gear Kits</category>
+			<nuyenbp>22</nuyenbp>
+			<gears>
+				<gear>
+					<name>Counterspelling Focus (Manipulation)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Sustaining Focus (Manipulation)</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Binding Focus</name>
+					<rating>3</rating>
+					<bonded>true</bonded>
+				</gear>
+				<gear>
+					<name>Power Focus</name>
+					<rating>2</rating>
+					<bonded>true</bonded>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Forging Kit</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<gears>
+				<gear>
+					<name>Tool Kit</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Appraisal Tool Shop</name>
+				</gear>
+				<gear>
+					<name>Datasoft</name>
+					<qty>50</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Knowsoft</name>
+					<qty>3</qty>
+					<rating>3</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Survivalist</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<armors>
+				<armor>
+					<name>Urban Explorer Jumpsuit</name>
+					<mods>
+						<mod>
+							<name>Insulation</name>
+							<rating>6</rating>
+						</mod>
+					</mods>
+				</armor>
+				<armor>
+					<name>Urban Explorer Jumpsuit</name>
+					<mods>
+						<mod>
+							<name>Insulation</name>
+							<rating>6</rating>
+						</mod>
+					</mods>
+				</armor>
+			</armors>
+			<weapons>
+				<weapon>
+					<name>Survival Knife</name>
+				</weapon>
+				<weapon>
+					<name>Survival Knife</name>
+				</weapon>
+			</weapons>
+			<gears>
+				<gear>
+					<name>Climbing Gear</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Diving Gear</name>
+				</gear>
+				<gear>
+					<name>Gas Mask</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>GPS</name>
+					<qty>2</qty>
+				</gear>
+				<gear>
+					<name>Flashlight</name>
+					<qty>3</qty>
+				</gear>
+				<gear>
+					<name>Light Stick</name>
+					<qty>10</qty>
+				</gear>
+				<gear>
+					<name>Magnesium Torch</name>
+					<qty>5</qty>
+				</gear>
+				<gear>
+					<name>Micro Flare Launcher</name>
+					<qty>5</qty>
+				</gear>
+				<gear>
+					<name>Micro Flares</name>
+					<qty>15</qty>
+				</gear>
+				<gear>
+					<name>Rappelling Gloves</name>
+				</gear>
+				<gear>
+					<name>Survival Kit</name>
+					<qty>5</qty>
+				</gear>
+				<gear>
+					<name>Standard Rope (100 m)</name>
+					<qty>4</qty>
+				</gear>
+				<gear>
+					<name>Biomonitor</name>
+				</gear>
+				<gear>
+					<name>Medkit</name>
+					<qty>3</qty>
+					<rating>6</rating>
+				</gear>
+				<gear>
+					<name>Disposable Syringe</name>
+					<qty>18</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Mundane Surveillance</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<gears>
+				<gear>
+					<name>Camera, Micro</name>
+					<rating>1</rating>
+					<gears>
+						<gear>
+							<name>Low Light</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Binoculars</name>
+					<rating>2</rating>
+					<gears>
+						<gear>
+							<name>Low Light</name>
+						</gear>
+						<gear>
+							<name>Vision Enhancement</name>
+							<rating>2</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Glasses</name>
+					<rating>4</rating>
+					<gears>
+						<gear>
+							<name>Low Light</name>
+						</gear>
+						<gear>
+							<name>Thermographic</name>
+						</gear>
+						<gear>
+							<name>Vision Magnification</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Microphone, Micro</name>
+					<rating>1</rating>
+					<gears>
+						<gear>
+							<name>Select Sound Filter</name>
+							<rating>3</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Microphone</name>
+					<rating>6</rating>
+					<gears>
+						<gear>
+							<name>Audio Enhancement</name>
+							<rating>3</rating>
+						</gear>
+						<gear>
+							<name>Select Sound Filter</name>
+							<rating>3</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Handheld Sensor</name>
+					<gears>
+						<gear>
+							<name>Directional Microphone</name>
+						</gear>
+						<gear>
+							<name>Laser Microphone</name>
+							<rating>6</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Earbuds</name>
+					<rating>3</rating>
+					<gears>
+						<gear>
+							<name>Audio Enhancement</name>
+							<rating>3</rating>
+						</gear>
+						<gear>
+							<name>Select Sound Filter</name>
+							<rating>3</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Handheld Sensor</name>
+					<gears>
+						<gear>
+							<name>Cyberware Scanner</name>
+							<rating>5</rating>
+						</gear>
+						<gear>
+							<name>MAD Scanner</name>
+							<rating>3</rating>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Stealth Tags</name>
+					<qty>100</qty>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Ground Combat Drones</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<gears>
+				<gear>
+					<name select="Assault Rifles">Ammo: Regular Ammo</name>
+					<qty>100</qty>
+				</gear>
+				<gear>
+					<name select="Light Machine Guns">Ammo: EX-Explosive Rounds</name>
+					<qty>500</qty>
+				</gear>
+			</gears>
+			<vehicles>
+				<vehicle>
+					<name>GM-Nissan Doberman (Medium)</name>
+					<weapons>
+						<weapon>
+							<name>AK-97</name>
+							<accessories>
+								<accessory>
+									<name>Sound Suppressor</name>
+									<mount>Barrel</mount>
+								</accessory>
+							</accessories>
+						</weapon>
+					</weapons>
+				</vehicle>
+				<vehicle>
+					<name>Steel Lynx (Large)</name>
+					<weapons>
+						<weapon>
+							<name>Ingram White Knight</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Air Combat Drones I</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<vehicles>
+				<vehicle>
+					<name>MCT-Nissan Roto-drone (Medium)</name>
+					<mods>
+						<mod>
+							<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+						</mod>
+					</mods>
+					<gears>
+						<gear>
+							<name select="Assault Rifles">Ammo: Regular Ammo</name>
+							<qty>100</qty>
+						</gear>
+					</gears>
+					<weapons>
+						<weapon>
+							<name>FN HAR</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+				<vehicle>
+					<name>MCT-Nissan Roto-drone (Medium)</name>
+					<mods>
+						<mod>
+							<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+						</mod>
+					</mods>
+					<gears>
+						<gear>
+							<name select="Assault Rifles">Ammo: Regular Ammo</name>
+							<qty>100</qty>
+						</gear>
+					</gears>
+					<weapons>
+						<weapon>
+							<name>FN HAR</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Air Combat Drones II</name>
+			<category>Gear Kits</category>
+			<nuyenbp>9</nuyenbp>
+			<vehicles>
+				<vehicle>
+					<name>GTS Tower (Large)</name>
+					<weapons>
+						<weapon>
+							<name>Walther MA-2100</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+				<vehicle>
+					<name>Cyberspace Designs Dragonfly (Minidrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>Cyberspace Designs Dragonfly (Minidrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>C-D Dalmatian (Large)</name>
+					<mods>
+						<mod>
+							<name>Ammo Bins</name>
+						</mod>
+						<mod>
+							<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+						</mod>
+					</mods>
+					<gears>
+						<gear>
+							<name select="Sniper Rifles">Ammo: Regular Ammo</name>
+							<qty>50</qty>
+						</gear>
+						<gear>
+							<name select="Light Machine Guns">Ammo: Regular Ammo</name>
+							<qty>750</qty>
+						</gear>
+					</gears>
+					<weapons>
+						<weapon>
+							<name>Ingram White Knight</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Surveillance Drones</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<vehicles>
+				<vehicle>
+					<name>Shiawase Kanmushi (Microdrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>Shiawase Kanmushi (Microdrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>Shiawase Kanmushi (Microdrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>S-B Microskimmer (Microdrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>S-B Microskimmer (Microdrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>MCT Fly-Spy (Minidrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>MCT Fly-Spy (Minidrone)</name>
+				</vehicle>
+				<vehicle>
+					<name>Renraku Stormcloud (Medium)</name>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Spy Car</name>
+			<category>Gear Kits</category>
+			<nuyenbp>24</nuyenbp>
+			<vehicles>
+				<vehicle>
+					<name>Eurocar Westwind 3K (Sports Car)</name>
+					<mods>
+						<mod>
+							<name>Ejection Seats</name>
+						</mod>
+						<mod>
+							<name>Nitrous Injection</name>
+						</mod>
+						<mod>
+							<name>Oil Slick Sprayer</name>
+						</mod>
+						<mod>
+							<name>Road Strip Ejector</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Spike Strip</name>
+						</mod>
+						<mod>
+							<name>Weapon Mount (Normal, Concealed, Fixed, Remote)</name>
+						</mod>
+						<mod>
+							<name>Armor, Concealed</name>
+							<rating>10</rating>
+						</mod>
+					</mods>
+					<gears>
+						<gear>
+							<name select="Light Machine Guns">Ammo: EX-Explosive Rounds</name>
+							<qty>150</qty>
+						</gear>
+					</gears>
+					<weapons>
+						<weapon>
+							<name>Ingram White Knight</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Classic Rigger Van</name>
+			<category>Gear Kits</category>
+			<nuyenbp>20</nuyenbp>
+			<vehicles>
+				<vehicle>
+					<name>GMC Bulldog Step-Van (Van)</name>
+					<mods>
+						<mod>
+							<name>Amenities, High</name>
+						</mod>
+						<mod>
+							<name>Anti-Theft</name>
+						</mod>
+						<mod>
+							<name>Armor, Concealed</name>
+							<rating>10</rating>
+						</mod>
+						<mod>
+							<name>Chameleon Coating</name>
+						</mod>
+						<mod>
+							<name>Drone Rack, Large</name>
+						</mod>
+						<mod>
+							<name>Interior Cameras</name>
+						</mod>
+						<mod>
+							<name>Rigger Adaptation</name>
+						</mod>
+						<mod>
+							<name>Rigger Cocoon, Enhanced</name>
+						</mod>
+						<mod>
+							<name>Valkyrie Module</name>
+						</mod>
+						<mod>
+							<name>Spoof Chip</name>
+						</mod>
+						<mod>
+							<name>Weapon Mount (Normal, Internal, Turret, Remote)</name>
+						</mod>
+					</mods>
+					<gears>
+						<gear>
+							<name select="Light Machine Guns">Ammo: EX-Explosive Rounds</name>
+							<qty>220</qty>
+						</gear>
+					</gears>
+					<weapons>
+						<weapon>
+							<name>Ingram White Knight</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Getaway Car</name>
+			<category>Gear Kits</category>
+			<nuyenbp>20</nuyenbp>
+			<gears>
+				<gear>
+					<name select="Light Machine Guns">Ammo: EX-Explosive Rounds</name>
+					<qty>220</qty>
+				</gear>
+			</gears>
+			<vehicles>
+				<vehicle>
+					<name>Hyundai Shin-Hyung (Sedan)</name>
+					<mods>
+						<mod>
+							<name>Engine Customization, Speed</name>
+						</mod>
+						<mod>
+							<name>Improved Suspension</name>
+						</mod>
+						<mod>
+							<name>Nitrous Injection</name>
+						</mod>
+						<mod>
+							<name>Passenger Protection</name>
+							<rating>6</rating>
+						</mod>
+						<mod>
+							<name>Racing Tires</name>
+							<rating>4</rating>
+						</mod>
+						<mod>
+							<name>Spoof Chip</name>
+						</mod>
+						<mod>
+							<name>Turbocharger</name>
+							<rating>1</rating>
+						</mod>
+					</mods>
+					<weapons>
+						<weapon>
+							<name>Ingram White Knight</name>
+						</weapon>
+					</weapons>
+				</vehicle>
+			</vehicles>
+		</pack>
+		<pack>
+			<name>Matrix Basics</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<gears>
+				<gear>
+					<name>Erika Elite</name>
+					<gears>
+						<gear>
+							<name>Iris Orb</name>
+						</gear>
+						<gear>
+							<name>Suite: Basic User</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Glasses</name>
+					<rating>1</rating>
+					<gears>
+						<gear>
+							<name>Image Link</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Linguasoft</name>
+					<rating>2</rating>
+				</gear>
+				<gear>
+					<name>Virtual Weather</name>
+				</gear>
+				<gear>
+					<name>Wall Space</name>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Matrix Power User</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<gears>
+				<gear>
+					<name>Transys Avalon</name>
+					<gears>
+						<gear>
+							<name>Novatech Navi</name>
+						</gear>
+						<gear>
+							<name>Sim Module (Cold)</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Suite: Pro User</name>
+				</gear>
+				<gear>
+					<name>Encrypt</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Scan</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Purge</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Linguasoft</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Nanopaste Trodes</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>AR Gloves</name>
+					<rating>1</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Hacker Pack</name>
+			<category>Gear Kits</category>
+			<nuyenbp>5</nuyenbp>
+			<gears>
+				<gear>
+					<name>Fairlight Caliban</name>
+					<gears>
+						<gear>
+							<name>Novatech Navi</name>
+						</gear>
+						<gear>
+							<name>Response 5</name>
+						</gear>
+						<gear>
+							<name>Firewall 5</name>
+						</gear>
+						<gear>
+							<name>System 5</name>
+						</gear>
+						<gear>
+							<name>Customized Interface</name>
+						</gear>
+						<gear>
+							<name select="Exploit">Optimization</name>
+						</gear>
+						<gear>
+							<name>Biometric Lock</name>
+						</gear>
+						<gear>
+							<name>Armor Case</name>
+							<rating>10</rating>
+						</gear>
+						<gear>
+							<name>Sim Module (Hot)</name>
+						</gear>
+					</gears>
+				</gear>
+				<gear>
+					<name>Nanopaste Trodes</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Skinlink</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Tag Eraser</name>
+				</gear>
+				<gear>
+					<name>Satellite Link</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Simrig</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Holo Projector</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>AR Gloves</name>
+					<rating>1</rating>
+				</gear>
+				<gear>
+					<name>Analyze</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Browse</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Command</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Edit</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Encrypt</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Purge</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Scan</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Reality Filter</name>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Cyber Warrior Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<gears>
+				<gear>
+					<name>Armor</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Attack</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Medic</name>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Self-Defense Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>1</nuyenbp>
+			<gears>
+				<gear>
+					<name>Attack</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Armor</name>
+					<rating>2</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Brain Melter Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<gears>
+				<gear>
+					<name>Biofeedback Filter</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Black Hammer</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Blackout</name>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Drone Puppeteer Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>3</nuyenbp>
+			<gears>
+				<gear>
+					<name>Decrypt</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>ECCM</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Sniffer</name>
+					<rating>3</rating>
+				</gear>
+				<gear>
+					<name>Spoof</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Track</name>
+					<rating>4</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Hacker Essential Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<gears>
+				<gear>
+					<name>Exploit</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Stealth</name>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Hacker Backup Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>2</nuyenbp>
+			<gears>
+				<gear>
+					<name>Exploit</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Stealth</name>
+					<rating>4</rating>
+				</gear>
+				<gear>
+					<name>Decrypt</name>
+					<rating>2</rating>
+				</gear>
+				<gear>
+					<name>Defuse</name>
+					<rating>2</rating>
+				</gear>
+			</gears>
+		</pack>
+		<pack>
+			<name>Data Thief Programs</name>
+			<category>Gear Kits</category>
+			<nuyenbp>4</nuyenbp>
+			<gears>
+				<gear>
+					<name>Decrypt</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Defuse</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Corrupt</name>
+					<rating>5</rating>
+				</gear>
+				<gear>
+					<name>Track</name>
+					<rating>5</rating>
+				</gear>
+			</gears>
+		</pack>
+	</packs>
+</chummer>

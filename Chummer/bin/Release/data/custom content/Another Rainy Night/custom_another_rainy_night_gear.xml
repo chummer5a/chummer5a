@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<gears>
+		<gear>
+			<name>Ammo: Wooden Sliver Rounds</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>12R</avail>
+			<costfor>10</costfor>
+			<cost>250</cost>
+			<weaponbonus>
+				<ap>2</ap>
+				<damage>-1</damage>
+			</weaponbonus>
+			<source>ARN</source>
+			<page>19</page>
+		</gear>
+		<gear>
+			<name>Cavalier Arms Personal Defense Sprayer</name>
+			<category>Camping and Survival Gear</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<cost>1500</cost>
+			<source>ARN</source>
+			<page>19</page>
+		</gear>
+		<gear>
+			<name>Weaponized Sawdust</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>150</cost>
+			<source>ARN</source>
+			<page>19</page>
+		</gear>
+	</gears>
+</chummer>

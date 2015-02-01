@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-499</version>
+  <echoes>
+    <echo>
+      <id>36aa9af4-5c04-40d9-ba09-31b401cc1ff0</id>
+      <name>Attack Upgrade</name>
+      <limit>no</limit>
+      <bonus>
+        <livingpersona>
+          <attack>1</attack>
+        </livingpersona>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>cd2e640c-06b7-4638-9eb4-bf75c28452a2</id>
+      <name>Data Processing Upgrade</name>
+      <limit>no</limit>
+      <bonus>
+        <livingpersona>
+          <dataprocessing>1</dataprocessing>
+        </livingpersona>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>4550fe9d-e5da-4b01-8115-14f7a0dfab1c</id>
+      <name>Firewall Upgrade</name>
+      <limit>no</limit>
+      <bonus>
+        <livingpersona>
+          <firewall>1</firewall>
+        </livingpersona>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>13c9f18c-a5f6-40e3-97c1-39265e1d70c2</id>
+      <name>Mind Over Machine</name>
+      <limit>no</limit>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>0adbc66d-6b29-4427-b652-0a93a87804b2</id>
+      <name>NeuroFilter</name>
+      <limit>no</limit>
+      <bonus>
+        <livingpersona>
+          <biofeedback>1</biofeedback>
+        </livingpersona>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>61055141-71f5-400e-9e67-cef650ce4801</id>
+      <name>Overclocking</name>
+      <bonus>
+        <livingpersona>
+          <response>1</response>
+        </livingpersona>
+        <matrixinitiativediceadd>1</matrixinitiativediceadd>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>dbd2fbba-8487-45cc-a92a-33813c3643b6</id>
+      <name>Resonance Link</name>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>d5dbe3f7-8a44-466b-8d5d-db9f0c68ee6b</id>
+      <name>Resonance [Program]</name>
+      <limit>no</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+    <echo>
+      <id>ce98f873-d261-4f1e-8bc7-fafa3c712700</id>
+      <name>Sleaze Upgrade</name>
+      <limit>no</limit>
+      <bonus>
+        <livingpersona>
+          <sleaze>1</sleaze>
+        </livingpersona>
+      </bonus>
+      <source>SR5</source>
+      <page>258</page>
+    </echo>
+  </echoes>
+</chummer>

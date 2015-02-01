@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>Hitch's Fly-Spy Mark II (Minidrone)</name>
+			<category>Drones: Mini</category>
+			<handling>1</handling>
+			<accel>3/15</accel>
+			<speed>15</speed>
+			<pilot>3</pilot>
+			<body>1</body>
+			<armor>0</armor>
+			<sensor>4</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>10000</cost>
+			<mods>
+				<name>Improved Takeoff and Landing Level 2</name>
+				<name>Chameleon Coating</name>
+				<name>Signal 4</name>
+			</mods>
+			<gears>
+				<gear>Minidrone Sensor</gear>
+				<gear>Laser Range Finder</gear>
+				<gear>Motion Sensor</gear>
+				<gear rating="4">Camera</gear>
+				<gear>Thermographic</gear>
+				<gear>Ultrasound</gear>
+				<gear rating="3" select="Self">Maneuver</gear>
+				<gear rating="3">Clearsight</gear>
+				<gear rating="3">Covert Ops</gear>
+				<gear rating="3">Chaser</gear>
+			</gears>
+			<source>DH2</source>
+			<page>31</page>
+		</vehicle>
+		<vehicle>
+			<name>Hitch's Roto-Drone Terminator Series (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>0</handling>
+			<accel>10/25</accel>
+			<speed>100</speed>
+			<pilot>3</pilot>
+			<body>3</body>
+			<armor>9</armor>
+			<sensor>4</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>21000</cost>
+			<mods>
+				<name>Improved Takeoff and Landing Level 2</name>
+				<name>Chameleon Coating</name>
+				<name>Signal 6</name>
+				<name>Weapon Mount (Normal, External, Turret, Remote)</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+				<gear rating="4">Radar</gear>
+				<gear rating="4">Camera</gear>
+				<gear>Thermographic</gear>
+				<gear>Vision Magnification</gear>
+				<gear>Low Light</gear>
+				<gear rating="2">Vision Enhancement</gear>
+				<gear rating="3" select="Self">Maneuver</gear>
+				<gear rating="3">Clearsight</gear>
+				<gear rating="3" select="Submachine Guns">Targeting</gear>
+			</gears>
+			<weapons>
+				<weapon>
+					<name>Ingram Smartgun X</name>
+				</weapon>
+			</weapons>
+			<source>DH2</source>
+			<page>31</page>
+		</vehicle>
+	</vehicles>
+</chummer>

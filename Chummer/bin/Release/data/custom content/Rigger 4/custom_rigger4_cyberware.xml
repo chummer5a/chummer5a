@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<cyberwares>
+		<cyberware>
+			<name>BattleMech Rigger Control Interface</name>
+			<category>Bodyware</category>
+			<ess>4.5</ess>
+			<capacity>0</capacity>
+			<avail>25F</avail>
+			<cost>2750000</cost>
+			<bonus>
+				<initiative precedence="1">2</initiative>
+				<initiativepass>2</initiativepass>
+			</bonus>
+			<source>R4</source>
+			<page>7</page>
+		</cyberware>
+	</cyberwares>
+</chummer>

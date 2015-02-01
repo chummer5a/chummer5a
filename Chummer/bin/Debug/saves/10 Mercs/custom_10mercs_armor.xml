@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<armors>
+		<armor>
+			<name>Centaur Battle Harness, CBH-91</name>
+			<category>Armor</category>
+			<b>12</b>
+			<i>10</i>
+			<armorcapacity>0</armorcapacity>
+			<avail>24F</avail>
+			<cost>45000</cost>
+			<source>10M</source>
+			<page>32</page>
+		</armor>
+		<armor>
+			<name>Drake Day Bag</name>
+			<category>Armor</category>
+			<b>8</b>
+			<i>6</i>
+			<armorcapacity>8</armorcapacity>
+			<avail>24</avail>
+			<cost>500</cost>
+			<source>10M</source>
+			<page>35</page>
+		</armor>
+		<armor>
+			<name>Team Zero Body Bag</name>
+			<category>Armor</category>
+			<b>3</b>
+			<i>10</i>
+			<armorcapacity>0</armorcapacity>
+			<avail>24</avail>
+			<cost>3000</cost>
+			<source>10M</source>
+			<page>43</page>
+		</armor>
+	</armors>
+</chummer>

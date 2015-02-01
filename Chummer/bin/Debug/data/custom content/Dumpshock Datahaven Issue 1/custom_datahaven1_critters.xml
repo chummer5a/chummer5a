@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<categories>
+		<category>Other</category>
+	</categories>
+	<metatypes>
+		<metatype>
+			<name>Sangre del Diablo</name>
+			<category>Other</category>
+			<bp>0</bp>
+			<bodmin>16</bodmin>
+			<bodmax>16</bodmax>
+			<bodaug>16</bodaug>
+			<agimin>5</agimin>
+			<agimax>5</agimax>
+			<agiaug>5</agiaug>
+			<reamin>5</reamin>
+			<reamax>5</reamax>
+			<reaaug>5</reaaug>
+			<strmin>14</strmin>
+			<strmax>14</strmax>
+			<straug>14</straug>
+			<chamin>5</chamin>
+			<chamax>5</chamax>
+			<chaaug>5</chaaug>
+			<intmin>5</intmin>
+			<intmax>5</intmax>
+			<intaug>5</intaug>
+			<logmin>2</logmin>
+			<logmax>2</logmax>
+			<logaug>2</logaug>
+			<wilmin>6</wilmin>
+			<wilmax>6</wilmax>
+			<wilaug>6</wilaug>
+			<inimin>2</inimin>
+			<inimax>10</inimax>
+			<iniaug>15</iniaug>
+			<edgmin>3</edgmin>
+			<edgmax>3</edgmax>
+			<edgaug>6</edgaug>
+			<magmin>8</magmin>
+			<magmax>8</magmax>
+			<magaug>8</magaug>
+			<resmin>0</resmin>
+			<resmax>6</resmax>
+			<resaug>6</resaug>
+			<essmin>0</essmin>
+			<essmax>6</essmax>
+			<essaug>6</essaug>
+			<movement>0/0</movement>
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+					<min>8</min>
+					<max>8</max>
+					<aug>8</aug>
+					<val>8</val>
+				</addattribute>
+				<enabletab>
+					<name>critter</name>
+					<name>magician</name>
+				</enabletab>
+			</bonus>
+			<powers>
+				<power>Compulsion</power>
+				<power>Corrosive Secretions</power>
+				<power>Engulf</power>
+				<power select="Fire">Immunity</power>
+				<power>Magical Guard</power>
+			</powers>
+			<skills>
+				<skill rating="6">Counterspelling</skill>
+				<skill rating="4">Perception</skill>
+				<skill rating="6">Unarmed Combat</skill>
+			</skills>
+			<source>DH1</source>
+			<page>12</page>
+		</metatype>
+	</metatypes>
+</chummer>

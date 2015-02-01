@@ -1,0 +1,2158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-491</version>
+  <qualities>
+    <quality>
+      <name>Adrenaline Surge</name>
+      <karma>12</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>Animal Empathy</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>Black Market Pipeline</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>Born Rich</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>City Slicker</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>College Education.RF</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>
+    <quality>
+      <name>Common Sense</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>145</page>
+    </quality>	
+    <quality>
+      <name>Daredevil</name>
+      <karma>6</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Digital Doppelganger</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Disgraced</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Erased</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Fame: Local</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Limited to Single Sprawl</condition>
+		  <skillcategory>
+			<name>Social Active</name>
+			<bonus>1</bonus>
+		  </skillcategory>
+        </limitmodifier>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Fame: National</quality>
+			<quality>Fame: Megacorporate</quality>
+			<quality>Fame: Global</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Fame: National</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>1</value>
+          <condition>Limited to Single Nation</condition>
+		  <condition>Must have 4+ Ranks in National Language</condition>
+		  <skillcategory>
+			<name>Social Active</name>
+			<bonus>2</bonus>
+		  </skillcategory>
+        </limitmodifier>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Fame: Local</quality>
+			<quality>Fame: Megacorporate</quality>
+			<quality>Fame: Global</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>146</page>
+    </quality>
+    <quality>
+      <name>Fame: Megacorporate</name>
+      <karma>12</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Limited to Single Megacorp</condition>
+		  <skillcategory>
+			<name>Social Active</name>
+			<bonus>2</bonus>
+		  </skillcategory>
+        </limitmodifier>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Fame: National</quality>
+			<quality>Fame: Local</quality>
+			<quality>Fame: Global</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Fame: Global</name>
+      <karma>16</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>3</value>
+		  <skillcategory>
+			<name>Social Active</name>
+			<bonus>3</bonus>
+		  </skillcategory>
+        </limitmodifier>
+      </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Fame: National</quality>
+			<quality>Fame: Megacorporate</quality>
+			<quality>Fame: Local</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Friends in High Places</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Hawk Eye</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Inspired.RF</name>
+      <karma>4</karma>
+      <category>Positive</category>
+		<bonus>
+			<selectskill limittoskill="Artisan, Performance">
+				<val>1</val>
+			</selectskill>
+		</bonus>
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Jack of All Trades Master of None</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>147</page>
+    </quality>
+    <quality>
+      <name>Lightning Reflexes</name>
+      <karma>20</karma>
+      <category>Positive</category>
+		<bonus>
+			<initiative>1</initiative>
+			<initiativepass>1</initiativepass>
+		</bonus>
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Linguist</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Made Man</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Night Vision</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Outdoorsman</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Overclocker</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Perceptive I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+	  <forbidden>
+        <oneof>
+          <quality>Perceptive II</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Perceptive II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus />
+	  <forbidden>
+        <oneof>
+          <quality>Perceptive I</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Perfect Time</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Poor Link</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>148</page>
+    </quality>
+    <quality>
+      <name>Privileged Family Name</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Restricted Gear</name>
+      <karma>10</karma>
+      <category>Positive</category>
+	  <limit>3</limit>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+	<quality>
+      <name>Restricted Gear II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+	  <limit>3</limit>
+      <bonus>
+		<selecttext />
+	  </bonus>
+	  <required>
+		<allof>
+			<quality>Restricted Gear</quality>
+		</allof>
+	  </required>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+	<quality>
+      <name>Restricted Gear III</name>
+      <karma>10</karma>
+      <category>Positive</category>
+	  <limit>3</limit>
+      <bonus>
+		<selecttext />
+	  </bonus>
+	  <required>
+		<allof>
+			<quality>Restricted Gear II</quality>
+		</allof>
+	  </required>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>School of Hard Knocks</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Sense of Direction</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus>
+		<specificskill>
+			<name>Navigation</name>
+			<bonus>1</bonus>
+		</specificskill>
+	  </bonus>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Sensei</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Solid Rep</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Legendary Rep</name>
+      <karma>3</karma>
+      <category>Positive</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Speed Reading</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>149</page>
+    </quality>
+    <quality>
+      <name>Spike Resistance I</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Spike Resistance II</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Spike Resistance III</name>
+      <karma>30</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Spirit Whisperer</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>Aspected Magician</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Steely Eyed Wheelman</name>
+      <karma>2</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Technical School Education</name>
+      <karma>4</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Tough as Nails Physical I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<physical>1</physical>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Physical II</quality>
+          <quality>Tough as Nails Physical III</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+	<quality>
+      <name>Tough as Nails Physical II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<physical>2</physical>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Physical I</quality>
+          <quality>Tough as Nails Physical III</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+	<quality>
+      <name>Tough as Nails Physical III</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<physical>3</physical>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Physical I</quality>
+          <quality>Tough as Nails Physical II</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+	<quality>
+      <name>Tough as Nails Stun I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<stun>1</stun>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Stun II</quality>
+          <quality>Tough as Nails Stun III</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+	<quality>
+      <name>Tough as Nails Stun II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<stun>2</stun>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Stun I</quality>
+          <quality>Tough as Nails Stun III</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+	<quality>
+      <name>Tough as Nails Stun III</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus>
+		<conditionmonitor>
+			<stun>3</stun>
+		</conditionmonitor>
+	  </bonus>
+	  <forbidden>
+        <oneof>
+          <quality>Tough as Nails Stun I</quality>
+          <quality>Tough as Nails Stun II</quality>
+        </oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>150</page>
+    </quality>
+    <quality>
+      <name>Trust Fund I</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Trust Fund II</name>
+      <karma>10</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Trust Fund III</name>
+      <karma>15</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Trust Fund IV</name>
+      <karma>20</karma>
+      <category>Positive</category>
+      <bonus />
+	  <required>
+        <oneof>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <name>Trustworthy</name>
+      <karma>15</karma>
+      <category>Positive</category>
+     <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>2</value>
+          <condition>Situations involving trust.</condition>
+		</limitmodifier>
+		<skillgroup>
+			<name>Influence</name>
+			<bonus>1</bonus>
+		</skillgroup>
+      </bonus>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <name>Vehicle Empathy</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus>
+		<skillcategory>
+			<name>Vehicle Active</name>
+			<exclude>Gunnery</exclude>
+			<bonus>1</bonus>
+		</skillcategory>
+	  </bonus>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+    <quality>
+      <name>Water Sprite</name>
+      <karma>6</karma>
+      <category>Positive</category>
+      <bonus>
+		<selectskill limittoskill="Diving, Swimming">
+			<val>2</val>
+		</selectskill>
+	  </bonus>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Witness My Hate</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	
+	
+	<quality>
+      <name>Albinism I</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Albinism II</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Albinism II</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Albinism I</quality>
+			<cyberwares>
+				<cyberwarecontains>Cybereyes</cyberwarecontains>
+			</cyberwares>
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>151</page>
+    </quality>
+	<quality>
+      <name>Amnesia (Surface Loss)</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Amnesia (Neural Deletion)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>152</page>
+    </quality>
+	<quality>
+      <name>Amnesia (Neural Deletion)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Amnesia (Surface Loss)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>152</page>
+    </quality>
+	<quality>
+      <name>Asthma</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>152</page>
+    </quality>
+	<quality>
+      <name>Bi-Polar</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>152</page>
+    </quality>
+	<quality>
+      <name>Big Regret</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Blind (Mundane)</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Magician</quality>
+			<quality>Aspected Magician</quality>
+			<quality>Reduced Sense (Sight)</quality>
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Blind (Mage)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Reduced Sense (Sight)</quality>
+		</oneof>
+	  </forbidden>
+	  <required>
+        <oneof>
+          <quality>Magician</quality>
+          <quality>Aspected Magician</quality>		  
+        </oneof>
+      </required>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Borrowed Time</name>
+      <karma>-20</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Computer Illiterate</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+          <skillgroup>
+			<name>Electronics</name>
+			<bonus>-4</bonus>
+		  </skillgroup>
+      </bonus>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Creature of Comfort (Middle)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Creature of Comfort (High)</quality>
+			<quality>Creature of Comfort (Luxury)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Creature of Comfort (High)</name>
+      <karma>-17</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Creature of Comfort (Middle)</quality>
+			<quality>Creature of Comfort (Luxury)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Creature of Comfort (Luxury)</name>
+      <karma>-25</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Creature of Comfort (Middle)</quality>
+			<quality>Creature of Comfort (High)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>153</page>
+    </quality>
+	<quality>
+      <name>Day Job (10 hrs)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Day Job (20 hrs)</quality>
+			<quality>Day Job (40 hrs)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Day Job (20 hrs)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Day Job (10 hrs)</quality>
+			<quality>Day Job (40 hrs)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Day Job (40 hrs)</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Day Job (10 hrs)</quality>
+			<quality>Day Job (20 hrs)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Deaf</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Reduced Sense (Hearing)</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Did You Just Call Me Dumb?</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Dimmer Bulb I</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+	  <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Dimmer Bulb II</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+	  <required>
+        <oneof>
+          <quality>Dimmer Bulb I</quality>		  
+        </oneof>
+      </required>
+	  <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Dimmer Bulb III</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+	  <required>
+        <oneof>
+          <quality>Dimmer Bulb II</quality>		  
+        </oneof>
+      </required>
+	  <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Driven</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Emotional Attachment</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>154</page>
+    </quality>
+	<quality>
+      <name>Ex-Con</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus>
+		<freepositivequalities>-10</freepositivequalities>
+	  </bonus>
+	  <addqualities>
+		<addquality>SINner (Criminal)</addquality>
+	  </addqualities>
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>Flashbacks I</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>Flashbacks II</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>Hobo with a Shotgun</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>Hung Out to Dry</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>Illiterate</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>155</page>
+    </quality>
+	<quality>
+      <name>In Debt I</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>5000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt II</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>10000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt I</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt III</name>
+      <karma>-3</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>15000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt IV</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>20000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt V</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>25000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt VI</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>30000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt VII</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>35000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt VIII</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>40000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt IX</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>45000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt X</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>50000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt XI</name>
+      <karma>-11</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>55000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt XII</name>
+      <karma>-12</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>60000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt XIII</name>
+      <karma>-13</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>65000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt XIV</name>
+      <karma>-14</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>70000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt I</quality>
+			<quality>In Debt XV</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>In Debt XV</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus>
+		<nuyenamt>75000</nuyenamt>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>In Debt II</quality>
+			<quality>In Debt III</quality>
+			<quality>In Debt IV</quality>
+			<quality>In Debt V</quality>
+			<quality>In Debt VI</quality>
+			<quality>In Debt VII</quality>
+			<quality>In Debt VIII</quality>
+			<quality>In Debt IX</quality>
+			<quality>In Debt X</quality>
+			<quality>In Debt XI</quality>
+			<quality>In Debt XII</quality>
+			<quality>In Debt XIII</quality>
+			<quality>In Debt XIV</quality>
+			<quality>In Debt I</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Incomplete Deprogramming</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Infirm I</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificattribute>
+			<name>BOD</name>
+			<max>-1</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>AGI</name>
+			<max>-1</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>REA</name>
+			<max>-1</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>STR</name>
+			<max>-1</max>
+			<aug>-4</aug>
+		</specificattribute>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Infirm II</quality>
+			<quality>Infirm III</quality>
+			<quality>Infirm IV</quality>
+			<quality>Infirm V</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Infirm II</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificattribute>
+			<name>BOD</name>
+			<max>-2</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>AGI</name>
+			<max>-2</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>REA</name>
+			<max>-2</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>STR</name>
+			<max>-2</max>
+			<aug>-4</aug>
+		</specificattribute>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Infirm I</quality>
+			<quality>Infirm III</quality>
+			<quality>Infirm IV</quality>
+			<quality>Infirm V</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Infirm III</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificattribute>
+			<name>BOD</name>
+			<max>-3</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>AGI</name>
+			<max>-3</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>REA</name>
+			<max>-3</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>STR</name>
+			<max>-3</max>
+			<aug>-4</aug>
+		</specificattribute>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Infirm II</quality>
+			<quality>Infirm I</quality>
+			<quality>Infirm IV</quality>
+			<quality>Infirm V</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Infirm IV</name>
+      <karma>-20</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificattribute>
+			<name>BOD</name>
+			<max>-4</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>AGI</name>
+			<max>-4</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>REA</name>
+			<max>-4</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>STR</name>
+			<max>-4</max>
+			<aug>-4</aug>
+		</specificattribute>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Infirm II</quality>
+			<quality>Infirm III</quality>
+			<quality>Infirm I</quality>
+			<quality>Infirm V</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Infirm V</name>
+      <karma>-25</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificattribute>
+			<name>BOD</name>
+			<max>-5</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>AGI</name>
+			<max>-5</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>REA</name>
+			<max>-5</max>
+			<aug>-4</aug>
+		</specificattribute>
+		<specificattribute>
+			<name>STR</name>
+			<max>-5</max>
+			<aug>-4</aug>
+		</specificattribute>
+	  </bonus>
+	  <forbidden>
+		<oneof>
+			<quality>Infirm II</quality>
+			<quality>Infirm III</quality>
+			<quality>Infirm IV</quality>
+			<quality>Infirm I</quality>			
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Liar</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+		<limitmodifier>
+          <limit>Social</limit>
+          <value>-1</value>
+          <condition>Neg Quality: Liar</condition>
+        </limitmodifier>
+	  </bonus>
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Night Blindness</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>156</page>
+    </quality>
+	<quality>
+      <name>Oblivious I</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificskill>
+			<name>Perception</name>
+			<bonus>-2</bonus>
+		</specificskill>
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Oblivious II</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<specificskill>
+			<name>Perception</name>
+			<bonus>-2</bonus>
+		</specificskill>
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Pacifist I</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Pacifist II</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Paranoia</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Paraplegic</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<basiclifestylecost>10</basiclifestylecost>
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Uncommon, Mild)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Uncommon, Moderate)</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Uncommon, Severe)</name>
+      <karma>-12</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Common, Mild)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Common, Moderate)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Phobia (Common, Severe)</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>157</page>
+    </quality>
+	<quality>
+      <name>Pie Iesu Domine. Dona Eis Requiem.</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <bonus>
+		<freenegativequalities>7</freenegativequalities>
+	  </bonus>
+	  <addqualities>
+		<addquality>High Pain Tolerance (Rating 1)</addquality>
+	  </addqualities>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Braggart)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive I, Personal)</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive II, Personal)</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive III, Personal)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive IV, Personal)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive I, Public Single Aspect)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive II, Public Single Aspect)</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive III, Public Single Aspect)</name>
+      <karma>-9</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive IV, Public Single Aspect)</name>
+      <karma>-11</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive I, Public Broad Aspect)</name>
+      <karma>-6</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive II, Public Broad Aspect)</name>
+      <karma>-8</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive III, Public Broad Aspect)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Compulsive IV, Public Broad Aspect)</name>
+      <karma>-12</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Thrill Seeker)</name>
+      <karma>-4</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Vindictive)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Poor Self Control (Combat Monster)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Ares)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (EVO)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Renraku)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (MCT)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Wuxing)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Aztechnology)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Horizon)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Neonet)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Records on File (Saeder-Krupp)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+	  <name>Records on File (Shiawase)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>158</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Smell)</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Taste)</name>
+      <karma>-2</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Touch)</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Hearing)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Deaf</quality>
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Sight)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+	  <forbidden>
+		<oneof>
+			<quality>Blind</quality>
+		</oneof>
+	  </forbidden>
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Reduced Sense (Astral Sight)</name>
+      <karma>-5</karma>
+      <category>Negative</category>
+      <bonus />
+	  <required>
+		<oneof>
+			<quality>Magician</quality>
+			<quality>Aspected Magician</quality>
+		</oneof>
+	  </required>
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Sensory Overload Syndrome</name>
+      <karma>-15</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Signature</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus />
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Vendetta</name>
+      <karma>-7</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+	<quality>
+      <name>Wanted</name>
+      <karma>-10</karma>
+      <category>Negative</category>
+      <bonus>
+		<selecttext />
+	  </bonus>
+      <source>RF</source>
+      <page>159</page>
+    </quality>
+  </qualities>
+</chummer>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<powers>
+		<power>
+			<name>Rigger's Curse</name>
+			<category>Mundane</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>LOS</range>
+			<duration>Always</duration>
+			<source>R4</source>
+			<page>18</page>
+		</power>
+	</powers>
+</chummer>

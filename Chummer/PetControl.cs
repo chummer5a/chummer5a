@@ -1,0 +1,222 @@
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+
+namespace Chummer
+{
+	public partial class PetControl : UserControl
+	{
+		private Contact _objContact;
+
+		// Events.
+		public event DeleteContactHandler DeleteContact;
+		public event FileNameChangedHandler FileNameChanged;
+
+		#region Control Events
+		public PetControl()
+		{
+			InitializeComponent();
+			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+			MoveControls();
+		}
+
+		private void PetControl_Load(object sender, EventArgs e)
+		{
+			this.Width = cmdDelete.Left + cmdDelete.Width;
+			lblMetatype.Text = "";
+
+			if (_objContact.FileName != string.Empty)
+			{
+				// Load the character to get their Metatype.
+				Character objPet = new Character();
+				objPet.FileName = _objContact.FileName;
+				objPet.Load();
+				lblMetatype.Text = objPet.Metatype;
+				if (objPet.Metavariant != string.Empty)
+					lblMetatype.Text += " (" + objPet.Metavariant + ")";
+				objPet = null;
+			}
+		}
+
+		private void cmdDelete_Click(object sender, EventArgs e)
+		{
+			// Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
+			// The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
+			DeleteContact(this);
+		}
+
+		private void txtName_TextChanged(object sender, EventArgs e)
+		{
+			_objContact.Name = txtContactName.Text;
+		}
+
+		private void imgLink_Click(object sender, EventArgs e)
+		{
+			// Determine which options should be shown based on the FileName value.
+			if (_objContact.FileName != "")
+			{
+				tsAttachCharacter.Visible = false;
+				tsContactOpen.Visible = true;
+				tsRemoveCharacter.Visible = true;
+			}
+			else
+			{
+				tsAttachCharacter.Visible = true;
+				tsContactOpen.Visible = false;
+				tsRemoveCharacter.Visible = false;
+			}
+			cmsContact.Show(imgLink, imgLink.Left - 700, imgLink.Top);
+		}
+
+		private void tsContactOpen_Click(object sender, EventArgs e)
+		{
+			bool blnError = false;
+			bool blnUseRelative = false;
+
+			// Make sure the file still exists before attempting to load it.
+			if (!File.Exists(_objContact.FileName))
+			{
+				// If the file doesn't exist, use the relative path if one is available.
+				if (_objContact.RelativeFileName == "")
+					blnError = true;
+				else
+				{
+					MessageBox.Show(Path.GetFullPath(_objContact.RelativeFileName));
+					if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
+						blnError = true;
+					else
+						blnUseRelative = true;
+				}
+
+				if (blnError)
+				{
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+			}
+
+			if (!blnUseRelative)
+				GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
+			else
+			{
+				string strFile = Path.GetFullPath(_objContact.RelativeFileName);
+				GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
+			}
+		}
+
+		private void tsAttachCharacter_Click(object sender, EventArgs e)
+		{
+			// Prompt the user to select a save file to associate with this Contact.
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "Chummer Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+
+			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+			{
+				_objContact.FileName = openFileDialog.FileName;
+				tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenFile"));
+
+				// Load the character to get their Metatype.
+				Character objPet = new Character();
+				objPet.FileName = _objContact.FileName;
+				objPet.Load();
+				lblMetatype.Text = objPet.Metatype;
+				if (objPet.Metavariant != string.Empty)
+					lblMetatype.Text += " (" + objPet.Metavariant + ")";
+				objPet = null;
+
+				// Set the relative path.
+				Uri uriApplication = new Uri(@Application.StartupPath);
+				Uri uriFile = new Uri(@_objContact.FileName);
+				Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+				_objContact.RelativeFileName = "../" + uriRelative.ToString();
+
+				FileNameChanged(this);
+			}
+		}
+
+		private void tsRemoveCharacter_Click(object sender, EventArgs e)
+		{
+			// Remove the file association from the Contact.
+			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_RemoveCharacterAssociation"), LanguageManager.Instance.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+			{
+				_objContact.FileName = "";
+				_objContact.RelativeFileName = "";
+				tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
+				lblMetatype.Text = "";
+				FileNameChanged(this);
+			}
+		}
+
+		private void imgNotes_Click(object sender, EventArgs e)
+		{
+			frmNotes frmContactNotes = new frmNotes();
+			frmContactNotes.Notes = _objContact.Notes;
+			frmContactNotes.ShowDialog(this);
+
+			if (frmContactNotes.DialogResult == DialogResult.OK)
+				_objContact.Notes = frmContactNotes.Notes;
+
+			string strTooltip = "";
+			strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
+			if (_objContact.Notes != string.Empty)
+				strTooltip += "\n\n" + _objContact.Notes;
+			tipTooltip.SetToolTip(imgNotes, strTooltip);
+		}
+
+		private void cmsContact_Opening(object sender, CancelEventArgs e)
+		{
+			foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
+			{
+				if (objItem.Tag != null)
+				{
+					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+				}
+			}
+		}
+		#endregion
+
+		#region Methods
+		private void MoveControls()
+		{
+			txtContactName.Left = lblName.Left + lblName.Width + 6;
+			lblMetatypeLabel.Left = txtContactName.Left + txtContactName.Width + 16;
+			lblMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
+		}
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Contact object this is linked to.
+		/// </summary>
+		public Contact ContactObject
+		{
+			get
+			{
+				return _objContact;
+			}
+			set
+			{
+				_objContact = value;
+			}
+		}
+
+		/// <summary>
+		/// Contact name.
+		/// </summary>
+		public string ContactName
+		{
+			get
+			{
+				return _objContact.Name;
+			}
+			set
+			{
+				txtContactName.Text = value;
+				_objContact.Name = value;
+			}
+		}
+		#endregion
+	}
+}

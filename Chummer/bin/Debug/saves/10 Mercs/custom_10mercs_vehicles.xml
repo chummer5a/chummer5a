@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>FMS Iwo Jima (LHA-7)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>-2</handling>
+			<accel>5/10</accel>
+			<speed>70</speed>
+			<pilot>3</pilot>
+			<body>22</body>
+			<armor>22</armor>
+			<sensor>6</sensor>
+			<devicerating>5</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name>Improved Sensor Array</name>
+				<name>Life Support Level 1</name>
+				<name>Missile Defense System</name>
+				<name>Satellite Communication</name>
+				<name select="Flight Deck">Generic Mod</name>
+				<name select="Aircraft Elevator">Generic Mod</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Workshop</name>
+			</mods>
+			<gears>
+				<gear>Extra-Large Vehicle Sensor</gear>
+			</gears>
+			<weapons>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+			</weapons>
+			<source>10M</source>
+			<page>26</page>
+		</vehicle>
+		<vehicle>
+			<name>FMS New Orleans (LPD-18)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>-2</handling>
+			<accel>5/10</accel>
+			<speed>70</speed>
+			<pilot>3</pilot>
+			<body>20</body>
+			<armor>20</armor>
+			<sensor>6</sensor>
+			<devicerating>5</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name>Improved Sensor Array</name>
+				<name>Life Support Level 1</name>
+				<name>Missile Defense System</name>
+				<name>Satellite Communication</name>
+				<name select="Flight Deck">Generic Mod</name>
+				<name select="Aircraft Elevator">Generic Mod</name>
+				<name select="Well Deck">Generic Mod</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Workshop</name>
+			</mods>
+			<gears>
+				<gear>Extra-Large Vehicle Sensor</gear>
+			</gears>
+			<weapons>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+			</weapons>
+			<source>10M</source>
+			<page>26</page>
+		</vehicle>
+		<vehicle>
+			<name>FMS Green Bay (LPD-20)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>-2</handling>
+			<accel>5/10</accel>
+			<speed>70</speed>
+			<pilot>3</pilot>
+			<body>20</body>
+			<armor>20</armor>
+			<sensor>6</sensor>
+			<devicerating>5</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name>Improved Sensor Array</name>
+				<name>Life Support Level 1</name>
+				<name>Missile Defense System</name>
+				<name>Satellite Communication</name>
+				<name select="Flight Deck">Generic Mod</name>
+				<name select="Aircraft Elevator">Generic Mod</name>
+				<name select="Well Deck">Generic Mod</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Weapon Mount (Normal, External, Heavy Turret, Manual)</name>
+				<name>Workshop</name>
+			</mods>
+			<gears>
+				<gear>Extra-Large Vehicle Sensor</gear>
+			</gears>
+			<weapons>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+				<weapon>
+					<name>GE Vanquisher Heavy Autocannon</name>
+				</weapon>
+			</weapons>
+			<source>10M</source>
+			<page>26</page>
+		</vehicle>
+		<vehicle>
+			<name>Thunder Corps Battlecam (Small)</name>
+			<category>Drones: Small</category>
+			<handling>1</handling>
+			<accel>10/30</accel>
+			<speed>60</speed>
+			<pilot>4</pilot>
+			<body>10</body>
+			<armor>10</armor>
+			<sensor>5</sensor>
+			<devicerating>3</devicerating>
+			<avail>14F</avail>
+			<cost>15000</cost>
+			<mods>
+				<name>Improved Sensor Array</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+				<gear rating="2">Clearsight</gear>
+			</gears>
+			<source>10M</source>
+			<page>48</page>
+		</vehicle>
+		<vehicle>
+			<name>Jefferson Davis MBT (Main Battle Tank)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>1</handling>
+			<accel>30/100</accel>
+			<speed>390</speed>
+			<pilot>3</pilot>
+			<body>38</body>
+			<armor>32</armor>
+			<sensor>4</sensor>
+			<devicerating>5</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name>Ejection Seats</name>
+				<name>Improved Sensor Array</name>
+				<name>Missile Defense System</name>
+				<name>Lock-On Countermeasures</name>
+				<name rating="3">Signature Masking</name>
+				<name>Rigger Adaptation</name>
+				<name rating="12">Armor, Smart</name>
+				<name>Weapon Mount (Normal, Concealed, Fixed, Remote)</name>
+				<name>Weapon Mount (Normal, Concealed, Fixed, Remote)</name>
+				<name>Weapon Mount (Normal, Concealed, Fixed, Remote)</name>
+				<name>Weapon Mount (Normal, Concealed, Fixed, Remote)</name>
+				<name>Weapon Mount (Reinforced, External, Heavy Turret, Remote)</name>
+				<name>Weapon Mount (Normal, External, Turret, Remote)</name>
+				<name>Weapon Mount (Normal, External, Turret, Remote)</name>
+			</mods>
+			<gears>
+				<gear>Extra-Large Vehicle Sensor</gear>
+			</gears>
+			<weapons>
+				<weapon>
+					<name>GM Heavy Cannon</name>
+				</weapon>
+				<weapon>
+					<name>Ares Firelance Vehicle Laser</name>
+				</weapon>
+				<weapon>
+					<name>GE Vigilant Light Autocannon</name>
+				</weapon>
+			</weapons>
+			<source>10M</source>
+			<page>49</page>
+		</vehicle>
+	</vehicles>
+	<mods>
+		<mod>
+			<name>Falconer TAC-C Command System Module, Mark I</name>
+			<category>All</category>
+			<rating>0</rating>
+			<limit>Aircraft Only</limit>
+			<slots>4</slots>
+			<avail>0</avail>
+			<cost>5500</cost>
+			<source>10M</source>
+			<page>11</page>
+		</mod>
+	</mods>
+</chummer>

@@ -1,0 +1,956 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.dndjunkie.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.dndjunkie.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.dndjunkie.com/">
+      <s:element name="RegisterUser">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterUserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegisterUserResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="LoginResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetEmailAddress">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strEmail" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetEmailAddressResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SetEmailAddressResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetEmailAddress">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetEmailAddressResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetEmailAddressResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetPassword">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ResetPasswordResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ResetPasswordResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCharacterTypes">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCharacterTypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCharacterTypesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCharacter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intCharacterID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strCharacterName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDescription" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetatype" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetavariant" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQualities" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intTypeID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="bytFile" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCharacterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadCharacterResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCharacter153">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intCharacterID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strCharacterName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDescription" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetatype" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetavariant" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQualities" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intTypeID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intCreated" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="bytFile" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadCharacter153Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadCharacter153Result" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadCharacter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intCharacterID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadCharacterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DownloadCharacterResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteCharacter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intCharacterID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteCharacterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DeleteCharacterResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchCharacters">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intTypeID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intSortOrder" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetatype" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetavariant" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUser" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality3" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchCharactersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FetchCharactersResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchCharacters153">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intTypeID" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="intSortOrder" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetatype" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strMetavariant" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intCreated" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUser" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strQuality3" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchCharacters153Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FetchCharacters153Result">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDataFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intDataID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDataName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDescription" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strFilesIncluded" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="bytFile" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadDataFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadDataFileResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadDataFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intDataID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadDataFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DownloadDataFileResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteDataFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intDataID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteDataFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DeleteDataFileResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchDataFiles">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intSortOrder" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strFilesIncluded" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUser" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchDataFilesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FetchDataFilesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadSheet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="intSheetID" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strSheetName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strDescription" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="bytFile" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UploadSheetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UploadSheetResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadSheet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intSheetID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadSheetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DownloadSheetResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteSheet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intSheetID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteSheetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DeleteSheetResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchSheets">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="intSortOrder" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="strUser" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="FetchSheetsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FetchSheetsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RegisterUserSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterUser" />
+  </wsdl:message>
+  <wsdl:message name="RegisterUserSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetEmailAddressSoapIn">
+    <wsdl:part name="parameters" element="tns:SetEmailAddress" />
+  </wsdl:message>
+  <wsdl:message name="SetEmailAddressSoapOut">
+    <wsdl:part name="parameters" element="tns:SetEmailAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetEmailAddressSoapIn">
+    <wsdl:part name="parameters" element="tns:GetEmailAddress" />
+  </wsdl:message>
+  <wsdl:message name="GetEmailAddressSoapOut">
+    <wsdl:part name="parameters" element="tns:GetEmailAddressResponse" />
+  </wsdl:message>
+  <wsdl:message name="ResetPasswordSoapIn">
+    <wsdl:part name="parameters" element="tns:ResetPassword" />
+  </wsdl:message>
+  <wsdl:message name="ResetPasswordSoapOut">
+    <wsdl:part name="parameters" element="tns:ResetPasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCharacterTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCharacterTypes" />
+  </wsdl:message>
+  <wsdl:message name="GetCharacterTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCharacterTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadCharacterSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadCharacter" />
+  </wsdl:message>
+  <wsdl:message name="UploadCharacterSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadCharacterResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadCharacter153SoapIn">
+    <wsdl:part name="parameters" element="tns:UploadCharacter153" />
+  </wsdl:message>
+  <wsdl:message name="UploadCharacter153SoapOut">
+    <wsdl:part name="parameters" element="tns:UploadCharacter153Response" />
+  </wsdl:message>
+  <wsdl:message name="DownloadCharacterSoapIn">
+    <wsdl:part name="parameters" element="tns:DownloadCharacter" />
+  </wsdl:message>
+  <wsdl:message name="DownloadCharacterSoapOut">
+    <wsdl:part name="parameters" element="tns:DownloadCharacterResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteCharacterSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteCharacter" />
+  </wsdl:message>
+  <wsdl:message name="DeleteCharacterSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteCharacterResponse" />
+  </wsdl:message>
+  <wsdl:message name="FetchCharactersSoapIn">
+    <wsdl:part name="parameters" element="tns:FetchCharacters" />
+  </wsdl:message>
+  <wsdl:message name="FetchCharactersSoapOut">
+    <wsdl:part name="parameters" element="tns:FetchCharactersResponse" />
+  </wsdl:message>
+  <wsdl:message name="FetchCharacters153SoapIn">
+    <wsdl:part name="parameters" element="tns:FetchCharacters153" />
+  </wsdl:message>
+  <wsdl:message name="FetchCharacters153SoapOut">
+    <wsdl:part name="parameters" element="tns:FetchCharacters153Response" />
+  </wsdl:message>
+  <wsdl:message name="UploadDataFileSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadDataFile" />
+  </wsdl:message>
+  <wsdl:message name="UploadDataFileSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadDataFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="DownloadDataFileSoapIn">
+    <wsdl:part name="parameters" element="tns:DownloadDataFile" />
+  </wsdl:message>
+  <wsdl:message name="DownloadDataFileSoapOut">
+    <wsdl:part name="parameters" element="tns:DownloadDataFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteDataFileSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteDataFile" />
+  </wsdl:message>
+  <wsdl:message name="DeleteDataFileSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteDataFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="FetchDataFilesSoapIn">
+    <wsdl:part name="parameters" element="tns:FetchDataFiles" />
+  </wsdl:message>
+  <wsdl:message name="FetchDataFilesSoapOut">
+    <wsdl:part name="parameters" element="tns:FetchDataFilesResponse" />
+  </wsdl:message>
+  <wsdl:message name="UploadSheetSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadSheet" />
+  </wsdl:message>
+  <wsdl:message name="UploadSheetSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadSheetResponse" />
+  </wsdl:message>
+  <wsdl:message name="DownloadSheetSoapIn">
+    <wsdl:part name="parameters" element="tns:DownloadSheet" />
+  </wsdl:message>
+  <wsdl:message name="DownloadSheetSoapOut">
+    <wsdl:part name="parameters" element="tns:DownloadSheetResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteSheetSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteSheet" />
+  </wsdl:message>
+  <wsdl:message name="DeleteSheetSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteSheetResponse" />
+  </wsdl:message>
+  <wsdl:message name="FetchSheetsSoapIn">
+    <wsdl:part name="parameters" element="tns:FetchSheets" />
+  </wsdl:message>
+  <wsdl:message name="FetchSheetsSoapOut">
+    <wsdl:part name="parameters" element="tns:FetchSheetsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="omaeSoap">
+    <wsdl:operation name="RegisterUser">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Register a new Omae account.</wsdl:documentation>
+      <wsdl:input message="tns:RegisterUserSoapIn" />
+      <wsdl:output message="tns:RegisterUserSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Login to an existing Omae account.</wsdl:documentation>
+      <wsdl:input message="tns:LoginSoapIn" />
+      <wsdl:output message="tns:LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetEmailAddress">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Set the email address for the user's account.</wsdl:documentation>
+      <wsdl:input message="tns:SetEmailAddressSoapIn" />
+      <wsdl:output message="tns:SetEmailAddressSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEmailAddress">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the email address for the user's account.</wsdl:documentation>
+      <wsdl:input message="tns:GetEmailAddressSoapIn" />
+      <wsdl:output message="tns:GetEmailAddressSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetPassword">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Reset the user's password.</wsdl:documentation>
+      <wsdl:input message="tns:ResetPasswordSoapIn" />
+      <wsdl:output message="tns:ResetPasswordSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCharacterTypes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the list of Character Types.</wsdl:documentation>
+      <wsdl:input message="tns:GetCharacterTypesSoapIn" />
+      <wsdl:output message="tns:GetCharacterTypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Upload a Character file.</wsdl:documentation>
+      <wsdl:input message="tns:UploadCharacterSoapIn" />
+      <wsdl:output message="tns:UploadCharacterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter153">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Upload a Character file.</wsdl:documentation>
+      <wsdl:input message="tns:UploadCharacter153SoapIn" />
+      <wsdl:output message="tns:UploadCharacter153SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCharacter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Download a Character file.</wsdl:documentation>
+      <wsdl:input message="tns:DownloadCharacterSoapIn" />
+      <wsdl:output message="tns:DownloadCharacterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteCharacter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Delete a Character.</wsdl:documentation>
+      <wsdl:input message="tns:DeleteCharacterSoapIn" />
+      <wsdl:output message="tns:DeleteCharacterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">List all of the characters for a given category.</wsdl:documentation>
+      <wsdl:input message="tns:FetchCharactersSoapIn" />
+      <wsdl:output message="tns:FetchCharactersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters153">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">List all of the characters for a given category.</wsdl:documentation>
+      <wsdl:input message="tns:FetchCharacters153SoapIn" />
+      <wsdl:output message="tns:FetchCharacters153SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataFile">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Upload a data file.</wsdl:documentation>
+      <wsdl:input message="tns:UploadDataFileSoapIn" />
+      <wsdl:output message="tns:UploadDataFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadDataFile">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Download a data file.</wsdl:documentation>
+      <wsdl:input message="tns:DownloadDataFileSoapIn" />
+      <wsdl:output message="tns:DownloadDataFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDataFile">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Delete a data file.</wsdl:documentation>
+      <wsdl:input message="tns:DeleteDataFileSoapIn" />
+      <wsdl:output message="tns:DeleteDataFileSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="FetchDataFiles">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">List all of the data files.</wsdl:documentation>
+      <wsdl:input message="tns:FetchDataFilesSoapIn" />
+      <wsdl:output message="tns:FetchDataFilesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadSheet">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Upload a character sheet.</wsdl:documentation>
+      <wsdl:input message="tns:UploadSheetSoapIn" />
+      <wsdl:output message="tns:UploadSheetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadSheet">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Download a character sheet.</wsdl:documentation>
+      <wsdl:input message="tns:DownloadSheetSoapIn" />
+      <wsdl:output message="tns:DownloadSheetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSheet">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Delete a character sheet.</wsdl:documentation>
+      <wsdl:input message="tns:DeleteSheetSoapIn" />
+      <wsdl:output message="tns:DeleteSheetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="FetchSheets">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">List all of the character sheets.</wsdl:documentation>
+      <wsdl:input message="tns:FetchSheetsSoapIn" />
+      <wsdl:output message="tns:FetchSheetsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="omaeSoap" type="tns:omaeSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegisterUser">
+      <soap:operation soapAction="http://www.dndjunkie.com/RegisterUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://www.dndjunkie.com/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetEmailAddress">
+      <soap:operation soapAction="http://www.dndjunkie.com/SetEmailAddress" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEmailAddress">
+      <soap:operation soapAction="http://www.dndjunkie.com/GetEmailAddress" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetPassword">
+      <soap:operation soapAction="http://www.dndjunkie.com/ResetPassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCharacterTypes">
+      <soap:operation soapAction="http://www.dndjunkie.com/GetCharacterTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter">
+      <soap:operation soapAction="http://www.dndjunkie.com/UploadCharacter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter153">
+      <soap:operation soapAction="http://www.dndjunkie.com/UploadCharacter153" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCharacter">
+      <soap:operation soapAction="http://www.dndjunkie.com/DownloadCharacter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteCharacter">
+      <soap:operation soapAction="http://www.dndjunkie.com/DeleteCharacter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters">
+      <soap:operation soapAction="http://www.dndjunkie.com/FetchCharacters" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters153">
+      <soap:operation soapAction="http://www.dndjunkie.com/FetchCharacters153" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataFile">
+      <soap:operation soapAction="http://www.dndjunkie.com/UploadDataFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadDataFile">
+      <soap:operation soapAction="http://www.dndjunkie.com/DownloadDataFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDataFile">
+      <soap:operation soapAction="http://www.dndjunkie.com/DeleteDataFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchDataFiles">
+      <soap:operation soapAction="http://www.dndjunkie.com/FetchDataFiles" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadSheet">
+      <soap:operation soapAction="http://www.dndjunkie.com/UploadSheet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadSheet">
+      <soap:operation soapAction="http://www.dndjunkie.com/DownloadSheet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSheet">
+      <soap:operation soapAction="http://www.dndjunkie.com/DeleteSheet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchSheets">
+      <soap:operation soapAction="http://www.dndjunkie.com/FetchSheets" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="omaeSoap12" type="tns:omaeSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegisterUser">
+      <soap12:operation soapAction="http://www.dndjunkie.com/RegisterUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://www.dndjunkie.com/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetEmailAddress">
+      <soap12:operation soapAction="http://www.dndjunkie.com/SetEmailAddress" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEmailAddress">
+      <soap12:operation soapAction="http://www.dndjunkie.com/GetEmailAddress" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetPassword">
+      <soap12:operation soapAction="http://www.dndjunkie.com/ResetPassword" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCharacterTypes">
+      <soap12:operation soapAction="http://www.dndjunkie.com/GetCharacterTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter">
+      <soap12:operation soapAction="http://www.dndjunkie.com/UploadCharacter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadCharacter153">
+      <soap12:operation soapAction="http://www.dndjunkie.com/UploadCharacter153" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCharacter">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DownloadCharacter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteCharacter">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DeleteCharacter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters">
+      <soap12:operation soapAction="http://www.dndjunkie.com/FetchCharacters" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchCharacters153">
+      <soap12:operation soapAction="http://www.dndjunkie.com/FetchCharacters153" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadDataFile">
+      <soap12:operation soapAction="http://www.dndjunkie.com/UploadDataFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadDataFile">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DownloadDataFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDataFile">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DeleteDataFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchDataFiles">
+      <soap12:operation soapAction="http://www.dndjunkie.com/FetchDataFiles" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadSheet">
+      <soap12:operation soapAction="http://www.dndjunkie.com/UploadSheet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadSheet">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DownloadSheet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteSheet">
+      <soap12:operation soapAction="http://www.dndjunkie.com/DeleteSheet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FetchSheets">
+      <soap12:operation soapAction="http://www.dndjunkie.com/FetchSheets" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="omae">
+    <wsdl:port name="omaeSoap" binding="tns:omaeSoap">
+      <soap:address location="http://www.chummergen.com/dev/chummer/omae/omae.asmx" />
+    </wsdl:port>
+    <wsdl:port name="omaeSoap12" binding="tns:omaeSoap12">
+      <soap12:address location="http://www.chummergen.com/dev/chummer/omae/omae.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

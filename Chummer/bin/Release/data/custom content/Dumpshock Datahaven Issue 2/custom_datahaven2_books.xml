@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<books>
+		<book>
+			<name>Dumpshock Datahaven Issue 2</name>
+			<code>DH2</code>
+		</book>
+	</books>
+</chummer>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>Ford Americar (Sedan)</name>
+			<category>Cars</category>
+			<handling>0</handling>
+			<accel>15/30</accel>
+			<speed>105</speed>
+			<pilot>2</pilot>
+			<body>10</body>
+			<armor>6</armor>
+			<sensor>1</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>14000</cost>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>ARN</source>
+			<page>19</page>
+		</vehicle>
+	</vehicles>
+</chummer>

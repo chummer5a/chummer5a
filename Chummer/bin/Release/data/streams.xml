@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-499</version>
+  <traditions>
+    <tradition>
+      <id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>
+      <name>Default</name>
+      <drain>WIL + RES</drain>
+      <spirits>
+        <spirit>Courier Sprite</spirit>
+        <spirit>Crack Sprite</spirit>
+        <spirit>Data Sprite</spirit>
+        <spirit>Fault Sprite</spirit>
+        <spirit>Machine Sprite</spirit>
+      </spirits>
+      <source>SR5</source>
+      <page>258</page>
+    </tradition>
+  </traditions>
+</chummer>

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>Achilles Pound-Penny-Farthing (Motorcycle)</name>
+			<category>Bikes</category>
+			<handling>-1</handling>
+			<accel>10/15</accel>
+			<speed>60</speed>
+			<pilot>1</pilot>
+			<body>4</body>
+			<armor>1</armor>
+			<sensor>1</sensor>
+			<devicerating>3</devicerating>
+			<avail>6</avail>
+			<cost>10000</cost>
+			<mods>
+				<name>GridLink</name>
+				<name>Motorcycle Gyro Stabilization</name>
+				<name>Multifuel Engine</name>
+				<name>Pimped Ride Level 2</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>3</page>
+		</vehicle>
+		<vehicle>
+			<name>Amish War Buggy (Buggy)</name>
+			<category>Cars</category>
+			<handling>2</handling>
+			<accel>10/50</accel>
+			<speed>50</speed>
+			<pilot>0</pilot>
+			<body>8</body>
+			<armor>15</armor>
+			<sensor>0</sensor>
+			<devicerating>3</devicerating>
+			<avail>12</avail>
+			<cost>20000</cost>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>3</page>
+		</vehicle>
+		<vehicle>
+			<name>Ares Warhammer (BattleMech)</name>
+			<category>Personal Mobility Vehicles</category>
+			<handling>0</handling>
+			<accel>20/40</accel>
+			<speed>65</speed>
+			<pilot>0</pilot>
+			<body>40</body>
+			<armor>30</armor>
+			<sensor>3</sensor>
+			<devicerating>3</devicerating>
+			<avail>35F</avail>
+			<cost>50000000</cost>
+			<mods>
+				<name rating="6">ECM</name>
+				<name>Ejection Seats</name>
+				<name>Termination System, Self-Destruct</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>4</page>
+		</vehicle>
+		<vehicle>
+			<name>Bull's Van (Van)</name>
+			<category>Trucks</category>
+			<handling>0</handling>
+			<accel>10/20</accel>
+			<speed>105</speed>
+			<pilot>6</pilot>
+			<body>10</body>
+			<armor>10</armor>
+			<sensor>6</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name>Obsolete</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>7</page>
+		</vehicle>
+		<vehicle>
+			<name>KE/LS MCCDS-01 Dough-Master Mobile Command Center Doughnut Shop (Food Truck)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>-2</handling>
+			<accel>10/40</accel>
+			<speed>80</speed>
+			<pilot>2</pilot>
+			<body>10</body>
+			<armor>30</armor>
+			<sensor>3</sensor>
+			<devicerating>5</devicerating>
+			<avail>50F</avail>
+			<cost>70000</cost>
+			<mods>
+				<name select="Encrypted Ordering Uplink">Generic Mod</name>
+				<name select="Baking Units">Generic Mod</name>
+				<name>Rigger Cocoon, Basic</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>9</page>
+		</vehicle>
+		<vehicle>
+			<name>KE Charger, Doughnut Variant Cruller (Food Truck)</name>
+			<category>Military, Security and Medical Craft</category>
+			<handling>-2</handling>
+			<accel>40/80</accel>
+			<speed>160</speed>
+			<pilot>2</pilot>
+			<body>10</body>
+			<armor>5</armor>
+			<sensor>1</sensor>
+			<devicerating>5</devicerating>
+			<avail>12F</avail>
+			<cost>10000</cost>
+			<mods>
+				<name>Anti-Theft</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>10</page>
+		</vehicle>
+		<vehicle>
+			<name>D-CAF (Small)</name>
+			<category>Drones: Small</category>
+			<handling>4</handling>
+			<accel>10/40</accel>
+			<speed>80</speed>
+			<pilot>4</pilot>
+			<body>20</body>
+			<armor>30</armor>
+			<sensor>5</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<mods>
+				<name select="Internal Storage Compartment">Generic Mod</name>
+				<name select="Reinforced Kaf Tap">Generic Mod</name>
+			</mods>
+			<gears>
+				<gear>Small Drone Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>11</page>
+		</vehicle>
+		<vehicle>
+			<name>Renraku Origami (Paper Airplane)</name>
+			<category>Personal Mobility Vehicles</category>
+			<handling>-4</handling>
+			<accel>0/0</accel>
+			<speed>0</speed>
+			<pilot>0</pilot>
+			<body>1</body>
+			<armor>0</armor>
+			<sensor>0</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>4</cost>
+			<source>R4</source>
+			<page>14</page>
+		</vehicle>
+		<vehicle>
+			<name>Saeder-Krupp Heavy Vehicle Dragon-Class Limousine (Limousine)</name>
+			<category>Cars</category>
+			<handling>-4</handling>
+			<accel>5/10</accel>
+			<speed>100</speed>
+			<pilot>6</pilot>
+			<body>30</body>
+			<armor>30</armor>
+			<sensor>6</sensor>
+			<devicerating>3</devicerating>
+			<avail>45R</avail>
+			<cost>5499999</cost>
+			<mods>
+				<name>Additional Fuel Tank</name>
+				<name>Amenities, Luxury</name>
+				<name>Anti-Theft</name>
+				<name rating="10">Armor, Smart</name>
+				<name rating="10">ECM</name>
+				<name>Fuzzy Logic</name>
+				<name>GridLink</name>
+				<name>Interior Cameras</name>
+				<name>Life Support Level 2</name>
+				<name>Lock-On Countermeasures</name>
+				<name>Multifuel Engine</name>
+				<name rating="6">Passenger Protection</name>
+				<name rating="10">Personal Armor</name>
+				<name>Pimped Ride Level 2</name>
+				<name>Ram Plate</name>
+				<name>Satellite Communication</name>
+				<name>SunCell</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>15</page>
+		</vehicle>
+		<vehicle>
+			<name>SK-99 Luftballoon (Zeppelin)</name>
+			<category>Zeppelin</category>
+			<handling>-6</handling>
+			<accel>5/5</accel>
+			<speed>0</speed>
+			<pilot>0</pilot>
+			<body>18</body>
+			<armor>16</armor>
+			<sensor>0</sensor>
+			<devicerating>3</devicerating>
+			<avail>9R</avail>
+			<cost>32000</cost>
+			<mods>
+				<name>Additional Fuel Tank</name>
+				<name>Ballast Tanks Level 2</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Gun Port</name>
+				<name>Improved Economy</name>
+				<name>Improved Takeoff and Landing Level 2</name>
+				<name>Lighter Than Air</name>
+				<name>Multifuel Engine</name>
+				<name rating="6">Signature Masking</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Reinforced, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Reinforced, External, Flexible, Remote)</name>
+				<name>Weapon Mount (Reinforced, External, Turret, Remote)</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>15</page>
+		</vehicle>
+		<vehicle>
+			<name>Varya Rally Fun CR-V Car Playset (Toy)</name>
+			<category>Cars</category>
+			<handling>3</handling>
+			<accel>5/5</accel>
+			<speed>25</speed>
+			<pilot>3</pilot>
+			<body>3</body>
+			<armor>4</armor>
+			<sensor>2</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>115</cost>
+			<mods>
+				<name>Fuzzy Logic</name>
+				<name>Off-Road Suspension</name>
+				<name>Pimped Ride Level 1</name>
+				<name rating="6">Signature Masking</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>16</page>
+		</vehicle>
+		<vehicle>
+			<name>Wrecked Ford Americar (Sedan)</name>
+			<category>Cars</category>
+			<handling>0</handling>
+			<accel>0/0</accel>
+			<speed>0</speed>
+			<pilot>2</pilot>
+			<body>10</body>
+			<armor>6</armor>
+			<sensor>1</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<mods>
+				<name>Obsolete</name>
+			</mods>
+			<gears>
+				<gear>Vehicle Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>16</page>
+		</vehicle>
+		<vehicle>
+			<name>Mitsuhama Nadeshiko Android MK-1 (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>5/15</accel>
+			<speed>1</speed>
+			<pilot>2</pilot>
+			<body>2</body>
+			<armor>1</armor>
+			<sensor>2</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>1000000</cost>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>11</page>
+		</vehicle>
+		<vehicle>
+			<name>Mitsuhama Nadeshiko Android MK-2 (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>3</handling>
+			<accel>2/15</accel>
+			<speed>1</speed>
+			<pilot>2</pilot>
+			<body>2</body>
+			<armor>1</armor>
+			<sensor>2</sensor>
+			<devicerating>3</devicerating>
+			<avail>0</avail>
+			<cost>250000</cost>
+			<mods>
+				<name>Mechanical Arm</name>
+				<name>Mechanical Arm</name>
+				<name>Rigger Adaptation</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>11</page>
+		</vehicle>
+		<vehicle>
+			<name>Mitsuhama Nadeshiko Android MK-3 (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>1</handling>
+			<accel>2/15</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>2</body>
+			<armor>0</armor>
+			<sensor>2</sensor>
+			<devicerating>3</devicerating>
+			<avail>5</avail>
+			<cost>100000</cost>
+			<mods>
+				<name>Mechanical Arm</name>
+				<name>Mechanical Arm</name>
+				<name>Rigger Adaptation</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+			</gears>
+			<source>R4</source>
+			<page>11</page>
+		</vehicle>
+		<vehicle>
+			<name>Mitsuhama Nadeshiko Android MK-4 (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>1</handling>
+			<accel>5/15</accel>
+			<speed>30</speed>
+			<pilot>2</pilot>
+			<body>3</body>
+			<armor>0</armor>
+			<sensor>2</sensor>
+			<devicerating>3</devicerating>
+			<avail>8</avail>
+			<cost>50000</cost>
+			<mods>
+				<name>Mechanical Arm</name>
+				<name>Mechanical Arm</name>
+				<name rating="2">Mimic</name>
+				<name>Walker Mode</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+				<gear rating="2" select="Cooking">Knowsoft</gear>
+				<gear rating="2" select="Cleaning">Knowsoft</gear>
+			</gears>
+			<source>R4</source>
+			<page>11</page>
+		</vehicle>
+	</vehicles>
+	<mods>
+		<mod>
+			<name>MIPS: Ballistic Ammunition Bin</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>R4</source>
+			<page>5</page>
+		</mod>
+		<mod>
+			<name>MIPS: Rocket Bin</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>R4</source>
+			<page>5</page>
+		</mod>
+		<mod>
+			<name>MIPS: Heat Sink</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>50000</cost>
+			<source>R4</source>
+			<page>5</page>
+		</mod>
+		<mod>
+			<name>MIPS: Armor Module</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>1</slots>
+			<avail>0</avail>
+			<cost>100000</cost>
+			<source>R4</source>
+			<page>5</page>
+		</mod>
+	</mods>
+</chummer>

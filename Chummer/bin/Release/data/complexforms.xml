@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-498</version>
+  <complexforms>
+    <complexform>
+      <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
+      <name>Cleaner</name>
+      <target>Persona</target>
+      <duration>P</duration>
+      <fv>L+1</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
+      <name>Diffusion of [Matrix Attribute]</name>
+      <target>Device</target>
+      <duration>S</duration>
+      <fv>L+1</fv>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
+      <name>Editor</name>
+      <target>File</target>
+      <duration>P</duration>
+      <fv>L+2</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
+      <name>Infusion of [Matrix Attribute]</name>
+      <target>Device</target>
+      <duration>S</duration>
+      <fv>L+1</fv>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
+      <name>Static Veil</name>
+      <target>Persona</target>
+      <duration>S</duration>
+      <fv>L-1</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
+      <name>Pulse Storm</name>
+      <target>Persona</target>
+      <duration>I</duration>
+      <fv>L+0</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
+      <name>Puppeteer</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L+4</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
+      <name>Resonance Channel</name>
+      <target>Device</target>
+      <duration>S</duration>
+      <fv>L-1</fv>
+      <source>SR5</source>
+      <page>252</page>
+    </complexform>
+    <complexform>
+      <id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
+      <name>Resonance Spike</name>
+      <target>Device</target>
+      <duration>I</duration>
+      <fv>L+0</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+    <complexform>
+      <id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
+      <name>Resonance Veil</name>
+      <target>Device</target>
+      <duration>S</duration>
+      <fv>L-1</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+    <complexform>
+      <id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
+      <name>Static Bomb</name>
+      <target>Self</target>
+      <duration>I</duration>
+      <fv>L+2</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+    <complexform>
+      <id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
+      <name>Stitches</name>
+      <target>Sprite</target>
+      <duration>P</duration>
+      <fv>L-2</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+    <complexform>
+      <id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
+      <name>Transcendent Grid</name>
+      <target>Self</target>
+      <duration>I</duration>
+      <fv>L-3</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+    <complexform>
+      <id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
+      <name>Tattletale</name>
+      <target>Persona</target>
+      <duration>P</duration>
+      <fv>L-2</fv>
+      <source>SR5</source>
+      <page>253</page>
+    </complexform>
+  </complexforms>
+</chummer>

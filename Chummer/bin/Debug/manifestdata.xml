@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <file>
+    <name>Chummer5.exe</name>
+    <type>Application</type>
+    <version>0.0.5.137</version>
+    <description>Chummer</description>
+    <notes>- Chummer Application</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMeU9jcjNKNldfdkU</url>
+  </file>
+  <file>
+    <name>Translator.exe</name>
+    <type>Application</type>
+    <version>0.0.5.101</version>
+    <description>Translator</description>
+    <notes>- Translator Application</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMenNnNHBTYWRkZDg</url>
+  </file>
+  <file>
+    <name>sheets/Commlinks.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Commlinks Sheet</description>
+    <notes>- Commlinks sheet based on the one created by ChinaGreenElvis</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMMzF3Qkk5bl9lcWc</url>
+  </file>
+  <file>
+    <name>sheets/ConditionMonitor.xslt</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Condition Monitor Base</description>
+    <notes>- Condition Monitor sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMd0txdEJJd1hOWW8</url>
+  </file>
+  <file>
+    <name>sheets/Dossier.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Dossier Sheet</description>
+    <notes>- Dossier sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMbHcwMy1LaTdqNjg</url>
+  </file>
+  <file>
+    <name>sheets/Game Master Summary.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Game Master Summary Character Sheet</description>
+    <notes>- Character sheet that displays a Game Master's summary version of multiple characters</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMclVreEpkQVdPODQ</url>
+  </file>
+  <file>
+    <name>sheets/Shadowrun 5 Base.xslt</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet Base</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMR1dZSGk5NGVvbTA</url>
+  </file>
+  <file>
+    <name>sheets/Shadowrun 5.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMQUVRNTZ5cXFSSTg</url>
+  </file>
+  <file>
+    <name>sheets/Shadowrun 5 (Grouped Skills by Name).xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet (Grouped Skills by Name)</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMWFJKOGNvcEtINVE</url>
+  </file>
+  <file>
+    <name>sheets/Shadowrun 5 (Grouped Skills by Rating).xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet (Grouped Skills by Rating)</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMT05vNkxydTlRZUk</url>
+  </file>
+  <file>
+    <name>sheets/Text-Only.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Text-Only Character Sheet</description>
+    <notes>- Text-only version of a character sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMQklsM0h5azVySWs</url>
+  </file>
+  <file>
+    <name>sheets/Vehicle Block.xsl</name>
+    <type>Character Sheets</type>
+    <version>-500</version>
+    <description>Vehicle Stat Block</description>
+    <notes>- Vehicle Stat Block</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMTEdqV0dIQmVNQm8</url>
+  </file>
+  <file>
+    <name>sheets/fr/Text-Only.xsl</name>
+    <type>French Character Sheets</type>
+    <version>-500</version>
+    <description>Text-Only Character Sheet</description>
+    <notes>- Text-only version of a character sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMdDRldkFUX0swQU0</url>
+  </file>
+  <file>
+    <name>sheets/de/Commlinks.xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Commlinks Sheet</description>
+    <notes>- Commlinks sheet based on the one created by ChinaGreenElvis</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMS3VRQzIya3pQU1k</url>
+  </file>
+  <file>
+    <name>sheets/de/ConditionMonitor.xslt</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Condition Monitor Base</description>
+    <notes>- Condition Monitor sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMaS10NU15c2lwMXM</url>
+  </file>
+  <file>
+    <name>sheets/de/Game Master Summary.xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Game Master Summary Character Sheet</description>
+    <notes>- Character sheet that displays a Game Master's summary version of multiple characters</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMcWg3Uzd3ZnF4UGM</url>
+  </file>
+  <file>
+    <name>sheets/de/Shadowrun 5 Base.xslt</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet Base</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZWN6VV92N3hITms</url>
+  </file>
+  <file>
+    <name>sheets/de/Shadowrun 5.xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMRVdOcVQtWjV5TzA</url>
+  </file>
+  <file>
+    <name>sheets/de/Shadowrun 5 (Grouped Skills by Name).xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet (Grouped Skills by Name)</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMQVg0WEVicWxuZk0</url>
+  </file>
+  <file>
+    <name>sheets/de/Shadowrun 5 (Grouped Skills by Rating).xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Shadowrun 5 Character Sheet (Grouped Skills by Rating)</description>
+    <notes>- Character sheet based on the Shadowrun 5 sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMUlAwMXFDQ2NZb00</url>
+  </file>
+  <file>
+    <name>sheets/de/Text-Only.xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Text-Only Character Sheet</description>
+    <notes>- Text-only version of a character sheet</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMSlJwS1VKWk5lYTQ</url>
+  </file>
+  <file>
+    <name>sheets/de/Vehicle Block.xsl</name>
+    <type>German Character Sheets</type>
+    <version>-500</version>
+    <description>Vehicle Stat Block</description>
+    <notes>- Vehicle Stat Block</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMaFJuOEtSYTlCR2s</url>
+  </file>
+  <file>
+    <name>export/Squad Manager.xsl</name>
+    <type>Export Template</type>
+    <version>-500</version>
+    <description>Squad Manager</description>
+    <notes>- Squad Manager (http://stauder-online.de/sr/english.htm)</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMUkc0d25JZWpnRXM</url>
+  </file>
+  <file>
+    <name>data/armor.xml</name>
+    <type>Data Files</type>
+    <version>-494</version>
+    <description>Armor</description>
+    <notes>- Armor data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMWFFJenBqREhtNDA</url>
+  </file>
+  <file>
+    <name>data/bioware.xml</name>
+    <type>Data Files</type>
+    <version>-497</version>
+    <description>Bioware</description>
+    <notes>- Bioware data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZGtsYUI3bTV1T3c</url>
+  </file>
+  <file>
+    <name>data/books.xml</name>
+    <type>Data Files</type>
+    <version>-493</version>
+    <description>Books</description>
+    <notes>- Books data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMSVc4Y0ZtZUtuMjQ</url>
+  </file>
+  <file>
+    <name>data/complexforms.xml</name>
+    <type>Data Files</type>
+    <version>-498</version>
+    <description>Complex Forms</description>
+    <notes>- Complex Forms data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMbEJRekRjOGJnNXM</url>
+  </file>
+  <file>
+    <name>data/contacts.xml</name>
+    <type>Data Files</type>
+    <version>-500</version>
+    <description>Contacts</description>
+    <notes>- Contacts data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMSHBYVzRFUDdndjg</url>
+  </file>
+  <file>
+    <name>data/critterpowers.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Critter Powers</description>
+    <notes>- Critter Powers data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMbGF3UUZlT19iNkk</url>
+  </file>
+  <file>
+    <name>data/critters.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Critters</description>
+    <notes>- Critters data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMTkt6VGZxbmVDakU</url>
+  </file>
+  <file>
+    <name>data/cyberware.xml</name>
+    <type>Data Files</type>
+    <version>-496</version>
+    <description>Cyberware</description>
+    <notes>- Cyberware data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMOUxDODBZcHB4YmM</url>
+  </file>
+  <file>
+    <name>data/echoes.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Echoes</description>
+    <notes>- Echoes data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMNDVncWxEOEJTbWM</url>
+  </file>
+  <file>
+    <name>data/gear.xml</name>
+    <type>Data Files</type>
+    <version>-487</version>
+    <description>Gear</description>
+    <notes>- Gear data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMRkI2b2hUQ1JlOHM</url>
+  </file>
+  <file>
+    <name>data/improvements.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Improvements</description>
+    <notes>- Improvements data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMcm9jUHQyczVvOXc</url>
+  </file>
+  <file>
+    <name>data/licenses.xml</name>
+    <type>Data Files</type>
+    <version>-498</version>
+    <description>Licenses</description>
+    <notes>- Licenses data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVTdfSmNzSUpLMG8</url>
+  </file>
+  <file>
+    <name>data/lifestyles.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Lifestyles</description>
+    <notes>- Lifestyles data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZmFrcTlQeE40M2c</url>
+  </file>
+  <file>
+    <name>data/martialarts.xml</name>
+    <type>Data Files</type>
+    <version>-498</version>
+    <description>Martial Arts</description>
+    <notes>- Martial Arts data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVTNQekN2TzdSb3M</url>
+  </file>
+  <file>
+    <name>data/mentors.xml</name>
+    <type>Data Files</type>
+    <version>-492</version>
+    <description>Mentor Spirits</description>
+    <notes>- Mentor Spirits data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMQk1lODNHaU5ia1E</url>
+  </file>
+  <file>
+    <name>data/metamagic.xml</name>
+    <type>Data Files</type>
+    <version>-496</version>
+    <description>Metamagic</description>
+    <notes>- Metamagic data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZkRqSkZoRTU0Tjg</url>
+  </file>
+  <file>
+    <name>data/metatypes.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Metatypes</description>
+    <notes>- Metatypes data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMcTFTZm5NUDZIcTQ</url>
+  </file>
+  <file>
+    <name>data/packs.xml</name>
+    <type>Data Files</type>
+    <version>-500</version>
+    <description>PACKS</description>
+    <notes>- PACKS data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMNWprWHdKbDB5UlU</url>
+  </file>
+  <file>
+    <name>data/paragons.xml</name>
+    <type>Data Files</type>
+    <version>-500</version>
+    <description>Paragons</description>
+    <notes>- Paragons data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMeEtSWjlIaXJ5TDA</url>
+  </file>
+  <file>
+    <name>data/powers.xml</name>
+    <type>Data Files</type>
+    <version>-492</version>
+    <description>Powers</description>
+    <notes>- Powers data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMUFZ3ZklVZ2VCR28</url>
+  </file>
+  <file>
+    <name>data/priorities.xml</name>
+    <type>Data Files</type>
+    <version>-498</version>
+    <description>Priorities</description>
+    <notes>- Priorities data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVTlCTmhPOVM2RkE</url>
+  </file>
+  <file>
+    <name>data/programs.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Programs</description>
+    <notes>- Programs data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMUlFYNTNiQkh2X1k</url>
+  </file>
+  <file>
+    <name>data/qualities.xml</name>
+    <type>Data Files</type>
+    <version>-490</version>
+    <description>Qualities</description>
+    <notes>- Qualities data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMUUtCaWdFRW9UUGc</url>
+  </file>
+  <file>
+    <name>data/ranges.xml</name>
+    <type>Data Files</type>
+    <version>-500</version>
+    <description>Ranges</description>
+    <notes>- Weapon Ranges data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZnoxOTNUUllvOUE</url>
+  </file>
+  <file>
+    <name>data/skills.xml</name>
+    <type>Data Files</type>
+    <version>-497</version>
+    <description>Skills</description>
+    <notes>- Skills data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVnRjRVV2RGZGMzg</url>
+  </file>
+  <file>
+    <name>data/spells.xml</name>
+    <type>Data Files</type>
+    <version>-491</version>
+    <description>Spells</description>
+    <notes>- Spells data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVlpXOHVTdmNpelk</url>
+  </file>
+  <file>
+    <name>data/streams.xml</name>
+    <type>Data Files</type>
+    <version>-499</version>
+    <description>Streams</description>
+    <notes>- Streams data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMVWVwWmFiaEFDaU0</url>
+  </file>
+  <file>
+    <name>data/traditions.xml</name>
+    <type>Data Files</type>
+    <version>-497</version>
+    <description>Traditions</description>
+    <notes>- Magic Traditions data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMc2k1YTNNT2s5amM</url>
+  </file>
+  <file>
+    <name>data/vehicles.xml</name>
+    <type>Data Files</type>
+    <version>-494</version>
+    <description>Vehicles</description>
+    <notes>- Vehicles data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMNkp5UUFURXJtWkU</url>
+  </file>
+  <file>
+    <name>data/vessels.xml</name>
+    <type>Data Files</type>
+    <version>-500</version>
+    <description>Vessels</description>
+    <notes>- Vessels data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZHVqTU9QR1d4Qmc</url>
+  </file>
+  <file>
+    <name>data/weapons.xml</name>
+    <type>Data Files</type>
+    <version>-487</version>
+    <description>Weapons</description>
+    <notes>- Weapons data file</notes>
+    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMTlNLTm1xa3EtTzQ</url>
+  </file>
+</manifest>

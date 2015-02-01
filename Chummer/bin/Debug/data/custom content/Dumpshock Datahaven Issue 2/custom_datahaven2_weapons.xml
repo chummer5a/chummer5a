@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<weapons>
+		<weapon>
+			<name>Ruhrmetall Vulkan</name>
+			<category>Shotguns</category>
+			<type>Ranged</type>
+			<reach>0</reach>
+			<damage>7P</damage>
+			<ap>-1</ap>
+			<mode>FA</mode>
+			<rc>0</rc>
+			<ammo>50(d) or belt</ammo>
+			<conceal>6</conceal>
+			<avail>16F</avail>
+			<cost>6500</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
+			<mods>
+				<mod>Metahuman Customization</mod>
+				<mod>Gas Vent 3</mod>
+				<mod>Heavy Barrel</mod>
+				<mod>Melee Hardening</mod>
+			</mods>
+			<source>DH2</source>
+			<page>32</page>
+		</weapon>
+	</weapons>
+</chummer>

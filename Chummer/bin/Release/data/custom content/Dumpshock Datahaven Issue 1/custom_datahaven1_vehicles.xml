@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<vehicles>
+		<vehicle>
+			<name>Horizon-Double MS3TD Combat Drone (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>1</handling>
+			<accel>40/80</accel>
+			<speed>320</speed>
+			<pilot>4</pilot>
+			<body>4</body>
+			<armor>8</armor>
+			<sensor>3</sensor>
+			<devicerating>3</devicerating>
+			<avail>30F</avail>
+			<cost>70000</cost>
+			<mods>
+				<name>Weapon Mount (Normal, External, Flexible, Remote)</name>
+				<name>Self-Repair</name>
+			</mods>
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+				<gear rating="4">Ultrawideband Radar</gear>
+				<gear rating="4" select="Self">Targeting</gear>
+				<gear rating="4">Clearsight</gear>
+				<gear rating="4">Chaser</gear>
+			</gears>
+			<source>DH1</source>
+			<page>11</page>
+		</vehicle>
+		<vehicle>
+			<name>Horizon-Double MS3TD-R Drone (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>1</handling>
+			<accel>40/80</accel>
+			<speed>320</speed>
+			<pilot>4</pilot>
+			<body>4</body>
+			<armor>8</armor>
+			<sensor>3</sensor>
+			<devicerating>3</devicerating>
+			<avail>10R</avail>
+			<cost>20000</cost>
+			<mods />
+			<gears>
+				<gear>Medium Drone Sensor</gear>
+				<gear rating="4">Ultrawideband Radar</gear>
+				<gear>Directional Microphone</gear>
+				<gear rating="4">Camera</gear>
+				<gear rating="4">Clearsight</gear>
+				<gear rating="4">Chaser</gear>
+			</gears>
+			<source>DH1</source>
+			<page>11</page>
+		</vehicle>
+	</vehicles>
+</chummer>

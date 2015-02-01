@@ -1,0 +1,594 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-496</version>
+  <metamagics>
+    <metamagic>
+      <id>03bdecec-6142-4b24-8aaa-0a0827c3eb78</id>
+      <name>Adept Centering</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <source>SR5</source>
+      <page>325</page>
+    </metamagic>
+    <metamagic>
+      <id>e021b9ba-2cbe-4c17-865d-0ebc9a2df4cc</id>
+      <name>Centering</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Centering</art>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>325</page>
+    </metamagic>
+    <metamagic>
+      <id>099af8f9-6d04-4aa5-8645-f7204a8bf9be</id>
+      <name>Fixation</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Advanced Alchemy</art>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>325</page>
+    </metamagic>
+    <metamagic>
+      <id>666626f2-3605-4c48-8190-7bcbcdb2e89c</id>
+      <name>Flexible Signature</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Flexible Signature</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>325</page>
+    </metamagic>
+    <metamagic>
+      <id>505d9fe3-852c-459b-8f9e-3e22c1b91b9a</id>
+      <name>Masking</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Masking</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SR5</source>
+      <page>326</page>
+    </metamagic>
+    <metamagic>
+      <id>406f096a-c093-4a02-b60f-002eb01a20b9</id>
+      <name>Power Point</name>
+      <limit>no</limit>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <bonus>
+        <adeptpowerpoints>1</adeptpowerpoints>
+      </bonus>
+      <source>SR5</source>
+      <page>326</page>
+    </metamagic>
+    <metamagic>
+      <id>4ea558ed-0fe8-4b9e-b2fa-afffb3eb2476</id>
+      <name>Quickening</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <bonus>
+        <quickeningmetamagic />
+      </bonus>
+      <required>
+        <allof>
+          <art>Quickening</art>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>326</page>
+    </metamagic>
+    <metamagic>
+      <id>532c6fed-5ad1-49b3-94cd-6f640b988f70</id>
+      <name>Shielding</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Apotropaic Magic</art>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>326</page>
+    </metamagic>
+    <metamagic>
+      <id>185c6889-2c45-47ee-9192-5f2fef3206a1</id>
+      <name>Spell Shaping</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Advanced Spellcasting</art>
+        </allof>
+      </required>
+      <source>SR5</source>
+      <page>326</page>
+    </metamagic>
+    <metamagic>
+      <id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
+      <name>Sympathetic Linking</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Psychometry</art>
+          <quality>The Spiritual Way</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>145</page>
+    </metamagic>
+    <metamagic>
+      <id>49f33f95-55fd-487f-9753-8b6207d021b9</id>
+      <name>Psychometry</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Psychometry</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>145</page>
+    </metamagic>
+    <metamagic>
+      <id>f2720e1b-494d-4d5b-9de2-7dc367f5b2a8</id>
+      <name>Danger Sense</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Divination</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>145</page>
+    </metamagic>
+    <metamagic>
+      <id>fdea34cc-5ffd-4f93-a80a-f1973c08a2c3</id>
+      <name>Channeling</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Channeling</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>148</page>
+    </metamagic>
+    <metamagic>
+      <id>283f7a08-7e65-40d6-819c-ac40baf88f73</id>
+      <name>Exorcism</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Exorcism</art>
+          <quality>The Spiritual Way</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>148</page>
+    </metamagic>
+    <metamagic>
+      <id>1712175b-66ee-44bd-9149-d2f450cc63d2</id>
+      <name>Extended Masking</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <metamagic>Masking</metamagic>
+          <art>Masking</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>149</page>
+    </metamagic>
+    <metamagic>
+      <id>81089c40-2a69-4ac3-b3e2-40ca1c9c4b6c</id>
+      <name>Astral Bluff</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Flexible Signature</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>150</page>
+    </metamagic>
+    <metamagic>
+      <id>d1d6cd22-d65c-4218-a783-f7c6a62dfa48</id>
+      <name>Flux</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Flexible Signature</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>150</page>
+    </metamagic>
+    <metamagic>
+      <id>94a38b4a-060d-4e95-bd58-665ff47929e7</id>
+      <name>Absorption</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <metamagic>Shielding</metamagic>
+          <art>Apotropaic Magic</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>151</page>
+    </metamagic>
+    <metamagic>
+      <id>102cc073-ba99-42a5-b5c6-37c9e87c3954</id>
+      <name>Reflection</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <metamagic>Shielding</metamagic>
+          <art>Apotropaic Magic</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>151</page>
+    </metamagic>
+    <metamagic>
+      <id>bb1431df-c546-4799-8dd4-ec42125f1a47</id>
+      <name>Anchoring</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <metamagic>Quickening</metamagic>
+          <art>Quickening</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>152</page>
+    </metamagic>
+    <metamagic>
+      <id>bffb21bd-30d2-4af8-a632-1d10109a1d25</id>
+      <name>Advanced Alchemy</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <metamagic>Fixation</metamagic>
+          <art>Advanced Alchemy</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>153</page>
+    </metamagic>
+    <metamagic>
+      <id>00aa480b-792f-4196-810d-72a91bcb81d0</id>
+      <name>Efficient Ritual</name>
+      <adept>yes</adept>
+      <magician>yes</magician>
+      <required>
+        <oneof>
+          <art>Advanced Ritual</art>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>SG</source>
+      <page>153</page>
+    </metamagic>
+    <metamagic>
+      <id>c98c7b04-052c-4f70-bb15-19aaed70d2b7</id>
+      <name>Greater Ritual</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Advanced Ritual</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>153</page>
+    </metamagic>
+    <metamagic>
+      <id>433c2fdb-7dfe-4876-988f-2ec868631922</id>
+      <name>Penetrating Spell</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Advanced Spellcasting</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>153</page>
+    </metamagic>
+    <metamagic>
+      <id>2cf811cd-1712-4c44-b20e-3f49ad8103a4</id>
+      <name>Cleansing</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Centering</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>155</page>
+    </metamagic>
+    <metamagic>
+      <id>657034b0-7c9d-4f5e-8169-578bf18069e4</id>
+      <name>Sensing</name>
+      <adept>no</adept>
+      <magician>yes</magician>
+      <required>
+        <allof>
+          <art>Sensing</art>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>155</page>
+    </metamagic>
+    <metamagic>
+      <id>954aca74-bb3e-493d-8df1-3563803780e5</id>
+      <name>Infusion</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <metamagic>Adept Centering</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>156</page>
+    </metamagic>
+    <metamagic>
+      <id>c860a479-4bb4-45f2-b4dd-dfe1ce39c045</id>
+      <name>Qi Sculpt</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <metamagic>Adept Centering</metamagic>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>156</page>
+    </metamagic>
+    <metamagic>
+      <id>69e7b92a-c5f9-4471-957f-839f5e7ac62d</id>
+      <name>Supernatural Prowess</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Athlete's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>156</page>
+    </metamagic>
+    <metamagic>
+      <id>443b0790-f4f3-40d4-9a13-2c6e42cbb4fa</id>
+      <name>Apex Predator</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Beast's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </metamagic>
+    <metamagic>
+      <id>066207e4-dc08-4718-96c2-a6ab4d9d0380</id>
+      <name>Totem Form (Animal)</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <allof>
+          <spell>Attune Animal</spell>
+          <quality>The Beast's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>157</page>
+    </metamagic>
+    <metamagic>
+      <id>c943ee91-ecad-4e84-bc8c-fab11b29090c</id>
+      <name>Stillness of the Void</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Invisible Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>158</page>
+    </metamagic>
+    <metamagic>
+      <id>8c433e0e-d1ee-41d8-82bd-ecfc20c6a069</id>
+      <name>Domain of the Spiritual</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Spiritual Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>158</page>
+    </metamagic>
+    <metamagic>
+      <id>8d16f0b3-ec2d-445e-b8f5-85ceeb32efe9</id>
+      <name>Fae-Touched</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Speaker's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>158</page>
+    </metamagic>
+    <metamagic>
+      <id>67e53002-2302-47c6-bc3c-f0b455e73672</id>
+      <name>Presence</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Speaker's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>159</page>
+    </metamagic>
+    <metamagic>
+      <id>605f3c8e-96c2-40f0-a09a-2857d2c5bbe6</id>
+      <name>Domain of the Warrior</name>
+      <adept>yes</adept>
+      <magician>no</magician>
+      <required>
+        <allof>
+          <quality>The Warrior's Way</quality>
+        </allof>
+      </required>
+      <source>SG</source>
+      <page>159</page>
+    </metamagic>
+  </metamagics>
+  <arts>
+    <art>
+      <id>5b922bcf-4114-4c49-a4f3-0f3dcb45dd2f</id>
+      <name>Geomancy</name>
+      <source>SG</source>
+      <page>143</page>
+    </art>
+    <art>
+      <id>fa64531c-5f86-45a0-aaaf-b8425a5b6dd1</id>
+      <name>Necromancy</name>
+      <source>SG</source>
+      <page>143</page>
+    </art>
+    <art>
+      <id>9613228a-6c83-41f4-beaa-20ce6276334f</id>
+      <name>Psychometry</name>
+      <source>SG</source>
+      <page>144</page>
+    </art>
+    <art>
+      <id>dec1323e-c728-45c6-8d24-59725e885dba</id>
+      <name>Divination</name>
+      <source>SG</source>
+      <page>147</page>
+    </art>
+    <art>
+      <id>155c3b67-7118-4cd6-90fa-d8d6a3dfe21b</id>
+      <name>Invocation</name>
+      <source>SG</source>
+      <page>147</page>
+    </art>
+    <art>
+      <id>adc0e5e6-29b3-4b9c-83ba-d06f30f597e5</id>
+      <name>Channeling</name>
+      <source>SG</source>
+      <page>148</page>
+    </art>
+    <art>
+      <id>c0fb021c-8dc3-46a5-9a88-7a4e15210d7d</id>
+      <name>Exorcism</name>
+      <source>SG</source>
+      <page>148</page>
+    </art>
+    <art>
+      <id>04e9d62d-3e45-45b5-8743-0fc8c74ee69b</id>
+      <name>Masking</name>
+      <source>SG</source>
+      <page>149</page>
+    </art>
+    <art>
+      <id>8691b2b4-dc2d-4ce4-8b75-931ef61ea874</id>
+      <name>Flexible Signature</name>
+      <source>SG</source>
+      <page>149</page>
+    </art>
+    <art>
+      <id>dd8b45f3-054d-4b96-a065-0ca249de60cb</id>
+      <name>Apotropaic Magic</name>
+      <source>SG</source>
+      <page>150</page>
+    </art>
+    <art>
+      <id>022c5efc-cd66-4e6e-8031-800a614d1cd8</id>
+      <name>Quickening</name>
+      <source>SG</source>
+      <page>152</page>
+    </art>
+    <art>
+      <id>1aa93daa-ffee-4e35-9141-a849f739e2b2</id>
+      <name>Advanced Alchemy</name>
+      <source>SG</source>
+      <page>153</page>
+    </art>
+    <art>
+      <id>28b078bf-22eb-4ba7-8689-e0d9f357ceb1</id>
+      <name>Advanced Ritual Casting</name>
+      <source>SG</source>
+      <page>153</page>
+    </art>
+    <art>
+      <id>10071e27-4cdd-4b17-8e8c-1de28713839b</id>
+      <name>Advanced Spellcasting</name>
+      <source>SG</source>
+      <page>153</page>
+    </art>
+    <art>
+      <id>fa4098b8-4075-4656-8c07-35d7dc0e63a8</id>
+      <name>Centering</name>
+      <source>SG</source>
+      <page>154</page>
+    </art>
+    <art>
+      <id>1ea5a816-2d5b-4dd2-86b0-0f780c68872f</id>
+      <name>Cleansing</name>
+      <source>SG</source>
+      <page>154</page>
+    </art>
+    <art>
+      <id>4a1e34dc-38c9-48e8-9808-a0cf9b1009af</id>
+      <name>Sensing</name>
+      <source>SG</source>
+      <page>155</page>
+    </art>
+  </arts>
+</chummer>

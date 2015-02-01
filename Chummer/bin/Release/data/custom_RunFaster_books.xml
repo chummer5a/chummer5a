@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+	<version>-900</version>
+	<books>
+		<book>
+			<name>Run Faster</name>
+			<code>RF</code>
+		</book>
+	</books>
+</chummer>

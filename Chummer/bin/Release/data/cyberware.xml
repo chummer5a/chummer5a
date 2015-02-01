@@ -1,0 +1,1342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chummer>
+  <version>-494</version>
+  <grades>
+    <grade>
+      <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
+      <name>Standard</name>
+      <ess>1</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
+      <name>Standard (Burnout's Way)</name>
+      <ess>0.8</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SG</source>
+      <page>177</page>
+    </grade>
+    <grade>
+      <id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
+      <name>Used</name>
+      <ess>1.25</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>75da0ff2-4137-4990-85e6-331977564712</id>
+      <name>Alphaware</name>
+      <ess>0.8</ess>
+      <cost>1.2</cost>
+      <avail>+2</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>b1b679e8-72ff-46b5-bd9d-652914731b17</id>
+      <name>Betaware</name>
+      <ess>0.7</ess>
+      <cost>1.5</cost>
+      <avail>+4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>7dedfc1d-74c3-4ec4-a0e4-ec5145a3e834</id>
+      <name>Deltaware</name>
+      <ess>0.5</ess>
+      <cost>2.5</cost>
+      <avail>+8</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+  </grades>
+  <categories>
+    <category>Headware</category>
+    <category>Eyeware</category>
+    <category>Earware</category>
+    <category>Bodyware</category>
+    <category>Cyberlimb</category>
+    <category>Cyberlimb Enhancement</category>
+    <category>Cyberlimb Accessory</category>
+    <category>Cyber Implant Weapon</category>
+  </categories>
+  <cyberwares>
+    <cyberware>
+      <id>6b219dfa-310a-45ab-98af-40a62e2431cf</id>
+      <name>Commlink</name>
+      <category>Headware</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>0</avail>
+      <cost>2000</cost>
+      <allowgear>
+        <gearcategory>Commlinks</gearcategory>
+      </allowgear>
+      <source>SR5</source>
+      <page>451</page>
+    </cyberware>
+    <cyberware>
+      <id>16b45886-2916-48eb-aea5-ecb74da835bd</id>
+      <name>Control Rig</name>
+      <category>Headware</category>
+      <rating>3</rating>
+      <ess>Rating * 1</ess>
+      <avail>Rating * 5</avail>
+      <capacity>0</capacity>
+      <cost>FixedValues(43000,97000,208000)</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>56e37c9d-9191-4f19-a733-33580888a560</id>
+      <name>Cranial Bomb - Kink Bomb</name>
+      <category>Headware</category>
+      <ess>0</ess>
+      <capacity>[1]</capacity>
+      <avail>12F</avail>
+      <cost>10000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>ff8b165b-1b43-479e-b9d7-87d9a341ef71</id>
+      <name>Cranial Bomb - Microbomb</name>
+      <category>Headware</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>16F</avail>
+      <cost>25000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>7af78ea8-2b19-4dee-a07f-194393a4a65b</id>
+      <name>Cranial Bomb - Area Bomb</name>
+      <category>Headware</category>
+      <ess>0</ess>
+      <capacity>[3]</capacity>
+      <avail>20F</avail>
+      <cost>40000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>754a2083-9d89-4034-b43f-31bd5bb43595</id>
+      <name>Cyberdeck</name>
+      <category>Headware</category>
+      <ess>0.4</ess>
+      <capacity>[4]</capacity>
+      <avail>5R</avail>
+      <allowgear>
+        <gearcategory>Cyberdecks</gearcategory>
+      </allowgear>
+      <cost>5000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>47c48542-48c3-417e-91f0-b5a456183f05</id>
+      <name>Datajack</name>
+      <category>Headware</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>2</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>eb9e691a-8002-4138-ac8d-d9714d398b1e</id>
+      <name>Data Lock</name>
+      <category>Headware</category>
+      <rating>12</rating>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 1000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>e9136c81-f8d5-4e7f-be2d-3be7ff6d1673</id>
+      <name>Olfactory Booster</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>Rating * 3</avail>
+      <cost>Rating * 4000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>ed88f785-7d61-43ec-b4ed-0ebb94736f5e</id>
+      <name>Simrig</name>
+      <category>Headware</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>12R</avail>
+      <cost>4000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>d31497dd-2be9-4b8a-808f-3ced36287c0c</id>
+      <name>Skilljack</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>Rating * 0.1</ess>
+      <capacity>0</capacity>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 20000</cost>
+      <bonus>
+        <skillsoftaccess />
+      </bonus>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>c533c0db-3a04-4fdd-95f9-d4d9781a3e79</id>
+      <name>Skilljack (German)</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>Rating * 0.1</ess>
+      <capacity>0</capacity>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 1000</cost>
+      <bonus>
+        <skillsoftaccess />
+      </bonus>
+      <source>SR5G</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>99128200-57f7-4ea1-ba48-7bae7215d6bb</id>
+      <name>Taste Booster</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>Rating * 3</avail>
+      <cost>Rating * 3000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>7924a873-341c-43a7-be03-f92895e0dc34</id>
+      <name>Tooth Compartment, Storage</name>
+      <category>Headware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>800</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>cd113e17-8412-4d93-80d0-91d6212646f0</id>
+      <name>Tooth Compartment, Breakable</name>
+      <category>Headware</category>
+      <ess>0</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>800</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>92e9d8e5-b9aa-4786-add3-a1d1f82b8ec0</id>
+      <name>Ultrasound Sensor</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>0.25</ess>
+      <capacity>[2]</capacity>
+      <avail>10</avail>
+      <cost>Rating * 12000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>ebc25387-655f-4a24-8ae7-81548c097dac</id>
+      <name>Voice Modulator</name>
+      <category>Headware</category>
+      <rating>6</rating>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>Rating * 3F</avail>
+      <cost>Rating * 5000</cost>
+      <source>SR5</source>
+      <page>452</page>
+    </cyberware>
+    <cyberware>
+      <id>8e414ade-2764-4dc7-bdc4-83bb4a086034</id>
+      <name>Cybereyes Basic System</name>
+      <category>Eyeware</category>
+      <rating>4</rating>
+      <ess>(Rating * 0.1) + 0.1</ess>
+      <capacity>(Rating * 4)</capacity>
+      <avail>(Rating * 3)</avail>
+      <cost>FixedValues(4000,6000,10000,14000)</cost>
+      <subsystems>
+        <subsystem>Eyeware</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>5921a6ac-1e20-483b-b210-dc84a14d3045</id>
+      <name>Flare Compensation</name>
+      <category>Eyeware</category>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>4</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>e03d454f-4a15-43ce-9cd0-db80e8600eae</id>
+      <name>Image Link</name>
+      <category>Eyeware</category>
+      <ess>0.1</ess>
+      <capacity>[*]</capacity>
+      <avail>4</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>97910ef7-dc30-4a87-8314-d1e0021dc39c</id>
+      <name>Low-Light Vision</name>
+      <category>Eyeware</category>
+      <ess>0.1</ess>
+      <capacity>[2]</capacity>
+      <avail>4</avail>
+      <cost>1500</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>fde2bfc3-c7a2-435e-a220-4896f49d8ca9</id>
+      <name>Ocular Drone</name>
+      <category>Eyeware</category>
+      <ess>0</ess>
+      <capacity>[6]</capacity>
+      <avail>6</avail>
+      <cost>6000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>fb0419a3-6f0d-4fbb-8b37-39e853efa195</id>
+      <name>Retinal Duplication</name>
+      <category>Eyeware</category>
+      <rating>6</rating>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>16F</avail>
+      <cost>Rating * 20000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>35dba0e2-1d3d-4386-a657-17fedca4622d</id>
+      <name>Smartlink</name>
+      <category>Eyeware</category>
+      <ess>0.2</ess>
+      <capacity>[3]</capacity>
+      <avail>8R</avail>
+      <cost>4000</cost>
+      <bonus>
+        <smartlink />
+      </bonus>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>ba3204d8-3ec5-4da0-b980-44992a3a4a13</id>
+      <name>Thermographic Vision</name>
+      <category>Eyeware</category>
+      <ess>0.1</ess>
+      <capacity>[2]</capacity>
+      <avail>4</avail>
+      <cost>1500</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>35c9c51e-5364-41b4-b3c9-4d1f080bd48c</id>
+      <name>Vision Enhancement</name>
+      <category>Eyeware</category>
+      <rating>3</rating>
+      <ess>0.1</ess>
+      <capacity>[Rating]</capacity>
+      <avail>Rating * 3</avail>
+      <cost>Rating * 4000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>2c578376-1219-468d-b76b-4c0da44dfca2</id>
+      <name>Vision Magnification</name>
+      <category>Eyeware</category>
+      <ess>0.1</ess>
+      <capacity>[2]</capacity>
+      <avail>4</avail>
+      <cost>2000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>2767fdaf-4f49-4403-a799-e91b9e6c8fa2</id>
+      <name>Cyberears</name>
+      <category>Earware</category>
+      <rating>4</rating>
+      <ess>(Rating * 0.1) + 0.1</ess>
+      <capacity>Rating * 4</capacity>
+      <avail>Rating * 3</avail>
+      <cost>FixedValues(3000,4500,7500,11000)</cost>
+      <subsystems>
+        <subsystem>Earware</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>9cdee6a3-a04e-40a1-95ce-e509b26b192c</id>
+      <name>Audio Enhancement</name>
+      <category>Earware</category>
+      <rating>3</rating>
+      <ess>0.1</ess>
+      <capacity>[Rating]</capacity>
+      <avail>Rating * 3</avail>
+      <cost>Rating * 4000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>31d82330-4650-4550-aa90-c314a189f897</id>
+      <name>Balance Augmenter</name>
+      <category>Earware</category>
+      <ess>0.1</ess>
+      <capacity>[4]</capacity>
+      <avail>8</avail>
+      <cost>8000</cost>
+      <source>SR5</source>
+      <page>453</page>
+    </cyberware>
+    <cyberware>
+      <id>3785a2cf-c3df-476a-b7cd-6e224ea77ab0</id>
+      <name>Damper</name>
+      <category>Earware</category>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>6</avail>
+      <cost>2250</cost>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>ab2e5330-25c6-4460-bab7-35a9e6b9aeb1</id>
+      <name>Select Sound Filter</name>
+      <category>Earware</category>
+      <rating>6</rating>
+      <ess>0.1</ess>
+      <capacity>[Rating]</capacity>
+      <avail>Rating * 3</avail>
+      <cost>Rating * 3500</cost>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>e0212e7e-e690-41d8-a461-4834a668d9c8</id>
+      <name>Sound Link</name>
+      <category>Earware</category>
+      <ess>0.1</ess>
+      <capacity>[*]</capacity>
+      <avail>4</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>004b7eb4-190e-4903-8308-27fe9b2f626b</id>
+      <name>Spatial Recognizer</name>
+      <category>Earware</category>
+      <ess>0.1</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>4000</cost>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>76523da7-271d-459a-9502-3f7c8d54be6a</id>
+      <name>Bone Lacing (Aluminum)</name>
+      <category>Bodyware</category>
+      <ess>1</ess>
+      <capacity>0</capacity>
+      <avail>12R</avail>
+      <cost>18000</cost>
+      <bonus>
+        <armor>2</armor>
+        <damageresistance>2</damageresistance>
+        <unarmeddv>2</unarmeddv>
+        <unarmeddvphysical />
+      </bonus>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>4fd033ab-9a43-4ee0-9675-47414af3c8f4</id>
+      <name>Bone Lacing (Plastic)</name>
+      <category>Bodyware</category>
+      <ess>0.5</ess>
+      <capacity>0</capacity>
+      <avail>8R</avail>
+      <cost>8000</cost>
+      <bonus>
+        <armor>1</armor>
+        <damageresistance>1</damageresistance>
+        <unarmeddv>1</unarmeddv>
+        <unarmeddvphysical />
+      </bonus>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>2ecc8684-5a9f-4523-beb8-d3abc886a233</id>
+      <name>Bone Lacing (Titanium)</name>
+      <category>Bodyware</category>
+      <ess>1.5</ess>
+      <capacity>0</capacity>
+      <avail>16R</avail>
+      <cost>30000</cost>
+      <bonus>
+        <armor>3</armor>
+        <damageresistance>3</damageresistance>
+        <unarmeddv>3</unarmeddv>
+        <unarmeddvphysical />
+      </bonus>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>6ba5239b-651e-456a-bcc9-f58d975d2397</id>
+      <name>Dermal Plating</name>
+      <category>Bodyware</category>
+      <rating>6</rating>
+      <ess>Rating * 0.5</ess>
+      <capacity>0</capacity>
+      <avail>(Rating * 4)R</avail>
+      <cost>Rating * 3000</cost>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>be1ed1c6-9a80-4299-9df3-335c59506027</id>
+      <name>Fingertip Compartment</name>
+      <category>Bodyware</category>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>4</avail>
+      <cost>3000</cost>
+      <allowgear />
+      <source>SR5</source>
+      <page>454</page>
+    </cyberware>
+    <cyberware>
+      <id>f145d15f-37e7-4961-98ba-38146dc849c9</id>
+      <name>Grapple Gun</name>
+      <category>Bodyware</category>
+      <ess>0.5</ess>
+      <capacity>[4]</capacity>
+      <avail>8</avail>
+      <cost>5000</cost>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>02ae9eca-ad70-4c27-8c1d-dec355265b8f</id>
+      <name>Internal Air Tank</name>
+      <category>Bodyware</category>
+      <rating>3</rating>
+      <ess>0.25</ess>
+      <capacity>[3]</capacity>
+      <avail>Rating</avail>
+      <cost>Rating * 4500</cost>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>46f80a44-80ae-41d7-a7c8-a119c4cff70f</id>
+      <name>Muscle Replacement</name>
+      <category>Bodyware</category>
+      <rating>4</rating>
+      <ess>Rating * 1</ess>
+      <capacity>0</capacity>
+      <avail>(Rating * 5)R</avail>
+      <cost>Rating * 25000</cost>
+      <bonus>
+        <specificattribute>
+          <name>AGI</name>
+          <val>Rating</val>
+        </specificattribute>
+        <specificattribute>
+          <name>STR</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>4cef53aa-13ea-4f28-8fbf-e3b254248247</id>
+      <name>Reaction Enhancers</name>
+      <category>Bodyware</category>
+      <rating>3</rating>
+      <ess>Rating * 0.3</ess>
+      <capacity>0</capacity>
+      <avail>(Rating * 5)R</avail>
+      <cost>Rating * 13000</cost>
+      <bonus>
+        <specificattribute>
+          <name precedence="1">REA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>60485c4e-042f-44f6-ad89-324003223f73</id>
+      <name>Skillwires</name>
+      <category>Bodyware</category>
+      <rating>6</rating>
+      <ess>Rating * 0.1</ess>
+      <capacity>0</capacity>
+      <avail>(Rating * 4)</avail>
+      <cost>Rating * 20000</cost>
+      <bonus>
+        <skillwire>Rating</skillwire>
+      </bonus>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>21055f0b-4f4d-4286-8cfb-e251e5898c04</id>
+      <name>Smuggling Compartment</name>
+      <category>Bodyware</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>6</avail>
+      <cost>7500</cost>
+      <allowgear />
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>bea0ded3-821f-449c-9507-815088f68b86</id>
+      <name>Wired Reflexes</name>
+      <category>Bodyware</category>
+      <rating>3</rating>
+      <ess>FixedValues(2,3,5)</ess>
+      <capacity>0</capacity>
+      <avail>FixedValues(8R,12R,20R)</avail>
+      <cost>FixedValues(39000,149000,217000)</cost>
+      <bonus>
+        <initiativepass>Rating</initiativepass>
+        <specificattribute>
+          <name precedence="1">REA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>SR5</source>
+      <page>455</page>
+    </cyberware>
+    <cyberware>
+      <id>df01eed6-a019-4198-b88d-4ba8f9aaefdf</id>
+      <name>Obvious Full Arm</name>
+      <category>Cyberlimb</category>
+      <limbslot>arm</limbslot>
+      <ess>1</ess>
+      <capacity>15</capacity>
+      <avail>4</avail>
+      <cost>15000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>c7b88f7e-4e3c-4c29-9f86-a4e244ec5066</id>
+      <name>Obvious Full Leg</name>
+      <category>Cyberlimb</category>
+      <limbslot>leg</limbslot>
+      <ess>1</ess>
+      <capacity>20</capacity>
+      <avail>4</avail>
+      <cost>15000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>eee044c5-3586-4f04-9577-5e290466c485</id>
+      <name>Obvious Foot</name>
+      <category>Cyberlimb</category>
+      <ess>0.25</ess>
+      <capacity>4</capacity>
+      <avail>2</avail>
+      <cost>5000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>cc503281-ff05-4e22-9121-09116a4a8306</id>
+      <name>Obvious Hand</name>
+      <category>Cyberlimb</category>
+      <ess>0.25</ess>
+      <capacity>4</capacity>
+      <avail>2</avail>
+      <cost>5000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>fdb0ef96-2234-46fa-9d51-55c7d1164b7a</id>
+      <name>Obvious Lower Arm</name>
+      <category>Cyberlimb</category>
+      <ess>0.45</ess>
+      <capacity>10</capacity>
+      <avail>4</avail>
+      <cost>10000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>f769235c-c295-4c31-9843-e9d413d77adf</id>
+      <name>Obvious Lower Leg</name>
+      <category>Cyberlimb</category>
+      <ess>0.45</ess>
+      <capacity>12</capacity>
+      <avail>4</avail>
+      <cost>10000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
+      <name>Obvious Torso</name>
+      <category>Cyberlimb</category>
+      <limbslot>torso</limbslot>
+      <ess>1.5</ess>
+      <capacity>10</capacity>
+      <avail>12</avail>
+      <cost>20000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>ea676290-1859-4a56-86f8-a3fb90decc32</id>
+      <name>Obvious Skull</name>
+      <category>Cyberlimb</category>
+      <limbslot>skull</limbslot>
+      <ess>0.75</ess>
+      <capacity>4</capacity>
+      <avail>16</avail>
+      <cost>10000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </bonus>
+      <subsystems>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>f4a48c40-29df-4435-8d09-b1f3153d61ee</id>
+      <name>Synthetic Full Arm</name>
+      <category>Cyberlimb</category>
+      <limbslot>arm</limbslot>
+      <ess>1</ess>
+      <capacity>8</capacity>
+      <avail>4</avail>
+      <cost>20000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>bf29ff5e-839a-4fd3-8063-371ce05065d6</id>
+      <name>Synthetic Full Leg</name>
+      <category>Cyberlimb</category>
+      <limbslot>leg</limbslot>
+      <ess>1</ess>
+      <capacity>10</capacity>
+      <avail>4</avail>
+      <cost>20000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>1e511ad7-4806-4862-8685-a04887b1bec9</id>
+      <name>Synthetic Foot</name>
+      <category>Cyberlimb</category>
+      <ess>0.25</ess>
+      <capacity>2</capacity>
+      <avail>2</avail>
+      <cost>6000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>a1591e59-d859-40fc-aaf8-30fde5cf6a42</id>
+      <name>Synthetic Hand</name>
+      <category>Cyberlimb</category>
+      <ess>0.25</ess>
+      <capacity>2</capacity>
+      <avail>2</avail>
+      <cost>6000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>4e8c4c99-b0bf-494f-b82c-1ab15ec26eb7</id>
+      <name>Synthetic Lower Arm</name>
+      <category>Cyberlimb</category>
+      <ess>0.45</ess>
+      <capacity>5</capacity>
+      <avail>4</avail>
+      <cost>12000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>d3a7e6f2-cb8c-42c0-9aef-c88b26648859</id>
+      <name>Synthetic Lower Leg</name>
+      <category>Cyberlimb</category>
+      <ess>0.45</ess>
+      <capacity>6</capacity>
+      <avail>4</avail>
+      <cost>12000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+        <selectside />
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
+      <name>Synthetic Torso</name>
+      <category>Cyberlimb</category>
+      <limbslot>torso</limbslot>
+      <ess>1.5</ess>
+      <capacity>5</capacity>
+      <avail>12</avail>
+      <cost>25000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </bonus>
+      <subsystems>
+        <subsystem>Bodyware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>992fbf6b-8f9a-4c27-a527-8705ecc3341f</id>
+      <name>Synthetic Skull</name>
+      <category>Cyberlimb</category>
+      <limbslot>skull</limbslot>
+      <ess>0.75</ess>
+      <capacity>2</capacity>
+      <avail>16</avail>
+      <cost>15000</cost>
+      <bonus>
+        <conditionmonitor>
+          <physical>1</physical>
+        </conditionmonitor>
+      </bonus>
+      <subsystems>
+        <subsystem>Headware</subsystem>
+        <subsystem>Cyberlimb Enhancement</subsystem>
+        <subsystem>Cyberlimb Accessory</subsystem>
+        <subsystem>Cyber Implant Weapon</subsystem>
+      </subsystems>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>8ea736c6-5a90-471c-9320-18432ec9aaf0</id>
+      <name>Armor</name>
+      <category>Cyberlimb Enhancement</category>
+      <rating>3</rating>
+      <ess>0</ess>
+      <capacity>[Rating]</capacity>
+      <avail>Rating * 5</avail>
+      <cost>Rating * 3000</cost>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>7d61f860-0637-4214-914d-c68022361d24</id>
+      <name>Customized Strength</name>
+      <category>Cyberlimb Enhancement</category>
+      <rating>20</rating>
+      <minrating>4</minrating>
+      <ess>0</ess>
+      <capacity>[0]</capacity>
+      <avail>+1</avail>
+      <cost>(Rating - 3) * 5000</cost>
+      <bonus />
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
+      <name>Customized Agility</name>
+      <category>Cyberlimb Enhancement</category>
+      <rating>20</rating>
+      <minrating>4</minrating>
+      <ess>0</ess>
+      <capacity>[0]</capacity>
+      <avail>+1</avail>
+      <cost>(Rating - 3) * 5000</cost>
+      <bonus />
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>a9f4efd4-b86c-4e90-b0f7-aefa32c3b9de</id>
+      <name>Enhanced Strength</name>
+      <category>Cyberlimb Enhancement</category>
+      <rating>3</rating>
+      <ess>0</ess>
+      <capacity>[Rating * 1]</capacity>
+      <avail>(Rating * 3)R</avail>
+      <cost>Rating * 6500</cost>
+      <bonus />
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>2c50d5c1-f2ff-4c7b-bf5e-46925e808648</id>
+      <name>Enhanced Agility</name>
+      <category>Cyberlimb Enhancement</category>
+      <rating>3</rating>
+      <ess>0</ess>
+      <capacity>[Rating * 1]</capacity>
+      <avail>(Rating * 3)R</avail>
+      <cost>Rating * 6500</cost>
+      <bonus />
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
+      <name>Cyber Holster</name>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[5]</capacity>
+      <avail>8R</avail>
+      <cost>2000</cost>
+      <source>SR5</source>
+      <page>457</page>
+    </cyberware>
+    <cyberware>
+      <id>816fbe31-0bfb-455f-a939-fca85b968bd2</id>
+      <name>Cyberarm Gyromount</name>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[8]</capacity>
+      <avail>12F</avail>
+      <cost>6000</cost>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>17e0bf0e-db82-4db7-ad85-d88e9945f5a7</id>
+      <name>Cyberarm Slide</name>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[3]</capacity>
+      <avail>12R</avail>
+      <cost>3000</cost>
+      <source>SR5</source>
+      <page>456</page>
+    </cyberware>
+    <cyberware>
+      <id>c7a55431-c54c-41ba-8468-0d9c3028010a</id>
+      <name>Hydraulic Jacks</name>
+      <category>Cyberlimb Accessory</category>
+      <rating>6</rating>
+      <ess>0</ess>
+      <capacity>[Rating]</capacity>
+      <avail>9</avail>
+      <cost>Rating * 2500</cost>
+      <source>SR5</source>
+      <page>457</page>
+    </cyberware>
+    <cyberware>
+      <id>32096cc1-25c0-4b29-a53d-92528f352d2f</id>
+      <name>Large Smuggling Compartment</name>
+      <category>Cyberlimb Accessory</category>
+      <ess>0</ess>
+      <capacity>[5]</capacity>
+      <avail>6</avail>
+      <cost>8000</cost>
+      <allowgear />
+      <source>SR5</source>
+      <page>457</page>
+    </cyberware>
+    <cyberware>
+      <id>ec5ed166-d1dc-4afe-80a1-71bc315f7d75</id>
+      <name>External Clip Port</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.1</ess>
+      <capacity>[1]</capacity>
+      <avail>0</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>c7ba7834-7337-452c-90e4-d1dd4abcbca5</id>
+      <name>Grenade Launcher</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>1.5</ess>
+      <capacity>[15]</capacity>
+      <avail>20F</avail>
+      <addweapon>Cyber Microgrenade Launcher</addweapon>
+      <cost>30000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>ba93ab8d-fd7f-4fc4-bfa3-5f987fd15d77</id>
+      <name>Hand Blade</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.25</ess>
+      <capacity>[2]</capacity>
+      <avail>10F</avail>
+      <addweapon>Hand Blade</addweapon>
+      <cost>2500</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>923d1629-5267-4093-a978-34eb4543cb15</id>
+      <name>Hand Razors</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>10F</avail>
+      <addweapon>Hand Razors</addweapon>
+      <cost>1250</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>e2997f83-e2a7-4f15-92a2-be9b5081ed59</id>
+      <name>Heavy Pistol</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.5</ess>
+      <capacity>[6]</capacity>
+      <avail>12R</avail>
+      <addweapon>Heavy Cyber Pistol</addweapon>
+      <cost>4300</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>abe607f4-ba21-4d7f-b6e1-327f03fab901</id>
+      <name>Holdout Pistol</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.1</ess>
+      <capacity>[2]</capacity>
+      <avail>8R</avail>
+      <addweapon>Cyber Hold-out</addweapon>
+      <cost>2000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>c8df9efc-e88e-4dec-becf-0453f20cdb34</id>
+      <name>Laser Sight</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0</ess>
+      <capacity>[1]</capacity>
+      <avail>0</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>45a32fd5-6db3-4e1d-aa34-76d1e299ae8b</id>
+      <name>Light Pistol</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.25</ess>
+      <capacity>[4]</capacity>
+      <avail>10R</avail>
+      <addweapon>Light Cyber Pistol</addweapon>
+      <cost>3900</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>b6e0d583-33e8-4711-8304-a1d8de86d391</id>
+      <name>Machine Pistol</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.5</ess>
+      <capacity>[6]</capacity>
+      <avail>12R</avail>
+      <addweapon>Cyber Machine Pistol</addweapon>
+      <cost>3500</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>1aa7fe36-10ab-4c3c-9a4f-f26e8460c0a8</id>
+      <name>Shock Hand</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.25</ess>
+      <capacity>[4]</capacity>
+      <avail>8R</avail>
+      <addweapon>Shock Hand</addweapon>
+      <cost>5000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>841cac06-6839-4041-a8dc-2050048df076</id>
+      <name>Shotgun</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>1.25</ess>
+      <capacity>[10]</capacity>
+      <avail>12R</avail>
+      <addweapon>Cyber Shotgun</addweapon>
+      <cost>8500</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
+      <name>Silencer</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>0</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
+      <name>Sound Suppressor</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0</ess>
+      <capacity>[2]</capacity>
+      <avail>0</avail>
+      <cost>1000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>c9e4a11f-ef4f-4cb6-9392-ce7378456d82</id>
+      <name>Spurs</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>0.3</ess>
+      <capacity>[3]</capacity>
+      <avail>12F</avail>
+      <addweapon>Spurs</addweapon>
+      <cost>5000</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+    <cyberware>
+      <id>13841067-a929-4e8d-b7e3-e8eb68a0dec1</id>
+      <name>Submachine Gun</name>
+      <category>Cyber Implant Weapon</category>
+      <ess>1</ess>
+      <capacity>[8]</capacity>
+      <avail>12R</avail>
+      <addweapon>Cyber Submachine Gun</addweapon>
+      <cost>4800</cost>
+      <source>SR5</source>
+      <page>458</page>
+    </cyberware>
+  </cyberwares>
+</chummer>
