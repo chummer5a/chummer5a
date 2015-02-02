@@ -8,14 +8,14 @@
     <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Chummer5.exe.manifest" size="3887">
+    <dependentAssembly dependencyType="install" codebase="Chummer5.exe.manifest" size="3891">
       <assemblyIdentity name="Chummer5.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>63KtsZI9W5IYwEkGcNxxUGRCa0U=</dsig:DigestValue>
+        <dsig:DigestValue>qj04yJu/lpi0nJ0HHNpHc+clN1o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

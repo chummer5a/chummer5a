@@ -3192,7 +3192,7 @@
 		</string>
 		<string>
 			<key>Tip_CommonAttributes</key>
-			<text>Characters cannot spend more than 50% of their BP on Primary Attributes (not including EDG, MAG, and RES).
+			<text>Characters cannot spend more than 50% of their Karma on Primary Attributes (not including EDG, MAG, and RES).
 Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
@@ -3241,7 +3241,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_CommonNuyen</key>
-			<text>The amount of Nuyen your character has to purchase equipment. 1 BP = {0}¥.</text>
+			<text>The amount of Nuyen your character has to purchase equipment. 1 Karma = {0}¥.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAIRating</key>
@@ -3265,11 +3265,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_CommonContacts</key>
-			<text>Each point of Connection or Loyalty costs {0} BP.</text>
+			<text>Each point of Connection or Loyalty costs {0} Karma.</text>
 		</string>
 		<string>
 			<key>Tip_CommonEnemies</key>
-			<text>Enemies are the opposite of Contacts. Each Enemy counts towards your Negative Qualities BP amount.</text>
+			<text>Enemies are the opposite of Contacts. Each Enemy counts towards your Negative Qualities Karma amount.</text>
 		</string>
 		<string>
 			<key>Tip_CommonBurnEdge</key>
@@ -3326,15 +3326,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsSkillGroups</key>
-			<text>Skill Groups cost {0} BP per point.</text>
+			<text>Skill Groups cost {0} Karma per point.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsActiveSkills</key>
-			<text>Skills cost {0} BP per point and {1} BP for a Specialization. Characters may have up to 1 Active Skill at Rating 6 or two at Rating 5. The rest must be at Rating 4 or lower.</text>
+			<text>Skills cost {0} Karma per point and {1} Karma for a Specialization. Characters may have up to 1 Active Skill at Rating 6 or two at Rating 5. The rest must be at Rating 4 or lower.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} BP each. A Language with a Rating of 0 is considered to be your Native Language.</text>
+			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
 		</string>
 		<!-- Martial Arts Tab -->
 		<string>
@@ -3440,11 +3440,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_SpellsSelectedSpells</key>
-			<text>Each Spell costs {0} BP.</text>
+			<text>Each Spell costs {0} Karma.</text>
 		</string>
 		<string>
 			<key>Tip_SpellsSpirits</key>
-			<text>Each Service a Spirit owes costs {0} BP.</text>
+			<text>Each Service a Spirit owes costs {0} Karma.</text>
 		</string>
 		<!-- Adept Tab -->
 		<string>
@@ -3526,11 +3526,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_TechnomancerComplexForms</key>
-			<text>Complex Forms cost {0} BP per Rating.</text>
+			<text>Complex Forms cost {0} Karma per Rating.</text>
 		</string>
 		<string>
 			<key>Tip_TechnomancerSprites</key>
-			<text>Each Task a Sprite owes costs {0} BP.</text>
+			<text>Each Task a Sprite owes costs {0} Karma.</text>
 		</string>
 		<string>
 			<key>Tip_TechnomancerResponse</key>
@@ -4254,19 +4254,19 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_BuildPositiveQualities</key>
-			<text>Characters may select up to 35 BP worth of Positive Qualities. Qualities in dark red do not count towards the 35 BP limit.</text>
+			<text>Characters may select up to 35 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 35 Karma limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
-			<text>Characters may select up to -35 BP worth of Negative Qualities. Qualities in dark red do not count towards the -35 BP limit.</text>
+			<text>Characters may select up to -35 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -35 Karma limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildFoci</key>
-			<text>Each bonded Focus costs {0} BP per point of Force.</text>
+			<text>Each bonded Focus costs {0} Karma per point of Force.</text>
 		</string>
 		<string>
 			<key>Tip_BuildManeuvers</key>
-			<text>Each Martial Art Maneuver costs {0} BP.</text>
+			<text>Each Martial Art Maneuver costs {0} Karma.</text>
 		</string>
 		<!-- Other Info Tab -->
 		<string>
@@ -5724,7 +5724,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Label_Options_BPCost</key>
-			<text>x BP Cost</text>
+			<text>x Karma Cost</text>
 		</string>
 		<string>
 			<key>Label_Options_Rating</key>
@@ -5952,7 +5952,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
-			<text>Free Contact Points BP:</text>
+			<text>Free Contact Points Karma:</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKnowledgeSkills</key>
@@ -6044,15 +6044,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualities</key>
-			<text>Allow characters to exceed 35 BP worth of Positive Qualities</text>
+			<text>Allow characters to exceed 35 Karma worth of Positive Qualities</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Allow characters to exceed 35 BP worth of Negative Qualities</text>
+			<text>Allow characters to exceed 35 Karma worth of Negative Qualities</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Characters only receive up to 35 BP from Negative Qualities</text>
+			<text>Characters only receive up to 35 Karma from Negative Qualities</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>
@@ -6295,7 +6295,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_SelectBP_IgnoreRules</key>
-			<text>When checked, all BP and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
+			<text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
 		</string>
 		<!-- Advanced Contact Options Window -->
 		<string>
@@ -6739,7 +6739,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>String_SelectPACKSKit_StartingNuyenBP</key>
-			<text>Starting Nuyen BP:</text>
+			<text>Starting Nuyen Karma:</text>
 		</string>
 		<string>
 			<key>String_SelectPACKSKit_Group</key>

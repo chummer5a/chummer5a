@@ -14793,7 +14793,7 @@ namespace Chummer
 			string strLOG = "";
 			string strWIL = "";
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Get the total of "free points" spent
                 int intAtt = 0;
@@ -15048,7 +15048,7 @@ namespace Chummer
 			string strMAG = "";
 			string strRES = "";
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Get the total of "free points" spent
                 int intAtt = 0;
@@ -15166,7 +15166,7 @@ namespace Chummer
 			strTooltip = strEDG + "\n" + strMAG + "\n" + strRES;
 			tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
 
                 _objCharacter.Special = _objCharacter.TotalSpecial - intBP;
