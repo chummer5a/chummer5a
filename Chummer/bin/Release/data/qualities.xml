@@ -961,6 +961,14 @@
       <bonus />
       <source>SR5</source>
       <page>69</page>
+	        <forbidden>
+        <oneof>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
     </quality>
     <quality>
       <id>55247bdc-c313-4614-ae15-5012308096ff</id>
@@ -970,6 +978,14 @@
       <bonus />
       <source>SR5</source>
       <page>69</page>
+	  <forbidden>
+        <oneof>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
     </quality>
     <quality>
       <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
@@ -979,6 +995,14 @@
       <bonus />
       <source>SR5</source>
       <page>69</page>
+	        <forbidden>
+        <oneof>
+          <quality>Magician</quality>
+          <quality>Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>
     </quality>
     <quality>
       <id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
@@ -988,6 +1012,14 @@
       <bonus />
       <source>SR5</source>
       <page>69</page>
+      <forbidden>
+        <oneof>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Adept</quality>
+        </oneof>
+      </forbidden>	  
     </quality>
     <quality>
       <id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
@@ -997,6 +1029,14 @@
       <bonus />
       <source>SR5</source>
       <page>69</page>
+      <forbidden>
+        <oneof>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+          <quality>Adept</quality>
+          <quality>Technomancer</quality>
+        </oneof>
+      </forbidden>	  
     </quality>
     <quality>
       <id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>

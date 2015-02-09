@@ -47,6 +47,9 @@
       <cost>26000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -75,6 +78,9 @@
       <cost>24500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -99,6 +105,9 @@
       <cost>23000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -127,6 +136,9 @@
       <cost>21000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -151,6 +163,9 @@
       <cost>32000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -180,6 +195,9 @@
       <cost>43000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -207,6 +225,9 @@
       <cost>950</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -232,6 +253,9 @@
       <underbarrel>AK-98 Grenade Launcher</underbarrel>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -257,6 +281,9 @@
       <underbarrel>Ares Alpha Grenade Launcher</underbarrel>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -284,6 +311,9 @@
       <cost>2400</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -312,6 +342,9 @@
       <cost>2250</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -340,6 +373,9 @@
       <cost>550</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -364,6 +400,9 @@
       <cost>1500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -393,6 +432,9 @@
       <underbarrel>HK XM30 Grenade Launcher</underbarrel>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -423,6 +465,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -455,6 +500,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -487,6 +535,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -519,6 +570,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -550,6 +604,9 @@
       <cost>1300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -578,6 +635,9 @@
       <underbarrel>Nissan Optiumum II Shotgun</underbarrel>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -606,6 +666,9 @@
       <cost>500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -633,6 +696,9 @@
       <cost>1900</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -660,6 +726,9 @@
       <cost>2800</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -688,6 +757,9 @@
       <cost>2600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -2536,6 +2608,9 @@
       <cost>3200</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -2563,6 +2638,9 @@
       <cost>5000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -2611,6 +2689,9 @@
       <cost>16300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -2640,6 +2721,9 @@
       <cost>19600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -2670,6 +2754,9 @@
       <cost>16000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -3027,7 +3114,7 @@
       <ammo>4(c)</ammo>
       <avail>5R</avail>
       <cost>1000</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3046,7 +3133,7 @@
       <ammo>4(c)</ammo>
       <avail>3R</avail>
       <cost>350</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <source>RG</source>
       <page>30</page>
     </weapon>
@@ -3065,7 +3152,7 @@
       <ammo>6(c)</ammo>
       <avail>4R</avail>
       <cost>120</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3084,7 +3171,7 @@
       <ammo>2(b)</ammo>
       <avail>4R</avail>
       <cost>180</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <source>SR5</source>
       <page>425</page>
     </weapon>
@@ -3103,7 +3190,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3123,7 +3210,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>true</allowaccessory>
+      <allowaccessory>false</allowaccessory>
       <useskill>Exotic Melee Weapon</useskill>
       <source>RG</source>
       <page>22</page>
@@ -3401,6 +3488,9 @@
       <cost>6000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -3431,6 +3521,9 @@
       <cost>5800</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -3462,6 +3555,9 @@
       <cost>2000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -3490,6 +3586,9 @@
       <cost>6500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4095,6 +4194,9 @@
       <cost>8500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4125,6 +4227,9 @@
       <cost>7000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4151,6 +4256,9 @@
       <cost>7600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4261,6 +4369,9 @@
       <cost>1800</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4331,6 +4442,9 @@
       <cost>450</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4355,6 +4469,9 @@
       <cost>475</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4380,6 +4497,9 @@
       <cost>1100</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4407,6 +4527,9 @@
       <cost>1050</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4435,6 +4558,9 @@
       <cost>600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4460,6 +4586,9 @@
       <cost>1400</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4487,6 +4616,9 @@
       <cost>1000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4515,6 +4647,9 @@
       <cost>950</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4543,6 +4678,9 @@
       <cost>450</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4570,6 +4708,9 @@
       <cost>1300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4594,6 +4735,9 @@
       <cost>900</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4622,6 +4766,9 @@
       <cost>1000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4646,6 +4793,9 @@
       <cost>17500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4675,6 +4825,9 @@
       <cost>38500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4703,6 +4856,9 @@
       <cost>10300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4732,6 +4888,9 @@
       <cost>12500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4759,6 +4918,9 @@
       <cost>500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4786,6 +4948,9 @@
       <cost>28000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4842,6 +5007,9 @@
       <cost>1300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4871,6 +5039,9 @@
       <cost>800</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -4895,6 +5066,9 @@
       <cost>35000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5251,6 +5425,9 @@
       <cost>1100</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5278,6 +5455,9 @@
       <cost>1100</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5305,6 +5485,9 @@
       <cost>1000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5329,6 +5512,9 @@
       <cost>300</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5353,6 +5539,9 @@
       <cost>1500</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5381,6 +5570,9 @@
       <cost>3600</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5408,6 +5600,9 @@
       <cost>1700</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5435,6 +5630,9 @@
       <cost>850</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5462,6 +5660,9 @@
       <cost>1800</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5489,6 +5690,9 @@
       <cost>650</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5544,6 +5748,9 @@
       <cost>1000</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5574,6 +5781,9 @@
       <cost>400</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -5761,6 +5971,9 @@
       <cost>425</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6017,6 +6230,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6044,6 +6260,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6072,6 +6291,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6105,6 +6327,9 @@
       <cost>0</cost>
       <allowaccessory>true</allowaccessory>
       <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Under</mount>
@@ -6182,7 +6407,184 @@
       <source>SASS</source>
       <page>31</page>
     </weapon>
-  </weapons>
+    <weapon>
+      <name>Digging Claws</name>
+      <category>Quality</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(STR)P</damage>
+      <ap>+1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <allowaccessory>false</allowaccessory>
+      <useskill>Unarmed Combat</useskill>
+      <source>RF</source>
+      <page>113</page>
+    </weapon>
+    <weapon>
+      <name>Razor Claws</name>
+      <category>Quality</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(STR+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <allowaccessory>false</allowaccessory>
+      <useskill>Unarmed Combat</useskill>
+      <source>RF</source>
+      <page>113</page>
+    </weapon>
+    <weapon>
+      <name>Retractable Claws</name>
+      <category>Quality</category>
+      <type>Melee</type>
+      <conceal>0</conceal>
+      <accuracy>Physical</accuracy>
+      <reach>0</reach>
+      <damage>(STR+1)P</damage>
+      <ap>-1</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <allowaccessory>false</allowaccessory>
+      <useskill>Unarmed Combat</useskill>
+      <source>RF</source>
+      <page>113</page>
+    </weapon>
+    <weapon>
+		<id>d8ce8d26-bccb-4107-aa90-3dd88af14d41</id>
+		<name>Raptor Beak</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>-1</reach>
+		<damage>(STR+2)P</damage>
+		<ap>-2</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Unarmed Combat</useskill>
+		<source>RF</source>
+		<page>112</page>
+	</weapon>
+	<weapon>
+		<id>847c2843-717f-4192-bad9-df21ffd4083b</id>
+		<name>Fangs</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>-1</reach>
+		<damage>(STR+1)P</damage>
+		<ap>-</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Unarmed Combat</useskill>
+		<source>RF</source>
+		<page>115</page>
+	</weapon>
+	<weapon>
+		<id>63bb72d2-977f-4ea3-b119-898186d2c299</id>
+		<name>Functional Tail (Thagomizer)</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>1</reach>
+		<damage>(STR+3)P</damage>
+		<ap>-1</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Exotic Melee Weapon</useskill>
+		<source>RF</source>
+		<page>115</page>
+	</weapon>
+	<weapon>
+		<id>c847a859-8a72-4a1b-acb5-201ddc66fe73</id>
+		<name>Goring Horns</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>0</reach>
+		<damage>(STR+2)P</damage>
+		<ap>-1</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Exotic Melee Weapon</useskill>
+		<source>RC</source>
+		<page>115</page>
+	</weapon>	
+	<weapon>
+		<id>54048c9d-854e-41b5-b493-6aa863da8fbd</id>
+		<name>Larger Tusks</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>0</reach>
+		<damage>(STR+2)P</damage>
+		<ap>-</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Unarmed Combat</useskill>
+		<source>RF</source>
+		<page>115</page>
+	</weapon>	
+	<weapon>
+		<id>1cdc0732-eb63-42c4-b8f4-cdf0e2d7c67c</id>
+		<name>Proboscis</name>
+		<category>Quality</category>
+		<type>Melee</type>
+		<reach>0</reach>
+		<damage>(STR-1)P</damage>
+		<ap>+1</ap>
+		<mode>0</mode>
+		<rc>0</rc>
+		<ammo>0</ammo>
+		<conceal>0</conceal>
+        <accuracy>Physical</accuracy>
+		<avail>0</avail>
+		<cost>0</cost>
+		<allowaccessory>false</allowaccessory>
+		<useskill>Unarmed Combat</useskill>
+		<source>RF</source>
+		<page>118</page>
+	</weapon>	
+</weapons>
   <accessories>
     <accessory>
       <id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
