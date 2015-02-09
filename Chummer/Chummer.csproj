@@ -620,11 +620,11 @@
     <Compile Include="Character Creation\frmCreate.Designer.cs">
       <DependentUpon>frmCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmMetatype.cs">
+    <Compile Include="Character Creation\frmKarmaMetatype.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmMetatype.Designer.cs">
-      <DependentUpon>frmMetatype.cs</DependentUpon>
+    <Compile Include="Character Creation\frmKarmaMetatype.Designer.cs">
+      <DependentUpon>frmKarmaMetatype.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectAttribute.cs">
       <SubType>Form</SubType>
@@ -923,8 +923,8 @@
       <DependentUpon>frmCreate.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmMetatype.resx">
-      <DependentUpon>frmMetatype.cs</DependentUpon>
+    <EmbeddedResource Include="Character Creation\frmKarmaMetatype.resx">
+      <DependentUpon>frmKarmaMetatype.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectAttribute.resx">
       <DependentUpon>frmSelectAttribute.cs</DependentUpon>

@@ -679,8 +679,22 @@
       <page>77</page>
     </quality>
     <quality>
-      <id>5a21137b-dc82-4141-9151-84718e7485f9</id>
+      <name>Resistance to Pathogens/Toxins</name>
+      <karma>8</karma>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Resistance to Pathogens</quality>
+          <quality>Resistance to Toxins</quality>
+        </oneof>
+      </forbidden>
+      <source>SR5</source>
+      <page>77</page>
+    </quality>	
+    <quality>
       <name>Resistance to Pathogens and Toxins</name>
+	  <hide>yes</hide>
       <karma>8</karma>
       <category>Positive</category>
       <bonus />

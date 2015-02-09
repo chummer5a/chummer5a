@@ -171,13 +171,30 @@ namespace Chummer
             lblMovement.Text = _objCharacter.Movement;
 
 			// Set the Statusbar Labels if we're using Karma to build.
-            if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma) || (_objCharacter.BuildMethod == CharacterBuildMethod.Priority))
+            if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma))
 			{
 				tssBPLabel.Text = LanguageManager.Instance.GetString("Label_BP");
 				tssBPRemainLabel.Text = LanguageManager.Instance.GetString("Label_BPRemaining");
 				tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
 				lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
 			}
+
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                nudAGI.Enabled = false;
+                nudBOD.Enabled = false;
+                nudSTR.Enabled = false;
+                nudREA.Enabled = false;
+                nudINT.Enabled = false;
+                nudCHA.Enabled = false;
+                nudLOG.Enabled = false;
+                nudWIL.Enabled = false;
+                nudEDG.Enabled = false;
+                nudRES.Enabled = false;
+                nudMAG.Enabled = false;
+            }
+
+
 
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
             if (!_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
@@ -325,6 +342,7 @@ namespace Chummer
 			lblFoci.Visible = _objCharacter.MAGEnabled;
 			treFoci.Visible = _objCharacter.MAGEnabled;
 			cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
+
 
 			lblRESLabel.Enabled = _objCharacter.RESEnabled;
 			lblRESAug.Enabled = _objCharacter.RESEnabled;
@@ -1663,7 +1681,10 @@ namespace Chummer
 			// Change to the status of MAG being enabled.
 			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
 			lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-			nudMAG.Enabled = _objCharacter.MAGEnabled;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                nudMAG.Enabled = _objCharacter.MAGEnabled;
+            }
             nudKMAG.Enabled = _objCharacter.MAGEnabled;
 			lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
 
@@ -1743,7 +1764,10 @@ namespace Chummer
 			// Change to the status of RES being enabled.
 			lblRESLabel.Enabled = _objCharacter.RESEnabled;
 			lblRESAug.Enabled = _objCharacter.RESEnabled;
-			nudRES.Enabled = _objCharacter.RESEnabled;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                nudRES.Enabled = _objCharacter.RESEnabled;
+            }
             nudKRES.Enabled = _objCharacter.RESEnabled;
 			lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
@@ -7803,6 +7827,52 @@ namespace Chummer
                 }
             }
 
+            // Remove the Improvements that were created by the Quality.
+            switch (objQuality.Name.ToString()) 
+            {
+                case "Magician":
+                    _objCharacter.MAGEnabled = false;
+                    _objCharacter.MagicianEnabled = false;
+                    break;
+                case "Aspected Magician":
+                    _objCharacter.MAGEnabled = false;
+                    _objCharacter.MagicianEnabled = false;
+                    break;
+                case "Adept":
+                    _objCharacter.MAGEnabled = false;
+                    _objCharacter.AdeptEnabled = false;
+                    break;
+                case "Mystic Adept":
+                    _objCharacter.MAGEnabled = false;
+                    _objCharacter.MagicianEnabled = false;
+                    _objCharacter.AdeptEnabled = false;
+                    break;
+                case "Technomancer":
+                    _objCharacter.RESEnabled = false;
+                    _objCharacter.TechnomancerEnabled = false;
+                    break;
+                default:
+                    break;
+            }
+
+
+            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+
+            if (objQuality.Name == "One Trick Pony")
+            {
+                if (treMartialArts.Nodes[1].Nodes.Count > 0)
+                {
+                    foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+                    {
+                        if (objMartialArt.Name == "One Trick Pony")
+                        {
+                            _objCharacter.MartialArts.Remove(objMartialArt);
+                            treMartialArts.Nodes[1].Nodes[0].Remove();
+                            break;
+                        }
+                    }
+                }
+            }
             // Remove Qualities that were created by the Quality.
             if (objQuality.Name == "Mentor Spirit")
             {
@@ -15434,25 +15504,25 @@ namespace Chummer
 			}
 
 			// Update Primary Attributes and Special Attributes values.
-            //if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            //{
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
                 intPointsRemain -= CalculatePrimaryAttributeBP();
                 intPointsUsed = CalculatePrimaryAttributeBP();
                 intFreestyleBPMin = CalculatePrimaryAttributeBP() * 2;
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intFreestyleBPMin -= (_objCharacter.MetatypeBP * 2);
                 intFreestyleBP += intPointsUsed;
                 lblAttributesBP.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
                 intPointsRemain -= CalculateSpecialAttributeBP();
                 intPointsUsed += CalculateSpecialAttributeBP();
                 lblSpecialAttributesBP.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
                 intFreestyleBP += intPointsUsed;
-            //}
-            //else
-            //{
-            //    intPointsRemain -= CalculatePrimaryAttributeBP();
-            //    intPointsRemain -= CalculateSpecialAttributeBP();
-            //}
+            }
+            else
+            {
+                intPointsRemain -= CalculatePrimaryAttributeBP();
+                intPointsRemain -= CalculateSpecialAttributeBP();
+                lblSpecialAttributesBP.Text = String.Format("{0} " + strPoints, CalculateSpecialAttributeBP().ToString());
+                lblAttributesBP.Text = String.Format("{0} " + strPoints, CalculatePrimaryAttributeBP().ToString());
+            }
 
             if (nudMysticAdeptMAGMagician.Value > 0)
             {
