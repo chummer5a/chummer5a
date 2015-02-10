@@ -462,7 +462,6 @@
 				<positive>
 					<quality>Thermographic Vision</quality>
 					<quality>Resistance to Pathogens/Toxins</quality>
-					<quality>Resistance to Pathogens and Toxins</quality>
 				</positive>
 			</qualities>
 			<bonus>
@@ -637,8 +636,7 @@
 					<qualities>
 						<positive>
 							<quality>Celerity</quality>
-							<quality>Resistance to Pathogens/Toxins</quality>
-							<quality>Resistance to Pathogens and Toxins</quality>							
+							<quality>Resistance to Pathogens/Toxins</quality>							
 							<quality>Thermographic Vision</quality>
 						</positive>
 						<negative>
@@ -697,7 +695,6 @@
 					<qualities>
 						<positive>
 							<quality>Resistance to Pathogens/Toxins</quality>
-							<quality>Resistance to Pathogens and Toxins</quality>
 							<quality>Thermographic Vision</quality>
 							<quality>Underwater Vision</quality>
 						</positive>

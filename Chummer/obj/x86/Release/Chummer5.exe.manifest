@@ -4,7 +4,7 @@
   <description asmv2:iconFile="chummer.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="Chummer5" version="0.5.144.33102" language="neutral" processorArchitecture="x86" />
+    <assemblyIdentity name="Chummer5" version="0.5.144.34481" language="neutral" processorArchitecture="x86" />
     <commandLine file="Chummer5.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -44,13 +44,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Chummer5.exe" size="3015568">
-      <assemblyIdentity name="Chummer5" version="0.5.144.33102" language="neutral" processorArchitecture="x86" />
+      <assemblyIdentity name="Chummer5" version="0.5.144.34481" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>UchYrxAq4yXUHE3610NuLUqoeZA=</dsig:DigestValue>
+        <dsig:DigestValue>qHE76RybaeI0HLzvyoJIvlec+yA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -225,13 +225,13 @@
       <dsig:DigestValue>n/CiIrWh8CMgqi8zHrfowFkJ4OE=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="data\metatypes.xml" size="32768" writeableType="applicationData">
+  <file name="data\metatypes.xml" size="32584" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>hyl8EUNEuOT/wzZTQfcBg17dflc=</dsig:DigestValue>
+      <dsig:DigestValue>JXRGOjo9XiaUtfN0bTUFcOcvctg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="data\packs.xml" size="102162" writeableType="applicationData">
