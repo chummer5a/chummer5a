@@ -101,14 +101,136 @@ M:\chummer5\Chummer\obj\x86\Debug\Chummer5.application
 M:\chummer5\Chummer\obj\x86\Debug\Chummer5.exe
 M:\chummer5\Chummer\obj\x86\Debug\Chummer5.pdb
 M:\chummer5\Chummer\obj\x86\Debug\Chummer.csprojResolveAssemblyReference.cache
+M:\Coding\Chummer5a\Chummer\bin\Debug\changelog.txt
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\armor.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\bioware.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\books.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\complexforms.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\contacts.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critterpowers.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critters.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\cyberware.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\echoes.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\gear.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\improvements.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\licenses.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\lifestyles.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\martialarts.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\mentors.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metamagic.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metatypes.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\packs.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\paragons.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\powers.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\priorities.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\programs.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\qualities.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\ranges.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\skills.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\spells.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\streams.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\SumtoTen.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\traditions.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vehicles.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vessels.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\weapons.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\export\Squad Manager.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\de.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\de_data.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\en-us.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\en-us2.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\fr.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\fr_data.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\jp.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\jp_data.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\settings\default.xml
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Commlinks.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\ConditionMonitor.xslt
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Commlinks.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\ConditionMonitor.xslt
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Game Master Summary.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Shadowrun 5 (Grouped Skills by Name).xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Shadowrun 5 (Grouped Skills by Rating).xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Shadowrun 5 Base.xslt
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Shadowrun 5.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Text-Only.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\de\Vehicle Block.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Dossier.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Formatted Text-Only.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\fr\Text-Only.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Game Master Summary.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Shadowrun 5 (Grouped Skills by Name).xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Shadowrun 5 (Grouped Skills by Rating).xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Shadowrun 5 Base.xslt
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Shadowrun 5.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Text-Only.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\sheets\Vehicle Block.xsl
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.Designer.cs
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\armor.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\armor.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\bioware.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\bioware.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\books.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\books.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\character.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critterpowers.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critterpowers.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critters.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\critters.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\cyberware.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\cyberware.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\echoes.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\echoes.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\gear.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\gear.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\improvements.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\lifestyles.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\lifestyles.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\martialarts.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\martialarts.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\mentors.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\mentors.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metamagic.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metamagic.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metatypes.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\metatypes.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\packs.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\packs.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\paragons.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\paragons.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\powers.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\powers.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\programs.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\programs.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\qualities.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\qualities.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\ranges.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\ranges.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\skills.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\skills.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\spells.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\spells.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\streams.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\streams.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\traditions.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\traditions.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vehicles.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vehicles.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vessels.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\vessels.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\weapons.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\data\weapons.zip
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\de.xml.bak
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\fr.xml.bak
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\jp.xml.bak
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xsc
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xsd
+M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xss
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe.config
-M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe
-M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.pdb
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe.manifest
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.application
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.pdb
-M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.csprojResolveAssemblyReference.cache
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.frmSumtoTenMetatype.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.ConditionMonitorUserControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.ContactControl.resources
@@ -204,3 +326,5 @@ M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.SpiritControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.csproj.GenerateResource.Cache
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe.manifest
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.application
+M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe
+M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.pdb

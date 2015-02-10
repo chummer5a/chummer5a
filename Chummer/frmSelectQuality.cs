@@ -397,6 +397,7 @@ namespace Chummer
                     _objCharacter.AdeptEnabled = true;
                     break;
                 case "Technomancer":
+                    MessageBox.Show("Test");
                     _objCharacter.RESEnabled = true;
                     _objCharacter.TechnomancerEnabled = true;
                     break;
