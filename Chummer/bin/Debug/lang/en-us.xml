@@ -6294,7 +6294,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Enter the maxiumum availability you are allowed to create your character with.</text>
 		</string>
 		<string>
-			<key>Tip_SelectBP_IgnoreRules</key>
+			<key>Tip_SelectKarma_IgnoreRules</key>
 			<text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
 		</string>
 		<!-- Advanced Contact Options Window -->

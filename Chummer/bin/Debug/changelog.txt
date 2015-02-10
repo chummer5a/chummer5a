@@ -1,13 +1,16 @@
+Build 5.146
+Application change: 
+- Qualities with text input (SINner, Allergy, etc.) fixed to not attempt and fail language validation. No more Error text in the field, basically.
+
 Build 5.145
-- Administrative change: Data files now embedded in the solution, rather than 
-  maintained separately. 
+Administrative change: 
+- Data files now embedded in the solution, rather than maintained separately. 
+
 Build 5.144
 Data changes:
-- "Resistance to Pathogens and Toxins" renamed to
-  "Resistance to Pathogens/Toxins" due to weird dwarf racism issue.
+- "Resistance to Pathogens and Toxins" renamed to "Resistance to Pathogens/Toxins" due to weird dwarf racism issue.
 Application changes:
-- The base statistics can no longer be modified during karmagen due to a
-  counting fault. Shouldn't be necessary anyway.
+- The base statistics can no longer be modified during karmagen due to a counting fault. Shouldn't be necessary anyway.
 Administrative changes:
 - frmMetatype renamed to frmKarmaMetatype for organisational purposes.
 Mea culpa changes:

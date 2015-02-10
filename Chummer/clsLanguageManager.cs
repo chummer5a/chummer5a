@@ -491,8 +491,8 @@ namespace Chummer
                 return strReturn;
             }
             catch (KeyNotFoundException e) 
-            { 
-                string strReturn = "Error";
+            {
+                string strReturn = "Error in string return - " + _objDictionary[strKey].ToString();
                 return strReturn;
             }
 		}

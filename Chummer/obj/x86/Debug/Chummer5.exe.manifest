@@ -4,7 +4,7 @@
   <description asmv2:iconFile="chummer.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="Chummer5" version="0.5.144.34478" language="neutral" processorArchitecture="x86" />
+    <assemblyIdentity name="Chummer5" version="0.5.146.35623" language="neutral" processorArchitecture="x86" />
     <commandLine file="Chummer5.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -43,24 +43,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Chummer5.exe" size="3220880">
-      <assemblyIdentity name="Chummer5" version="0.5.144.34478" language="neutral" processorArchitecture="x86" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Chummer5.exe" size="3221392">
+      <assemblyIdentity name="Chummer5" version="0.5.146.35623" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>CkrNFraXVDF0Xzh5Sqt4gD253Lc=</dsig:DigestValue>
+        <dsig:DigestValue>eiorVXzIZRNHo3YmVnWTnMuUFYo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="changelog.txt" size="302634">
+  <file name="changelog.txt" size="302813">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>yEJyvNVq0DiZex98vOk8EY3ssjE=</dsig:DigestValue>
+      <dsig:DigestValue>FSfNE6sSYjL4PtSbcispb4qSQtI=</dsig:DigestValue>
     </hash>
   </file>
   <file name="chummer.ico" size="34494">
@@ -396,13 +396,13 @@
       <dsig:DigestValue>hpqA82saMO0vTv2Bj/ypSBQSrvk=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="lang\en-us.xml" size="205978" writeableType="applicationData">
+  <file name="lang\en-us.xml" size="205981" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>yqsq93WXQFXsTolI/svmOCi5on8=</dsig:DigestValue>
+      <dsig:DigestValue>9SCXeOINrHUCl16U/017B+SAN9w=</dsig:DigestValue>
     </hash>
   </file>
   <file name="lang\en-us2.xml" size="203459" writeableType="applicationData">
