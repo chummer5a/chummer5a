@@ -14944,7 +14944,7 @@ namespace Chummer
 							}
 						}
 					}
-                    else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+                    else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                     {
                         // Each Attribute point costs 1 AP (the first point is free).
                         intBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum);

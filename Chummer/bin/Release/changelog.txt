@@ -1,3 +1,9 @@
+Build 5.147
+Application change:
+- Fix for Chummer ignoring changes to the Nuyen per BP option.
+Data change:
+- Typo in Sum-to-Ten generation fixed that stopped Adepts from working properly. (More like 4depts, amirite?)
+
 Build 5.146
 Application change: 
 - Qualities with text input (SINner, Allergy, etc.) fixed to not attempt and fail language validation. No more Error text in the field, basically.

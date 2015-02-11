@@ -227,8 +227,6 @@ M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xsc
 M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xsd
 M:\Coding\Chummer5a\Chummer\bin\Debug\lang\language.xss
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe.config
-M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe.manifest
-M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.application
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe
 M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.pdb
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.frmSumtoTenMetatype.resources
@@ -324,7 +322,5 @@ M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.SkillControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.SmallSkillControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.SpiritControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.csproj.GenerateResource.Cache
-M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe.manifest
-M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.application
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.pdb

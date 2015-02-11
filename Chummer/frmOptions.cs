@@ -1056,14 +1056,14 @@ namespace Chummer
 			{
 			}
 
-			int intNuyenPerBP = 2000;
-			try
-			{
-				intNuyenPerBP = _objOptions.NuyenPerBP;
-			}
-			catch
-			{
-			}
+			//int intNuyenPerBP = 2000;
+			//try
+			//{
+				int intNuyenPerBP = _objOptions.NuyenPerBP;
+			//}
+			//catch
+			//{
+			//}
 			nudNuyenPerBP.Value = intNuyenPerBP;
 
 			int intEssenceDecimals = 2;

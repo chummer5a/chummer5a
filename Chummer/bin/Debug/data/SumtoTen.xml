@@ -196,7 +196,7 @@
       <talents>
         <talent>
           <name>Adept - 6 Magic</name>
-          <value>4dept</value>
+          <value>Adept</value>
           <qualities>
             <quality>Adept</quality>
           </qualities>
@@ -262,7 +262,7 @@
       <talents>
         <talent>
           <name>Adept - 4 Magic</name>
-          <value>4dept</value>
+          <value>Adept</value>
           <qualities>
             <quality>Adept</quality>
           </qualities>
@@ -319,7 +319,7 @@
       <talents>
         <talent>
           <name>Adept - 2 Magic</name>
-          <value>4dept</value>
+          <value>Adept</value>
           <qualities>
             <quality>Adept</quality>
           </qualities>
