@@ -292,14 +292,16 @@ namespace Chummer
                             else
                                 objItem.Name = objXmlQuality["name"].InnerText;
 
-                            try
-                            {
-                                objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText).Name + "]";
-                                lstQuality.Add(objItem);
-                            }
-                            catch
-                            {
-                            }
+                             try
+                             {
+                                 objItem.Name += " [" + _lstCategory.Find(objFind => objFind.Value == objXmlQuality["category"].InnerText).Name + "]";
+                            
+                                 lstQuality.Add(objItem);
+                            
+                             }
+                             catch
+                             {
+                             }
                         }
                     }
 				}
@@ -377,8 +379,12 @@ namespace Chummer
 			if (lstQualities.Text == "")
 				return;
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
-            switch (lstQualities.Text.ToString())
+            switch (lstQualities.SelectedValue.ToString())
             {
+                case "Technomancer":
+                    _objCharacter.RESEnabled = true;
+                    _objCharacter.TechnomancerEnabled = true;
+                    break;
                 case "Magician":
                     _objCharacter.MAGEnabled = true;
                     _objCharacter.MagicianEnabled = true;
@@ -395,10 +401,6 @@ namespace Chummer
                     _objCharacter.MAGEnabled = true;
                     _objCharacter.MagicianEnabled = true;
                     _objCharacter.AdeptEnabled = true;
-                    break;
-                case "Technomancer":
-                    _objCharacter.RESEnabled = true;
-                    _objCharacter.TechnomancerEnabled = true;
                     break;
                 default:
                     break;
