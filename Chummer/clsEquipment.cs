@@ -14541,7 +14541,7 @@ namespace Chummer
 		{
 			get
 			{
-				return 8 + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intBody, GlobalOptions.Instance.CultureInfo) / 2.0));
+				return 12 + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intBody, GlobalOptions.Instance.CultureInfo) / 2.0));
 			}
 		}
 

@@ -324,3 +324,4 @@ M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.SpiritControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.csproj.GenerateResource.Cache
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.exe
 M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer5.pdb
+M:\Coding\Chummer5a\Chummer\obj\x86\Debug\Chummer.csprojResolveAssemblyReference.cache

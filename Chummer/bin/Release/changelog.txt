@@ -1,3 +1,11 @@
+Build 5.148a
+Application Change:
+- Condition Monitor for vehicles corrected to use the correct formula (12+ 1/2 Body)
+
+Build 5.148
+Application change: 
+- Fixed "Special" qualities not enabling resonance, magic, etc. if the talent was selected from a search filter.
+
 Build 5.147
 Application change:
 - Fix for Chummer ignoring changes to the Nuyen per BP option.
