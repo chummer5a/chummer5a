@@ -52,7 +52,7 @@
             // 
             this.nudConnection.Location = new System.Drawing.Point(378, 4);
             this.nudConnection.Maximum = new decimal(new int[] {
-            6,
+            12,
             0,
             0,
             0});

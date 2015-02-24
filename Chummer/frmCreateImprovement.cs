@@ -202,7 +202,7 @@ namespace Chummer
 			}
 			if (_strSelect == "SelectSkill")
 			{
-				frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+				frmSelectSkill frmPickSkill = new frmSelectSkill();
 				frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
 				frmPickSkill.ShowDialog(this);
 
@@ -211,7 +211,7 @@ namespace Chummer
 			}
 			if (_strSelect == "SelectKnowSkill")
 			{
-				frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+				frmSelectSkill frmPickSkill = new frmSelectSkill();
 				frmPickSkill.ShowKnowledgeSkills = true;
 				frmPickSkill.Description = LanguageManager.Instance.GetString("Title_SelectSkill");
 				frmPickSkill.ShowDialog(this);

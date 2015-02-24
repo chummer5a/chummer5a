@@ -38,23 +38,35 @@ namespace Chummer
         private int _intWorkingRating = 0;
         private int _intBaseRating = 0;
         private int _intKarmaRating = 0;
+        private readonly Character _objCharacter;
 
 		#region Control Events
-		public SkillControl()
+        public SkillControl()
         {
             InitializeComponent();
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
 
+        public SkillControl(Character _objCharacter)
+        {
+            InitializeComponent();
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            this._objCharacter = _objCharacter;
+        }
         private void SkillControl_Load(object sender, EventArgs e)
         {
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                nudSkill.Enabled = false;
+                nudSkill.Visible = false;
+            }
 			_blnSkipRefresh = true;
 			if (_objSkill.KnowledgeSkill)
 			{
 				cboSkillName.Text = _objSkill.Name;
 			}
 
-			if (_objSkill.CharacterObject.Created)
+			if (_objCharacter.Created)
 			{
 				string strTooltip = "";
 				int intNewRating = _objSkill.Rating + 1;
@@ -1000,5 +1012,7 @@ namespace Chummer
             }
         }
         #endregion
+
+        public Character objCharacter { get; set; }
     }
 }

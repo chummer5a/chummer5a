@@ -20,15 +20,15 @@ namespace Chummer
 		private readonly Character _objCharacter;
 
 		#region Control Events
-		public frmSelectSkill(Character objCharacter)
+		public frmSelectSkill()
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			_objCharacter = objCharacter;
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
         {
+            objCharacter = _objCharacter;
 			List<ListItem> lstSkills = new List<ListItem>();
 
 			if (!_blnKnowledgeSkill)
@@ -267,5 +267,6 @@ namespace Chummer
 			}
 		}
 		#endregion
-    }
+    
+public  Character objCharacter { get; set; }}
 }

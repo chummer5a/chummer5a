@@ -6,7 +6,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmMetatype : Form
+    public partial class frmKarmaMetatype : Form
     {
 		private readonly Character _objCharacter;
 
@@ -65,7 +65,7 @@ namespace Chummer
 		#endregion
 
 		#region Form Events
-		public frmMetatype(Character objCharacter)
+		public frmKarmaMetatype(Character objCharacter)
         {
 			_objCharacter = objCharacter;
             InitializeComponent();

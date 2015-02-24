@@ -173,28 +173,25 @@ namespace Chummer
 			// Set the Statusbar Labels if we're using Karma to build.
             if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma))
 			{
-				tssBPLabel.Text = LanguageManager.Instance.GetString("Label_BP");
-				tssBPRemainLabel.Text = LanguageManager.Instance.GetString("Label_BPRemaining");
-				tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
+				tssBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+                tssBPRemainLabel.Text = LanguageManager.Instance.GetString("Label_KarmaRemaining");
+                tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
 				lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
-			}
-
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-            {
-                nudAGI.Enabled = false;
-                nudBOD.Enabled = false;
-                nudSTR.Enabled = false;
-                nudREA.Enabled = false;
-                nudINT.Enabled = false;
-                nudCHA.Enabled = false;
-                nudLOG.Enabled = false;
-                nudWIL.Enabled = false;
-                nudEDG.Enabled = false;
-                nudRES.Enabled = false;
-                nudMAG.Enabled = false;
+                //TODO: Fix the UI for karmagen
+                nudKAGI.Visible = false;
+                nudKBOD.Visible = false;
+                nudKSTR.Visible = false;
+                nudKREA.Visible = false;
+                nudKINT.Visible = false;
+                nudKCHA.Visible = false;
+                nudKLOG.Visible = false;
+                nudKWIL.Visible = false;
+                nudKEDG.Visible = false;
+                nudKRES.Visible = false;
+                nudKMAG.Visible = false;
             }
-
-
+            //MessageBox.Show(_objCharacter.NuyenBP.ToString());
+            //nudNuyen.Value = _objCharacter.NuyenBP;
 
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
             if (!_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
@@ -564,12 +561,12 @@ namespace Chummer
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
                 {
                     nudNuyen.Maximum = 10;
-                    nudNuyen.Value = 0;
+                    nudNuyen.Value = _objCharacter.NuyenBP;
                 }
                 else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                 {
                     nudNuyen.Maximum = 200;
-                    nudNuyen.Value = 0;
+                    nudNuyen.Value = _objCharacter.NuyenBP;
                 }
             }
             else 
@@ -583,12 +580,17 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/skills/skill[" + _objCharacter.Options.BookXPath() + "]");
 			// Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
 			int i = -1;
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
+            {
+                label8.Visible = false;
+                label14.Visible = false;
+            }
 			foreach (Skill objSkill in _objCharacter.Skills)
 			{
 				if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
 				{
 					i++;
-					SkillControl objSkillControl = new SkillControl();
+					SkillControl objSkillControl = new SkillControl(_objCharacter);
 					objSkillControl.SkillObject = objSkill;
 
 					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -682,7 +684,7 @@ namespace Chummer
 			foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
 			{
 				i++;
-				SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options);
+				SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
 				objGroupControl.SkillGroupObject = objGroup;
 
 				// Attach an EventHandler for the GetRatingChanged Event.
@@ -5308,7 +5310,7 @@ namespace Chummer
             }
 
             // Check against the maximum allowable number of spells
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 if (intSpellCount >= ((_objCharacter.MAG.TotalValue * 2) + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
                 {
@@ -5721,7 +5723,7 @@ namespace Chummer
 
 		private void cmdAddComplexForm_Click(object sender, EventArgs e)
         {
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // The number of Complex Form Points cannot exceed the priority limit.
                 int intCFP = 0;
@@ -14986,12 +14988,12 @@ namespace Chummer
 			strTooltip = strBOD + "\n" + strAGI + "\n" + strREA + "\n" + strSTR + "\n" + strCHA + "\n" + strINT + "\n" + strLOG + "\n" + strWIL;
 			tipTooltip.SetToolTip(lblAttributesBP, strTooltip);
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 _objCharacter.Attributes = _objCharacter.TotalAttributes - intBP;
-                //if (_objCharacter.Attributes < 0)
-                //    lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.TotalAttributes.ToString());
-                //else
+                if (_objCharacter.Attributes < 0)
+                    lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.TotalAttributes.ToString());
+                else
                     lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Attributes).ToString(), _objCharacter.TotalAttributes.ToString());
 
                 // If the character overspent on primary attributes, the excess must be charged to Karma.
@@ -15197,7 +15199,7 @@ namespace Chummer
 								}
 							}
 						}
-                        else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+                        else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                         {
                             // If the Essence Loss in use is not 0, reduce it by 1 to correct the BP cost since the first point of Special Attributes is always free.
                             if (intUseEssenceLoss != 0)
@@ -15330,7 +15332,7 @@ namespace Chummer
 				intPointsRemain -= (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier);
 			}
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Calculate the BP used by Contacts.
                 int intContactPointsUsed = 0;
@@ -15545,7 +15547,7 @@ namespace Chummer
             }
 
 			// Calculate the BP used by Skill Groups.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Get the total point value
                 intPointsUsed = 0;
@@ -15606,7 +15608,7 @@ namespace Chummer
             }
 
             intPointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 foreach (SkillControl objSkillControl in panActiveSkills.Controls)
                 {
@@ -15800,7 +15802,7 @@ namespace Chummer
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
 
             intPointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
@@ -16105,7 +16107,7 @@ namespace Chummer
 
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
 				// Characters built using the Karma system do not get free Knowledge Skills.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge))
+                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                     _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Base + _objCharacter.LOG.Base) * 2;
 				else
 					_objCharacter.KnowledgeSkillPoints = 0;
@@ -16417,7 +16419,7 @@ namespace Chummer
                 }
 
                 // Attribute: Magic.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                 {
                     lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0), _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
                     nudMAG.Minimum = Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0);
@@ -16857,9 +16859,14 @@ namespace Chummer
 		{
 			int intNuyen = 0;
             if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
                 intNuyen = _objCharacter.StartingNuyen;
+            }
+            else
+            {
+                intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
+            }
 
-            intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.KarmaNuyenPer;
 			intNuyen += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.Nuyen));
 
 			int intDeductions = 0;
@@ -19820,7 +19827,7 @@ namespace Chummer
 			string strAvailItems = "";
 
             // Check limits specific to the Priority build method.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Check if the character has more than 1 Martial Art
                 int intMartialArts = _objCharacter.MartialArts.Count;
@@ -20958,7 +20965,7 @@ namespace Chummer
 				foreach (XmlNode objXmlGroup in objXmlKit.SelectNodes("skills/skillgroup"))
 				{
 					// Find the correct SkillGroupControl.
-					SkillGroupControl objSkillGroupControl = new SkillGroupControl(_objCharacter.Options);
+					SkillGroupControl objSkillGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
 					foreach (SkillGroupControl objControl in panSkillGroups.Controls)
 					{
 						if (objControl.GroupName == objXmlGroup["name"].InnerText)
@@ -21340,14 +21347,14 @@ namespace Chummer
 			if (objXmlKit["nuyenbp"] != null)
 			{
 				int intAmount = Convert.ToInt32(objXmlKit["nuyenbp"].InnerText);
-				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-					intAmount *= 2;
+				//if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+					//intAmount *= 2;
 
 				// Make sure we don't go over the field's maximum which would throw an Exception.
-				if (nudNuyen.Value + intAmount > nudNuyen.Maximum)
+				//if (nudNuyen.Value + intAmount > nudNuyen.Maximum)
 					nudNuyen.Value = nudNuyen.Maximum;
-				else
-					nudNuyen.Value += intAmount;
+				//else
+			//		nudNuyen.Value += intAmount;
 			}
 
 			// Update Armor.
@@ -22054,9 +22061,17 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
             }
+            else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            {
+                frmSumtoTenMetatype frmSelectMetatype = new frmSumtoTenMetatype(_objCharacter);
+                frmSelectMetatype.ShowDialog(this);
+
+                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    return;
+            }
             else
             {
-                frmMetatype frmSelectMetatype = new frmMetatype(_objCharacter);
+                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(_objCharacter);
                 frmSelectMetatype.ShowDialog(this);
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)

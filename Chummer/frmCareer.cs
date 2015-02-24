@@ -618,7 +618,7 @@ namespace Chummer
 			foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
 			{
 				i++;
-				SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, true);
+				SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter, true);
 				objGroupControl.SkillGroupObject = objGroup;
 
 				// Attach an EventHandler for the GetRatingChanged Event.

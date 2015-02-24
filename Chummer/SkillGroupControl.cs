@@ -21,19 +21,26 @@ namespace Chummer
 		public event GroupKaramClickHandler GroupKarmaClicked;
 		
 		private readonly CharacterOptions _objOptions;
+        private readonly Character _objCharacter;
 
 		#region Control Events
-		public SkillGroupControl(CharacterOptions objOptions, bool blnCareer = false)
+		public SkillGroupControl(CharacterOptions objOptions, Character objCharacter, bool blnCareer = false)
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_blnCareer = blnCareer;
 			_objOptions = objOptions;
+            _objCharacter = objCharacter;
         }
 
         private void SkillControl_Load(object sender, EventArgs e)
         {
-			nudSkill.Maximum = _objSkillGroup.RatingMaximum;
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                nudSkill.Enabled = false;
+                nudSkill.Visible = false;
+            }
+            nudSkill.Maximum = _objSkillGroup.RatingMaximum;
 
 			if (_blnCareer)
 			{

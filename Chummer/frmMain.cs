@@ -213,7 +213,7 @@ namespace Chummer
             }
             else
             {
-                frmMetatype frmSelectMetatype = new frmMetatype(objCharacter);
+                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
                 frmSelectMetatype.XmlFile = "critters.xml";
                 frmSelectMetatype.ShowDialog();
 
@@ -504,7 +504,7 @@ namespace Chummer
 				return;
             if (objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
-                frmMetatype frmSelectMetatype = new frmMetatype(objCharacter);
+                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)

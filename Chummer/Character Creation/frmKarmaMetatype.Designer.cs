@@ -1,6 +1,6 @@
 ﻿namespace Chummer
 {
-    partial class frmMetatype
+    partial class frmKarmaMetatype
     {
         /// <summary>
         /// Required designer variable.

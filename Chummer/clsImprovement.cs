@@ -1374,7 +1374,7 @@ namespace Chummer
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strForcedValue = " + _strForcedValue);
 
                         // Display the Select Skill window and record which Skill was selected.
-                        frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                        frmSelectSkill frmPickSkill = new frmSelectSkill();
                         if (strFriendlyName != "")
                             frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed").Replace("{0}", strFriendlyName);
                         else
@@ -2862,7 +2862,7 @@ namespace Chummer
                                     objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "selectskill = " + objXmlSpecificPower["selectskill"].OuterXml.ToString());
                                     XmlNode nodSkill = nodBonus["specificpower"];
                                     // Display the Select Skill window and record which Skill was selected.
-                                    frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                                    frmSelectSkill frmPickSkill = new frmSelectSkill();
                                     if (strFriendlyName != "")
                                         frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed").Replace("{0}", strFriendlyName);
                                     else
@@ -3272,7 +3272,7 @@ namespace Chummer
                                     objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "selectskill = " + objBonus["selectskill"].OuterXml.ToString());
                                     XmlNode nodSkill = objBonus;
                                     // Display the Select Skill window and record which Skill was selected.
-                                    frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                                    frmSelectSkill frmPickSkill = new frmSelectSkill();
                                     if (strFriendlyName != "")
                                         frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed").Replace("{0}", strFriendlyName);
                                     else
