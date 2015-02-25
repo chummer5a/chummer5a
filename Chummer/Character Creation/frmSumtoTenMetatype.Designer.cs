@@ -773,7 +773,7 @@
         internal System.Windows.Forms.Label lblBOD;
         internal System.Windows.Forms.Label Label3;
         internal System.Windows.Forms.ListBox lstMetatypes;
-
+        internal System.Windows.Forms.Label lblMetavariantBP;
         private System.Windows.Forms.Panel pnlMetatypes;
         private System.Windows.Forms.ToolTip tipTooltip;
         internal System.Windows.Forms.Label lblSpecial;

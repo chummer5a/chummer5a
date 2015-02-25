@@ -178,17 +178,19 @@ namespace Chummer
                 tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
 				lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
                 //TODO: Fix the UI for karmagen
-                nudKAGI.Visible = false;
-                nudKBOD.Visible = false;
-                nudKSTR.Visible = false;
-                nudKREA.Visible = false;
-                nudKINT.Visible = false;
-                nudKCHA.Visible = false;
-                nudKLOG.Visible = false;
-                nudKWIL.Visible = false;
-                nudKEDG.Visible = false;
-                nudKRES.Visible = false;
-                nudKMAG.Visible = false;
+
+                nudAGI.Enabled = false;
+                nudBOD.Enabled = false;
+                nudSTR.Enabled = false;
+                nudREA.Enabled = false;
+                nudINT.Enabled = false;
+                nudCHA.Enabled = false;
+                nudLOG.Enabled = false;
+                nudWIL.Enabled = false;
+                nudEDG.Enabled = false;
+                nudRES.Enabled = false;
+                nudMAG.Enabled = false;
+                
             }
             //MessageBox.Show(_objCharacter.NuyenBP.ToString());
             //nudNuyen.Value = _objCharacter.NuyenBP;
@@ -250,7 +252,7 @@ namespace Chummer
 					else
 					{
 						tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
-						cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
+                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
 						chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
 						chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
 					}
@@ -1721,6 +1723,7 @@ namespace Chummer
 				tabCharacterTabs.TabPages.Remove(tabInitiation);
 				// Put MAG back to the Metatype minimum.
 				nudMAG.Value = nudMAG.Minimum;
+                nudKMAG.Value = nudKMAG.Minimum;
 			}
 
 			// Run through all of the Skills and Enable/Disable them as needed.
@@ -1787,7 +1790,7 @@ namespace Chummer
 					{
 						tabCharacterTabs.TabPages.Insert(3, tabInitiation);
 						tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
-						cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
+                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
 						chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
 						chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
 					}
@@ -1799,6 +1802,7 @@ namespace Chummer
 				tabCharacterTabs.TabPages.Remove(tabInitiation);
 				// Put RES back to the Metatype minimum.
 				nudRES.Value = nudRES.Minimum;
+                nudKRES.Value = nudKRES.Minimum;
 			}
 
 			// Run through all of the Skills and Enable/Disable them as needed.
@@ -6991,7 +6995,7 @@ namespace Chummer
 
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(_objCharacter);
-                objGrade.Create(_objCharacter.InitiateGrade + 1, _objCharacter.RESEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
+                objGrade.Create(_objCharacter.InitiateGrade + 1, _objCharacter.MAGEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
                 _objCharacter.InitiationGrades.Add(objGrade);
 
                 // Set the character's Initiate Grade.
@@ -7025,6 +7029,12 @@ namespace Chummer
             }
             else if (_objCharacter.RESEnabled)
             {
+            tsMetamagicAddArt.Visible = false;
+            tsMetamagicAddEnchantment.Visible = false;
+            tsMetamagicAddEnhancement.Visible = false;
+            tsMetamagicAddRitual.Visible = false;
+            tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
+
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
@@ -14734,16 +14744,18 @@ namespace Chummer
 
 			// Metatypes cost Karma.
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-				lblMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+				lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 			else
-				lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
+				lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
 
 			string strToolTip = _objCharacter.Metatype;
-			if (_objCharacter.Metavariant != "")
-				strToolTip += " (" + _objCharacter.Metavariant + ")";
-			strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
-			tipTooltip.SetToolTip(lblMetatypeBP, strToolTip);
-
+            if (_objCharacter.Metavariant != "")
+            {
+                strToolTip += " (" + _objCharacter.Metavariant + ")";
+                strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
+                tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
+                lblMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            }
 			_blnSkipUpdate = false;
 
 			UpdateCharacterInfo();
@@ -15333,7 +15345,9 @@ namespace Chummer
 			}
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            
             {
+                intPointsRemain -= (_objCharacter.MetatypeBP);
                 // Calculate the BP used by Contacts.
                 int intContactPointsUsed = 0;
                 foreach (ContactControl objContactControl in panContacts.Controls)
@@ -21351,10 +21365,10 @@ namespace Chummer
 					//intAmount *= 2;
 
 				// Make sure we don't go over the field's maximum which would throw an Exception.
-				//if (nudNuyen.Value + intAmount > nudNuyen.Maximum)
+				if (nudNuyen.Value + intAmount > nudNuyen.Maximum)
 					nudNuyen.Value = nudNuyen.Maximum;
-				//else
-			//		nudNuyen.Value += intAmount;
+				else
+					nudNuyen.Value += intAmount;
 			}
 
 			// Update Armor.
@@ -22223,15 +22237,16 @@ namespace Chummer
 
 			// If we're working with Karma, the Metatype doesn't cost anything.
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.MetatypeCostsKarma)
-				lblMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+				lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 			else
-				lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
+				lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
+                lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_BP");
 
 			string strToolTip = _objCharacter.Metatype;
 			if (_objCharacter.Metavariant != "")
 				strToolTip += " (" + _objCharacter.Metavariant + ")";
 			strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
-			tipTooltip.SetToolTip(lblMetatypeBP, strToolTip);
+			tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
 
 			UpdateCharacterInfo();
 		}

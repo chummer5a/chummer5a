@@ -228,7 +228,7 @@ namespace Chummer
 
 				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
 
-				lblBP.Text = objXmlMetatype["bp"].InnerText;
+				lblBP.Text = objXmlMetatype["karma"].InnerText;
 				if (objXmlMetatype["forcecreature"] == null)
 				{
 					lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);
@@ -338,7 +338,7 @@ namespace Chummer
 			if (cboMetavariant.SelectedValue.ToString() != "None")
 			{
 				XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
-				lblMetavariantBP.Text = objXmlMetavariant["bp"].InnerText;
+				lblMetavariantBP.Text = objXmlMetavariant["karma"].InnerText;
 
                 lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
                 lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);

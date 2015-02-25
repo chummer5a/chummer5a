@@ -969,6 +969,7 @@
     <None Include="app.config" />
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

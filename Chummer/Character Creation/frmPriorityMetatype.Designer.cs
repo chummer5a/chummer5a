@@ -79,6 +79,8 @@
             this.lblSpecial = new System.Windows.Forms.Label();
             this.lblSpecialAttributes = new System.Windows.Forms.Label();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.lblMetavariantBP = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.pnlPriorities.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.pnlMetatypes.SuspendLayout();
@@ -330,10 +332,11 @@
             // cboMetavariant
             // 
             this.cboMetavariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboMetavariant.DropDownWidth = 69;
             this.cboMetavariant.FormattingEnabled = true;
             this.cboMetavariant.Location = new System.Drawing.Point(326, 246);
             this.cboMetavariant.Name = "cboMetavariant";
-            this.cboMetavariant.Size = new System.Drawing.Size(129, 21);
+            this.cboMetavariant.Size = new System.Drawing.Size(69, 21);
             this.cboMetavariant.TabIndex = 59;
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
@@ -544,6 +547,8 @@
             // 
             // pnlMetatypes
             // 
+            this.pnlMetatypes.Controls.Add(this.lblMetavariantBP);
+            this.pnlMetatypes.Controls.Add(this.label6);
             this.pnlMetatypes.Controls.Add(this.lblMetatypeSkillSelection);
             this.pnlMetatypes.Controls.Add(this.cboSkill1);
             this.pnlMetatypes.Controls.Add(this.cboSkill2);
@@ -656,6 +661,26 @@
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
+            // lblMetavariantBP
+            // 
+            this.lblMetavariantBP.AutoSize = true;
+            this.lblMetavariantBP.Location = new System.Drawing.Point(401, 246);
+            this.lblMetavariantBP.Name = "lblMetavariantBP";
+            this.lblMetavariantBP.Size = new System.Drawing.Size(13, 13);
+            this.lblMetavariantBP.TabIndex = 77;
+            this.lblMetavariantBP.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(401, 230);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(23, 13);
+            this.label6.TabIndex = 76;
+            this.label6.Tag = "String_BP";
+            this.label6.Text = "BP";
+            // 
             // frmPriorityMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -680,7 +705,8 @@
         }
 
         #endregion
-
+        
+        internal System.Windows.Forms.Label lblMetavariantBP;
         private System.Windows.Forms.Panel pnlPriorities;
         private System.Windows.Forms.ComboBox cboResources;
         private System.Windows.Forms.Label lblResourcesLabel;
@@ -732,5 +758,6 @@
         private System.Windows.Forms.Label lblMetatypeSkillSelection;
         private System.Windows.Forms.ComboBox cboSkill1;
         private System.Windows.Forms.ComboBox cboSkill2;
+        internal System.Windows.Forms.Label label6;
     }
 }

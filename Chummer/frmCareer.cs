@@ -6984,6 +6984,7 @@ namespace Chummer
             }
             else if (_objCharacter.RESEnabled)
             {
+
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
