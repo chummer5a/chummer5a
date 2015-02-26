@@ -642,19 +642,30 @@ namespace Chummer
             if (cboMetavariant.SelectedValue.ToString() != "None")
             {
                 XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
-
+                lblMetavariantBP.Text = objXmlMetavariant["bp"].InnerText;
+                lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
+                lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);
+                lblREA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["reamin"].InnerText, objXmlMetavariant["reamax"].InnerText, objXmlMetavariant["reaaug"].InnerText);
+                lblSTR.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["strmin"].InnerText, objXmlMetavariant["strmax"].InnerText, objXmlMetavariant["straug"].InnerText);
+                lblCHA.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["chamin"].InnerText, objXmlMetavariant["chamax"].InnerText, objXmlMetavariant["chaaug"].InnerText);
+                lblINT.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["intmin"].InnerText, objXmlMetavariant["intmax"].InnerText, objXmlMetavariant["intaug"].InnerText);
+                lblLOG.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["logmin"].InnerText, objXmlMetavariant["logmax"].InnerText, objXmlMetavariant["logaug"].InnerText);
+                lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["wilmin"].InnerText, objXmlMetavariant["wilmax"].InnerText, objXmlMetavariant["wilaug"].InnerText);
+                lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["inimin"].InnerText, objXmlMetavariant["inimax"].InnerText, objXmlMetavariant["iniaug"].InnerText);
                 // Set the special attributes label.
                 int intSpecial = 0;
+                //XmlNode objXmlMetavariantList = objXmlDocumentSumtoTen.SelectSingleNode("/chummer/sum10priorities/SumtoTen[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]" + "/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
                 if (cboHeritage.SelectedIndex < 4)
                 {
                     try
                     {
-                        XmlNodeList objXmlMetatypeList = objXmlDocumentSumtoTen.SelectNodes("/chummer/sum10priorities/SumtoTen[category = \"Heritage\" and value = \"" + ((ListItem)(cboHeritage.Items[cboHeritage.SelectedIndex + 1])).Value + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
-                        intSpecial = Convert.ToInt32(objXmlMetatypeList[0]["value"].InnerText);
+                        XmlNodeList objXmlMetavariantList = objXmlDocumentSumtoTen.SelectNodes("/chummer/sum10priorities/SumtoTen[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
+                        intSpecial = Convert.ToInt32(objXmlMetavariantList[0]["value"].InnerText);
+                        lblSpecial.Text = objXmlMetavariantList[0]["value"].InnerText.ToString();
                     }
                     catch { }
                 }
-                lblSpecial.Text = intSpecial.ToString();
+
 
                 string strQualities = "";
                 // Build a list of the Metavariant's Positive Qualities.
@@ -1017,6 +1028,7 @@ namespace Chummer
                     _objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetavariant["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resaug"].InnerText, intForce, 0));
                     _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetavariant["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgaug"].InnerText, intForce, 0));
                     _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetavariant["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essaug"].InnerText, intForce, 0));
+                    _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantBP.Text);
                 }
                 else if (_strXmlFile != "critters.xml" || lstMetatypes.SelectedValue.ToString() == "Ally Spirit")
                 {

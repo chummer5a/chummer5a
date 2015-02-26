@@ -101,3 +101,4 @@ M:\chummer5\Chummer\obj\x86\Debug\Chummer5.application
 M:\chummer5\Chummer\obj\x86\Debug\Chummer5.exe
 M:\chummer5\Chummer\obj\x86\Debug\Chummer5.pdb
 M:\chummer5\Chummer\obj\x86\Debug\Chummer.csprojResolveAssemblyReference.cache
+M:\Coding\Chummer5a\Chummer\bin\Debug\Chummer5.exe.config

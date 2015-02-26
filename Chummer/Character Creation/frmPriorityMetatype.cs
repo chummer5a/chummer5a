@@ -654,12 +654,13 @@ namespace Chummer
                 {
                     try
                     {
-                        XmlNodeList objXmlMetatypeList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + ((ListItem)(cboHeritage.Items[cboHeritage.SelectedIndex + 1])).Value + "\"]/metavariants/metavariant[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
-                        intSpecial = Convert.ToInt32(objXmlMetatypeList[0]["value"].InnerText);
+                        XmlNodeList objXmlMetavariantList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
+                        intSpecial = Convert.ToInt32(objXmlMetavariantList[0]["value"].InnerText);
+                        lblSpecial.Text = objXmlMetavariantList[0]["value"].InnerText.ToString();
                     }
                     catch { }
                 }
-                lblSpecial.Text = intSpecial.ToString();
+                //lblSpecial.Text = intSpecial.ToString();
 
 				string strQualities = "";
 				// Build a list of the Metavariant's Positive Qualities.

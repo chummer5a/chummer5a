@@ -77,7 +77,9 @@
             this.lblHeritageValue = new System.Windows.Forms.Label();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.pnlMetatypes = new System.Windows.Forms.Panel();
+            this.lblMetavariantBP = new System.Windows.Forms.Label();
             this.lblMetatypeSkillSelection = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.cboSkill1 = new System.Windows.Forms.ComboBox();
             this.cboSkill2 = new System.Windows.Forms.ComboBox();
             this.cboTalents = new System.Windows.Forms.ComboBox();
@@ -325,9 +327,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(325, 230);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(353, 114);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 58;
             this.label2.Tag = "Label_Metavariant";
             this.label2.Text = "Metavariant";
@@ -336,9 +339,9 @@
             // 
             this.cboMetavariant.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMetavariant.FormattingEnabled = true;
-            this.cboMetavariant.Location = new System.Drawing.Point(326, 246);
+            this.cboMetavariant.Location = new System.Drawing.Point(356, 127);
             this.cboMetavariant.Name = "cboMetavariant";
-            this.cboMetavariant.Size = new System.Drawing.Size(129, 21);
+            this.cboMetavariant.Size = new System.Drawing.Size(69, 21);
             this.cboMetavariant.TabIndex = 59;
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
@@ -589,7 +592,9 @@
             // 
             // pnlMetatypes
             // 
+            this.pnlMetatypes.Controls.Add(this.lblMetavariantBP);
             this.pnlMetatypes.Controls.Add(this.lblMetatypeSkillSelection);
+            this.pnlMetatypes.Controls.Add(this.label6);
             this.pnlMetatypes.Controls.Add(this.cboSkill1);
             this.pnlMetatypes.Controls.Add(this.cboSkill2);
             this.pnlMetatypes.Controls.Add(this.cboTalents);
@@ -631,9 +636,18 @@
             this.pnlMetatypes.Size = new System.Drawing.Size(472, 354);
             this.pnlMetatypes.TabIndex = 36;
             // 
+            // lblMetavariantBP
+            // 
+            this.lblMetavariantBP.AutoSize = true;
+            this.lblMetavariantBP.Location = new System.Drawing.Point(182, 127);
+            this.lblMetavariantBP.Name = "lblMetavariantBP";
+            this.lblMetavariantBP.Size = new System.Drawing.Size(13, 13);
+            this.lblMetavariantBP.TabIndex = 106;
+            this.lblMetavariantBP.Text = "0";
+            // 
             // lblMetatypeSkillSelection
             // 
-            this.lblMetatypeSkillSelection.Location = new System.Drawing.Point(182, 147);
+            this.lblMetatypeSkillSelection.Location = new System.Drawing.Point(182, 148);
             this.lblMetatypeSkillSelection.Name = "lblMetatypeSkillSelection";
             this.lblMetatypeSkillSelection.Size = new System.Drawing.Size(286, 28);
             this.lblMetatypeSkillSelection.TabIndex = 75;
@@ -641,6 +655,17 @@
             this.lblMetatypeSkillSelection.Text = "Based on your talent selection, you may choose 2 magical skills to start at ratin" +
     "g 5.";
             this.lblMetatypeSkillSelection.Visible = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(182, 114);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(23, 13);
+            this.label6.TabIndex = 105;
+            this.label6.Tag = "String_BP";
+            this.label6.Text = "BP";
             // 
             // cboSkill1
             // 
@@ -675,7 +700,7 @@
             // lblSpecial
             // 
             this.lblSpecial.AutoSize = true;
-            this.lblSpecial.Location = new System.Drawing.Point(182, 127);
+            this.lblSpecial.Location = new System.Drawing.Point(239, 127);
             this.lblSpecial.Name = "lblSpecial";
             this.lblSpecial.Size = new System.Drawing.Size(13, 13);
             this.lblSpecial.TabIndex = 71;
@@ -685,7 +710,7 @@
             // 
             this.lblSpecialAttributes.AutoSize = true;
             this.lblSpecialAttributes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSpecialAttributes.Location = new System.Drawing.Point(182, 114);
+            this.lblSpecialAttributes.Location = new System.Drawing.Point(239, 114);
             this.lblSpecialAttributes.Name = "lblSpecialAttributes";
             this.lblSpecialAttributes.Size = new System.Drawing.Size(107, 13);
             this.lblSpecialAttributes.TabIndex = 70;
@@ -773,7 +798,6 @@
         internal System.Windows.Forms.Label lblBOD;
         internal System.Windows.Forms.Label Label3;
         internal System.Windows.Forms.ListBox lstMetatypes;
-        internal System.Windows.Forms.Label lblMetavariantBP;
         private System.Windows.Forms.Panel pnlMetatypes;
         private System.Windows.Forms.ToolTip tipTooltip;
         internal System.Windows.Forms.Label lblSpecial;
@@ -782,5 +806,7 @@
         private System.Windows.Forms.Label lblMetatypeSkillSelection;
         private System.Windows.Forms.ComboBox cboSkill1;
         private System.Windows.Forms.ComboBox cboSkill2;
+        internal System.Windows.Forms.Label lblMetavariantBP;
+        internal System.Windows.Forms.Label label6;
     }
 }

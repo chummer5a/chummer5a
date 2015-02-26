@@ -970,6 +970,7 @@
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1471,6 +1472,7 @@
     </Content>
     <Content Include="data\qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\ranges.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

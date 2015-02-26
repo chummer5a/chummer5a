@@ -7100,11 +7100,19 @@ namespace Chummer
                     InitiationGrade objGrade = _objFunctions.FindInitiationGrade(treMetamagic.SelectedNode.Tag.ToString(), _objCharacter.InitiationGrades);
 
                     // Stop if this isn't the highest grade
-                    if (objGrade.Grade != _objCharacter.InitiateGrade)
-                    {
-                        MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+
+                    if (_objCharacter.MAGEnabled)
+                        if (objGrade.Grade != _objCharacter.InitiateGrade)
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    else if (_objCharacter.RESEnabled)
+                            if (objGrade.Grade != _objCharacter.SubmersionGrade)
+                            {
+                                MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
 
                     // We're deleting an entire grade
                     string strMessage = "";
