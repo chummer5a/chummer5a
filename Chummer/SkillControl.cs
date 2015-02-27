@@ -55,7 +55,7 @@ namespace Chummer
         }
         private void SkillControl_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
             {
                 nudSkill.Enabled = false;
                 nudSkill.Visible = false;
@@ -66,7 +66,7 @@ namespace Chummer
 				cboSkillName.Text = _objSkill.Name;
 			}
 
-			if (_objCharacter.Created)
+			if (_objSkill.CharacterObject.Created)
 			{
 				string strTooltip = "";
 				int intNewRating = _objSkill.Rating + 1;

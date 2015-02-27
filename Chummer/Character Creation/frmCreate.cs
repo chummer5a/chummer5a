@@ -192,8 +192,7 @@ namespace Chummer
                 nudMAG.Enabled = false;
                 
             }
-            //MessageBox.Show(_objCharacter.NuyenBP.ToString());
-            //nudNuyen.Value = _objCharacter.NuyenBP;
+            nudNuyen.Value = _objCharacter.NuyenBP;
 
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
             if (!_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
