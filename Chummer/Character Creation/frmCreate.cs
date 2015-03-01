@@ -147,6 +147,7 @@ namespace Chummer
                     _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
                     _objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
                     _objCharacter.ContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                    
                 }
 
                 lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
@@ -15844,6 +15845,7 @@ namespace Chummer
 			// Calculate the BP used by Resources/Nuyen.
 			intPointsRemain -= (int)nudNuyen.Value;
 			lblNuyenBP.Text = nudNuyen.Value.ToString() + " " + strPoints;
+
 			intFreestyleBP += (int)nudNuyen.Value;
 
             // Calculate the BP discounted by Adept Way for Bonded Foci
@@ -16253,9 +16255,10 @@ namespace Chummer
                 //else
                 //    nudNuyen.Maximum = 100000;
 
-                int intNuyen;
-                    intNuyen = Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
+                int intNuyen = _objCharacter.StartingNuyen;
+                    intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
                     intNuyen += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.Nuyen));
+
 
                 lblNuyenTotal.Text = String.Format("= {0:###,###,##0¥}", intNuyen);
 
@@ -16878,7 +16881,7 @@ namespace Chummer
 		/// </summary>
 		private int CalculateNuyen()
 		{
-			int intNuyen = 0;
+			int intNuyen = _objCharacter.StartingNuyen;
             intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
 			intNuyen += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.Nuyen));
 
@@ -22026,12 +22029,46 @@ namespace Chummer
 					if (objXmlQuality.SelectNodes("required/allof/metatype[. = \"" + _objCharacter.Metatype + "\"]").Count > 0 || objXmlQuality.SelectNodes("required/allof/metavariant[. = \"" + _objCharacter.Metavariant + "\"]").Count > 0)
 						strQualities += "\n\t" + objQuality.DisplayNameShort;
 				}
+
+
 			}
 			if (strQualities != "")
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotChangeMetatype") + strQualities, LanguageManager.Instance.GetString("MessageTitle_CannotChangeMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
+
+            //Revert all Special Qualities
+            foreach (Quality objQuality in _objCharacter.Qualities)
+            {
+                switch (objQuality.Name.ToString())
+                {
+                    case "Magician":
+                        _objCharacter.MAGEnabled = false;
+                        _objCharacter.MagicianEnabled = false;
+                        break;
+                    case "Aspected Magician":
+                        _objCharacter.MAGEnabled = false;
+                        _objCharacter.MagicianEnabled = false;
+                        break;
+                    case "Adept":
+                        _objCharacter.MAGEnabled = false;
+                        _objCharacter.AdeptEnabled = false;
+                        break;
+                    case "Mystic Adept":
+                        _objCharacter.MAGEnabled = false;
+                        _objCharacter.MagicianEnabled = false;
+                        _objCharacter.AdeptEnabled = false;
+                        break;
+                    case "Technomancer":
+                        _objCharacter.RESEnabled = false;
+                        _objCharacter.TechnomancerEnabled = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
 
 			int intEssenceLoss = 0;
 			if (!_objOptions.ESSLossReducesMaximumOnly)
