@@ -428,3 +428,4 @@ M:\Coding\Chummer5a\Chummer\obj\x86\Release\Chummer.SpiritControl.resources
 M:\Coding\Chummer5a\Chummer\obj\x86\Release\Chummer.csproj.GenerateResource.Cache
 M:\Coding\Chummer5a\Chummer\obj\x86\Release\Chummer5.exe
 M:\Coding\Chummer5a\Chummer\obj\x86\Release\Chummer5.pdb
+M:\Coding\Chummer5a\Chummer\bin\Release\Translator.exe

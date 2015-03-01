@@ -16879,15 +16879,7 @@ namespace Chummer
 		private int CalculateNuyen()
 		{
 			int intNuyen = 0;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
-            {
-                intNuyen = _objCharacter.StartingNuyen;
-            }
-            else
-            {
-                intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
-            }
-
+            intNuyen += Convert.ToInt32(nudNuyen.Value) * _objOptions.NuyenPerBP;
 			intNuyen += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.Nuyen));
 
 			int intDeductions = 0;

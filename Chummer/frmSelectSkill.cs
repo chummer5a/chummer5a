@@ -17,18 +17,18 @@ namespace Chummer
 		private bool _blnKnowledgeSkill = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
-		private readonly Character _objCharacter;
+        private readonly Character _objCharacter;
 
 		#region Control Events
-		public frmSelectSkill()
+        public frmSelectSkill(Character objCharacter)
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            _objCharacter = objCharacter;
         }
 
         private void frmSelectSkill_Load(object sender, EventArgs e)
         {
-            objCharacter = _objCharacter;
 			List<ListItem> lstSkills = new List<ListItem>();
 
 			if (!_blnKnowledgeSkill)
