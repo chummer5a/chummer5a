@@ -140,6 +140,62 @@
 		  </metavariant>		  
 		  </metavariants>		  
         </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>6</value>		  
+        </metatype>		
+        <metatype>
+          <name>Naga</name>
+          <value>4</value>		  
+        </metatype>
+        <metatype>
+          <name>Pixie</name>
+          <value>6</value>		  
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>5</value>		  
+        </metatype>	
+<!--         <metatype>
+          <name>Shapeshifter: Bovine</name>
+          <value>8</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Vulpine</name>
+          <value>8</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Canine</name>
+          <value>7</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Falconine</name>
+          <value>7</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Lupine</name>
+          <value>6</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Equine</name>
+          <value>6</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Leonine</name>
+          <value>4</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Ursine</name>
+          <value>4</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Pantherine</name>
+          <value>4</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Tigrine</name>
+          <value>4</value>		  		
+		  </metatype> -->		
       </metatypes>
     </priority>
     <priority>
@@ -246,6 +302,62 @@
 		  </metavariant>		  
 		  </metavariants>		  
         </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>3</value>		  
+        </metatype>		
+        <metatype>
+          <name>Naga</name>
+          <value>2</value>		  
+        </metatype>
+        <metatype>
+          <name>Pixie</name>
+          <value>3</value>		  
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>2</value>		  
+        </metatype>
+<!--         <metatype>
+          <name>Shapeshifter: Bovine</name>
+          <value>6</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Vulpine</name>
+          <value>6</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Canine</name>
+          <value>5</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Falconine</name>
+          <value>5</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Lupine</name>
+          <value>4</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Equine</name>
+          <value>4</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Leonine</name>
+          <value>2</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Ursine</name>
+          <value>2</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Pantherine</name>
+          <value>2</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Tigrine</name>
+          <value>2</value>		  		
+		  </metatype> -->		
       </metatypes>
     </priority>
     <priority>
@@ -330,6 +442,62 @@
 		  </metavariant>		  
 		  </metavariants>		  
         </metatype>
+        <metatype>
+          <name>Centaur</name>
+          <value>0</value>		  
+        </metatype>		
+        <metatype>
+          <name>Naga</name>
+          <value>0</value>		  
+        </metatype>
+        <metatype>
+          <name>Pixie</name>
+          <value>0</value>		  
+        </metatype>
+        <metatype>
+          <name>Sasquatch</name>
+          <value>0</value>		  
+        </metatype>
+        <!-- <metatype>
+          <name>Shapeshifter: Bovine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Vulpine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Canine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Falconine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Lupine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Equine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Leonine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Ursine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Pantherine</name>
+          <value>0</value>		  
+        </metatype>
+		        <metatype>
+          <name>Shapeshifter: Tigrine</name>
+          <value>0</value>		  		
+		  </metatype> -->
       </metatypes>
     </priority>
     <priority>

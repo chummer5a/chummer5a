@@ -797,10 +797,10 @@ namespace Chummer
         private bool _blnUsePointsOnBrokenGroups = false;
         private bool _blnDontDoubleQualityCost = false;
 		private string _strBookXPath = "";
-		private int _intNuyenPerBP = 5000;
+		private int _intNuyenPerBP = 2000;
 		private int _intFreeContactsMultiplier = 2;
 		private int _intFreeContactsFlatNumber = 0;
-		private int _intMetatypeCostMultiplier = 1;
+		private int _intMetatypeCostMultiplier = 0;
 		private int _intLimbCount = 6;
 		private int _intRestrictedCostMultiplier = 1;
 		private int _intForbiddenCostMultiplier = 1;
@@ -826,7 +826,7 @@ namespace Chummer
 
 		// Karma variables.
 		private int _intKarmaAttribute = 5;
-		private int _intKarmaQuality = 2;
+		private int _intKarmaQuality = 1;
 		private int _intKarmaSpecialization = 2;
 		private int _intKarmaNewKnowledgeSkill = 2;
 		private int _intKarmaNewActiveSkill = 4;
@@ -869,7 +869,7 @@ namespace Chummer
 		private int _intKarmaWeaponFocus = 3;
 
 		// Default build settings.
-		private string _strBuildMethod = "Priority";
+		private string _strBuildMethod = "Karma";
 		private int _intBuildPoints = 800;
 		private int _intAvailability = 12;
 

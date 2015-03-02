@@ -225,7 +225,7 @@ namespace Chummer
 			if (lstMetatypes.Text != "")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
-
+                XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
 				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
 
 				lblBP.Text = objXmlMetatype["karma"].InnerText;
@@ -304,6 +304,68 @@ namespace Chummer
 					lblForceLabel.Visible = false;
 					nudForce.Visible = false;
 				}
+
+                if (cboCategory.Text == "Metasapient")
+                {
+                    string strQualities = "";
+                    // Build a list of the Metavariant's Positive Qualities.
+                    foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
+                    {
+                        try
+                        {
+                            if (GlobalOptions.Instance.Language != "en-us")
+                            {
+                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                                if (objQuality["translate"] != null)
+                                    strQualities += objQuality["translate"].InnerText;
+                                else
+                                    strQualities += objXmlQuality.InnerText;
+
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                            }
+                            else
+                            {
+                                strQualities += objXmlQuality.InnerText;
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        strQualities += "\n";
+                    }
+                    // Build a list of the Metavariant's Negative Qualities.
+                    foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
+                    {
+                        try
+                        {
+                            if (GlobalOptions.Instance.Language != "en-us")
+                            {
+                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                                if (objQuality["translate"] != null)
+                                    strQualities += objQuality["translate"].InnerText;
+                                else
+                                    strQualities += objXmlQuality.InnerText;
+
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                            }
+                            else
+                            {
+                                strQualities += objXmlQuality.InnerText;
+                                if (objXmlQuality.Attributes["select"].InnerText != "")
+                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        strQualities += "\n";
+                    }
+                    lblMetavariantQualities.Text = strQualities;
+                }
 			}
 			else
 			{
@@ -424,7 +486,7 @@ namespace Chummer
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			PopulateMetatypes();
+            PopulateMetatypes();
 		}
 		#endregion
 
@@ -948,13 +1010,13 @@ namespace Chummer
                 {
                     int x = 0;
                        int.TryParse(lblMetavariantBP.Text, out x);
-                    _objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
+                    //_objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
                 }
                 else
                 {
                     int x = 0;
                        int.TryParse(lblBP.Text, out x);
-                    _objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
+                    //_objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
                 }
 				this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -1054,9 +1116,5 @@ namespace Chummer
 		}
 		#endregion
 
-        private void cboCategory_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-
-        }
     }
 }
