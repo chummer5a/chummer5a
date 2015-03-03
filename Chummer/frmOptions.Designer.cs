@@ -794,7 +794,7 @@
             // chkPrintSkillsWithZeroRating
             // 
             this.chkPrintSkillsWithZeroRating.AutoSize = true;
-            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(9, 182);
+            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(10, 161);
             this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(259, 17);
             this.chkPrintSkillsWithZeroRating.TabIndex = 11;
@@ -805,13 +805,14 @@
             // chkMoreLethalGameplay
             // 
             this.chkMoreLethalGameplay.AutoSize = true;
-            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(8, 6);
+            this.chkMoreLethalGameplay.Location = new System.Drawing.Point(8, 98);
             this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
             this.chkMoreLethalGameplay.Size = new System.Drawing.Size(132, 17);
             this.chkMoreLethalGameplay.TabIndex = 0;
             this.chkMoreLethalGameplay.Tag = "Checkbox_Options_MoreLethalGameplace";
             this.chkMoreLethalGameplay.Text = "More Lethal Gameplay";
             this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
+            this.chkMoreLethalGameplay.Visible = false;
             // 
             // chkAutomaticUpdate
             // 
@@ -827,16 +828,17 @@
             // lblNuyenPerBP
             // 
             this.lblNuyenPerBP.AutoSize = true;
-            this.lblNuyenPerBP.Location = new System.Drawing.Point(6, 38);
+            this.lblNuyenPerBP.Location = new System.Drawing.Point(7, 316);
             this.lblNuyenPerBP.Name = "lblNuyenPerBP";
             this.lblNuyenPerBP.Size = new System.Drawing.Size(112, 13);
             this.lblNuyenPerBP.TabIndex = 2;
             this.lblNuyenPerBP.Tag = "Label_Options_NuyenPerBP";
             this.lblNuyenPerBP.Text = "Nuyen per Build Point:";
+            this.lblNuyenPerBP.Visible = false;
             // 
             // nudNuyenPerBP
             // 
-            this.nudNuyenPerBP.Location = new System.Drawing.Point(135, 36);
+            this.nudNuyenPerBP.Location = new System.Drawing.Point(136, 314);
             this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -850,6 +852,7 @@
             0,
             0,
             0});
+            this.nudNuyenPerBP.Visible = false;
             // 
             // chkEnforceSkillMaximumModifiedRating
             // 
@@ -876,7 +879,7 @@
             // chkPrintExpenses
             // 
             this.chkPrintExpenses.AutoSize = true;
-            this.chkPrintExpenses.Location = new System.Drawing.Point(9, 205);
+            this.chkPrintExpenses.Location = new System.Drawing.Point(10, 184);
             this.chkPrintExpenses.Name = "chkPrintExpenses";
             this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
             this.chkPrintExpenses.TabIndex = 12;
@@ -1208,7 +1211,7 @@
             // chkPrintToFileFirst
             // 
             this.chkPrintToFileFirst.AutoSize = true;
-            this.chkPrintToFileFirst.Location = new System.Drawing.Point(9, 251);
+            this.chkPrintToFileFirst.Location = new System.Drawing.Point(10, 230);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
             this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
             this.chkPrintToFileFirst.TabIndex = 18;
@@ -1220,7 +1223,7 @@
             // 
             this.cboEssenceDecimals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEssenceDecimals.FormattingEnabled = true;
-            this.cboEssenceDecimals.Location = new System.Drawing.Point(243, 287);
+            this.cboEssenceDecimals.Location = new System.Drawing.Point(244, 266);
             this.cboEssenceDecimals.Name = "cboEssenceDecimals";
             this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
             this.cboEssenceDecimals.TabIndex = 17;
@@ -1228,7 +1231,7 @@
             // lblEssenceDecimals
             // 
             this.lblEssenceDecimals.AutoSize = true;
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(7, 290);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(8, 269);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
             this.lblEssenceDecimals.TabIndex = 16;
@@ -1238,7 +1241,7 @@
             // chkPrintNotes
             // 
             this.chkPrintNotes.AutoSize = true;
-            this.chkPrintNotes.Location = new System.Drawing.Point(9, 228);
+            this.chkPrintNotes.Location = new System.Drawing.Point(10, 207);
             this.chkPrintNotes.Name = "chkPrintNotes";
             this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
             this.chkPrintNotes.TabIndex = 15;
@@ -1259,7 +1262,7 @@
             // chkAllowSkillDiceRolling
             // 
             this.chkAllowSkillDiceRolling.AutoSize = true;
-            this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(9, 149);
+            this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(10, 128);
             this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
             this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
             this.chkAllowSkillDiceRolling.TabIndex = 10;
@@ -1270,7 +1273,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(6, 61);
+            this.label36.Location = new System.Drawing.Point(7, 40);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(140, 13);
             this.label36.TabIndex = 4;
@@ -1279,7 +1282,7 @@
             // 
             // nudBP
             // 
-            this.nudBP.Location = new System.Drawing.Point(86, 86);
+            this.nudBP.Location = new System.Drawing.Point(87, 65);
             this.nudBP.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -1298,7 +1301,7 @@
             // 
             this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBuildMethod.FormattingEnabled = true;
-            this.cboBuildMethod.Location = new System.Drawing.Point(19, 86);
+            this.cboBuildMethod.Location = new System.Drawing.Point(20, 65);
             this.cboBuildMethod.Name = "cboBuildMethod";
             this.cboBuildMethod.Size = new System.Drawing.Size(61, 21);
             this.cboBuildMethod.TabIndex = 5;
@@ -1307,7 +1310,7 @@
             // lblMaxAvail
             // 
             this.lblMaxAvail.AutoSize = true;
-            this.lblMaxAvail.Location = new System.Drawing.Point(21, 116);
+            this.lblMaxAvail.Location = new System.Drawing.Point(22, 95);
             this.lblMaxAvail.Name = "lblMaxAvail";
             this.lblMaxAvail.Size = new System.Drawing.Size(59, 13);
             this.lblMaxAvail.TabIndex = 7;
@@ -1316,7 +1319,7 @@
             // 
             // nudMaxAvail
             // 
-            this.nudMaxAvail.Location = new System.Drawing.Point(86, 113);
+            this.nudMaxAvail.Location = new System.Drawing.Point(87, 92);
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(42, 20);
             this.nudMaxAvail.TabIndex = 8;
@@ -2180,13 +2183,14 @@
             // chkContactPoints
             // 
             this.chkContactPoints.AutoSize = true;
-            this.chkContactPoints.Location = new System.Drawing.Point(8, 374);
+            this.chkContactPoints.Location = new System.Drawing.Point(8, 328);
             this.chkContactPoints.Name = "chkContactPoints";
             this.chkContactPoints.Size = new System.Drawing.Size(252, 17);
             this.chkContactPoints.TabIndex = 32;
             this.chkContactPoints.Tag = "Checkbox_Options_ContactPoints";
             this.chkContactPoints.Text = "Contact points instead of fixed Contacts (RC 40)";
             this.chkContactPoints.UseVisualStyleBackColor = true;
+            this.chkContactPoints.Visible = false;
             // 
             // chkMayBuyQualities
             // 
@@ -2198,22 +2202,24 @@
             this.chkMayBuyQualities.Tag = "Checkbox_Options_MayBuyQualities";
             this.chkMayBuyQualities.Text = "May buy Qualities (RC 40)";
             this.chkMayBuyQualities.UseVisualStyleBackColor = true;
+            this.chkMayBuyQualities.Visible = false;
             // 
             // chkExtendAnyDetectionSpell
             // 
             this.chkExtendAnyDetectionSpell.AutoSize = true;
-            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(8, 328);
+            this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(8, 144);
             this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(378, 17);
             this.chkExtendAnyDetectionSpell.TabIndex = 30;
             this.chkExtendAnyDetectionSpell.Tag = "Checkbox_Options_ExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version (SM 165)";
             this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
+            this.chkExtendAnyDetectionSpell.Visible = false;
             // 
             // chkBreakSkillGroupsInCreateMode
             // 
             this.chkBreakSkillGroupsInCreateMode.AutoSize = true;
-            this.chkBreakSkillGroupsInCreateMode.Location = new System.Drawing.Point(8, 305);
+            this.chkBreakSkillGroupsInCreateMode.Location = new System.Drawing.Point(8, 52);
             this.chkBreakSkillGroupsInCreateMode.Name = "chkBreakSkillGroupsInCreateMode";
             this.chkBreakSkillGroupsInCreateMode.Size = new System.Drawing.Size(339, 17);
             this.chkBreakSkillGroupsInCreateMode.TabIndex = 29;
@@ -2224,95 +2230,103 @@
             // chkAlternateMatrixAttribute
             // 
             this.chkAlternateMatrixAttribute.AutoSize = true;
-            this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(8, 236);
+            this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(8, 259);
             this.chkAlternateMatrixAttribute.Name = "chkAlternateMatrixAttribute";
             this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
             this.chkAlternateMatrixAttribute.TabIndex = 12;
             this.chkAlternateMatrixAttribute.Tag = "Checkbox_Options_AlternateMatrixAttribute";
             this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix Attribute (UN 39)";
             this.chkAlternateMatrixAttribute.UseVisualStyleBackColor = true;
+            this.chkAlternateMatrixAttribute.Visible = false;
             // 
             // chkAllowCustomTransgenics
             // 
             this.chkAllowCustomTransgenics.AutoSize = true;
-            this.chkAllowCustomTransgenics.Location = new System.Drawing.Point(8, 282);
+            this.chkAllowCustomTransgenics.Location = new System.Drawing.Point(8, 305);
             this.chkAllowCustomTransgenics.Name = "chkAllowCustomTransgenics";
             this.chkAllowCustomTransgenics.Size = new System.Drawing.Size(297, 17);
             this.chkAllowCustomTransgenics.TabIndex = 14;
             this.chkAllowCustomTransgenics.Tag = "Checkbox_Options_AllowCustomTransgenics";
             this.chkAllowCustomTransgenics.Text = "Allow any Bioware to be converted to Transgenic (AU 93)";
             this.chkAllowCustomTransgenics.UseVisualStyleBackColor = true;
+            this.chkAllowCustomTransgenics.Visible = false;
             // 
             // chkAlternateComplexFormCost
             // 
             this.chkAlternateComplexFormCost.AutoSize = true;
-            this.chkAlternateComplexFormCost.Location = new System.Drawing.Point(8, 259);
+            this.chkAlternateComplexFormCost.Location = new System.Drawing.Point(8, 282);
             this.chkAlternateComplexFormCost.Name = "chkAlternateComplexFormCost";
             this.chkAlternateComplexFormCost.Size = new System.Drawing.Size(231, 17);
             this.chkAlternateComplexFormCost.TabIndex = 13;
             this.chkAlternateComplexFormCost.Tag = "Checkbox_Options_AlternateComplexFormCost";
             this.chkAlternateComplexFormCost.Text = "Use alternate Complex Forms costs (UN 39)";
             this.chkAlternateComplexFormCost.UseVisualStyleBackColor = true;
+            this.chkAlternateComplexFormCost.Visible = false;
             // 
             // chkUseCalculatedVehicleSensorRatings
             // 
             this.chkUseCalculatedVehicleSensorRatings.AutoSize = true;
-            this.chkUseCalculatedVehicleSensorRatings.Location = new System.Drawing.Point(8, 213);
+            this.chkUseCalculatedVehicleSensorRatings.Location = new System.Drawing.Point(8, 236);
             this.chkUseCalculatedVehicleSensorRatings.Name = "chkUseCalculatedVehicleSensorRatings";
             this.chkUseCalculatedVehicleSensorRatings.Size = new System.Drawing.Size(255, 17);
             this.chkUseCalculatedVehicleSensorRatings.TabIndex = 11;
             this.chkUseCalculatedVehicleSensorRatings.Tag = "Checkbox_Options_UseCalculatedVehicleSensorRatings";
             this.chkUseCalculatedVehicleSensorRatings.Text = "Use calculated Vehicle Sensor Ratings (AR 105)";
             this.chkUseCalculatedVehicleSensorRatings.UseVisualStyleBackColor = true;
+            this.chkUseCalculatedVehicleSensorRatings.Visible = false;
             // 
             // chkArmorDegradation
             // 
             this.chkArmorDegradation.AutoSize = true;
-            this.chkArmorDegradation.Location = new System.Drawing.Point(8, 190);
+            this.chkArmorDegradation.Location = new System.Drawing.Point(8, 213);
             this.chkArmorDegradation.Name = "chkArmorDegradation";
             this.chkArmorDegradation.Size = new System.Drawing.Size(181, 17);
             this.chkArmorDegradation.TabIndex = 10;
             this.chkArmorDegradation.Tag = "Checkbox_Options_ArmorDegradation";
             this.chkArmorDegradation.Text = "Allow Armor Degradation (AR 44)";
             this.chkArmorDegradation.UseVisualStyleBackColor = true;
+            this.chkArmorDegradation.Visible = false;
             // 
             // chkArmorSuitCapacity
             // 
             this.chkArmorSuitCapacity.AutoSize = true;
-            this.chkArmorSuitCapacity.Location = new System.Drawing.Point(8, 167);
+            this.chkArmorSuitCapacity.Location = new System.Drawing.Point(8, 190);
             this.chkArmorSuitCapacity.Name = "chkArmorSuitCapacity";
             this.chkArmorSuitCapacity.Size = new System.Drawing.Size(179, 17);
             this.chkArmorSuitCapacity.TabIndex = 9;
             this.chkArmorSuitCapacity.Tag = "Checkbox_Options_ArmorSuitCapacity";
             this.chkArmorSuitCapacity.Text = "Use Armor Suit Capacity (AR 44)";
             this.chkArmorSuitCapacity.UseVisualStyleBackColor = true;
+            this.chkArmorSuitCapacity.Visible = false;
             // 
             // chkMaximumArmorModifications
             // 
             this.chkMaximumArmorModifications.AutoSize = true;
-            this.chkMaximumArmorModifications.Location = new System.Drawing.Point(8, 144);
+            this.chkMaximumArmorModifications.Location = new System.Drawing.Point(8, 167);
             this.chkMaximumArmorModifications.Name = "chkMaximumArmorModifications";
             this.chkMaximumArmorModifications.Size = new System.Drawing.Size(226, 17);
             this.chkMaximumArmorModifications.TabIndex = 8;
             this.chkMaximumArmorModifications.Tag = "Checkbox_Options_MaximumArmorModifications";
             this.chkMaximumArmorModifications.Text = "Use Maximum Armor Modifications (AR 44)";
             this.chkMaximumArmorModifications.UseVisualStyleBackColor = true;
+            this.chkMaximumArmorModifications.Visible = false;
             // 
             // chkStrengthAffectsRecoil
             // 
             this.chkStrengthAffectsRecoil.AutoSize = true;
-            this.chkStrengthAffectsRecoil.Location = new System.Drawing.Point(8, 121);
+            this.chkStrengthAffectsRecoil.Location = new System.Drawing.Point(8, 374);
             this.chkStrengthAffectsRecoil.Name = "chkStrengthAffectsRecoil";
             this.chkStrengthAffectsRecoil.Size = new System.Drawing.Size(203, 17);
             this.chkStrengthAffectsRecoil.TabIndex = 7;
             this.chkStrengthAffectsRecoil.Tag = "Checkbox_Options_StrengthAffectsRecoil";
             this.chkStrengthAffectsRecoil.Text = "High Strength affects Weapon Recoil";
             this.chkStrengthAffectsRecoil.UseVisualStyleBackColor = true;
+            this.chkStrengthAffectsRecoil.Visible = false;
             // 
             // lblMetatypeCostsKarma
             // 
             this.lblMetatypeCostsKarma.AutoSize = true;
-            this.lblMetatypeCostsKarma.Location = new System.Drawing.Point(226, 99);
+            this.lblMetatypeCostsKarma.Location = new System.Drawing.Point(222, 30);
             this.lblMetatypeCostsKarma.Name = "lblMetatypeCostsKarma";
             this.lblMetatypeCostsKarma.Size = new System.Drawing.Size(12, 13);
             this.lblMetatypeCostsKarma.TabIndex = 5;
@@ -2320,7 +2334,7 @@
             // 
             // nudMetatypeCostsKarmaMultiplier
             // 
-            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(244, 97);
+            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(240, 26);
             this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -2343,7 +2357,7 @@
             // chkMetatypeCostsKarma
             // 
             this.chkMetatypeCostsKarma.AutoSize = true;
-            this.chkMetatypeCostsKarma.Location = new System.Drawing.Point(8, 98);
+            this.chkMetatypeCostsKarma.Location = new System.Drawing.Point(8, 29);
             this.chkMetatypeCostsKarma.Name = "chkMetatypeCostsKarma";
             this.chkMetatypeCostsKarma.Size = new System.Drawing.Size(212, 17);
             this.chkMetatypeCostsKarma.TabIndex = 4;
@@ -2354,7 +2368,7 @@
             // chkAllowSkillRegrouping
             // 
             this.chkAllowSkillRegrouping.AutoSize = true;
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(8, 75);
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(8, 6);
             this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
             this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
             this.chkAllowSkillRegrouping.TabIndex = 3;
@@ -2365,7 +2379,7 @@
             // chkCapSkillRating
             // 
             this.chkCapSkillRating.AutoSize = true;
-            this.chkCapSkillRating.Location = new System.Drawing.Point(8, 52);
+            this.chkCapSkillRating.Location = new System.Drawing.Point(8, 75);
             this.chkCapSkillRating.Name = "chkCapSkillRating";
             this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
             this.chkCapSkillRating.TabIndex = 2;
@@ -2373,17 +2387,19 @@
             this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is h" +
     "igher";
             this.chkCapSkillRating.UseVisualStyleBackColor = true;
+            this.chkCapSkillRating.Visible = false;
             // 
             // chkNoSingleArmorEncumbrance
             // 
             this.chkNoSingleArmorEncumbrance.AutoSize = true;
-            this.chkNoSingleArmorEncumbrance.Location = new System.Drawing.Point(8, 29);
+            this.chkNoSingleArmorEncumbrance.Location = new System.Drawing.Point(8, 121);
             this.chkNoSingleArmorEncumbrance.Name = "chkNoSingleArmorEncumbrance";
             this.chkNoSingleArmorEncumbrance.Size = new System.Drawing.Size(322, 17);
             this.chkNoSingleArmorEncumbrance.TabIndex = 1;
             this.chkNoSingleArmorEncumbrance.Tag = "Checkbox_Options_SingleArmorEncumbrance";
             this.chkNoSingleArmorEncumbrance.Text = "No Armor Encumbrance when wearing only one piece of Armor";
             this.chkNoSingleArmorEncumbrance.UseVisualStyleBackColor = true;
+            this.chkNoSingleArmorEncumbrance.Visible = false;
             // 
             // tabHouseRules
             // 

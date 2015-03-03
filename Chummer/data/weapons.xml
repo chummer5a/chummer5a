@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-398</version>
 	<categories>
 		<category>Blades</category>
 		<category>Clubs</category>
@@ -322,8 +322,8 @@
 				<accessory>Shock Pad</accessory>
 				<accessory>Smartgun System, Internal</accessory>
 			</accessories>
-			<source>SR5</source>
-			<page>428</page>
+			<source>RG</source>
+			<page>37</page>
 		</weapon>
 		<weapon>
 			<id>6d99b7b6-7610-4ba0-833b-ecda09d83366</id>

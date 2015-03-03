@@ -121,8 +121,7 @@ namespace Chummer
 			cboSetting.DisplayMember = "Name";
 			cboSetting.SelectedIndex = 0;
 
-            tabControl1.TabPages.RemoveAt(1);
-            tabControl1.TabPages.RemoveAt(1);
+            //tabControl1.TabPages.RemoveAt(1);
             // tabControl1.TabPages.RemoveAt(1);
 
 			// Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
@@ -357,13 +356,13 @@ namespace Chummer
             _objOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
             _objOptions.CyberlegMovement = chkCyberlegMovement.Checked;
             _objOptions.IgnoreArt = chkIgnoreArt.Checked;
-            _objOptions.NuyenPerBP = Convert.ToInt32(nudNuyenPerBP.Value);
+            _objOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
 			_objOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
 			_objOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
 			_objOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
 			_objOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
 			_objOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
-			_objOptions.StrengthAffectsRecoil = chkStrengthAffectsRecoil.Checked;
+			_objOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
 			_objOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
 			_objOptions.ArmorSuitCapacity = chkArmorSuitCapacity.Checked;
 			_objOptions.ArmorDegradation = chkArmorDegradation.Checked;
@@ -537,25 +536,25 @@ namespace Chummer
 				return;
 
 			// Restore the default Karma values.
-			nudKarmaAttribute.Value = 5;
-			nudKarmaQuality.Value = 2;
-			nudKarmaSpecialization.Value = 2;
-			nudKarmaNewKnowledgeSkill.Value = 2;
-			nudKarmaNewActiveSkill.Value = 4;
+			nudKarmaSpecialization.Value = 7;
+			nudKarmaNewKnowledgeSkill.Value = 1;
+			nudKarmaNewActiveSkill.Value = 2;
 			nudKarmaNewSkillGroup.Value = 10;
 			nudKarmaImproveKnowledgeSkill.Value = 1;
 			nudKarmaImproveActiveSkill.Value = 2;
 			nudKarmaImproveSkillGroup.Value = 5;
-			nudKarmaSpell.Value = 5;
+            nudKarmaAttribute.Value = 5;
+            nudKarmaQuality.Value = 2;			
+            nudKarmaSpell.Value = 5;
 			nudKarmaNewComplexForm.Value = 2;
 			nudKarmaImproveComplexForm.Value = 1;
 			nudKarmaComplexFormOption.Value = 2;
 			nudKarmaComplexFormSkillsoft.Value = 1;
-			nudKarmaNuyenPer.Value = 2000;
+            nudKarmaSpirit.Value = 2;
+            nudKarmaManeuver.Value = 4;
+            nudKarmaNuyenPer.Value = 2000;
 			nudKarmaContact.Value = 2;
 			nudKarmaCarryover.Value = 5;
-			nudKarmaSpirit.Value = 2;
-			nudKarmaManeuver.Value = 4;
 			nudKarmaInitiation.Value = 3;
 			nudKarmaMetamagic.Value = 15;
 			nudKarmaJoinGroup.Value = 5;
@@ -1154,7 +1153,7 @@ namespace Chummer
 			}
 			nudMetatypeCostsKarmaMultiplier.Value = intMetatypeCostsKarmaMultiplier;
 
-			bool blnStrengthAffectsRecoil = false;
+            bool blnStrengthAffectsRecoil = false;		
 			try
 			{
 				blnStrengthAffectsRecoil = _objOptions.StrengthAffectsRecoil;
@@ -1163,7 +1162,7 @@ namespace Chummer
 			{
 			}
 			chkStrengthAffectsRecoil.Checked = blnStrengthAffectsRecoil;
-
+            
 			bool blnMaximumArmorModifications = false;
 			try
 			{

@@ -799,8 +799,8 @@ namespace Chummer
 		private string _strBookXPath = "";
 		private int _intNuyenPerBP = 2000;
 		private int _intFreeContactsMultiplier = 2;
-		private int _intFreeContactsFlatNumber = 0;
-		private int _intMetatypeCostMultiplier = 0;
+		private int _intFreeContactsFlatNumber = 1;
+		private int _intMetatypeCostMultiplier = 1;
 		private int _intLimbCount = 6;
 		private int _intRestrictedCostMultiplier = 1;
 		private int _intForbiddenCostMultiplier = 1;
@@ -825,30 +825,30 @@ namespace Chummer
 		private int _intBPComplexFormOption = 1;
 
 		// Karma variables.
-		private int _intKarmaAttribute = 5;
-		private int _intKarmaQuality = 1;
-		private int _intKarmaSpecialization = 2;
-		private int _intKarmaNewKnowledgeSkill = 2;
-		private int _intKarmaNewActiveSkill = 4;
-		private int _intKarmaNewSkillGroup = 10;
-		private int _intKarmaImproveKnowledgeSkill = 1;
-		private int _intKarmaImproveActiveSkill = 2;
-		private int _intKarmaImproveSkillGroup = 5;
-		private int _intKarmaSpell = 5;
+        private int _intKarmaSpecialization = 7;
+        private int _intKarmaNewKnowledgeSkill = 1;
+        private int _intKarmaNewActiveSkill = 2;
+        private int _intKarmaNewSkillGroup = 10;
+        private int _intKarmaImproveKnowledgeSkill = 1;
+        private int _intKarmaImproveActiveSkill = 2;
+        private int _intKarmaImproveSkillGroup = 5;
+        private int _intKarmaAttribute = 5;
+        private int _intKarmaQuality = 2;
+        private int _intKarmaSpell = 5;
+        private int _intKarmaNewComplexForm = 2;
+        private int _intKarmaImproveComplexForm = 1;
+        private int _intKarmaComplexFormOption = 2;
+        private int _intKarmaComplexFormSkillfot = 1;
+        private int _intKarmaSpirit = 2;
+        private int _intKarmaManeuver = 4;
+        private int _intKarmaNuyenPer = 2000;
+        private int _intKarmaContact = 2;
+        private int _intKarmaCarryover = 5;
+        private int _intKarmaInitiation = 3;
+        private int _intKarmaMetamagic = 15;
+        private int _intKarmaJoinGroup = 5;
+        private int _intKarmaLeaveGroup = 1;
         private int _intKarmaEnhancement = 2;
-		private int _intKarmaNewComplexForm = 2;
-		private int _intKarmaImproveComplexForm = 1;
-		private int _intKarmaComplexFormOption = 2;
-		private int _intKarmaComplexFormSkillfot = 1;
-		private int _intKarmaNuyenPer = 2500;
-		private int _intKarmaContact = 2;
-		private int _intKarmaCarryover = 5;
-		private int _intKarmaSpirit = 2;
-		private int _intKarmaManeuver = 4;
-		private int _intKarmaInitiation = 3;
-		private int _intKarmaMetamagic = 15;
-		private int _intKarmaJoinGroup = 5;
-		private int _intKarmaLeaveGroup = 1;
 
 		// Karma Foci variables.
 		private int _intKarmaAlchemicalFocus = 3;
@@ -1410,7 +1410,7 @@ namespace Chummer
 			// Strength Affects Recoil.
 			try
 			{
-				_blnStrengthAffectsRecoil = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/strengthaffectsrecoil").InnerText);
+                _blnStrengthAffectsRecoil = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/strengthaffectsrecoil").InnerText);
 			}
 			catch
 			{

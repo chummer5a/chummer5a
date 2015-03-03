@@ -62,7 +62,7 @@
 					<name>Nartaki</name>
 					<category>Metavariant</category>
 					<karma>40</karma>
-					<bp>0</bp>
+					
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<bodaug>10</bodaug>
@@ -123,7 +123,7 @@
 			<id>b3259991-b315-4dbe-ae3c-51f71a1116e2</id>
 			<name>Elf</name>
 			<karma>40</karma>
-			<bp>0</bp>
+			
 			<category>Metahuman</category>
 			<bodmin>1</bodmin>
 			<bodmax>6</bodmax>
@@ -179,7 +179,7 @@
 				<metavariant>
 					<name>Dryad</name>
 					<karma>90</karma>
-					<bp>0</bp>
+					
 					<category>Metavariant</category>
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
@@ -241,7 +241,7 @@
 					<category>Metavariant</category>
 					<bodmin>1</bodmin>
 					<karma>60</karma>
-					<bp>0</bp>
+					
 					<bodmax>5</bodmax>
 					<bodaug>9</bodaug>
 					<agimin>3</agimin>
@@ -304,7 +304,7 @@
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<karma>80</karma>
-					<bp>0</bp>
+					
 					<bodaug>10</bodaug>
 					<agimin>2</agimin>
 					<agimax>7</agimax>
@@ -412,7 +412,7 @@
 					</qualities>
 					<bonus />
 					<karma>70</karma>
-					<bp>12</bp>
+					
 					<source>RF</source>
 					<page>104</page>
 				</metavariant>
@@ -422,7 +422,7 @@
 			<id>08f2c9cc-f9f8-4f1a-9efb-63555af71788</id>
 			<name>Dwarf</name>
 			<karma>50</karma>
-			<bp>0</bp>
+			
 			<category>Metahuman</category>
 			<bodmin>3</bodmin>
 			<bodmax>8</bodmax>
@@ -482,7 +482,7 @@
 					<name>Gnome</name>
 					<category>Metavariant</category>
 					<karma>50</karma>
-					<bp>7</bp>
+					
 					<bodmin>1</bodmin>
 					<bodmax>4</bodmax>
 					<bodaug>8</bodaug>
@@ -542,7 +542,7 @@
 					<name>Haruman</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
-					<bp>5</bp>
+					
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<bodaug>10</bodaug>
@@ -604,7 +604,7 @@
 					<name>Koborokuru</name>
 					<category>Metavariant</category>
 					<karma>70</karma>
-					<bp>0</bp>
+					
 					<bodmin>2</bodmin>
 					<bodmax>7</bodmax>
 					<bodaug>11</bodaug>
@@ -665,7 +665,7 @@
 					<name>Menehune</name>
 					<category>Metavariant</category>
 					<karma>50</karma>
-					<bp>2</bp>
+					
 					<bodmin>2</bodmin>
 					<bodmax>7</bodmax>
 					<bodaug>11</bodaug>
@@ -783,7 +783,7 @@
 					<name>Hobgoblin</name>
 					<category>Metavariant</category>
 					<karma>40</karma>
-					<bp>5</bp>
+					
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<bodaug>10</bodaug>
@@ -844,7 +844,7 @@
 				<metavariant>
 					<name>Ogre</name>
 					<karma>40</karma>
-					<bp>8</bp>
+					
 					<category>Metavariant</category>
 					<bodmin>4</bodmin>
 					<bodmax>9</bodmax>
@@ -902,7 +902,7 @@
 				<metavariant>
 					<name>Oni</name>
 					<karma>50</karma>
-					<bp>4</bp>
+					
 					<category>Metavariant</category>
 					<bodmin>3</bodmin>
 					<bodmax>8</bodmax>
@@ -1012,7 +1012,7 @@
 						</positive>
 					</qualities>
 					<karma>50</karma>
-					<bp>10</bp>
+					
 					<bonus />
 					<source>RF</source>
 					<page>104</page>
@@ -1083,7 +1083,7 @@
 					<name>Cyclopean</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
-					<bp>2</bp>
+					
 					<bodmin>5</bodmin>
 					<bodmax>10</bodmax>
 					<bodaug>14</bodaug>
@@ -1143,7 +1143,7 @@
 					<name>Fomorian</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
-					<bp>12</bp>
+					
 					<bodmin>4</bodmin>
 					<bodmax>9</bodmax>
 					<bodaug>13</bodaug>
@@ -1204,7 +1204,7 @@
 					<name>Giant</name>
 					<category>Metavariant</category>
 					<karma>90</karma>
-					<bp>2</bp>
+					
 					<bodmin>5</bodmin>
 					<bodmax>10</bodmax>
 					<bodaug>14</bodaug>
@@ -1265,7 +1265,7 @@
 					<name>Minotaur</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
-					<bp>2</bp>
+					
 					<bodmin>6</bodmin>
 					<bodmax>11</bodmax>
 					<bodaug>15</bodaug>

@@ -1,3 +1,14 @@
+Build 5.156
+Application Change:
+- Karma Costs tab re-enabled in Options. This will allow the user to change character generation details without file editing directly. The Nuyen Per BP field has also been relocated into this tab.
+
+Data Change:
+- Metavariant/Metasapient BP costs and karma values shifted into Priorities/SumtoTen.xml files because Hobgoblins are terrible.
+- Ares HVAR book reference altered to proper book (Run and Gun)
+
+Issues: 
+- Metavariants that confer bonus karma (Hobgoblin, Oni at Priority C) currently are not counted against the maximum limit for Negative Qualities.
+
 Build 5.155
 Application Change:
 - Settings.xml default values validated against what they're actually supposed to be. Fixes some issues with Quality prices, fixes the 5000 Nuyen per Build Point issue AGAIN.
