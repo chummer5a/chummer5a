@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-397</version>
 	<categories>
 		<category>Heritage</category>
 		<category>Talent</category>
@@ -239,7 +239,7 @@
 			<metatypes>
 				<metatype>
 					<name>Human</name>
-					<value>9</value>
+					<value>7</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -251,7 +251,7 @@
 				</metatype>
 				<metatype>
 					<name>Dwarf</name>
-					<value>7</value>
+					<value>4</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -278,7 +278,7 @@
 				</metatype>
 				<metatype>
 					<name>Ork</name>
-					<value>7</value>
+					<value>4</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -305,7 +305,7 @@
 				</metatype>
 				<metatype>
 					<name>Elf</name>
-					<value>7</value>
+					<value>6</value>
 					<metavariants>
 						<metavariant>
 							<name>Nocturna</name>
@@ -331,7 +331,7 @@
 				</metatype>
 				<metatype>
 					<name>Troll</name>
-					<value>5</value>
+					<value>0</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -436,7 +436,7 @@
 			<metatypes>
 				<metatype>
 					<name>Human</name>
-					<value>9</value>
+					<value>5</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -448,7 +448,7 @@
 				</metatype>
 				<metatype>
 					<name>Dwarf</name>
-					<value>7</value>
+					<value>1</value>
 					<bp>0</bp>
 					<metavariants>
 						<metavariant>
@@ -475,7 +475,7 @@
 				</metatype>
 				<metatype>
 					<name>Ork</name>
-					<value>7</value>
+					<value>0</value>
 					<metavariants>
 						<metavariant>
 							<name>Ogre</name>
@@ -501,7 +501,7 @@
 				</metatype>
 				<metatype>
 					<name>Elf</name>
-					<value>8</value>
+					<value>3</value>
 					<metavariants>
 						<metavariant>
 							<name>Nocturna</name>
@@ -617,26 +617,26 @@
 				</metatype>
 				<metatype>
 					<name>Elf</name>
-					<value>8</value>
+					<value>0</value>
 					<metavariants>
 						<metavariant>
 							<name>Nocturna</name>
-							<value>8</value>
+							<value>0</value>
 							<bp>0</bp>
 						</metavariant>
 						<metavariant>
 							<name>Wakyambi</name>
-							<value>8</value>
+							<value>0</value>
 							<bp>12</bp>
 						</metavariant>
 						<metavariant>
 							<name>Xapiri Thëpë</name>
-							<value>8</value>
+							<value>0</value>
 							<bp>0</bp>
 						</metavariant>
 						<metavariant>
 							<name>Dryad</name>
-							<value>8</value>
+							<value>0</value>
 							<bp>0</bp>
 						</metavariant>		  
 					</metavariants>		  
