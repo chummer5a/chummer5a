@@ -1,3 +1,11 @@
+Build 5.156.1
+Application Change: 
+- Karma calculation issue fixed in karmagen. (Wasn't counting metatype minimmums.)
+- Default value for nudKarmaQuality changed to 1x. 
+
+Data Change:
+- Special Attributes for Priority-Gen and Sum-to-Ten fixed to proper values. Got a bit lazy copying the data.
+
 Build 5.156
 Application Change:
 - Karma Costs tab re-enabled in Options. This will allow the user to change character generation details without file editing directly. The Nuyen Per BP field has also been relocated into this tab.

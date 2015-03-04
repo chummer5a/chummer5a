@@ -544,7 +544,7 @@ namespace Chummer
 			nudKarmaImproveActiveSkill.Value = 2;
 			nudKarmaImproveSkillGroup.Value = 5;
             nudKarmaAttribute.Value = 5;
-            nudKarmaQuality.Value = 2;			
+            nudKarmaQuality.Value = 1;			
             nudKarmaSpell.Value = 5;
 			nudKarmaNewComplexForm.Value = 2;
 			nudKarmaImproveComplexForm.Value = 1;

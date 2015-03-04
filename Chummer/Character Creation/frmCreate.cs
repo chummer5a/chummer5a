@@ -7510,8 +7510,8 @@ namespace Chummer
 			// If the item being checked would cause the limit of 35 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
 			string strAmount = "";
 			int intMaxQualityAmount = 0;
-			strAmount = "70 " + LanguageManager.Instance.GetString("String_Karma");
-			intMaxQualityAmount = 70;
+			strAmount = "35 " + LanguageManager.Instance.GetString("String_Karma");
+			intMaxQualityAmount = 35;
 
 			// Make sure that adding the Quality would not cause the character to exceed their BP limits.
 			int intBP = 0;
@@ -7529,8 +7529,6 @@ namespace Chummer
 					if (objCharacterQuality.Type == QualityType.Negative && objCharacterQuality.ContributeToLimit)
 						intBP += objCharacterQuality.BP;
 				}
-				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-					intBP *= _objOptions.KarmaQuality;
 
 				// Include the BP used by Enemies.
 				if (lblEnemiesBP.Text.Contains(LanguageManager.Instance.GetString("String_BP")))
@@ -14936,7 +14934,42 @@ namespace Chummer
                 }
                 return intBP;
             }
-
+            else
+            {
+                for (int i = 1; i <= nudKBOD.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudBOD.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKAGI.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudAGI.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKREA.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudREA.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKSTR.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKCHA.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudCHA.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKINT.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudINT.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKLOG.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudLOG.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                for (int i = 1; i <= nudKWIL.Value; i++)
+                {
+                    intBP += ((Convert.ToInt32(nudWIL.Value) + i) * _objOptions.KarmaAttribute);
+                }
+                return intBP;
+            }
 			foreach (NumericUpDown objControl in panAttributes.Controls.OfType<NumericUpDown>())
 			{
 				int intThisBP = 0;
@@ -15515,7 +15548,7 @@ namespace Chummer
 			// If the character is only allowed to gain 25 BP (70 Karma) from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
 			if (_objOptions.ExceedNegativeQualitiesLimit)
 			{
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority && intNegativePoints < -1 * _objCharacter.MaxKarma)
+                if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma && intNegativePoints < -1 * _objCharacter.MaxKarma)
 				{
                     intNegativePoints += _objCharacter.MaxKarma;
 					intPointsRemain += intNegativePoints;
