@@ -9,6 +9,8 @@ namespace Chummer
 {
 	public partial class frmSelectQuality : Form
 	{
+        public int buildPos = 0;
+        public int buildNeg = 0;
 		private string _strSelectedQuality = "";
 		private bool _blnAddAgain = false;
 		private readonly Character _objCharacter;
@@ -404,6 +406,15 @@ namespace Chummer
                     _objCharacter.MagicianEnabled = true;
                     _objCharacter.AdeptEnabled = true;
                     break;
+                case "Changeling (Class I SURGE)":
+                    _objCharacter.metageneticLimit = 30;
+                    break;
+                case "Changeling (Class II SURGE)":
+                    _objCharacter.metageneticLimit = 15;
+                    break;
+                case "Changeling (Class III SURGE)":
+                    _objCharacter.metageneticLimit = 30;
+                    break;
                 default:
                     break;
             }
@@ -414,7 +425,6 @@ namespace Chummer
 
 			if (!RequirementMet(objNode, true))
 				return;
-
 			this.DialogResult = DialogResult.OK;
 		}
 
@@ -448,7 +458,7 @@ namespace Chummer
 						return false;
 					}
 				}
-			}
+			}            
 
 			if (objXmlQuality.InnerXml.Contains("forbidden"))
 			{

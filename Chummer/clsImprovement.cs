@@ -106,6 +106,7 @@ namespace Chummer
             PhysicalLimit = 93,
             MentalLimit = 94,
             SocialLimit = 95,
+            SchoolOfHardKnocks = 96,
         }
 
         public enum ImprovementSource
@@ -268,6 +269,8 @@ namespace Chummer
 					return ImprovementType.AdeptPowerPoints;
 				case "ArmorEncumbrancePenalty":
 					return ImprovementType.ArmorEncumbrancePenalty;
+                case "SchoolOfHardKnocks":
+                    return ImprovementType.SchoolOfHardKnocks;
 				case "Uncouth":
 					return ImprovementType.Uncouth;
 				case "Initiation":
@@ -2369,6 +2372,15 @@ namespace Chummer
                         _objCharacter.Uncouth = true;
                     }
 
+                    // Check for School of Hard Knocks modifiers.
+                    if (NodeExists(nodBonus, "schoolofhardknocks"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "schoolofhardknocks");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "schoolofhardknocks = " + nodBonus["school"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
+                        _objCharacter.SchoolOfHardKnocks = true;
+                    }
                     // Check for Infirm modifiers.
                     if (NodeExists(nodBonus, "infirm"))
                     {
@@ -4258,6 +4270,28 @@ namespace Chummer
 					if (!blnFound)
 						_objCharacter.Uncouth = false;
 				}
+
+                // Turn off the SchoolOfHardKnocks flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.SchoolOfHardKnocks = false;
+                }
 
 				// Turn off the Infirm flag if it is being removed.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Infirm)

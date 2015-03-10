@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-400</version>
+	<version>-399</version>
 	<name>English (US)</name>
 	<strings>
 		<!-- Common Strings -->
@@ -1985,6 +1985,26 @@
 			<key>Message_InvalidAvail</key>
 			<text>{0} more items with Avail higher than {1} than allowed</text>
 		</string>
+		<string>
+			<key>Message_OverPositiveMetagenicQualities</key>
+			<text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
+		</string>		
+		<string>
+			<key>Message_OverNegativeMetagenicQualities</key>
+			<text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
+		</string>		
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>Negative Metagenic Qualities are unbalanced. Current: {0} Expected: {1} or {2}</text>
+		</string>	
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>1 Karma is required to balance Negative and Positive Metagenic Qualities. Currently available: {0}.\nIs it okay to spend these points?</text>
+		</string>		
 		<string>
 			<key>MessageTitle_Invalid</key>
 			<text>Invalid Character</text>

@@ -186,7 +186,6 @@
             this.chkMetagenetic.Tag = "Checkbox_SelectQuality_Metagenetic";
             this.chkMetagenetic.Text = "Show only Metagenetic Qualities";
             this.chkMetagenetic.UseVisualStyleBackColor = true;
-            this.chkMetagenetic.Visible = false;
             this.chkMetagenetic.CheckedChanged += new System.EventHandler(this.chkMetagenetic_CheckedChanged);
             // 
             // txtSearch

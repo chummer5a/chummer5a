@@ -3732,14 +3732,14 @@
 		<weapon>
 			<id>305a23ec-098f-47c9-898f-ca28016846d1</id>
 			<name>Colt New Model Revolver</name>
-			<category>Light Pistols</category>
+			<category>Holdouts</category>
 			<type>Ranged</type>
 			<spec>Revolvers</spec>
 			<conceal>-2</conceal>
 			<accuracy>6</accuracy>
 			<reach>0</reach>
 			<damage>5P</damage>
-			<ap>+1</ap>
+			<ap>-</ap>
 			<mode>SA</mode>
 			<rc>0</rc>
 			<ammo>5(cy)</ammo>

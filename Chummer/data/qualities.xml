@@ -1033,6 +1033,7 @@
 			<bonus />
 			<source>SR5</source>
 			<page>69</page>
+			<contributetolimit>no</contributetolimit>
 			<forbidden>
 				<oneof>
 					<quality>Adept</quality>
@@ -1058,6 +1059,7 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
@@ -1075,6 +1077,7 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
@@ -1091,7 +1094,8 @@
 					<quality>Aspected Magician</quality>
 					<quality>Adept</quality>
 				</oneof>
-			</forbidden>	  
+			</forbidden>
+			<contributetolimit>no</contributetolimit>			
 		</quality>
 		<quality>
 			<id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
@@ -1108,7 +1112,8 @@
 					<quality>Adept</quality>
 					<quality>Technomancer</quality>
 				</oneof>
-			</forbidden>	  
+			</forbidden>
+			<contributetolimit>no</contributetolimit>			
 		</quality>
 		<quality>
 			<id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
@@ -2303,61 +2308,43 @@
 			<name>Changeling (Class I SURGE)</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus>
-				<freenegativequalities>-35</freenegativequalities>
-				<freepositivequalities>30</freepositivequalities>
-			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Changeling (Class II SURGE)</quality>
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>103</page>
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<name>Changeling (Class II SURGE)</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<freenegativequalities>-35</freenegativequalities>
-				<freepositivequalities>30</freepositivequalities>
-			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Changeling (Class I SURGE)</quality>
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>103</page>
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<name>Changeling (Class III SURGE)</name>
-			<karma>25</karma>
+			<karma>30</karma>
 			<category>Positive</category>
-			<bonus>
-				<freenegativequalities>-35</freenegativequalities>
-				<freepositivequalities>30</freepositivequalities>
-			</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Changeling (Class I SURGE)</quality>
 					<quality>Changeling (Class II SURGE)</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>103</page>
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<name>360-degree Eyesight</name>
@@ -2373,6 +2360,7 @@
 			</required>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Animal Pelage (Quills)</name>
@@ -2394,6 +2382,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Animal Pelage (Insulating Pelt)</name>
@@ -2415,6 +2404,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Animal Pelage (Camo Fur)</name>
@@ -2436,6 +2426,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Arcane Arrester</name>
@@ -2460,6 +2451,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>		
 		<quality>
 			<name>Arcane Arrester II</name>
@@ -2484,6 +2476,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Balance Receptor</name>
@@ -2516,6 +2509,7 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Raptor Beak</name>
@@ -2534,6 +2528,7 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Bicardiac</name>
@@ -2549,6 +2544,7 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Biosonar</name>
@@ -2564,6 +2560,7 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Bone Spikes</name>
@@ -2582,6 +2579,7 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Broadened Auditory System (Infrasound)</name>
@@ -2597,6 +2595,7 @@
 			</required>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Broadened Auditory System (Ultrasound)</name>
@@ -2612,6 +2611,7 @@
 			</required>
 			<source>RF</source>
 			<page>111</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Camouflage</name>
@@ -2627,6 +2627,7 @@
 			</required>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dynamic Coloration</name>
@@ -2642,6 +2643,7 @@
 			</required>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Celerity</name>
@@ -2664,6 +2666,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>		
 		<quality>
 			<name>Claws</name>
@@ -2686,6 +2689,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>		
 		<quality>
 			<name>Razor Claws</name>
@@ -2708,6 +2712,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Retractable Claws</name>
@@ -2730,6 +2735,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Climate Adaptation (Arctic)</name>
@@ -2770,6 +2776,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Corrosive Spit</name>
@@ -2790,6 +2797,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Alteration (Bark Skin)</name>
@@ -2815,6 +2823,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Alteration (Blubber)</name>
@@ -2838,6 +2847,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>112</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Alteration (Dragon Skin)</name>
@@ -2861,6 +2871,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Alteration (Granite Shell)</name>
@@ -2886,6 +2897,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Alteration (Rhino Hide)</name>
@@ -2911,6 +2923,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Dermal Deposits</name>
@@ -2943,6 +2956,7 @@
 			</required>
 			<source>RF</source>
 			<page>114</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Electroception (Electrosense)</name>
@@ -2958,6 +2972,7 @@
 			</required>
 			<source>RF</source>
 			<page>114</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Electroception (Technosense)</name>
@@ -2973,6 +2988,7 @@
 			</required>
 			<source>RF</source>
 			<page>114</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Elongated Limbs</name>
@@ -2990,6 +3006,7 @@
 			</required>
 			<source>RF</source>
 			<page>113</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Fangs</name>
@@ -3006,6 +3023,7 @@
 			</required>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Frog Tongue</name>
@@ -3021,6 +3039,7 @@
 			</required>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Functional Tail (Balance)</name>
@@ -3049,6 +3068,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Functional Tail (Paddle)</name>
@@ -3077,6 +3097,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Functional Tail (Prehensile)</name>
@@ -3100,6 +3121,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Functional Tail (Thagomizer)</name>
@@ -3124,6 +3146,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Gills (Air)</name>
@@ -3145,6 +3168,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Gills (Aqua)</name>
@@ -3166,6 +3190,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Gills (Full)</name>
@@ -3187,6 +3212,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Glamour</name>
@@ -3215,6 +3241,7 @@
 			</required>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Greasy Skin</name>
@@ -3246,6 +3273,7 @@
 			</required>
 			<source>RF</source>
 			<page>115</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Keen-Eared</name>
@@ -3277,6 +3305,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Low-Light Vision</name>
@@ -3292,6 +3321,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Low-Light Vision (Feline)</name>
@@ -3307,6 +3337,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Magic Sense</name>
@@ -3322,6 +3353,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Magnetoception</name>
@@ -3342,6 +3374,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Marsupial Pouch</name>
@@ -3357,6 +3390,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Metagenetic Improvement</name>
@@ -3381,6 +3415,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Metahuman Traits</name>
@@ -3401,6 +3436,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Monkey Paws</name>
@@ -3416,6 +3452,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Nasty Vibe</name>
@@ -3436,6 +3473,7 @@
 			</required>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Exhaled, Mild)</name>
@@ -3467,6 +3505,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Exhaled, Moderate)</name>
@@ -3498,6 +3537,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Exhaled, Serious)</name>
@@ -3529,6 +3569,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Exhaled, Deadly)</name>
@@ -3560,6 +3601,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Spat, Mild)</name>
@@ -3591,6 +3633,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Spat, Moderate)</name>
@@ -3622,6 +3665,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Spat, Serious)</name>
@@ -3653,6 +3697,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Spat, Deadly)</name>
@@ -3684,6 +3729,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Injected, Mild)</name>
@@ -3718,6 +3764,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Injected, Moderate)</name>
@@ -3752,6 +3799,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Injected, Serious)</name>
@@ -3786,6 +3834,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Natural Venom (Injected, Deadly)</name>
@@ -3820,6 +3869,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Ogre Stomach</name>
@@ -3837,6 +3887,7 @@
 			</required>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Photometabolism</name>
@@ -3859,6 +3910,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Proboscis</name>
@@ -3874,6 +3926,7 @@
 			</required>
 			<source>RF</source>
 			<page>117</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Satyr Legs</name>
@@ -3891,6 +3944,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Setae</name>
@@ -3906,6 +3960,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Shiva Arms (1 Pair)</name>
@@ -3927,6 +3982,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>		
 		<quality>
 			<name>Shiva Arms (2 Pairs)</name>
@@ -3948,6 +4004,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Thermal Sensitivity</name>
@@ -3963,9 +4020,10 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Thermographic Vision</name>
+			<name>Thermographic Vision (SURGE)</name>
 			<karma>3</karma>
 			<category>Positive</category>
 			<bonus />
@@ -3978,6 +4036,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Thorns</name>
@@ -3999,6 +4058,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Underwater Vision</name>
@@ -4014,6 +4074,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Vomeronasal Organ</name>
@@ -4029,6 +4090,7 @@
 			</required>
 			<source>RF</source>
 			<page>118</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Webbed Digits</name>
@@ -4049,6 +4111,7 @@
 			</required>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Adiposis</name>
@@ -4065,48 +4128,33 @@
 					<bonus>-3</bonus>
 				</specificskill>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Astral Hazing (non-Awakened)</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Astral Hazing (Awakened)</quality>
+					<quality>Aspected Magician</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Astral Hazing (Awakened)</name>
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Astral Hazing (non-Awakened)</quality>
@@ -4114,94 +4162,58 @@
 			</forbidden>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Berserker</name>
 			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Bioluminescence</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>119</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Cephalopod Skull</name>
 			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Cold-Blooded</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Critter Spook</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Cyclopean Eye</name>
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Third Eye</quality>
@@ -4209,6 +4221,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Deformity (Picasso)</name>
@@ -4220,18 +4233,12 @@
 					<bonus>-2</bonus>
 				</specificskill>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Deformity (25 Karma)</name>
+			<name>Deformity (Quasimodo)</name>
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus>
@@ -4240,43 +4247,24 @@
 					<bonus>-2</bonus>
 				</skillcategory>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Extravagant Eyes</name>
 			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Feathers</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Animal Pelage (Quills)</quality>
@@ -4288,6 +4276,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Impaired Attribute</name>
@@ -4302,43 +4291,24 @@
 					<max>-2</max>
 				</selectattribute>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>120</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Insectoid Features</name>
 			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Mood Hair</name>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Feathers</quality>
@@ -4347,6 +4317,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Neoteny</name>
@@ -4358,28 +4329,15 @@
 					<lifestylecost>10</lifestylecost>
 				</conditionmonitor>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Nocturnal</name>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Photometabolism</quality>
@@ -4387,6 +4345,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Progeria</name>
@@ -4398,28 +4357,15 @@
 					<bonus>-2</bonus>
 				</skillcategory>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Scales</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Animal Pelage (Quills)</quality>
@@ -4431,51 +4377,34 @@
 			</forbidden>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Scent Glands</name>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>121</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Slow Healer</name>
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Striking Skin Pigmentation</name>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Stubby Arms</name>
@@ -4484,43 +4413,24 @@
 			<bonus>
 				<reach>-1</reach>
 			</bonus>
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Symbiosis</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Third Eye</name>
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Cyclopean Eye</quality>
@@ -4528,34 +4438,22 @@
 			</forbidden>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Unusual Hair</name>
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<source>RF</source>
 			<page>122</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Vestigial Tail</name>
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Changeling (Class I SURGE)</quality>
-					<quality>Changeling (Class II SURGE)</quality>
-					<quality>Changeling (Class III SURGE)</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Functional Tail (Balance)</quality>
@@ -4566,6 +4464,7 @@
 			</forbidden>
 			<source>RF</source>
 			<page>123</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Adrenaline Surge</name>

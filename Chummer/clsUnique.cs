@@ -955,6 +955,7 @@ namespace Chummer
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = "";
+        public string _strMetagenetic = "";
 		private string _strExtra = "";
 		private string _strSource = "";
 		private string _strPage = "";
@@ -1026,6 +1027,10 @@ namespace Chummer
 		public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
 		{
 			_strName = objXmlQuality["name"].InnerText;
+            if (objXmlQuality["metagenetic"] != null)
+            {
+                _strMetagenetic = objXmlQuality["metagenetic"].InnerText;
+            }
 			_intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
 			_objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
@@ -1114,7 +1119,8 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("bp", _intBP.ToString());
-			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+            objWriter.WriteElementString("metagenetic", _strMetagenetic.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());
 			objWriter.WriteElementString("qualitytype", _objQualityType.ToString());
 			objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
@@ -1462,20 +1468,36 @@ namespace Chummer
 			{
 				bool blnReturn;
 
+
                 if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
                     blnReturn = false;
                 else
                 {
-                    if (_strName == "Mentor Spirit")
+                    bool blnContribute = true;
+                    //Positive Metagenetic Qualities are free if you're a Changeling. 
+                    if (_strMetagenetic == "yes")
                     {
-                        bool blnContribute = true;
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            if (objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way")
-                                blnContribute = false;
+                            if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
+                            { blnContribute = false; }
                         }
                         blnReturn = blnContribute;
                     }
+                    
+                    else if (_strName == "Mentor Spirit")
+                    {
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+
+                            if (objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way")
+                            {
+                                blnContribute = false;
+                            }
+                        }
+                        blnReturn = blnContribute;
+                    }
+                        
                     else
                         blnReturn = true;
                 }

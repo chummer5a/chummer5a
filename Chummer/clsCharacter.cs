@@ -25,6 +25,8 @@ public delegate void CritterTabEnabledChangedHandler(Object sender);
 // UneducatedChanged Event Handler
 public delegate void UneducatedChangedHandler(Object sender);
 // UncouthChanged Event Handler
+public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
+// SchoolOfHardKnocksChanged Event Handler
 public delegate void UncouthChangedHandler(Object sender);
 // InformChanged Event Handler
 public delegate void InfirmChangedHandler(Object sender);
@@ -70,6 +72,7 @@ namespace Chummer
         private int _intSpellLimit = 0;
         private int _intCFPLimit = 0;
         private int _intContactPoints = 0;
+        public int metageneticLimit = 0;
 
 		// General character info.
 		private string _strName = "";
@@ -125,6 +128,7 @@ namespace Chummer
 		private bool _blnCritterEnabled = false;
 		private bool _blnUneducated = false;
 		private bool _blnUncouth = false;
+        private bool _blnSchoolOfHardKnocks = false;
 		private bool _blnInfirm = false;
 		private bool _blnIsCritter = false;
 		private bool _blnPossessed = false;
@@ -237,6 +241,7 @@ namespace Chummer
 		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
 		public event UneducatedChangedHandler UneducatedChanged;
 		public event UncouthChangedHandler UncouthChanged;
+        public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
 		public event InfirmChangedHandler InfirmChanged;
 		public event CharacterNameChangedHandler CharacterNameChanged;
 		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
@@ -456,7 +461,9 @@ namespace Chummer
 			objWriter.WriteElementString("uneducated", _blnUneducated.ToString());
 			// <uncouth />
 			objWriter.WriteElementString("uncouth", _blnUncouth.ToString());
-			// <infirm />
+            // <uncouth />
+            objWriter.WriteElementString("schoolofhardknocks", _blnSchoolOfHardKnocks.ToString());
+            // <infirm />
 			objWriter.WriteElementString("infirm", _blnInfirm.ToString());
 			// <blackmarket />
 			objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
@@ -1349,6 +1356,13 @@ namespace Chummer
 			catch
 			{
 			}
+            try
+            {
+                _blnSchoolOfHardKnocks = Convert.ToBoolean(objXmlCharacter["schoolofhardknocks"].InnerText);
+            }
+            catch
+            {
+            }
 			try
 			{
 				_blnInfirm = Convert.ToBoolean(objXmlCharacter["infirm"].InnerText);
@@ -6609,7 +6623,29 @@ namespace Chummer
 				}
 			}
 		}
-
+        /// <summary>
+        /// Whether or not School of Hard Knocks is enabled.
+        /// </summary>
+        public bool SchoolOfHardKnocks
+        {
+            get
+            {
+                return _blnSchoolOfHardKnocks;
+            }
+            set
+            {
+                bool blnOldValue = _blnSchoolOfHardKnocks;
+                _blnSchoolOfHardKnocks = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        SchoolOfHardKnocksChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
 		/// <summary>
 		/// Whether or not Infirm is enabled.
 		/// </summary>

@@ -219,6 +219,7 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
             this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
             this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
             this.chkDontDoubleQualities = new System.Windows.Forms.CheckBox();
@@ -228,6 +229,7 @@
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
+            this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
@@ -2404,6 +2406,7 @@
             // tabHouseRules
             // 
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
             this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
             this.tabHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups);
             this.tabHouseRules.Controls.Add(this.chkDontDoubleQualities);
@@ -2416,6 +2419,17 @@
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // chkFreeKarmaKnowledge
+            // 
+            this.chkFreeKarmaKnowledge.AutoSize = true;
+            this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 49);
+            this.chkFreeKarmaKnowledge.Name = "chkFreeKarmaKnowledge";
+            this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(254, 17);
+            this.chkFreeKarmaKnowledge.TabIndex = 4;
+            this.chkFreeKarmaKnowledge.Tag = "Checkbox_Options_FreeKnowledgeSkills";
+            this.chkFreeKarmaKnowledge.Text = "Karma Build: Free Knowledge Skills like BP Build";
+            this.chkFreeKarmaKnowledge.UseVisualStyleBackColor = true;
             // 
             // chkAllowInitiation
             // 
@@ -2518,6 +2532,17 @@
             this.txtSettingName.Name = "txtSettingName";
             this.txtSettingName.Size = new System.Drawing.Size(190, 20);
             this.txtSettingName.TabIndex = 3;
+            // 
+            // chkFreeKarmaContacts
+            // 
+            this.chkFreeKarmaContacts.AutoSize = true;
+            this.chkFreeKarmaContacts.Location = new System.Drawing.Point(8, 6);
+            this.chkFreeKarmaContacts.Name = "chkFreeKarmaContacts";
+            this.chkFreeKarmaContacts.Size = new System.Drawing.Size(155, 17);
+            this.chkFreeKarmaContacts.TabIndex = 0;
+            this.chkFreeKarmaContacts.Tag = "Checkbox_Options_FreeContactPointsKarma";
+            this.chkFreeKarmaContacts.Text = "Free Contact Points: CHA x";
+            this.chkFreeKarmaContacts.UseVisualStyleBackColor = true;
             // 
             // tipTooltip
             // 
@@ -2813,5 +2838,7 @@
         private System.Windows.Forms.CheckBox chkUsePointsOnBrokenGroups;
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
+        private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
+        private System.Windows.Forms.CheckBox chkFreeKarmaKnowledge;
 	}
 }

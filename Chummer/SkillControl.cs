@@ -92,10 +92,14 @@ namespace Chummer
 						else
 							intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
-
 					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
 					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
 						intKarmaCost *= 2;
+                    //Double the Karma cost if the character is Uncouth and is a Social Active Skill.
+                    if (_objSkill.CharacterObject.Uncouth && (SkillCategory == "Social Active"))
+                    {
+                        intKarmaCost *= 2;
+                    }
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
 					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 				}
@@ -182,6 +186,7 @@ namespace Chummer
         {
             if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
                 nudKarma.Value = nudSkill.Maximum - nudSkill.Value;
+
             _intKarmaRating = Convert.ToInt32(nudKarma.Value);
             _objSkill.Karma = Convert.ToInt32(nudKarma.Value);
             _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
@@ -512,10 +517,24 @@ namespace Chummer
 						else
 							intKarmaCost = (value + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
-					
+
+                    if (_objSkill.CharacterObject.SchoolOfHardKnocks) 
+                    {
+                        MessageBox.Show("What");
+                        intKarmaCost *= 100;
+                    }
+
 					// Double the Karma cost if the character is Uneducated and is a Technica Active, Academic, or Professional Skill.
 					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
-						intKarmaCost *= 2;
+                    {
+                        intKarmaCost *= 2;
+                    }
+
+                    //Double the Karma cost if the character is Uncouth and is a Social Active Skill.
+                    if (_objSkill.CharacterObject.Uncouth && (SkillCategory == "Social Active"))
+                    {
+                        intKarmaCost *= 2;
+                    }
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
 					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 					cmdImproveSkill.Enabled = true;

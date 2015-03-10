@@ -53,6 +53,7 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+            _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
 			_objCharacter.InfirmChanged += objCharacter_InfirmChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
@@ -1418,7 +1419,6 @@ namespace Chummer
 			_objFunctions.SortTree(treMartialArts);
 			UpdateMentorSpirits();
 			UpdateInitiationGradeTree();
-
 			UpdateCharacterInfo();
 
 			_blnIsDirty = false;
@@ -1467,6 +1467,7 @@ namespace Chummer
 				_objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
 				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
+                _objCharacter.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
 				_objCharacter.InfirmChanged -= objCharacter_InfirmChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
@@ -2053,6 +2054,19 @@ namespace Chummer
 			}
 		}
 
+        private void objCharacter_SchoolOfHardKnocksChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            // Change to the status of SchoolOfHardKnocksChanged being enabled.
+            if (_objCharacter.SchoolOfHardKnocks)
+            {
+            }
+            else
+            { }
+        }
+
 		private void objCharacter_InfirmChanged(object sender)
 		{
 			if (_blnReapplyImprovements)
@@ -2361,6 +2375,7 @@ namespace Chummer
 			bool blnRESEnabled = _objCharacter.RESEnabled;
 			bool blnUneducated = _objCharacter.Uneducated;
 			bool blnUncouth = _objCharacter.Uncouth;
+            bool blnSchoolOfHardKnocks = _objCharacter.SchoolOfHardKnocks;
 			bool blnInfirm = _objCharacter.Infirm;
 
 			_blnReapplyImprovements = true;
@@ -2840,6 +2855,8 @@ namespace Chummer
 				objCharacter_UneducatedChanged(this);
 			if (blnUncouth != _objCharacter.Uncouth)
 				objCharacter_UncouthChanged(this);
+            if (blnSchoolOfHardKnocks != _objCharacter.SchoolOfHardKnocks)
+                objCharacter_SchoolOfHardKnocksChanged(this);
 			if (blnInfirm != _objCharacter.Infirm)
 				objCharacter_InfirmChanged(this);
 
@@ -7101,18 +7118,22 @@ namespace Chummer
 
                     // Stop if this isn't the highest grade
 
-                    if (_objCharacter.MAGEnabled)
+                    if (_objCharacter.MAGEnabled) 
+                    { 
                         if (objGrade.Grade != _objCharacter.InitiateGrade)
                         {
                             MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
+                    }
                     else if (_objCharacter.RESEnabled)
-                            if (objGrade.Grade != _objCharacter.SubmersionGrade)
-                            {
-                                MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
+                    {
+                        if (objGrade.Grade != _objCharacter.SubmersionGrade)
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_DeleteGrade"), LanguageManager.Instance.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
 
                     // We're deleting an entire grade
                     string strMessage = "";
@@ -7211,7 +7232,29 @@ namespace Chummer
                     _objCharacter.InitiationGrades.Remove(objGrade);
 
                     treMetamagic.SelectedNode.Remove();
-                    _objCharacter.InitiateGrade = objGrade.Grade - 1;
+                    if (_objCharacter.MAGEnabled)
+                    {
+                        _objCharacter.InitiateGrade = objGrade.Grade - 1;
+                    // Remove any existing Initiation Improvements.
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Initiation, "Initiation");
+
+                    // Create the replacement Improvement.
+                        _objImprovementManager.CreateImprovement("MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.InitiateGrade);
+                    _objImprovementManager.Commit();
+                    }
+                    else if (_objCharacter.RESEnabled)
+                    {
+                        _objCharacter.SubmersionGrade = objGrade.Grade - 1;
+
+                        // Remove any existing Initiation Improvements.
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Submersion, "Submersion");
+
+                        // Create the replacement Improvement.
+                        _objImprovementManager.CreateImprovement("RES", Improvement.ImprovementSource.Submersion, "Submersion", Improvement.ImprovementType.Attribute, "", 0, 1, 0, _objCharacter.SubmersionGrade);
+                        _objImprovementManager.Commit();
+                    }
+                    
+                    
                 }
                 else
                 {
@@ -7507,11 +7550,11 @@ namespace Chummer
 			if (frmPickQuality.FreeCost)
 				objQuality.BP = 0;
 
-			// If the item being checked would cause the limit of 35 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+			// If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
 			string strAmount = "";
 			int intMaxQualityAmount = 0;
-			strAmount = "35 " + LanguageManager.Instance.GetString("String_Karma");
-			intMaxQualityAmount = 35;
+			strAmount = "25 " + LanguageManager.Instance.GetString("String_Karma");
+			intMaxQualityAmount = 25;
 
 			// Make sure that adding the Quality would not cause the character to exceed their BP limits.
 			int intBP = 0;
@@ -15173,8 +15216,6 @@ namespace Chummer
 			string strMAG = "";
 			string strRES = "";
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
                 // Get the total of "free points" spent
                 int intAtt = 0;
                 intAtt += Convert.ToInt32(nudEDG.Value - nudEDG.Minimum);
@@ -15206,8 +15247,6 @@ namespace Chummer
                     }
                 }
                 return intBP;
-            }
-
 
 			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
 			int intEssenceLoss = 0;
@@ -15545,7 +15584,7 @@ namespace Chummer
             lblPBuildNegativeQualities.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
             intFreestyleBP += intPointsUsed;
 
-			// If the character is only allowed to gain 25 BP (70 Karma) from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+			// If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
 			if (_objOptions.ExceedNegativeQualitiesLimit)
 			{
                 if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma && intNegativePoints < -1 * _objCharacter.MaxKarma)
@@ -15555,7 +15594,7 @@ namespace Chummer
 				}
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && intNegativePoints < -70)
 				{
-					intNegativePoints += 70;
+                    intNegativePoints += _objCharacter.MaxKarma;
 					intPointsRemain += intNegativePoints;
 				}
 			}
@@ -15815,7 +15854,7 @@ namespace Chummer
 
                 if (objSkillControl.SkillSpec.Trim() != string.Empty)
                 {
-                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                     {
                         bool blnFound = false;
                         if (objSkillControl.SkillName == "Artisan")
@@ -15857,7 +15896,7 @@ namespace Chummer
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
 
             intPointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
@@ -16163,8 +16202,8 @@ namespace Chummer
 
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
 				// Characters built using the Karma system do not get free Knowledge Skills.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Base + _objCharacter.LOG.Base) * 2;
+                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * 2;
 				else
 					_objCharacter.KnowledgeSkillPoints = 0;
 
@@ -20008,6 +20047,64 @@ namespace Chummer
 				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", (intBuildPoints * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
 			}
 
+            // if character has more than permitted Metagenetic qualities
+            if (_objCharacter.metageneticLimit > 0)
+            {
+                int metageneticPositiveQualities = 0;
+                int metageneticNegativeQualities = 0;
+                foreach (Quality objQuality in _objCharacter.Qualities)
+                {
+                    if (objQuality._strMetagenetic == "yes")
+                    {
+                        if (objQuality.Type == QualityType.Positive)
+                        {
+                            metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
+                        }
+                        else if (objQuality.Type == QualityType.Negative)
+                        {
+                            metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
+                        }
+                    }
+                }
+                if (metageneticNegativeQualities > _objCharacter.metageneticLimit)
+                {
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    blnValid = false;
+                }
+                if (metageneticPositiveQualities > _objCharacter.metageneticLimit)
+                {
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    blnValid = false;
+                }
+
+                if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
+                {
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesUnbalanced").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", (metageneticPositiveQualities - 1).ToString()).Replace("{2}", metageneticPositiveQualities.ToString());
+                    blnValid = false;
+                }
+                //Subtract 1 karma to balance Metagenic Qualities
+                if (metageneticNegativeQualities == (metageneticPositiveQualities - 1))
+                {
+                    if (intBuildPoints > 0)
+                    
+                    {
+                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_MetagenicQualitiesSubtractingKarma").Replace("{0}", intBuildPoints.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                        {
+                            blnValid = false;
+                        }
+                        else
+                        {
+                            intBuildPoints = intBuildPoints - 1;
+                        }
+                    }
+                    else
+                    {
+                        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesInsufficientKarma").Replace("{0}", intBuildPoints.ToString());
+                        blnValid = false;
+                    }
+                }
+
+            }
             // Check if the character has gone over on Primary Attributes
             if (_objCharacter.Attributes < 0)
             {

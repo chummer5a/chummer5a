@@ -1,3 +1,28 @@
+Build 5.158
+Application Change:
+- Qualities now capped at 25 points instead of 35.
+- Knowledge Skills calculated based on proper value (Was metatype base, is now actual value.)
+- New House Rule: Point Buy grants free Knowledge Skills. Todo: enable free knowledge multiplier as a house rule variable.
+- SURGE qualities are free if a character has the Changeling qualities.
+- 1 Karma will be subtracted from free karma if Positive and Negative Changeling qualities are unbalanced.
+- Deleting Submersion properly decrements augmented maximum. Also fixes being able to remove earlier initiate grades.
+- Default value for purchasing a Complex Form set to 4.
+
+Data Change: 
+- Technomancer, Adept, Mystic Adept, Magician, Aspected Magician and Changeling qualities no longer contribute towards quality limit during karmagen.
+- SURGE qualities all tagged as metagenetic improvements to support the new way SURGE works. Also should have been done from the start, but that's neither here nor there.
+- Colt New Model Revolver amended to use proper statistics.
+
+New Strings:
+Message_OverNegativeMetagenicQualities
+Message_MetagenicQualitiesUnbalanced
+Message_MetagenicQualitiesInsufficientKarma
+Message_MetagenicQualitiesSubtractingKarma
+
+Build 5.157
+Application Change: 
+- Karma calculation issue fixed in karmagen for special attributes. (Sure, let's include a specific handler for priority gen and nothing else. Makes sense.)
+
 Build 5.156.1
 Application Change: 
 - Karma calculation issue fixed in karmagen. (Wasn't counting metatype minimmums.)

@@ -833,7 +833,7 @@ namespace Chummer
         private int _intKarmaImproveActiveSkill = 2;
         private int _intKarmaImproveSkillGroup = 5;
         private int _intKarmaAttribute = 5;
-        private int _intKarmaQuality = 2;
+        private int _intKarmaQuality = 1;
         private int _intKarmaSpell = 5;
         private int _intKarmaNewComplexForm = 2;
         private int _intKarmaImproveComplexForm = 1;
