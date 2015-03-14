@@ -6040,7 +6040,7 @@ namespace Chummer
 		private void cmdAddLifestyle_Click(object sender, EventArgs e)
 		{
 			Lifestyle objLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objLifestyle, _objCharacter);
+            frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objLifestyle, _objCharacter);
             frmPickLifestyle.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -12705,7 +12705,7 @@ namespace Chummer
 		private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+			frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -12735,7 +12735,7 @@ namespace Chummer
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -12765,7 +12765,7 @@ namespace Chummer
 		private void tsSafehouse_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -17398,7 +17398,7 @@ namespace Chummer
 			if (objLifestyle.BaseLifestyle != "")
 			{
 				// Edit Advanced Lifestyle.
-				frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 

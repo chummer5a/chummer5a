@@ -6203,32 +6203,34 @@ namespace Chummer
 			}
 		}
 
-		private void cmdAddLifestyle_Click(object sender, EventArgs e)
-		{
-            Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+        private void cmdAddLifestyle_Click(object sender, EventArgs e)
+        {
+            Lifestyle objLifestyle = new Lifestyle(_objCharacter);
+            frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objLifestyle, _objCharacter);
             frmPickLifestyle.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                 return;
 
-            objNewLifestyle.StyleType = LifestyleType.Advanced;
-
-            _objCharacter.Lifestyles.Add(objNewLifestyle);
+            _objCharacter.Lifestyles.Add(objLifestyle);
 
             TreeNode objNode = new TreeNode();
-            objNode.Text = objNewLifestyle.Name;
-            objNode.Tag = objNewLifestyle.InternalId;
-            objNode.ContextMenuStrip = cmsAdvancedLifestyle;
+            objNode.Text = objLifestyle.DisplayName;
+            objNode.Tag = objLifestyle.InternalId;
+            objNode.ContextMenuStrip = cmsLifestyleNotes;
             treLifestyles.Nodes[0].Nodes.Add(objNode);
             treLifestyles.Nodes[0].Expand();
-
-            if (frmPickLifestyle.AddAgain)
-                tsAdvancedLifestyle_Click(sender, e);
+            treLifestyles.SelectedNode = objNode;
 
             UpdateCharacterInfo();
-		}
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+
+            if (frmPickLifestyle.AddAgain)
+                cmdAddLifestyle_Click(sender, e);
+        }
 
 		private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
 		{
@@ -9517,40 +9519,40 @@ namespace Chummer
 			}
 		}
 
-		private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
-		{
-			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
-			frmPickLifestyle.ShowDialog(this);
+        private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
+        {
+            Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
+            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmPickLifestyle.ShowDialog(this);
 
-			// Make sure the dialogue window was not canceled.
-			if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-				return;
+            // Make sure the dialogue window was not canceled.
+            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                return;
 
-			objNewLifestyle.StyleType = LifestyleType.Advanced;
+            objNewLifestyle.StyleType = LifestyleType.Advanced;
 
-			_objCharacter.Lifestyles.Add(objNewLifestyle);
+            _objCharacter.Lifestyles.Add(objNewLifestyle);
 
-			TreeNode objNode = new TreeNode();
-			objNode.Text = objNewLifestyle.Name;
-			objNode.Tag = objNewLifestyle.InternalId;
-			objNode.ContextMenuStrip = cmsAdvancedLifestyle;
-			treLifestyles.Nodes[0].Nodes.Add(objNode);
-			treLifestyles.Nodes[0].Expand();
+            TreeNode objNode = new TreeNode();
+            objNode.Text = objNewLifestyle.Name;
+            objNode.Tag = objNewLifestyle.InternalId;
+            objNode.ContextMenuStrip = cmsAdvancedLifestyle;
+            treLifestyles.Nodes[0].Nodes.Add(objNode);
+            treLifestyles.Nodes[0].Expand();
 
-			if (frmPickLifestyle.AddAgain)
-				tsAdvancedLifestyle_Click(sender, e);
+            if (frmPickLifestyle.AddAgain)
+                tsAdvancedLifestyle_Click(sender, e);
 
-			UpdateCharacterInfo();
-		}
+            UpdateCharacterInfo();
+        }
 
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
 			frmPickLifestyle.ShowDialog(this);
-
+            
 			// Make sure the dialogue window was not canceled.
 			if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
 				return;
@@ -9573,7 +9575,7 @@ namespace Chummer
 		private void tsSafehouse_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -12492,7 +12494,7 @@ namespace Chummer
             if (objLifestyle.BaseLifestyle != "")
 			{
 				// Edit Advanced Lifestyle.
-				frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 

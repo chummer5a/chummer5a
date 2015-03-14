@@ -8941,6 +8941,11 @@ namespace Chummer
 		private int _intPercentage = 100;
 		private string _strLifestyleName = "";
 		private bool _blnPurchased = false;
+        private string _strComforts = "";
+        private string _strEntertainment = "";
+        private string _strNecessities = "";
+        private string _strNeighborhood = "";
+        private string _strSecurity = "";
         private string _strBaseLifestyle = "";
 		private string _strSource = "";
 		private string _strPage = "";
@@ -9012,6 +9017,11 @@ namespace Chummer
 			objWriter.WriteElementString("percentage", _intPercentage.ToString());
 			objWriter.WriteElementString("lifestylename", _strLifestyleName);
 			objWriter.WriteElementString("purchased", _blnPurchased.ToString());
+            objWriter.WriteElementString("comforts", _strComforts);
+            objWriter.WriteElementString("entertainment", _strEntertainment);
+            objWriter.WriteElementString("necessities", _strNecessities);
+            objWriter.WriteElementString("neighborhood", _strNeighborhood);
+            objWriter.WriteElementString("security", _strSecurity);
 			objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
@@ -9394,7 +9404,79 @@ namespace Chummer
                 _strBaseLifestyle = value;
 			}
 		}
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public string Comforts
+        {
+            get
+            {
+                return _strComforts;
+            }
+            set
+            {
+                _strComforts = value;
+            }
+        }
 
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public string Entertainment
+        {
+            get
+            {
+                return _strEntertainment;
+            }
+            set
+            {
+                _strEntertainment = value;
+            }
+        }
+        /// <summary>
+        /// Advance Lifestyle Necessities.
+        /// </summary>
+        public string Necessities
+        {
+            get
+            {
+                return _strNecessities;
+            }
+            set
+            {
+                _strNecessities = value;
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Neighborhood.
+        /// </summary>
+        public string Neighborhood
+        {
+            get
+            {
+                return _strNeighborhood;
+            }
+            set
+            {
+                _strNeighborhood = value;
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Security.
+        /// </summary>
+        public string Security
+        {
+            get
+            {
+                return _strSecurity;
+            }
+            set
+            {
+                _strSecurity = value;
+            }
+        }
 		/// <summary>
 		/// Advanced Lifestyle Qualities.
 		/// </summary>

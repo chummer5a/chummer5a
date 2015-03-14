@@ -175,6 +175,12 @@
     <Compile Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectAdvancedLifestyle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectAdvancedLifestyle.Designer.cs">
+      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    </Compile>
     <Compile Include="lang\language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -307,11 +313,11 @@
     <Compile Include="frmReload.Designer.cs">
       <DependentUpon>frmReload.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.cs">
+    <Compile Include="frmSelectLifestyle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.designer.cs">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <Compile Include="frmSelectLifestyle.designer.cs">
+      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectArmorMod.cs">
       <SubType>Form</SubType>
@@ -366,12 +372,6 @@
     </Compile>
     <Compile Include="frmSelectItem.Designer.cs">
       <DependentUpon>frmSelectItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmSelectLifestyle.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmSelectLifestyle.Designer.cs">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectLimit.cs">
       <SubType>Form</SubType>
@@ -716,6 +716,9 @@
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectAdvancedLifestyle.resx">
+      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
     </EmbeddedResource>
@@ -781,8 +784,8 @@
     <EmbeddedResource Include="frmReload.resx">
       <DependentUpon>frmReload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectAdvancedLifestyle.resx">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <EmbeddedResource Include="frmSelectLifestyle.resx">
+      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectArmorMod.resx">
       <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
@@ -810,9 +813,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectItem.resx">
       <DependentUpon>frmSelectItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectLifestyle.resx">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLimit.resx">
       <DependentUpon>frmSelectLimit.cs</DependentUpon>
