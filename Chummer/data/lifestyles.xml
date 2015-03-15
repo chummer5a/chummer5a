@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-923</version>
+	<version>-922</version>
 	<lifestyles>
 		<lifestyle>
 			<name>Bolt Hole</name>
@@ -194,7 +194,393 @@
 		</security>		
 	</securities>
 	<entertainments>
-Treat like qualities
+		<entertainment>
+			<name>Armory</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>2000</cost>
+			<page>220</page>
+		</entertainment>
+		<entertainment>
+			<name>Cleaning Service (Standard)</name>
+			<category>Service</category>
+			<lp>1</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>220</page>
+		</entertainment>
+		<entertainment>
+			<name>Cleaning Service (Mage Sensitive)</name>
+			<category>Service</category>
+			<lp>1</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>200</cost>
+			<page>220</page>
+		</entertainment>
+		<entertainment>
+			<name>Cleaning Service (Pollution Sensitive)</name>
+			<category>Service</category>
+			<lp>1</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>400</cost>
+			<page>220</page>
+		</entertainment>	
+		<entertainment>
+			<name>Discreet Cleaning Service</name>
+			<category>Service</category>
+			<lp>4</lp>
+			<free></free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>221</page>
+		</entertainment>	
+		<entertainment>
+			<name>Discreet Deliveryman</name>
+			<category>Service</category>
+			<lp>3</lp>
+			<free></free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>221</page>
+		</entertainment>
+		<entertainment>
+			<name>Discreet Candyman</name>
+			<category>Service</category>
+			<lp>3</lp>
+			<free></free>
+			<source>RF</source>
+			<cost>1000</cost>
+			<page>221</page>
+		</entertainment>
+		<entertainment>
+			<name>Garage (Airplane)</name>
+			<category>Asset</category>
+			<lp>4</lp>
+			<free>Luxury</free>
+			<source>RF</source>
+			<cost>20000</cost>
+			<page>221</page>
+		</entertainment>
+		<entertainment>
+			<name>Garage (Boat)</name>
+			<category>Asset</category>
+			<lp>3</lp>
+			<free>High, Luxury</free>
+			<source>RF</source>
+			<cost>5000</cost>
+			<page>221</page>
+		</entertainment>	
+		<entertainment>
+			<name>Garage (Car (Body 4 or Less))</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>221</page>
+		</entertainment>	
+		<entertainment>
+			<name>Garage (Car (Body 5 or More))</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>221</page>
+		</entertainment>
+		<entertainment>
+			<name>Garage (Helicopter)</name>
+			<category>Asset</category>
+			<lp>4</lp>
+			<free>Luxury</free>
+			<source>RF</source>
+			<cost>1000</cost>
+			<page>221</page>
+		</entertainment>	
+		<entertainment>
+			<name>Greenhouse</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>500</cost>
+			<page>221</page>
+		</entertainment>
+		<entertainment>
+			<name>Grid Subscription</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Gym</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>300</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Indoor Arboretum</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Local Bar Patron</name>
+			<category>Outing</category>
+			<lp>1</lp>
+			<free>Low,Medium,High,Luxury</free>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<cost>25</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Goods (Avail 3)</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Goods (Avail 5)</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Goods (Avail 7)</name>
+			<category>Asset</category>
+			<lp>3</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Goods (Avail 9)</name>
+			<category>Asset</category>
+			<lp>4</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Pawn Shop</name>
+			<category>Service</category>
+			<lp>2</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Merchandise: Used Goods</name>
+			<category>Service</category>
+			<lp>2</lp>
+			<bonus>
+				<selecttext />
+			</bonus>			
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>10000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Panic Room</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>1000</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Patron of the Arts (Concerts/Events)</name>
+			<category>Outing</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Patron of the Arts (Private Club)</name>
+			<category>Outing</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>200</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Patron of the Arts (Zoo/Museum)</name>
+			<category>Outing</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>Low,Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>75</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Patron of the Arts (Theme Parks)</name>
+			<category>Outing</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Private Room</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Squatter,Low,Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>20</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Public Transportation</name>
+			<category>Service</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>Low,Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Railway Pass</name>
+			<category>Service</category>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Shooting Range</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>500</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Soy Processing Unit</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>20</cost>
+			<page>223</page>
+		</entertainment>
+		<entertainment>
+			<name>Sports Court - Small</name>
+			<bonus>
+				<selecttext />
+			</bonus>	
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>High,Luxury</free>
+			<source>RF</source>
+			<cost>300</cost>
+			<page>224</page>
+		</entertainment>
+		<entertainment>
+			<name>Swimming Pool</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>224</page>
+		</entertainment>
+		<entertainment>
+			<name>Walk-In Freezer</name>
+			<category>Asset</category>
+			<lp>1</lp>
+			<free>Commercial</free>
+			<source>RF</source>
+			<cost>1000</cost>
+			<page>224</page>
+		</entertainment>
+		<entertainment>
+			<name>Workshop/Facility</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Medium,Commercial</free>
+			<source>RF</source>
+			<cost>2500</cost>
+			<page>224</page>
+		</entertainment>
+		<entertainment>
+			<name>Yard</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Low,Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>50</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Zen Den</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>222</page>
+		</entertainment>
+		<entertainment>
+			<name>Bat Cave</name>
+			<category>Asset</category>
+			<lp>2</lp>
+			<free>Medium,High,Luxury</free>
+			<source>RF</source>
+			<cost>100</cost>
+			<page>222</page>
+		</entertainment>		
 	</entertainments>	
 	<qualities>	
 		<quality>
@@ -205,1233 +591,5 @@ Treat like qualities
 			<source>RC</source>
 			<page>161</page>
 		</quality>
-		<quality>
-			<name>Astral Repellant</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Commercial Zone</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Concerned Neighbors</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Easy-Going Landlord</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Escape Tunnel</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Feng Shui</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>161</page>
-		</quality>
-		<quality>
-			<name>Free Access</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Friendly Neighbors</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Hasty Exit</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Homegrown Farming</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>In Tune</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Inconspicuous Housing, Matrix</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Inconspicuous Housing, Physical</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>No Neighbors</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Perfect Roommate</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Astral (Rating 1)</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Astral (Rating 2)</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Astral (Rating 3)</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Matrix (Rating 1)</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Matrix (Rating 2)</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Matrix (Rating 3)</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Physical (Rating 1)</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Physical (Rating 2)</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Privacy Screen, Physical (Rating 3)</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Quiet Neighborhood</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Rad Pad</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Resonance Well</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Security Conscious</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Well Made</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Workplace</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Animal Lover Rating 1</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Animal Lover Rating 2</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Animal Lover Rating 3</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Rural Home</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Outbuildings Rating 1</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Outbuildings Rating 2</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Reinforced Housing Rating 1</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>Reinforced Housing Rating 2</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RW</source>
-			<page>40</page>
-		</quality>
-		<quality>
-			<name>AI in Residence</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Ambusher's Delight</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>162</page>
-		</quality>
-		<quality>
-			<name>Black Hole (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Black Hole (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-4</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Corporate Owned</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Crash Pad</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Defective CHN</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Green Plan</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Haunted</name>
-			<category>Negative</category>
-			<lp>-4</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Household Gremlins (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Household Gremlins (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Lax Security</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Living by Committee</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Living with Parents</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>163</page>
-		</quality>
-		<quality>
-			<name>Network Bottleneck</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Forwarding Address</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Nosy Neighbors</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Astral (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Astral (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Astral (Rating 3)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Matrix (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Matrix (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Matrix (Rating 3)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Physical (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Physical (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>No Privacy, Physical (Rating 3)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Pest Magnet (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Pest Magnet (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Poor Condition</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Rough Neighborhood</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Sprite Magnet (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Sprite Magnet (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>This Isn't Big Bob's Autos</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Trigger-Happy Landlord</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Unsound</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Unsafe</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Worse Neighbors</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced</allowed>
-			<source>RC</source>
-			<page>164</page>
-		</quality>
-		<quality>
-			<name>Deliveryman</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Candyman</name>
-			<category>Positive</category>
-			<lp>4</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>No Masters</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Parabellum</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>High Traffic</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Stocked Up</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Alternate Energy</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Magician On Staff (Bolt Hole)</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>BoltHole</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Magician On Staff (Safehouse)</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Dug a Hole</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Legitimate</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Shoemaker</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Nurse Is In</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Doctor Is In</name>
-			<category>Positive</category>
-			<lp>4</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Healer Is In</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Fully Stocked Bar</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>15</page>
-		</quality>
-		<quality>
-			<name>Medium of Hicksville</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Ultramodern</name>
-			<category>Positive</category>
-			<lp>1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Armory</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Stunt Double</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Made It to Mexico</name>
-			<category>Positive</category>
-			<lp>5</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Inaccessible</name>
-			<category>Positive</category>
-			<lp>3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Mr. Johnson's Neighborhood</name>
-			<category>Positive</category>
-			<lp>2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Hotel California</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Book Thumpers</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Affiliated</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Racist Hellhole (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Racist Hellhole (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Racist Hellhole (Rating 3)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>16</page>
-		</quality>
-		<quality>
-			<name>Tree-Hugging Hippies</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Loud Neighborhood</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Not a Home</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Hell's Waiting Room</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Cellmate (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Cellmate (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Cellmate (Rating 3)</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Cellmate (Rating 4)</name>
-			<category>Negative</category>
-			<lp>-4</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Cellmate (Rating 5)</name>
-			<category>Negative</category>
-			<lp>-5</lp>
-			<allowed>BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Donut Shop (Rating 1)</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Donut Shop (Rating 2)</name>
-			<category>Negative</category>
-			<lp>-4</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Witless Protection</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Under A Rock</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Leaky Faucet</name>
-			<category>Negative</category>
-			<lp>-2</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>The Building that Time Forgot</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Fresh Meat</name>
-			<category>Negative</category>
-			<lp>-3</lp>
-			<allowed>Advanced,BoltHole,Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
-		<quality>
-			<name>Maid's on Vacation</name>
-			<category>Negative</category>
-			<lp>-1</lp>
-			<allowed>Safehouse</allowed>
-			<source>SH</source>
-			<page>17</page>
-		</quality>
 	</qualities>
-	<costs>
-		<cost>
-			<lp>0</lp>
-			<cost>0</cost>
-		</cost>
-		<cost>
-			<lp>1</lp>
-			<cost>100</cost>
-		</cost>
-		<cost>
-			<lp>2</lp>
-			<cost>200</cost>
-		</cost>
-		<cost>
-			<lp>3</lp>
-			<cost>300</cost>
-		</cost>
-		<cost>
-			<lp>4</lp>
-			<cost>400</cost>
-		</cost>
-		<cost>
-			<lp>5</lp>
-			<cost>500</cost>
-		</cost>
-		<cost>
-			<lp>6</lp>
-			<cost>800</cost>
-		</cost>
-		<cost>
-			<lp>7</lp>
-			<cost>1100</cost>
-		</cost>
-		<cost>
-			<lp>8</lp>
-			<cost>1400</cost>
-		</cost>
-		<cost>
-			<lp>9</lp>
-			<cost>1700</cost>
-		</cost>
-		<cost>
-			<lp>10</lp>
-			<cost>2000</cost>
-		</cost>
-		<cost>
-			<lp>11</lp>
-			<cost>2600</cost>
-		</cost>
-		<cost>
-			<lp>12</lp>
-			<cost>3200</cost>
-		</cost>
-		<cost>
-			<lp>13</lp>
-			<cost>3800</cost>
-		</cost>
-		<cost>
-			<lp>14</lp>
-			<cost>4400</cost>
-		</cost>
-		<cost>
-			<lp>15</lp>
-			<cost>5000</cost>
-		</cost>
-		<cost>
-			<lp>16</lp>
-			<cost>6000</cost>
-		</cost>
-		<cost>
-			<lp>17</lp>
-			<cost>7000</cost>
-		</cost>
-		<cost>
-			<lp>18</lp>
-			<cost>8000</cost>
-		</cost>
-		<cost>
-			<lp>19</lp>
-			<cost>9000</cost>
-		</cost>
-		<cost>
-			<lp>20</lp>
-			<cost>10000</cost>
-		</cost>
-		<cost>
-			<lp>21</lp>
-			<cost>15000</cost>
-		</cost>
-		<cost>
-			<lp>22</lp>
-			<cost>20000</cost>
-		</cost>
-		<cost>
-			<lp>23</lp>
-			<cost>30000</cost>
-		</cost>
-		<cost>
-			<lp>24</lp>
-			<cost>40000</cost>
-		</cost>
-		<cost>
-			<lp>25</lp>
-			<cost>50000</cost>
-		</cost>
-		<cost>
-			<lp>26</lp>
-			<cost>60000</cost>
-		</cost>
-		<cost>
-			<lp>27</lp>
-			<cost>70000</cost>
-		</cost>
-		<cost>
-			<lp>28</lp>
-			<cost>80000</cost>
-		</cost>
-		<cost>
-			<lp>29</lp>
-			<cost>90000</cost>
-		</cost>
-		<cost>
-			<lp>30</lp>
-			<cost>100000</cost>
-		</cost>
-		<cost>
-			<lp>31+</lp>
-			<cost>25000</cost>
-		</cost>
-	</costs>
-	<safehousecosts>
-		<cost>
-			<lp>0</lp>
-			<cost>0</cost>
-		</cost>
-		<cost>
-			<lp>1</lp>
-			<cost>75</cost>
-		</cost>
-		<cost>
-			<lp>2</lp>
-			<cost>150</cost>
-		</cost>
-		<cost>
-			<lp>3</lp>
-			<cost>200</cost>
-		</cost>
-		<cost>
-			<lp>4</lp>
-			<cost>350</cost>
-		</cost>
-		<cost>
-			<lp>5</lp>
-			<cost>400</cost>
-		</cost>
-		<cost>
-			<lp>6</lp>
-			<cost>700</cost>
-		</cost>
-		<cost>
-			<lp>7</lp>
-			<cost>1000</cost>
-		</cost>
-		<cost>
-			<lp>8</lp>
-			<cost>1300</cost>
-		</cost>
-		<cost>
-			<lp>9</lp>
-			<cost>1600</cost>
-		</cost>
-		<cost>
-			<lp>10</lp>
-			<cost>1900</cost>
-		</cost>
-		<cost>
-			<lp>11</lp>
-			<cost>2600</cost>
-		</cost>
-		<cost>
-			<lp>12</lp>
-			<cost>3200</cost>
-		</cost>
-		<cost>
-			<lp>13</lp>
-			<cost>3800</cost>
-		</cost>
-		<cost>
-			<lp>14</lp>
-			<cost>4400</cost>
-		</cost>
-		<cost>
-			<lp>15</lp>
-			<cost>5000</cost>
-		</cost>
-		<cost>
-			<lp>16</lp>
-			<cost>7500</cost>
-		</cost>
-		<cost>
-			<lp>17</lp>
-			<cost>9000</cost>
-		</cost>
-		<cost>
-			<lp>18</lp>
-			<cost>10500</cost>
-		</cost>
-		<cost>
-			<lp>19</lp>
-			<cost>12000</cost>
-		</cost>
-		<cost>
-			<lp>20</lp>
-			<cost>13500</cost>
-		</cost>
-		<cost>
-			<lp>21</lp>
-			<cost>20000</cost>
-		</cost>
-		<cost>
-			<lp>22</lp>
-			<cost>25000</cost>
-		</cost>
-		<cost>
-			<lp>23</lp>
-			<cost>35000</cost>
-		</cost>
-		<cost>
-			<lp>24</lp>
-			<cost>45000</cost>
-		</cost>
-		<cost>
-			<lp>25</lp>
-			<cost>55000</cost>
-		</cost>
-		<cost>
-			<lp>26</lp>
-			<cost>65000</cost>
-		</cost>
-		<cost>
-			<lp>27</lp>
-			<cost>75000</cost>
-		</cost>
-		<cost>
-			<lp>28</lp>
-			<cost>85000</cost>
-		</cost>
-		<cost>
-			<lp>29</lp>
-			<cost>95000</cost>
-		</cost>
-		<cost>
-			<lp>30</lp>
-			<cost>110000</cost>
-		</cost>
-		<cost>
-			<lp>31+</lp>
-			<cost>35000</cost>
-		</cost>
-	</safehousecosts>
 </chummer>
