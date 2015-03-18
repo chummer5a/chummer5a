@@ -745,7 +745,7 @@ namespace Chummer
 		private bool _blnIgnoreArmorEncumbrance = true;
 		private bool _blnAlternateArmorEncumbrance = false;
 		private bool _blnESSLossReducesMaximumOnly = false;
-		private bool _blnAllowSkillRegrouping = false;
+		private bool _blnAllowSkillRegrouping = true;
 		private bool _blnMetatypeCostsKarma = true;
 		private bool _blnAllowCyberwareESSDiscounts = false;
 		private bool _blnStrengthAffectsRecoil = false;

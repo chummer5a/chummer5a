@@ -6277,9 +6277,6 @@
 			<name>Pie Iesu Domine. Dona Eis Requiem.</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus>
-				<freenegativequalities>7</freenegativequalities>
-			</bonus>
 			<addqualities>
 				<addquality>High Pain Tolerance (Rating 1)</addquality>
 			</addqualities>

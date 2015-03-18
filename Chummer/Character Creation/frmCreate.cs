@@ -336,7 +336,10 @@ namespace Chummer
 			// Check for Special Attributes.
 			lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
 			lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-			nudMAG.Enabled = _objCharacter.MAGEnabled;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                nudMAG.Enabled = _objCharacter.MAGEnabled;
+            }
             nudKMAG.Enabled = _objCharacter.MAGEnabled;
 			lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
 			lblFoci.Visible = _objCharacter.MAGEnabled;
@@ -346,7 +349,10 @@ namespace Chummer
 
 			lblRESLabel.Enabled = _objCharacter.RESEnabled;
 			lblRESAug.Enabled = _objCharacter.RESEnabled;
-			nudRES.Enabled = _objCharacter.RESEnabled;
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            {
+                nudRES.Enabled = _objCharacter.RESEnabled;
+            }
             nudKRES.Enabled = _objCharacter.RESEnabled;
 			lblRESMetatype.Enabled = _objCharacter.RESEnabled;
 
@@ -776,7 +782,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Contact)
 				{
 					intContact++;
-					ContactControl objContactControl = new ContactControl();
+					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
@@ -800,7 +806,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Enemy)
 				{
 					intEnemy++;
-					ContactControl objContactControl = new ContactControl();
+                    ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
@@ -929,7 +935,20 @@ namespace Chummer
                 objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
 				objPowerControl.LevelEnabled = objPower.LevelsEnabled;
 				if (objPower.MaxLevels > 0)
-					objPowerControl.MaxLevels = objPower.MaxLevels;
+                    foreach (Skill objSkill in _objCharacter.Skills)
+                        if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
+                        {
+                            int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                            if (intImprovedAbilityMaximum == 0)
+                            {
+                                intImprovedAbilityMaximum = 1;
+                            }
+                            objPower.MaxLevels = intImprovedAbilityMaximum;
+                        }
+                        else
+                        { 
+                            objPowerControl.MaxLevels = objPower.MaxLevels;
+                        }
 				objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
 				if (objPower.Rating < 1)
 					objPower.Rating = 1;
@@ -1206,6 +1225,7 @@ namespace Chummer
 
             // Clear the Dirty flag which gets set when creating a new Character.
 			CalculateBP();
+            CalculateNuyen();
 			_blnIsDirty = false;
 			UpdateWindowTitle();
 			if (_objCharacter.AdeptEnabled)
@@ -5024,6 +5044,18 @@ namespace Chummer
 		{
 			// Handle the PowerRatingChange Event for the PowerControl object.
 			PowerControl objPowerControl = (PowerControl)sender;
+
+            foreach (Skill objSkill in _objCharacter.Skills)
+            {
+                foreach (Power objPower in _objCharacter.Powers)
+                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
+                    {
+                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                    }
+            }
 			if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5215,7 +5247,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panContacts.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+            ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Contact;
 
@@ -5287,7 +5319,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panEnemies.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+            ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Enemy;
 
@@ -5565,8 +5597,22 @@ namespace Chummer
 			objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
 			objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
-			if (frmPickPower.MaxLevels() > 0)
-				objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+
+            if (frmPickPower.MaxLevels() > 0)
+                foreach (Skill objSkill in _objCharacter.Skills)
+                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
+                    {
+                        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        if (intImprovedAbilityMaximum == 0)
+                        {
+                            intImprovedAbilityMaximum = 1;
+                        }
+                        objPower.MaxLevels = intImprovedAbilityMaximum;
+                    }
+                    else
+                    {
+                        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+                    }
 
 			// Open the Cyberware XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
@@ -6807,6 +6853,7 @@ namespace Chummer
 
             _objFunctions.SortTree(treMartialArts);
             CalculateBP();
+            CalculateNuyen();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -7010,7 +7057,7 @@ namespace Chummer
                     dblMultiplier -= 0.1;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(_objCharacter);
@@ -7041,8 +7088,7 @@ namespace Chummer
                     }
                 }
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
+                
                 string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
                 tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
             }
@@ -7065,7 +7111,7 @@ namespace Chummer
                 double dblMultiplier = 1.0;
                 dblMultiplier = Math.Round(dblMultiplier, 2);
 
-                int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                int intKarmaExpense = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(_objCharacter);
@@ -15252,8 +15298,10 @@ namespace Chummer
 
 			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
 			int intEssenceLoss = 0;
-			if (!_objOptions.ESSLossReducesMaximumOnly)
-				intEssenceLoss = _objCharacter.EssencePenalty;
+            if (!_objOptions.ESSLossReducesMaximumOnly)
+            {
+                intEssenceLoss = _objCharacter.EssencePenalty;
+            }
 
 			foreach (NumericUpDown objControl in panAttributes.Controls.OfType<NumericUpDown>())
 			{
@@ -15847,8 +15895,8 @@ namespace Chummer
                 intPointsInKnowledgeSkills += objSkillControl.SkillBase;
 
                 // The cost is double if the character is Uneducated and is an Academic or Professional Skill.
-                if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-                    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
+                //if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
+                //    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
 
                 // The Linguistics Adept Power gives 1 free point in Languages.
                 if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillBase > 0)
@@ -16075,9 +16123,22 @@ namespace Chummer
 			// Calculate the BP used by Initiation.
 			intPointsUsed = 0;
 			int intInitiationPoints = 0;
-			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-				intInitiationPoints += objGrade.KarmaCost;
+            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+            {
+                double dblMultiplier = 1.0;
+                if (objGrade.Group == true)
+                    dblMultiplier -= 0.1;
+                if (objGrade.Ordeal == true)
+                    dblMultiplier -= 0.1;
+                if (objGrade.Schooling == true)
+                    dblMultiplier -= 0.1;
+                dblMultiplier = Math.Round(dblMultiplier, 2);
+                int intMultiplier = Convert.ToInt32(dblMultiplier);
 
+                intInitiationPoints += objGrade.KarmaCost;
+                intInitiationPoints *= intMultiplier;
+
+            }
 			// Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
 			foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
 			{
@@ -16991,6 +17052,21 @@ namespace Chummer
 			// Vehicle cost.
 			foreach (Vehicle objVehcile in _objCharacter.Vehicles)
 				intDeductions += objVehcile.TotalCost;
+
+            // Martial Arts
+            foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
+            {
+                intDeductions += 7500;
+            }
+
+            // Martial Art Maneuvers
+            foreach (MartialArtManeuver objMartialArtManeuver in _objCharacter.MartialArtManeuvers) 
+            {
+                //First Maneuver is free.
+                int i = -1;
+                i += 1;
+                intDeductions += (i * 5000);
+            }
 
             _objCharacter.Nuyen = intNuyen - intDeductions;
 			lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
@@ -22130,9 +22206,9 @@ namespace Chummer
 
             int intAmount = 0;
             if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
             else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
             string strInitTip = "";
             if (_objCharacter.MAGEnabled)

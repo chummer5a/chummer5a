@@ -91,7 +91,7 @@
       <name>Full Body Armor: Helmet</name>
       <category>Armor</category>
       <armor>+3</armor>
-      <armorcapacity>3</armorcapacity>
+      <armorcapacity>6</armorcapacity>
       <avail>0</avail>
       <cost>500</cost>
       <source>SR5</source>
@@ -1344,7 +1344,7 @@
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
-          <value>1</value>
+          <value>2</value>
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>

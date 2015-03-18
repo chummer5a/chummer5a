@@ -65,6 +65,8 @@
             this.tabPosQualities = new System.Windows.Forms.TabPage();
             this.tabNegQualities = new System.Windows.Forms.TabPage();
             this.tabEntertainments = new System.Windows.Forms.TabPage();
+            this.cmdAddQuality = new System.Windows.Forms.Button();
+            this.cmdDeleteQuality = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComfortsEntertainment)).BeginInit();
@@ -125,6 +127,7 @@
             // 
             // trePositiveQualities
             // 
+            this.trePositiveQualities.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.trePositiveQualities.CheckBoxes = true;
             this.trePositiveQualities.HideSelection = false;
             this.trePositiveQualities.Location = new System.Drawing.Point(0, 0);
@@ -132,13 +135,14 @@
             this.trePositiveQualities.ShowLines = false;
             this.trePositiveQualities.ShowPlusMinus = false;
             this.trePositiveQualities.ShowRootLines = false;
-            this.trePositiveQualities.Size = new System.Drawing.Size(241, 290);
+            this.trePositiveQualities.Size = new System.Drawing.Size(241, 278);
             this.trePositiveQualities.TabIndex = 23;
             this.trePositiveQualities.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.trePositiveQualities_AfterCheck);
             this.trePositiveQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePositiveQualities_AfterSelect);
             // 
             // treNegativeQualities
             // 
+            this.treNegativeQualities.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treNegativeQualities.CheckBoxes = true;
             this.treNegativeQualities.HideSelection = false;
             this.treNegativeQualities.Location = new System.Drawing.Point(0, 0);
@@ -146,7 +150,7 @@
             this.treNegativeQualities.ShowLines = false;
             this.treNegativeQualities.ShowPlusMinus = false;
             this.treNegativeQualities.ShowRootLines = false;
-            this.treNegativeQualities.Size = new System.Drawing.Size(241, 290);
+            this.treNegativeQualities.Size = new System.Drawing.Size(241, 278);
             this.treNegativeQualities.TabIndex = 25;
             this.treNegativeQualities.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treNegativeQualities_AfterCheck);
             this.treNegativeQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treNegativeQualities_AfterSelect);
@@ -287,6 +291,7 @@
             // 
             // treEntertainments
             // 
+            this.treEntertainments.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treEntertainments.CheckBoxes = true;
             this.treEntertainments.HideSelection = false;
             this.treEntertainments.Location = new System.Drawing.Point(0, 0);
@@ -294,7 +299,7 @@
             this.treEntertainments.ShowLines = false;
             this.treEntertainments.ShowPlusMinus = false;
             this.treEntertainments.ShowRootLines = false;
-            this.treEntertainments.Size = new System.Drawing.Size(241, 290);
+            this.treEntertainments.Size = new System.Drawing.Size(241, 278);
             this.treEntertainments.TabIndex = 30;
             // 
             // cboBaseLifestyle
@@ -441,7 +446,7 @@
             this.tabQualitiesEntertainments.Location = new System.Drawing.Point(2, 3);
             this.tabQualitiesEntertainments.Name = "tabQualitiesEntertainments";
             this.tabQualitiesEntertainments.SelectedIndex = 0;
-            this.tabQualitiesEntertainments.Size = new System.Drawing.Size(249, 316);
+            this.tabQualitiesEntertainments.Size = new System.Drawing.Size(249, 304);
             this.tabQualitiesEntertainments.TabIndex = 50;
             // 
             // tabPosQualities
@@ -450,7 +455,7 @@
             this.tabPosQualities.Location = new System.Drawing.Point(4, 22);
             this.tabPosQualities.Name = "tabPosQualities";
             this.tabPosQualities.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPosQualities.Size = new System.Drawing.Size(241, 310);
+            this.tabPosQualities.Size = new System.Drawing.Size(241, 278);
             this.tabPosQualities.TabIndex = 1;
             this.tabPosQualities.Text = "Pos. Qualities";
             this.tabPosQualities.UseVisualStyleBackColor = true;
@@ -461,7 +466,7 @@
             this.tabNegQualities.Location = new System.Drawing.Point(4, 22);
             this.tabNegQualities.Name = "tabNegQualities";
             this.tabNegQualities.Padding = new System.Windows.Forms.Padding(3);
-            this.tabNegQualities.Size = new System.Drawing.Size(241, 310);
+            this.tabNegQualities.Size = new System.Drawing.Size(241, 278);
             this.tabNegQualities.TabIndex = 2;
             this.tabNegQualities.Text = "Neg. Qualities";
             this.tabNegQualities.UseVisualStyleBackColor = true;
@@ -472,10 +477,30 @@
             this.tabEntertainments.Location = new System.Drawing.Point(4, 22);
             this.tabEntertainments.Name = "tabEntertainments";
             this.tabEntertainments.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEntertainments.Size = new System.Drawing.Size(241, 290);
+            this.tabEntertainments.Size = new System.Drawing.Size(241, 278);
             this.tabEntertainments.TabIndex = 3;
             this.tabEntertainments.Text = "Entertainment";
             this.tabEntertainments.UseVisualStyleBackColor = true;
+            // 
+            // cmdAddQuality
+            // 
+            this.cmdAddQuality.Location = new System.Drawing.Point(1, 313);
+            this.cmdAddQuality.Name = "cmdAddQuality";
+            this.cmdAddQuality.Size = new System.Drawing.Size(122, 23);
+            this.cmdAddQuality.TabIndex = 51;
+            this.cmdAddQuality.Text = "Add Quality";
+            this.cmdAddQuality.UseVisualStyleBackColor = true;
+            this.cmdAddQuality.Click += new System.EventHandler(this.cmdAddQuality_Click);
+            // 
+            // cmdDeleteQuality
+            // 
+            this.cmdDeleteQuality.Location = new System.Drawing.Point(129, 313);
+            this.cmdDeleteQuality.Name = "cmdDeleteQuality";
+            this.cmdDeleteQuality.Size = new System.Drawing.Size(122, 23);
+            this.cmdDeleteQuality.TabIndex = 52;
+            this.cmdDeleteQuality.Text = "Delete Quality";
+            this.cmdDeleteQuality.UseVisualStyleBackColor = true;
+            this.cmdDeleteQuality.Click += new System.EventHandler(this.cmdDeleteQuality_Click);
             // 
             // frmSelectAdvancedLifestyle
             // 
@@ -484,6 +509,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(572, 342);
+            this.Controls.Add(this.cmdDeleteQuality);
+            this.Controls.Add(this.cmdAddQuality);
             this.Controls.Add(this.tabQualitiesEntertainments);
             this.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Securities);
             this.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Area);
@@ -577,5 +604,7 @@
         private System.Windows.Forms.TabPage tabPosQualities;
         private System.Windows.Forms.TabPage tabNegQualities;
         private System.Windows.Forms.TabPage tabEntertainments;
+        private System.Windows.Forms.Button cmdAddQuality;
+        private System.Windows.Forms.Button cmdDeleteQuality;
 	}
 }

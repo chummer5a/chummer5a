@@ -1484,7 +1484,7 @@ namespace Chummer
                         }
                         blnReturn = blnContribute;
                     }
-                    
+                    //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                     else if (_strName == "Mentor Spirit")
                     {
                         foreach (Quality objQuality in _objCharacter.Qualities)
@@ -1497,7 +1497,19 @@ namespace Chummer
                         }
                         blnReturn = blnContribute;
                     }
-                        
+                    //Characters with the "Pie Iesu Domine. Dona Eis Requiem." Quality gain High Pain Tolerance (Rating 1) for free.
+                    else if (_strName == "High Pain Tolerance (Rating 1)")
+                    {
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+
+                            if (objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem.")
+                            {
+                                blnContribute = false;
+                            }
+                        }
+                        blnReturn = blnContribute;
+                    }                        
                     else
                         blnReturn = true;
                 }
@@ -9097,6 +9109,7 @@ namespace Chummer
 		/// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
 		/// <param name="blnGroup">Whether or not a Group was used.</param>
 		/// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
 		public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling)
 		{
 			_intGrade = intGrade;
@@ -9134,13 +9147,7 @@ namespace Chummer
 			_intGrade = Convert.ToInt32(objNode["grade"].InnerText);
 			_blnGroup = Convert.ToBoolean(objNode["group"].InnerText);
 			_blnOrdeal = Convert.ToBoolean(objNode["ordeal"].InnerText);
-            try
-            {
-                _blnOrdeal = Convert.ToBoolean(objNode["schooling"].InnerText);
-            }
-            catch
-            {
-            }
+            _blnSchooling = Convert.ToBoolean(objNode["schooling"].InnerText);
             try
 			{
 				_strNotes = objNode["notes"].InnerText;

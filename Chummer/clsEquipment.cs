@@ -2232,7 +2232,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _strName.Contains("(Second-Hand)");
+				return _strName.Contains("(Used)");
 			}
 		}
 		#endregion
@@ -6349,7 +6349,7 @@ namespace Chummer
 				string strRCFull = "0";
 				string strRC = "";
                 string strRCTip = "";
-				int intRCBase = 0;
+				int intRCBase = 1;
 				int intRCFull = 0;
 				int intRCModifier = 0;
 

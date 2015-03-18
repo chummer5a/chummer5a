@@ -1,3 +1,25 @@
+Build 5.159
+Application Change:
+- Issue with Initiation/Submersion in chargen forgetting Ordeals and Schooling fixed.
+- Martial Arts and Maneuvers cost Nuyen to learn.
+- Contact Connection rating limited to 6 during Character generation, 12 Connection during Career mode. TODO: Validate contacts during completion stage; contacts should not exceed 7 Karma.
+- Improved Ability (Skill) now has a maximum value of (Skill + (Skill/2)).
+- Base Recoil Compensation increased to 1.
+- Default state of the rule "Allow broken skillgroups to be regrouped if they have an equal value." changed to enabled.
+
+Data Change:
+- Concealed Quick-Draw Holster: Concealment value set to -1.
+- Custom Ballistic Mask: Social Limit increased to 2.
+- Uniform (Disguise) crash fixed.
+- Maglock with Anti-Tamper Circuits crash fixed.
+- Full Body Armour Helmet capacity fixed.
+
+New Strings:
+Label_SelectAdvancedLifestyle_Base_Comforts
+Label_SelectAdvancedLifestyle_Upgrade
+Label_SelectAdvancedLifestyle_Base_Security
+Label_SelectAdvancedLifestyle_Base_Area
+
 Build 5.158
 Application Change:
 - Qualities now capped at 25 points instead of 35.

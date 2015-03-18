@@ -207,7 +207,6 @@
         private System.Windows.Forms.Label lblPowerName;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Label lblRating;
-        private System.Windows.Forms.NumericUpDown nudRating;
         private System.Windows.Forms.Label lblX;
         private System.Windows.Forms.Label lblPowerPoints;
 		private System.Windows.Forms.CheckBox chkDiscountedAdeptWay;
@@ -215,6 +214,7 @@
 		private System.Windows.Forms.Label lblDiscountLabel;
 		private System.Windows.Forms.PictureBox imgNotes;
 		private System.Windows.Forms.ToolTip tipTooltip;
+        public System.Windows.Forms.NumericUpDown nudRating;
 
     }
 }

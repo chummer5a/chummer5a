@@ -691,7 +691,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Contact)
 				{
 					intContact++;
-					ContactControl objContactControl = new ContactControl();
+					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
@@ -714,7 +714,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Enemy)
 				{
 					intEnemy++;
-					ContactControl objContactControl = new ContactControl();
+					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
@@ -4858,6 +4858,18 @@ namespace Chummer
 				}
 			}
 
+            foreach (Skill objSkill in _objCharacter.Skills)
+            {
+                foreach (Power objPower in _objCharacter.Powers)
+                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
+                    {
+                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                    }
+            }
+
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -4998,7 +5010,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panContacts.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+			ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Contact;
 
@@ -5025,7 +5037,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panEnemies.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+			ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Enemy;
 

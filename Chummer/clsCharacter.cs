@@ -384,7 +384,7 @@ namespace Chummer
 			// <totalkarma />
 			objWriter.WriteElementString("totalkarma", _intTotalKarma.ToString());
             // <special />
-            objWriter.WriteElementString("special", _intKarma.ToString());
+            objWriter.WriteElementString("special", _intSpecial.ToString());
             // <totalspecial />
             objWriter.WriteElementString("totalspecial", _intTotalSpecial.ToString());
             // <totalattributes />

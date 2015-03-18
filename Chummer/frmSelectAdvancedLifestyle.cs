@@ -69,14 +69,15 @@ namespace Chummer
             cboBaseLifestyle.DataSource = lstLifestyles;
 
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
-            if (cboBaseLifestyle.SelectedIndex == -1)
-            { cboBaseLifestyle.SelectedIndex = 4; }
 
+            if (cboBaseLifestyle.SelectedIndex == -1)
+            { cboBaseLifestyle.SelectedIndex = 0; }
+/*
 			// Fill the Positive Qualities list.
-			foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[category = \"Positive\" and contains(allowed, \"" + _objType.ToString() + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[category = \"Positive\"]"))
 			{
 				TreeNode nodQuality = new TreeNode();
-				nodQuality.Tag = objXmlQuality["name"].InnerText + " [" + objXmlQuality["lp"].InnerText + "LP]";
+				//nodQuality.Tag = objXmlQuality["name"].InnerText + " [" + objXmlQuality["lp"].InnerText + "LP]";
 				if (objXmlQuality["translate"] != null)
 					nodQuality.Text = objXmlQuality["translate"].InnerText + " [" + objXmlQuality["lp"].InnerText + "LP]";
 				else
@@ -85,7 +86,7 @@ namespace Chummer
 			}
 
 			// Fill the Negative Qualities list.
-			foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[category = \"Negative\" and contains(allowed, \"" + _objType.ToString() + "\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+			foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[category = \"Negative\")]"))
 			{
 				TreeNode nodQuality = new TreeNode();
 				nodQuality.Tag = objXmlQuality["name"].InnerText + " [" + objXmlQuality["lp"].InnerText + "LP]";
@@ -111,7 +112,7 @@ namespace Chummer
 			SortTree(trePositiveQualities);
 			SortTree(treNegativeQualities);
             SortTree(treEntertainments);
-
+*/
 			if (_objSourceLifestyle != null)
 			{
 				txtLifestyleName.Text = _objSourceLifestyle.Name;
@@ -484,5 +485,16 @@ namespace Chummer
 			//cboBaseLifestyle.Left = intLeft + 6;
 		}
 		#endregion
+
+        private void cmdAddQuality_Click(object sender, EventArgs e)
+        {
+            frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter);
+            frmSelectLifestyleQuality.ShowDialog(this);
+        }
+
+        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        {
+
+        }
 	}
 }
