@@ -382,42 +382,6 @@ namespace Chummer
 		{
 			if (lstQualities.Text == "")
 				return;
-            //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
-            switch (lstQualities.SelectedValue.ToString())
-            {
-                case "Technomancer":
-                    _objCharacter.RESEnabled = true;
-                    _objCharacter.TechnomancerEnabled = true;
-                    break;
-                case "Magician":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    break;
-                case "Aspected Magician":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    break;
-                case "Adept":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.AdeptEnabled = true;
-                    break;
-                case "Mystic Adept":
-                    _objCharacter.MAGEnabled = true;
-                    _objCharacter.MagicianEnabled = true;
-                    _objCharacter.AdeptEnabled = true;
-                    break;
-                case "Changeling (Class I SURGE)":
-                    _objCharacter.metageneticLimit = 30;
-                    break;
-                case "Changeling (Class II SURGE)":
-                    _objCharacter.metageneticLimit = 15;
-                    break;
-                case "Changeling (Class III SURGE)":
-                    _objCharacter.metageneticLimit = 30;
-                    break;
-                default:
-                    break;
-            }
 
 			XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
 			_strSelectedQuality = objNode["name"].InnerText;

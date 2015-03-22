@@ -936,6 +936,7 @@ namespace Chummer
 	{
 		Positive = 0,
 		Negative = 1,
+        Entertainment = 2,
 	}
 
 	/// <summary>
@@ -983,6 +984,12 @@ namespace Chummer
 			{
 				case "Negative":
 					return QualityType.Negative;
+                case "Entertainment - Asset":
+                    return QualityType.Entertainment;
+                case "Entertainment - Service":
+                    return QualityType.Entertainment;
+                case "Entertainment - Outing":
+                    return QualityType.Entertainment;
 				default:
 					return QualityType.Positive;
 			}
@@ -1031,7 +1038,14 @@ namespace Chummer
             {
                 _strMetagenetic = objXmlQuality["metagenetic"].InnerText;
             }
-			_intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+            if (objXmlQuality["karma"] != null)
+            {
+                _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+            }
+            if (objXmlQuality["lp"] != null)
+            {
+                _intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
+            }
 			_objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
 			if (objXmlQuality["print"] != null)

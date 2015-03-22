@@ -63,7 +63,7 @@
             this.Label_SelectAdvancedLifestyle_Base_Securities = new System.Windows.Forms.Label();
             this.cmdAddQuality = new System.Windows.Forms.Button();
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.treLifestyleQualities = new System.Windows.Forms.TreeView();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComfortsEntertainment)).BeginInit();
@@ -284,6 +284,7 @@
             this.nudComfortsEntertainment.Name = "nudComfortsEntertainment";
             this.nudComfortsEntertainment.Size = new System.Drawing.Size(69, 20);
             this.nudComfortsEntertainment.TabIndex = 33;
+            this.nudComfortsEntertainment.ValueChanged += new System.EventHandler(this.nudComfortsEntertainment_ValueChanged);
             // 
             // label5
             // 
@@ -306,6 +307,7 @@
             this.nudAreaEntertainment.Name = "nudAreaEntertainment";
             this.nudAreaEntertainment.Size = new System.Drawing.Size(69, 20);
             this.nudAreaEntertainment.TabIndex = 35;
+            this.nudAreaEntertainment.ValueChanged += new System.EventHandler(this.nudAreaEntertainment_ValueChanged);
             // 
             // nudSecurityEntertainment
             // 
@@ -318,6 +320,7 @@
             this.nudSecurityEntertainment.Name = "nudSecurityEntertainment";
             this.nudSecurityEntertainment.Size = new System.Drawing.Size(69, 20);
             this.nudSecurityEntertainment.TabIndex = 37;
+            this.nudSecurity.ValueChanged += new System.EventHandler(this.nudSecurityEntertainment_ValueChanged);
             // 
             // nudSecurity
             // 
@@ -330,6 +333,7 @@
             this.nudSecurity.Name = "nudSecurity";
             this.nudSecurity.Size = new System.Drawing.Size(69, 20);
             this.nudSecurity.TabIndex = 41;
+            this.nudSecurity.ValueChanged += new System.EventHandler(this.nudSecurity_ValueChanged);
             // 
             // nudArea
             // 
@@ -342,6 +346,7 @@
             this.nudArea.Name = "nudArea";
             this.nudArea.Size = new System.Drawing.Size(69, 20);
             this.nudArea.TabIndex = 40;
+            this.nudArea.ValueChanged += new System.EventHandler(this.nudArea_ValueChanged);
             // 
             // nudComforts
             // 
@@ -354,6 +359,7 @@
             this.nudComforts.Name = "nudComforts";
             this.nudComforts.Size = new System.Drawing.Size(69, 20);
             this.nudComforts.TabIndex = 39;
+            this.nudComforts.ValueChanged += new System.EventHandler(this.nudComforts_ValueChanged);
             // 
             // Label_SelectAdvancedLifestyle_Base_Comforts
             // 
@@ -408,31 +414,31 @@
             this.cmdDeleteQuality.UseVisualStyleBackColor = true;
             this.cmdDeleteQuality.Click += new System.EventHandler(this.cmdDeleteQuality_Click);
             // 
-            // treeView1
+            // treLifestyleQualities
             // 
-            this.treeView1.Location = new System.Drawing.Point(1, 8);
-            this.treeView1.Name = "treeView1";
+            this.treLifestyleQualities.Location = new System.Drawing.Point(1, 8);
+            this.treLifestyleQualities.Name = "treLifestyleQualities";
             treeNode1.Name = "nodPositiveLifestyleQualities";
             treeNode1.Text = "Positive Qualities";
             treeNode2.Name = "nodNegativeLifestyleQualities";
             treeNode2.Text = "Negative Qualities";
             treeNode3.Name = "nodLifestyleEntertainments";
             treeNode3.Text = "Entertainments";
-            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3});
-            this.treeView1.Size = new System.Drawing.Size(249, 299);
-            this.treeView1.TabIndex = 53;
+            this.treLifestyleQualities.Size = new System.Drawing.Size(249, 299);
+            this.treLifestyleQualities.TabIndex = 53;
             // 
-            // frmSelectAdvancedLifestyle
+            // frmSelectLifestyleAdvanced
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(572, 342);
-            this.Controls.Add(this.treeView1);
+            this.Controls.Add(this.treLifestyleQualities);
             this.Controls.Add(this.cmdDeleteQuality);
             this.Controls.Add(this.cmdAddQuality);
             this.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Securities);
@@ -466,7 +472,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectAdvancedLifestyle";
+            this.Name = "frmSelectLifestyleAdvanced";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAdvancedLifestyle";
@@ -484,6 +490,36 @@
             this.PerformLayout();
 
 		}
+
+        private void nudSecurity_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
+
+        private void nudComforts_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
+
+        private void nudArea_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
+
+        private void nudSecurityEntertainment_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
+
+        private void nudComfortsEntertainment_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
+
+        private void nudAreaEntertainment_ValueChanged(object sender, System.EventArgs e)
+        {
+            CalculateValues();
+        }
 
 		#endregion
 
@@ -518,6 +554,6 @@
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Base_Securities;
         private System.Windows.Forms.Button cmdAddQuality;
         private System.Windows.Forms.Button cmdDeleteQuality;
-        private System.Windows.Forms.TreeView treeView1;
-	}
+        private System.Windows.Forms.TreeView treLifestyleQualities;
+    }
 }
