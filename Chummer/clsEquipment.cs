@@ -6349,7 +6349,7 @@ namespace Chummer
 				string strRCFull = "0";
 				string strRC = "";
                 string strRCTip = "";
-				int intRCBase = 1;
+				int intRCBase = 0;
 				int intRCFull = 0;
 				int intRCModifier = 0;
 
@@ -6386,7 +6386,7 @@ namespace Chummer
 					strRCFull = _strRC;
 				}
 
-                strRCTip = "Base (" + strRCBase + ")";
+                strRCTip = "1 + Base (" + strRCBase + ")";
 
 				intRCBase = Convert.ToInt32(strRCBase);
 				intRCFull = Convert.ToInt32(strRCFull.Replace("(", string.Empty).Replace(")", string.Empty));
@@ -6517,13 +6517,9 @@ namespace Chummer
                 if (strRCGroup5 != string.Empty)
                     strRCTip += " + " + strRCGroup5 + " (" + intRCGroup5.ToString() + ")";
 
-                // If the optional rule for a character's Strength affecting Recoil, factor that in.
-				if (!_blnVehicleMounted)
-				{
-					intRCBase += (_objCharacter.STR.TotalValue + 2) / 3;
-                    intRCFull += (_objCharacter.STR.TotalValue + 2) / 3;
-                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue.ToString() + "] (" + ((_objCharacter.STR.TotalValue + 2) / 3).ToString() + ")";
-                }
+					intRCBase += (_objCharacter.STR.TotalValue / 3) +1;
+                    intRCFull += (_objCharacter.STR.TotalValue / 3);
+                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue.ToString() + "] (" + (_objCharacter.STR.TotalValue / 3).ToString() + ")";
 
 				// If the full RC is not higher than the base, only the base value is shown.
                 if (intRCFull <= intRCBase)

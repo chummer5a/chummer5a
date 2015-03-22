@@ -1330,6 +1330,10 @@
 			<text>You cannot gain more than {0} from Negative Qualities.</text>
 		</string>
 		<string>
+			<key>Message_NegativeQualityAndMetatypeLimit</key>
+			<text>You cannot gain more than {0} from Negative Qualities and Metatype.</text>
+		</string>		
+		<string>
 			<key>MessageTitle_NegativeQualityLimit</key>
 			<text>Negative Qualities</text>
 		</string>
@@ -6183,6 +6187,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Location of PDF application:</text>
 		</string>
 		<string>
+			<key>Label_Options_URLApplicationPath</key>
+			<text>Location of Web Browser:</text>
+		</string>	
+		<string>
 			<key>Label_Options_PDFLocation</key>
 			<text>PDF Location:</text>
 		</string>
@@ -6193,6 +6201,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Button_Options_PDFTest</key>
 			<text>Test - Open to Page 5</text>
+		</string>
+				<string>
+			<key>Checkbox_Options_OpenPDFsAsURLs</key>
+			<text>Open PDFs as URLs (For use in browsers)</text>
 		</string>
 		<!-- Print Multiple Window -->
 		<string>

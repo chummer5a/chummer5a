@@ -2692,6 +2692,14 @@ namespace Chummer
 			// </critterpowers>
 			objWriter.WriteEndElement();
 
+            // <calendar>
+            objWriter.WriteStartElement("calendar");
+            _lstCalendar.Sort();
+            foreach (CalendarWeek objWeek in _lstCalendar)
+                objWeek.Print(objWriter);
+            // </expenses>
+            objWriter.WriteEndElement();
+
 			// Print the Expense Log Entries if the option is enabled.
 			if (_objOptions.PrintExpenses)
 			{

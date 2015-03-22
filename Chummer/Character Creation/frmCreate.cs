@@ -7638,6 +7638,17 @@ namespace Chummer
 						MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", strAmount), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 						blnAddItem = false;
 					}
+                    if (_objCharacter.MetatypeBP < 0) 
+                    {
+                        if ((intBP + _objCharacter.MetatypeBP) < (intMaxQualityAmount * -1) && !_objCharacter.IgnoreRules) 
+                        {
+                            MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityAndMetatypeLimit").Replace("{0}", strAmount), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            blnAddItem = false;
+                        }
+                    }
+                    {
+
+                    }
 				}
 			}
 			else
@@ -9568,7 +9579,7 @@ namespace Chummer
         private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
             Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
             frmPickLifestyle.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
@@ -9595,7 +9606,7 @@ namespace Chummer
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
 			frmPickLifestyle.ShowDialog(this);
             
@@ -9621,7 +9632,7 @@ namespace Chummer
 		private void tsSafehouse_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
 			frmPickLifestyle.ShowDialog(this);
 

@@ -8,6 +8,7 @@ using System.Xml;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Drawing;
+using System.Web;
 
 namespace Chummer
 {
@@ -1405,9 +1406,18 @@ namespace Chummer
                 // Open the PDF.
                 // acrord32 /A "page=123" "D:\foo\bar.pdf"
                 //string strFilePath = "C:\\Gaming\\Shadowrun\\Books\\Shadowrun 4th ed Anniverary.pdf";
-                string strParams = " /n /A \"page=" + intPage.ToString() + "\" \"" + strPath + "\"";
-
-                Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
+                if (GlobalOptions._blnOpenPDFsAsURLs)
+                {
+                    var uri = new System.Uri(strPath, UriKind.Absolute);
+                    string strParams = "\"" + uri + "#page=" + intPage.ToString() + "\"";
+                    MessageBox.Show(strParams.ToString());
+                    Process.Start(GlobalOptions.Instance.URLAppPath, strParams);
+                }
+                else
+                {
+                    string strParams = " /n /A \"page=" + intPage.ToString() + "\" \"" + strPath + "\"";
+                    Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
+                }
             }
 		}
 		#endregion

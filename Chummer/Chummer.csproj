@@ -175,11 +175,11 @@
     <Compile Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.cs">
+    <Compile Include="frmSelectLifestyleAdvanced.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.Designer.cs">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <Compile Include="frmSelectLifestyleAdvanced.Designer.cs">
+      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectLifestyleQuality.cs">
       <SubType>Form</SubType>
@@ -722,8 +722,8 @@
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectAdvancedLifestyle.resx">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <EmbeddedResource Include="frmSelectLifestyleAdvanced.resx">
+      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
@@ -981,6 +981,7 @@
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
     <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

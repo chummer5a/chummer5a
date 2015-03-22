@@ -629,6 +629,7 @@
 		</quality>	
 		<quality>
 			<name>Extra Secure</name>
+			<lp>1</lp>
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>370</page>

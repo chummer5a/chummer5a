@@ -12747,7 +12747,7 @@ namespace Chummer
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -12777,7 +12777,7 @@ namespace Chummer
 		private void tsSafehouse_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -19060,6 +19060,13 @@ namespace Chummer
                     {
                         if (objPower.BonusSource == objGear.InternalId)
                         {
+                            foreach (Improvement objImprovement in _objCharacter.Improvements.ToList())
+                            {
+                                if (objImprovement.SourceName == objPower.InternalId) 
+                                {
+                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId); 
+                                }
+                            }
                             if (objPower.Free)
                                 _objCharacter.Powers.Remove(objPower);
                             else if (objPower.FreeLevels < objPower.Rating)
