@@ -189,7 +189,7 @@ namespace Chummer
 			_objLifestyle.Cost = CalculateValues(false);
 			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
-			_objLifestyle.Qualities.Clear();
+			_objLifestyle.LifestyleQualities.Clear();
 
 			// Get the starting Nuyen information.
             XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
@@ -418,6 +418,14 @@ namespace Chummer
             {
                 treLifestyleQualities.SelectedNode.Remove();
                 CalculateValues();
+            }
+        }
+
+        private void treLifestyleQualities_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmdDeleteQuality_Click(sender, e);
             }
         }
 	}

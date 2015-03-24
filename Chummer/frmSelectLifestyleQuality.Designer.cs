@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            this.lstQualities = new System.Windows.Forms.ListBox();
+            this.lstLifestyleQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new System.Windows.Forms.ComboBox();
             this.lblSource = new System.Windows.Forms.Label();
@@ -47,15 +47,15 @@
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
-            // lstQualities
+            // lstLifestyleQualities
             // 
-            this.lstQualities.FormattingEnabled = true;
-            this.lstQualities.Location = new System.Drawing.Point(12, 38);
-            this.lstQualities.Name = "lstQualities";
-            this.lstQualities.Size = new System.Drawing.Size(275, 407);
-            this.lstQualities.TabIndex = 9;
-            this.lstQualities.SelectedIndexChanged += new System.EventHandler(this.lstQualities_SelectedIndexChanged);
-            this.lstQualities.DoubleClick += new System.EventHandler(this.lstQualities_DoubleClick);
+            this.lstLifestyleQualities.FormattingEnabled = true;
+            this.lstLifestyleQualities.Location = new System.Drawing.Point(12, 38);
+            this.lstLifestyleQualities.Name = "lstLifestyleQualities";
+            this.lstLifestyleQualities.Size = new System.Drawing.Size(275, 407);
+            this.lstLifestyleQualities.TabIndex = 9;
+            this.lstLifestyleQualities.SelectedIndexChanged += new System.EventHandler(this.lstLifestyleQualities_SelectedIndexChanged);
+            this.lstLifestyleQualities.DoubleClick += new System.EventHandler(this.lstLifestyleQualities_DoubleClick);
             // 
             // lblCategory
             // 
@@ -238,7 +238,7 @@
             this.Controls.Add(this.lblSourceLabel);
             this.Controls.Add(this.lblCategory);
             this.Controls.Add(this.cboCategory);
-            this.Controls.Add(this.lstQualities);
+            this.Controls.Add(this.lstLifestyleQualities);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -255,7 +255,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.ListBox lstQualities;
+		private System.Windows.Forms.ListBox lstLifestyleQualities;
 		private System.Windows.Forms.Label lblCategory;
 		private System.Windows.Forms.ComboBox cboCategory;
 		private System.Windows.Forms.Label lblSource;

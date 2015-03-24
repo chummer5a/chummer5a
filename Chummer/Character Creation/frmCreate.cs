@@ -19007,6 +19007,7 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
 				lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
 
+
 				// Change the Cost/Month label.
 				if (objLifestyle.StyleType == LifestyleType.Safehouse)
 					lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
@@ -19026,11 +19027,11 @@ namespace Chummer
 					else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-					foreach (string strQuality in objLifestyle.Qualities)
+					foreach (string strQuality in objLifestyle.LifestyleQualities)
 					{
                         if (strQualities.Length > 0)
                             strQualities += ", ";
-                        string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
+                        string strQualityName = strQuality.ToString();
                         objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
                         XmlNode nodCost = objNode["lifestylecost"];
                         if (nodCost != null)
@@ -21560,9 +21561,15 @@ namespace Chummer
 						objLifestyle.BaseLifestyle = objXmlLifestyle["baselifestyle"].InnerText;
 						objLifestyle.Source = "SR5";
 						objLifestyle.Page = "373";
+                        objLifestyle.Comforts = Convert.ToInt32(objXmlLifestyle["comforts"].InnerText);
+                        objLifestyle.ComfortsEntertainment = Convert.ToInt32(objXmlLifestyle["comfortsentertainment"].InnerText);
+                        objLifestyle.Security = Convert.ToInt32(objXmlLifestyle["security"].InnerText);
+                        objLifestyle.SecurityEntertainment = Convert.ToInt32(objXmlLifestyle["securityentertainment"].InnerText);
+                        objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"].InnerText);
+                        objLifestyle.AreaEntertainment = Convert.ToInt32(objXmlLifestyle["areaentertainment"].InnerText);
 
 						foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
-							objLifestyle.Qualities.Add(objXmlQuality.InnerText);
+							objLifestyle.LifestyleQualities.Add(objXmlQuality.InnerText);
 
 						objNode.Text = strName;
 					}

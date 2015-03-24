@@ -432,11 +432,11 @@ namespace Chummer
 						objWriter.WriteElementString("dice", objLifestyle.Dice.ToString());
 						objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString());
 						objWriter.WriteElementString("baselifestyle", objLifestyle.BaseLifestyle);
-						if (objLifestyle.Qualities.Count > 0)
+						if (objLifestyle.LifestyleQualities.Count > 0)
 						{
 							// <qualities>
 							objWriter.WriteStartElement("qualities");
-							foreach (string strQuality in objLifestyle.Qualities)
+							foreach (string strQuality in objLifestyle.LifestyleQualities)
 								objWriter.WriteElementString("quality", strQuality);
 							// </qualities>
 							objWriter.WriteEndElement();

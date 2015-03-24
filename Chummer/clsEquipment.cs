@@ -8937,16 +8937,18 @@ namespace Chummer
 		private int _intPercentage = 100;
 		private string _strLifestyleName = "";
 		private bool _blnPurchased = false;
-        private string _strComforts = "";
-        private string _strEntertainment = "";
-        private string _strNecessities = "";
-        private string _strNeighborhood = "";
-        private string _strSecurity = "";
+        private int _intEntertainment = 0;
+        private int _intComforts = 0;
+        private int _intArea = 0;
+        private int _intSecurity = 0;
+        private int _intComfortsEntertainment = 0;
+        private int _intAreaEntertainment = 0;
+        private int _intSecurityEntertainment = 0;
         private string _strBaseLifestyle = "";
 		private string _strSource = "";
 		private string _strPage = "";
 		private LifestyleType _objType = LifestyleType.Standard;
-		private List<string> _lstQualities = new List<string>();
+		private List<string> _lstLifestyleQualities = new List<string>();
 		private string _strNotes = "";
 
 		private readonly Character _objCharacter;
@@ -9013,18 +9015,20 @@ namespace Chummer
 			objWriter.WriteElementString("percentage", _intPercentage.ToString());
 			objWriter.WriteElementString("lifestylename", _strLifestyleName);
 			objWriter.WriteElementString("purchased", _blnPurchased.ToString());
-            objWriter.WriteElementString("comforts", _strComforts);
-            objWriter.WriteElementString("entertainment", _strEntertainment);
-            objWriter.WriteElementString("necessities", _strNecessities);
-            objWriter.WriteElementString("neighborhood", _strNeighborhood);
-            objWriter.WriteElementString("security", _strSecurity);
+            objWriter.WriteElementString("comforts", _intComforts.ToString());
+            objWriter.WriteElementString("area", _intArea.ToString());
+            objWriter.WriteElementString("security", _intSecurity.ToString());
+            objWriter.WriteElementString("comfortsentertainment", _intComfortsEntertainment.ToString());
+            objWriter.WriteElementString("areaentertainment", _intAreaEntertainment.ToString());
+            objWriter.WriteElementString("securityentertainment", _intSecurityEntertainment.ToString());
+            objWriter.WriteElementString("entertainment", _intEntertainment.ToString());
 			objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("type", _objType.ToString());
-			objWriter.WriteStartElement("qualities");
-			foreach (string strQuality in _lstQualities)
-				objWriter.WriteElementString("quality", strQuality);
+			objWriter.WriteStartElement("lifestylequalities");
+			foreach (string strQuality in _lstLifestyleQualities)
+                objWriter.WriteElementString("lifestylequality", strQuality);
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
@@ -9048,6 +9052,27 @@ namespace Chummer
 			_intDice = Convert.ToInt32(objNode["dice"].InnerText);
 			_intMultiplier = Convert.ToInt32(objNode["multiplier"].InnerText);
 			_intMonths = Convert.ToInt32(objNode["months"].InnerText);
+            try
+			{
+                _intArea = Convert.ToInt32(objNode["area"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _intSecurity = Convert.ToInt32(objNode["security"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _intComforts = Convert.ToInt32(objNode["comforts"].InnerText);
+            }
+            catch
+            {
+            }
 			try
 			{
 				_intRoommates = Convert.ToInt32(objNode["roommates"].InnerText);
@@ -9087,8 +9112,8 @@ namespace Chummer
 			}
 			try
 			{
-				foreach (XmlNode objXmlQuality in objNode.SelectNodes("qualities/quality"))
-					_lstQualities.Add(objXmlQuality.InnerText);
+                foreach (XmlNode objXmlQuality in objNode.SelectNodes("lifestylequalities/lifestylequality"))
+                    _lstLifestyleQualities.Add(objXmlQuality.InnerText);
 			}
 			catch
 			{
@@ -9153,16 +9178,16 @@ namespace Chummer
 			objWriter.WriteStartElement("qualities");
 
 			// Retrieve the Qualities for the Advanced Lifestyle if applicable.
-			if (_lstQualities.Count > 0)
+            if (_lstLifestyleQualities.Count > 0)
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				XmlNode objNode;
 
-				foreach (string strQuality in _lstQualities)
+                foreach (string strQuality in _lstLifestyleQualities)
 				{
 					string strThisQuality = "";
 					string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
-					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                    objNode = objXmlDocument.SelectSingleNode("/chummer/lifestylequalities/lifestylequality[name = \"" + strQualityName + "\"]");
 
 
 					if (objNode["translate"] != null)
@@ -9403,84 +9428,113 @@ namespace Chummer
         /// <summary>
         /// Advance Lifestyle Comforts.
         /// </summary>
-        public string Comforts
+        public int Comforts
         {
             get
             {
-                return _strComforts;
+                return _intComforts;
             }
             set
             {
-                _strComforts = value;
+                _intComforts = value;
+            }
+        }
+        /// <summary>
+        /// Advance Lifestyle Comforts.
+        /// </summary>
+        public int ComfortsEntertainment
+        {
+            get
+            {
+                return _intComfortsEntertainment;
+            }
+            set
+            {
+                _intComfortsEntertainment = value;
             }
         }
 
         /// <summary>
-        /// Advance Lifestyle Comforts.
+        /// Advance Lifestyle Neighborhood Entertainment.
         /// </summary>
-        public string Entertainment
+        public int AreaEntertainment
         {
             get
             {
-                return _strEntertainment;
+                return _intAreaEntertainment;
             }
             set
             {
-                _strEntertainment = value;
+                _intAreaEntertainment = value;
+            }
+        }
+
+        /// <summary>
+        /// Advance Lifestyle Security Entertainment.
+        /// </summary>
+        public int SecurityEntertainment
+        {
+            get
+            {
+                return _intSecurityEntertainment;
+            }
+            set
+            {
+                _intSecurityEntertainment = value;
             }
         }
         /// <summary>
-        /// Advance Lifestyle Necessities.
+        /// Advance Lifestyle Comforts.
         /// </summary>
-        public string Necessities
+        public int Entertainment
         {
             get
             {
-                return _strNecessities;
+                return _intEntertainment;
             }
             set
             {
-                _strNecessities = value;
+                _intEntertainment = value;
             }
         }
 
         /// <summary>
         /// Advance Lifestyle Neighborhood.
         /// </summary>
-        public string Neighborhood
+        public int Area
         {
             get
             {
-                return _strNeighborhood;
+                return _intArea;
             }
             set
             {
-                _strNeighborhood = value;
+                _intArea = value;
             }
         }
 
         /// <summary>
         /// Advance Lifestyle Security.
         /// </summary>
-        public string Security
+        public int Security
         {
             get
             {
-                return _strSecurity;
+                return _intSecurity;
             }
             set
             {
-                _strSecurity = value;
+                _intSecurity = value;
             }
         }
 		/// <summary>
 		/// Advanced Lifestyle Qualities.
 		/// </summary>
-		public List<string> Qualities
+		public List<string> LifestyleQualities
 		{
 			get
 			{
-				return _lstQualities;
+                return _lstLifestyleQualities;
 			}
 		}
 
@@ -9587,7 +9641,7 @@ namespace Chummer
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 int intCost = _intCost;
-                foreach (string strQuality in _lstQualities)
+                foreach (string strQuality in _lstLifestyleQualities)
                 {
                     if (strQuality.Contains("%"))
                     {

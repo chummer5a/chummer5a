@@ -24260,7 +24260,7 @@ namespace Chummer
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-                    foreach (string strQuality in objLifestyle.Qualities)
+                    foreach (string strQuality in objLifestyle.LifestyleQualities)
                     {
                         if (strQualities.Length > 0)
                             strQualities += ", ";
