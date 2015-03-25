@@ -212,6 +212,7 @@ namespace Chummer
 		private List<Cyberware> _lstCyberware = new List<Cyberware>();
 		private List<Weapon> _lstWeapons = new List<Weapon>();
 		private List<Quality> _lstQualities = new List<Quality>();
+        private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
 		private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
 		private List<Gear> _lstGear = new List<Gear>();
 		private List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -5516,7 +5517,16 @@ namespace Chummer
 				return _lstQualities;
 			}
 		}
-
+        /// <summary>
+        /// Qualities (Positive and Negative).
+        /// </summary>
+        public List<LifestyleQuality> LifestyleQualities
+        {
+            get
+            {
+                return _lstLifestyleQualities;
+            }
+        }
 		/// <summary>
 		/// Locations.
 		/// </summary>

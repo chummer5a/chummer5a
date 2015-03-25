@@ -492,6 +492,11 @@
 
 		}
 
+        private void treLifestyleQualities_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private void nudSecurity_ValueChanged(object sender, System.EventArgs e)
         {
             CalculateValues();

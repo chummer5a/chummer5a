@@ -9027,8 +9027,10 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("type", _objType.ToString());
 			objWriter.WriteStartElement("lifestylequalities");
-			foreach (string strQuality in _lstLifestyleQualities)
+            foreach (string strQuality in _lstLifestyleQualities)
+            {
                 objWriter.WriteElementString("lifestylequality", strQuality);
+            }
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
@@ -9216,7 +9218,7 @@ namespace Chummer
                         strThisQuality += " [" + strCost + "]";
                     }
 
-					objWriter.WriteElementString("quality", strThisQuality);
+					objWriter.WriteElementString("lifestylequality", strThisQuality);
 				}
 			}
 			objWriter.WriteEndElement();
@@ -9650,7 +9652,7 @@ namespace Chummer
                         double dblPercent = Convert.ToDouble(strPercent);
                         dblModifier += dblPercent;
                     }
-                    else
+                    else if (strQuality.Contains("¥"))
                     {
                         string strFlat = strQuality.Substring(strQuality.IndexOf("[") + 1);
                         strFlat = strFlat.Substring(0, strFlat.IndexOf("¥"));

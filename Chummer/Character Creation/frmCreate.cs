@@ -21568,7 +21568,7 @@ namespace Chummer
                         objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"].InnerText);
                         objLifestyle.AreaEntertainment = Convert.ToInt32(objXmlLifestyle["areaentertainment"].InnerText);
 
-						foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))
+                        foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
 							objLifestyle.LifestyleQualities.Add(objXmlQuality.InnerText);
 
 						objNode.Text = strName;
