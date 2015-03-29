@@ -965,6 +965,7 @@ namespace Chummer
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
 		private int _intBP = 0;
+        private int _intLP = 0;
 		private QualityType _objQualityType = QualityType.Positive;
 		private QualitySource _objQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
@@ -1044,7 +1045,7 @@ namespace Chummer
             }
             if (objXmlQuality["lp"] != null)
             {
-                _intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
+                _intLP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
             }
 			_objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
@@ -1392,6 +1393,20 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Number of Build Points the Quality costs.
+        /// </summary>
+        public int LP
+        {
+            get
+            {
+                return _intLP;
+            }
+            set
+            {
+                _intLP = value;
+            }
+        }
 		/// <summary>
 		/// The name of the object as it should be displayed on printouts (translated name only).
 		/// </summary>

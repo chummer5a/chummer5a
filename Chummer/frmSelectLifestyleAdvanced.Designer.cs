@@ -430,7 +430,7 @@
             treeNode3});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 299);
             this.treLifestyleQualities.TabIndex = 53;
-            this.treLifestyleQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyleQualities_KeyDown);
+            //this.treLifestyleQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyleQualities_KeyDown);
             // 
             // frmSelectLifestyleAdvanced
             // 
@@ -491,11 +491,6 @@
             this.PerformLayout();
 
 		}
-
-        private void treLifestyleQualities_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            throw new System.NotImplementedException();
-        }
 
         private void nudSecurity_ValueChanged(object sender, System.EventArgs e)
         {
