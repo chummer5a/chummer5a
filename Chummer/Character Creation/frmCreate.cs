@@ -1728,6 +1728,7 @@ namespace Chummer
 				// If the character is being build with Karma, show the Initiation Tab.
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
 				{
+                    nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
 					if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
 					{
 						tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -1807,6 +1808,7 @@ namespace Chummer
 
 				// If the character is being build with Karma, show the Initiation Tab.
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma){
+                    nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
 					if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
 					{
 						tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -14811,6 +14813,11 @@ namespace Chummer
 			nudLOG.Maximum = _objCharacter.LOG.TotalMaximum;
 			nudWIL.Maximum = _objCharacter.WIL.TotalMaximum;
 			nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
+            }
 			nudMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
 			nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
 
@@ -19055,11 +19062,18 @@ namespace Chummer
                         }
                         else
                         {
-                            string strCost = objNode["cost"].InnerText;
-                            if (objNode["translate"] != null)
-                                strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
-                            else
-                                strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
+                            if (objNode["cost"] != null)
+                            {
+                                string strCost = objNode["cost"].InnerText;
+                                if (objNode["translate"] != null)
+                                    strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
+                                else
+                                    strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
+                            }
+                            else 
+                            {
+                                strQualities += objNode["name"].InnerText;
+                            }
                         }
 					}
 
@@ -22401,6 +22415,11 @@ namespace Chummer
 			nudLOG.Maximum = _objCharacter.LOG.TotalMaximum;
 			nudWIL.Maximum = _objCharacter.WIL.TotalMaximum;
 			nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
+            }
 			nudMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
 			nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
 
@@ -23661,24 +23680,27 @@ namespace Chummer
 				strForceValue = objXmlGear["name"].Attributes["select"].InnerText;
 
 			Gear objNewGear = new Gear(_objCharacter);
-			switch (objXmlGearNode["category"].InnerText)
-			{
-                case "Commlinks":
-                case "Cyberdecks":
-                case "Rigger Command Consoles":
-                    Commlink objCommlink = new Commlink(_objCharacter);
-					objCommlink.Create(objXmlGearNode, _objCharacter, objNode, intRating, true, blnCreateChildren);
-					objCommlink.Quantity = intQty;
-					objNewGear = objCommlink;
-					break;
-				default:
-					Gear objGear = new Gear(_objCharacter);
-					objGear.Create(objXmlGearNode, _objCharacter, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
-					objGear.Quantity = intQty;
-					objNode.Text = objGear.DisplayName;
-					objNewGear = objGear;
-					break;
-			}
+            if (objXmlGearNode != null)
+            {
+                switch (objXmlGearNode["category"].InnerText)
+                {
+                    case "Commlinks":
+                    case "Cyberdecks":
+                    case "Rigger Command Consoles":
+                        Commlink objCommlink = new Commlink(_objCharacter);
+                        objCommlink.Create(objXmlGearNode, _objCharacter, objNode, intRating, true, blnCreateChildren);
+                        objCommlink.Quantity = intQty;
+                        objNewGear = objCommlink;
+                        break;
+                    default:
+                        Gear objGear = new Gear(_objCharacter);
+                        objGear.Create(objXmlGearNode, _objCharacter, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
+                        objGear.Quantity = intQty;
+                        objNode.Text = objGear.DisplayName;
+                        objNewGear = objGear;
+                        break;
+                }
+            }
 
 			if (objParentObject.GetType() == typeof(Character))
 				((Character)objParentObject).Gear.Add(objNewGear);
@@ -24273,6 +24295,7 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
+            nudMysticAdeptMAGMagician.Maximum = _objCharacter.MAG.TotalValue;
         }
 
         private void nudKRES_ValueChanged(object sender, EventArgs e)

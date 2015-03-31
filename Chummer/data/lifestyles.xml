@@ -265,6 +265,51 @@
 			<page>221</page>
 		</quality>
 		<quality>
+			<name>Cramped Garage (Airplane)</name>
+			<category>Entertainment - Asset</category>
+			<lp>4</lp>
+			<allowed>Luxury</allowed>
+			<source>RF</source>
+			<cost>18000</cost>
+			<page>221</page>
+		</quality>
+		<quality>
+			<name>Cramped Garage (Boat)</name>
+			<category>Entertainment - Asset</category>
+			<lp>3</lp>
+			<allowed>High, Luxury</allowed>
+			<source>RF</source>
+			<cost>4500</cost>
+			<page>221</page>
+		</quality>	
+		<quality>
+			<name>Cramped Garage (Car (Body 4 or Less))</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Medium,High,Luxury</allowed>
+			<source>RF</source>
+			<cost>45</cost>
+			<page>221</page>
+		</quality>	
+		<quality>
+			<name>Cramped Garage (Car (Body 5 or More))</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>Medium,High,Luxury</allowed>
+			<source>RF</source>
+			<cost>90</cost>
+			<page>221</page>
+		</quality>
+		<quality>
+			<name>Cramped Garage (Helicopter)</name>
+			<category>Entertainment - Asset</category>
+			<lp>4</lp>
+			<allowed>Luxury</allowed>
+			<source>RF</source>
+			<cost>900</cost>
+			<page>221</page>
+		</quality>		
+		<quality>
 			<name>Garage (Airplane)</name>
 			<category>Entertainment - Asset</category>
 			<lp>4</lp>
@@ -615,7 +660,7 @@
 			<page>225</page>
 		</quality>
 		<quality>
-			<name>Cramped</name>
+			<name>Cramped (Workshop/Facility)</name>
 			<category>Negative</category>
 			<lp>3</lp>
 			<required>
@@ -626,11 +671,20 @@
 			</required>
 			<source>RF</source>
 			<page>225</page>
+		</quality>
+		<quality>
+			<name>Cramped</name>
+			<lp>1</lp>
+			<category>Negative</category>
+			<multiplier>-10</multiplier>
+			<source>SR5</source>
+			<page>370</page>
 		</quality>	
 		<quality>
 			<name>Extra Secure</name>
 			<lp>1</lp>
 			<category>Positive</category>
+			<multiplier>20</multiplier>
 			<source>SR5</source>
 			<page>370</page>
 		</quality>
@@ -645,6 +699,11 @@
 			<name>Maid is Out</name>
 			<category>Negative</category>
 			<lp>-1</lp>
+			<forbidden>
+			<oneof>
+			<quality>Cleaning Service</quality>
+			</oneof>
+			</forbidden>
 			<source>RF</source>
 			<page>226</page>
 		</quality>	
@@ -652,6 +711,7 @@
 			<name>Not a Home</name>
 			<category>Negative</category>
 			<lp>-1</lp>
+			<comforts>-1</comforts>
 			<source>RF</source>
 			<page>226</page>
 		</quality>
@@ -659,6 +719,7 @@
 			<name>Obscure/Difficult to Find</name>
 			<category>Positive</category>
 			<lp>1</lp>
+			<multiplier>10</multiplier>
 			<forbidden>
 				<oneof>
 					<quality>Discreet Deliveryman</quality>
@@ -672,6 +733,7 @@
 			<name>One Good Thing About This Place</name>
 			<category>Positive</category>
 			<lp>1</lp>
+			<bonus><selecttext /></bonus>
 			<source>RF</source>
 			<page>226</page>
 		</quality>		
@@ -679,6 +741,7 @@
 			<name>Safehouse</name>
 			<category>Positive</category>
 			<lp>0</lp>
+			<cost>500</cost>
 			<source>RF</source>
 			<page>226</page>
 		</quality>
@@ -686,6 +749,12 @@
 			<name>Safety Third</name>
 			<category>Negative</category>
 			<lp>-1</lp>
+			<required>
+			<oneof>
+			<quality>Garage</quality>
+			<quality>Workshop/Facility</quality>
+			</oneof>
+			</required>
 			<source>RF</source>
 			<page>226</page>
 		</quality>
@@ -693,6 +762,7 @@
 			<name>Special Work Area</name>
 			<category>Positive</category>
 			<lp>0</lp>
+			<cost>1000</cost>
 			<source>SR5</source>
 			<page>370</page>
 		</quality>
@@ -706,7 +776,8 @@
 		<quality>
 			<name>W Zone</name>
 			<category>Negative</category>
-			<lp>0</lp>
+			<neighborhood>-1</neighborhood>
+			<lp>-1</lp>
 			<source>RF</source>
 			<page>226</page>
 		</quality>		

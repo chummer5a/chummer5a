@@ -189,6 +189,7 @@ namespace Chummer
             _objLifestyle.Cost = CalculateValues(false);
             _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
+            _objLifestyle.BaseLifestyle = cboBaseLifestyle.Text;
             //_objLifestyle.LifestyleQualities.Clear();
 
             // Get the starting Nuyen information.
@@ -222,6 +223,7 @@ namespace Chummer
 
             int intLP = 0;
             int intNuyen = 0;
+            int intMultiplier = 0;
 
             // Calculate the limits of the 3 aspects.
             // Comforts LP.
@@ -272,10 +274,14 @@ namespace Chummer
             // Calculate the cost of Positive Qualities.
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[0].Nodes)
             {
-                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Tag.ToString() + "\" and category = \"Positive\"]");
+                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text.ToString() + "\" and category = \"Positive\"]");
                 if (objXmlAspect != null)
                 {
                     intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+                    if (objXmlAspect["multiplier"] != null)
+                    {
+                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+                    }
                 }
             }
 
@@ -286,18 +292,45 @@ namespace Chummer
                 if (objXmlAspect != null)
                 {
                     intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+                    if (objXmlAspect["neighborhood"] != null)
+                    {
+                        nudArea.Maximum += Convert.ToInt32(objXmlAspect["neighborhood"].InnerText);
+                    }
+
+                    if (objXmlAspect["comforts"] != null)
+                    {
+                        nudComforts.Maximum += Convert.ToInt32(objXmlAspect["comforts"].InnerText); ;
+                    }
+                     if (objXmlAspect["multiplier"] != null)
+                    {
+                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+                    }
+                     if (objXmlAspect["cost"] != null)
+                     {
+                         intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+                     }
+                    
                 }
+
             }
 
             // Calculate the cost of Entertainments.
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[2].Nodes)
             {
-                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Tag.ToString() + "\"]");
+                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text.ToString() + "\"]");
                 string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');
                 int intLifestyleEntertainmentFree = 0;
                 if (objXmlAspect != null)
                 {
                     intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+                    if (objXmlAspect["multiplier"] != null)
+                    {
+                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+                    }
+                    if (objXmlAspect["cost"] != null)
+                    {
+                        intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+                    }
                 }
                 
                 foreach (string strLifestyle in strLifestyleEntertainments)
@@ -315,14 +348,15 @@ namespace Chummer
                         intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
                     }
                 }
+
+
             }
 
-            if (blnIncludePercentage)
-            {
-                intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * (1.0 + Convert.ToDouble(nudRoommates.Value / 10, GlobalOptions.Instance.CultureInfo)));
-                intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
-            }
+            intMultiplier += Convert.ToInt32(nudRoommates.Value * 10);
             intNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+            intMultiplier = (intNuyen * intMultiplier) / 100;
+            intNuyen += intMultiplier;
+            intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 
@@ -451,7 +485,6 @@ namespace Chummer
         private string _strExtra = "";
         private string _strSource = "";
         private string _strPage = "";
-        private string _strMutant = "";
         private string _strNotes = "";
         private bool _blnContributeToLimit = true;
         private bool _blnPrint = true;
@@ -463,7 +496,6 @@ namespace Chummer
         private readonly Character _objCharacter;
         private string _strAltName = "";
         private string _strAltPage = "";
-        private Guid _guiWeaponID = new Guid();
 
         #region Helper Methods
         /// <summary>
