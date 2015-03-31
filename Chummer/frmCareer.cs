@@ -691,7 +691,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Contact)
 				{
 					intContact++;
-					ContactControl objContactControl = new ContactControl();
+					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
@@ -714,7 +714,7 @@ namespace Chummer
 				if (objContact.EntityType == ContactType.Enemy)
 				{
 					intEnemy++;
-					ContactControl objContactControl = new ContactControl();
+					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
 					objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
@@ -4858,6 +4858,18 @@ namespace Chummer
 				}
 			}
 
+            foreach (Skill objSkill in _objCharacter.Skills)
+            {
+                foreach (Power objPower in _objCharacter.Powers)
+                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
+                    {
+                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                    }
+            }
+
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -4998,7 +5010,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panContacts.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+			ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Contact;
 
@@ -5025,7 +5037,7 @@ namespace Chummer
 			_objCharacter.Contacts.Add(objContact);
 
 			int i = panEnemies.Controls.Count;
-			ContactControl objContactControl = new ContactControl();
+			ContactControl objContactControl = new ContactControl(_objCharacter);
 			objContactControl.ContactObject = objContact;
 			objContactControl.EntityType = ContactType.Enemy;
 
@@ -6040,7 +6052,7 @@ namespace Chummer
 		private void cmdAddLifestyle_Click(object sender, EventArgs e)
 		{
 			Lifestyle objLifestyle = new Lifestyle(_objCharacter);
-            frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objLifestyle, _objCharacter);
+            frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objLifestyle, _objCharacter);
             frmPickLifestyle.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -12705,7 +12717,7 @@ namespace Chummer
 		private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+			frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.ShowDialog(this);
 
 			// Make sure the dialogue window was not canceled.
@@ -12735,7 +12747,7 @@ namespace Chummer
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -12765,7 +12777,7 @@ namespace Chummer
 		private void tsSafehouse_Click(object sender, EventArgs e)
 		{
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
 			frmPickLifestyle.ShowDialog(this);
 
@@ -17398,7 +17410,7 @@ namespace Chummer
 			if (objLifestyle.BaseLifestyle != "")
 			{
 				// Edit Advanced Lifestyle.
-				frmSelectAdvancedLifestyle frmPickLifestyle = new frmSelectAdvancedLifestyle(objNewLifestyle, _objCharacter);
+				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 
@@ -19048,6 +19060,13 @@ namespace Chummer
                     {
                         if (objPower.BonusSource == objGear.InternalId)
                         {
+                            foreach (Improvement objImprovement in _objCharacter.Improvements.ToList())
+                            {
+                                if (objImprovement.SourceName == objPower.InternalId) 
+                                {
+                                    _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Power, objPower.InternalId); 
+                                }
+                            }
                             if (objPower.Free)
                                 _objCharacter.Powers.Remove(objPower);
                             else if (objPower.FreeLevels < objPower.Rating)
@@ -24241,7 +24260,7 @@ namespace Chummer
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-                    foreach (string strQuality in objLifestyle.Qualities)
+                    foreach (string strQuality in objLifestyle.LifestyleQualities)
                     {
                         if (strQualities.Length > 0)
                             strQualities += ", ";

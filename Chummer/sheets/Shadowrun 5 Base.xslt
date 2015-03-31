@@ -291,7 +291,44 @@
 						</tr>
 					</table>
 				</div>
+					<div class="block" id="CalendarBlock">
+						<table width="100%" cellspacing="0" cellpadding="0" border="0">
+							<tr>
+								<td>
+									<table width="100%" cellspacing="0" cellpadding="0" border="0" class="tableborder">
+										<tr>
+											<td width="30%">
+												<strong>DATE</strong>
+											</td>
+											<td width="70%" style="text-align:left;">
+												<strong>NOTES</strong>
+											</td>
+										</tr>
+										<xsl:for-each select="calendar/week">
+											<tr>
+												<td>
+													<xsl:value-of select="date"/>
+												</td>
+												<td style="text-align:right;">
 
+													<xsl:value-of select="notes"/>
+												</td>
+											</tr>
+										</xsl:for-each>
+										<tr>
+											<td class="rowsummary" colspan="3"> CALENDAR ENTRIES
+												<span class="rowsummarybutton" onClick="showhide(this,'CalendarBlock');" colspan="1">Show: YES</span>
+												<span class="rowsummarybutton" onClick="zalomit(this,'CalendarBlock');" colspan="1">Page Break: NO</span>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="hseparator"/>
+							</tr>
+						</table>
+					</div>
 				<div class="block" id="AttributesBlock">
 					<table width="100%" cellspacing="0" cellpadding="0" border="0">
 						<tr>

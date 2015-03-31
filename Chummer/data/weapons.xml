@@ -6967,6 +6967,7 @@
 			<id>ea64527d-0e1e-4248-957b-7c02d79dad30</id>
 			<name>Concealed Quick-Draw Holster</name>
 			<mount/>
+      <conceal>-1</conceal>
 			<avail>6</avail>
 			<cost>275</cost>
 			<source>RG</source>

@@ -212,6 +212,7 @@ namespace Chummer
 		private List<Cyberware> _lstCyberware = new List<Cyberware>();
 		private List<Weapon> _lstWeapons = new List<Weapon>();
 		private List<Quality> _lstQualities = new List<Quality>();
+        private List<Quality> _lstLifestyleQualities = new List<Quality>();
 		private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
 		private List<Gear> _lstGear = new List<Gear>();
 		private List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -384,7 +385,7 @@ namespace Chummer
 			// <totalkarma />
 			objWriter.WriteElementString("totalkarma", _intTotalKarma.ToString());
             // <special />
-            objWriter.WriteElementString("special", _intKarma.ToString());
+            objWriter.WriteElementString("special", _intSpecial.ToString());
             // <totalspecial />
             objWriter.WriteElementString("totalspecial", _intTotalSpecial.ToString());
             // <totalattributes />
@@ -2691,6 +2692,14 @@ namespace Chummer
 			}
 			// </critterpowers>
 			objWriter.WriteEndElement();
+
+            // <calendar>
+            objWriter.WriteStartElement("calendar");
+            _lstCalendar.Sort();
+            foreach (CalendarWeek objWeek in _lstCalendar)
+                objWeek.Print(objWriter);
+            // </expenses>
+            objWriter.WriteEndElement();
 
 			// Print the Expense Log Entries if the option is enabled.
 			if (_objOptions.PrintExpenses)
@@ -5508,7 +5517,16 @@ namespace Chummer
 				return _lstQualities;
 			}
 		}
-
+        /// <summary>
+        /// Qualities (Positive and Negative).
+        /// </summary>
+        public List<Quality> LifestyleQualities
+        {
+            get
+            {
+                return _lstLifestyleQualities;
+            }
+        }
 		/// <summary>
 		/// Locations.
 		/// </summary>

@@ -11,7 +11,7 @@ namespace Chummer
 {
     public partial class PowerControl : UserControl
     {
-		private Power _objPower;
+		private Power _objPower;     
 
         // Events.
         public event PowerRatingChangedHandler PowerRatingChanged;
@@ -30,12 +30,13 @@ namespace Chummer
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
 		}
-
+        
 		private void nudRating_ValueChanged(object sender, EventArgs e)
         {
             // Raise the PowerRatingChanged Event when the NumericUpDown's Value changes.
             // The entire PowerControl is passed as an argument so the handling event can evaluate its contents.
-			_objPower.Rating = nudRating.Value;
+
+            _objPower.Rating = nudRating.Value;
             try
             {
                 PowerRatingChanged(this);
@@ -154,6 +155,10 @@ namespace Chummer
             set
             {
 				_objPower.Rating = value;
+                if (_objPower.Rating > nudRating.Maximum) 
+                {
+                   value = Convert.ToInt32(nudRating.Maximum);
+                }
                 nudRating.Value = value;
                 UpdatePointsPerLevel();
             }

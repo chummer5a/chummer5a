@@ -22,11 +22,12 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
 		private Contact _objContact;
+        private readonly Character _objCharacter;
         private string _strContactName;
         private string _strContactRole;
         private string _strContactLocation;
         private bool _blnEnemy = false;
-
+        
         // Events.
 		public event ConnectionRatingChangedHandler ConnectionRatingChanged;
 		public event ConnectionGroupRatingChangedHandler ConnectionGroupRatingChanged;
@@ -35,9 +36,14 @@ namespace Chummer
 		public event FileNameChangedHandler FileNameChanged;
 
 		#region Control Events
-        public ContactControl()
+        public ContactControl(Character objCharacter)
         {
             InitializeComponent();
+            _objCharacter = objCharacter;
+            if (!_objCharacter.Created)
+            {
+                nudConnection.Maximum = 6;
+            }
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
 

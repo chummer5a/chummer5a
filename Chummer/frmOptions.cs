@@ -199,9 +199,20 @@ namespace Chummer
 			}
 			chkPrintToFileFirst.Checked = blnPrintToFileFirst;
 
+            bool blnOpenPDFsAsURLs = false;
+            try
+            {
+                blnOpenPDFsAsURLs = GlobalOptions.Instance.OpenPDFsAsURLs;
+            }
+            catch
+            {
+            }
+            chkOpenPDFsAsURLs.Checked = blnOpenPDFsAsURLs;
+
             chkLicenseEachRestrictedItem.Checked = _objOptions.LicenseRestricted;
 
 			txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
+            txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
 
 			// Populate the Language List.
 			string strPath = Path.Combine(Application.StartupPath, "lang");
@@ -589,6 +600,15 @@ namespace Chummer
 				txtPDFAppPath.Text = openFileDialog.FileName;
 		}
 
+        private void cmdURLAppPath_Click(object sender, EventArgs e)
+        {
+            // Prompt the user to select a save file to associate with this Contact.
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
+
+            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                txtURLAppPath.Text = openFileDialog.FileName;
+        }
 		private void cmdPDFLocation_Click(object sender, EventArgs e)
 		{
 			// Prompt the user to select a save file to associate with this Contact.
@@ -1534,6 +1554,16 @@ namespace Chummer
 			{
 			}
 
+            bool blnOpenPDFsAsURLs = false;
+            try
+            {
+                blnOpenPDFsAsURLs = GlobalOptions._blnOpenPDFsAsURLs;
+            }
+            catch
+            {
+            }
+            chkOpenPDFsAsURLs.Checked = blnOpenPDFsAsURLs;
+
 			if (_objOptions.LimbCount == 6)
 				cboLimbCount.SelectedValue = "all";
 			else
@@ -1621,6 +1651,8 @@ namespace Chummer
 			GlobalOptions.Instance.DatesIncludeTime = chkDatesIncludeTime.Checked;
 			GlobalOptions.Instance.PrintToFileFirst = chkPrintToFileFirst.Checked;
 			GlobalOptions.Instance.PDFAppPath = txtPDFAppPath.Text;
+            GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
+            GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
 			Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
 			objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
 			objRegistry.SetValue("localisedupdatesonly", chkLocalisedUpdatesOnly.Checked.ToString());
@@ -1631,7 +1663,8 @@ namespace Chummer
 			objRegistry.SetValue("defaultsheet", cboXSLT.SelectedValue.ToString());
 			objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
 			objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
-
+            objRegistry.SetValue("openpdfsasurls", chkOpenPDFsAsURLs.Checked.ToString());
+            objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
 			objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
 
 			// Save the SourcebookInfo.

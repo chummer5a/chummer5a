@@ -105,8 +105,9 @@ namespace Chummer
 
 		// PDF information.
 		public static string _strPDFAppPath = "";
+        public static string _strURLAppPath = "";
 		public static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
-
+        public static bool _blnOpenPDFsAsURLs = false;
         public static bool _blnUseLogging = false;
 
 		#region Constructor and Instance
@@ -218,6 +219,15 @@ namespace Chummer
 			catch
 			{
 			}
+
+            // Open PDFs as URLs. For use with Chrome, Firefox, etc.
+            try
+            {
+                _blnOpenPDFsAsURLs = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasurls").ToString());
+            }
+            catch
+            {
+            }
 
 			// PDF application path.
 			try
@@ -521,6 +531,20 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Path to the user's PDF application.
+        /// </summary>
+        public string URLAppPath
+        {
+            get
+            {
+                return _strURLAppPath;
+            }
+            set
+            {
+                _strURLAppPath = value;
+            }
+        }
 		/// <summary>
 		/// List of SourcebookInfo.
 		/// </summary>
@@ -721,7 +745,22 @@ namespace Chummer
 			return lstFiles;
 		}
 		#endregion
-	}
+        /// <summary>
+        /// Which method of opening PDFs to use. True = file://path.pdf#page=x
+        /// </summary>
+        public bool OpenPDFsAsURLs 
+        { 
+            get
+            {
+                return GlobalOptions._blnOpenPDFsAsURLs;
+            }
+            set
+            {
+                GlobalOptions._blnOpenPDFsAsURLs = value;
+            } 
+        }
+
+    }
 
 	public class CharacterOptions
 	{
@@ -745,7 +784,7 @@ namespace Chummer
 		private bool _blnIgnoreArmorEncumbrance = true;
 		private bool _blnAlternateArmorEncumbrance = false;
 		private bool _blnESSLossReducesMaximumOnly = false;
-		private bool _blnAllowSkillRegrouping = false;
+		private bool _blnAllowSkillRegrouping = true;
 		private bool _blnMetatypeCostsKarma = true;
 		private bool _blnAllowCyberwareESSDiscounts = false;
 		private bool _blnStrengthAffectsRecoil = false;
@@ -4258,5 +4297,6 @@ namespace Chummer
 			}
 		}
 		#endregion
-	}
+
+    }
 }

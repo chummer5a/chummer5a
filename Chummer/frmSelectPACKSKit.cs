@@ -818,6 +818,7 @@ namespace Chummer
 				objNode = objXmlItemDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\"]");
 			
 			TreeNode objChild = new TreeNode();
+            if (objNode != null) { 
 			if (objNode["translate"] != null)
 				objChild.Text = objNode["translate"].InnerText;
 			else
@@ -831,6 +832,7 @@ namespace Chummer
 				objChild.Text += " x" + objXmlGear["qty"].InnerText;
 
 			objParent.Nodes.Add(objChild);
+            }
 
 			// Check for children.
 			foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))

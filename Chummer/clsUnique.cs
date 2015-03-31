@@ -936,6 +936,7 @@ namespace Chummer
 	{
 		Positive = 0,
 		Negative = 1,
+        Entertainment = 2,
 	}
 
 	/// <summary>
@@ -964,6 +965,7 @@ namespace Chummer
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
 		private int _intBP = 0;
+        private int _intLP = 0;
 		private QualityType _objQualityType = QualityType.Positive;
 		private QualitySource _objQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
@@ -983,6 +985,12 @@ namespace Chummer
 			{
 				case "Negative":
 					return QualityType.Negative;
+                case "Entertainment - Asset":
+                    return QualityType.Entertainment;
+                case "Entertainment - Service":
+                    return QualityType.Entertainment;
+                case "Entertainment - Outing":
+                    return QualityType.Entertainment;
 				default:
 					return QualityType.Positive;
 			}
@@ -1031,7 +1039,14 @@ namespace Chummer
             {
                 _strMetagenetic = objXmlQuality["metagenetic"].InnerText;
             }
-			_intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+            if (objXmlQuality["karma"] != null)
+            {
+                _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+            }
+            if (objXmlQuality["lp"] != null)
+            {
+                _intLP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
+            }
 			_objQualityType = ConvertToQualityType(objXmlQuality["category"].InnerText);
 			_objQualitySource = objQualitySource;
 			if (objXmlQuality["print"] != null)
@@ -1378,6 +1393,20 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Number of Build Points the Quality costs.
+        /// </summary>
+        public int LP
+        {
+            get
+            {
+                return _intLP;
+            }
+            set
+            {
+                _intLP = value;
+            }
+        }
 		/// <summary>
 		/// The name of the object as it should be displayed on printouts (translated name only).
 		/// </summary>
@@ -1484,7 +1513,7 @@ namespace Chummer
                         }
                         blnReturn = blnContribute;
                     }
-                    
+                    //The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                     else if (_strName == "Mentor Spirit")
                     {
                         foreach (Quality objQuality in _objCharacter.Qualities)
@@ -1497,7 +1526,19 @@ namespace Chummer
                         }
                         blnReturn = blnContribute;
                     }
-                        
+                    //Characters with the "Pie Iesu Domine. Dona Eis Requiem." Quality gain High Pain Tolerance (Rating 1) for free.
+                    else if (_strName == "High Pain Tolerance (Rating 1)")
+                    {
+                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        {
+
+                            if (objQuality.Name == "Pie Iesu Domine. Dona Eis Requiem.")
+                            {
+                                blnContribute = false;
+                            }
+                        }
+                        blnReturn = blnContribute;
+                    }                        
                     else
                         blnReturn = true;
                 }
@@ -9097,6 +9138,7 @@ namespace Chummer
 		/// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
 		/// <param name="blnGroup">Whether or not a Group was used.</param>
 		/// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
+        /// <param name="blnSchooling">Whether or not Schooling was used.</param>
 		public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling)
 		{
 			_intGrade = intGrade;
@@ -9134,13 +9176,7 @@ namespace Chummer
 			_intGrade = Convert.ToInt32(objNode["grade"].InnerText);
 			_blnGroup = Convert.ToBoolean(objNode["group"].InnerText);
 			_blnOrdeal = Convert.ToBoolean(objNode["ordeal"].InnerText);
-            try
-            {
-                _blnOrdeal = Convert.ToBoolean(objNode["schooling"].InnerText);
-            }
-            catch
-            {
-            }
+            _blnSchooling = Convert.ToBoolean(objNode["schooling"].InnerText);
             try
 			{
 				_strNotes = objNode["notes"].InnerText;

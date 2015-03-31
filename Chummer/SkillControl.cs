@@ -178,15 +178,13 @@ namespace Chummer
             _intBaseRating = Convert.ToInt32(nudSkill.Value);
             _objSkill.Base = Convert.ToInt32(nudSkill.Value);
             _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
+
             RefreshControl();
 			RatingChanged(this);
         }
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
-            if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
-                nudKarma.Value = nudSkill.Maximum - nudSkill.Value;
-
             _intKarmaRating = Convert.ToInt32(nudKarma.Value);
             _objSkill.Karma = Convert.ToInt32(nudKarma.Value);
             _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));

@@ -81,8 +81,6 @@ namespace Chummer
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
 
-			// Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.Created)
 				lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
 
             BuildQualityList();

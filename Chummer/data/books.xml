@@ -61,5 +61,9 @@
 		<name>Shadow Spells</name>
 		<code>SSP</code>
 	</book>	
+	<book>
+		<name>Nothing Personal</name>
+		<code>NP</code>
+	</book>		
   </books>
 </chummer>

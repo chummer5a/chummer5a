@@ -1246,7 +1246,7 @@
       <category>Disguises</category>
       <rating>0</rating>
       <avail>16F</avail>
-      <cost>&gt;Variable(2000-15000)</cost>
+      <cost>Variable(2000-15000)</cost>
       <source>SS</source>
       <page>178</page>
     </gear>
@@ -2924,7 +2924,7 @@
       <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
       <name>Camera</name>
       <category>Sensor Functions</category>
-      <rating>0</rating>
+      <rating>Rating</rating>
       <capacity>1/[1]</capacity>
       <armorcapacity>1/[1]</armorcapacity>
       <avail>0</avail>
@@ -3119,8 +3119,8 @@
       <name>Anti-Tamper Circuits</name>
       <category>Security Devices</category>
       <rating>4</rating>
-      <avail>+(Rating)</avail>
-      <cost>+(Raging * 250)</cost>
+      <avail>+Rating</avail>
+      <cost>Rating*250</cost>
       <source>SR5</source>
       <page>447</page>
     </gear>

@@ -175,6 +175,18 @@
     <Compile Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectLifestyleAdvanced.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectLifestyleAdvanced.Designer.cs">
+      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSelectLifestyleQuality.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectLifestyleQuality.designer.cs">
+      <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </Compile>
     <Compile Include="lang\language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -307,11 +319,11 @@
     <Compile Include="frmReload.Designer.cs">
       <DependentUpon>frmReload.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.cs">
+    <Compile Include="frmSelectLifestyle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectAdvancedLifestyle.designer.cs">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <Compile Include="frmSelectLifestyle.designer.cs">
+      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectArmorMod.cs">
       <SubType>Form</SubType>
@@ -366,12 +378,6 @@
     </Compile>
     <Compile Include="frmSelectItem.Designer.cs">
       <DependentUpon>frmSelectItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmSelectLifestyle.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmSelectLifestyle.Designer.cs">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectLimit.cs">
       <SubType>Form</SubType>
@@ -716,6 +722,12 @@
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectLifestyleAdvanced.resx">
+      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectLifestyleQuality.resx">
+      <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
     </EmbeddedResource>
@@ -781,8 +793,8 @@
     <EmbeddedResource Include="frmReload.resx">
       <DependentUpon>frmReload.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectAdvancedLifestyle.resx">
-      <DependentUpon>frmSelectAdvancedLifestyle.cs</DependentUpon>
+    <EmbeddedResource Include="frmSelectLifestyle.resx">
+      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectArmorMod.resx">
       <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
@@ -810,9 +822,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectItem.resx">
       <DependentUpon>frmSelectItem.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectLifestyle.resx">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLimit.resx">
       <DependentUpon>frmSelectLimit.cs</DependentUpon>
@@ -972,6 +981,8 @@
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
     <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram5.cd" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1406,6 +1417,7 @@
     </Content>
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1458,12 +1470,14 @@
     </Content>
     <Content Include="data\packs.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\paragons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\powers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\priorities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1511,6 +1525,7 @@
     </Content>
     <Content Include="lang\de_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="lang\en-us.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
