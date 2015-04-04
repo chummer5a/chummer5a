@@ -1,3 +1,9 @@
+Build 5.159.1
+Application Change:
+- Reset the cost for Complex Forms to the proper value again.
+- Removed some needless return values for including percentages in lifestyle costs.
+- Lifestyle Qualities will no longer add a blank node if you hit the Cancel button.
+
 Build 5.159
 Application Change:
 - Issue with Initiation/Submersion in chargen forgetting Ordeals and Schooling fixed.

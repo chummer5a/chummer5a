@@ -7891,15 +7891,12 @@ namespace Chummer
 			{
 				// Look up the cost of the Quality.
 				XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-				int intBP = Convert.ToInt32(objXmlMetatypeQuality["bp"].InnerText) * -1;
+				int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -1;
 				int intShowBP = intBP;
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
 					intShowBP *= _objOptions.KarmaQuality;
 				string strBP = intShowBP.ToString();
-				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
 					strBP += " " + LanguageManager.Instance.GetString("String_Karma");
-				else
-					strBP += " " + LanguageManager.Instance.GetString("String_BP");
 
 				if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP)))
 					return;
@@ -15481,7 +15478,6 @@ namespace Chummer
 			int intFreestyleBP = 0;
 			string strPoints = "";
 
-			// Determine if cost strings should end in "BP" or "Karma" based on the Build Method being used.
 			intPointsRemain = _objCharacter.BuildKarma;
 			strPoints = LanguageManager.Instance.GetString("String_Karma");
 

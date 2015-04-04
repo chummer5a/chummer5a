@@ -186,7 +186,7 @@ namespace Chummer
             _objLifestyle.Source = "RF";
             _objLifestyle.Page = "154";
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = CalculateValues(false);
+            _objLifestyle.Cost = CalculateValues();
             _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
             _objLifestyle.BaseLifestyle = cboBaseLifestyle.Text;
@@ -216,7 +216,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private int CalculateValues(bool blnIncludePercentage = true)
+        private int CalculateValues()
         {
             if (_blnSkipRefresh)
                 return 0;
@@ -413,6 +413,10 @@ namespace Chummer
         {
             frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter);
             frmSelectLifestyleQuality.ShowDialog(this);
+
+                        // Don't do anything else if the form was canceled.
+            if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                return;
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
