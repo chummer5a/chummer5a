@@ -8,3 +8,8 @@ The repository for Keith's original code can be found at: https://code.google.co
 
 The repository for Adam Schmidt's original code can be found at: https://code.google.com/p/chummer5/, and a github repository has been created at https://github.com/chummer5a/chummer for archival purposes.
 
+*********
+Common Issues
+*********
+
+If you're experiencing program slowdowns, it may be due to Windows Defender. Try creating an exception for the application, see if that helps.
