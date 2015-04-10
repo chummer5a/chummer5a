@@ -386,16 +386,13 @@
 										</p>
 									</td>
 									<td width="25%" class="attributecell">
-										<p>
-											Initiative: <xsl:value-of select="init/base" />
-											<xsl:if test="init/total != init/base">
-												(<xsl:value-of select="init/total" />)
-											</xsl:if>
-										</p>
+										<p> Initiative: <xsl:value-of select="init"/></p>
 									</td>
 									<td width="25%" class="attributecell">
 										<p>
-											Matrix Ini: <xsl:value-of select="matrixinit/base" />
+											Matrix AR: <xsl:value-of select="matrixarinit"/><br />
+											Matrix COLD: <xsl:value-of select="matrixcoldinit"/><br />
+											Matrix HOT: <xsl:value-of select="matrixhotinit"/>
 										</p>
 									</td>
 								</tr>
@@ -435,14 +432,13 @@
 									</td>
 									<td width="25%" class="attributecell">
 										<p>
-											Ini-Durchgänge: <xsl:value-of select="ip/base" />
 											<xsl:if test="ip/total != ip/base">
 												(<xsl:value-of select="ip/total" />)
 											</xsl:if>
-												&#160;&#160;&#160;Matrix: <xsl:value-of select="matrixip/base" />
 											<xsl:if test="magenabled = 'True'">
 												&#160;&#160;&#160;Astral: <xsl:value-of select="astralip/base" />
 											</xsl:if>
+											&#160;
 										</p>
 									</td>
 								</tr>
