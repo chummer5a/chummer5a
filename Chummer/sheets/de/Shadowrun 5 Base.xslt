@@ -387,6 +387,12 @@
 									</td>
 									<td width="25%" class="attributecell">
 										<p> Initiative: <xsl:value-of select="init"/></p>
+<!--										<p>
+											Initiative: <xsl:value-of select="init/base" />
+											<xsl:if test="init/total != init/base">
+												(<xsl:value-of select="init/total" />)
+											</xsl:if>
+										</p> -->
 									</td>
 									<td width="25%" class="attributecell">
 										<p>
@@ -626,7 +632,7 @@
 																<strong>Panzerung</strong>
 															</td>
 															<td width="30%" style="text-align:center;">
-																<strong>Ballistisch/Stoß</strong>
+																<strong>Wert</strong>
 															</td>
 															<td width="20%" style="text-align:center;">
 															</td>
@@ -636,7 +642,7 @@
 																<strong>Gesamt</strong>
 															</td>
 															<td width="30%" style="text-align:center;">
-																<xsl:value-of select="armorb" />/<xsl:value-of select="armori" />
+																<xsl:value-of select="armor" />
 															</td>
 															<td width="20%" style="text-align:center;">
 															</td>
@@ -1907,7 +1913,7 @@
 																</xsl:if>
 															</td>
 															<td width="30%" style="text-align:center;" valign="top">
-																<xsl:value-of select="b" />/<xsl:value-of select="i" />
+																<xsl:value-of select="armor" />
 															</td>
 															<td width="20%" style="text-align:center;" valign="top">
 																<xsl:value-of select="source" /><xsl:text> </xsl:text><xsl:value-of select="page" />
