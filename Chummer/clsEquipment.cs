@@ -14526,6 +14526,17 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Is this vehicle a drone?
+        /// </summary>
+        public Boolean IsDrone
+        {
+            get
+            {
+                return Category.Contains("Drone");
+            }
+        }
+
 		/// <summary>
 		/// Handling.
 		/// </summary>
@@ -14668,15 +14679,32 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Base Physical Boxes. 12 for vehicles, 6 for Drones.
+        /// </summary>
+        public int BasePhysicalBoxes
+        {
+            get
+            {
+                int basePhysicalBoxes = 12;
+
+                if (this.IsDrone)
+                {
+                    basePhysicalBoxes = 6;
+                }
+                return basePhysicalBoxes;
+            }
+        }
+
 		/// <summary>
 		/// Physical Condition Monitor boxes.
 		/// </summary>
 		public int PhysicalCM
 		{
-			get
-			{
-				return 12 + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intBody, GlobalOptions.Instance.CultureInfo) / 2.0));
-			}
+            get
+            {
+                return BasePhysicalBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intBody, GlobalOptions.Instance.CultureInfo) / 2.0));
+            }
 		}
 
 		/// <summary>
