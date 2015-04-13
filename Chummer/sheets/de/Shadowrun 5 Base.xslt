@@ -386,16 +386,19 @@
 										</p>
 									</td>
 									<td width="25%" class="attributecell">
-										<p>
+										<p> Initiative: <xsl:value-of select="init"/></p>
+<!--										<p>
 											Initiative: <xsl:value-of select="init/base" />
 											<xsl:if test="init/total != init/base">
 												(<xsl:value-of select="init/total" />)
 											</xsl:if>
-										</p>
+										</p> -->
 									</td>
 									<td width="25%" class="attributecell">
 										<p>
-											Matrix Ini: <xsl:value-of select="matrixinit/base" />
+											Matrix AR: <xsl:value-of select="matrixarinit"/><br />
+											Matrix COLD: <xsl:value-of select="matrixcoldinit"/><br />
+											Matrix HOT: <xsl:value-of select="matrixhotinit"/>
 										</p>
 									</td>
 								</tr>
@@ -435,14 +438,13 @@
 									</td>
 									<td width="25%" class="attributecell">
 										<p>
-											Ini-Durchgänge: <xsl:value-of select="ip/base" />
 											<xsl:if test="ip/total != ip/base">
 												(<xsl:value-of select="ip/total" />)
 											</xsl:if>
-												&#160;&#160;&#160;Matrix: <xsl:value-of select="matrixip/base" />
 											<xsl:if test="magenabled = 'True'">
 												&#160;&#160;&#160;Astral: <xsl:value-of select="astralip/base" />
 											</xsl:if>
+											&#160;
 										</p>
 									</td>
 								</tr>
@@ -630,7 +632,7 @@
 																<strong>Panzerung</strong>
 															</td>
 															<td width="30%" style="text-align:center;">
-																<strong>Ballistisch/Stoß</strong>
+																<strong>Wert</strong>
 															</td>
 															<td width="20%" style="text-align:center;">
 															</td>
@@ -640,7 +642,7 @@
 																<strong>Gesamt</strong>
 															</td>
 															<td width="30%" style="text-align:center;">
-																<xsl:value-of select="armorb" />/<xsl:value-of select="armori" />
+																<xsl:value-of select="armor" />
 															</td>
 															<td width="20%" style="text-align:center;">
 															</td>
@@ -1911,7 +1913,7 @@
 																</xsl:if>
 															</td>
 															<td width="30%" style="text-align:center;" valign="top">
-																<xsl:value-of select="b" />/<xsl:value-of select="i" />
+																<xsl:value-of select="armor" />
 															</td>
 															<td width="20%" style="text-align:center;" valign="top">
 																<xsl:value-of select="source" /><xsl:text> </xsl:text><xsl:value-of select="page" />
