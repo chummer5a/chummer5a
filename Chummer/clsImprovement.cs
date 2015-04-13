@@ -106,7 +106,7 @@ namespace Chummer
             PhysicalLimit = 93,
             MentalLimit = 94,
             SocialLimit = 95,
-            SchoolOfHardKnocks = 96,
+            SchoolOfHardKnocks = 96
         }
 
         public enum ImprovementSource
@@ -2376,7 +2376,7 @@ namespace Chummer
                     if (NodeExists(nodBonus, "schoolofhardknocks"))
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "schoolofhardknocks");
-                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "schoolofhardknocks = " + nodBonus["school"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "schoolofhardknocks = " + nodBonus["schoolofhardknocks"].OuterXml.ToString());
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
                         _objCharacter.SchoolOfHardKnocks = true;

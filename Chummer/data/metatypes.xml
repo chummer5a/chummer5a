@@ -482,7 +482,6 @@
 					<name>Gnome</name>
 					<category>Metavariant</category>
 					<karma>50</karma>
-					
 					<bodmin>1</bodmin>
 					<bodmax>4</bodmax>
 					<bodaug>8</bodaug>
@@ -535,14 +534,13 @@
 							<quality>Neoteny</quality>
 						</negative>
 					</qualities>
-					<source>SR5</source>
+					<source>RF</source>
 					<page>54</page>
 				</metavariant>
 				<metavariant>
 					<name>Haruman</name>
 					<category>Metavariant</category>
 					<karma>100</karma>
-					
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<bodaug>10</bodaug>
@@ -597,14 +595,13 @@
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
-					<source>SR5</source>
+					<source>RF</source>
 					<page>55</page>
 				</metavariant>
 				<metavariant>
 					<name>Koborokuru</name>
 					<category>Metavariant</category>
 					<karma>70</karma>
-					
 					<bodmin>2</bodmin>
 					<bodmax>7</bodmax>
 					<bodaug>11</bodaug>
@@ -658,7 +655,7 @@
 							<quality>Unusual Hair</quality>
 						</negative>
 					</qualities>
-					<source>SR5</source>
+					<source>RF</source>
 					<page>53</page>
 				</metavariant>
 				<metavariant>
@@ -718,7 +715,7 @@
 							<quality>Distinctive Style</quality>
 						</negative>
 					</qualities>
-					<source>SR5</source>
+					<source>RF</source>
 					<page>54</page>
 				</metavariant>
 			</metavariants>	  
@@ -844,7 +841,6 @@
 				<metavariant>
 					<name>Ogre</name>
 					<karma>40</karma>
-					
 					<category>Metavariant</category>
 					<bodmin>4</bodmin>
 					<bodmax>9</bodmax>

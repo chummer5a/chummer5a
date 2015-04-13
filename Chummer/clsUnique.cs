@@ -1480,6 +1480,18 @@ namespace Chummer
 				else
 					blnReturn = true;
 
+                if (_strMetagenetic == "yes")
+                {
+                    foreach (Quality objQuality in _objCharacter.Qualities)
+                    {
+                        if (objQuality.Name == "Changeling (Class I SURGE)" || objQuality.Name == "Changeling (Class II SURGE)" || objQuality.Name == "Changeling (Class III SURGE)")
+                        { 
+                            _blnContributeToLimit = false;
+                        }
+                    }
+                    blnReturn = _blnContributeToLimit;
+                }
+
 				return blnReturn;
 			}
 			set

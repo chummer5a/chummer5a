@@ -2447,7 +2447,7 @@
             this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(254, 17);
             this.chkFreeKarmaKnowledge.TabIndex = 4;
             this.chkFreeKarmaKnowledge.Tag = "Checkbox_Options_FreeKnowledgeSkills";
-            this.chkFreeKarmaKnowledge.Text = "Karma Build: Free Knowledge Skills like BP Build";
+            this.chkFreeKarmaKnowledge.Text = "Karma Build: Free Knowledge Skills like Priority";
             this.chkFreeKarmaKnowledge.UseVisualStyleBackColor = true;
             // 
             // chkAllowInitiation

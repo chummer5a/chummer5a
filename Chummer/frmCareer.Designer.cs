@@ -413,7 +413,7 @@
             this.tabStreetGear = new System.Windows.Forms.TabPage();
             this.tabStreetGearTabs = new System.Windows.Forms.TabControl();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
-            this.cmdAddLifestyle = new System.Windows.Forms.Button();
+            this.cmdAddLifestyle = new SplitButton();
             this.lblLifestyleComforts = new System.Windows.Forms.Label();
             this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleQualities = new System.Windows.Forms.Label();
@@ -5304,10 +5304,12 @@
             // cmdAddLifestyle
             // 
             this.cmdAddLifestyle.AutoSize = true;
+            this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
             this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
             this.cmdAddLifestyle.Name = "cmdAddLifestyle";
-            this.cmdAddLifestyle.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddLifestyle.TabIndex = 118;
+            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
+            this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
+            this.cmdAddLifestyle.TabIndex = 91;
             this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
             this.cmdAddLifestyle.Text = "&Add Lifestyle";
             this.cmdAddLifestyle.UseVisualStyleBackColor = true;
@@ -9592,8 +9594,8 @@
             // 
             this.cmsLifestyle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAdvancedLifestyle,
-            this.tsBoltHole,
-            this.tsSafehouse});
+            /*this.tsBoltHole,
+            this.tsSafehouse*/});
             this.cmsLifestyle.Name = "cmsLifestyle";
             this.cmsLifestyle.Size = new System.Drawing.Size(174, 70);
             this.cmsLifestyle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
@@ -9608,7 +9610,7 @@
             this.tsAdvancedLifestyle.Click += new System.EventHandler(this.tsAdvancedLifestyle_Click);
             // 
             // tsBoltHole
-            // 
+            /* 
             this.tsBoltHole.Name = "tsBoltHole";
             this.tsBoltHole.Size = new System.Drawing.Size(173, 22);
             this.tsBoltHole.Tag = "Menu_BoltHole";
@@ -9622,7 +9624,7 @@
             this.tsSafehouse.Tag = "Menu_Safehouse";
             this.tsSafehouse.Text = "&Safehouse";
             this.tsSafehouse.Click += new System.EventHandler(this.tsSafehouse_Click);
-            // 
+            /*/ 
             // lblArmor
             // 
             this.lblArmor.AutoSize = true;
@@ -12906,7 +12908,7 @@
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;
         private System.Windows.Forms.Label lblLifestyleComforts;
         private System.Windows.Forms.Label lblLifestyleComfortsLabel;
-        private System.Windows.Forms.Button cmdAddLifestyle;
+        private SplitButton cmdAddLifestyle;
         private System.Windows.Forms.Label lblArmorValueLabel;
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.Label label5;

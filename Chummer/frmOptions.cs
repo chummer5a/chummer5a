@@ -392,6 +392,7 @@ namespace Chummer
 			_objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
 			_objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
 			_objOptions.PrintNotes = chkPrintNotes.Checked;
+            _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
 			switch (cboLimbCount.SelectedValue.ToString())
 			{
 				case "torso":
@@ -464,6 +465,14 @@ namespace Chummer
 
 			_objOptions.Save();
 
+            Form fc = Application.OpenForms["frmCreate"]; 
+            if (fc != null)
+            {
+                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Options_CloseForms"), LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    fc = Application.OpenForms["frmCreate"]; if (fc != null) fc.Close();
+                }
+            }
 			this.DialogResult = DialogResult.OK;
 		}
 
@@ -522,7 +531,7 @@ namespace Chummer
 				}
 			}
 
-			// If the SR4 book was somehow missed, add it back.
+			// If the SR5 book was somehow missed, add it back.
 			if (!blnSR5Included)
 				_objOptions.Books.Add("SR5");
 
@@ -550,7 +559,7 @@ namespace Chummer
 			nudKarmaSpecialization.Value = 7;
 			nudKarmaNewKnowledgeSkill.Value = 1;
 			nudKarmaNewActiveSkill.Value = 2;
-			nudKarmaNewSkillGroup.Value = 10;
+			nudKarmaNewSkillGroup.Value = 5;
 			nudKarmaImproveKnowledgeSkill.Value = 1;
 			nudKarmaImproveActiveSkill.Value = 2;
 			nudKarmaImproveSkillGroup.Value = 5;
@@ -564,7 +573,7 @@ namespace Chummer
             nudKarmaSpirit.Value = 2;
             nudKarmaManeuver.Value = 4;
             nudKarmaNuyenPer.Value = 2000;
-			nudKarmaContact.Value = 2;
+			nudKarmaContact.Value = 1;
 			nudKarmaCarryover.Value = 5;
 			nudKarmaInitiation.Value = 3;
 			nudKarmaMetamagic.Value = 15;
@@ -999,6 +1008,16 @@ namespace Chummer
             }
             chkAllowInitiation.Checked = blnAllowInitiation;
 
+            bool blnFreeKarmaKnowledge = false;
+            try
+            {
+                blnFreeKarmaKnowledge = _objOptions.FreeKarmaKnowledge;
+            }
+            catch
+            {
+            }
+            chkFreeKarmaKnowledge.Checked = blnFreeKarmaKnowledge;
+
             bool blnUsePointsOnBrokenGroups = false;
             try
             {
@@ -1061,15 +1080,6 @@ namespace Chummer
 			try
 			{
 				intFreeContactsFlatNumber = _objOptions.FreeContactsFlatNumber;
-			}
-			catch
-			{
-			}
-
-			bool blnFreeKarmaKnowledge = false;
-			try
-			{
-				blnFreeKarmaKnowledge = _objOptions.FreeKarmaKnowledge;
 			}
 			catch
 			{

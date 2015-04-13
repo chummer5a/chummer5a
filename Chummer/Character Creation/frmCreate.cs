@@ -316,6 +316,14 @@ namespace Chummer
 						strPage = objMetatypeNode["page"].InnerText;
 				}
 			}
+
+            
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                lblKnowledgeSkillPoints.Visible = _objOptions.FreeKarmaKnowledge;
+                lblKnowledgeSkillPointsTitle.Visible = _objOptions.FreeKarmaKnowledge;
+                label11.Visible = _objOptions.FreeKarmaKnowledge;
+            }
 			lblMetatype.Text = strMetatype;
 			lblMetatypeSource.Text = strBook + " " + strPage;
 			txtCharacterName.Text = _objCharacter.Name;
@@ -2084,6 +2092,23 @@ namespace Chummer
             // Change to the status of SchoolOfHardKnocksChanged being enabled.
             if (_objCharacter.SchoolOfHardKnocks)
             {
+                /*if (!_objCharacter.Created) 
+                    {
+                        foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
+                        {
+                            if (objSkillControl.SkillCategory == "Street")
+                            {
+                                int currentSkillRating = objSkillControl.SkillBase;
+                                int currentKarmaRating = objSkillControl.SkillKarma;
+                                objSkillControl.SkillBase = 0;
+                                objSkillControl.SkillKarma = 0;
+                                _objOptions.KarmaImproveKnowledgeSkill = (_objOptions.KarmaImproveKnowledgeSkill / 2);
+                                objSkillControl.SkillBase = currentSkillRating;
+                                objSkillControl.SkillKarma = currentKarmaRating;
+                                _objOptions.KarmaImproveKnowledgeSkill = (_objOptions.KarmaImproveKnowledgeSkill * 2);
+                            }
+                        }
+                    }*/
             }
             else
             { }
@@ -5803,8 +5828,8 @@ namespace Chummer
             }
             else
             {
-                // The number of Complex Forms cannot exceed twice the character's LOG.
-                if (_objCharacter.ComplexForms.Count >= ((_objCharacter.LOG.Value * 2) + _objImprovementManager.ValueOf(Improvement.ImprovementType.ComplexFormLimit)) && !_objCharacter.IgnoreRules)
+                // The number of Complex Forms cannot exceed the character's LOG.
+                if (_objCharacter.ComplexForms.Count >= ((_objCharacter.LOG.Value) + _objImprovementManager.ValueOf(Improvement.ImprovementType.ComplexFormLimit)) && !_objCharacter.IgnoreRules)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_ComplexFormLimit"), LanguageManager.Instance.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -7276,7 +7301,22 @@ namespace Chummer
                         }
                     }
                     foreach (Spell objSpell in lstRemoveSpells)
+                    {
                         _objCharacter.Spells.Remove(objSpell);
+                        foreach (TreeNode objRootNode in treSpells.Nodes) 
+                        {
+                            if (objRootNode.Text == ("Selected " + objSpell.Category))
+                            {
+                                foreach (TreeNode objNode in objRootNode.Nodes)
+                                {
+                                    if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
+                                    {
+                                        objNode.Remove();
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     // Grade
                     _objCharacter.InitiationGrades.Remove(objGrade);
@@ -7372,12 +7412,25 @@ namespace Chummer
                         strMessage = LanguageManager.Instance.GetString("Message_DeleteSpell");
                         if (!_objFunctions.ConfirmDelete(strMessage))
                             return;
-
                         _objCharacter.Spells.Remove(objSpell);
                         treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+
+                            foreach (TreeNode objRootNode in treSpells.Nodes)
+                            {
+                                if (objRootNode.Text == ("Selected " + objSpell.Category))
+                                {
+                                    foreach (TreeNode objNode in objRootNode.Nodes)
+                                    {
+                                        if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
+                                        {
+                                            objNode.Remove();
+                                        }
+                                    }
+                                }
+                            }
+                        
                         return;
                     }
-
 
                 }
             }
@@ -12528,12 +12581,14 @@ namespace Chummer
 			{
 				return;
 			}
-
 			// Locate the selected Lifestyle.
 			Lifestyle objLifestyle = new Lifestyle(_objCharacter);
 			string strGuid = "";
 			int intMonths = 0;
 			int intPosition = -1;
+            int intRoommates = 0;
+            List<LifestyleQuality> lstQualities = new List<LifestyleQuality>();
+
 			foreach (Lifestyle objCharacterLifestyle in _objCharacter.Lifestyles)
 			{
 				intPosition++;
@@ -12542,15 +12597,14 @@ namespace Chummer
 					objLifestyle = objCharacterLifestyle;
 					strGuid = objLifestyle.InternalId;
 					intMonths = objLifestyle.Months;
-					break;
+                    intRoommates = objLifestyle.Roommates;
+                    MessageBox.Show(objLifestyle.Roommates.ToString());
 				}
 			}
 
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            if (objLifestyle.BaseLifestyle != "")
-			{
 				// Edit Advanced Lifestyle.
-				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 
@@ -12561,30 +12615,11 @@ namespace Chummer
 				objLifestyle = frmPickLifestyle.SelectedLifestyle;
 				objLifestyle.SetInternalId(strGuid);
 				objLifestyle.Months = intMonths;
+                objLifestyle.Roommates = intRoommates;
 				_objCharacter.Lifestyles[intPosition] = objLifestyle;
 				treLifestyles.SelectedNode.Text = objLifestyle.DisplayNameShort;
 				RefreshSelectedLifestyle();
 				UpdateCharacterInfo();
-			}
-			else
-			{
-				// Edit Basic Lifestyle.
-				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
-				frmPickLifestyle.SetLifestyle(objLifestyle);
-				frmPickLifestyle.ShowDialog(this);
-
-				if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-					return;
-
-				// Update the selected Lifestyle and refresh the list.
-				objLifestyle = frmPickLifestyle.SelectedLifestyle;
-				objLifestyle.SetInternalId(strGuid);
-				objLifestyle.Months = intMonths;
-				_objCharacter.Lifestyles[intPosition] = objLifestyle;
-				treLifestyles.SelectedNode.Text = objLifestyle.DisplayName;
-				RefreshSelectedLifestyle();
-				UpdateCharacterInfo();
-			}
 		}
 
 		private void treLifestyles_ItemDrag(object sender, ItemDragEventArgs e)
@@ -17067,6 +17102,7 @@ namespace Chummer
 			foreach (Vehicle objVehcile in _objCharacter.Vehicles)
 				intDeductions += objVehcile.TotalCost;
 
+            /*
             // Martial Arts
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
@@ -17080,7 +17116,7 @@ namespace Chummer
                 int i = -1;
                 i += 1;
                 intDeductions += (i * 5000);
-            }
+            }*/
 
             _objCharacter.Nuyen = intNuyen - intDeductions;
 			lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
@@ -18585,6 +18621,7 @@ namespace Chummer
 						Commlink objCommlink = (Commlink)objSelectedGear;
 						frmPickGear.CommlinkResponse = objCommlink.DeviceRating;
 					}
+
 				}
 			}
 			catch
@@ -18978,7 +19015,7 @@ namespace Chummer
 				lblLifestyleTotalCost.Text = "";
 				lblLifestyleSource.Text = "";
 				tipTooltip.SetToolTip(lblLifestyleSource, null);
-				lblLifestyleComforts.Text = "";
+				lblLifestyleBaseLifestyle.Text = "";
 				lblLifestyleQualities.Text = "";
 				nudLifestyleMonths.Enabled = false;
 				return;
@@ -19003,6 +19040,7 @@ namespace Chummer
 
 				lblLifestyleCost.Text = String.Format("{0:###,###,##0¥}", objLifestyle.TotalMonthlyCost);
 				nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.Instance.CultureInfo);
+                
 				lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + String.Format("{0:###,###,##0¥}", objLifestyle.Multiplier);
 				string strBook = _objOptions.LanguageBookShort(objLifestyle.Source);
 				string strPage = objLifestyle.Page;
@@ -19087,12 +19125,12 @@ namespace Chummer
                         }
                     }
 
-                    lblLifestyleComforts.Text = strBaseLifestyle;
+                    lblLifestyleBaseLifestyle.Text = strBaseLifestyle;
 					lblLifestyleQualities.Text += strQualities;
 				}
 				else
 				{
-					lblLifestyleComforts.Text = "";
+					lblLifestyleBaseLifestyle.Text = "";
 					lblLifestyleQualities.Text = "";
 				}
 
@@ -20820,10 +20858,20 @@ namespace Chummer
 				// See if the character has any Karma remaining.
 				if (intBuildPoints > _objOptions.KarmaCarryover)
 				{
-					if (MessageBox.Show(LanguageManager.Instance.GetString("Message_ExtraKarma").Replace("{0}", intBuildPoints.ToString()).Replace("{1}", _objOptions.KarmaCarryover.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-						blnValid = false;
-					else
-						_objCharacter.Karma = _objOptions.KarmaCarryover;
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                    {
+                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NoExtraKarma").Replace("{0}", intBuildPoints.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                            blnValid = false;
+                        else
+                            _objCharacter.Karma = 0;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_ExtraKarma").Replace("{0}", intBuildPoints.ToString()).Replace("{1}", _objOptions.KarmaCarryover.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                            blnValid = false;
+                        else
+                            _objCharacter.Karma = _objOptions.KarmaCarryover;
+                    }
 				}
                 else
                 {
@@ -22355,6 +22403,15 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
             }
+/*
+            else if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+            {
+                frmSelectLifeModule frmSelectMetatype = new frmSelectLifeModule(_objCharacter);
+                frmSelectMetatype.ShowDialog(this);
+
+                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    return;
+            }*/
             else
             {
                 frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(_objCharacter);
@@ -22909,9 +22966,9 @@ namespace Chummer
 			lblLifestyleTotalCost.Left = lblLifestyleMonthsLabel.Left + lblLifestyleMonthsLabel.Width + 6;
 			lblLifestyleStartingNuyen.Left = lblLifestyleStartingNuyenLabel.Left + lblLifestyleStartingNuyenLabel.Width + 6;
 
-			lblLifestyleComforts.Left = lblLifestyleComfortsLabel.Left + intWidth + 6;
+			lblLifestyleBaseLifestyle.Left = lblLifestyleBaseLifestyleLabel.Left + intWidth + 6;
 
-			lblLifestyleQualitiesLabel.Left = lblLifestyleComforts.Left + 132;
+			lblLifestyleQualitiesLabel.Left = lblLifestyleBaseLifestyle.Left + 132;
 			lblLifestyleQualities.Left = lblLifestyleQualitiesLabel.Left + 14;
 			lblLifestyleQualities.Width = tabLifestyle.Width - lblLifestyleQualities.Left - 10;
 

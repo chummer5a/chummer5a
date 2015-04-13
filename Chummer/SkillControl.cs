@@ -59,11 +59,19 @@ namespace Chummer
             {
                 nudSkill.Enabled = false;
                 nudSkill.Visible = false;
+                chkKarma.Checked = true;
+                chkKarma.Enabled = false;
+
             }
 			_blnSkipRefresh = true;
 			if (_objSkill.KnowledgeSkill)
 			{
 				cboSkillName.Text = _objSkill.Name;
+                if (_objSkill.CharacterObject.Options.FreeKarmaKnowledge == true)
+                {
+                    nudSkill.Visible = true;
+                    nudSkill.Enabled = true;
+                }
 			}
 
 			if (_objSkill.CharacterObject.Created)
@@ -489,14 +497,14 @@ namespace Chummer
                 if (value < _objSkill.FreeLevels)
                     value = _objSkill.FreeLevels;
 
-                // nudSkill.Value = value;
+                nudSkill.Value = value;
                 lblSkillRating.Text = value.ToString();
                 _objSkill.Rating = value;
 
 				if (value < _objSkill.RatingMaximum)
 				{
 					string strTooltip = "";
-					int intNewRating = value + 1;
+                    int intNewRating = value + 1;
 					int intKarmaCost = 0;
 
 					if (KnowledgeSkill == false)
@@ -516,14 +524,8 @@ namespace Chummer
 							intKarmaCost = (value + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
 
-                    if (_objSkill.CharacterObject.SchoolOfHardKnocks) 
-                    {
-                        MessageBox.Show("What");
-                        intKarmaCost *= 100;
-                    }
-
 					// Double the Karma cost if the character is Uneducated and is a Technica Active, Academic, or Professional Skill.
-					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
+                    if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
                     {
                         intKarmaCost *= 2;
                     }
@@ -699,6 +701,10 @@ namespace Chummer
             set
             {
                 chkKarma.Checked = value;
+                if (objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
+                {
+                    chkKarma.Checked = true;
+                }
                 _objSkill.BuyWithKarma = value;
             }
         }

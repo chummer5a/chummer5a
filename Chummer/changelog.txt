@@ -1,3 +1,22 @@
+Build 160
+Application Change:
+- When using Point Buy, karma can no longer be carried over into Career Mode, because Point Buy cannot have nice things.
+- Sum to Ten now validates over/under limits.
+- Nuyen cost for Martial Arts and styles removed, because I'm an idiot and didn't pay attention to what Instruction Cost meant.
+- Revalidated default karma options again, default value for contacts changed. 
+- Added a prompt to close open characters when changing Options. Will look at this again properly later to support saving the characters and reloading them, but for now it just closes, prompting the user to save any modified characters.
+- Did some fiddling with the UI for Point Buy and the optional 'Free Knowledge Skills like Priority' rule. Buy With Karma is enabled by default, etc.
+- Removing Rituals should no longer cause terrible crashes in chargen mode.
+- Complex Forms limited to the correct amounts during Chargen and Career mode.
+
+New Strings:
+- Message_Options_CloseForms
+- MessageTitle_Options_CloseForms
+- Message_ComplexFormLimitCareer
+
+Data Changes: 
+- Dwarf metavariants are tagged as Run Faster again.
+
 Build 5.159.1
 Application Change:
 - Reset the cost for Complex Forms to the proper value again.

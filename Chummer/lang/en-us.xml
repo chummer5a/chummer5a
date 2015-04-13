@@ -47,7 +47,7 @@
 		<string>
 			<key>Label_StartingInit</key>
 			<text>Starting Initiative</text>
-		</string>
+		</string>		
 		<string>
 			<key>AddToken_Header</key>
 			<text>Add Token Player</text>
@@ -1618,8 +1618,12 @@
 			<text>Cannot Remove Spell</text>
 		</string>
 		<string>
+			<key>Message_ComplexFormLimitCareer</key>
+			<text>Your number of Complex Forms cannot exceed your RES x 2 score.</text>
+		</string>		
+		<string>
 			<key>Message_ComplexFormLimit</key>
-			<text>Your number of Complex Forms cannot exceed twice your LOG score.</text>
+			<text>Your number of Complex Forms cannot exceed your LOG score during Character Generation.</text>
 		</string>
 		<string>
 			<key>Message_PriorityComplexFormLimit</key>
@@ -2017,6 +2021,14 @@
 			<key>Message_ExtraKarma</key>
 			<text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>
+		<string>
+			<key>Message_NoExtraKarma</key>
+			<text>You have {0} remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
+		</string>	
+		<string>
+			<key>Message_SumtoTen</key>
+			<text>Your Priority selection must equal 10. It is currently {0}.</text>
+		</string>		
 		<string>
 			<key>MessageTitle_ExtraKarma</key>
 			<text>Extra Karma</text>
@@ -3845,8 +3857,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Extreme (-6)</text>
 		</string>
 		<string>
-			<key>Label_DicePool</key>
+			<key>Label_SpellDicePool</key>
 			<text>Dice Pool:</text>
+		</string>
+		<string>
+			<key>Label_DicePool</key>
+			<text>Dice Pool</text>
 		</string>
 		<string>
 			<key>Checkbox_BaseWeapon</key>
@@ -6174,6 +6190,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Option_TechnomancerAllowAutosoft</key>
 			<text>Technomancers may select Autosofts as Complex Forms</text>
 		</string>
+		<string>
+			<key>Message_Options_CloseForms</key>
+			<text>Options are only enumerated on character load. Should we close the current open characters?</text>
+		</string>		
+		<string>
+			<key>MessageTitle_Options_CloseForms</key>
+			<text>Close Forms</text>
+		</string>		
 		<string>
 			<key>Message_Options_RestoreDefaults</key>
 			<text>This will reset the totals on this tab back to their default value. Are you sure you want to do this?</text>

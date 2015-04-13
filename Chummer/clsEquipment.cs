@@ -9188,8 +9188,9 @@ namespace Chummer
                 foreach (string strQuality in _lstLifestyleQualities)
 				{
 					string strThisQuality = "";
-					string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
-                    objNode = objXmlDocument.SelectSingleNode("/chummer/lifestylequalities/lifestylequality[name = \"" + strQualityName + "\"]");
+					//string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
+                    string strQualityName = strQuality.ToString();
+                    objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
 
 
 					if (objNode["translate"] != null)
@@ -9826,7 +9827,7 @@ namespace Chummer
 			{
 			}
 			_nodBonus = objXmlGear["bonus"];
-			_intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
+            _intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
 			try
 			{
 				_intMinRating = Convert.ToInt32(objXmlGear["minrating"].InnerText);
@@ -13301,7 +13302,11 @@ namespace Chummer
 			}
 			set
 			{
-				_intRating = value;
+                if (_intRating == -1)
+                {
+                    _intRating = 0;
+                }
+                _intRating = value;
 			}
 		}
 

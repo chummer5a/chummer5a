@@ -2941,6 +2941,7 @@
 			</required>
 			<source>RF</source>
 			<page>114</page>
+			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
 			<name>Defensive Secretion</name>
@@ -4844,7 +4845,9 @@
 			<name>School of Hard Knocks</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<schoolofhardknocks />
+			</bonus>
 			<source>RF</source>
 			<page>149</page>
 		</quality>

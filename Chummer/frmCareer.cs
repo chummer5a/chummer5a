@@ -5468,6 +5468,12 @@ namespace Chummer
 
 		private void cmdAddComplexForm_Click(object sender, EventArgs e)
 		{
+            // The number of Complex Forms cannot exceed the character's LOG.
+            if (_objCharacter.ComplexForms.Count >= ((_objCharacter.RES.Value * 2) + _objImprovementManager.ValueOf(Improvement.ImprovementType.ComplexFormLimit)))
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_ComplexFormLimitCareer"), LanguageManager.Instance.GetString("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 			// Let the user select a Program.
 			frmSelectProgram frmPickProgram = new frmSelectProgram(_objCharacter);
 			frmPickProgram.ShowDialog(this);
@@ -12714,35 +12720,34 @@ namespace Chummer
 			}
 		}
 
-		private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
-		{
-			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
-			frmPickLifestyle.ShowDialog(this);
+        private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
+        {
+            Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
+            frmPickLifestyle.ShowDialog(this);
 
-			// Make sure the dialogue window was not canceled.
-			if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-				return;
+            // Make sure the dialogue window was not canceled.
+            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                return;
 
-			objNewLifestyle.Months = 0;
-			objNewLifestyle.StyleType = LifestyleType.Advanced;
-			_objCharacter.Lifestyles.Add(objNewLifestyle);
+            objNewLifestyle.StyleType = LifestyleType.Advanced;
 
-			TreeNode objNode = new TreeNode();
-			objNode.Text = objNewLifestyle.Name;
-			objNode.Tag = objNewLifestyle.InternalId;
-			objNode.ContextMenuStrip = cmsAdvancedLifestyle;
-			treLifestyles.Nodes[0].Nodes.Add(objNode);
-			treLifestyles.Nodes[0].Expand();
+            _objCharacter.Lifestyles.Add(objNewLifestyle);
 
-			if (frmPickLifestyle.AddAgain)
-				tsAdvancedLifestyle_Click(sender, e);
+            TreeNode objNode = new TreeNode();
+            objNode.Text = objNewLifestyle.Name;
+            objNode.Tag = objNewLifestyle.InternalId;
+            objNode.ContextMenuStrip = cmsAdvancedLifestyle;
+            treLifestyles.Nodes[0].Nodes.Add(objNode);
+            treLifestyles.Nodes[0].Expand();
 
-			UpdateCharacterInfo();
+            if (frmPickLifestyle.AddAgain)
+                tsAdvancedLifestyle_Click(sender, e);
 
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
+            UpdateCharacterInfo();
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
 
 		private void tsBoltHole_Click(object sender, EventArgs e)
 		{
@@ -24264,7 +24269,7 @@ namespace Chummer
                     {
                         if (strQualities.Length > 0)
                             strQualities += ", ";
-                        string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
+                        string strQualityName = strQuality.ToString();
                         objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
                         XmlNode nodCost = objNode["lifestylecost"];
                         if (nodCost != null)
@@ -24288,11 +24293,18 @@ namespace Chummer
                         }
                         else
                         {
-                            string strCost = objNode["cost"].InnerText;
-                            if (objNode["translate"] != null)
-                                strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
+                            if (objNode["cost"] != null)
+                            {
+                                string strCost = objNode["cost"].InnerText;
+                                if (objNode["translate"] != null)
+                                    strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
+                                else
+                                    strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
+                            }
                             else
-                                strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
+                            {
+                                strQualities += objNode["name"].InnerText;
+                            }
                         }
                     }
 

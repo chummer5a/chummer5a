@@ -755,7 +755,17 @@ namespace Chummer
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+        private int SumtoTen ()
+        { 
+            int value = 0;
+            value += Convert.ToInt32(cboHeritage.SelectedValue.ToString());
+            value += Convert.ToInt32(cboTalent.SelectedValue.ToString());
+            value += Convert.ToInt32(cboAttributes.SelectedValue.ToString());
+            value += Convert.ToInt32(cboSkills.SelectedValue.ToString());
+            value += Convert.ToInt32(cboResources.SelectedValue.ToString());
 
+            return value;
+        } 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             PopulateMetatypes();
@@ -765,34 +775,7 @@ namespace Chummer
         {
             if (_blnInitializing)
                 return;
-            /*
-            List<string> objPriorities = new List<string>() { "4", "3", "2", "1", "E" };
-
-            // Discover which SumtoTen rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
-
-            string strMissing = objPriorities[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
-
-            if (cboAttributes.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
-
-            if (cboSkills.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
-                        */
+            SumtoTen();
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -810,35 +793,7 @@ namespace Chummer
         {
             if (_blnInitializing)
                 return;
-            /*
-            List<string> objPriorities = new List<string>() { "4", "3", "2", "1", "E" };
-
-            // Discover which SumtoTen rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
-
-            string strMissing = objPriorities[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboHeritage.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
-
-            if (cboAttributes.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
-
-            if (cboSkills.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
-
-            */
+            SumtoTen();
             _blnInitializing = false;
             string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
@@ -856,34 +811,7 @@ namespace Chummer
         {
             if (_blnInitializing)
                 return;
-            /*
-            List<string> objPriorities = new List<string>() { "4", "3", "2", "1", "0" };
-
-            // Discover which SumtoTen rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
-
-            string strMissing = objPriorities[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
-
-            if (cboHeritage.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
-
-            if (cboSkills.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
-            */
+            SumtoTen();
 
             _blnInitializing = false;
 
@@ -902,34 +830,7 @@ namespace Chummer
         {
             if (_blnInitializing)
                 return;
-            /*
-            List<string> objPriorities = new List<string>() { "4", "3", "2", "1", "0" };
-
-            // Discover which SumtoTen rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
-
-            string strMissing = objPriorities[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
-
-            if (cboAttributes.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
-
-            if (cboHeritage.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
-            */
+            SumtoTen();
             _blnInitializing = false;
             string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
@@ -944,37 +845,7 @@ namespace Chummer
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*if (_blnInitializing)
-                return;
-
-            List<string> objPriorities = new List<string>() { "4", "3", "2", "1", "0" };
-
-            // Discover which SumtoTen rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
-
-            string strMissing = objPriorities[0].ToString();
-
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
-
-            if (cboAttributes.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
-
-            if (cboSkills.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboHeritage.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
-            _blnInitializing = false;
-            */
+            SumtoTen();
             string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
@@ -993,6 +864,12 @@ namespace Chummer
         /// </summary>
         void MetatypeSelected()
         {
+
+            if (cboTalents.SelectedIndex == -1)
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_SelectTalent"), LanguageManager.Instance.GetString("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }            
             if (cboTalents.SelectedIndex == -1)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_SelectTalent"), LanguageManager.Instance.GetString("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1008,6 +885,12 @@ namespace Chummer
             if (cboSkill1.Visible && cboSkill2.Visible && cboSkill1.SelectedValue.ToString() == cboSkill2.SelectedValue.ToString())
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_Duplicate"), LanguageManager.Instance.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (SumtoTen() != 10) 
+            {
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SumtoTen").Replace("{0}", (SumtoTen().ToString())));
                 return;
             }
 

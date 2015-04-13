@@ -41,7 +41,8 @@ namespace Chummer
 	{
 		Karma = 0,
         Priority = 1,
-        SumtoTen = 2
+        SumtoTen = 2,
+        LifeModule = 3
 	}
 
 	/// <summary>
@@ -2695,7 +2696,7 @@ namespace Chummer
 
             // <calendar>
             objWriter.WriteStartElement("calendar");
-            _lstCalendar.Sort();
+            //_lstCalendar.Sort();
             foreach (CalendarWeek objWeek in _lstCalendar)
                 objWeek.Print(objWriter);
             // </expenses>
