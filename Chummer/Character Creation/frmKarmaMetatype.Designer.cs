@@ -253,8 +253,8 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(23, 13);
             this.label6.TabIndex = 60;
-            this.label6.Tag = "String_Karma";
-            this.label6.Text = "Karma";
+            this.label6.Tag = "String_BP";
+            this.label6.Text = "BP";
             // 
             // label2
             // 
@@ -485,8 +485,8 @@
             this.Label1.Name = "Label1";
             this.Label1.Size = new System.Drawing.Size(23, 13);
             this.Label1.TabIndex = 36;
-            this.Label1.Tag = "String_Karma";
-            this.Label1.Text = "Karma";
+            this.Label1.Tag = "String_BP";
+            this.Label1.Text = "BP";
             // 
             // lstMetatypes
             // 

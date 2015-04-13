@@ -1,7 +1,0 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/Chummer/obj/x86/Debug
-/Chummer/bin/Debug
-/Chummer/Chummer.sln

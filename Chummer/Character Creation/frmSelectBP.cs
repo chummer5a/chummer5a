@@ -35,14 +35,9 @@ namespace Chummer
             objSumtoTen.Value = "SumtoTen";
             objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
 
-            ListItem objLifeModule = new ListItem();
-            objLifeModule.Value = "LifeModule";
-            objLifeModule.Name = "Life Module";
-
             lstBuildMethod.Add(objKarma);
             lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objSumtoTen);
-            //lstBuildMethod.Add(objLifeModule);
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
@@ -111,15 +106,6 @@ namespace Chummer
                 _objCharacter.NuyenMaximumBP = 10;
                 _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
                 _objCharacter.GameplayOption = cboGamePlay.Text;
-            }
-            else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
-            {
-                _objCharacter.BuildPoints = 0;
-                _objCharacter.BuildKarma = Convert.ToInt32(nudKarma.Value);
-                _objCharacter.NuyenMaximumBP = 200;
-                _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
-                _objCharacter.GameplayOption = cboGamePlay.Text;
-
             }
             else
             {

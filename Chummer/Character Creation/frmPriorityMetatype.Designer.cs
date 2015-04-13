@@ -607,8 +607,8 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(23, 13);
             this.label6.TabIndex = 76;
-            this.label6.Tag = "String_Karma";
-            this.label6.Text = "Karma";
+            this.label6.Tag = "String_BP";
+            this.label6.Text = "BP";
             // 
             // lblMetatypeSkillSelection
             // 

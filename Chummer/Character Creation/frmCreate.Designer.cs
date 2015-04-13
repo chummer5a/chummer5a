@@ -158,7 +158,6 @@
             this.tsCyberwareAddGear = new System.Windows.Forms.ToolStripMenuItem();
             this.tsCyberwareNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAdvancedLifestyle = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddArmorMod = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAddArmorGear = new System.Windows.Forms.ToolStripMenuItem();
@@ -257,6 +256,7 @@
             this.tsBiowareNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsAdvancedLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsEditAdvancedLifestyle = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsAdvancedLifestyle = new System.Windows.Forms.ToolStripMenuItem();
             this.tsAdvancedLifestyleNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
@@ -552,8 +552,8 @@
             this.tabLifestyle = new System.Windows.Forms.TabPage();
             this.lblLifestyleQualities = new System.Windows.Forms.Label();
             this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleBaseLifestyle = new System.Windows.Forms.Label();
-            this.lblLifestyleBaseLifestyleLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleComforts = new System.Windows.Forms.Label();
+            this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
             this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
             this.lblLifestyleSource = new System.Windows.Forms.Label();
@@ -877,12 +877,11 @@
             this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblDicePool = new System.Windows.Forms.Label();
             this.cmdAddMartialArt = new SplitButton();
+            this.cmdAddLifestyle = new SplitButton();
             this.cmdAddSpell = new SplitButton();
             this.cmdAddComplexForm = new SplitButton();
             this.cmdAddCyberware = new SplitButton();
-            this.cmdAddLifestyle = new SplitButton();
             this.cmdAddArmor = new SplitButton();
             this.cmdAddWeapon = new SplitButton();
             this.cmdAddGear = new SplitButton();
@@ -892,7 +891,6 @@
             this.cmsSpellButton.SuspendLayout();
             this.cmsComplexForm.SuspendLayout();
             this.cmsCyberware.SuspendLayout();
-            this.cmsLifestyle.SuspendLayout();
             this.cmsArmor.SuspendLayout();
             this.cmsWeapon.SuspendLayout();
             this.cmsGearButton.SuspendLayout();
@@ -2100,9 +2098,9 @@
             // cmsLifestyle
             // 
             this.cmsLifestyle.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAdvancedLifestyle});
+            this.tsAdvancedLifestyle,});
             this.cmsLifestyle.Name = "cmsLifestyle";
-            this.cmsLifestyle.Size = new System.Drawing.Size(174, 26);
+            this.cmsLifestyle.Size = new System.Drawing.Size(174, 70);
             this.cmsLifestyle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsAdvancedLifestyle
@@ -4434,7 +4432,6 @@
             // splitSkills.Panel2
             // 
             this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.splitSkills.Panel2.Controls.Add(this.lblDicePool);
             this.splitSkills.Panel2.Controls.Add(this.label2);
             this.splitSkills.Panel2.Controls.Add(this.label10);
             this.splitSkills.Panel2.Controls.Add(this.label11);
@@ -4947,7 +4944,7 @@
             this.lblSpellDicePoolLabel.Name = "lblSpellDicePoolLabel";
             this.lblSpellDicePoolLabel.Size = new System.Drawing.Size(56, 13);
             this.lblSpellDicePoolLabel.TabIndex = 106;
-            this.lblSpellDicePoolLabel.Tag = "Label_SpellDicePool";
+            this.lblSpellDicePoolLabel.Tag = "Label_DicePool";
             this.lblSpellDicePoolLabel.Text = "Dice Pool:";
             // 
             // lblMentorSpirit
@@ -6477,8 +6474,8 @@
             this.tabLifestyle.Controls.Add(this.cmdAddLifestyle);
             this.tabLifestyle.Controls.Add(this.lblLifestyleQualities);
             this.tabLifestyle.Controls.Add(this.lblLifestyleQualitiesLabel);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleBaseLifestyle);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleBaseLifestyleLabel);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleComforts);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleComfortsLabel);
             this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyenLabel);
             this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyen);
             this.tabLifestyle.Controls.Add(this.lblLifestyleSource);
@@ -6498,6 +6495,20 @@
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyle";
             // 
+            // cmdAddLifestyle
+            // 
+            this.cmdAddLifestyle.AutoSize = true;
+            this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
+            this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
+            this.cmdAddLifestyle.Name = "cmdAddLifestyle";
+            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
+            this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
+            this.cmdAddLifestyle.TabIndex = 91;
+            this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
+            this.cmdAddLifestyle.Text = "&Add Lifestyle";
+            this.cmdAddLifestyle.UseVisualStyleBackColor = true;
+            this.cmdAddLifestyle.Click += new System.EventHandler(this.cmdAddLifestyle_Click);
+            // 
             // lblLifestyleQualities
             // 
             this.lblLifestyleQualities.Location = new System.Drawing.Point(494, 151);
@@ -6516,24 +6527,24 @@
             this.lblLifestyleQualitiesLabel.Tag = "Label_LifestyleQualities";
             this.lblLifestyleQualitiesLabel.Text = "Qualities:";
             // 
-            // lblLifestyleBaseLifestyle
+            // lblLifestyleComforts
             // 
-            this.lblLifestyleBaseLifestyle.AutoSize = true;
-            this.lblLifestyleBaseLifestyle.Location = new System.Drawing.Point(408, 128);
-            this.lblLifestyleBaseLifestyle.Name = "lblLifestyleBaseLifestyle";
-            this.lblLifestyleBaseLifestyle.Size = new System.Drawing.Size(19, 13);
-            this.lblLifestyleBaseLifestyle.TabIndex = 93;
-            this.lblLifestyleBaseLifestyle.Text = "[0]";
+            this.lblLifestyleComforts.AutoSize = true;
+            this.lblLifestyleComforts.Location = new System.Drawing.Point(408, 128);
+            this.lblLifestyleComforts.Name = "lblLifestyleComforts";
+            this.lblLifestyleComforts.Size = new System.Drawing.Size(19, 13);
+            this.lblLifestyleComforts.TabIndex = 93;
+            this.lblLifestyleComforts.Text = "[0]";
             // 
-            // lblLifestyleBaseLifestyleLabel
+            // lblLifestyleComfortsLabel
             // 
-            this.lblLifestyleBaseLifestyleLabel.AutoSize = true;
-            this.lblLifestyleBaseLifestyleLabel.Location = new System.Drawing.Point(307, 128);
-            this.lblLifestyleBaseLifestyleLabel.Name = "lblLifestyleBaseLifestyleLabel";
-            this.lblLifestyleBaseLifestyleLabel.Size = new System.Drawing.Size(48, 13);
-            this.lblLifestyleBaseLifestyleLabel.TabIndex = 92;
-            this.lblLifestyleBaseLifestyleLabel.Tag = "Label_SelectAdvancedLifestyle_Lifestyle";
-            this.lblLifestyleBaseLifestyleLabel.Text = "Lifestyle:";
+            this.lblLifestyleComfortsLabel.AutoSize = true;
+            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(307, 128);
+            this.lblLifestyleComfortsLabel.Name = "lblLifestyleComfortsLabel";
+            this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblLifestyleComfortsLabel.TabIndex = 92;
+            this.lblLifestyleComfortsLabel.Tag = "Label_SelectAdvancedLifestyle_Lifestyle";
+            this.lblLifestyleComfortsLabel.Text = "Lifestyle:";
             // 
             // lblLifestyleStartingNuyenLabel
             // 
@@ -10140,16 +10151,6 @@
             this.tsAddTechniqueNotes.Text = "&Notes";
             this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
             // 
-            // lblDicePool
-            // 
-            this.lblDicePool.AutoSize = true;
-            this.lblDicePool.Location = new System.Drawing.Point(307, 31);
-            this.lblDicePool.Name = "lblDicePool";
-            this.lblDicePool.Size = new System.Drawing.Size(53, 13);
-            this.lblDicePool.TabIndex = 51;
-            this.lblDicePool.Tag = "Label_DicePool";
-            this.lblDicePool.Text = "Dice Pool";
-            // 
             // cmdAddMartialArt
             // 
             this.cmdAddMartialArt.AutoSize = true;
@@ -10205,20 +10206,6 @@
             this.cmdAddCyberware.Text = "&Add Cyberware";
             this.cmdAddCyberware.UseVisualStyleBackColor = true;
             this.cmdAddCyberware.Click += new System.EventHandler(this.cmdAddCyberware_Click);
-            // 
-            // cmdAddLifestyle
-            // 
-            this.cmdAddLifestyle.AutoSize = true;
-            this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
-            this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
-            this.cmdAddLifestyle.Name = "cmdAddLifestyle";
-            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
-            this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
-            this.cmdAddLifestyle.TabIndex = 91;
-            this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
-            this.cmdAddLifestyle.Text = "&Add Lifestyle";
-            this.cmdAddLifestyle.UseVisualStyleBackColor = true;
-            this.cmdAddLifestyle.Click += new System.EventHandler(this.cmdAddLifestyle_Click);
             // 
             // cmdAddArmor
             // 
@@ -10301,7 +10288,6 @@
             this.cmsSpellButton.ResumeLayout(false);
             this.cmsComplexForm.ResumeLayout(false);
             this.cmsCyberware.ResumeLayout(false);
-            this.cmsLifestyle.ResumeLayout(false);
             this.cmsArmor.ResumeLayout(false);
             this.cmsWeapon.ResumeLayout(false);
             this.cmsGearButton.ResumeLayout(false);
@@ -10785,8 +10771,8 @@
 		private System.Windows.Forms.Label lblLifestyleStartingNuyen;
         private System.Windows.Forms.ToolStripProgressBar pgbProgress;
         private System.Windows.Forms.CheckBox chkCharacterCreated;
-		private System.Windows.Forms.Label lblLifestyleBaseLifestyle;
-		private System.Windows.Forms.Label lblLifestyleBaseLifestyleLabel;
+		private System.Windows.Forms.Label lblLifestyleComforts;
+		private System.Windows.Forms.Label lblLifestyleComfortsLabel;
 		private System.Windows.Forms.Label lblLifestyleQualities;
         private System.Windows.Forms.Label lblLifestyleQualitiesLabel;
 		private System.Windows.Forms.Button cmdAddExoticSkill;
@@ -11272,7 +11258,6 @@
         private System.Windows.Forms.ToolStripMenuItem tsAddTechniqueNotes;
         private System.Windows.Forms.Label lblMetatypeBP;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label lblDicePool;
     }
 }
 
