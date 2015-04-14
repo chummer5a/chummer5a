@@ -1,3 +1,8 @@
+Build 161 (Reverting things that weren't broken Hotfix)
+Application Change:
+- So it turns out that the default options don't actually populate from where they're defined, but are an entirely separate int. Todo: buy scotch. Try not to cry. Cry deeply.
+- Fixed the issue with skills doubling their rating on load. Commenting out code without explaining why you did it is dangerous, kiddies. Don't uncomment things you don't know the purpose of.
+
 Build 160
 Application Change:
 - When using Point Buy, karma can no longer be carried over into Career Mode, because Point Buy cannot have nice things.
@@ -8,6 +13,7 @@ Application Change:
 - Did some fiddling with the UI for Point Buy and the optional 'Free Knowledge Skills like Priority' rule. Buy With Karma is enabled by default, etc.
 - Removing Rituals should no longer cause terrible crashes in chargen mode.
 - Complex Forms limited to the correct amounts during Chargen and Career mode.
+- Drone Condition Monitor assigned to correct value, courtesy of BodieSullivan.
 
 New Strings:
 - Message_Options_CloseForms
@@ -16,6 +22,8 @@ New Strings:
 
 Data Changes: 
 - Dwarf metavariants are tagged as Run Faster again.
+- Formatting typo in de_data.xml resolved, courtesy of UrsZeidler.
+- Several issues with the German character sheet resovled, courtesy of Zwixx.
 
 Build 5.159.1
 Application Change:

@@ -5976,15 +5976,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_LimitSkills</key>
-			<text>Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is higher (SR4 61)</text>
+			<text>Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is higher</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SkillRegroup</key>
-			<text>Allow Skills to be re-Grouped if all Ratings are the same (SR4 FAQ)</text>
+			<text>Allow Skills to be re-Grouped if all Ratings are the same</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MetatypesCostKarma</key>
-			<text>Metatypes cost Karma equal to their BP</text>
+			<text>Metatypes cost Karma equal to their Karma</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsKarma</key>
@@ -5996,7 +5996,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKnowledgeSkills</key>
-			<text>Karma Build: Free Knowledge Skills like BP Build</text>
+			<text>Karma Build: Free Knowledge Skills like Priority Build</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MaxSpiritForce</key>
@@ -6024,47 +6024,47 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StrengthAffectsRecoil</key>
-			<text>High Strength affects Weapon Recoil (AR 163)</text>
+			<text>High Strength affects Weapon Recoil</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_MaximumArmorModifications</key>
-			<text>Use Maximum Armor Modifications (AR 44)</text>
+			<text>Use Maximum Armor Modifications</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ArmorSuitCapacity</key>
-			<text>Use Armor Suit Capacity (AR 44)</text>
+			<text>Use Armor Suit Capacity</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ArmorDegradation</key>
-			<text>Allow Armor Degradation (AR 44)</text>
+			<text>Allow Armor Degradation</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseCalculatedVehicleSensorRatings</key>
-			<text>Use calculated Vehicle Sensor Ratings (AR 105)</text>
+			<text>Use calculated Vehicle Sensor Ratings</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AlternateMatrixAttribute</key>
-			<text>Use alternate Matrix Attribute (UN 39)</text>
+			<text>Use alternate Matrix Attribute</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AlternateComplexFormCost</key>
-			<text>Use alternate Complex Forms costs (UN 39)</text>
+			<text>Use alternate Complex Forms costs</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCustomTransgenics</key>
-			<text>Allow any Bioware to be converted to Transgenic (AU 93)</text>
+			<text>Allow any Bioware to be converted to Transgenic</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
-			<text>Allow Skill Groups to be broken during character creation (SR4 68)</text>
+			<text>Allow Skill Groups to be broken during character creation</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExtendAnyDetectionSpell</key>
-			<text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
+			<text>Allow any Detection Spell to be taken as Extended range version</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ErgonomicProgramLimit</key>
-			<text>Ergonomic Programs do not affect a Commlink's effective Response (UN 114)</text>
+			<text>Ergonomic Programs do not affect a Commlink's effective Response</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>

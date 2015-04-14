@@ -57,8 +57,7 @@ namespace Chummer
         {
             if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
             {
-                nudSkill.Enabled = false;
-                nudSkill.Visible = false;
+                nudSkill.Visible = true;
                 chkKarma.Checked = true;
                 chkKarma.Enabled = false;
 
@@ -182,7 +181,9 @@ namespace Chummer
             // Raise the RatingChanged Event when the NumericUpDown's Value changes.
             // The entire SkillControl is passed as an argument so the handling event can evaluate its contents.
             if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
+            {
                 nudSkill.Value = nudSkill.Maximum - nudKarma.Value;
+            }
             _intBaseRating = Convert.ToInt32(nudSkill.Value);
             _objSkill.Base = Convert.ToInt32(nudSkill.Value);
             _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
@@ -497,7 +498,6 @@ namespace Chummer
                 if (value < _objSkill.FreeLevels)
                     value = _objSkill.FreeLevels;
 
-                nudSkill.Value = value;
                 lblSkillRating.Text = value.ToString();
                 _objSkill.Rating = value;
 
