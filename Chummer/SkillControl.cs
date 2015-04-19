@@ -57,10 +57,13 @@ namespace Chummer
         {
             if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
             {
-                nudSkill.Visible = true;
+                nudSkill.Visible = false;
                 chkKarma.Checked = true;
                 chkKarma.Enabled = false;
-
+                if (nudSkill.Value > 0 && nudSkill.Visible == false) 
+                {
+                    nudSkill.Value = 0;
+                }
             }
 			_blnSkipRefresh = true;
 			if (_objSkill.KnowledgeSkill)
@@ -96,7 +99,9 @@ namespace Chummer
 					{
 						if (_objSkill.Rating == 0)
 							intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewKnowledgeSkill;
-						else
+						else if (_objSkill.Rating >= 3 && _objSkill.CharacterObject.SchoolOfHardKnocks)
+                            intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                        else
 							intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
 					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.

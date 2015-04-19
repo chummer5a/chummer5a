@@ -98,6 +98,9 @@
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
+            this.cmdURLAppPath = new System.Windows.Forms.Button();
+            this.txtURLAppPath = new System.Windows.Forms.TextBox();
+            this.lblURLAppPath = new System.Windows.Forms.Label();
             this.chkOpenPDFsAsURLs = new System.Windows.Forms.CheckBox();
             this.chkUseLogging = new System.Windows.Forms.CheckBox();
             this.chkLocalisedUpdatesOnly = new System.Windows.Forms.CheckBox();
@@ -232,9 +235,7 @@
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.cmdURLAppPath = new System.Windows.Forms.Button();
-            this.txtURLAppPath = new System.Windows.Forms.TextBox();
-            this.lblURLAppPath = new System.Windows.Forms.Label();
+            this.chkFreeContacts = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -980,6 +981,34 @@
             this.tabGlobal.TabIndex = 0;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
+            // 
+            // cmdURLAppPath
+            // 
+            this.cmdURLAppPath.Location = new System.Drawing.Point(407, 214);
+            this.cmdURLAppPath.Name = "cmdURLAppPath";
+            this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
+            this.cmdURLAppPath.TabIndex = 21;
+            this.cmdURLAppPath.Text = "...";
+            this.cmdURLAppPath.UseVisualStyleBackColor = true;
+            this.cmdURLAppPath.Click += new System.EventHandler(this.cmdURLAppPath_Click);
+            // 
+            // txtURLAppPath
+            // 
+            this.txtURLAppPath.Location = new System.Drawing.Point(153, 216);
+            this.txtURLAppPath.Name = "txtURLAppPath";
+            this.txtURLAppPath.ReadOnly = true;
+            this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
+            this.txtURLAppPath.TabIndex = 20;
+            // 
+            // lblURLAppPath
+            // 
+            this.lblURLAppPath.AutoSize = true;
+            this.lblURLAppPath.Location = new System.Drawing.Point(6, 219);
+            this.lblURLAppPath.Name = "lblURLAppPath";
+            this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
+            this.lblURLAppPath.TabIndex = 19;
+            this.lblURLAppPath.Tag = "Label_Options_URLApplicationPath";
+            this.lblURLAppPath.Text = "Location of Web browser";
             // 
             // chkOpenPDFsAsURLs
             // 
@@ -2425,6 +2454,7 @@
             // tabHouseRules
             // 
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkFreeContacts);
             this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
             this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
             this.tabHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups);
@@ -2444,7 +2474,7 @@
             this.chkFreeKarmaKnowledge.AutoSize = true;
             this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 49);
             this.chkFreeKarmaKnowledge.Name = "chkFreeKarmaKnowledge";
-            this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(254, 17);
+            this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(245, 17);
             this.chkFreeKarmaKnowledge.TabIndex = 4;
             this.chkFreeKarmaKnowledge.Tag = "Checkbox_Options_FreeKnowledgeSkills";
             this.chkFreeKarmaKnowledge.Text = "Karma Build: Free Knowledge Skills like Priority";
@@ -2569,33 +2599,16 @@
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
             // 
-            // cmdURLAppPath
+            // chkFreeContacts
             // 
-            this.cmdURLAppPath.Location = new System.Drawing.Point(407, 214);
-            this.cmdURLAppPath.Name = "cmdURLAppPath";
-            this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
-            this.cmdURLAppPath.TabIndex = 21;
-            this.cmdURLAppPath.Text = "...";
-            this.cmdURLAppPath.UseVisualStyleBackColor = true;
-            this.cmdURLAppPath.Click += new System.EventHandler(this.cmdURLAppPath_Click);
-            // 
-            // txtURLAppPath
-            // 
-            this.txtURLAppPath.Location = new System.Drawing.Point(153, 216);
-            this.txtURLAppPath.Name = "txtURLAppPath";
-            this.txtURLAppPath.ReadOnly = true;
-            this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
-            this.txtURLAppPath.TabIndex = 20;
-            // 
-            // lblURLAppPath
-            // 
-            this.lblURLAppPath.AutoSize = true;
-            this.lblURLAppPath.Location = new System.Drawing.Point(6, 219);
-            this.lblURLAppPath.Name = "lblURLAppPath";
-            this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
-            this.lblURLAppPath.TabIndex = 19;
-            this.lblURLAppPath.Tag = "Label_Options_URLApplicationPath";
-            this.lblURLAppPath.Text = "Location of Web browser";
+            this.chkFreeContacts.AutoSize = true;
+            this.chkFreeContacts.Location = new System.Drawing.Point(366, 72);
+            this.chkFreeContacts.Name = "chkFreeContacts";
+            this.chkFreeContacts.Size = new System.Drawing.Size(207, 17);
+            this.chkFreeContacts.TabIndex = 8;
+            this.chkFreeContacts.Tag = "Checkbox_Options_FreeContacts";
+            this.chkFreeContacts.Text = "Karma Build: Free Contacts like Priority";
+            this.chkFreeContacts.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -2891,5 +2904,6 @@
         private System.Windows.Forms.Button cmdURLAppPath;
         private System.Windows.Forms.TextBox txtURLAppPath;
         private System.Windows.Forms.Label lblURLAppPath;
+        private System.Windows.Forms.CheckBox chkFreeContacts;
 	}
 }

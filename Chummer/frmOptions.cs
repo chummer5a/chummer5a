@@ -393,6 +393,7 @@ namespace Chummer
 			_objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
 			_objOptions.PrintNotes = chkPrintNotes.Checked;
             _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
+            _objOptions.FreeContacts = chkFreeContacts.Checked;
 			switch (cboLimbCount.SelectedValue.ToString())
 			{
 				case "torso":
@@ -1018,6 +1019,16 @@ namespace Chummer
             }
             chkFreeKarmaKnowledge.Checked = blnFreeKarmaKnowledge;
 
+            bool blnFreeContacts = false;
+            try
+            {
+                blnFreeContacts = _objOptions.FreeContacts;
+            }
+            catch
+            {
+            }
+            chkFreeContacts.Checked = blnFreeContacts;
+
             bool blnUsePointsOnBrokenGroups = false;
             try
             {
@@ -1058,7 +1069,7 @@ namespace Chummer
             }
             chkCyberlegMovement.Checked = blnCyberlegsMovement;
 
-            int intFreeKarmaContactsMultiplier = 2;
+            int intFreeKarmaContactsMultiplier = 1;
 			try
 			{
 				intFreeKarmaContactsMultiplier = _objOptions.FreeContactsMultiplier;

@@ -5279,6 +5279,7 @@
 			</forbidden>
 			<required>
 				<oneof>
+					<power>Astral Perception</power>
 					<quality>Magician</quality>
 					<quality>Aspected Magician</quality>		  
 				</oneof>

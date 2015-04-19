@@ -56,6 +56,11 @@
             0,
             0,
             0});
+            this.nudConnection.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudConnection.Name = "nudConnection";
             this.nudConnection.Size = new System.Drawing.Size(40, 20);
             this.nudConnection.TabIndex = 3;

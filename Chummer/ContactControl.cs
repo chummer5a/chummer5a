@@ -428,7 +428,7 @@ namespace Chummer
                         cmdDelete.Visible = false;
                     }
 
-					nudConnection.Minimum = 0;
+					nudConnection.Minimum = 1;
 				}
 			}
 		}

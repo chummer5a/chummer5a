@@ -1,3 +1,19 @@
+Build 162
+Application Change:
+- Points for free Contacts include Karma values.
+- Amended an issue where the first point of Connection or Loyalty was free for Contacts. Basing this off the example text on page 99, but I'm moderately sure that there was a falling out between the development team and the writers at some point, so they may not have been talking at that point.
+- Added an optional rule to generate free contacts during Point Buy. Currently working on adding free contact points during Point Buy. Shouldn't be much longer to complete.
+- Refixed an issue with skill groups adding points to the Priority number counters.  Will also clean up karmagen characters that were built accidentally using Points instead of just Karma. 
+- Fixed issues with the Uneducated, Infirm, and Uncouth qualities during chargen. (Additional karma costs, wrong karma costs, just generally broken.)
+- Support added for the School of Hard Knocks quality. 
+- Build Summary now reports the Karma used by Contacts if you exceed the free points.
+
+Data Change:
+- Blind (Mage) quality is now available for Adepts that have the Astral Perception quality.
+
+New Strings:
+- String_OverContactPoints
+
 Build 161 (Reverting things that weren't broken Hotfix)
 Application Change:
 - So it turns out that the default options don't actually populate from where they're defined, but are an entirely separate int. Todo: buy scotch. Try not to cry. Cry deeply.

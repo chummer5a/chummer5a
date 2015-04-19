@@ -273,6 +273,11 @@
 			<text>page</text>
 		</string>
 		<string>
+			<key>String_OverContactPoints</key>
+			<text>{0} of {1}: {2} Karma</text>
+		</string>
+		
+		<string>
 			<key>String_Of</key>
 			<text>of</text>
 		</string>
@@ -3345,6 +3350,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Free Knowledge Skill Points Remaining:</text>
 		</string>
 		<string>
+			<key>Label_FreeContactPoints</key>
+			<text>Free Contact Points Remaining:</text>
+		</string>		
+		<string>
 			<key>Label_FreeSkills</key>
 			<text>Free Skill Points Remaining:</text>
 		</string>
@@ -5993,6 +6002,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Checkbox_Options_FreeContactPointsBP</key>
 			<text>Free Contact Points Karma:</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_FreeContacts</key>
+			<text>Karma Build: Free Contacts like Priority Build</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKnowledgeSkills</key>

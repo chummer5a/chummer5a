@@ -15,7 +15,6 @@ namespace Chummer
 		// Set the default culture to en-US so we work with decimals correctly.
 		private Character _objCharacter;
 		private MainController _objController;
-
 		private CharacterOptions _objOptions;
 		private CommonFunctions _objFunctions;
 		private bool _blnSkipRefresh = false;
@@ -131,7 +130,17 @@ namespace Chummer
                 foreach (Contact contact in _objCharacter.Contacts)
                     count += contact.ContactPoints;
 
-                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
+                if ((_objCharacter.ContactPoints - count) >= 0)
+                {
+                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
+                }
+                else
+                {
+                    int karmaSpent = _objCharacter.ContactPoints - count;
+                    karmaSpent = karmaSpent *= -1;
+                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
+                }
+                
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -161,7 +170,16 @@ namespace Chummer
                 foreach (Contact contact in _objCharacter.Contacts)
                     count += contact.ContactPoints;
 
-                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
+                if ((_objCharacter.ContactPoints - count) >= 0)
+                {
+                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
+                }
+                else 
+                {
+                    int karmaSpent = _objCharacter.ContactPoints - count;
+                    karmaSpent = karmaSpent *= -1;
+                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(),karmaSpent.ToString());
+                }
             }
 
             else
@@ -4094,7 +4112,7 @@ namespace Chummer
             _objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
 
             // Calculate the BP used by Contacts.
-            _objCharacter.ContactPoints = _objCharacter.CHA.Base * _objCharacter.ContactMultiplier;
+            _objCharacter.ContactPoints = (_objCharacter.CHA.Base + _objCharacter.CHA.Karma) * _objCharacter.ContactMultiplier;
             int intContactPointsUsed = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
@@ -4105,10 +4123,10 @@ namespace Chummer
                 }
             }
 
-            //if (_objCharacter.ContactPoints - intContactPointsUsed < 0)
-            //    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.ContactPoints.ToString());
-            //else
-                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString());
+            if (_objCharacter.ContactPoints - intContactPointsUsed < 0)
+            { lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.ContactPoints.ToString()); }
+            else
+            { lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString()); }
 
             UpdateCharacterInfo();
             CalculateBP();
@@ -7375,6 +7393,21 @@ namespace Chummer
 
                         _objCharacter.Spells.Remove(objSpell);
                         treMetamagic.Nodes.Remove(treMetamagic.SelectedNode);
+
+                        
+                            foreach (TreeNode objRootNode in treSpells.Nodes)
+                            {
+                                if (objRootNode.Text == ("Selected " + objSpell.Category))
+                                {
+                                    foreach (TreeNode objNode in objRootNode.Nodes)
+                                    {
+                                        if (objNode.Tag.ToString() == objSpell.InternalId.ToString())
+                                        {
+                                            objNode.Remove();
+                                        }
+                                    }
+                                }
+                            }
                         return;
                     }
 
@@ -7625,7 +7658,7 @@ namespace Chummer
 
 				// Include the BP used by Enemies.
 				if (lblEnemiesBP.Text.Contains(LanguageManager.Instance.GetString("String_BP")))
-					intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.Instance.GetString("String_BP"), ""));
+                    intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.Instance.GetString("String_BP"), ""));
 				else
 					intBP += int.Parse(lblEnemiesBP.Text.Replace(" " + LanguageManager.Instance.GetString("String_Karma"), ""));
 
@@ -7896,10 +7929,7 @@ namespace Chummer
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
 					intShowBP *= _objOptions.KarmaQuality;
 				string strBP = intShowBP.ToString();
-				if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
 					strBP += " " + LanguageManager.Instance.GetString("String_Karma");
-				else
-					strBP += " " + LanguageManager.Instance.GetString("String_BP");
 
 				if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteMetatypeQuality").Replace("{0}", strBP)))
 					return;
@@ -9604,58 +9634,6 @@ namespace Chummer
 
             UpdateCharacterInfo();
         }
-
-		private void tsBoltHole_Click(object sender, EventArgs e)
-		{
-			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
-			frmPickLifestyle.StyleType = LifestyleType.BoltHole;
-			frmPickLifestyle.ShowDialog(this);
-            
-			// Make sure the dialogue window was not canceled.
-			if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-				return;
-
-			_objCharacter.Lifestyles.Add(objNewLifestyle);
-
-			TreeNode objNode = new TreeNode();
-			objNode.Text = objNewLifestyle.Name;
-			objNode.Tag = objNewLifestyle.InternalId;
-			objNode.ContextMenuStrip = cmsAdvancedLifestyle;
-			treLifestyles.Nodes[0].Nodes.Add(objNode);
-			treLifestyles.Nodes[0].Expand();
-
-			if (frmPickLifestyle.AddAgain)
-				tsAdvancedLifestyle_Click(sender, e);
-
-			UpdateCharacterInfo();
-		}
-
-		private void tsSafehouse_Click(object sender, EventArgs e)
-		{
-			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
-			frmPickLifestyle.StyleType = LifestyleType.Safehouse;
-			frmPickLifestyle.ShowDialog(this);
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-				return;
-
-			_objCharacter.Lifestyles.Add(objNewLifestyle);
-
-			TreeNode objNode = new TreeNode();
-			objNode.Text = objNewLifestyle.Name;
-			objNode.Tag = objNewLifestyle.InternalId;
-			objNode.ContextMenuStrip = cmsAdvancedLifestyle;
-			treLifestyles.Nodes[0].Nodes.Add(objNode);
-			treLifestyles.Nodes[0].Expand();
-
-			if (frmPickLifestyle.AddAgain)
-				tsAdvancedLifestyle_Click(sender, e);
-
-			UpdateCharacterInfo();
-		}
 
 		private void tsWeaponName_Click(object sender, EventArgs e)
 		{
@@ -12553,7 +12531,7 @@ namespace Chummer
             if (objLifestyle.BaseLifestyle != "")
 			{
 				// Edit Advanced Lifestyle.
-				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 
@@ -15480,8 +15458,6 @@ namespace Chummer
 			int intFreestyleBPMin = 0;
 			int intFreestyleBP = 0;
 			string strPoints = "";
-
-			// Determine if cost strings should end in "BP" or "Karma" based on the Build Method being used.
 			intPointsRemain = _objCharacter.BuildKarma;
 			strPoints = LanguageManager.Instance.GetString("String_Karma");
 
@@ -15536,8 +15512,9 @@ namespace Chummer
 
                 if (_objCharacter.ContactPoints - intContactPointsUsed < 0)
                 {
-                    //lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.ContactPoints.ToString());
-                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString());
+                    int karmaSpent = _objCharacter.ContactPoints - intContactPointsUsed;
+                    karmaSpent = karmaSpent *= -1;
+                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
                     intPointsUsed -= (_objCharacter.ContactPoints - intContactPointsUsed);
                     intPointsRemain += (_objCharacter.ContactPoints - intContactPointsUsed);
                 }
@@ -15559,10 +15536,17 @@ namespace Chummer
                 }
 
                 // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-                int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intFreePoints *= _objOptions.KarmaContact;
+                int intFreePoints = 0;
+                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objOptions.FreeContacts)
+                {
 
+                    intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                        intFreePoints *= _objOptions.KarmaContact;
+                    //Update the label that displays the number of free Contacts remaining.
+                    lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intFreePoints.ToString(), _objCharacter.CHA.TotalValue.ToString());
+
+                }
                 if (intPointsUsed >= intFreePoints)
                 {
                     intPointsUsed -= intFreePoints;
@@ -15573,6 +15557,8 @@ namespace Chummer
                     intPointsRemain += intPointsUsed;
                     intPointsUsed = 0;
                 }
+
+
 
                 // If the option for free Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
                 if (_objOptions.FreeContactsFlat)
@@ -15794,6 +15780,9 @@ namespace Chummer
                     {
                         // The first point in a Skill costs KarmaNewActiveSkill.
                         // Each additional beyond 1 costs i x KarmaImproveActiveSkill.
+
+                        //Uneducated, Uncouth character handler.
+                        //First level of skill
                         if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") || (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
                         {
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill * 2;
@@ -15804,29 +15793,18 @@ namespace Chummer
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intPointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
+                        //Subsequent levels of skills
                         for (int i = objSkillControl.SkillRatingMinimum + 2; i <= objSkillControl.SkillRating; i++)
                         {
-                            if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") || (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+                            if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
                             {
                                 intPointsRemain -= (i * _objOptions.KarmaImproveActiveSkill) * 2;
                                 intPointsUsed += (i * _objOptions.KarmaImproveActiveSkill * 2);
-                                // Karma cost is doubled when increasing a Skill's Rating above 6.
-                                if (i > 6)
-                                {
-                                    intPointsRemain -= (i * _objOptions.KarmaImproveActiveSkill) * 2;
-                                    intPointsUsed += (i * _objOptions.KarmaImproveActiveSkill) * 2;
-                                }
                             }
                             else
                             {
                                 intPointsRemain -= i * _objOptions.KarmaImproveActiveSkill;
                                 intPointsUsed += i * _objOptions.KarmaImproveActiveSkill;
-                                // Karma cost is doubled when increasing a Skill's Rating above 6.
-                                if (i > 6)
-                                {
-                                    intPointsRemain -= i * _objOptions.KarmaImproveActiveSkill;
-                                    intPointsUsed += i * _objOptions.KarmaImproveActiveSkill;
-                                }
                             }
                         }
 
@@ -15880,18 +15858,7 @@ namespace Chummer
                     // Specialization Cost (Exotic skills do not count since their "Spec" is actually what the Skill is being used for and cannot be Specialized).
                     if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
                     {
-                        bool blnFound = false;
-                        if (objSkillControl.SkillName == "Artisan")
-                        {
-                            // Look for the Inspired quality to see if we get a free specialization
-                            foreach (Quality objQuality in _objCharacter.Qualities)
-                            {
-                                if (objQuality.Name == "Inspired")
-                                    blnFound = true;
-                            }
-
-                        }
-                        if (!blnFound && objSkillControl.BuyWithKarma)
+                        if (objSkillControl.BuyWithKarma)
                         {
                             // Each Specialization costs KarmaSpecialization.
                             intPointsRemain -= _objOptions.KarmaSpecialization;
@@ -15913,8 +15880,10 @@ namespace Chummer
                 intPointsInKnowledgeSkills += objSkillControl.SkillBase;
 
                 // The cost is double if the character is Uneducated and is an Academic or Professional Skill.
-                //if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-                //    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
+                /*if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma) && _objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
+                {
+                    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
+                }*/
 
                 // The Linguistics Adept Power gives 1 free point in Languages.
                 if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillBase > 0)
@@ -15924,24 +15893,12 @@ namespace Chummer
                 {
                     if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        bool blnFound = false;
-                        if (objSkillControl.SkillName == "Artisan")
-                        {
-                            // Look for the Inspired quality to see if we get a free specialization
-                            foreach (Quality objQuality in _objCharacter.Qualities)
-                            {
-                                if (objQuality.Name == "Inspired")
-                                    blnFound = true;
-                            }
-
-                        }
-                        if (!blnFound && !objSkillControl.BuyWithKarma)
-                            intPointsInKnowledgeSkills++;
-                        else if (!blnFound)
-                            intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
+                        intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
                     }
                     else
+                    {
                         intPointsInKnowledgeSkills += _objOptions.KarmaSpecialization;
+                    }
                     intSpecCount++;
                 }
             }
@@ -15964,17 +15921,25 @@ namespace Chummer
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
 
             intPointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-            {
+
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
                     for (int i = 1; i <= objSkillControl.SkillKarma; i++)
                     {
-                        intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
+                        
+                        if (_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street")
+                        {
+                            intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
+                            i++;
+                        }
+                        else
+                        {
+                            intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
+                        }
                     }
+                    
                 }
                 intPointsRemain -= intPointsUsed;
-            }
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());
@@ -17070,21 +17035,6 @@ namespace Chummer
 			// Vehicle cost.
 			foreach (Vehicle objVehcile in _objCharacter.Vehicles)
 				intDeductions += objVehcile.TotalCost;
-
-            // Martial Arts
-            foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
-            {
-                intDeductions += 7500;
-            }
-
-            // Martial Art Maneuvers
-            foreach (MartialArtManeuver objMartialArtManeuver in _objCharacter.MartialArtManeuvers) 
-            {
-                //First Maneuver is free.
-                int i = -1;
-                i += 1;
-                intDeductions += (i * 5000);
-            }
 
             _objCharacter.Nuyen = intNuyen - intDeductions;
 			lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
@@ -20114,8 +20064,6 @@ namespace Chummer
 
                 // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
                 int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                    intFreePoints *= _objOptions.KarmaContact;
 
                 if (intContactPointsUsed >= intFreePoints)
                 {
@@ -20824,10 +20772,20 @@ namespace Chummer
 				// See if the character has any Karma remaining.
 				if (intBuildPoints > _objOptions.KarmaCarryover)
 				{
-					if (MessageBox.Show(LanguageManager.Instance.GetString("Message_ExtraKarma").Replace("{0}", intBuildPoints.ToString()).Replace("{1}", _objOptions.KarmaCarryover.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-						blnValid = false;
-					else
-						_objCharacter.Karma = _objOptions.KarmaCarryover;
+                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                    {
+                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_NoExtraKarma").Replace("{0}", intBuildPoints.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                            blnValid = false;
+                        else
+                            _objCharacter.Karma = 0;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_ExtraKarma").Replace("{0}", intBuildPoints.ToString()).Replace("{1}", _objOptions.KarmaCarryover.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                            blnValid = false;
+                        else
+                            _objCharacter.Karma = _objOptions.KarmaCarryover;
+                    }
 				}
                 else
                 {
@@ -22521,7 +22479,7 @@ namespace Chummer
 				lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP * _objOptions.MetatypeCostsKarmaMultiplier).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 			else
 				lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
-                lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_BP");
+                lblMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
 
 			string strToolTip = _objCharacter.Metatype;
 			if (_objCharacter.Metavariant != "")
@@ -24115,6 +24073,20 @@ namespace Chummer
             _objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
             _objCharacter.CHA.Karma = Convert.ToInt32(nudKCHA.Value);
             _objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
+
+            // Calculate the BP used by Contacts.
+            _objCharacter.ContactPoints = 0;
+            _objCharacter.ContactPoints = (_objCharacter.CHA.Base + _objCharacter.CHA.Karma) * _objCharacter.ContactMultiplier;
+            int intContactPointsUsed = 0;
+            foreach (ContactControl objContactControl in panContacts.Controls)
+            {
+                if (!objContactControl.Free)
+                {
+                    // The Contact's BP cost = their Connection + Loyalty Rating.
+                    intContactPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
+                }
+            }
+
             UpdateCharacterInfo();
 
             _blnIsDirty = true;

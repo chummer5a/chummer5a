@@ -837,8 +837,8 @@ namespace Chummer
         private bool _blnDontDoubleQualityCost = false;
 		private string _strBookXPath = "";
 		private int _intNuyenPerBP = 2000;
-		private int _intFreeContactsMultiplier = 2;
-		private int _intFreeContactsFlatNumber = 1;
+		private int _intFreeContactsMultiplier = 0;
+		private int _intFreeContactsFlatNumber = 0;
 		private int _intMetatypeCostMultiplier = 1;
 		private int _intLimbCount = 6;
 		private int _intRestrictedCostMultiplier = 1;
@@ -1001,6 +1001,8 @@ namespace Chummer
             // <freekarmacontactsmultiplier />
 			objWriter.WriteElementString("freekarmacontactsmultiplier", _intFreeContactsMultiplier.ToString());
 			// <freecontactsflat />
+            objWriter.WriteElementString("freecontacts", _blnFreeContacts.ToString());
+            // <freecontactsflatnumber />
 			objWriter.WriteElementString("freecontactsflat", _blnFreeContactsFlat.ToString());
 			// <freecontactsflatnumber />
 			objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
@@ -1378,7 +1380,9 @@ namespace Chummer
             { }
             // Free Contacts Multiplier
 			_intFreeContactsMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmacontactsmultiplier").InnerText);
-			// Free Contacts Flat
+            // Free Contacts
+            _blnFreeContacts = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freecontacts").InnerText);
+            // Free Contacts Flat
 			_blnFreeContactsFlat = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freecontactsflat").InnerText);
 			// Free Contacts Flat Number
 			_intFreeContactsFlatNumber = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freecontactsflatnumber").InnerText);
@@ -2012,7 +2016,15 @@ namespace Chummer
 			catch
 			{
 			}
-
+            // Free Contacts Flat
+            try
+            {
+                _blnFreeContacts = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freecontacts").ToString());
+                Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freecontacts");
+            }
+            catch
+            {
+            }
 			// Free Contacts Flat
 			try
 			{
@@ -2554,6 +2566,20 @@ namespace Chummer
 			}
 		}
 
+        /// <summary>
+        /// Whether or not characters get a flat number of BP for free Contacts.
+        /// </summary>
+        public bool FreeContacts
+        {
+            get
+            {
+                return _blnFreeContacts;
+            }
+            set
+            {
+                _blnFreeContacts = value;
+            }
+        }
 		/// <summary>
 		/// Whether or not characters get a flat number of BP for free Contacts.
 		/// </summary>
