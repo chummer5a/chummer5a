@@ -106,7 +106,8 @@ namespace Chummer
             PhysicalLimit = 93,
             MentalLimit = 94,
             SocialLimit = 95,
-            SchoolOfHardKnocks = 96
+            SchoolOfHardKnocks = 96,
+            FriendsInHighPlaces = 97
         }
 
         public enum ImprovementSource
@@ -268,7 +269,9 @@ namespace Chummer
 				case "AdeptPowerPoints":
 					return ImprovementType.AdeptPowerPoints;
 				case "ArmorEncumbrancePenalty":
-					return ImprovementType.ArmorEncumbrancePenalty;
+                    return ImprovementType.ArmorEncumbrancePenalty;
+                case "FriendsInHighPlaces":
+                    return ImprovementType.FriendsInHighPlaces;
                 case "SchoolOfHardKnocks":
                     return ImprovementType.SchoolOfHardKnocks;
 				case "Uncouth":
@@ -2372,6 +2375,15 @@ namespace Chummer
                         _objCharacter.Uncouth = true;
                     }
 
+                    // Check for Friends In High Places modifiers.
+                    if (NodeExists(nodBonus, "friendsinhighplaces"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "friendsinhighplaces");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "friendsinhighplaces = " + nodBonus["friendsinhighplaces"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FriendsInHighPlaces, strUnique);
+                        _objCharacter.FriendsInHighPlaces = true;
+                    }
                     // Check for School of Hard Knocks modifiers.
                     if (NodeExists(nodBonus, "schoolofhardknocks"))
                     {
@@ -4269,7 +4281,29 @@ namespace Chummer
 
 					if (!blnFound)
 						_objCharacter.Uncouth = false;
-				}
+                }
+
+                // Turn off the FriendsInHighPlaces flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.FriendsInHighPlaces = false;
+                }
 
                 // Turn off the SchoolOfHardKnocks flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.SchoolOfHardKnocks)

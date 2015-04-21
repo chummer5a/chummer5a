@@ -4659,7 +4659,9 @@
 			<name>Friends in High Places</name>
 			<karma>8</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <friendsinhighplaces />
+      </bonus>
 			<source>RF</source>
 			<page>147</page>
 		</quality>

@@ -107,24 +107,24 @@
     <Compile Include="clsOptions.cs" />
     <Compile Include="clsUnique.cs" />
     <Compile Include="clsXmlManager.cs" />
-    <Compile Include="ConditionMonitorUserControl.cs">
+    <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ConditionMonitorUserControl.Designer.cs">
+    <Compile Include="Controls\ConditionMonitorUserControl.Designer.cs">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ContactControl.cs">
+    <Compile Include="Controls\ContactControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ContactControl.Designer.cs">
+    <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Compile Include="controllers\clsDashboardController.cs" />
     <Compile Include="controllers\clsMainController.cs" />
-    <Compile Include="DiceRollerControl.cs">
+    <Compile Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DiceRollerControl.Designer.cs">
+    <Compile Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="frmAddToken.cs">
@@ -595,10 +595,10 @@
     <Compile Include="frmViewer.Designer.cs">
       <DependentUpon>frmViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="InitiativeUserControl.cs">
+    <Compile Include="Controls\InitiativeUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="InitiativeUserControl.Designer.cs">
+    <Compile Include="Controls\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Omae\OmaeRecord.cs">
@@ -607,16 +607,16 @@
     <Compile Include="Omae\OmaeRecord.Designer.cs">
       <DependentUpon>OmaeRecord.cs</DependentUpon>
     </Compile>
-    <Compile Include="PetControl.cs">
+    <Compile Include="Controls\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PetControl.Designer.cs">
+    <Compile Include="Controls\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="PowerControl.cs">
+    <Compile Include="Controls\PowerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PowerControl.Designer.cs">
+    <Compile Include="Controls\PowerControl.Designer.cs">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Service References\OmaeService\Reference.cs">
@@ -630,10 +630,10 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="SkillGroupControl.cs">
+    <Compile Include="Controls\SkillGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SkillGroupControl.Designer.cs">
+    <Compile Include="Controls\SkillGroupControl.Designer.cs">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Character Creation\frmCreate.cs">
@@ -662,22 +662,22 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkillControl.cs">
+    <Compile Include="Controls\SkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SkillControl.Designer.cs">
+    <Compile Include="Controls\SkillControl.Designer.cs">
       <DependentUpon>SkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="SmallSkillControl.cs">
+    <Compile Include="Controls\SmallSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SmallSkillControl.Designer.cs">
+    <Compile Include="Controls\SmallSkillControl.Designer.cs">
       <DependentUpon>SmallSkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="SpiritControl.cs">
+    <Compile Include="Controls\SpiritControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SpiritControl.Designer.cs">
+    <Compile Include="Controls\SpiritControl.Designer.cs">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </Compile>
     <Compile Include="SplitButton.cs">
@@ -686,13 +686,13 @@
     <EmbeddedResource Include="Character Creation\frmSumtoTenMetatype.resx">
       <DependentUpon>frmSumtoTenMetatype.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConditionMonitorUserControl.resx">
+    <EmbeddedResource Include="Controls\ConditionMonitorUserControl.resx">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ContactControl.resx">
+    <EmbeddedResource Include="Controls\ContactControl.resx">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DiceRollerControl.resx">
+    <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddToken.resx">
@@ -929,19 +929,19 @@
     <EmbeddedResource Include="frmViewer.resx">
       <DependentUpon>frmViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InitiativeUserControl.resx">
+    <EmbeddedResource Include="Controls\InitiativeUserControl.resx">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Omae\OmaeRecord.resx">
       <DependentUpon>OmaeRecord.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PetControl.resx">
+    <EmbeddedResource Include="Controls\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PowerControl.resx">
+    <EmbeddedResource Include="Controls\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SkillGroupControl.resx">
+    <EmbeddedResource Include="Controls\SkillGroupControl.resx">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
@@ -967,13 +967,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SkillControl.resx">
+    <EmbeddedResource Include="Controls\SkillControl.resx">
       <DependentUpon>SkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SmallSkillControl.resx">
+    <EmbeddedResource Include="Controls\SmallSkillControl.resx">
       <DependentUpon>SmallSkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SpiritControl.resx">
+    <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />

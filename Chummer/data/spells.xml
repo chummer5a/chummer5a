@@ -1267,7 +1267,7 @@
       <range>T</range>
       <damage>P</damage>
       <duration>I</duration>
-      <dv>F-3</dv>
+      <dv>F-5</dv>
       <bonus>
         <selecttext />
       </bonus>
@@ -1283,7 +1283,7 @@
       <range>LOS</range>
       <damage>P</damage>
       <duration>I</duration>
-      <dv>F-2</dv>
+      <dv>F-3</dv>
       <bonus>
         <selecttext />
       </bonus>
@@ -1343,7 +1343,7 @@
       <name>Destroy [Vehicle]</name>
       <descriptor>Direct</descriptor>
       <category>Combat</category>
-      <type>M</type>
+      <type>P</type>
       <range>LOS</range>
       <damage>P</damage>
       <duration>I</duration>
@@ -1385,7 +1385,7 @@
       <name>Insecticide [Insect Spirit]</name>
       <descriptor>Direct, Area</descriptor>
       <category>Combat</category>
-      <type>P</type>
+      <type>M</type>
       <range>LOS(A)</range>
       <damage>P</damage>
       <duration>I</duration>
@@ -1463,7 +1463,7 @@
       <range>LOS(A)</range>
       <damage>P</damage>
       <duration>I</duration>
-      <dv>F-1</dv>
+      <dv>F-2</dv>
       <bonus>
         <selecttext />
       </bonus>
@@ -1547,7 +1547,7 @@
     <spell>
       <id>e0b3608a-cf54-4a1d-a99a-a4cd513c5e8a</id>
       <name>Pollutant Stream</name>
-      <descriptor>Indirect, Elemental</descriptor>
+      <descriptor>Indirect, Area, Elemental</descriptor>
       <category>Combat</category>
       <type>P</type>
       <range>LOS</range>
@@ -1654,7 +1654,7 @@
       <descriptor>Active, Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T</range>
+      <range>T(A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -1800,7 +1800,7 @@
       <descriptor>Passive, Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T</range>
+      <range>T(A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -1813,7 +1813,7 @@
       <descriptor>Passive, Extended Area</descriptor>
       <category>Detection</category>
       <type>P</type>
-      <range>T</range>
+      <range>T(A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2429,7 +2429,7 @@
       <descriptor>Environmental, Area</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>T</range>
+      <range>T(A)</range>
       <damage>0</damage>
       <duration>P</duration>
       <dv>F-1</dv>
@@ -2494,7 +2494,7 @@
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS</range>
+      <range>LOS(A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-3</dv>
@@ -2507,7 +2507,7 @@
       <descriptor>Physical</descriptor>
       <category>Manipulation</category>
       <type>P</type>
-      <range>LOS</range>
+      <range>LOS(A)</range>
       <damage>0</damage>
       <duration>S</duration>
       <dv>F-1</dv>
@@ -2653,7 +2653,7 @@
       <range>LOS(A)</range>
       <damage>0</damage>
       <duration>I</duration>
-      <dv>F+1</dv>
+      <dv>F+3</dv>
       <source>SG</source>
       <page>118</page>
     </spell>
@@ -2679,7 +2679,7 @@
       <range>LOS</range>
       <damage>0</damage>
       <duration>S</duration>
-      <dv>F+4</dv>
+      <dv>F+1</dv>
       <source>SG</source>
       <page>118</page>
     </spell>
@@ -2721,7 +2721,7 @@
       <range>LOS</range>
       <damage>0</damage>
       <duration>S</duration>
-      <dv>F-2</dv>
+      <dv>F-4</dv>
       <bonus>
         <selecttext />
       </bonus>
@@ -2776,7 +2776,7 @@
       <range>LOS</range>
       <damage>0</damage>
       <duration>S</duration>
-      <dv>F+1</dv>
+      <dv>F+3</dv>
       <source>SG</source>
       <page>119</page>
     </spell>

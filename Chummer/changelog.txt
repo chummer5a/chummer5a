@@ -1,3 +1,16 @@
+Build 163
+Administrative Change:
+- Controls (Skills, groups, etc.) moved into a separate folder because I'm tired of looking for them and can't be bothered prefixing. Organisation is love. Organisation is life.
+
+Application Change:
+- Fix for Friends in High Places causing a crash due to invalid bounds.
+- Fixed an issue with free karma knowledge reverting values to 0.
+- Rewrite of Knowledge Skill BP calculation to support free points. Needs some logic validation.
+- Fixed an issue with the Blind (Mage) quality causing an exception.
+
+Data Change:
+- Updated some spells with correct ranges, from the errata.
+
 Build 162
 Application Change:
 - Points for free Contacts include Karma values.

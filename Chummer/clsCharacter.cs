@@ -28,8 +28,10 @@ public delegate void UneducatedChangedHandler(Object sender);
 public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
 // SchoolOfHardKnocksChanged Event Handler
 public delegate void UncouthChangedHandler(Object sender);
-// InformChanged Event Handler
+// InfirmChanged Event Handler
 public delegate void InfirmChangedHandler(Object sender);
+// FriendsInHighPlacesChanged Event Handler
+public delegate void FriendsInHighPlacesChangedHandler(Object sender);
 // CharacterNameChanged Event Handler
 public delegate void CharacterNameChangedHandler(Object sender);
 // BlackMarketEnabledChanged Event Handler
@@ -121,7 +123,7 @@ namespace Chummer
 		private int _intMetatypeBP = 0;
 		private int _intMutantCritterBaseSkills = 0;
 
-		// Special Tab Flags.
+		// Special Flags.
 		private bool _blnAdeptEnabled = false;
 		private bool _blnMagicianEnabled = false;
 		private bool _blnTechnomancerEnabled = false;
@@ -134,6 +136,7 @@ namespace Chummer
 		private bool _blnIsCritter = false;
 		private bool _blnPossessed = false;
 		private bool _blnBlackMarket = false;
+        private bool _blnFriendsInHighPlaces = false;
 		
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -245,6 +248,7 @@ namespace Chummer
 		public event UncouthChangedHandler UncouthChanged;
         public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
 		public event InfirmChangedHandler InfirmChanged;
+        public event FriendsInHighPlacesChangedHandler FriendsInHighPlacesChanged;
 		public event CharacterNameChangedHandler CharacterNameChanged;
 		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
 
@@ -465,6 +469,8 @@ namespace Chummer
 			objWriter.WriteElementString("uncouth", _blnUncouth.ToString());
             // <uncouth />
             objWriter.WriteElementString("schoolofhardknocks", _blnSchoolOfHardKnocks.ToString());
+            // <friendsinhighplaces />
+            objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
             // <infirm />
 			objWriter.WriteElementString("infirm", _blnInfirm.ToString());
 			// <blackmarket />
@@ -1361,6 +1367,13 @@ namespace Chummer
             try
             {
                 _blnSchoolOfHardKnocks = Convert.ToBoolean(objXmlCharacter["schoolofhardknocks"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnFriendsInHighPlaces = Convert.ToBoolean(objXmlCharacter["friendsinhighplaces"].InnerText);
             }
             catch
             {
@@ -6618,7 +6631,29 @@ namespace Chummer
 				}
 			}
 		}
-
+        /// <summary>
+        /// Whether or not Friends in High Places is enabled.
+        /// </summary>
+        public bool FriendsInHighPlaces
+        {
+            get
+            {
+                return _blnFriendsInHighPlaces;
+            }
+            set
+            {
+                bool blnOldValue = _blnFriendsInHighPlaces;
+                _blnFriendsInHighPlaces = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        FriendsInHighPlacesChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
 		/// <summary>
 		/// Whether or not Uncouth is enabled.
 		/// </summary>

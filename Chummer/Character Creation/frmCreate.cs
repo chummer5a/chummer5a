@@ -27,6 +27,7 @@ namespace Chummer
 		private int _intDragLevel = 0;
 		private MouseButtons _objDragButton = new MouseButtons();
 		private bool _blnDraggingGear = false;
+        public int contactConnection = 0;
 		
 		// Create the XmlManager that will handle finding all of the XML files.
 		private ImprovementManager _objImprovementManager;
@@ -52,6 +53,7 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+            _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
             _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
 			_objCharacter.InfirmChanged += objCharacter_InfirmChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -1505,6 +1507,7 @@ namespace Chummer
 				_objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
 				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
+                _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
                 _objCharacter.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
 				_objCharacter.InfirmChanged -= objCharacter_InfirmChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
@@ -2106,7 +2109,21 @@ namespace Chummer
             else
             { }
         }
+        private void objCharacter_FriendsInHighPlacesChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
 
+            // Change to the status of Infirm being enabled.
+            if (_objCharacter.FriendsInHighPlaces)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
 		private void objCharacter_InfirmChanged(object sender)
 		{
 			if (_blnReapplyImprovements)
@@ -2415,6 +2432,7 @@ namespace Chummer
 			bool blnRESEnabled = _objCharacter.RESEnabled;
 			bool blnUneducated = _objCharacter.Uneducated;
 			bool blnUncouth = _objCharacter.Uncouth;
+            bool blnFriendsInHighPlaces = _objCharacter.FriendsInHighPlaces;
             bool blnSchoolOfHardKnocks = _objCharacter.SchoolOfHardKnocks;
 			bool blnInfirm = _objCharacter.Infirm;
 
@@ -2895,6 +2913,8 @@ namespace Chummer
 				objCharacter_UneducatedChanged(this);
 			if (blnUncouth != _objCharacter.Uncouth)
 				objCharacter_UncouthChanged(this);
+            if (blnFriendsInHighPlaces != _objCharacter.FriendsInHighPlaces)
+                objCharacter_FriendsInHighPlacesChanged(this);
             if (blnSchoolOfHardKnocks != _objCharacter.SchoolOfHardKnocks)
                 objCharacter_SchoolOfHardKnocksChanged(this);
 			if (blnInfirm != _objCharacter.Infirm)
@@ -15873,39 +15893,6 @@ namespace Chummer
             // Calculate the BP used by Knowledge Skills.
             int intPointsInKnowledgeSkills = 0;
             intPointsUsed = 0;
-            int intSpecCount = 0;
-            foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-            {
-                // Add the current Skill's SkillRating to the counter.
-                intPointsInKnowledgeSkills += objSkillControl.SkillBase;
-
-                // The cost is double if the character is Uneducated and is an Academic or Professional Skill.
-                /*if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma) && _objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-                {
-                    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
-                }*/
-
-                // The Linguistics Adept Power gives 1 free point in Languages.
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillBase > 0)
-                    intPointsInKnowledgeSkills--;
-
-                if (objSkillControl.SkillSpec.Trim() != string.Empty)
-                {
-                    if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    {
-                        intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
-                    }
-                    else
-                    {
-                        intPointsInKnowledgeSkills += _objOptions.KarmaSpecialization;
-                    }
-                    intSpecCount++;
-                }
-            }
-
-            // Specializations do not count towards free Knowledge Skills in Karma Build mode.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge)
-                intPointsInKnowledgeSkills -= (intSpecCount * _objOptions.KarmaSpecialization);
 
             int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
             foreach (Quality objQuality in _objCharacter.Qualities)
@@ -15918,15 +15905,43 @@ namespace Chummer
                     intKnowledgeSkillPoints += 15;
             }
 
+            foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
+            {
+                if (_objOptions.FreeKarmaKnowledge)
+                {
+                    // Add the current Skill's SkillRating to the counter.
+                    intPointsInKnowledgeSkills += objSkillControl.SkillBase;
+                    // Each Specialization costs KarmaSpecialization.
+                    if (objSkillControl.SkillSpec.Trim() != string.Empty)
+                    {
+                        if (objSkillControl.BuyWithKarma) 
+                        {
+                            intPointsUsed += _objOptions.KarmaSpecialization;
+                        }
+                        else 
+                        {
+                            //Assuming that Point Buy treats specialisations like Priority
+                            intPointsInKnowledgeSkills += 1;
+                        }
+
+                    }
+                }
+                else
+                {
+                    intPointsUsed += _objOptions.KarmaSpecialization;
+                }
+            }
+
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
 
+            intPointsRemain -= intPointsUsed;
             intPointsUsed = 0;
 
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
                     for (int i = 1; i <= objSkillControl.SkillKarma; i++)
                     {
-                        
+                        //School of Hard Knocks is a '2 for 1' purchase of a skill. 
                         if (_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street")
                         {
                             intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
@@ -15934,13 +15949,17 @@ namespace Chummer
                         }
                         else
                         {
-                            intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
+                            intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase)) * _objOptions.KarmaImproveKnowledgeSkill);
                         }
                     }
-                    
                 }
-                intPointsRemain -= intPointsUsed;
+                if (intPointsInKnowledgeSkills > intKnowledgeSkillPoints)
+                {
+                    intPointsUsed += (intPointsInKnowledgeSkills - intKnowledgeSkillPoints);
+                }
 
+                intPointsRemain -= intPointsUsed;
+            
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());
             lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());
