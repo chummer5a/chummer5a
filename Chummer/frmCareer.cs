@@ -4099,6 +4099,19 @@ namespace Chummer
 			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") || (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
 				intKarmaCost *= 2;
 
+            if (_objCharacter.JackOfAllTrades) 
+            {
+                if (objSkillControl.SkillRating <= 5)
+                {
+                    intKarmaCost -= 1;
+                    
+                }
+                else
+                {
+                    intKarmaCost += 2;
+                }
+            }
+
 			if (intKarmaCost > _objCharacter.Karma)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4240,6 +4253,12 @@ namespace Chummer
 			// The Karma Cost for improving a Language Knowledge Skill to Rating 1 is free for characters with the Linguistics Adept Power.
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillRating == 0)
 				intKarmaCost = 0;
+
+            //Academic Knowledge Skills over rating 3 get a 1 point discount with the College Education quality enabled.
+            if (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic" && (objSkillControl.SkillRating + 1) >= 3)
+            {
+                intKarmaCost -= 1;
+            }
 
 			if (intKarmaCost > _objCharacter.Karma)
 			{

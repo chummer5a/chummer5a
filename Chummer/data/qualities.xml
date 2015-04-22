@@ -4511,7 +4511,9 @@
 			<name>College Education.RF</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <collegeeducation />
+      </bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4689,7 +4691,9 @@
 			<name>Jack of All Trades Master of None</name>
 			<karma>2</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <jackofalltrades />
+      </bonus>
 			<source>RF</source>
 			<page>147</page>
 		</quality>

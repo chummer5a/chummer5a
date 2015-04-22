@@ -15947,6 +15947,12 @@ namespace Chummer
                             intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
                             i++;
                         }
+
+                        else if (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")
+                        {
+                            MessageBox.Show(Convert.ToString(Math.Ceiling(Convert.ToDouble((objSkillControl.SkillBase + i) * _objOptions.KarmaImproveKnowledgeSkill) / 2)));
+                            intPointsUsed += Convert.ToInt32(Math.Ceiling(Convert.ToDouble((objSkillControl.SkillBase + i) * _objOptions.KarmaImproveKnowledgeSkill)/2));
+                        }
                         else
                         {
                             intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase)) * _objOptions.KarmaImproveKnowledgeSkill);

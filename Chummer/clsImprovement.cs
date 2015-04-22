@@ -107,7 +107,10 @@ namespace Chummer
             MentalLimit = 94,
             SocialLimit = 95,
             SchoolOfHardKnocks = 96,
-            FriendsInHighPlaces = 97
+            FriendsInHighPlaces = 97,
+            JackOfAllTrades = 98,
+            CollegeEducation = 99
+
         }
 
         public enum ImprovementSource
@@ -272,6 +275,10 @@ namespace Chummer
                     return ImprovementType.ArmorEncumbrancePenalty;
                 case "FriendsInHighPlaces":
                     return ImprovementType.FriendsInHighPlaces;
+                case "CollegeEducation":
+                    return ImprovementType.CollegeEducation;
+                case "JackOfAllTrades":
+                    return ImprovementType.JackOfAllTrades;
                 case "SchoolOfHardKnocks":
                     return ImprovementType.SchoolOfHardKnocks;
 				case "Uncouth":
@@ -2363,6 +2370,26 @@ namespace Chummer
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uneducated, strUnique);
                         _objCharacter.Uneducated = true;
+                    }
+
+                    // Check for College Education modifiers.
+                    if (NodeExists(nodBonus, "collegeeducation"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "collegeeducation");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "collegeeducation = " + nodBonus["collegeeducation"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CollegeEducation, strUnique);
+                        _objCharacter.CollegeEducation = true;
+                    }
+
+                    // Check for Jack Of All Trades modifiers.
+                    if (NodeExists(nodBonus, "jackofalltrades"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "jackofalltrades");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "jackofalltrades = " + nodBonus["jackofalltrades"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.JackOfAllTrades, strUnique);
+                        _objCharacter.JackOfAllTrades = true;
                     }
 
                     // Check for Uncouth modifiers.

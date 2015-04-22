@@ -24,9 +24,13 @@ public delegate void InitiationTabEnabledChangedHandler(Object sender);
 public delegate void CritterTabEnabledChangedHandler(Object sender);
 // UneducatedChanged Event Handler
 public delegate void UneducatedChangedHandler(Object sender);
-// UncouthChanged Event Handler
-public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
+// JackOfAllTradesChanged Event Handler
+public delegate void JackOfAllTradesChangedHandler(Object sender);
+// CollegeEducationChanged Event Handler
+public delegate void CollegeEducationChangedHandler(Object sender);
 // SchoolOfHardKnocksChanged Event Handler
+public delegate void SchoolOfHardKnocksChangedHandler(Object sender);
+// UncouthChanged Event Handler
 public delegate void UncouthChangedHandler(Object sender);
 // InfirmChanged Event Handler
 public delegate void InfirmChangedHandler(Object sender);
@@ -136,7 +140,9 @@ namespace Chummer
 		private bool _blnIsCritter = false;
 		private bool _blnPossessed = false;
 		private bool _blnBlackMarket = false;
+        private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
+        private bool _blnJackOfAllTrades = false;
 		
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -469,8 +475,12 @@ namespace Chummer
 			objWriter.WriteElementString("uncouth", _blnUncouth.ToString());
             // <uncouth />
             objWriter.WriteElementString("schoolofhardknocks", _blnSchoolOfHardKnocks.ToString());
+            // <collegeeducation />
+            objWriter.WriteElementString("collegeeducation", _blnCollegeEducation.ToString());
             // <friendsinhighplaces />
             objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
+            // <jackofalltrades />
+            objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
             // <infirm />
 			objWriter.WriteElementString("infirm", _blnInfirm.ToString());
 			// <blackmarket />
@@ -1374,6 +1384,20 @@ namespace Chummer
             try
             {
                 _blnFriendsInHighPlaces = Convert.ToBoolean(objXmlCharacter["friendsinhighplaces"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnCollegeEducation = Convert.ToBoolean(objXmlCharacter["collegeeducation"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnJackOfAllTrades = Convert.ToBoolean(objXmlCharacter["jackofalltrades"].InnerText);
             }
             catch
             {
@@ -6632,6 +6656,54 @@ namespace Chummer
 			}
 		}
         /// <summary>
+        /// Whether or not Jack of All Trades is enabled.
+        /// </summary>
+        public bool JackOfAllTrades
+        {
+            get
+            {
+                return _blnJackOfAllTrades;
+            }
+            set
+            {
+                bool blnOldValue = _blnJackOfAllTrades;
+                _blnJackOfAllTrades = value;
+                try
+                {
+                    if (blnOldValue != value) { }
+                        //JackOfAllTradesChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether or not Friends in High Places is enabled.
+        /// </summary>
+        public bool CollegeEducation
+        {
+            get
+            {
+                return _blnCollegeEducation;
+            }
+            set
+            {
+                bool blnOldValue = _blnCollegeEducation;
+                _blnCollegeEducation = value;
+                try
+                {
+                    if (blnOldValue != value) { }
+                        //CollegeEducationChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether or not Friends in High Places is enabled.
         /// </summary>
         public bool FriendsInHighPlaces
@@ -6734,6 +6806,8 @@ namespace Chummer
 			{
 				case "Karma":
 					return CharacterBuildMethod.Karma;
+                case "SumtoTen":
+                    return CharacterBuildMethod.SumtoTen;
 				default:
 					return CharacterBuildMethod.Priority;
 			}

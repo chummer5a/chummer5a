@@ -7,6 +7,8 @@ Application Change:
 - Fixed an issue with free karma knowledge reverting values to 0.
 - Rewrite of Knowledge Skill BP calculation to support free points. Needs some logic validation.
 - Fixed an issue with the Blind (Mage) quality causing an exception.
+- Added functionality for the Jack of All Trades, Master of None quality.
+- Added functionality for the College Education quality from Run Faster.
 
 Data Change:
 - Updated some spells with correct ranges, from the errata.

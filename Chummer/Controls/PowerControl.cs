@@ -36,8 +36,6 @@ namespace Chummer
             nudRating.Maximum = _objPower.MaxLevels;
             nudRating.Minimum = _objPower.FreeLevels;
 
-            MessageBox.Show(_objPower.FreeLevels.ToString());
-
             if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
             {
                 nudRating.Value = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value); 
