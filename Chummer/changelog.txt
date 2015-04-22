@@ -3,6 +3,8 @@ Administrative Change:
 - Controls (Skills, groups, etc.) moved into a separate folder because I'm tired of looking for them and can't be bothered prefixing. Organisation is love. Organisation is life.
 
 Application Change:
+- AUTOMATIC UPDATES ENABLED. Now I just have to not forget to update the version metadata every time I fiddle with something...
+	- To use automatic updates, open the Tools window and click on Check For Updates. Any new file versions should be available for download. Select the files, hit the download button and cross your fingers.
 - Fix for Friends in High Places causing a crash due to invalid bounds.
 - Fixed an issue with free karma knowledge reverting values to 0.
 - Rewrite of Knowledge Skill BP calculation to support free points. Needs some logic validation.

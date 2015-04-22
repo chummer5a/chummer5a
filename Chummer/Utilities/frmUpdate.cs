@@ -227,7 +227,7 @@ namespace Chummer
             objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "Get manifestdata.xml");
             // Download the manifestdata.xml file which describes all of the files available for download and extract its nodes.
 			// Timeout set to 30 seconds.
-            HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("https://docs.google.com/uc?export=download&id=0B1j5wMS6KHqMQzRxYmlJWEVzQVE");
+            HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("https://www.dropbox.com/s/52l5t9ip47nx8ke/manifestdata.xml?dl=1");
 			//HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create("http://localhost/manifestdata.xml");
 			objRequest.Timeout = 30000;
 			HttpWebResponse objResponse;
@@ -261,7 +261,7 @@ namespace Chummer
 
             objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "Get manifestlang.xml");
             // Download the manifestlang.xml file which describes the language content available for download.
-            objRequest = (HttpWebRequest)WebRequest.Create("https://docs.google.com/uc?export=download&id=0B1j5wMS6KHqMUFFTTWo2dC01S0k");
+            objRequest = (HttpWebRequest)WebRequest.Create("https://www.dropbox.com/s/noe1v5l3dlgcr72/manifestlang.xml?dl=1");
 			// objRequest = (HttpWebRequest)WebRequest.Create("http://localhost/manifestlang.xml");
 			try
 			{
