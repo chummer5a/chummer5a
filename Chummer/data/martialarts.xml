@@ -51,7 +51,7 @@
           <name>Throw Person</name>
         </technique>
         <technique>
-          <name>Yielding Force (Counter Strike)</name>
+          <name>Yielding Force (Counterstrike)</name>
         </technique>
         <technique>
           <name>Yielding Force (Throw)</name>
@@ -621,13 +621,13 @@
           <name>Broken Fang</name>
         </technique>
         <technique>
-          <name>Called Shot (Break Weapon)&gt;</name>
+          <name>Called Shot (Break Weapon)</name>
         </technique>
         <technique>
           <name>Close Quarter Defense Against Firearms</name>
         </technique>
         <technique>
-          <name>Hammer Fist</name>
+          <name>Hammerfist</name>
         </technique>
         <technique>
           <name>Imposing Stone</name>
@@ -717,10 +717,10 @@
           <name>Close Quarter Firearms (Archery)</name>
         </technique>
         <technique>
-          <name>Hammer Fist</name>
+          <name>Hammerfist</name>
         </technique>
         <technique>
-          <name>Knucklebreaker (Blast Out of Hand)</name>
+          <name>Knucklebreaker (Blast Out of Hands)</name>
         </technique>
         <technique>
           <name>Soaring Shackles</name>
@@ -787,7 +787,7 @@
           <name>Herding</name>
         </technique>
         <technique>
-          <name>Multiple Opponent Defense (Defender has Defended</name>
+          <name>Multiple Opponent Defense (Defender has Defended)</name>
         </technique>
         <technique>
           <name>Oaken Stance (Defense Against Being Charged)</name>
@@ -822,7 +822,7 @@
           <name>Kick Attack</name>
         </technique>
         <technique>
-          <name>Thunderstrike</name>
+          <name>Thunder Strike</name>
         </technique>
         <technique>
           <name>Ti Khao</name>
@@ -880,7 +880,7 @@
           <name>Counterstrike</name>
         </technique>
         <technique>
-          <name>Oaken Stance (Parry)</name>
+          <name>Opposing Force (Parry)</name>
         </technique>
         <technique>
           <name>Randori (Vitals)</name>
@@ -918,7 +918,7 @@
           <name>Monkey Climb</name>
         </technique>
         <technique>
-          <name>Rolling Cloud</name>
+          <name>Rolling Clouds</name>
         </technique>
         <technique>
           <name>Shadow Block</name>
@@ -985,7 +985,7 @@
           <name>Stagger</name>
         </technique>
         <technique>
-          <name>Thunderstrike</name>
+          <name>Thunder Strike</name>
         </technique>
         <technique>
           <name>Neijia</name>
@@ -1101,7 +1101,7 @@
           <name>Called Shot (Pin)</name>
         </technique>
         <technique>
-          <name>Close Quarters Defense Against Firearms</name>
+          <name>Close Quarter Defense Against Firearms</name>
         </technique>
         <technique>
           <name>Hammerfist</name>
@@ -2037,6 +2037,12 @@
       <name>Strike the Darkness</name>
       <source>RG</source>
       <page>141</page>
+    </technique>
+    <technique>
+      <id>1ff5110c-6b10-453c-a05a-faf9410581e0</id>
+      <name>Sacrificial Throw</name>
+      <source>RG</source>
+      <page>131</page>
     </technique>
   </techniques>
 </chummer>
