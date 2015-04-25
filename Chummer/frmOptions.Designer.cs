@@ -223,6 +223,7 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.chkFreeContacts = new System.Windows.Forms.CheckBox();
             this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
             this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
             this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
@@ -235,7 +236,12 @@
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.chkFreeContacts = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nudContactMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkContactMultiplier = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudKnowledgeMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkKnowledgeMultiplier = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -289,6 +295,8 @@
             this.tabOptionalRules.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
             this.tabHouseRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -2454,6 +2462,12 @@
             // tabHouseRules
             // 
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.label3);
+            this.tabHouseRules.Controls.Add(this.nudKnowledgeMultiplier);
+            this.tabHouseRules.Controls.Add(this.chkKnowledgeMultiplier);
+            this.tabHouseRules.Controls.Add(this.label2);
+            this.tabHouseRules.Controls.Add(this.nudContactMultiplier);
+            this.tabHouseRules.Controls.Add(this.chkContactMultiplier);
             this.tabHouseRules.Controls.Add(this.chkFreeContacts);
             this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
             this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
@@ -2469,10 +2483,21 @@
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
             // 
+            // chkFreeContacts
+            // 
+            this.chkFreeContacts.AutoSize = true;
+            this.chkFreeContacts.Location = new System.Drawing.Point(366, 26);
+            this.chkFreeContacts.Name = "chkFreeContacts";
+            this.chkFreeContacts.Size = new System.Drawing.Size(207, 17);
+            this.chkFreeContacts.TabIndex = 8;
+            this.chkFreeContacts.Tag = "Checkbox_Options_FreeContacts";
+            this.chkFreeContacts.Text = "Karma Build: Free Contacts like Priority";
+            this.chkFreeContacts.UseVisualStyleBackColor = true;
+            // 
             // chkFreeKarmaKnowledge
             // 
             this.chkFreeKarmaKnowledge.AutoSize = true;
-            this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 49);
+            this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 72);
             this.chkFreeKarmaKnowledge.Name = "chkFreeKarmaKnowledge";
             this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(245, 17);
             this.chkFreeKarmaKnowledge.TabIndex = 4;
@@ -2483,7 +2508,7 @@
             // chkAllowInitiation
             // 
             this.chkAllowInitiation.AutoSize = true;
-            this.chkAllowInitiation.Location = new System.Drawing.Point(366, 26);
+            this.chkAllowInitiation.Location = new System.Drawing.Point(8, 118);
             this.chkAllowInitiation.Name = "chkAllowInitiation";
             this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
             this.chkAllowInitiation.TabIndex = 7;
@@ -2495,7 +2520,7 @@
             // chkUsePointsOnBrokenGroups
             // 
             this.chkUsePointsOnBrokenGroups.AutoSize = true;
-            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(366, 3);
+            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(8, 95);
             this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
             this.chkUsePointsOnBrokenGroups.TabIndex = 6;
@@ -2599,16 +2624,89 @@
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
             // 
-            // chkFreeContacts
+            // label2
             // 
-            this.chkFreeContacts.AutoSize = true;
-            this.chkFreeContacts.Location = new System.Drawing.Point(366, 72);
-            this.chkFreeContacts.Name = "chkFreeContacts";
-            this.chkFreeContacts.Size = new System.Drawing.Size(207, 17);
-            this.chkFreeContacts.TabIndex = 8;
-            this.chkFreeContacts.Tag = "Checkbox_Options_FreeContacts";
-            this.chkFreeContacts.Text = "Karma Build: Free Contacts like Priority";
-            this.chkFreeContacts.UseVisualStyleBackColor = true;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(594, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(12, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "x";
+            // 
+            // nudContactMultiplier
+            // 
+            this.nudContactMultiplier.Location = new System.Drawing.Point(612, 0);
+            this.nudContactMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudContactMultiplier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudContactMultiplier.Name = "nudContactMultiplier";
+            this.nudContactMultiplier.Size = new System.Drawing.Size(36, 20);
+            this.nudContactMultiplier.TabIndex = 11;
+            this.nudContactMultiplier.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // chkContactMultiplier
+            // 
+            this.chkContactMultiplier.AutoSize = true;
+            this.chkContactMultiplier.Location = new System.Drawing.Point(366, 3);
+            this.chkContactMultiplier.Name = "chkContactMultiplier";
+            this.chkContactMultiplier.Size = new System.Drawing.Size(179, 17);
+            this.chkContactMultiplier.TabIndex = 9;
+            this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
+            this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
+            this.chkContactMultiplier.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(594, 50);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "x";
+            // 
+            // nudKnowledgeMultiplier
+            // 
+            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 46);
+            this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudKnowledgeMultiplier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudKnowledgeMultiplier.Name = "nudKnowledgeMultiplier";
+            this.nudKnowledgeMultiplier.Size = new System.Drawing.Size(36, 20);
+            this.nudKnowledgeMultiplier.TabIndex = 14;
+            this.nudKnowledgeMultiplier.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // chkKnowledgeMultiplier
+            // 
+            this.chkKnowledgeMultiplier.AutoSize = true;
+            this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(366, 49);
+            this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
+            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(231, 17);
+            this.chkKnowledgeMultiplier.TabIndex = 12;
+            this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
+            this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
+            this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -2691,6 +2789,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
             this.tabHouseRules.ResumeLayout(false);
             this.tabHouseRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2905,5 +3005,11 @@
         private System.Windows.Forms.TextBox txtURLAppPath;
         private System.Windows.Forms.Label lblURLAppPath;
         private System.Windows.Forms.CheckBox chkFreeContacts;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown nudKnowledgeMultiplier;
+        private System.Windows.Forms.CheckBox chkKnowledgeMultiplier;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown nudContactMultiplier;
+        private System.Windows.Forms.CheckBox chkContactMultiplier;
 	}
 }

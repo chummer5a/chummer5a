@@ -393,7 +393,11 @@ namespace Chummer
 			_objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
 			_objOptions.PrintNotes = chkPrintNotes.Checked;
             _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
-            _objOptions.FreeContacts = chkFreeContacts.Checked;
+            _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
+            _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
+            _objOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
+            _objOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+
 			switch (cboLimbCount.SelectedValue.ToString())
 			{
 				case "torso":
@@ -999,6 +1003,7 @@ namespace Chummer
             }
             chkKnucks.Checked = blnKnucksUseUnarmed;
 
+
             bool blnAllowInitiation = false;
             try
             {
@@ -1009,6 +1014,18 @@ namespace Chummer
             }
             chkAllowInitiation.Checked = blnAllowInitiation;
 
+            //Free Contacts in Point Buy
+            bool blnFreeKarmaContacts = false;
+            try
+            {
+                blnFreeKarmaContacts = _objOptions.FreeKarmaKnowledge;
+            }
+            catch
+            {
+            }
+            chkFreeContacts.Checked = blnFreeKarmaContacts;
+
+            //Free Knowledge Skills in Point Buy
             bool blnFreeKarmaKnowledge = false;
             try
             {
@@ -1019,15 +1036,27 @@ namespace Chummer
             }
             chkFreeKarmaKnowledge.Checked = blnFreeKarmaKnowledge;
 
-            bool blnFreeContacts = false;
+            //Contact Multiplier Enabled
+            bool blnFreeContactMultiplierEnabled = false;
             try
             {
-                blnFreeContacts = _objOptions.FreeContacts;
+                blnFreeContactMultiplierEnabled = _objOptions.FreeContactsMultiplierEnabled;
             }
             catch
             {
             }
-            chkFreeContacts.Checked = blnFreeContacts;
+            chkContactMultiplier.Checked = blnFreeContactMultiplierEnabled;
+
+            //Knowledge Multiplier Enabled
+            bool blnFreeKnowledgeMultiplierEnabled = false;
+            try
+            {
+                blnFreeKnowledgeMultiplierEnabled = _objOptions.FreeKnowledgeMultiplierEnabled;
+            }
+            catch
+            {
+            }
+            chkKnowledgeMultiplier.Checked = blnFreeKnowledgeMultiplierEnabled;
 
             bool blnUsePointsOnBrokenGroups = false;
             try
@@ -1077,33 +1106,36 @@ namespace Chummer
 			catch
 			{
 			}
+            nudContactMultiplier.Value = _objOptions.FreeContactsMultiplier;
 
-			bool blnFreeContactsFlat = false;
+            int intFreeKarmaKnowledgeMultiplier = 3;
+            try
+            {
+                intFreeKarmaKnowledgeMultiplier = _objOptions.FreeKnowledgeMultiplier;
+            }
+            catch
+            {
+            }
+            nudKnowledgeMultiplier.Value = intFreeKarmaKnowledgeMultiplier;
+
+            int intFreeContactsMultiplier = 3;
+            try
+            {
+                intFreeContactsMultiplier = _objOptions.FreeContactsMultiplier;
+            }
+            catch
+            {
+            }
+            nudContactMultiplier.Value = intFreeContactsMultiplier;
+
+			int intNuyenPerBP = 2000;
 			try
 			{
-				blnFreeContactsFlat = _objOptions.FreeContactsFlat;
+				intNuyenPerBP = _objOptions.NuyenPerBP;
 			}
 			catch
 			{
 			}
-
-			int intFreeContactsFlatNumber = 0;
-			try
-			{
-				intFreeContactsFlatNumber = _objOptions.FreeContactsFlatNumber;
-			}
-			catch
-			{
-			}
-
-			//int intNuyenPerBP = 2000;
-			//try
-			//{
-				int intNuyenPerBP = _objOptions.NuyenPerBP;
-			//}
-			//catch
-			//{
-			//}
 			nudNuyenPerBP.Value = intNuyenPerBP;
 
 			int intEssenceDecimals = 2;

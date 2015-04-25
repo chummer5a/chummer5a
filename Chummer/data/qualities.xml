@@ -4880,7 +4880,7 @@
 		</quality>
 		<quality>
 			<name>Solid Rep</name>
-			<karma>3</karma>
+			<karma>2</karma>
 			<category>Positive</category>
 			<bonus>
 				<selecttext />
@@ -4890,7 +4890,7 @@
 		</quality>
 		<quality>
 			<name>Legendary Rep</name>
-			<karma>3</karma>
+			<karma>4</karma>
 			<category>Positive</category>
 			<bonus>
 				<selecttext />

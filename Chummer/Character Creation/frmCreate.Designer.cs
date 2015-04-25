@@ -282,6 +282,8 @@
             this.tabCommon = new System.Windows.Forms.TabPage();
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
+            this.lblContactPoints = new System.Windows.Forms.Label();
+            this.lblContactPoints_Label = new System.Windows.Forms.Label();
             this.lblConnection = new System.Windows.Forms.Label();
             this.lblLoyalty = new System.Windows.Forms.Label();
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
@@ -886,8 +888,6 @@
             this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblContactPoints = new System.Windows.Forms.Label();
-            this.lblContactPoints_Label = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -3355,6 +3355,25 @@
             this.tabContacts.Size = new System.Drawing.Size(536, 237);
             this.tabContacts.TabIndex = 0;
             this.tabContacts.Text = "Contacts";
+            // 
+            // lblContactPoints
+            // 
+            this.lblContactPoints.AutoSize = true;
+            this.lblContactPoints.Location = new System.Drawing.Point(288, 11);
+            this.lblContactPoints.Name = "lblContactPoints";
+            this.lblContactPoints.Size = new System.Drawing.Size(34, 13);
+            this.lblContactPoints.TabIndex = 48;
+            this.lblContactPoints.Text = "0 of 0";
+            // 
+            // lblContactPoints_Label
+            // 
+            this.lblContactPoints_Label.AutoSize = true;
+            this.lblContactPoints_Label.Location = new System.Drawing.Point(88, 11);
+            this.lblContactPoints_Label.Name = "lblContactPoints_Label";
+            this.lblContactPoints_Label.Size = new System.Drawing.Size(156, 13);
+            this.lblContactPoints_Label.TabIndex = 47;
+            this.lblContactPoints_Label.Tag = "Label_FreeContactPoints";
+            this.lblContactPoints_Label.Text = "Free Contact Points Remaining:";
             // 
             // lblConnection
             // 
@@ -10267,25 +10286,6 @@
             this.tsAddTechniqueNotes.Tag = "Menu_Notes";
             this.tsAddTechniqueNotes.Text = "&Notes";
             this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
-            // 
-            // lblContactPoints
-            // 
-            this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(288, 11);
-            this.lblContactPoints.Name = "lblContactPoints";
-            this.lblContactPoints.Size = new System.Drawing.Size(34, 13);
-            this.lblContactPoints.TabIndex = 48;
-            this.lblContactPoints.Text = "0 of 0";
-            // 
-            // lblContactPoints_Label
-            // 
-            this.lblContactPoints_Label.AutoSize = true;
-            this.lblContactPoints_Label.Location = new System.Drawing.Point(88, 11);
-            this.lblContactPoints_Label.Name = "lblContactPoints_Label";
-            this.lblContactPoints_Label.Size = new System.Drawing.Size(156, 13);
-            this.lblContactPoints_Label.TabIndex = 47;
-            this.lblContactPoints_Label.Tag = "Label_FreeContactPoints";
-            this.lblContactPoints_Label.Text = "Free Contact Points Remaining:";
             // 
             // frmCreate
             // 

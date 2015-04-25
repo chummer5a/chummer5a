@@ -96,17 +96,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsCommon.cs" />
-    <Compile Include="clsEquipment.cs" />
-    <Compile Include="clsCharacter.cs" />
-    <Compile Include="clsImprovement.cs" />
-    <Compile Include="clsExpenses.cs" />
-    <Compile Include="clsLanguageManager.cs" />
-    <Compile Include="clsListItems.cs" />
-    <Compile Include="clsOmaeHelper.cs" />
-    <Compile Include="clsOptions.cs" />
-    <Compile Include="clsUnique.cs" />
-    <Compile Include="clsXmlManager.cs" />
+    <Compile Include="Classes\clsCommon.cs" />
+    <Compile Include="Classes\clsEquipment.cs" />
+    <Compile Include="Classes\clsCharacter.cs" />
+    <Compile Include="Classes\clsImprovement.cs" />
+    <Compile Include="Classes\clsExpenses.cs" />
+    <Compile Include="Classes\clsLanguageManager.cs" />
+    <Compile Include="Classes\clsListItems.cs" />
+    <Compile Include="Classes\clsOmaeHelper.cs" />
+    <Compile Include="Classes\clsOptions.cs" />
+    <Compile Include="Classes\clsUnique.cs" />
+    <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -983,6 +983,7 @@
     <None Include="ClassDiagram3.cd" />
     <None Include="ClassDiagram4.cd" />
     <None Include="ClassDiagram5.cd" />
+    <None Include="ClassDiagram6.cd" />
     <None Include="data\armor.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -61,12 +61,17 @@ namespace Chummer
                 nudSkill.Visible = false;
                 chkKarma.Checked = true;
                 chkKarma.Enabled = false;
-                if (_objSkill.CharacterObject.Options.FreeKarmaKnowledge == false && nudSkill.Value > 0) 
+                if ((_objSkill.KnowledgeSkill && _objSkill.CharacterObject.Options.FreeKarmaKnowledge == false && nudSkill.Value > 0) || (!_objSkill.KnowledgeSkill && nudSkill.Value > 0))
                 {
                     nudSkill.Value = 0;
                 }
+
                 if (_objSkill.KnowledgeSkill)
                 {
+                    if (!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) 
+                    {
+                        nudKarma.Minimum = 1;
+                    }
                     chkKarma.Checked = false;
                     chkKarma.Enabled = true;
                 }
@@ -75,7 +80,7 @@ namespace Chummer
 			if (_objSkill.KnowledgeSkill)
 			{
 				cboSkillName.Text = _objSkill.Name;
-                if (_objSkill.CharacterObject.Options.FreeKarmaKnowledge == true)
+                if (!_objSkill.CharacterObject.Created && _objSkill.CharacterObject.Options.FreeKarmaKnowledge == true)
                 {
                     nudSkill.Visible = true;
                     nudSkill.Enabled = true;

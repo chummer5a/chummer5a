@@ -867,7 +867,7 @@
 		</string>
 		<string>
 			<key>Message_Main_RunningWild</key>
-			<text>You must have Running Wild selected as a sourcebook in order to create Critters.</text>
+			<text>Critter Creation is currently disabled, as there is no version of Running Wild for Shadowrun 5.</text>
 		</string>
 		<string>
 			<key>MessageTitle_Main_RunningWild</key>
@@ -5650,6 +5650,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Checkbox_Options_MayBuyQualities</key>
 			<text>May buy Qualities (RC 40)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_KnowledgeMultiplier</key>
+			<text>Free Knowledge Points equal to (INT+LOG)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_ContactMultiplier</key>
+			<text>Free Contact Points equal to Charisma</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ContactPoints</key>

@@ -639,26 +639,25 @@ namespace Chummer
 									strThisRequirement += "\n\t" + objXmlRequired.InnerText;
 							}
 						}
-                        if (objXmlRequired.Name == "power")
+                        else if (objXmlRequired.Name == "power")
                         {
                             // Run through all of the Powers the character has and see if the current required item exists.
                             // If so, turn on the RequirementMet flag so it can be selected.
-                            if (_objCharacter.AdeptEnabled)
+                            if (_objCharacter.AdeptEnabled && _objCharacter.Powers != null)
                             {
-                                foreach (Power objCharacterPower in _objCharacter.Powers)
-                                {
-                                    if (objCharacterPower.Name == objXmlRequired.InnerText)
-                                        blnOneOfMet = true;
-                                }
+                                    foreach (Power objCharacterPower in _objCharacter.Powers)
+                                    {
+                                        //Check that the power matches the name and doesn't come from a bonus source like a focus. There's probably an edge case that this will break.
+                                        if (objXmlRequired.InnerText == objCharacterPower.Name && objCharacterPower.BonusSource.Length == 0)
+                                        {
+                                                blnOneOfMet = true;
+                                        }
+                                    }
 
-                                if (!blnOneOfMet)
-                                {
-                                    XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlRequired.InnerText + "\"]");
-                                    if (objNode["translate"] != null)
-                                        strThisRequirement += "\n\t" + objNode["translate"].InnerText;
-                                    else
-                                        strThisRequirement += "\n\t" + objXmlRequired.InnerText;
-                                }
+                                    if (!blnOneOfMet)
+                                    {
+                                            strThisRequirement += "\n\t" + objXmlRequired.InnerText;
+                                    }
                             }
                         }
 						else if (objXmlRequired.Name == "inherited")

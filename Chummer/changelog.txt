@@ -1,3 +1,13 @@
+Build 164
+Application Change:
+- Martial Arts are no longer included in the calculations for positive quality limits at chargen.
+- Fixed an issue in which point-buy characters weren't having points removed after patch 162.
+- Fixed an issue with characters that had Middle/Medium lifestyles causing a crash.
+
+New Strings:
+- Checkbox_Options_ContactMultiplier
+- Checkbox_Options_KnowledgeMultiplier
+
 Build 163
 Administrative Change:
 - Controls (Skills, groups, etc.) moved into a separate folder because I'm tired of looking for them and can't be bothered prefixing. Organisation is love. Organisation is life.
@@ -14,6 +24,7 @@ Application Change:
 
 Data Change:
 - Updated some spells with correct ranges, from the errata.
+- Updated some martial arts, courtesy of Urs Zeidler.
 
 Build 162
 Application Change:
