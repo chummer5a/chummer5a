@@ -141,7 +141,7 @@
     </string>
     <string>
       <key>Label_Slots</key>
-      <text>Slots:</text>
+      <text>Sitzplätze:</text>
     </string>
     <string>
       <key>Label_Rating</key>
@@ -6641,31 +6641,31 @@
     </string>
     <string>
       <key>String_BuyWithKarma</key>
-      <text>Buy With Karma</text>
+      <text>Mit Karma kaufen</text>
     </string>
     <string>
       <key>String_Points</key>
-      <text>Points</text>
+      <text>Punkte</text>
     </string>
     <string>
       <key>String_Priority</key>
-      <text>Priority</text>
+      <text>Priorität</text>
     </string>
     <string>
       <key>String_Special</key>
-      <text>Special Attributes</text>
+      <text>Spezial Attribute</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
-      <text>Special Attribute Points</text>
+      <text>Spezielle Attribut Punkte</text>
     </string>
     <string>
       <key>String_AttributePoints</key>
-      <text>Attribute Points</text>
+      <text>Attribut Punkte</text>
     </string>
     <string>
       <key>String_Metamagic</key>
-      <text>Metamagic</text>
+      <text>Metamagie</text>
     </string>
     <string>
       <key>String_Echo</key>
@@ -6681,15 +6681,15 @@
     </string>
     <string>
       <key>String_Enchantment</key>
-      <text>Enchantment</text>
+      <text>Verzauberung</text>
     </string>
     <string>
       <key>String_Enhancement</key>
-      <text>Enhancement</text>
+      <text>Verbesserung</text>
     </string>
     <string>
       <key>Label_Metamagic</key>
-      <text>Metamagic:</text>
+      <text>Metamagie:</text>
     </string>
     <string>
       <key>Label_Echo</key>
@@ -6705,31 +6705,31 @@
     </string>
     <string>
       <key>Label_Enchantment</key>
-      <text>Enchantment:</text>
+      <text>Verzauberung:</text>
     </string>
     <string>
       <key>Label_Enhancement</key>
-      <text>Enhancement:</text>
+      <text>Verbesserung:</text>
     </string>
     <string>
       <key>String_MartialArtsCount</key>
-      <text>Martial Arts</text>
+      <text>Kampfkünste</text>
     </string>
     <string>
       <key>String_TechniquesCount</key>
-      <text>Techniques</text>
+      <text>Techniken</text>
     </string>
     <string>
       <key>String_SkillPoints</key>
-      <text>Skill Points</text>
+      <text>Fertigkeitspunkte</text>
     </string>
     <string>
       <key>String_SkillGroupPoints</key>
-      <text>Skill Group Points</text>
+      <text>Fertigkeitsgruppenpunkte</text>
     </string>
     <string>
       <key>String_Spells</key>
-      <text>Spells</text>
+      <text>Zauber</text>
     </string>
     <string>
       <key>String_ComplexForms</key>
@@ -6741,15 +6741,15 @@
     </string>
     <string>
       <key>Label_Accuracy</key>
-      <text>Accuracy:</text>
+      <text>Präzision:</text>
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>DeviceRating:</text>
+      <text>Gerätestufe:</text>
     </string>
     <string>
       <key>Label_Attack</key>
-      <text>Attack:</text>
+      <text>Angriff:</text>
     </string>
     <string>
       <key>Label_Sleaze</key>
@@ -6765,35 +6765,35 @@
     </string>
     <string>
       <key>Label_ArmorValueShort</key>
-      <text>Armor:</text>
+      <text>Panzerung:</text>
     </string>
     <string>
       <key>Label_ArmorLong</key>
-      <text>Armor:</text>
+      <text>Panzerung:</text>
     </string>
     <string>
       <key>Label_PriorityHeritage</key>
-      <text>Metatype:</text>
+      <text>Metatyp:</text>
     </string>
     <string>
       <key>Label_PriorityTalent</key>
-      <text>Magic or Resonance:</text>
+      <text>Magie/Resonanze:</text>
     </string>
     <string>
       <key>Label_PriorityAttributes</key>
-      <text>Attributes:</text>
+      <text>Attribute:</text>
     </string>
     <string>
       <key>Label_PrioritySkills</key>
-      <text>Skills:</text>
+      <text>Fertigkeiten:</text>
     </string>
     <string>
       <key>Label_PriorityResources</key>
-      <text>Resources:</text>
+      <text>Resourcen:</text>
     </string>
     <string>
       <key>Label_Location</key>
-      <text>Location:</text>
+      <text>Ort:</text>
     </string>
     <string>
       <key>Label_Archtype</key>
@@ -6801,7 +6801,7 @@
     </string>
     <string>
       <key>String_Contacts</key>
-      <text>Contacts</text>
+      <text>Kontakte</text>
     </string>
     <string>
       <key>String_ArmorEncumbrance</key>
@@ -6813,7 +6813,7 @@
     </string>
     <string>
       <key>String_MountInternal</key>
-      <text>Internal</text>
+      <text>Intern</text>
     </string>
     <string>
       <key>String_MountStock</key>
@@ -6821,7 +6821,7 @@
     </string>
     <string>
       <key>MessageTitle_DeleteGrade</key>
-      <text>Cannot Delete</text>
+      <text>Kann nicht gelöscht werden</text>
     </string>
     <string>
       <key>Message_DeleteGrade</key>
@@ -6853,7 +6853,7 @@
     </string>
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
-      <text>Cannot Delete</text>
+      <text>Kann nicht gelöscht werden</text>
     </string>
     <string>
       <key>Message_SelectLimitModifier</key>
@@ -6917,7 +6917,7 @@
     </string>
     <string>
       <key>MessageTitle_NotEnoughMagic</key>
-      <text>Not Enough Magic</text>
+      <text>Nicht genug MAG</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaandNuyenExpense</key>
@@ -6933,19 +6933,19 @@
     </string>
     <string>
       <key>String_SpellAlchemical</key>
-      <text>Alchemical</text>
+      <text>Alchemie</text>
     </string>
     <string>
       <key>String_ExpenseLearnTechnique</key>
-      <text>Learned Technique</text>
+      <text>Gelernte Techniken</text>
     </string>
     <string>
       <key>String_Schooling</key>
-      <text>Schooling</text>
+      <text>Ausbildung</text>
     </string>
     <string>
       <key>String_DescAlchemicalPreparation</key>
-      <text>Alchemical Preparation</text>
+      <text>Alchemie Erzeugniss</text>
     </string>
     <string>
       <key>String_DescAdept</key>
@@ -6957,7 +6957,7 @@
     </string>
     <string>
       <key>String_DescBlood</key>
-      <text>Blood</text>
+      <text>Blut</text>
     </string>
     <string>
       <key>String_DescContractual</key>
@@ -6981,11 +6981,11 @@
     </string>
     <string>
       <key>String_DescSpell</key>
-      <text>Spell</text>
+      <text>Zauber</text>
     </string>
     <string>
       <key>String_DescSpotter</key>
-      <text>Spotter</text>
+      <text>Aufklärer</text>
     </string>
     <string>
       <key>Label_ValAugmented</key>
@@ -7037,7 +7037,7 @@
     </string>
     <string>
       <key>Label_SpiritCombat</key>
-      <text>Combat:</text>
+      <text>Kampf:</text>
     </string>
     <string>
       <key>Label_SpiritDetection</key>
@@ -7045,7 +7045,7 @@
     </string>
     <string>
       <key>Label_SpiritHealth</key>
-      <text>Health:</text>
+      <text>Gesundheit:</text>
     </string>
     <string>
       <key>Label_SpiritIllusion</key>
@@ -7073,7 +7073,7 @@
     </string>
     <string>
       <key>Node_Physical</key>
-      <text>Physical</text>
+      <text>Physisch</text>
     </string>
     <string>
       <key>Node_Mental</key>
@@ -7081,7 +7081,7 @@
     </string>
     <string>
       <key>Node_Social</key>
-      <text>Social</text>
+      <text>Sozial</text>
     </string>
     <string>
       <key>Node_Astral</key>
@@ -7089,7 +7089,7 @@
     </string>
     <string>
       <key>String_LimitPhysicalShort</key>
-      <text>Physical</text>
+      <text>Physisch</text>
     </string>
     <string>
       <key>String_LimitMentalShort</key>
@@ -7097,11 +7097,11 @@
     </string>
     <string>
       <key>String_LimitSocialShort</key>
-      <text>Social</text>
+      <text>Sozial</text>
     </string>
     <string>
       <key>Checkbox_InitiationSchooling</key>
-      <text>Schooling (-10%)</text>
+      <text>Ausbildung (-10%)</text>
     </string>
     <string>
       <key>Button_AddInitiateGrade</key>
@@ -7125,7 +7125,7 @@
     </string>
     <string>
       <key>Label_SummaryEssence</key>
-      <text>Essence</text>
+      <text>Essenz</text>
     </string>
     <string>
       <key>Label_OtherMatrixInitVRCold</key>
@@ -7141,7 +7141,7 @@
     </string>
     <string>
       <key>Label_OtherArmor</key>
-      <text>Armor:</text>
+      <text>Panzerung:</text>
     </string>
     <string>
       <key>Tip_OtherArmor</key>
@@ -7149,7 +7149,7 @@
     </string>
     <string>
       <key>Label_CMArmor</key>
-      <text>Armor:</text>
+      <text>Panzerung:</text>
     </string>
     <string>
       <key>Message_Metatype_SelectTalent</key>
@@ -7157,7 +7157,7 @@
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>
-      <text>Select a Talent</text>
+      <text>Wähle ein Talent</text>
     </string>
     <string>
       <key>Message_Metatype_SelectSkill</key>
@@ -7165,7 +7165,7 @@
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectSkill</key>
-      <text>Select a Skill/Skill Group</text>
+      <text>Wähle einen/e Fertigkeit/sgruppe</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>
@@ -7241,15 +7241,15 @@
     </string>
     <string>
       <key>Title_SelectEnhancement</key>
-      <text>Select an Enhancement</text>
+      <text>Wähle eine Verbesserung</text>
     </string>
     <string>
       <key>Title_SelectEnchantment</key>
-      <text>Select an Enchantment</text>
+      <text>Wähle eine Verbesserung</text>
     </string>
     <string>
       <key>Title_SelectRitual</key>
-      <text>Select an Ritual</text>
+      <text>Wähle ein Ritual</text>
     </string>
     <string>
       <key>Message_SelectArt_ArtRequirement</key>
@@ -7289,15 +7289,15 @@
     </string>
     <string>
       <key>Checkbox_SelectEnhancement_LimitList</key>
-      <text>Show only Enhancements I can take</text>
+      <text>Zeige nur Verbesserungen die ich wählen kann</text>
     </string>
     <string>
       <key>Checkbox_SelectEnchantment_LimitList</key>
-      <text>Show only Enchantments I can take</text>
+      <text>Zeige nur Verbesserungen die ich wählen kann</text>
     </string>
     <string>
       <key>Checkbox_SelectRitual_LimitList</key>
-      <text>Show only Rituals I can take</text>
+      <text>Zeige nur Rituale die ich wählen kann</text>
     </string>
     <string>
       <key>String_PowerPoint</key>
@@ -7305,7 +7305,7 @@
     </string>
     <string>
       <key>Label_SelectProgram_Target</key>
-      <text>Target:</text>
+      <text>Ziel:</text>
     </string>
     <string>
       <key>Label_SelectProgram_Duration</key>
@@ -7317,7 +7317,7 @@
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Alchemical Preparation</text>
+      <text>Alchemische Erzeugnisse</text>
     </string>
     <string>
       <key>String_Improvement_SelectLimitNamed</key>
@@ -7373,7 +7373,7 @@
     </string>
     <string>
       <key>Message_Metatype_Duplicate</key>
-      <text>You may not select the same skill twice.</text>
+      <text>Du kannst die Fertigkeit nicht zweimal wählen.</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_Duplicate</key>
@@ -7381,19 +7381,19 @@
     </string>
     <string>
       <key>Label_Condition</key>
-      <text>Condition:</text>
+      <text>Bedingung:</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseSkillSpecialization</key>
-      <text>Are you sure you want to spend {0} Karma on a skill specialization?</text>
+      <text>Bist du sicher das {0} Karma für eine Fertigkeitsspezialisierung ausgegeben werden sollen?</text>
     </string>
     <string>
       <key>String_ExpenseLearnSpecialization</key>
-      <text>Learned Specialization</text>
+      <text>Spezialisierung gelernt</text>
     </string>
     <string>
       <key>Tip_Skill_AddSpecialization</key>
-      <text>Add Specialization for {0} Karma</text>
+      <text>Füge Spezialisierung für {0} Karma hinzu</text>
     </string>
   </strings>
 </chummer>
