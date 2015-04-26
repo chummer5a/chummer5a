@@ -13956,7 +13956,10 @@ namespace Chummer
 					break;
 				case NuyenExpenseType.AddGear:
 					// Locate the Gear that was added.
+                    //If the gear was already deleted manually we will not be able to locate it here
 					Gear objGear = objCommon.FindGear(objEntry.Undo.ObjectId, _objCharacter.Gear);
+                    if (objGear == null)
+                        break;
 					objGear.Quantity -= objEntry.Undo.Qty;
 
 					if (objGear.Quantity <= 0)
