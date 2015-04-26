@@ -75,11 +75,7 @@
 			// nudServices
 			// 
 			this.nudServices.Location = new System.Drawing.Point(521, 1);
-			this.nudServices.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
+			this.nudServices.Maximum = decimal.MaxValue;
 			this.nudServices.Name = "nudServices";
 			this.nudServices.Size = new System.Drawing.Size(40, 20);
 			this.nudServices.TabIndex = 4;

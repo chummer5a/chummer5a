@@ -590,7 +590,7 @@ namespace Chummer
 								{
 									wc.Encoding = Encoding.UTF8;
                                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "Download the changelog");
-                                    wc.DownloadFile("https://docs.google.com/uc?export=download&id=0B1j5wMS6KHqMODljM1JXdHcxRjg", Path.Combine(Application.StartupPath, "changelog.txt"));
+                                    wc.DownloadFile("https://www.dropbox.com/s/0ugjj17dvi1qrr0/changelog.txt?dl=1", Path.Combine(Application.StartupPath, "changelog.txt"));
 									webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" + File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt")).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />") + "</font>";
 								}
 								catch (Exception ex)

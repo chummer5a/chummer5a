@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-922</version>
+	<version>-921</version>
 	<categories>
 	<category>Entertainment - Asset</category>
 	<category>Entertainment - Service</category>
@@ -717,8 +717,8 @@
 		</quality>
 		<quality>
 			<name>Obscure/Difficult to Find</name>
-			<category>Positive</category>
-			<lp>1</lp>
+			<category>Negative</category>
+			<lp>-1</lp>
 			<multiplier>10</multiplier>
 			<forbidden>
 				<oneof>

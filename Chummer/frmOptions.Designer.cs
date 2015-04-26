@@ -223,6 +223,12 @@
             this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudKnowledgeMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkKnowledgeMultiplier = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nudContactMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkContactMultiplier = new System.Windows.Forms.CheckBox();
             this.chkFreeContacts = new System.Windows.Forms.CheckBox();
             this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
             this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
@@ -236,12 +242,9 @@
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            this.nudContactMultiplier = new System.Windows.Forms.NumericUpDown();
-            this.chkContactMultiplier = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.nudKnowledgeMultiplier = new System.Windows.Forms.NumericUpDown();
-            this.chkKnowledgeMultiplier = new System.Windows.Forms.CheckBox();
+            this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
+            this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
+            this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -295,8 +298,8 @@
             this.tabOptionalRules.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
             this.tabHouseRules.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -2462,6 +2465,9 @@
             // tabHouseRules
             // 
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit);
+            this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualities);
+            this.tabHouseRules.Controls.Add(this.chkExceedPositiveQualities);
             this.tabHouseRules.Controls.Add(this.label3);
             this.tabHouseRules.Controls.Add(this.nudKnowledgeMultiplier);
             this.tabHouseRules.Controls.Add(this.chkKnowledgeMultiplier);
@@ -2482,6 +2488,90 @@
             this.tabHouseRules.TabIndex = 3;
             this.tabHouseRules.Tag = "Tab_Options_HouseRules";
             this.tabHouseRules.Text = "House Rules";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(594, 50);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 13);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "x";
+            // 
+            // nudKnowledgeMultiplier
+            // 
+            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 46);
+            this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudKnowledgeMultiplier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudKnowledgeMultiplier.Name = "nudKnowledgeMultiplier";
+            this.nudKnowledgeMultiplier.Size = new System.Drawing.Size(36, 20);
+            this.nudKnowledgeMultiplier.TabIndex = 14;
+            this.nudKnowledgeMultiplier.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // chkKnowledgeMultiplier
+            // 
+            this.chkKnowledgeMultiplier.AutoSize = true;
+            this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(366, 49);
+            this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
+            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(231, 17);
+            this.chkKnowledgeMultiplier.TabIndex = 12;
+            this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
+            this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
+            this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(594, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(12, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "x";
+            // 
+            // nudContactMultiplier
+            // 
+            this.nudContactMultiplier.Location = new System.Drawing.Point(612, 0);
+            this.nudContactMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudContactMultiplier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudContactMultiplier.Name = "nudContactMultiplier";
+            this.nudContactMultiplier.Size = new System.Drawing.Size(36, 20);
+            this.nudContactMultiplier.TabIndex = 11;
+            this.nudContactMultiplier.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // chkContactMultiplier
+            // 
+            this.chkContactMultiplier.AutoSize = true;
+            this.chkContactMultiplier.Location = new System.Drawing.Point(366, 3);
+            this.chkContactMultiplier.Name = "chkContactMultiplier";
+            this.chkContactMultiplier.Size = new System.Drawing.Size(179, 17);
+            this.chkContactMultiplier.TabIndex = 9;
+            this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
+            this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
+            this.chkContactMultiplier.UseVisualStyleBackColor = true;
             // 
             // chkFreeContacts
             // 
@@ -2624,89 +2714,40 @@
             this.tipTooltip.InitialDelay = 500;
             this.tipTooltip.ReshowDelay = 100;
             // 
-            // label2
+            // chkExceedNegativeQualitiesLimit
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(594, 4);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(12, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "x";
+            this.chkExceedNegativeQualitiesLimit.AutoSize = true;
+            this.chkExceedNegativeQualitiesLimit.Enabled = false;
+            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(384, 141);
+            this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
+            this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(308, 17);
+            this.chkExceedNegativeQualitiesLimit.TabIndex = 17;
+            this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
+            this.chkExceedNegativeQualitiesLimit.Text = "Characters only receive up to 35 BP from Negative Qualities";
+            this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
             // 
-            // nudContactMultiplier
+            // chkExceedNegativeQualities
             // 
-            this.nudContactMultiplier.Location = new System.Drawing.Point(612, 0);
-            this.nudContactMultiplier.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudContactMultiplier.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudContactMultiplier.Name = "nudContactMultiplier";
-            this.nudContactMultiplier.Size = new System.Drawing.Size(36, 20);
-            this.nudContactMultiplier.TabIndex = 11;
-            this.nudContactMultiplier.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
+            this.chkExceedNegativeQualities.AutoSize = true;
+            this.chkExceedNegativeQualities.Location = new System.Drawing.Point(366, 118);
+            this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
+            this.chkExceedNegativeQualities.Size = new System.Drawing.Size(316, 17);
+            this.chkExceedNegativeQualities.TabIndex = 16;
+            this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
+            this.chkExceedNegativeQualities.Text = "Allow characters to exceed 35 BP worth of Negative Qualities";
+            this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
+            this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
             // 
-            // chkContactMultiplier
+            // chkExceedPositiveQualities
             // 
-            this.chkContactMultiplier.AutoSize = true;
-            this.chkContactMultiplier.Location = new System.Drawing.Point(366, 3);
-            this.chkContactMultiplier.Name = "chkContactMultiplier";
-            this.chkContactMultiplier.Size = new System.Drawing.Size(179, 17);
-            this.chkContactMultiplier.TabIndex = 9;
-            this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
-            this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
-            this.chkContactMultiplier.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(594, 50);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(12, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "x";
-            // 
-            // nudKnowledgeMultiplier
-            // 
-            this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 46);
-            this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudKnowledgeMultiplier.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudKnowledgeMultiplier.Name = "nudKnowledgeMultiplier";
-            this.nudKnowledgeMultiplier.Size = new System.Drawing.Size(36, 20);
-            this.nudKnowledgeMultiplier.TabIndex = 14;
-            this.nudKnowledgeMultiplier.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // chkKnowledgeMultiplier
-            // 
-            this.chkKnowledgeMultiplier.AutoSize = true;
-            this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(366, 49);
-            this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
-            this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(231, 17);
-            this.chkKnowledgeMultiplier.TabIndex = 12;
-            this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
-            this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
-            this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
+            this.chkExceedPositiveQualities.AutoSize = true;
+            this.chkExceedPositiveQualities.Location = new System.Drawing.Point(366, 95);
+            this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
+            this.chkExceedPositiveQualities.Size = new System.Drawing.Size(310, 17);
+            this.chkExceedPositiveQualities.TabIndex = 15;
+            this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
+            this.chkExceedPositiveQualities.Text = "Allow characters to exceed 35 BP worth of Positive Qualities";
+            this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -2789,8 +2830,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
             this.tabHouseRules.ResumeLayout(false);
             this.tabHouseRules.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3011,5 +3052,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudContactMultiplier;
         private System.Windows.Forms.CheckBox chkContactMultiplier;
+        private System.Windows.Forms.CheckBox chkExceedNegativeQualitiesLimit;
+        private System.Windows.Forms.CheckBox chkExceedNegativeQualities;
+        private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
 	}
 }
