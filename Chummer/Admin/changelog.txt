@@ -1,3 +1,10 @@
+Build 165
+Application Change:
+- Knowledge skills actually fixed now. Is now completely buildmethod-agnostic, so won't break when you look at it funny.
+
+Data Change: 
+- Fixed an issue with Haruman in Sum-to-Ten/Priority.
+
 Build 164
 Application Change:
 - Martial Arts are no longer included in the calculations for positive quality limits at chargen.

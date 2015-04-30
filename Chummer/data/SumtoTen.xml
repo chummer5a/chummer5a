@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-397</version>
+	<version>-396</version>
 	<categories>
 		<category>Heritage</category>
 		<category>Talent</category>
@@ -65,7 +65,7 @@
 							<karma>7</karma>
 						</metavariant>
 						<metavariant>
-							<name>Hanuman</name>
+							<name>Haruman</name>
 							<value>7</value>
 							<karma>5</karma>
 						</metavariant>
@@ -260,7 +260,7 @@
 							<karma>7</karma>
 						</metavariant>
 						<metavariant>
-							<name>Hanuman</name>
+							<name>Haruman</name>
 							<value>4</value>
 							<karma>5</karma>
 						</metavariant>
@@ -457,7 +457,7 @@
 							<karma>7</karma>
 						</metavariant>
 						<metavariant>
-							<name>Hanuman</name>
+							<name>Haruman</name>
 							<value>1</value>
 							<karma>5</karma>
 						</metavariant>

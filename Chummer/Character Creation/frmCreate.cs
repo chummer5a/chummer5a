@@ -806,6 +806,11 @@ namespace Chummer
                     objSkillControl.Top = i * objSkillControl.Height;
                     objSkillControl.AutoScroll = false;
                     panKnowledgeSkills.Controls.Add(objSkillControl);
+                    //Handler for pre-5.163 Point Buy characters that had skill points in their knowledge skills
+                    if (objSkill.Base != 0 && !objSkill.CharacterObject.Options.FreeKarmaKnowledge && _objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
+                    {
+                        objSkill.Base = 0;
+                    }
                 }
             }
 
@@ -15750,6 +15755,7 @@ namespace Chummer
                 intFreestyleBP += intPointsUsed;
             }
 
+            // Calculate the BP used by Active Skills.
             intPointsUsed = 0;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -15767,7 +15773,6 @@ namespace Chummer
             }
             else
             {
-                // Calculate the BP used by Active Skills.
                 intPointsUsed = 0;
                 foreach (SkillControl objSkillControl in panActiveSkills.Controls)
                 {
@@ -15865,7 +15870,8 @@ namespace Chummer
                 lblActiveSkillsBP.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
                 intFreestyleBP += intPointsUsed;
             }
-            // Calculate the BP used by Knowledge Skills.
+
+            // Calculate the points used by Knowledge Skills.
             int intPointsInKnowledgeSkills = 0;
             intPointsUsed = 0;
 
@@ -15880,64 +15886,82 @@ namespace Chummer
                     intKnowledgeSkillPoints += 15;
             }
 
-            //Skill Ratings and Specialisations
             foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
             {
-                // Add the current Skill's SkillRating to the counter.
-                intPointsInKnowledgeSkills += objSkillControl.SkillBase;
-                // Each Specialization costs KarmaSpecialization.
-                if (objSkillControl.SkillSpec.Trim() != string.Empty)
+                for (int i = 1; i <= objSkillControl.SkillRating; i++)
                 {
-                    if (objSkillControl.BuyWithKarma)
+                    //First level of skill purchased with Karma
+                    if (objSkillControl.SkillBase == 0 && objSkillControl.SkillRating >= 1)
                     {
-                        intPointsUsed += _objOptions.KarmaSpecialization;
+                        intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
+
+                        //Skip a level for the 2-for-1 deals.
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")) 
+                        {
+                            i++;
+                        }
+                    }
+                    //Loop through skill points until we run out, then start spending karma
+                    if (i <= objSkillControl.SkillBase)
+                    {
+                        //Skip a level for the 2-for-1 deals.
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                        {
+                            i++;
+                        }
+                        intPointsInKnowledgeSkills++;
                     }
                     else
                     {
-                        //Assuming that Point Buy treats specialisations like Priority
-                        intPointsInKnowledgeSkills += 1;
+                        //Subsequent levels of skills
+                        for (i = 2; i <= objSkillControl.SkillRating; i++)
+                        {
+                            intPointsUsed += (i * _objOptions.KarmaImproveKnowledgeSkill);
+                            //Skip a level for the 2-for-1 deals.
+                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                            {
+                                i++;
+                            }
+                            else if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
+                            {
+                                intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
+                            }
+                            intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
+                        }
                     }
 
+                    if (objSkillControl.SkillSpec.Trim() != string.Empty)
+                    {
+                        bool blnFound = false;
+                        if (objSkillControl.SkillName == "Artisan")
+                        {
+                            // Look for the Inspired quality to see if we get a free specialization
+                            foreach (Quality objQuality in _objCharacter.Qualities)
+                            {
+                                if (objQuality.Name == "Inspired")
+                                    blnFound = true;
+                            }
+                        }
+                        if (!blnFound && !objSkillControl.BuyWithKarma)
+                            intPointsInKnowledgeSkills++;
+                        else if (!blnFound)
+                            intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
+                    }
                 }
             }
 
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
 
-            intPointsRemain -= intPointsUsed;
             intPointsUsed = 0;
 
-            foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-            {
-                //First level of skill
+                foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
-                    intPointsRemain -= _objOptions.KarmaNewKnowledgeSkill;
-                    intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
-                }
-                //Subsequent levels of skills
-                for (int i = 2; i <= objSkillControl.SkillRating; i++)
-                {
-                    //School of Hard Knocks is a '2 for 1' purchase of a skill. 
-                    if (_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street")
+                    for (int i = 1; i <= objSkillControl.SkillKarma; i++)
                     {
                         intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
-                        i++;
-                    }
-
-                    else if (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")
-                    {
-                        intPointsUsed += Convert.ToInt32(Math.Ceiling(Convert.ToDouble((objSkillControl.SkillBase + i) * _objOptions.KarmaImproveKnowledgeSkill) / 2));
-                    }
-                    else
-                    {
-                        intPointsRemain -= i * _objOptions.KarmaImproveKnowledgeSkill;
-                        intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
                     }
                 }
-            }
-            if (intPointsInKnowledgeSkills > intKnowledgeSkillPoints)
-            {
-                intPointsUsed += (intPointsInKnowledgeSkills - intKnowledgeSkillPoints);
-            }
+                intPointsRemain -= intPointsUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());
@@ -16261,7 +16285,7 @@ namespace Chummer
                         intKnowledgeSkillPoints += 15;
                 }
 
-                lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
+                //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
                 lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
 
                 // Update the character's Skill information.
