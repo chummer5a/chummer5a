@@ -15929,24 +15929,24 @@ namespace Chummer
                             intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
                         }
                     }
+                }
 
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty)
+                if (objSkillControl.SkillSpec.Trim() != string.Empty)
+                {
+                    bool blnFound = false;
+                    if (objSkillControl.SkillName == "Artisan")
                     {
-                        bool blnFound = false;
-                        if (objSkillControl.SkillName == "Artisan")
+                        // Look for the Inspired quality to see if we get a free specialization
+                        foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            // Look for the Inspired quality to see if we get a free specialization
-                            foreach (Quality objQuality in _objCharacter.Qualities)
-                            {
-                                if (objQuality.Name == "Inspired")
-                                    blnFound = true;
-                            }
+                            if (objQuality.Name == "Inspired")
+                                blnFound = true;
                         }
-                        if (!blnFound && !objSkillControl.BuyWithKarma)
-                            intPointsInKnowledgeSkills++;
-                        else if (!blnFound)
-                            intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
                     }
+                    if (!blnFound && !objSkillControl.BuyWithKarma)
+                        intPointsInKnowledgeSkills++;
+                    else if (!blnFound)
+                        intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
                 }
             }
 
