@@ -1413,7 +1413,7 @@
     <None Include="icons\emoticon_waii.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Admin\changelog.txt">
+    <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Admin\manifestdata.xml" />

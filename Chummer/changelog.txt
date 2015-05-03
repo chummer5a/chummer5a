@@ -1,3 +1,7 @@
+Build 166
+Application Change:
+- Fixed an issue with Point Buy characters transitioning to career mode causing an exception error for skills.
+
 Build 165
 Application Change:
 - Knowledge skills actually fixed now. Is now completely buildmethod-agnostic, so won't break when you look at it funny.

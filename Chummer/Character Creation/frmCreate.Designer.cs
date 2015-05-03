@@ -3363,7 +3363,7 @@
             this.lblContactPoints.Name = "lblContactPoints";
             this.lblContactPoints.Size = new System.Drawing.Size(34, 13);
             this.lblContactPoints.TabIndex = 48;
-            this.lblContactPoints.Text = "0 of 0";
+            this.lblContactPoints.Text = "";
             // 
             // lblContactPoints_Label
             // 
@@ -9750,7 +9750,7 @@
             this.lblContactsBP.Name = "lblContactsBP";
             this.lblContactsBP.Size = new System.Drawing.Size(30, 13);
             this.lblContactsBP.TabIndex = 60;
-            this.lblContactsBP.Text = "0 BP";
+            this.lblContactsBP.Text = "0 Karma";
             // 
             // tabBuildSummary
             // 

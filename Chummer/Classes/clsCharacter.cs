@@ -2021,7 +2021,7 @@ namespace Chummer
                 _intMaxKarma = Convert.ToInt32(strKarma);
                 _intMaxNuyen = Convert.ToInt32(strNuyen);
                 _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                _intContactPoints = CHA.Base * _intContactMultiplier;
+                _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
             }
 
             // If the character had old Qualities that were converted, immediately save the file so they are in the new format.

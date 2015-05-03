@@ -136,20 +136,6 @@ namespace Chummer
                 lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
                 tabInfo.TabPages.RemoveAt(0);
 
-                int count = 0;
-                foreach (Contact contact in _objCharacter.Contacts)
-                    count += contact.ContactPoints;
-
-                if ((_objCharacter.ContactPoints - count) >= 0)
-                {
-                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
-                }
-                else
-                {
-                    int karmaSpent = _objCharacter.ContactPoints - count;
-                    karmaSpent = karmaSpent *= -1;
-                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-                }
 
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -175,33 +161,33 @@ namespace Chummer
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
                 _objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
 
-
-
                 lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
                 lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Attributes).ToString(), _objCharacter.TotalAttributes.ToString());
                 lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - _objCharacter.Spells.Count).ToString(), _objCharacter.SpellLimit.ToString());
                 lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - _objCharacter.ComplexForms.Count).ToString(), _objCharacter.CFPLimit.ToString());
                 tabInfo.TabPages.RemoveAt(0);
-
-                int count = 0;
-                foreach (Contact contact in _objCharacter.Contacts)
-                    count += contact.ContactPoints;
-
-                if ((_objCharacter.ContactPoints - count) >= 0)
-                {
-                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
-                }
-                else
-                {
-                    int karmaSpent = _objCharacter.ContactPoints - count;
-                    karmaSpent = karmaSpent *= -1;
-                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-                }
             }
 
             else
             {
                 tabInfo.TabPages.RemoveAt(1);
+            }
+
+
+            int count = 0;
+            foreach (Contact contact in _objCharacter.Contacts)
+                count += contact.ContactPoints;
+
+            if ((_objCharacter.ContactPoints - count) >= 0)
+            {
+                MessageBox.Show("Test");
+                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
+            }
+            else
+            {
+                int karmaSpent = _objCharacter.ContactPoints - count;
+                karmaSpent = karmaSpent *= -1;
+                lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
             }
 
             // Set the movement speed defaults
@@ -4151,23 +4137,6 @@ namespace Chummer
 
             _objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
             _objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
-
-            // Calculate the BP used by Contacts.
-            _objCharacter.ContactPoints = (_objCharacter.CHA.Base + _objCharacter.CHA.Karma) * _objCharacter.ContactMultiplier;
-            int intContactPointsUsed = 0;
-            foreach (ContactControl objContactControl in panContacts.Controls)
-            {
-                if (!objContactControl.Free)
-                {
-                    // The Contact's BP cost = their Connection + Loyalty Rating.
-                    intContactPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
-                }
-            }
-
-            if (_objCharacter.ContactPoints - intContactPointsUsed < 0)
-            { lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.ContactPoints.ToString()); }
-            else
-            { lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString()); }
 
             UpdateCharacterInfo();
             CalculateBP();
@@ -15506,82 +15475,37 @@ namespace Chummer
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 intPointsRemain -= (_objCharacter.MetatypeBP);
-                // Calculate the BP used by Contacts.
-                int intContactPointsUsed = 0;
-                foreach (ContactControl objContactControl in panContacts.Controls)
-                {
-                    if (!objContactControl.Free)
-                    {
-                        // The Contact's BP cost = their Connection + Loyalty Rating.
-                        intContactPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
-                    }
-                }
-
-                int intFreePoints = (_objCharacter.CHA.TotalValue * _objCharacter.ContactMultiplier);
-
-                if (intContactPointsUsed >= intFreePoints)
-                {
-                    intContactPointsUsed -= intFreePoints;
-                }
-                else
-                {
-                    intContactPointsUsed = 0;
-                }
-
-                if (_objCharacter.ContactPoints - intContactPointsUsed < 0)
-                {
-                    int karmaSpent = _objCharacter.ContactPoints - intContactPointsUsed;
-                    karmaSpent = karmaSpent *= -1;
-                    lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-                    lblContactPoints.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-                    intPointsUsed -= (_objCharacter.ContactPoints - intContactPointsUsed);
-                    intPointsRemain += (_objCharacter.ContactPoints - intContactPointsUsed);
-                }
-                else
-                    lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString());
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - intContactPointsUsed).ToString(), _objCharacter.ContactPoints.ToString());
             }
-            else
+
+            // Calculate the points used by Contacts.
+            int intPointsInContacts = 0;
+            intPointsUsed = 0;
+
+            int intContactPoints = _objCharacter.ContactPoints;
+            foreach (ContactControl objContactControl in panContacts.Controls)
             {
-                // Calculate the BP used by Contacts.
-                intPointsUsed = 0;
-                foreach (ContactControl objContactControl in panContacts.Controls)
+                int intCombinedRating = objContactControl.ConnectionRating + objContactControl.LoyaltyRating;
+                for (int i = 1; i <= objContactControl.ContactObject.ContactPoints; i++)
                 {
-                    if (!objContactControl.Free)
+                    //Loop through Contact points until we run out, then start spending karma
+                    if (i <= _objCharacter.ContactPoints)
                     {
-                        // The Contact's Karma cost = their (Connection + Loyalty Rating ) x Karma multiplier.
-                        intPointsRemain -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
-                        intPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
+                        intPointsInContacts++;
+                        lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString());
+                        lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString());
+                    }
+                    else if (i <= objContactControl.ContactObject.ContactPoints)
+                    {
+                        intPointsUsed += 1;
+                        intPointsRemain -= 1;
+                        lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
+                        lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
                     }
                 }
-
-                // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-                int intFreePoints = 0;
-                if (_objOptions.FreeContactsMultiplierEnabled)
-                {
-                    intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
-                }
-                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge))
-                {
-                    intFreePoints = (_objCharacter.CHA.TotalValue * 3);
-                }
-
-                //Update the label that displays the number of free Contacts remaining.
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intFreePoints.ToString(), _objCharacter.ContactPoints.ToString());
-                if (intPointsUsed >= intFreePoints)
-                {
-                    intPointsUsed -= intFreePoints;
-                    intPointsRemain += intFreePoints;
-                }
-                else
-                {
-                    intPointsRemain += intPointsUsed;
-                    intPointsUsed = 0;
-                }
-                lblContactsBP.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
-                intFreestyleBP += intPointsUsed;
+                _objCharacter.ContactPoints = intContactPoints - intPointsInContacts;
             }
 
+            
             // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
             // a Negative Quality.
             intPointsUsed = 0;
@@ -16273,6 +16197,12 @@ namespace Chummer
                     _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * _objOptions.FreeKnowledgeMultiplier;
                 else
                     _objCharacter.KnowledgeSkillPoints = 0;
+
+                // Calculate Free Contacts Points. Free points = (CHA) * 2.
+                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+                    _objCharacter.ContactPoints = (int)(_objCharacter.CHA.Value) * _objOptions.FreeContactsMultiplier;
+                else
+                    _objCharacter.ContactPoints = 0;
 
                 int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
                 foreach (Quality objQuality in _objCharacter.Qualities)
@@ -24075,21 +24005,8 @@ namespace Chummer
             _objCharacter.CHA.Karma = Convert.ToInt32(nudKCHA.Value);
             _objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
 
-            // Calculate the BP used by Contacts.
-            _objCharacter.ContactPoints = 0;
-            _objCharacter.ContactPoints = (_objCharacter.CHA.Base + _objCharacter.CHA.Karma) * _objCharacter.ContactMultiplier;
-            int intContactPointsUsed = 0;
-            foreach (ContactControl objContactControl in panContacts.Controls)
-            {
-                if (!objContactControl.Free)
-                {
-                    // The Contact's BP cost = their Connection + Loyalty Rating.
-                    intContactPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
-                }
-            }
-
             UpdateCharacterInfo();
-
+            CalculateBP();
             _blnIsDirty = true;
             UpdateWindowTitle();
         }

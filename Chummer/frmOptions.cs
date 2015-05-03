@@ -316,8 +316,10 @@ namespace Chummer
             cboXSLT.DisplayMember = "Name";
             cboXSLT.DataSource = lstFiles;
 
-            if (GlobalOptions.Instance.DefaultCharacterSheet == "")
+            if (GlobalOptions.Instance.DefaultCharacterSheet == "" || GlobalOptions.Instance.DefaultCharacterSheet == null)
+            {
                 GlobalOptions.Instance.DefaultCharacterSheet = "Shadowrun 5";
+            }
             cboXSLT.SelectedValue = GlobalOptions.Instance.DefaultCharacterSheet;
         }
         #endregion
@@ -392,6 +394,7 @@ namespace Chummer
             _objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             _objOptions.PrintNotes = chkPrintNotes.Checked;
+            _objOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
             _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
             _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
             _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
@@ -1030,12 +1033,12 @@ namespace Chummer
             bool blnFreeKarmaContacts = false;
             try
             {
-                blnFreeKarmaContacts = _objOptions.FreeKarmaKnowledge;
+                blnFreeKarmaContacts = _objOptions.FreeKarmaContacts;
             }
             catch
             {
             }
-            chkFreeContacts.Checked = blnFreeKarmaContacts;
+            chkFreeKarmaContacts.Checked = blnFreeKarmaContacts;
 
             //Free Knowledge Skills in Point Buy
             bool blnFreeKarmaKnowledge = false;

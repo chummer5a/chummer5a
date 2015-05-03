@@ -6012,7 +6012,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Free Contact Points Karma:</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_FreeContacts</key>
+			<key>Checkbox_Options_FreeKarmaContacts</key>
 			<text>Karma Build: Free Contacts like Priority Build</text>
 		</string>
 		<string>

@@ -780,7 +780,8 @@ namespace Chummer
         private bool _blnFreeContactsMultiplierEnabled = false;
         private bool _blnFreeKnowledgeMultiplierEnabled = false;
 		private bool _blnFreeKarmaKnowledge = false;
-		private bool _blnNoSingleArmorEncumbrance = false;
+        private bool _blnFreeKarmaContacts = false;
+        private bool _blnNoSingleArmorEncumbrance = false;
 		private bool _blnIgnoreArmorEncumbrance = true;
 		private bool _blnAlternateArmorEncumbrance = false;
 		private bool _blnESSLossReducesMaximumOnly = false;
@@ -1009,8 +1010,10 @@ namespace Chummer
             objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
 			// <freecontactsflatnumber />
 			objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
-			// <freekarmaknowledge />
-			objWriter.WriteElementString("freekarmaknowledge", _blnFreeKarmaKnowledge.ToString());
+            // <freekarmaknowledge />
+            objWriter.WriteElementString("freekarmacontacts", _blnFreeKarmaContacts.ToString());
+            // <freekarmaknowledge />
+            objWriter.WriteElementString("freekarmaknowledge", _blnFreeKarmaKnowledge.ToString());
 			// <nosinglearmorencumbrance />
 			objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString());
 			// <ignorearmorencumbrance />
@@ -1400,8 +1403,11 @@ namespace Chummer
                 _blnFreeKnowledgeMultiplierEnabled = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplierenabled").InnerText);
             }
             catch { }
-			// Karma Free Knowledge
-			_blnFreeKarmaKnowledge = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledge").InnerText);
+
+            // Karma Free Knowledge
+            _blnFreeKarmaContacts = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmacontacts").InnerText);
+            // Karma Free Knowledge
+            _blnFreeKarmaKnowledge = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledge").InnerText);
             // Free Contacts Multiplier
             _intFreeKnowledgeMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
 			// No Single Armor Encumbrance
@@ -2061,9 +2067,17 @@ namespace Chummer
             catch
             {
             }
-
-			// Karma Free Knowledge
-			try
+            // Karma Free Knowledge
+            try
+            {
+                _blnFreeKarmaContacts = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmacontacts").ToString());
+                Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmacontacts");
+            }
+            catch
+            {
+            }
+            // Karma Free Knowledge
+            try
 			{
 				_blnFreeKarmaKnowledge = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("freekarmaknowledge").ToString());
 				Registry.CurrentUser.CreateSubKey("Software\\Chummer5").DeleteValue("freekarmaknowledge");
@@ -2598,10 +2612,26 @@ namespace Chummer
             }
         }
 
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		public bool FreeKarmaKnowledge
+
+        /// <summary>
+        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
+        /// </summary>
+        public bool FreeKarmaContacts
+        {
+            get
+            {
+                return _blnFreeKarmaContacts;
+            }
+            set
+            {
+                _blnFreeKarmaContacts = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
+        /// </summary>
+        public bool FreeKarmaKnowledge
 		{
 			get
 			{
