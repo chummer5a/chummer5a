@@ -22623,7 +22623,7 @@ namespace Chummer
 			tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
 			tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
 			tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
-			tipTooltip.SetToolTip(lblNuyen, LanguageManager.Instance.GetString("Tip_CommonNuyen"));
+			tipTooltip.SetToolTip(lblNuyen, String.Format(LanguageManager.Instance.GetString("Tip_CommonNuyen"), _objCharacter.Options.KarmaNuyenPer));
 			tipTooltip.SetToolTip(lblRatingLabel, LanguageManager.Instance.GetString("Tip_CommonAIRating"));
 			tipTooltip.SetToolTip(lblSystemLabel, LanguageManager.Instance.GetString("Tip_CommonAISystem"));
 			tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));
