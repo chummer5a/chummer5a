@@ -2534,6 +2534,7 @@
             // 
             // nudKnowledgeMultiplier
             // 
+            this.nudKnowledgeMultiplier.Enabled = false;
             this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 46);
             this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
             10,
@@ -2564,6 +2565,7 @@
             this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
             this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
             this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
+            this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
             // 
             // label2
             // 
@@ -2576,6 +2578,7 @@
             // 
             // nudContactMultiplier
             // 
+            this.nudContactMultiplier.Enabled = false;
             this.nudContactMultiplier.Location = new System.Drawing.Point(612, 0);
             this.nudContactMultiplier.Maximum = new decimal(new int[] {
             10,
@@ -2606,6 +2609,7 @@
             this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
             this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
             this.chkContactMultiplier.UseVisualStyleBackColor = true;
+            this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
             // 
             // chkFreeKarmaContacts
             // 

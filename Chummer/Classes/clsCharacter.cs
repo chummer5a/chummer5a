@@ -79,6 +79,7 @@ namespace Chummer
         private int _intSpellLimit = 0;
         private int _intCFPLimit = 0;
         private int _intContactPoints = 0;
+        private int _intContactPointsUsed = 0;
         public int metageneticLimit = 0;
 
         // General character info.
@@ -403,6 +404,8 @@ namespace Chummer
             objWriter.WriteElementString("totalattributes", _intTotalAttributes.ToString());
             // <contactpoints />
             objWriter.WriteElementString("contactpoints", _intContactPoints.ToString());
+            // <contactpoints />
+            objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
             // <spelllimit />
             objWriter.WriteElementString("spelllimit", _intSpellLimit.ToString());
             // <cfplimit />
@@ -1184,6 +1187,13 @@ namespace Chummer
             }
             try
             {
+                _intContactPointsUsed = Convert.ToInt32(objXmlCharacter["contactpointsused"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
                 _intCFPLimit = Convert.ToInt32(objXmlCharacter["cfplimit"].InnerText);
             }
             catch
@@ -1246,7 +1256,13 @@ namespace Chummer
             catch
             {
             }
-
+            try
+            {
+                _intContactPointsUsed = Convert.ToInt32(objXmlCharacter["contactpointsused"].InnerText);
+            }
+            catch
+            {
+            }
             try
             {
                 _intStreetCred = Convert.ToInt32(objXmlCharacter["streetcred"].InnerText);
@@ -2188,9 +2204,10 @@ namespace Chummer
             objWriter.WriteElementString("limitsocial", LimitSocial.ToString());
             // <limitastral />
             objWriter.WriteElementString("limitastral", LimitAstral.ToString());
-
             // <contactpoints />
             objWriter.WriteElementString("contactpoints", _intContactPoints.ToString());
+            // <contactpointsused />
+            objWriter.WriteElementString("contactpointsused", _intContactPointsUsed.ToString());
             // <cfplimit />
             objWriter.WriteElementString("cfplimit", _intCFPLimit.ToString());
             // <spelllimit />
@@ -2840,6 +2857,7 @@ namespace Chummer
             _intSpellLimit = 0;
             _intCFPLimit = 0;
             _intContactPoints = 0;
+            _intContactPointsUsed = 0;
             _intKarma = 0;
             _intSpecial = 0;
             _intTotalSpecial = 0;
@@ -3856,6 +3874,22 @@ namespace Chummer
             set
             {
                 _intContactPoints = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Number of free Contact Points the character has used.
+        /// </summary>
+        public int ContactPointsUsed
+        {
+            get
+            {
+                return _intContactPointsUsed;
+            }
+            set
+            {
+                _intContactPointsUsed = value;
             }
         }
 

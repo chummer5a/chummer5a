@@ -15497,18 +15497,18 @@ namespace Chummer
                         intPointsRemain -= 1;
                         }
                 }
-                _objCharacter.ContactPoints = intContactPoints - intPointsInContacts;
+                _objCharacter.ContactPointsUsed = intContactPoints - intPointsInContacts;
             }
 
             if (intPointsInContacts <= intContactPoints && ((intContactPoints - intPointsInContacts) > 0))
             {
-                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString());
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString());
+                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString());
+                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString());
             }
             else
             {
-                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", (intContactPoints - intPointsInContacts).ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
+                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
+                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
             }
 
 

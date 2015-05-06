@@ -3,7 +3,7 @@
   <file>
     <name>Chummer5.exe</name>
     <type>Application</type>
-    <version>0.0.5.165</version>
+    <version>0.0.5.166</version>
     <description>Chummer</description>
     <notes>- Chummer Application</notes>
     <url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -355,7 +355,7 @@
   <file>
     <name>data/priorities.xml</name>
     <type>Data Files</type>
-    <version>-397</version>
+    <version>-396</version>
     <description>Priorities</description>
     <notes>- Priorities data file</notes>
     <url>https://www.dropbox.com/s/sdlxvlmratzy0th/priorities.xml?dl=1</url>
@@ -371,7 +371,7 @@
   <file>
     <name>data/qualities.xml</name>
     <type>Data Files</type>
-    <version>-399</version>
+    <version>-397</version>
     <description>Qualities</description>
     <notes>- Qualities data file</notes>
     <url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -411,7 +411,7 @@
   <file>
     <name>data/SumtoTen.xml</name>
     <type>Data Files</type>
-    <version>-396</version>
+    <version>-395</version>
     <description>Sum to Ten Priorities</description>
     <notes>- Sum to Ten Priority data file</notes>
     <url>https://www.dropbox.com/s/metwywhddzlmozo/SumtoTen.xml?dl=1</url>
@@ -419,7 +419,7 @@
   <file>
     <name>data/traditions.xml</name>
     <type>Data Files</type>
-    <version>-400</version>
+    <version>-399</version>
     <description>Traditions</description>
     <notes>- Magic Traditions data file</notes>
     <url>https://www.dropbox.com/s/fu7j24hxc9cf5h6/traditions.xml?dl=1</url>

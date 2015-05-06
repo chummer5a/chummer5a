@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-400</version>
+  <version>-399</version>
   <traditions>
     <tradition>
       <id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
@@ -296,8 +296,8 @@
       <spirits>
         <spirit>Spirit of Beasts</spirit>
         <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Plant</spirit>
-        <spirit>Spirit of Guidance</spirit>
+        <spirit>Plant Spirit</spirit>
+        <spirit>Guidance Spirit</spirit>
         <spirit>Spirit of Air</spirit>
       </spirits>
       <source>SSP</source>
@@ -310,7 +310,7 @@
         <spirit>Spirit of Fire</spirit>
         <spirit>Spirit of Earth</spirit>
         <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Guidance</spirit>
+        <spirit>Guidance Spirit</spirit>
         <spirit>Spirit of Water</spirit>
       </spirits>
       <source>SSP</source>
@@ -322,7 +322,7 @@
       <spirits>
         <spirit>Spirit of Guardian</spirit>
         <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Plant</spirit>
+        <spirit>Plant Spirit</spirit>
         <spirit>Spirit of Air</spirit>
         <spirit>Spirit of Fire</spirit>
       </spirits>
@@ -336,8 +336,8 @@
         <spirit>Spirit of Fire</spirit>
         <spirit>Spirit of Air</spirit>
         <spirit>Spirit of Man</spirit>
-        <spirit>Spirit of Guidance</spirit>
-        <spirit>Spirit of Task</spirit>
+        <spirit>Guidance Spirit</spirit>
+        <spirit>Task Spirit</spirit>
       </spirits>
       <source>SSP</source>
       <page>5</page>

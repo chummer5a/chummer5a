@@ -1,6 +1,11 @@
 Build 166
 Application Change:
 - Fixed an issue with Point Buy characters transitioning to career mode causing an exception error for skills.
+- Values for Contact and Knowledge Multipliers will now reset to their default values if the relevant house rules are disabled.
+- Value for Contact and Knowledge Multipliers reset to proper defaults.
+- Fixed several magic traditions to use valid spirit names. 'Spirit of Plant'. Pfft.
+- Fixed an issue with Spirit Bane being available to non-magic users.
+- Fixed an issue that enabled the free knowledge skills for point buy if the free contact point house rule was enabled.
 
 Build 165
 Application Change:

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-397</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -1717,6 +1717,13 @@
 			</bonus>
 			<source>SR5</source>
 			<page>85</page>
+			<required>
+				<oneof>
+					<quality>Aspected Magician</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
 		</quality>
 		<quality>
 			<id>f0873c37-4f09-41cd-be81-88e8df5b42ae</id>

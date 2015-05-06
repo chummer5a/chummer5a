@@ -397,11 +397,15 @@ namespace Chummer
             _objOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
             _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
             _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
+            if (chkContactMultiplier.Checked)
+                nudContactMultiplier.Enabled = true;
             _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
+            if (chkKnowledgeMultiplier.Checked)
+                chkKnowledgeMultiplier.Enabled = true;
             _objOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
             _objOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
             _objOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
-            if (chkExceedPositiveQualities.Checked)
+            if (chkExceedNegativeQualities.Checked)
                 chkExceedNegativeQualitiesLimit.Enabled = true;
             _objOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
             _objOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
@@ -562,6 +566,25 @@ namespace Chummer
                 chkExceedNegativeQualitiesLimit.Checked = false;
         }
 
+        private void chkContactMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudContactMultiplier.Enabled = chkContactMultiplier.Checked;
+            if (!chkContactMultiplier.Checked)
+            {
+                nudContactMultiplier.Value = 3;
+                nudContactMultiplier.Enabled = false;
+            }
+        }
+
+        private void chkKnowledgeMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
+            if (!chkKnowledgeMultiplier.Checked)
+            {
+                nudKnowledgeMultiplier.Value = 2;
+                nudKnowledgeMultiplier.Enabled = false;
+            }
+        }
         private void cmdRestoreDefaultsBP_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
@@ -1061,6 +1084,8 @@ namespace Chummer
             {
             }
             chkContactMultiplier.Checked = blnFreeContactMultiplierEnabled;
+            nudContactMultiplier.Enabled = chkContactMultiplier.Checked;
+            nudContactMultiplier.Value = 3;
 
             //Knowledge Multiplier Enabled
             bool blnFreeKnowledgeMultiplierEnabled = false;
@@ -1072,6 +1097,8 @@ namespace Chummer
             {
             }
             chkKnowledgeMultiplier.Checked = blnFreeKnowledgeMultiplierEnabled;
+            nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
+            nudKnowledgeMultiplier.Value = 2;
 
             bool blnUsePointsOnBrokenGroups = false;
             try
@@ -1310,7 +1337,7 @@ namespace Chummer
             {
             }
             chkExceedNegativeQualities.Checked = blnExceedNegativeQualities;
-            chkExceedNegativeQualitiesLimit.Enabled = chkExceedPositiveQualities.Checked;
+            chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
 
             bool blnExceedNegativeQualitiesLimit = false;
             try
