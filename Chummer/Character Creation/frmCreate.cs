@@ -616,6 +616,11 @@ namespace Chummer
             }
             foreach (Skill objSkill in _objCharacter.Skills)
             {
+                //Clean up old karmagen characters that might have had points placed into the Base numericupdown.
+                if (!_objCharacter.Created && ((objSkill.KnowledgeSkill && _objCharacter.Options.FreeKarmaKnowledge == false && objSkill.Base > 0) || (!objSkill.KnowledgeSkill && objSkill.Base > 0)))
+                {
+                    objSkill.Base = 0;
+                }
                 if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
                 {
                     i++;

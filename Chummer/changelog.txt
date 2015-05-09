@@ -1,3 +1,7 @@
+Build 166:
+Application Change:
+- Fixed an issue in which the Maximum Modified Rating rule could not be disabled.
+
 Build 166
 Application Change:
 - Fixed an issue with Point Buy characters transitioning to career mode causing an exception error for skills.

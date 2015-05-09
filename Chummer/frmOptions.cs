@@ -356,59 +356,59 @@ namespace Chummer
             if (!blnSR5Included)
                 _objOptions.Books.Add("SR5");
 
-            _objOptions.ConfirmDelete = chkConfirmDelete.Checked;
-            _objOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
-            _objOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
-            _objOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
-            _objOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
-            _objOptions.CapSkillRating = chkCapSkillRating.Checked;
-            _objOptions.PrintExpenses = chkPrintExpenses.Checked;
-            _objOptions.KnucksUseUnarmed = chkKnucks.Checked;
+            _objOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
             _objOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
-            _objOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
-            _objOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
-            _objOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _objOptions.IgnoreArt = chkIgnoreArt.Checked;
-            _objOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
-            _objOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
-            _objOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
+            _objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _objOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _objOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
-            _objOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
-            _objOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
-            _objOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
-            _objOptions.ArmorSuitCapacity = chkArmorSuitCapacity.Checked;
+            _objOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
+            _objOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
             _objOptions.ArmorDegradation = chkArmorDegradation.Checked;
             _objOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
             _objOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
-            _objOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            _objOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
-            _objOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
-            _objOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
-            _objOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
             _objOptions.BreakSkillGroupsInCreateMode = chkBreakSkillGroupsInCreateMode.Checked;
-            _objOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
-            _objOptions.RestrictRecoil = chkRestrictRecoil.Checked;
             _objOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
-            _objOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
-            _objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            _objOptions.CapSkillRating = chkCapSkillRating.Checked;
+            _objOptions.ConfirmDelete = chkConfirmDelete.Checked;
+            _objOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
-            _objOptions.PrintNotes = chkPrintNotes.Checked;
-            _objOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
-            _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
-            _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
-            if (chkContactMultiplier.Checked)
-                nudContactMultiplier.Enabled = true;
-            _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
-            if (chkKnowledgeMultiplier.Checked)
-                chkKnowledgeMultiplier.Enabled = true;
-            _objOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
-            _objOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+            _objOptions.CyberlegMovement = chkCyberlegMovement.Checked;
+            _objOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
+            _objOptions.EnforceCapacity = chkEnforceCapacity.Checked;
+            _objOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
+            _objOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
+            _objOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
             _objOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
-            if (chkExceedNegativeQualities.Checked)
-                chkExceedNegativeQualitiesLimit.Enabled = true;
+                if (chkExceedNegativeQualities.Checked)
+                    chkExceedNegativeQualitiesLimit.Enabled = true;
             _objOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
             _objOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
+            _objOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
+            _objOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
+            _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
+                if (chkContactMultiplier.Checked)
+                    nudContactMultiplier.Enabled = true;
+            _objOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
+            _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
+            _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
+                if (chkKnowledgeMultiplier.Checked)
+                    chkKnowledgeMultiplier.Enabled = true;
+            _objOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+            _objOptions.IgnoreArt = chkIgnoreArt.Checked;
+            _objOptions.KnucksUseUnarmed = chkKnucks.Checked;
+            _objOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
+            _objOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
+            _objOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
+            _objOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
+            _objOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
+            _objOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
+            _objOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
+            _objOptions.PrintExpenses = chkPrintExpenses.Checked;
+            _objOptions.PrintNotes = chkPrintNotes.Checked;
+            _objOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
+            _objOptions.RestrictRecoil = chkRestrictRecoil.Checked;
+            _objOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
+            _objOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
+            _objOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             switch (cboLimbCount.SelectedValue.ToString())
             {
@@ -991,7 +991,7 @@ namespace Chummer
             {
             }
 
-            bool blnEnforceSkillMaximumModifiedRating = true;
+            bool blnEnforceSkillMaximumModifiedRating = false;
             try
             {
                 blnEnforceSkillMaximumModifiedRating = _objOptions.EnforceMaximumSkillRatingModifier;
