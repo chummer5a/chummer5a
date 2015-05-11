@@ -40,6 +40,17 @@ public delegate void FriendsInHighPlacesChangedHandler(Object sender);
 public delegate void CharacterNameChangedHandler(Object sender);
 // BlackMarketEnabledChanged Event Handler
 public delegate void BlackMarketEnabledChangedHandler(Object sender);
+public delegate void ExConChangedHandler(Object sender);
+public delegate void TrustFundChangedHandler(Object sender);
+public delegate void TechSchoolChangedHandler(Object sender);
+public delegate void RestrictedGearChangedHandler(Object sender);
+public delegate void OverclockerChangedHandler(Object sender);
+public delegate void MadeManChangedHandler(Object sender);
+public delegate void LinguistChangedHandler(Object sender);
+public delegate void LightningReflexesChangedHandler(Object sender);
+public delegate void FameChangedHandler(Object sender);
+public delegate void BornRichChangedHandler(Object sender);
+public delegate void ErasedChangedHandler(Object sender);
 
 namespace Chummer
 {
@@ -144,6 +155,18 @@ namespace Chummer
         private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
+        private bool _blnExCon = false;
+        private bool _blnTrustFund = false;
+        private bool _blnTechSchool = false;
+        private bool _blnRestrictedGear = false;
+        private bool _blnOverclocker = false;
+        private bool _blnMadeMan = false;
+        private bool _blnLinguist = false;
+        private bool _blnLightningReflexes = false;
+        private bool _blnFame = false;
+        private bool _blnBornRich = false;
+        private bool _blnBlackMarketPipeline = false;
+        private bool _blnErased = false;
 
         // Attributes.
         private Attribute _attBOD = new Attribute("BOD");
@@ -258,6 +281,17 @@ namespace Chummer
         public event FriendsInHighPlacesChangedHandler FriendsInHighPlacesChanged;
         public event CharacterNameChangedHandler CharacterNameChanged;
         public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
+        public event ExConChangedHandler ExConChanged;
+        public event TrustFundChangedHandler TrustFundChanged;
+        public event TechSchoolChangedHandler TechSchoolChanged;
+        public event RestrictedGearChangedHandler RestrictedGearChanged;
+        public event OverclockerChangedHandler OverclockerChanged;
+        public event MadeManChangedHandler MadeManChanged;
+        public event LinguistChangedHandler LinguistChanged;
+        public event LightningReflexesChangedHandler LightningReflexesChanged;
+        public event FameChangedHandler FameChanged;
+        public event BornRichChangedHandler BornRichChanged;
+        public event ErasedChangedHandler ErasedChanged;
 
         private frmViewer _frmPrintView;
 
@@ -488,6 +522,28 @@ namespace Chummer
             objWriter.WriteElementString("infirm", _blnInfirm.ToString());
             // <blackmarket />
             objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
+
+            objWriter.WriteElementString("excon", _blnExCon.ToString());
+
+            objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
+
+            objWriter.WriteElementString("techschool", _blnTechSchool.ToString());
+
+            objWriter.WriteElementString("restrictedgear", _blnRestrictedGear.ToString());
+
+            objWriter.WriteElementString("overclocker", _blnOverclocker.ToString());
+
+            objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+
+            objWriter.WriteElementString("linguist", _blnLinguist.ToString());
+
+            objWriter.WriteElementString("lightningreflexes", _blnLightningReflexes.ToString());
+
+            objWriter.WriteElementString("fame", _blnFame.ToString());
+
+            objWriter.WriteElementString("bornrich", _blnBornRich.ToString());
+
+            objWriter.WriteElementString("erased", _blnErased.ToString());
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
@@ -1428,6 +1484,83 @@ namespace Chummer
             try
             {
                 _blnBlackMarket = Convert.ToBoolean(objXmlCharacter["blackmarket"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnExCon = Convert.ToBoolean(objXmlCharacter["excon"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnTrustFund = Convert.ToBoolean(objXmlCharacter["trustfund"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnTechSchool = Convert.ToBoolean(objXmlCharacter["techschool"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnRestrictedGear = Convert.ToBoolean(objXmlCharacter["restrictedgear"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnOverclocker = Convert.ToBoolean(objXmlCharacter["overclocker"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnMadeMan = Convert.ToBoolean(objXmlCharacter["mademan"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnLinguist = Convert.ToBoolean(objXmlCharacter["linguist"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnLightningReflexes = Convert.ToBoolean(objXmlCharacter["lightningreflexes"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnFame = Convert.ToBoolean(objXmlCharacter["fame"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnBornRich = Convert.ToBoolean(objXmlCharacter["bornrich"].InnerText);
+            }
+            catch
+            {
+            }
+            try
+            {
+                _blnErased = Convert.ToBoolean(objXmlCharacter["erased"].InnerText);
             }
             catch
             {
@@ -6838,7 +6971,259 @@ namespace Chummer
                 }
             }
         }
-
+        /// <summary>
+        /// Whether or not ExCon is enabled.
+        /// </summary>
+        public bool ExCon
+        {
+            get
+            {
+                return _blnExCon;
+            }
+            set
+            {
+                bool blnOldValue = _blnExCon;
+                _blnExCon = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        ExConChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not TrustFund is enabled.
+        /// </summary>
+        public bool TrustFund
+        {
+            get
+            {
+                return _blnTrustFund;
+            }
+            set
+            {
+                bool blnOldValue = _blnTrustFund;
+                _blnTrustFund = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        TrustFundChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not TechSchool is enabled.
+        /// </summary>
+        public bool TechSchool
+        {
+            get
+            {
+                return _blnTechSchool;
+            }
+            set
+            {
+                bool blnOldValue = _blnTechSchool;
+                _blnTechSchool = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        TechSchoolChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not RestrictedGear is enabled.
+        /// </summary>
+        public bool RestrictedGear
+        {
+            get
+            {
+                return _blnRestrictedGear;
+            }
+            set
+            {
+                bool blnOldValue = _blnRestrictedGear;
+                _blnRestrictedGear = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        RestrictedGearChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not Overclocker is enabled.
+        /// </summary>
+        public bool Overclocker
+        {
+            get
+            {
+                return _blnOverclocker;
+            }
+            set
+            {
+                bool blnOldValue = _blnOverclocker;
+                _blnOverclocker = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        OverclockerChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not MadeMan is enabled.
+        /// </summary>
+        public bool MadeMan
+        {
+            get
+            {
+                return _blnMadeMan;
+            }
+            set
+            {
+                bool blnOldValue = _blnMadeMan;
+                _blnMadeMan = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        MadeManChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not Linguist is enabled.
+        /// </summary>
+        public bool Linguist
+        {
+            get
+            {
+                return _blnLinguist;
+            }
+            set
+            {
+                bool blnOldValue = _blnLinguist;
+                _blnLinguist = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        LinguistChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not LightningReflexes is enabled.
+        /// </summary>
+        public bool LightningReflexes
+        {
+            get
+            {
+                return _blnLightningReflexes;
+            }
+            set
+            {
+                bool blnOldValue = _blnLightningReflexes;
+                _blnLightningReflexes = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        LightningReflexesChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not Fame is enabled.
+        /// </summary>
+        public bool Fame
+        {
+            get
+            {
+                return _blnFame;
+            }
+            set
+            {
+                bool blnOldValue = _blnFame;
+                _blnFame = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        FameChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not BornRich is enabled.
+        /// </summary>
+        public bool BornRich
+        {
+            get
+            {
+                return _blnBornRich;
+            }
+            set
+            {
+                bool blnOldValue = _blnBornRich;
+                _blnBornRich = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        BornRichChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
+        /// <summary>
+        /// Whether or not Erased is enabled.
+        /// </summary>
+        public bool Erased
+        {
+            get
+            {
+                return _blnErased;
+            }
+            set
+            {
+                bool blnOldValue = _blnErased;
+                _blnErased = value;
+                try
+                {
+                    if (blnOldValue != value)
+                        ErasedChanged(this);
+                }
+                catch
+                {
+                }
+            }
+        }
         /// <summary>
         /// Convert a string to a CharacterBuildMethod.
         /// </summary>

@@ -4494,7 +4494,9 @@
 			<name>Black Market Pipeline</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<blackmarket />
+			</bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4502,7 +4504,9 @@
 			<name>Born Rich</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<bornrich />
+			</bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4560,7 +4564,9 @@
 			<name>Erased</name>
 			<karma>8</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<erased />
+			</bonus>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4709,6 +4715,7 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
+				<lightningreflexes />
 				<initiative>1</initiative>
 				<initiativepass>1</initiativepass>
 			</bonus>
@@ -4719,7 +4726,9 @@
 			<name>Linguist</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<linguist />
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4727,7 +4736,9 @@
 			<name>Made Man</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<mademan />
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4817,6 +4828,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
+				<restrictedgear />
 				<selecttext />
 			</bonus>
 			<source>RF</source>
@@ -4828,6 +4840,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
+				<restrictedgear />
 				<selecttext />
 			</bonus>
 			<required>
@@ -4844,6 +4857,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
+				<restrictedgear />
 				<selecttext />
 			</bonus>
 			<required>
@@ -4964,7 +4978,9 @@
 			<name>Technical School Education</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<techschool />
+			</bonus>
 			<source>RF</source>
 			<page>150</page>
 		</quality>
@@ -5080,7 +5096,9 @@
 			<name>Trust Fund I</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5094,7 +5112,9 @@
 			<name>Trust Fund II</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5108,7 +5128,9 @@
 			<name>Trust Fund III</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5122,7 +5144,9 @@
 			<name>Trust Fund IV</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5488,6 +5512,7 @@
 			<category>Negative</category>
 			<bonus>
 				<freepositivequalities>-10</freepositivequalities>
+				<excon />
 			</bonus>
 			<addqualities>
 				<addquality>SINner (Criminal)</addquality>

@@ -42,7 +42,7 @@ namespace Chummer
             _objController = new MainController(_objCharacter);
             InitializeComponent();
 
-            // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
+            // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             _objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             _objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
             _objCharacter.AdeptTabEnabledChanged += objCharacter_AdeptTabEnabledChanged;
@@ -56,6 +56,18 @@ namespace Chummer
             _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
             _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
             _objCharacter.InfirmChanged += objCharacter_InfirmChanged;
+            _objCharacter.ExConChanged += objCharacter_ExConChanged;
+            _objCharacter.TrustFundChanged += objCharacter_TrustFundChanged;
+            _objCharacter.TechSchoolChanged += objCharacter_TechSchoolChanged;
+            _objCharacter.RestrictedGearChanged += objCharacter_RestrictedGearChanged;
+            _objCharacter.OverclockerChanged += objCharacter_OverclockerChanged;
+            _objCharacter.MadeManChanged += objCharacter_MadeManChanged;
+            _objCharacter.LinguistChanged += objCharacter_LinguistChanged;
+            _objCharacter.LightningReflexesChanged += objCharacter_LightningReflexesChanged;
+            _objCharacter.FameChanged += objCharacter_FameChanged;
+            _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
+            _objCharacter.ErasedChanged += objCharacter_ErasedChanged;
+
             GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -2026,19 +2038,6 @@ namespace Chummer
             // Change the status of Black Market being enabled.
             if (_objCharacter.BlackMarket)
             {
-                chkCyberwareBlackMarketDiscount.Visible = true;
-                chkArmorBlackMarketDiscount.Visible = true;
-                chkWeaponBlackMarketDiscount.Visible = true;
-                chkGearBlackMarketDiscount.Visible = true;
-                chkVehicleBlackMarketDiscount.Visible = true;
-            }
-            else
-            {
-                chkCyberwareBlackMarketDiscount.Visible = false;
-                chkArmorBlackMarketDiscount.Visible = false;
-                chkWeaponBlackMarketDiscount.Visible = false;
-                chkGearBlackMarketDiscount.Visible = false;
-                chkVehicleBlackMarketDiscount.Visible = false;
             }
         }
 
@@ -2125,8 +2124,183 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            // Change to the status of Infirm being enabled.
+            
             if (_objCharacter.FriendsInHighPlaces)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        private void objCharacter_ExConChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.ExCon)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_TrustFundChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.TrustFund)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_TechSchoolChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.TechSchool)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_RestrictedGearChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.RestrictedGear)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_OverclockerChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.Overclocker)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_MadeManChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.MadeMan)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_LinguistChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.Linguist)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_LightningReflexesChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.LightningReflexes)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_FameChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.Fame)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_BornRichChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.BornRich)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void objCharacter_ErasedChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            
+            if (_objCharacter.Erased)
             {
 
             }
