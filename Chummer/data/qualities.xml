@@ -5471,6 +5471,7 @@
 			<category>Negative</category>
 			<bonus>
 				<freepositivequalities>-10</freepositivequalities>
+        <excon/>
 			</bonus>
 			<addqualities>
 				<addquality>SINner (Criminal)</addquality>

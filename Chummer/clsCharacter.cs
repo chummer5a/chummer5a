@@ -34,6 +34,8 @@ public delegate void InfirmChangedHandler(Object sender);
 public delegate void CharacterNameChangedHandler(Object sender);
 // BlackMarketEnabledChanged Event Handler
 public delegate void BlackMarketEnabledChangedHandler(Object sender);
+// EX-Con event handler
+public delegate void EXConChangedChangeHandler(Object sender);
 
 namespace Chummer
 {
@@ -133,6 +135,7 @@ namespace Chummer
 		private bool _blnIsCritter = false;
 		private bool _blnPossessed = false;
 		private bool _blnBlackMarket = false;
+	    private bool _blnEXCon = false;
 		
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -246,6 +249,7 @@ namespace Chummer
 		public event InfirmChangedHandler InfirmChanged;
 		public event CharacterNameChangedHandler CharacterNameChanged;
 		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
+	    public event EXConChangedChangeHandler EXConChanged;
 
 		private frmViewer _frmPrintView;
 		
@@ -466,7 +470,9 @@ namespace Chummer
             objWriter.WriteElementString("schoolofhardknocks", _blnSchoolOfHardKnocks.ToString());
             // <infirm />
 			objWriter.WriteElementString("infirm", _blnInfirm.ToString());
-			// <blackmarket />
+            // <excon />
+            objWriter.WriteElementString("excon", _blnEXCon.ToString());
+            // <blackmarket />
 			objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
 
 			// <attributes>
@@ -1371,6 +1377,14 @@ namespace Chummer
 			catch
 			{
 			}
+		    try
+		    {
+		        _blnEXCon = Convert.ToBoolean(objXmlCharacter["excon"].InnerText);
+		    }
+		    catch
+		    {
+		    }
+
 			try
 			{
 				_blnBlackMarket = Convert.ToBoolean(objXmlCharacter["blackmarket"].InnerText);
@@ -2813,6 +2827,7 @@ namespace Chummer
 			_blnTechnomancerEnabled = false;
 			_blnInitiationEnabled = false;
 			_blnCritterEnabled = false;
+		    _blnEXCon = false;
 		
 			// Reset Attributes.
 			_attBOD = new Attribute("BOD");
@@ -6687,6 +6702,24 @@ namespace Chummer
 				}
 			}
 		}
+
+	    public bool EXCon
+	    {
+	        get
+	        {
+	            return _blnEXCon;
+	        }
+	        set
+	        {
+	            bool blnOldValue = _blnEXCon;
+	            _blnEXCon = value;
+	            if (blnOldValue != value)
+	            {
+	                if (EXConChanged != null) EXConChanged(this);
+	            }
+	            
+	        }
+	    }
 
 		/// <summary>
 		/// Convert a string to a CharacterBuildMethod.
