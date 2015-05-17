@@ -109,7 +109,19 @@ namespace Chummer
             SchoolOfHardKnocks = 96,
             FriendsInHighPlaces = 97,
             JackOfAllTrades = 98,
-            CollegeEducation = 99
+            CollegeEducation = 99,
+            Erased = 100,
+            BornRich = 101,
+            Fame = 102,
+            LightningReflexes = 103,
+            Linguist = 104,
+            MadeMan = 105,
+            Overclocker = 106,
+            RestrictedGear = 107,
+            TechSchool = 108,
+            TrustFund = 109,
+            ExCon = 110,
+            BlackMarket = 111
 
         }
 
@@ -289,7 +301,29 @@ namespace Chummer
 					return ImprovementType.Submersion;
 				case "Infirm":
 					return ImprovementType.Infirm;
-				case "Skillwire":
+                case "Overclocker":
+                    return ImprovementType.Overclocker;
+                case "TechSchool":
+                    return ImprovementType.TechSchool;
+                case "RestrictedGear":
+                    return ImprovementType.RestrictedGear;
+                case "TrustFund":
+                    return ImprovementType.TrustFund;
+                case "MadeMan":
+                    return ImprovementType.MadeMan;
+                case "BlackMarket":
+                    return ImprovementType.BlackMarket;
+                case "Linguist":
+                    return ImprovementType.Linguist;
+                case "Fame":
+                    return ImprovementType.Fame;
+                case "BornRich":
+                    return ImprovementType.BornRich;
+                case "Erased":
+                    return ImprovementType.Erased;
+                case "ExCon":
+                    return ImprovementType.ExCon;
+                case "Skillwire":
 					return ImprovementType.Skillwire;
 				case "DamageResistance":
 					return ImprovementType.DamageResistance;
@@ -2428,6 +2462,127 @@ namespace Chummer
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Infirm, strUnique);
                         _objCharacter.Infirm = true;
+                    }
+                    // Check for ExCon modifiers.
+                    if (NodeExists(nodBonus, "excon"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "ExCon");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "ExCon = " + nodBonus["excon"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ExCon, strUnique);
+                        _objCharacter.ExCon = true;
+                    }
+
+                    // Check for TrustFund modifiers.
+                    if (NodeExists(nodBonus, "trustfund"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "TrustFund");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "TrustFund = " + nodBonus["trustfund"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TrustFund, strUnique);
+                        _objCharacter.TrustFund = true;
+                    }
+
+                    // Check for BlackMarket modifiers.
+                    if (NodeExists(nodBonus, "blackmarket"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "BlackMarket");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "BlackMarket = " + nodBonus["blackmarket"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarket, strUnique);
+                        _objCharacter.BlackMarket = true;
+                    }
+
+
+                    // Check for Tech School modifiers.
+                    if (NodeExists(nodBonus, "techschool"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "techschool");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "techschool = " + nodBonus["techschool"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TechSchool, strUnique);
+                        _objCharacter.TechSchool = true;
+                    }
+                    // Check for MadeMan modifiers.
+                    if (NodeExists(nodBonus, "mademan"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "MadeMan");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "MadeMan = " + nodBonus["mademan"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MadeMan, strUnique);
+                        _objCharacter.MadeMan = true;
+                    }
+
+                    // Check for Linguist modifiers.
+                    if (NodeExists(nodBonus, "linguist"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Linguist");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "Linguist = " + nodBonus["linguist"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Linguist, strUnique);
+                        _objCharacter.Linguist = true;
+                    }
+
+                    // Check for LightningReflexes modifiers.
+                    if (NodeExists(nodBonus, "lightningreflexes"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "LightningReflexes");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "LightningReflexes = " + nodBonus["lightningreflexes"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.LightningReflexes, strUnique);
+                        _objCharacter.LightningReflexes = true;
+                    }
+
+                    // Check for Fame modifiers.
+                    if (NodeExists(nodBonus, "fame"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Fame");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "Fame = " + nodBonus["fame"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Fame, strUnique);
+                        _objCharacter.Fame = true;
+
+                    }
+                    // Check for BornRich modifiers.
+                    if (NodeExists(nodBonus, "bornrich"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "BornRich");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "BornRich = " + nodBonus["bornrich"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BornRich, strUnique);
+                        _objCharacter.BornRich = true;
+
+                    }
+                    // Check for Erased modifiers.
+                    if (NodeExists(nodBonus, "erased"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Erased");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "Erased = " + nodBonus["erased"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Erased, strUnique);
+                        _objCharacter.Erased = true;
+
+                    }
+                    // Check for Erased modifiers.
+                    if (NodeExists(nodBonus, "overclocker"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "OverClocker");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "Overclocker = " + nodBonus["overclocker"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Overclocker, strUnique);
+                        _objCharacter.Overclocker = true;
+
+                    }
+
+                    // Check for Restricted Gear modifiers.
+                    if (NodeExists(nodBonus, "restrictedgear"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "restrictedgear");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "restrictedgear = " + nodBonus["restrictedgear"].OuterXml.ToString());
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.RestrictedGear, strUnique);
+                        _objCharacter.RestrictedGear = true;
+
                     }
 
                     // Check for Adept Linguistics.

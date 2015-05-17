@@ -4584,6 +4584,7 @@
 						<bonus>1</bonus>
 					</skillcategory>
 				</limitmodifier>
+				<fame />
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -4600,6 +4601,7 @@
 			<karma>8</karma>
 			<category>Positive</category>
 			<bonus>
+			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -4626,6 +4628,7 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
+			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -4651,6 +4654,7 @@
 			<karma>16</karma>
 			<category>Positive</category>
 			<bonus>
+			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -4762,7 +4766,9 @@
 			<name>Overclocker</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+			<overclocker />
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4829,7 +4835,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selecttext />
+				<selectrestricted />
 			</bonus>
 			<source>RF</source>
 			<page>149</page>
@@ -4841,7 +4847,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selecttext />
+				<selectrestricted />
 			</bonus>
 			<required>
 				<allof>
@@ -4858,7 +4864,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selecttext />
+				<selectrestricted />
 			</bonus>
 			<required>
 				<allof>
