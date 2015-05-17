@@ -55,6 +55,7 @@ namespace Chummer
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
 			_objCharacter.InfirmChanged += objCharacter_InfirmChanged;
+            _objCharacter.EXConChanged += _objCharacter_EXConChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -71,6 +72,8 @@ namespace Chummer
 			SetTooltips();
 			MoveControls();
 		}
+
+        
 
 		/// <summary>
 		/// Set the form to Loading mode so that certain events do not fire while data is being populated.
@@ -2121,6 +2124,14 @@ namespace Chummer
 				}
 			}
 		}
+
+        void _objCharacter_EXConChanged(object sender)
+        {
+            if (_blnReapplyImprovements)
+                return;
+
+            return; //We don't acctualy do anything with this before validation
+        }
 		#endregion
 
 		#region Menu Events
@@ -20017,6 +20028,7 @@ namespace Chummer
 			int intRestrictedAllowed = _objImprovementManager.ValueOf(Improvement.ImprovementType.RestrictedItemCount);
 			int intRestrictedCount = 0;
 			string strAvailItems = "";
+		    string strExConItems = "";
 
             // Check limits specific to the Priority build method.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -20315,6 +20327,13 @@ namespace Chummer
 					intRestrictedCount++;
 					strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
 				}
+
+			    if (_objCharacter.EXCon && 
+                    (objCyberware.Avail.Contains("F") || objCyberware.Avail.Contains("R")))
+			    {
+			        strExConItems += "\n\t\t" + objCyberware.DisplayNameShort;
+			    }
+
 				foreach (Cyberware objPlugin in objCyberware.Children)
 				{
 					if (!objPlugin.TotalAvail.StartsWith("+"))
@@ -20607,6 +20626,13 @@ namespace Chummer
 				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
 				strMessage += strAvailItems;
 			}
+
+		    if (!String.IsNullOrWhiteSpace(strExConItems))
+		    {
+		        blnValid = false;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+		        strMessage += strExConItems;
+		    }
 
 			// Check item Capacities if the option is enabled.
             List<string> lstOverCapacity = new List<string>();

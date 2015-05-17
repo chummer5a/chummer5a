@@ -14,91 +14,91 @@ namespace Chummer
             Skill = 0,
             Attribute = 1,
             Text = 2,
-			Armor = 3,
-			Reach = 5,
-			Nuyen = 6,
-			Essence = 7,
-			Reaction = 8,
-			PhysicalCM = 9,
-			StunCM = 10,
-			UnarmedDV = 11,
-			SkillGroup = 12,
-			SkillCategory = 13,
-			SkillAttribute = 14,
-			InitiativePass = 15,
-			MatrixInitiative = 16,
-			MatrixInitiativePass = 17,
-			LifestyleCost = 18,
-			CMThreshold = 19,
-			EnhancedArticulation = 20,
-			WeaponCategoryDV = 21,
-			CyberwareEssCost = 22,
-			SpecialTab = 23,
-			Initiative = 24,
-			Uneducated = 25,
-			LivingPersonaResponse = 26,
-			LivingPersonaSignal = 27,
-			LivingPersonaFirewall = 28,
-			LivingPersonaSystem = 29,
-			LivingPersonaBiofeedback = 30,
-			Smartlink = 31,
-			BiowareEssCost = 32,
-			GenetechCostMultiplier = 33,
-			BasicBiowareEssCost = 34,
-			TransgenicsBiowareCost = 35,
-			SoftWeave = 36,
-			SensitiveSystem = 37,
-			ConditionMonitor = 38,
-			UnarmedDVPhysical = 39,
-			MovementPercent = 40,
-			Adapsin = 41,
-			FreePositiveQualities = 42,
-			FreeNegativeQualities = 43,
-			NuyenMaxBP = 44,
-			CMOverflow = 45,
-			FreeSpiritPowerPoints = 46,
-			AdeptPowerPoints = 47,
-			ArmorEncumbrancePenalty = 48,
-			Uncouth = 49,
-			Initiation = 50,
-			Submersion = 51,
-			Infirm = 52,
-			Skillwire = 53,
-			DamageResistance = 54,
-			RestrictedItemCount = 55,
-			AdeptLinguistics = 56,
-			SwimPercent = 57,
-			FlyPercent = 58,
-			FlySpeed = 59,
-			JudgeIntentions = 60,
-			LiftAndCarry = 61,
-			Memory = 62,
-			Concealability = 63,
-			SwapSkillAttribute = 64,
-			DrainResistance = 65,
-			FadingResistance = 66,
-			MatrixInitiativePassAdd = 67,
-			InitiativePassAdd = 68,
-			Composure = 69,
-			UnarmedAP = 70,
-			CMThresholdOffset = 71,
-			Restricted = 72,
-			Notoriety = 73,
-			SpellCategory = 74,
-			ThrowRange = 75,
-			SkillsoftAccess = 76,
-			AddSprite = 77,
-			BlackMarketDiscount = 78,
-			SelectWeapon = 79,
-			ComplexFormLimit = 80,
-			SpellLimit = 81,
-			QuickeningMetamagic = 82,
-			BasicLifestyleCost = 83,
-			ThrowSTR = 84,
-			IgnoreCMPenaltyStun = 85,
-			IgnoreCMPenaltyPhysical = 86,
-			CyborgEssence = 87,
-			EssenceMax = 88,
+            Armor = 3,
+            Reach = 5,
+            Nuyen = 6,
+            Essence = 7,
+            Reaction = 8,
+            PhysicalCM = 9,
+            StunCM = 10,
+            UnarmedDV = 11,
+            SkillGroup = 12,
+            SkillCategory = 13,
+            SkillAttribute = 14,
+            InitiativePass = 15,
+            MatrixInitiative = 16,
+            MatrixInitiativePass = 17,
+            LifestyleCost = 18,
+            CMThreshold = 19,
+            EnhancedArticulation = 20,
+            WeaponCategoryDV = 21,
+            CyberwareEssCost = 22,
+            SpecialTab = 23,
+            Initiative = 24,
+            Uneducated = 25,
+            LivingPersonaResponse = 26,
+            LivingPersonaSignal = 27,
+            LivingPersonaFirewall = 28,
+            LivingPersonaSystem = 29,
+            LivingPersonaBiofeedback = 30,
+            Smartlink = 31,
+            BiowareEssCost = 32,
+            GenetechCostMultiplier = 33,
+            BasicBiowareEssCost = 34,
+            TransgenicsBiowareCost = 35,
+            SoftWeave = 36,
+            SensitiveSystem = 37,
+            ConditionMonitor = 38,
+            UnarmedDVPhysical = 39,
+            MovementPercent = 40,
+            Adapsin = 41,
+            FreePositiveQualities = 42,
+            FreeNegativeQualities = 43,
+            NuyenMaxBP = 44,
+            CMOverflow = 45,
+            FreeSpiritPowerPoints = 46,
+            AdeptPowerPoints = 47,
+            ArmorEncumbrancePenalty = 48,
+            Uncouth = 49,
+            Initiation = 50,
+            Submersion = 51,
+            Infirm = 52,
+            Skillwire = 53,
+            DamageResistance = 54,
+            RestrictedItemCount = 55,
+            AdeptLinguistics = 56,
+            SwimPercent = 57,
+            FlyPercent = 58,
+            FlySpeed = 59,
+            JudgeIntentions = 60,
+            LiftAndCarry = 61,
+            Memory = 62,
+            Concealability = 63,
+            SwapSkillAttribute = 64,
+            DrainResistance = 65,
+            FadingResistance = 66,
+            MatrixInitiativePassAdd = 67,
+            InitiativePassAdd = 68,
+            Composure = 69,
+            UnarmedAP = 70,
+            CMThresholdOffset = 71,
+            Restricted = 72,
+            Notoriety = 73,
+            SpellCategory = 74,
+            ThrowRange = 75,
+            SkillsoftAccess = 76,
+            AddSprite = 77,
+            BlackMarketDiscount = 78,
+            SelectWeapon = 79,
+            ComplexFormLimit = 80,
+            SpellLimit = 81,
+            QuickeningMetamagic = 82,
+            BasicLifestyleCost = 83,
+            ThrowSTR = 84,
+            IgnoreCMPenaltyStun = 85,
+            IgnoreCMPenaltyPhysical = 86,
+            CyborgEssence = 87,
+            EssenceMax = 88,
             AdeptPower = 89,
             SpecificQuality = 90,
             MartialArt = 91,
@@ -107,6 +107,7 @@ namespace Chummer
             MentalLimit = 94,
             SocialLimit = 95,
             SchoolOfHardKnocks = 96,
+            EXCon = 97,
         }
 
         public enum ImprovementSource
@@ -2245,7 +2246,7 @@ namespace Chummer
                     }
 
                     // Check for Initiative Pass modifiers. Only the highest one ever applies.
-                    if (NodeExists(nodBonus, "initiativepass"))
+                    if (NodeExists(nodBonus, "initiativepass"))  //TODO: Easy lightning reflexes?
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "initiativepass");
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "initiativepass = " + nodBonus["initiativepass"].OuterXml.ToString());
@@ -2389,6 +2390,14 @@ namespace Chummer
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Infirm, strUnique);
                         _objCharacter.Infirm = true;
+                    }
+
+                    if (NodeExists(nodBonus, "excon"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "excon");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+                        CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.EXCon, strUnique);
+                        _objCharacter.EXCon = true;
                     }
 
                     // Check for Adept Linguistics.
@@ -4292,6 +4301,28 @@ namespace Chummer
                     if (!blnFound)
                         _objCharacter.SchoolOfHardKnocks = false;
                 }
+
+                //Turn off the Ex-Con flag if it is being removed
+			    if (objImprovement.ImproveType == Improvement.ImprovementType.EXCon)
+			    {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.EXCon)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.EXCon = false;
+			    }
 
 				// Turn off the Infirm flag if it is being removed.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Infirm)
