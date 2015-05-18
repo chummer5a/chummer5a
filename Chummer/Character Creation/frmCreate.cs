@@ -20097,6 +20097,7 @@ namespace Chummer
             int intRestrictedAllowed = _objImprovementManager.ValueOf(Improvement.ImprovementType.RestrictedItemCount);
             int intRestrictedCount = 0;
             string strAvailItems = "";
+            string strExConItems = "";
 
             // Check limits specific to the Priority build method.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -20379,6 +20380,13 @@ namespace Chummer
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
                 }
+
+                if (_objCharacter.ExCon && 
+                (objCyberware.Avail.Contains("F") || objCyberware.Avail.Contains("R")))
+ 			    {
+ 			        strExConItems += "\n\t\t" + objCyberware.DisplayNameShort;
+ 			    }
+
                 foreach (Cyberware objPlugin in objCyberware.Children)
                 {
                     if (!objPlugin.TotalAvail.StartsWith("+"))
@@ -20671,6 +20679,13 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
                 strMessage += strAvailItems;
             }
+
+            if (!String.IsNullOrWhiteSpace(strExConItems))
+		    {
+		        blnValid = false;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+		        strMessage += strExConItems;
+		    }
 
             // Check item Capacities if the option is enabled.
             List<string> lstOverCapacity = new List<string>();
