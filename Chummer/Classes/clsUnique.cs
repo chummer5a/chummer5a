@@ -8098,10 +8098,7 @@ namespace Chummer
         private string _strLocation = "";
 		private int _intConnection = 1;
 		private int _intLoyalty = 1;
-		private int _intMembership = 0;
-		private int _intAreaOfInfluence = 0;
-		private int _intMagicalResources = 0;
-		private int _intMatrixResources = 0;
+		
 		private string _strGroupName = "";
 		private ContactType _objContactType = ContactType.Contact;
 		private string _strFileName = "";
@@ -8109,7 +8106,7 @@ namespace Chummer
 		private string _strNotes = "";
 		private Color _objColour;
 		private bool _blnFree = false;
-        private bool _blnFixed = false;
+        private bool _blnIsGroup = false;
 		private Character _objCharacter;
 
 		#region Helper Methods
@@ -8149,18 +8146,14 @@ namespace Chummer
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("connection", _intConnection.ToString());
 			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
-			objWriter.WriteElementString("membership", _intMembership.ToString());
-			objWriter.WriteElementString("areaofinfluence", _intAreaOfInfluence.ToString());
-			objWriter.WriteElementString("magicalresources", _intMagicalResources.ToString());
-			objWriter.WriteElementString("matrixresources", _intMatrixResources.ToString());
-			objWriter.WriteElementString("type", _objContactType.ToString());
+            objWriter.WriteElementString("type", _objContactType.ToString());
 			objWriter.WriteElementString("file", _strFileName);
 			objWriter.WriteElementString("relative", _strRelativeName);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("groupname", _strGroupName);
 			objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
 			objWriter.WriteElementString("free", _blnFree.ToString());
-            objWriter.WriteElementString("fixed", _blnFixed.ToString());
+            objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteEndElement();
 		}
 
@@ -8187,17 +8180,7 @@ namespace Chummer
             }
             _intConnection = Convert.ToInt32(objNode["connection"].InnerText);
 			_intLoyalty = Convert.ToInt32(objNode["loyalty"].InnerText);
-			try
-			{
-				_intMembership = Convert.ToInt32(objNode["membership"].InnerText);
-				_intAreaOfInfluence = Convert.ToInt32(objNode["areaofinfluence"].InnerText);
-				_intMagicalResources = Convert.ToInt32(objNode["magicalresources"].InnerText);
-				_intMatrixResources = Convert.ToInt32(objNode["matrixresources"].InnerText);
-			}
-			catch
-			{
-			}
-			_objContactType = ConvertToContactType(objNode["type"].InnerText);
+            _objContactType = ConvertToContactType(objNode["type"].InnerText);
 			try
 			{
 				_strFileName = objNode["file"].InnerText;
@@ -8241,12 +8224,12 @@ namespace Chummer
 			{
 			}
             try
-            {
-                _blnFixed = Convert.ToBoolean(objNode["fixed"].InnerText);
-            }
-            catch
-            {
-            }
+		    {
+		        _blnIsGroup = Convert.ToBoolean(objNode["group"].InnerText);
+		    }
+		    catch
+		    {
+		    }
         }
 
 		/// <summary>
@@ -8259,10 +8242,10 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("role", _strRole);
             objWriter.WriteElementString("location", _strLocation);
-            if (Group == 0)
+            if (IsGroup == false)
 				objWriter.WriteElementString("connection", _intConnection.ToString());
 			else
-				objWriter.WriteElementString("connection", _intConnection.ToString() + " (" + Group.ToString() + ")");
+                objWriter.WriteElementString("connection", "Group(" + _intConnection.ToString() + ")");
 			objWriter.WriteElementString("loyalty", _intLoyalty.ToString());
 			objWriter.WriteElementString("type", LanguageManager.Instance.GetString("String_" + _objContactType.ToString()));
 			if (_objCharacter.Options.PrintNotes)
@@ -8359,76 +8342,24 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Contact's Group Rating (applies to Contacts only).
-		/// </summary>
-		public int Group
-		{
-			get
-			{
-				return _intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources;
-			}
-		}
+		
 
-		/// <summary>
-		/// Connection Modifier: Membership.
-		/// </summary>
-		public int Membership
-		{
-			get
-			{
-				return _intMembership;
-			}
-			set
-			{
-				_intMembership = value;
-			}
-		}
+        /// <summary>
+        /// Is this contract a group contract?
+        /// </summary>
+	    public bool IsGroup
+	    {
+	        get
+	        {
+	            return _blnIsGroup;
+	        }
+            set
+            {
+                _blnIsGroup = value;
+            }
+	    }
 
-		/// <summary>
-		/// Connection Modifier: Area of Influence.
-		/// </summary>
-		public int AreaOfInfluence
-		{
-			get
-			{
-				return _intAreaOfInfluence;
-			}
-			set
-			{
-				_intAreaOfInfluence = value;
-			}
-		}
-
-		/// <summary>
-		/// Connection Modifier: Magical Resources.
-		/// </summary>
-		public int MagicalResources
-		{
-			get
-			{
-				return _intMagicalResources;
-			}
-			set
-			{
-				_intMagicalResources = value;
-			}
-		}
-
-		/// <summary>
-		/// Connection Modifier: Matrix Resources:
-		/// </summary>
-		public int MatrixResources
-		{
-			get
-			{
-				return _intMatrixResources;
-			}
-			set
-			{
-				_intMatrixResources = value;
-			}
-		}
+		
 
 		/// <summary>
 		/// The Contact's type, either Contact or Enemy.
@@ -8535,20 +8466,6 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Whether or not this is a fixed (non-removable) contact.
-        /// </summary>
-        public bool Fixed
-        {
-            get
-            {
-                return _blnFixed;
-            }
-            set
-            {
-                _blnFixed = value;
-            }
-        }
         #endregion
 	}
 
