@@ -95,6 +95,8 @@ namespace Chummer
             if (_objContact.Notes != string.Empty)
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, strTooltip);
+
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
