@@ -59,6 +59,19 @@ namespace Chummer
             control.MouseLeave += control_MouseLeave;
         }
 
+        public void AddControlRecursive(Control control)
+        {
+            _controls.Add(control);
+            control.MouseLeave += control_MouseLeave;
+            if (control.HasChildren)
+            {
+                foreach (Control child in control.Controls)
+                {
+                    AddControlRecursive(child);
+                }
+            }
+        }
+
         //This is our custom event added to each control to check mouse leave
         void control_MouseLeave(object sender, EventArgs e)
         {
@@ -94,5 +107,7 @@ namespace Chummer
             //As we don't call after this we don't need to store references to potential dead controls
             _controls.Clear();
         }
+
+        
     }
 }

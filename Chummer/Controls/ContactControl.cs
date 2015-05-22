@@ -51,8 +51,10 @@ namespace Chummer
             txtContactLocation.MouseHover += ContactControl_MouseHover;
             txtContactName.MouseHover += ContactControl_MouseHover;
             cboContactRole.MouseHover += ContactControl_MouseHover;
-            //Uncomment line to make hover window apear on delete button too
+            //Uncomment lines belov to make hovering over quick info 
+            //label/delete button work
             //cmdDelete.MouseHover += ContactControl_MouseHover;
+            //lblQuick.MouseHover += ContactControl_MouseHover;
 
 
              //we need to raise some events that are based on this file but
@@ -107,8 +109,8 @@ namespace Chummer
                 _displayCordinator.OnAllLeave += (o, args) => { _displayCordinator = null; };
                 ContactAdv _contactAdv = 
                     new ContactAdv(_displayCordinator, this, _objContact, _objCharacter,cbobj);
-                _displayCordinator.AddControl(this);
-                _displayCordinator.AddControl(_contactAdv);
+                _displayCordinator.AddControlRecursive(this);
+                _displayCordinator.AddControlRecursive(_contactAdv);
                 _contactAdv.Show(ParentForm);
                 _contactAdv.DesktopLocation = PointToScreen(new Point(0, (- _contactAdv.Height)));
             }
