@@ -1404,16 +1404,27 @@ namespace Chummer
             }
             catch { }
 
-            // Karma Free Knowledge
-            _blnFreeKarmaContacts = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmacontacts").InnerText);
-            // Karma Free Knowledge
-            _blnFreeKarmaKnowledge = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledge").InnerText);
-            // Free Contacts Multiplier
-            _intFreeKnowledgeMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
-			// No Single Armor Encumbrance
-			_blnNoSingleArmorEncumbrance = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/nosinglearmorencumbrance").InnerText);
-			// Ignore Armor Encumbrance
-			try
+		    try
+		    {
+		        // Karma Free Knowledge
+		        _blnFreeKarmaContacts =
+		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmacontacts").InnerText);
+		        // Karma Free Knowledge
+		        _blnFreeKarmaKnowledge =
+		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledge").InnerText);
+		        // Free Contacts Multiplier
+		        _intFreeKnowledgeMultiplier =
+		            Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
+		        // No Single Armor Encumbrance
+		        _blnNoSingleArmorEncumbrance =
+		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/nosinglearmorencumbrance").InnerText);
+		        // Ignore Armor Encumbrance
+		    }
+		    catch
+		    {
+		    }
+
+		    try
 			{
 				_blnIgnoreArmorEncumbrance = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/ignorearmorencumbrance").InnerText);
 			}

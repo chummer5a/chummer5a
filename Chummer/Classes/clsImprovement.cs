@@ -4509,6 +4509,28 @@ namespace Chummer
                         _objCharacter.SchoolOfHardKnocks = false;
                 }
 
+                //Turn off the Ex-Con flag if it is being removed
+			    if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
+			    {
+                     bool blnFound = false;
+                     // See if the character has anything else that is granting them access to SchoolOfHardKnocks.
+                     foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                     {
+                         // Skip items from the current Improvement source.
+                         if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                         {
+                             if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
+                             {
+                                 blnFound = true;
+                                 break;
+                             }
+                         }
+                     }
+ 
+                     if (!blnFound)
+                         _objCharacter.ExCon = false;
+ 			    }
+
 				// Turn off the Infirm flag if it is being removed.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Infirm)
 				{
