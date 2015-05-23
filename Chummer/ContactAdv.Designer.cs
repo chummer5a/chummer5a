@@ -54,7 +54,7 @@
             // 
             // nudLoyalty
             // 
-            this.nudLoyalty.Location = new System.Drawing.Point(74, 16);
+            this.nudLoyalty.Location = new System.Drawing.Point(76, 16);
             this.nudLoyalty.Maximum = new decimal(new int[] {
             6,
             0,
@@ -217,7 +217,7 @@
             // lblGroup
             // 
             this.lblGroup.AutoSize = true;
-            this.lblGroup.Location = new System.Drawing.Point(122, 0);
+            this.lblGroup.Location = new System.Drawing.Point(126, 0);
             this.lblGroup.Name = "lblGroup";
             this.lblGroup.Size = new System.Drawing.Size(39, 13);
             this.lblGroup.TabIndex = 51;
@@ -227,7 +227,7 @@
             // chkGroup
             // 
             this.chkGroup.AutoSize = true;
-            this.chkGroup.Location = new System.Drawing.Point(125, 18);
+            this.chkGroup.Location = new System.Drawing.Point(129, 18);
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(15, 14);
             this.chkGroup.TabIndex = 52;

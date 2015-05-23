@@ -68,9 +68,7 @@ namespace Chummer
 
         private void LoadLanguage()
         {
-            //Load different language here
-            //Tag on objects to data strings
-
+            
 
             //setup the right tooltips depending on enemy/contact
             bool blnEnemy = _objContact.EntityType == ContactType.Enemy;
@@ -95,6 +93,14 @@ namespace Chummer
             if (_objContact.Notes != string.Empty)
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, strTooltip);
+
+            //Set Loyality to Incidence in case of Enemies
+            if (blnEnemy)
+            {
+                lblLoyalty.Text = "Incidence:";
+                lblLoyalty.Tag = "Label_Enemy_Incidence"; //Tag for translation
+            }
+
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
