@@ -825,7 +825,8 @@ namespace Chummer
                 {
                     intContact++;
                     ContactControl objContactControl = new ContactControl(_objCharacter);
-                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                    objContactControl.OtherCostChanged += objContact_OtherCostChanged;
                     objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
                     objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
@@ -4793,6 +4794,16 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
+        private void objContact_OtherCostChanged(Object sender)
+        {
+            //Handle any other kind of change that changes contact cost
+            //mostly a free contact but a few details in run faster changes it too
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
         private void objContact_LoyaltyRatingChanged(Object sender)
         {
             // Handle the LoyaltyRatingChanged Event for the ContactControl object.
@@ -5454,7 +5465,8 @@ namespace Chummer
             objContactControl.ContactObject = objContact;
             objContactControl.EntityType = ContactType.Contact;
 
-            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
+            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
             objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
@@ -5526,7 +5538,9 @@ namespace Chummer
             objContactControl.ContactObject = objContact;
             objContactControl.EntityType = ContactType.Enemy;
 
-            // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+            // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged and OtherCostChanged(hackish) Events
+            //TODO: Refactor the clusterfuck that is enemy cost calculations
+            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
             objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
@@ -15657,6 +15671,9 @@ namespace Chummer
             int intGroupContacts = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
+                //Don't care about free contacts
+                if (objContactControl.ContactObject.Free) continue;
+
                 if (objContactControl.IsGroup == false)
                 {
                     int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
@@ -15667,6 +15684,7 @@ namespace Chummer
                         //over is negative so to add we substract
                         //instead of +abs(over)
                         intPointsUsed -= over;
+                        intContactPointsLeft = 0; //we went over so we know none are left
                     }
                     else
                     {

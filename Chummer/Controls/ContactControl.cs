@@ -16,6 +16,8 @@ public delegate void LoyaltyRatingChangedHandler(Object sender);
 public delegate void DeleteContactHandler(Object sender);
 // FileNameChanged Event Handler.
 public delegate void FileNameChangedHandler(Object sender);
+// OtherCostChanged Event Handler.
+public delegate void OtherCostChangedHandler(Object sender);
 
 namespace Chummer
 {
@@ -36,6 +38,7 @@ namespace Chummer
         public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
         public event DeleteContactHandler DeleteContact;
 		public event FileNameChangedHandler FileNameChanged;
+        public event OtherCostChangedHandler OtherCostChanged;
 
 		#region Control Events
         public ContactControl(Character objCharacter)
@@ -60,7 +63,10 @@ namespace Chummer
              //we need to raise some events that are based on this file but
             //now raised somewhere else. This object works as a proxy for that
             cbobj = new ContractControlCallBackObject();
-            
+            cbobj.OtherCostChanged += sender =>
+            {
+                if (OtherCostChanged != null) OtherCostChanged(sender);
+            };
             cbobj.FileNameChanged += sender =>
             {
                 if (FileNameChanged != null) FileNameChanged(sender);
@@ -357,6 +363,7 @@ namespace Chummer
         internal event ConnectionGroupRatingChangedHandler GroupStatusChanged;
         internal event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
         internal event FileNameChangedHandler FileNameChanged;
+        internal event OtherCostChangedHandler OtherCostChanged;
 
         internal void OnConnectionRatingChanged(Object sender)
         {
@@ -387,6 +394,14 @@ namespace Chummer
             if (FileNameChanged != null)
             {
                 FileNameChanged(sender);
+            }
+        }
+
+        internal void OnOtherCostChanged(Object sender)
+        {
+            if (OtherCostChanged != null)
+            {
+                OtherCostChanged(sender);
             }
         }
     }

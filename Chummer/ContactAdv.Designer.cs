@@ -45,6 +45,8 @@
             this.lblContactNameLabel = new System.Windows.Forms.Label();
             this.lblGroup = new System.Windows.Forms.Label();
             this.chkGroup = new System.Windows.Forms.CheckBox();
+            this.lblFree = new System.Windows.Forms.Label();
+            this.chkFree = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -234,11 +236,33 @@
             this.chkGroup.UseVisualStyleBackColor = true;
             this.chkGroup.CheckedChanged += new System.EventHandler(this.chkGroup_CheckedChanged);
             // 
+            // lblFree
+            // 
+            this.lblFree.AutoSize = true;
+            this.lblFree.Location = new System.Drawing.Point(171, 0);
+            this.lblFree.Name = "lblFree";
+            this.lblFree.Size = new System.Drawing.Size(31, 13);
+            this.lblFree.TabIndex = 53;
+            this.lblFree.Tag = "Label_Contact_Free";
+            this.lblFree.Text = "Free:";
+            // 
+            // chkFree
+            // 
+            this.chkFree.AutoSize = true;
+            this.chkFree.Location = new System.Drawing.Point(174, 18);
+            this.chkFree.Name = "chkFree";
+            this.chkFree.Size = new System.Drawing.Size(15, 14);
+            this.chkFree.TabIndex = 54;
+            this.chkFree.UseVisualStyleBackColor = true;
+            this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
+            // 
             // ContactAdv
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(464, 55);
+            this.Controls.Add(this.chkFree);
+            this.Controls.Add(this.lblFree);
             this.Controls.Add(this.chkGroup);
             this.Controls.Add(this.lblGroup);
             this.Controls.Add(this.lblContactArchtypeLabel);
@@ -282,6 +306,8 @@
         private System.Windows.Forms.Label lblContactNameLabel;
         private System.Windows.Forms.Label lblGroup;
         private System.Windows.Forms.CheckBox chkGroup;
+        private System.Windows.Forms.Label lblFree;
+        private System.Windows.Forms.CheckBox chkFree;
 
     }
 }

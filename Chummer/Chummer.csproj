@@ -99,6 +99,7 @@
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsEquipment.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
+    <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
     <Compile Include="Classes\clsExpenses.cs" />
     <Compile Include="Classes\clsLanguageManager.cs" />
@@ -144,6 +145,12 @@
     </Compile>
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ContactAdv.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ContactAdv.Designer.cs">
+      <DependentUpon>ContactAdv.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCreateCyberwareSuite.cs">
       <SubType>Form</SubType>
@@ -706,6 +713,9 @@
     <EmbeddedResource Include="frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ContactAdv.resx">
+      <DependentUpon>ContactAdv.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCreateCyberwareSuite.resx">
       <DependentUpon>frmCreateCyberwareSuite.cs</DependentUpon>
