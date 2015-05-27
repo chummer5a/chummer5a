@@ -54,7 +54,13 @@ namespace Chummer
             nudLoyalty.Value = _objContact.Loyalty;
             chkGroup.Checked = _objContact.IsGroup;
 
-            
+            //We don't acctualy pay for contacts in play so everyone is free
+            //Don't present a useless field
+            if (_objCharacter.Created)
+            {
+                lblFree.Visible = false;
+                chkFree.Visible = false;
+            }
             
             
 
@@ -68,9 +74,7 @@ namespace Chummer
 
         private void LoadLanguage()
         {
-            //Load different language here
-            //Tag on objects to data strings
-
+            
 
             //setup the right tooltips depending on enemy/contact
             bool blnEnemy = _objContact.EntityType == ContactType.Enemy;
@@ -95,6 +99,14 @@ namespace Chummer
             if (_objContact.Notes != string.Empty)
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, strTooltip);
+
+            //Set Loyality to Incidence in case of Enemies
+            if (blnEnemy)
+            {
+                lblLoyalty.Text = "Incidence:";
+                lblLoyalty.Tag = "Label_Enemy_Incidence"; //Tag for translation
+            }
+
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
@@ -263,6 +275,12 @@ namespace Chummer
             //Loyality can be changed by event above
             nudLoyalty.Enabled = !_objContact.IsGroup;
             nudLoyalty.Value = _objContact.Loyalty;
+        }
+
+        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        {
+            _objContact.Free = chkFree.Checked;
+            _cb.OnOtherCostChanged(this);
         }
     }
 }
