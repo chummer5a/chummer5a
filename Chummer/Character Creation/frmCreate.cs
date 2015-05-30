@@ -741,7 +741,7 @@ namespace Chummer
                 if (objGroup.Rating > objGroup.RatingMaximum)
                     objGroup.RatingMaximum = objGroup.Rating;
                 objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
-                // objGroupControl.GroupRating = objGroup.Rating;
+                objGroupControl.GroupRating = objGroup.Rating;
                 objGroupControl.BaseRating = objGroup.Base;
                 objGroupControl.KarmaRating = objGroup.Karma;
                 objGroupControl.Top = i * objGroupControl.Height;
@@ -4725,7 +4725,8 @@ namespace Chummer
                         objActiveSkill.SkillRating = intRating;
                         objActiveSkill.SkillObject.FreeLevels = intRating;
                         if (objSkillGroup.FreeLevels > 0)
-                            objActiveSkill.SkillObject.FreeLevels = intRating;
+                        { objActiveSkill.SkillObject.FreeLevels = intRating; }
+                    
                     }
                 }
             }
@@ -16005,7 +16006,8 @@ namespace Chummer
                         intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
 
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")) 
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
+
                         {
                             i++;
                         }
@@ -16014,7 +16016,7 @@ namespace Chummer
                     if (i <= objSkillControl.SkillBase)
                     {
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
                         {
                             i++;
                         }
@@ -16027,7 +16029,7 @@ namespace Chummer
                         {
                             intPointsUsed += (i * _objOptions.KarmaImproveKnowledgeSkill);
                             //Skip a level for the 2-for-1 deals.
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
                             {
                                 i++;
                             }
@@ -20339,10 +20341,24 @@ namespace Chummer
             }
 
             // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
+            bool blnRestrictedGearUsed = false;
             // Gear Availability.
             foreach (Gear objGear in _objCharacter.Gear)
             {
-                if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                    {
+                        blnRestrictedGearUsed = true;
+                    }
+                    else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                    {
+                        intRestrictedCount++;
+                        strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                    }
+                }
+
+                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                 {
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
@@ -20351,19 +20367,46 @@ namespace Chummer
                 {
                     if (!objChild.TotalAvail().StartsWith("+"))
                     {
-                        if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                         }
                         foreach (Gear objSubChild in objChild.Children)
                         {
                             if (!objSubChild.TotalAvail().StartsWith("+"))
                             {
-                                if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                {
+                                    if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                    }
+                                    else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                                    }
+                                }
+
+                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                 {
                                     intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                                 }
                             }
                         }
@@ -20374,19 +20417,47 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
-                if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+
+                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    if ((GetAvailInt(objCyberware.TotalAvail) <= 24) && ((GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)))
+                    {
+                        blnRestrictedGearUsed = true;
+                    }
+                    else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+                    {
+                        intRestrictedCount++;
+                        strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
+                    }
+                }
+
+                else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
                 {
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
                 }
+
                 foreach (Cyberware objPlugin in objCyberware.Children)
                 {
                     if (!objPlugin.TotalAvail.StartsWith("+"))
                     {
-                        if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objPlugin.TotalAvail) <= 24) && ((GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objPlugin.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objPlugin.DisplayNameShort;
+                            strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
                         }
                     }
 
@@ -20394,17 +20465,43 @@ namespace Chummer
                     {
                         if (!objGear.TotalAvail().StartsWith("+"))
                         {
-                            if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                                }
+                            }
+
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                             {
                                 intRestrictedCount++;
                                 strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
-                        }
+                    }
                         foreach (Gear objChild in objGear.Children)
                         {
                             if (!objChild.TotalAvail().StartsWith("+"))
                             {
-                                if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                {
+                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                    }
+                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                    }
+                                }
+
+                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                 {
                                     intRestrictedCount++;
                                     strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
@@ -20414,7 +20511,20 @@ namespace Chummer
                             {
                                 if (!objSubChild.TotalAvail().StartsWith("+"))
                                 {
-                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                        }
+                                    }
+
+                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                     {
                                         intRestrictedCount++;
                                         strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
@@ -20429,7 +20539,21 @@ namespace Chummer
                 {
                     if (!objGear.TotalAvail().StartsWith("+"))
                     {
-                        if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
                             strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
@@ -20439,21 +20563,47 @@ namespace Chummer
                     {
                         if (!objChild.TotalAvail().StartsWith("+"))
                         {
-                            if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                             {
                                 intRestrictedCount++;
                                 strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
                             }
                         }
+
+                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                        }
+                    }
                         foreach (Gear objSubChild in objChild.Children)
                         {
-                            if (!objSubChild.TotalAvail().StartsWith("+"))
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                             {
-                                if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
                                 {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    blnRestrictedGearUsed = true;
                                 }
+                                else if (!objSubChild.TotalAvail().StartsWith("+"))
+                                {
+                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    }
+                                }
+                            }
+
+                            else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
                         }
                     }
@@ -20463,27 +20613,143 @@ namespace Chummer
             // Armor Availability.
             foreach (Armor objArmor in _objCharacter.Armor)
             {
-                if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
+
+                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    if ((GetAvailInt(objArmor.TotalAvail) <= 24) && ((GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)))
+                    {
+                        blnRestrictedGearUsed = true;
+                    }
+                    else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
+                    {
+                        intRestrictedCount++;
+                        strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
+                    }
+                }
+
+                else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
                 {
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
                 }
+
                 foreach (ArmorMod objMod in objArmor.ArmorMods)
                 {
-                    if (!objMod.TotalAvail.StartsWith("+") && !objMod.IncludedInArmor)
+                    if (!objMod.TotalAvail.StartsWith("+"))
                     {
-                        if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+                            strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
+                        }
+                    }
+
+                    foreach (Gear objGear in objArmor.Gear)
+                    {
+                        if (!objGear.TotalAvail().StartsWith("+"))
+                        {
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                                }
+                            }
+
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                            }
+                        }
+                        foreach (Gear objChild in objGear.Children)
+                        {
+                            if (!objChild.TotalAvail().StartsWith("+"))
+                            {
+                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                {
+                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                    }
+                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                    }
+                                }
+
+                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                }
+                            }
+                            foreach (Gear objSubChild in objChild.Children)
+                            {
+                                if (!objSubChild.TotalAvail().StartsWith("+"))
+                                {
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                        }
+                                    }
+
+                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
                 foreach (Gear objGear in objArmor.Gear)
                 {
                     if (!objGear.TotalAvail().StartsWith("+"))
                     {
-                        if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
                             strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
@@ -20493,21 +20759,47 @@ namespace Chummer
                     {
                         if (!objChild.TotalAvail().StartsWith("+"))
                         {
-                            if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                }
+                            }
+
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                             {
                                 intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
                         }
                         foreach (Gear objSubChild in objChild.Children)
                         {
-                            if (!objSubChild.TotalAvail().StartsWith("+"))
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                             {
-                                if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
                                 {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    blnRestrictedGearUsed = true;
                                 }
+                                else if (!objSubChild.TotalAvail().StartsWith("+"))
+                                {
+                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    }
+                                }
+                            }
+
+                            else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
                         }
                     }
@@ -20517,16 +20809,43 @@ namespace Chummer
             // Weapon Availability.
             foreach (Weapon objWeapon in _objCharacter.Weapons)
             {
-                if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)))
+                    {
+                        blnRestrictedGearUsed = true;
+                    }
+                    else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+                    {
+                        intRestrictedCount++;
+                        strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+                    }
+                }
+
+                else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
                 {
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
                 }
+
                 foreach (WeaponMod objMod in objWeapon.WeaponMods)
                 {
                     if (!objMod.TotalAvail.StartsWith("+"))
                     {
-                        if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability && !objMod.IncludedInWeapon)
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
                         {
                             intRestrictedCount++;
                             strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
@@ -20537,10 +20856,23 @@ namespace Chummer
                 {
                     if (!objAccessory.TotalAvail.StartsWith("+"))
                     {
-                        if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)) && !objAccessory.IncludedInWeapon)
+                            {
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
+                            }
+                        }
+
+                        else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
                         {
                             intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
+                            strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
                         }
                     }
 
@@ -20548,7 +20880,20 @@ namespace Chummer
                     {
                         if (!objGear.TotalAvail().StartsWith("+"))
                         {
-                            if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                                }
+                            }
+
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                             {
                                 intRestrictedCount++;
                                 strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
@@ -20558,7 +20903,20 @@ namespace Chummer
                         {
                             if (!objChild.TotalAvail().StartsWith("+"))
                             {
-                                if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                {
+                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                    }
+                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                    }
+                                }
+
+                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                 {
                                     intRestrictedCount++;
                                     strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
@@ -20568,7 +20926,20 @@ namespace Chummer
                             {
                                 if (!objSubChild.TotalAvail().StartsWith("+"))
                                 {
-                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                        }
+                                    }
+
+                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                     {
                                         intRestrictedCount++;
                                         strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
@@ -20583,7 +20954,19 @@ namespace Chummer
             // Vehicle Availability.
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
-                if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
+                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                {
+                    if ((GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicle.CalculatedAvail) <= 24))
+                    {
+                        blnRestrictedGearUsed = true;
+                    }
+                    else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
+                    {
+                        intRestrictedCount++;
+                        strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
+                    }
+                }
+                else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
                 {
                     intRestrictedCount++;
                     strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
@@ -20592,71 +20975,117 @@ namespace Chummer
                 {
                     if (!objVehicleMod.TotalAvail.StartsWith("+"))
                     {
-                        if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability && !objVehicleMod.IncludedInVehicle)
+                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                         {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objVehicleMod.DisplayNameShort;
-                        }
-                    }
-                    foreach (Weapon objWeapon in objVehicleMod.Weapons)
-                    {
-                        if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
-                        }
-                        foreach (WeaponMod objMod in objWeapon.WeaponMods)
-                        {
-                            if (!objMod.TotalAvail.StartsWith("+"))
+                            if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24) && !objVehicleMod.IncludedInVehicle)
                             {
-                                if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability && !objMod.IncludedInWeapon)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
-                                }
+                                blnRestrictedGearUsed = true;
                             }
-                        }
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            if (!objAccessory.TotalAvail.StartsWith("+"))
-                            {
-                                if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
-                                }
-                            }
-                        }
-                    }
-                }
-                foreach (Gear objGear in objVehicle.Gear)
-                {
-                    if (!objGear.TotalAvail().StartsWith("+"))
-                    {
-                        if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                        }
-                    }
-                    foreach (Gear objChild in objGear.Children)
-                    {
-                        if (!objChild.TotalAvail().StartsWith("+"))
-                        {
-                            if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                            else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability && !objVehicleMod.IncludedInVehicle)
                             {
                                 intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                strAvailItems += "\n\t\t" + objVehicleMod.DisplayNameShort;
                             }
                         }
-                        foreach (Gear objSubChild in objChild.Children)
+                        foreach (Weapon objWeapon in objVehicleMod.Weapons)
                         {
-                            if (!objSubChild.TotalAvail().StartsWith("+"))
+                            if ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objWeapon.TotalAvail) <= 24))
                             {
-                                if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                blnRestrictedGearUsed = true;
+                            }
+                            else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+                            {
+                                intRestrictedCount++;
+                                strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+                            }
+                            foreach (WeaponMod objMod in objWeapon.WeaponMods)
+                            {
+                                if (!objMod.TotalAvail.StartsWith("+"))
+                                {
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objMod.TotalAvail) <= 24) && !objMod.IncludedInWeapon)
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability && !objMod.IncludedInWeapon)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                if (!objAccessory.TotalAvail.StartsWith("+"))
+                                {
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24) && !objAccessory.IncludedInWeapon)
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach (Gear objGear in objVehicle.Gear)
+                    {
+                        if (!objGear.TotalAvail().StartsWith("+"))
+                        {
+                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                            {
+                                if ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objGear.TotalAvail(true)) <= 24))
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                                 {
                                     intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+                                }
+                            }
+                        }
+                        foreach (Gear objChild in objGear.Children)
+                        {
+                            if (!objChild.TotalAvail().StartsWith("+"))
+                            {
+                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                {
+                                    if ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objChild.TotalAvail(true)) <= 24))
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                    }
+                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                    }
+                                }
+                            }
+                            foreach (Gear objSubChild in objChild.Children)
+                            {
+                                if (!objSubChild.TotalAvail().StartsWith("+"))
+                                {
+                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objSubChild.TotalAvail(true)) <= 24))
+                                        {
+                                            blnRestrictedGearUsed = true;
+                                        }
+                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                        {
+                                            intRestrictedCount++;
+                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -20664,8 +21093,8 @@ namespace Chummer
                 }
             }
 
-            // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
-            if (intRestrictedCount > intRestrictedAllowed)
+                // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
+                if (intRestrictedCount > intRestrictedAllowed)
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());

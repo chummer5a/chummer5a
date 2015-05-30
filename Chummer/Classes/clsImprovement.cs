@@ -401,7 +401,13 @@ namespace Chummer
                     return ImprovementType.MartialArt;
                 case "LimitModifier":
                     return ImprovementType.LimitModifier;
-				default:
+                case "PhysicalLimit":
+                    return ImprovementType.PhysicalLimit;
+                case "SocialLimit":
+                    return ImprovementType.SocialLimit;
+                case "MentalLimit":
+                    return ImprovementType.MentalLimit;
+                default:
 					return ImprovementType.Skill;
 			}
 		}
@@ -4531,8 +4537,323 @@ namespace Chummer
 						_objCharacter.Infirm = false;
 				}
 
-				// If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)
+                // Turn off the FriendsInHighPlaces flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to FriendsInHighPlaces.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.FriendsInHighPlaces = false;
+                }
+                // Turn off the JackOfAllTrades flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to JackOfAllTrades.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.JackOfAllTrades)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.JackOfAllTrades = false;
+                }
+                // Turn off the CollegeEducation flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to CollegeEducation.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.CollegeEducation = false;
+                }
+                // Turn off the Erased flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Erased)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to Erased.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Erased)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.Erased = false;
+                }
+                // Turn off the BornRich flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.BornRich)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to BornRich.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BornRich)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.BornRich = false;
+                }
+                // Turn off the Fame flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Fame)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to Fame.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Fame)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.Fame = false;
+                }
+                // Turn off the LightningReflexes flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to LightningReflexes.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.LightningReflexes)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.LightningReflexes = false;
+                }
+                // Turn off the Linguist flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Linguist)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to Linguist.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Linguist)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.Linguist = false;
+                }
+                // Turn off the MadeMan flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to MadeMan.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.MadeMan = false;
+                }
+                // Turn off the Overclocker flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to Overclocker.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Overclocker)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.Overclocker = false;
+                }
+                // Turn off the RestrictedGear flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to RestrictedGear.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.RestrictedGear)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.RestrictedGear = false;
+                }
+                // Turn off the TechSchool flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to TechSchool.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TechSchool)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.TechSchool = false;
+                }
+                // Turn off the TrustFund flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to TrustFund.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.TrustFund = false;
+                }
+                // Turn off the ExCon flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to ExCon.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.ExCon)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.ExCon = false;
+                }
+                // Turn off the BlackMarket flag if it is being removed.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+                {
+                    bool blnFound = false;
+                    // See if the character has anything else that is granting them access to BlackMarket.
+                    foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+                    {
+                        // Skip items from the current Improvement source.
+                        if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+                        {
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+                            {
+                                blnFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!blnFound)
+                        _objCharacter.BlackMarket = false;
+                }
+                // If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)
 				{
 					if (!_objCharacter.AdapsinEnabled)
 					{

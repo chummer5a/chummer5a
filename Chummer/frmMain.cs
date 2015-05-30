@@ -10,9 +10,10 @@ namespace Chummer
 	{
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
+        private Character _objCharacter;
 
-		#region Control Events
-		public frmMain()
+        #region Control Events
+        public frmMain()
 		{
 			InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -468,13 +469,26 @@ namespace Chummer
 			else
 				e.Effect = DragDropEffects.None;
 		}
-		#endregion
 
-		#region Methods
-		/// <summary>
-		/// Create a new character and show the Create Form.
-		/// </summary>
-		private void ShowNewForm(object sender, EventArgs e)
+        private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
+        {
+            objCharacter = _objCharacter;
+            foreach (Skill objSkill in objCharacter.Skills)
+            {
+                if (objSkill.Name == "Impersonation")
+                {
+                    MessageBox.Show(objSkill.Rating.ToString());
+                }
+            }
+        }
+
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Create a new character and show the Create Form.
+        /// </summary>
+        private void ShowNewForm(object sender, EventArgs e)
 		{
 			Character objCharacter = new Character();
 

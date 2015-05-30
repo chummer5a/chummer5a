@@ -683,8 +683,9 @@ namespace Chummer
 				}
 			}
 
-			// Populate Contacts and Enemies.
-			int intContact = -1;
+
+            // Populate Contacts and Enemies.
+            int intContact = -1;
 			int intEnemy = -1;
 			foreach (Contact objContact in _objCharacter.Contacts)
 			{
@@ -894,8 +895,9 @@ namespace Chummer
 				}
 			}
 
-			// Populate Technomancer Sprites.
-			i = -1;
+
+            // Populate Technomancer Sprites.
+            i = -1;
 			foreach (Spirit objSpirit in _objCharacter.Spirits)
 			{
 				if (objSpirit.EntityType == SpiritType.Sprite)
@@ -1190,8 +1192,8 @@ namespace Chummer
 			ToolStripManager.RevertMerge("toolStrip");
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
-			// If this is a Sprite, re-label the Mental Attribute Labels.
-			if (_objCharacter.Metatype.EndsWith("Sprite"))
+            // If this is a Sprite, re-label the Mental Attribute Labels.
+            if (_objCharacter.Metatype.EndsWith("Sprite"))
 			{
 				lblBODLabel.Enabled = false;
 				lblAGILabel.Enabled = false;
@@ -1344,7 +1346,39 @@ namespace Chummer
 			cboSkillFilter.SelectedIndex = 0;
 			cboSkillFilter_SelectedIndexChanged(null, null);
 
-			if (_objCharacter.MetatypeCategory == "Cyberzombie")
+            // If the option to re-group Skill Groups is enabled, run through the Skill Groups and see if they can be re-enabled.
+            if (_objOptions.AllowSkillRegrouping)
+            {
+                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+                {
+                    bool blnBroken = false;
+                    int intRating = -1;
+                    if (objSkillGroupControl.Broken)
+                    {
+                        foreach (SkillControl objControl in panActiveSkills.Controls)
+                        {
+                            if (objControl.SkillGroup == objSkillGroupControl.GroupName)
+                            {
+                                if (objControl.SkillRating > 5)
+                                    blnBroken = true;
+                                if (intRating == -1)
+                                    intRating = objControl.SkillRating;
+                                if (objControl.SkillRating != intRating)
+                                    blnBroken = true;
+                                if (objControl.SkillSpec != string.Empty)
+                                    blnBroken = true;
+                            }
+                        }
+                        if (!blnBroken)
+                        {
+                            objSkillGroupControl.Broken = false;
+                            objSkillGroupControl.GroupRating = intRating;
+                        }
+                    }
+                }
+            }
+
+            if (_objCharacter.MetatypeCategory == "Cyberzombie")
 				mnuSpecialCyberzombie.Visible = false;
 
 			// Determine if the Critter should have access to the Possession menu item.
@@ -1359,8 +1393,9 @@ namespace Chummer
 			}
 			mnuSpecialPossess.Visible = blnAllowPossession;
 
-			// Set the visibility of the Armor Degradation buttons.
-			cmdArmorDecrease.Visible = _objOptions.ArmorDegradation;
+
+            // Set the visibility of the Armor Degradation buttons.
+            cmdArmorDecrease.Visible = _objOptions.ArmorDegradation;
 			cmdArmorIncrease.Visible = _objOptions.ArmorDegradation;
 
 			_objFunctions.SortTree(treCyberware);
@@ -4197,38 +4232,6 @@ namespace Chummer
 
 			objSkillControl.SkillRating += 1;
 
-			// If the option to re-group Skill Groups is enabled, run through the Skill Groups and see if they can be re-enabled.
-			if (_objOptions.AllowSkillRegrouping)
-			{
-				foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-				{
-					bool blnBroken = false;
-					int intRating = -1;
-					if (objSkillGroupControl.Broken)
-					{
-						foreach (SkillControl objControl in panActiveSkills.Controls)
-						{
-							if (objControl.SkillGroup == objSkillGroupControl.GroupName)
-							{
-								if (objControl.SkillRating > 5)
-									blnBroken = true;
-								if (intRating == -1)
-									intRating = objControl.SkillRating;
-								if (objControl.SkillRating != intRating)
-									blnBroken = true;
-								if (objControl.SkillSpec != string.Empty)
-									blnBroken = true;
-							}
-						}
-						if (!blnBroken)
-						{
-							objSkillGroupControl.Broken = false;
-							objSkillGroupControl.GroupRating = intRating;
-						}
-					}
-				}
-			}
-
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -4403,8 +4406,8 @@ namespace Chummer
 									blnBroken = true;
 								if (objControl.SkillSpec != string.Empty)
 									blnBroken = true;
-							}
-						}
+                            }
+                        }
 						if (!blnBroken)
 						{
 							objSkillGroupControl.Broken = false;
@@ -4414,7 +4417,7 @@ namespace Chummer
 				}
 			}
 
-			_blnSkipRefresh = false;
+            _blnSkipRefresh = false;
 
 			UpdateCharacterInfo();
 
@@ -4501,7 +4504,6 @@ namespace Chummer
 
 			// Retrieve the list of Skills that are associated with the Skill Group.
 			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + objGroupControl.GroupName + "\"]");
-
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
 				// Run through all of the Skills in the Active Skill Panel and update the ones that match the Skills in the Skill Group.
@@ -4511,11 +4513,13 @@ namespace Chummer
 					{
 						if (objGroupControl.GroupRating > 0)
 						{
-							// Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
-							if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
-								objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
-							objSkillControl.SkillRating = objGroupControl.GroupRating;
-							objSkillControl.IsGrouped = true;
+                            // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
+                            if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
+                            {
+                                objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
+                                objSkillControl.SkillRating = objGroupControl.GroupRating;
+                                objSkillControl.IsGrouped = true;
+                            }
 						}
 						else
 						{
@@ -4541,8 +4545,10 @@ namespace Chummer
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
-		}
+        }
+
 		#endregion
+
 
 		#region ContactControl Events
 		private void objContact_ConnectionRatingChanged(Object sender)
@@ -21702,8 +21708,8 @@ namespace Chummer
 					}
 				}
 
-				// Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
-				if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyStun, true))
+                // Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
+                if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyStun, true))
 					intStunCMPenalty = 0;
 				if (_objCharacter.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyPhysical, true))
 					intPhysicalCMPenalty = 0;
@@ -21722,17 +21728,17 @@ namespace Chummer
 				foreach (SkillControl objSkillControl in panActiveSkills.Controls)
 				{
 					objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
-					objSkillControl.RefreshControl();
-				}
+                    objSkillControl.RefreshControl();
+                }
 
-				// Update the character's Knowledge Skill information.
-				foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
+                // Update the character's Knowledge Skill information.
+                foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
 				{
 					objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
 					objSkillControl.RefreshControl();
 				}
 
-				// Armor Ratings.
+                // Armor Ratings.
                 lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
                 lblCMArmor.Text = lblArmor.Text;
 				string strArmorToolTip = "";
