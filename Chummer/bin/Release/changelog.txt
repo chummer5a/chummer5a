@@ -5,6 +5,7 @@ Application Change:
 - Fixed issues with Limit Enhancements not saving. 
 - Technical School, College Education, Linguist qualities do the discounty things they're supposed to.
 - Fixed issues with the optional rule to re-group skill groups if the skills were balanced when the character was saved.
+- Fixed an embarassing issue with broken skill groups levelling themselves back down to the grouped rating.
 
 Data Change:
 - Fixed incorrect calculation for varieties of Indomitable.

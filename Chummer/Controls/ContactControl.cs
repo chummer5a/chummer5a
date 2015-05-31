@@ -16,47 +16,110 @@ public delegate void LoyaltyRatingChangedHandler(Object sender);
 public delegate void DeleteContactHandler(Object sender);
 // FileNameChanged Event Handler.
 public delegate void FileNameChangedHandler(Object sender);
+// OtherCostChanged Event Handler.
+public delegate void OtherCostChangedHandler(Object sender);
 
 namespace Chummer
 {
     public partial class ContactControl : UserControl
     {
-		private Contact _objContact;
+        private Contact _objContact;
         private readonly Character _objCharacter;
         private string _strContactName;
         private string _strContactRole;
         private string _strContactLocation;
         private bool _blnEnemy = false;
-        
+        private HoverDisplayCordinator _displayCordinator;
+        private ContractControlCallBackObject cbobj;
+
         // Events.
-		public event ConnectionRatingChangedHandler ConnectionRatingChanged;
-		public event ConnectionGroupRatingChangedHandler ConnectionGroupRatingChanged;
+        public event ConnectionRatingChangedHandler ConnectionRatingChanged;
+        public event ConnectionGroupRatingChangedHandler GroupStatusChanged;
         public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
         public event DeleteContactHandler DeleteContact;
-		public event FileNameChangedHandler FileNameChanged;
+        public event FileNameChangedHandler FileNameChanged;
+        public event OtherCostChangedHandler OtherCostChanged;
 
-		#region Control Events
+        #region Control Events
         public ContactControl(Character objCharacter)
         {
             InitializeComponent();
             _objCharacter = objCharacter;
-            
-            if (!_objCharacter.Created)
+
+
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+
+            //Hover dosen't work if there is a control in the way
+            //Add same event to most of the controls (base added in init)
+            txtContactLocation.MouseHover += ContactControl_MouseHover;
+            txtContactName.MouseHover += ContactControl_MouseHover;
+            cboContactRole.MouseHover += ContactControl_MouseHover;
+            //Uncomment lines belov to make hovering over quick info 
+            //label/delete button work
+            //cmdDelete.MouseHover += ContactControl_MouseHover;
+            //lblQuick.MouseHover += ContactControl_MouseHover;
+
+
+            //we need to raise some events that are based on this file but
+            //now raised somewhere else. This object works as a proxy for that
+            cbobj = new ContractControlCallBackObject();
+            cbobj.OtherCostChanged += sender =>
             {
-                if (_objCharacter.FriendsInHighPlaces)
-                {
-                    nudConnection.Maximum = 12;
-                }
-                else
-                {
-                    nudConnection.Maximum = 6;
-                }
-            }
-            else
+                if (OtherCostChanged != null) OtherCostChanged(sender);
+            };
+            cbobj.FileNameChanged += sender =>
             {
-                nudConnection.Maximum = 12;
+                if (FileNameChanged != null) FileNameChanged(sender);
+            };
+            cbobj.GroupStatusChanged += cbobj_GroupStatusChanged;
+            cbobj.ConnectionRatingChanged += cbobj_ConnectionRatingChanged;
+            cbobj.LoyaltyRatingChanged += cbobj_LoyaltyRatingChanged;
+        }
+
+        void cbobj_GroupStatusChanged(object sender)
+        {
+            if (GroupStatusChanged != null) GroupStatusChanged(sender);
+
+            if (IsGroup)
+            {
+                _objContact.Loyalty = 1;
             }
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+
+            UpdateQuickText();
+        }
+
+        private void cbobj_LoyaltyRatingChanged(object sender)
+        {
+            if (LoyaltyRatingChanged != null) LoyaltyRatingChanged(sender);
+
+            UpdateQuickText();
+        }
+
+        private void cbobj_ConnectionRatingChanged(object sender)
+        {
+            if (ConnectionRatingChanged != null) ConnectionRatingChanged(sender);
+
+            UpdateQuickText();
+        }
+
+        private void UpdateQuickText()
+        {
+            lblQuick.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? "G" : _objContact.Loyalty.ToString());
+        }
+
+        private void ContactControl_MouseHover(object sender, EventArgs e)
+        {
+            if (_displayCordinator == null)
+            {
+                _displayCordinator = new HoverDisplayCordinator();
+                _displayCordinator.OnAllLeave += (o, args) => { _displayCordinator = null; };
+                ContactAdv _contactAdv =
+                    new ContactAdv(_displayCordinator, this, _objContact, _objCharacter, cbobj);
+                _displayCordinator.AddControlRecursive(this);
+                _displayCordinator.AddControlRecursive(_contactAdv);
+                _contactAdv.Show(ParentForm);
+                _contactAdv.DesktopLocation = PointToScreen(new Point(0, (-_contactAdv.Height)));
+            }
         }
 
         private void LoadContactList()
@@ -97,55 +160,55 @@ namespace Chummer
                 cboContactRole.Text = _strContactRole;
         }
 
-		private void ContactControl_Load(object sender, EventArgs e)
-		{
-			this.Width = cmdDelete.Left + cmdDelete.Width;
+        private void ContactControl_Load(object sender, EventArgs e)
+        {
+            this.Width = cmdDelete.Left + cmdDelete.Width;
             LoadContactList();
-		}
-
-		private void nudConnection_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
-            // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_objCharacter.Created)
-            {
-                if (_objCharacter.FriendsInHighPlaces)
-                {
-                    nudConnection.Maximum = 12;
-                }
-                else
-                {
-                    nudConnection.Maximum = 6;
-                }
-            }
-            else
-            {
-                nudConnection.Maximum = 12;
-            }
-			_objContact.Connection = Convert.ToInt32(nudConnection.Value);
-            ConnectionRatingChanged(this);
         }
 
-        private void nudLoyalty_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
-            // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-			_objContact.Loyalty = Convert.ToInt32(nudLoyalty.Value);
-            LoyaltyRatingChanged(this);
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-			DeleteContact(this);
+            DeleteContact(this);
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
-		{
-			_objContact.Role = cboContactRole.Text;
+        {
+            _objContact.Role = cboContactRole.Text;
             ConnectionRatingChanged(this);
-		}
+        }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
@@ -158,178 +221,178 @@ namespace Chummer
             _objContact.Location = txtContactLocation.Text;
             ConnectionRatingChanged(this);
         }
-        
-        private void imgLink_Click(object sender, EventArgs e)
-		{
-			// Determine which options should be shown based on the FileName value.
-			if (_objContact.FileName != "")
-			{
-				tsAttachCharacter.Visible = false;
-				tsContactOpen.Visible = true;
-				tsRemoveCharacter.Visible = true;
-			}
-			else
-			{
-				tsAttachCharacter.Visible = true;
-				tsContactOpen.Visible = false;
-				tsRemoveCharacter.Visible = false;
-			}
-			cmsContact.Show(imgLink, imgLink.Left - 490, imgLink.Top);
-		}
 
-		private void tsContactOpen_Click(object sender, EventArgs e)
-		{
-			bool blnError = false;
-			bool blnUseRelative = false;
 
-			// Make sure the file still exists before attempting to load it.
-			if (!File.Exists(_objContact.FileName))
-			{
-				// If the file doesn't exist, use the relative path if one is available.
-				if (_objContact.RelativeFileName == "")
-					blnError = true;
-				else
-				{
-					MessageBox.Show(Path.GetFullPath(_objContact.RelativeFileName));
-					if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
-						blnError = true;
-					else
-						blnUseRelative = true;
-				}
 
-				if (blnError)
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.Instance.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-			}
 
-			if (!blnUseRelative)
-				GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
-			else
-			{
-				string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-				GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
-			}
-		}
 
-		private void tsAttachCharacter_Click(object sender, EventArgs e)
-		{
-			// Prompt the user to select a save file to associate with this Contact.
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
 
-			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-			{
-				_objContact.FileName = openFileDialog.FileName;
-				if (_objContact.EntityType == ContactType.Enemy)
-					tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_OpenFile"));
-				else
-					tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenFile"));
 
-				// Set the relative path.
-				Uri uriApplication = new Uri(@Application.StartupPath);
-				Uri uriFile = new Uri(@_objContact.FileName);
-				Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-				_objContact.RelativeFileName = "../" + uriRelative.ToString();
 
-				FileNameChanged(this);
-			}
-		}
 
-		private void tsRemoveCharacter_Click(object sender, EventArgs e)
-		{
-			// Remove the file association from the Contact.
-			if (MessageBox.Show(LanguageManager.Instance.GetString("Message_RemoveCharacterAssociation"), LanguageManager.Instance.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-			{
-				_objContact.FileName = "";
-				_objContact.RelativeFileName = "";
-				if (_objContact.EntityType == ContactType.Enemy)
-					tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_LinkFile"));
-				else
-					tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
-				FileNameChanged(this);
-			}
-		}
 
-		private void cmdGroup_Click(object sender, EventArgs e)
-		{
-			frmSelectContactConnection frmPickContactConnection = new frmSelectContactConnection();
-			frmPickContactConnection.Membership = _objContact.Membership;
-			frmPickContactConnection.AreaOfInfluence = _objContact.AreaOfInfluence;
-			frmPickContactConnection.MagicalResources = _objContact.MagicalResources;
-			frmPickContactConnection.MatrixResources = _objContact.MatrixResources;
-			frmPickContactConnection.GroupName = _objContact.GroupName;
-			frmPickContactConnection.Colour = _objContact.Colour;
-			frmPickContactConnection.Free = _objContact.Free;
-			frmPickContactConnection.ShowDialog(this);
 
-			if (frmPickContactConnection.DialogResult == DialogResult.Cancel)
-				return;
 
-			// Update the Connection Modifier values.
-			_objContact.Membership = frmPickContactConnection.Membership;
-			_objContact.AreaOfInfluence = frmPickContactConnection.AreaOfInfluence;
-			_objContact.MagicalResources = frmPickContactConnection.MagicalResources;
-			_objContact.MatrixResources = frmPickContactConnection.MatrixResources;
-			_objContact.GroupName = frmPickContactConnection.GroupName;
-			_objContact.Colour = frmPickContactConnection.Colour;
-			_objContact.Free = frmPickContactConnection.Free;
 
-			if (_objContact.Colour.Name != "White" && _objContact.Colour.Name != "Black")
-				this.BackColor = _objContact.Colour;
-			else
-				this.BackColor = SystemColors.Control;
 
-			ConnectionGroupRatingChanged(this);
-		}
 
-		private void imgNotes_Click(object sender, EventArgs e)
-		{
-			frmNotes frmContactNotes = new frmNotes();
-			frmContactNotes.Notes = _objContact.Notes;
-			frmContactNotes.ShowDialog(this);
 
-			if (frmContactNotes.DialogResult == DialogResult.OK)
-				_objContact.Notes = frmContactNotes.Notes;
 
-			string strTooltip = "";
-			if (_objContact.EntityType == ContactType.Enemy)
-				strTooltip = LanguageManager.Instance.GetString("Tip_Enemy_EditNotes");
-			else
-				strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
-			if (_objContact.Notes != string.Empty)
-				strTooltip += "\n\n" + _objContact.Notes;
-			tipTooltip.SetToolTip(imgNotes, strTooltip);
-		}
 
-		private void cmsContact_Opening(object sender, CancelEventArgs e)
-		{
-			foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-			{
-				if (objItem.Tag != null)
-				{
-					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
-				}
-			}
-		}
-		#endregion
 
-		#region Properties
-		/// <summary>
-		/// Contact object this is linked to.
-		/// </summary>
-		public Contact ContactObject
-		{
-			get
-			{
-				return _objContact;
-			}
-			set
-			{
-				_objContact = value;
-			}
-		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Contact object this is linked to.
+        /// </summary>
+        public Contact ContactObject
+        {
+            get
+            {
+                return _objContact;
+            }
+            set
+            {
+                _objContact = value;
+            }
+        }
 
         public bool IsEnemy
         {
@@ -351,13 +414,13 @@ namespace Chummer
         {
             get
             {
-				return _objContact.Name;
+                return _objContact.Name;
             }
             set
             {
                 txtContactName.Text = value;
                 _strContactName = value;
-				_objContact.Name = value;
+                _objContact.Name = value;
             }
         }
 
@@ -396,69 +459,69 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Contact name.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /// Indicates if this is a Contact or Enemy.
         /// </summary>
-        public bool Fixed
+        public ContactType EntityType
         {
             get
             {
-                return _objContact.Fixed;
+                return _objContact.EntityType;
             }
             set
             {
-                cmdDelete.Enabled = value;
-                _objContact.Fixed = value;
+                _objContact.EntityType = value;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
         }
-
-        /// <summary>
-		/// Indicates if this is a Contact or Enemy.
-		/// </summary>
-		public ContactType EntityType
-		{
-			get
-			{
-				return _objContact.EntityType;
-			}
-			set
-			{
-				_objContact.EntityType = value;
-				if (value ==  ContactType.Enemy)
-				{
-					if (_objContact.FileName != "")
-						tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_OpenLinkedEnemy"));
-					else
-						tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Enemy_LinkEnemy"));
-
-					string strTooltip = LanguageManager.Instance.GetString("Tip_Enemy_EditNotes");
-					if (_objContact.Notes != string.Empty)
-						strTooltip += "\n\n" + _objContact.Notes;
-					tipTooltip.SetToolTip(imgNotes, strTooltip);
-
-					nudConnection.Minimum = 1;
-				}
-				else
-				{
-					if (_objContact.FileName != "")
-						tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_OpenLinkedContact"));
-					else
-						tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkContact"));
-
-					string strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
-					if (_objContact.Notes != string.Empty)
-						strTooltip += "\n\n" + _objContact.Notes;
-					tipTooltip.SetToolTip(imgNotes, strTooltip);
-                    if (_objContact.Fixed)
-                    {
-                        nudConnection.Enabled = false;
-                        nudLoyalty.Enabled = false;
-                        cmdDelete.Visible = false;
-                    }
-
-					nudConnection.Minimum = 1;
-				}
-			}
-		}
 
         /// <summary>
         /// Connection Rating.
@@ -467,74 +530,14 @@ namespace Chummer
         {
             get
             {
-				return _objContact.Connection;
+                return _objContact.Connection;
             }
             set
             {
-                nudConnection.Value = value;
-				_objContact.Connection = value;
+                //nudConnection.Value = value;
+                _objContact.Connection = value;
             }
         }
-
-		/// <summary>
-		/// Connection Modifier: Membership.
-		/// </summary>
-		public int MembershipRating
-		{
-			get
-			{
-				return _objContact.Membership;
-			}
-			set
-			{
-				_objContact.Membership = value;
-			}
-		}
-
-		/// <summary>
-		/// Connection Modifier: Area of Influence.
-		/// </summary>
-		public int AreaOfInfluenceRating
-		{
-			get
-			{
-				return _objContact.AreaOfInfluence;
-			}
-			set
-			{
-				_objContact.AreaOfInfluence = value;
-			}
-		}
-
-		/// <summary>
-		/// Connection Modifier: Magical Resources.
-		/// </summary>
-		public int MagicalResourcesRating
-		{
-			get
-			{
-				return _objContact.MagicalResources;
-			}
-			set
-			{
-				_objContact.MagicalResources = value;
-			}
-		}
-
-		/// <summary>
-		/// Connection Modifier: Matrix Resources.
-		/// </summary>
-		public int MatrixResourcesRating
-		{
-			get
-			{
-				return _objContact.MatrixResources;
-			}
-			set
-			{
-				_objContact.MatrixResources = value;
-			}
-		}
 
         /// <summary>
         /// Loyalty Rating.
@@ -543,29 +546,109 @@ namespace Chummer
         {
             get
             {
-				return _objContact.Loyalty;
+                return _objContact.Loyalty;
             }
             set
             {
-                nudLoyalty.Value = value;
-				_objContact.Loyalty = value;
+                //nudLoyalty.Value = value;
+                _objContact.Loyalty = value;
             }
         }
 
-		/// <summary>
-		/// Whether or not this is a free Contact.
-		/// </summary>
-		public bool Free
-		{
-			get
-			{
-				return _objContact.Free;
-			}
-			set
-			{
-				_objContact.Free = value;
-			}
-		}
-		#endregion
-	}
+        /// <summary>
+        /// Whether or not this is a free Contact.
+        /// </summary>
+        public bool Free
+        {
+            get
+            {
+                return _objContact.Free;
+            }
+            set
+            {
+                _objContact.Free = value;
+            }
+        }
+
+        /// <summary>
+        /// Is the contract a group contract
+        /// </summary>
+        public bool IsGroup
+        {
+            get
+            {
+                return _objContact.IsGroup;
+            }
+            set
+            {
+                _objContact.IsGroup = value;
+            }
+        }
+
+        #endregion
+
+
+    }
+
+    //Since events can only be raised from inside a class and we moved some
+    //controls that raises events to ContactAdv we need to either move events
+    //or give it some way to raise them. This object is giving a way to raise
+    //them while maintaning OOP encapsulationg where not everything can raise them
+    public class ContractControlCallBackObject
+    {
+        internal event ConnectionRatingChangedHandler ConnectionRatingChanged;
+        internal event ConnectionGroupRatingChangedHandler GroupStatusChanged;
+        internal event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
+        internal event FileNameChangedHandler FileNameChanged;
+        internal event OtherCostChangedHandler OtherCostChanged;
+
+        internal void OnConnectionRatingChanged(Object sender)
+        {
+            if (ConnectionRatingChanged != null)
+
+
+            {
+                ConnectionRatingChanged(sender);
+            }
+        }
+
+        internal void OnLoyaltyRatingChanged(Object sender)
+
+
+
+        {
+            if (LoyaltyRatingChanged != null)
+            {
+                LoyaltyRatingChanged(sender);
+            }
+        }
+
+        internal void OnGroupStatusChanged(Object sender)
+        {
+            if (GroupStatusChanged != null)
+            {
+                GroupStatusChanged(sender);
+            }
+        }
+
+        internal void OnFileNameChanged(Object sender)
+
+
+
+        {
+            if (FileNameChanged != null)
+            {
+                FileNameChanged(sender);
+            }
+        }
+
+        internal void OnOtherCostChanged(Object sender)
+        {
+            if (OtherCostChanged != null)
+            {
+                OtherCostChanged(sender);
+            }
+        }
+
+    }
 }

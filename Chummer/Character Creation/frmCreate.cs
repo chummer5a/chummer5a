@@ -741,7 +741,7 @@ namespace Chummer
                 if (objGroup.Rating > objGroup.RatingMaximum)
                     objGroup.RatingMaximum = objGroup.Rating;
                 objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
-                objGroupControl.GroupRating = objGroup.Rating;
+                // objGroupControl.GroupRating = objGroup.Rating;
                 objGroupControl.BaseRating = objGroup.Base;
                 objGroupControl.KarmaRating = objGroup.Karma;
                 objGroupControl.Top = i * objGroupControl.Height;
@@ -825,9 +825,10 @@ namespace Chummer
                 {
                     intContact++;
                     ContactControl objContactControl = new ContactControl(_objCharacter);
-                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                    objContactControl.OtherCostChanged += objContact_OtherCostChanged;
                     objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-                    objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
+                    objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
                     objContactControl.DeleteContact += objContact_DeleteContact;
                     objContactControl.FileNameChanged += objContact_FileNameChanged;
@@ -840,6 +841,7 @@ namespace Chummer
                     objContactControl.LoyaltyRating = objContact.Loyalty;
                     objContactControl.EntityType = objContact.EntityType;
                     objContactControl.BackColor = objContact.Colour;
+                    objContactControl.IsGroup = objContact.IsGroup;
 
                     objContactControl.Top = intContact * objContactControl.Height;
 
@@ -851,7 +853,7 @@ namespace Chummer
                     ContactControl objContactControl = new ContactControl(_objCharacter);
                     // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
                     objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-                    objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
+                    objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
                     objContactControl.DeleteContact += objEnemy_DeleteContact;
                     objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -865,6 +867,7 @@ namespace Chummer
                     objContactControl.LoyaltyRating = objContact.Loyalty;
                     objContactControl.EntityType = objContact.EntityType;
                     objContactControl.BackColor = objContact.Colour;
+                    objContactControl.IsGroup = objContact.IsGroup;
 
                     objContactControl.Top = intEnemy * objContactControl.Height;
                     panEnemies.Controls.Add(objContactControl);
@@ -1580,7 +1583,7 @@ namespace Chummer
                 foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
                 {
                     objContactControl.ConnectionRatingChanged -= objContact_ConnectionRatingChanged;
-                    objContactControl.ConnectionGroupRatingChanged -= objContact_ConnectionGroupRatingChanged;
+                    objContactControl.GroupStatusChanged -= ObjContactGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
                     objContactControl.DeleteContact -= objContact_DeleteContact;
                     objContactControl.FileNameChanged -= objContact_FileNameChanged;
@@ -1589,7 +1592,7 @@ namespace Chummer
                 foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
                 {
                     objContactControl.ConnectionRatingChanged -= objEnemy_ConnectionRatingChanged;
-                    objContactControl.ConnectionGroupRatingChanged -= objEnemy_ConnectionGroupRatingChanged;
+                    objContactControl.GroupStatusChanged -= ObjEnemyGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
                     objContactControl.DeleteContact -= objEnemy_DeleteContact;
                     objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
@@ -4725,8 +4728,7 @@ namespace Chummer
                         objActiveSkill.SkillRating = intRating;
                         objActiveSkill.SkillObject.FreeLevels = intRating;
                         if (objSkillGroup.FreeLevels > 0)
-                        { objActiveSkill.SkillObject.FreeLevels = intRating; }
-                    
+                            objActiveSkill.SkillObject.FreeLevels = intRating;
                     }
                 }
             }
@@ -4783,9 +4785,19 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void objContact_ConnectionGroupRatingChanged(Object sender)
+        private void ObjContactGroupStatusChanged(Object sender)
         {
-            // Handle the ConnectionGroupRatingChanged Event for the ContactControl object.
+            // Handle the GroupStatusChanged Event for the ContactControl object.
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
+        private void objContact_OtherCostChanged(Object sender)
+        {
+            //Handle any other kind of change that changes contact cost
+            //mostly a free contact but a few details in run faster changes it too
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -4897,7 +4909,7 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void objEnemy_ConnectionGroupRatingChanged(Object sender)
+        private void ObjEnemyGroupStatusChanged(Object sender)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
@@ -4933,10 +4945,7 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_EnemyLimit").Replace("{0}", strEnemyPoints), LanguageManager.Instance.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ContactControl objSender = (ContactControl)sender;
-                objSender.ContactObject.AreaOfInfluence = 0;
-                objSender.ContactObject.MagicalResources = 0;
-                objSender.ContactObject.MatrixResources = 0;
-                objSender.ContactObject.Membership = 0;
+                
                 return;
             }
 
@@ -4946,10 +4955,6 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", strQualityPoints), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ContactControl objSender = (ContactControl)sender;
-                    objSender.ContactObject.AreaOfInfluence = 0;
-                    objSender.ContactObject.MagicalResources = 0;
-                    objSender.ContactObject.MatrixResources = 0;
-                    objSender.ContactObject.Membership = 0;
                     return;
                 }
             }
@@ -5460,9 +5465,10 @@ namespace Chummer
             objContactControl.ContactObject = objContact;
             objContactControl.EntityType = ContactType.Contact;
 
-            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
+            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-            objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
+            objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
             objContactControl.DeleteContact += objContact_DeleteContact;
             objContactControl.FileNameChanged += objContact_FileNameChanged;
@@ -5532,9 +5538,11 @@ namespace Chummer
             objContactControl.ContactObject = objContact;
             objContactControl.EntityType = ContactType.Enemy;
 
-            // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+            // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged and OtherCostChanged(hackish) Events
+            //TODO: Refactor the clusterfuck that is enemy cost calculations
+            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-            objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
+            objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
             objContactControl.DeleteContact += objEnemy_DeleteContact;
             objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -15634,15 +15642,13 @@ namespace Chummer
         /// </summary>
         private int CalculateBP()
         {
-            int intPointsRemain = 0;
+            int intPointsRemain =_objCharacter.BuildKarma;
             int intPointsUsed = 0;
             int intEnemyPoints = 0;
             int intNegativePoints = 0;
             int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
-            string strPoints = "";
-            intPointsRemain = _objCharacter.BuildKarma;
-            strPoints = LanguageManager.Instance.GetString("String_Karma");
+            string strPoints = LanguageManager.Instance.GetString("String_Karma");
 
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.MetatypeCostsKarma)
@@ -15661,34 +15667,50 @@ namespace Chummer
             intPointsUsed = 0;
 
             int intContactPoints = _objCharacter.ContactPoints;
+            int intContactPointsLeft = intContactPoints;
+            int intGroupContacts = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
-                for (int i = 1; i <= objContactControl.ContactObject.ContactPoints; i++)
+                //Don't care about free contacts
+                if (objContactControl.ContactObject.Free) continue;
+
+                if (objContactControl.IsGroup == false)
                 {
-                    //Loop through Contact points until we run out, then start spending karma
-                    if (i <= _objCharacter.ContactPoints)
+                    int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
+
+                    //Prefers to eat 0, we went over
+                    if (over < 0)
                     {
-                        intPointsInContacts++;
-                        }
-                    //Keep looping while i is less than the combined rating of Loyalty and Connection.
-                    else if (i <= objContactControl.ContactObject.ContactPoints)
+                        //over is negative so to add we substract
+                        //instead of +abs(over)
+                        intPointsUsed -= over;
+                        intContactPointsLeft = 0; //we went over so we know none are left
+                    }
+                    else
                     {
-                        intPointsUsed += 1;
-                        intPointsRemain -= 1;
-                        }
+                        //otherwise just set;
+                        intContactPointsLeft = over;
+                    }
                 }
-                _objCharacter.ContactPointsUsed = intContactPoints - intPointsInContacts;
+                else
+                {
+                    //save this for later, as a group contract is counted as a positive quality
+                    intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                }
             }
 
-            if (intPointsInContacts <= intContactPoints && ((intContactPoints - intPointsInContacts) > 0))
+            _objCharacter.ContactPointsUsed = intContactPointsLeft;
+            intPointsRemain -= intPointsUsed;
+            string strOf = LanguageManager.Instance.GetString("String_Of");
+            if (intPointsUsed < 0)
             {
-                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString());
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString());
+                lblContactsBP.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
+                lblContactPoints.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
             }
             else
             {
-                lblContactsBP.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
-                lblContactPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1} ({2} {3})", _objCharacter.ContactPointsUsed.ToString(), intContactPoints.ToString(), intPointsUsed.ToString(), strPoints);
+                lblContactsBP.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
+                lblContactPoints.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
             }
 
 
@@ -15719,6 +15741,9 @@ namespace Chummer
                     intPointsUsed += (objQuality.BP * _objOptions.KarmaQuality);
                 }
             }
+
+            intPointsRemain -= intGroupContacts;
+            intPointsUsed += intGroupContacts;
 
             // Deduct the amount for free Qualities.
             intPointsRemain += _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality;
@@ -16006,8 +16031,7 @@ namespace Chummer
                         intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
 
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
-
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")) 
                         {
                             i++;
                         }
@@ -16016,7 +16040,7 @@ namespace Chummer
                     if (i <= objSkillControl.SkillBase)
                     {
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
                         {
                             i++;
                         }
@@ -16029,7 +16053,7 @@ namespace Chummer
                         {
                             intPointsUsed += (i * _objOptions.KarmaImproveKnowledgeSkill);
                             //Skip a level for the 2-for-1 deals.
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic") || (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language"))
+                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
                             {
                                 i++;
                             }
@@ -20099,6 +20123,7 @@ namespace Chummer
             int intRestrictedAllowed = _objImprovementManager.ValueOf(Improvement.ImprovementType.RestrictedItemCount);
             int intRestrictedCount = 0;
             string strAvailItems = "";
+            string strExConItems = "";
 
             // Check limits specific to the Priority build method.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -20115,6 +20140,42 @@ namespace Chummer
                     if (intTechniques > 5)
                         strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((5 - intTechniques) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_TechniquesCount"));
                 }
+
+                // Check if the character has gone over limits from optional rules
+                int intContactPointsUsed = 0;
+                int intGroupContacts = 0;
+                foreach (ContactControl objContactControl in panContacts.Controls)
+                {
+                    if (!objContactControl.Free)
+                    {
+                        if (objContactControl.IsGroup)
+                        {
+                            intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                        }
+                        else
+                        {
+                            // The Contact's BP cost = their Connection + Loyalty Rating.
+                            intContactPointsUsed += (objContactControl.ConnectionRating +
+                                                     objContactControl.LoyaltyRating)*_objOptions.BPContact;
+                        }
+                    }
+                }
+
+                // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
+                int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
+
+                if (intContactPointsUsed >= intFreePoints)
+                {
+                    intContactPointsUsed -= intFreePoints;
+                }
+                else
+                {
+                    intContactPointsUsed = 0;
+                }
+
+                //if (intContactPointsUsed > _objCharacter.ContactPoints)
+                //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
+            
 
                 // Check if the character has  positive qualities outnumbering negative qualities
                 // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
@@ -20140,7 +20201,8 @@ namespace Chummer
                         intPointsUsed += objQuality.BP;
                     }
                 }
-
+                //group contacts are counted as a posetive quality
+                intPointsUsed += intGroupContacts;
                 // Deduct the amount for free Qualities.
                 intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
                 int intPositivePointsUsed = intPointsUsed;
@@ -20183,31 +20245,6 @@ namespace Chummer
                     blnValid = false;
                 }
 
-                // Check if the character has gone over limits from optional rules
-                int intContactPointsUsed = 0;
-                foreach (ContactControl objContactControl in panContacts.Controls)
-                {
-                    if (!objContactControl.Free)
-                    {
-                        // The Contact's BP cost = their Connection + Loyalty Rating.
-                        intContactPointsUsed += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
-                    }
-                }
-
-                // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-                int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
-
-                if (intContactPointsUsed >= intFreePoints)
-                {
-                    intContactPointsUsed -= intFreePoints;
-                }
-                else
-                {
-                    intContactPointsUsed = 0;
-                }
-
-                //if (intContactPointsUsed > _objCharacter.ContactPoints)
-                //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
             }
 
             // Check if the character has gone over the Build Point total.
@@ -20483,7 +20520,7 @@ namespace Chummer
                                 intRestrictedCount++;
                                 strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
-                    }
+                        }
                         foreach (Gear objChild in objGear.Children)
                         {
                             if (!objChild.TotalAvail().StartsWith("+"))
@@ -20566,22 +20603,22 @@ namespace Chummer
                             if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                             {
                                 if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
+                                {
+                                    blnRestrictedGearUsed = true;
+                                }
+                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+                                {
+                                    intRestrictedCount++;
+                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                }
                             }
-                            else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+
+                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
                             {
                                 intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
                             }
                         }
-
-                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                        }
-                    }
                         foreach (Gear objSubChild in objChild.Children)
                         {
                             if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
@@ -21093,13 +21130,20 @@ namespace Chummer
                 }
             }
 
-                // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
-                if (intRestrictedCount > intRestrictedAllowed)
+            // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
+            if (intRestrictedCount > intRestrictedAllowed)
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
                 strMessage += strAvailItems;
             }
+
+            if (!String.IsNullOrWhiteSpace(strExConItems))
+		    {
+		        blnValid = false;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+		        strMessage += strExConItems;
+		    }
 
             // Check item Capacities if the option is enabled.
             List<string> lstOverCapacity = new List<string>();
@@ -23126,7 +23170,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblAttributesBase, LanguageManager.Instance.GetString("Tip_CommonAttributesBase"));
             tipTooltip.SetToolTip(lblAttributesAug, LanguageManager.Instance.GetString("Tip_CommonAttributesAug"));
             tipTooltip.SetToolTip(lblAttributesMetatype, LanguageManager.Instance.GetString("Tip_CommonAttributesMetatypeLimits"));
-            tipTooltip.SetToolTip(lblNuyen, LanguageManager.Instance.GetString("Tip_CommonNuyen"));
+            tipTooltip.SetToolTip(lblNuyen, String.Format(LanguageManager.Instance.GetString("Tip_CommonNuyen"), _objCharacter.Options.KarmaNuyenPer));
             tipTooltip.SetToolTip(lblRatingLabel, LanguageManager.Instance.GetString("Tip_CommonAIRating"));
             tipTooltip.SetToolTip(lblSystemLabel, LanguageManager.Instance.GetString("Tip_CommonAISystem"));
             tipTooltip.SetToolTip(lblFirewallLabel, LanguageManager.Instance.GetString("Tip_CommonAIFirewall"));

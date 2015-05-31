@@ -695,7 +695,7 @@ namespace Chummer
 					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-					objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
+					objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objContact_DeleteContact;
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
@@ -708,6 +708,7 @@ namespace Chummer
 					objContactControl.LoyaltyRating = objContact.Loyalty;
 					objContactControl.EntityType = objContact.EntityType;
 					objContactControl.BackColor = objContact.Colour;
+				    objContactControl.IsGroup = objContact.IsGroup;
 
 					objContactControl.Top = intContact * objContactControl.Height;
 					panContacts.Controls.Add(objContactControl);
@@ -718,7 +719,7 @@ namespace Chummer
 					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-					objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
+					objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -732,6 +733,7 @@ namespace Chummer
 					objContactControl.LoyaltyRating = objContact.Loyalty;
 					objContactControl.EntityType = objContact.EntityType;
 					objContactControl.BackColor = objContact.Colour;
+                    objContactControl.IsGroup = objContact.IsGroup;
 
 					objContactControl.Top = intEnemy * objContactControl.Height;
 					panEnemies.Controls.Add(objContactControl);
@@ -1512,7 +1514,7 @@ namespace Chummer
 				foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
 				{
 					objContactControl.ConnectionRatingChanged -= objContact_ConnectionRatingChanged;
-					objContactControl.ConnectionGroupRatingChanged -= objContact_ConnectionGroupRatingChanged;
+					objContactControl.GroupStatusChanged -= ObjContactGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objContact_DeleteContact;
 					objContactControl.FileNameChanged -= objContact_FileNameChanged;
@@ -1521,7 +1523,7 @@ namespace Chummer
 				foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
 				{
 					objContactControl.ConnectionRatingChanged -= objEnemy_ConnectionRatingChanged;
-					objContactControl.ConnectionGroupRatingChanged -= objEnemy_ConnectionGroupRatingChanged;
+					objContactControl.GroupStatusChanged -= ObjEnemyGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objEnemy_DeleteContact;
 					objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
@@ -4560,9 +4562,9 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-		private void objContact_ConnectionGroupRatingChanged(Object sender)
+		private void ObjContactGroupStatusChanged(Object sender)
 		{
-			// Handle the ConnectionGroupRatingChanged Event for the ContactControl object.
+			// Handle the GroupStatusChanged Event for the ContactControl object.
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -4626,7 +4628,7 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-		private void objEnemy_ConnectionGroupRatingChanged(Object sender)
+		private void ObjEnemyGroupStatusChanged(Object sender)
 		{
 			UpdateCharacterInfo();
 
@@ -5041,7 +5043,7 @@ namespace Chummer
 
 			// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 			objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-			objContactControl.ConnectionGroupRatingChanged += objContact_ConnectionGroupRatingChanged;
+			objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
 			objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objContact_DeleteContact;
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
@@ -5068,7 +5070,7 @@ namespace Chummer
 
 			// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 			objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-			objContactControl.ConnectionGroupRatingChanged += objEnemy_ConnectionGroupRatingChanged;
+			objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
 			objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;

@@ -1998,6 +1998,10 @@
 			<key>Message_InvalidAvail</key>
 			<text>{0} more items with Avail higher than {1} than allowed</text>
 		</string>
+    <string>
+      <key>Message_InvalidExConWare</key>
+      <text>The following pieces of restricted Cyber/Bioware are not allowed on an ExCon:</text>
+    </string>
 		<string>
 			<key>Message_OverPositiveMetagenicQualities</key>
 			<text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
@@ -4582,6 +4586,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Contact_Group</key>
 			<text>Group:</text>
 		</string>
+    <string>
+      <key>Label_Contact_Free</key>
+      <text>Free:</text>
+    </string>
 		<string>
 			<key>Label_Enemy_Incidence</key>
 			<text>Incidence:</text>
