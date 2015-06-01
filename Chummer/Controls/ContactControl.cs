@@ -111,6 +111,11 @@ namespace Chummer
         {
             if (_displayCordinator == null)
             {
+                bool blnContactLocationFocused = txtContactLocation.Focused;
+                bool blnContactNameFocused = txtContactName.Focused;
+                bool blnContactRoleFocused = cboContactRole.Focused;
+                
+
                 _displayCordinator = new HoverDisplayCordinator();
                 _displayCordinator.OnAllLeave += (o, args) => { _displayCordinator = null; };
                 ContactAdv _contactAdv = 
@@ -119,6 +124,10 @@ namespace Chummer
                 _displayCordinator.AddControlRecursive(_contactAdv);
                 _contactAdv.Show(ParentForm);
                 _contactAdv.DesktopLocation = PointToScreen(new Point(0, (- _contactAdv.Height)));
+
+                if (blnContactLocationFocused) txtContactLocation.Focus();
+                if (blnContactNameFocused) txtContactName.Focus();
+                if (blnContactRoleFocused) cboContactRole.Focus();
             }
         }
 
