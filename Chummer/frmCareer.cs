@@ -25570,7 +25570,7 @@ namespace Chummer
 				Name = "Series1",
 				Color = System.Drawing.Color.Blue,
 				IsVisibleInLegend = false,
-				IsXValueIndexed = true,
+				IsXValueIndexed = false,
 				ChartType = SeriesChartType.Area
 			};
 			Series objNuyenSeries = new Series
@@ -25578,7 +25578,7 @@ namespace Chummer
 				Name = "Series1",
 				Color = System.Drawing.Color.Green,
 				IsVisibleInLegend = false,
-				IsXValueIndexed = true,
+				IsXValueIndexed = false,
 				ChartType = SeriesChartType.Area
 			};
 
@@ -25586,35 +25586,75 @@ namespace Chummer
 			chtKarma.Series.Add(objKarmaSeries);
 			chtKarma.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
 			chtKarma.ChartAreas[0].AxisY.Title = "Karma Remaining";
-			chtKarma.ChartAreas[0].AxisX.Minimum = 1;
+			chtKarma.ChartAreas[0].AxisX.Minimum = 0;
 
 			// Configure the Nuyen chart.
 			chtNuyen.Series.Add(objNuyenSeries);
 			chtNuyen.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
 			chtNuyen.ChartAreas[0].AxisY.Title = "Nuyen Remaining";
-			chtNuyen.ChartAreas[0].AxisX.Minimum = 1;
+			chtNuyen.ChartAreas[0].AxisX.Minimum = 0;
 
-			int intKarmaX = 0;
-			int intNuyenX = 0;
+
+            //Find the first karma/nuyen entry
+		    DateTime KarmaFirst = DateTime.MaxValue;
+		    DateTime NuyenFirst = DateTime.MaxValue;
+		    foreach (ExpenseLogEntry objExpense in _objCharacter.ExpenseEntries)
+		    {
+		        if (objExpense.Type == ExpenseType.Karma)
+		        {
+		            if (objExpense.Date.CompareTo(KarmaFirst) < 0)
+		            {
+		                KarmaFirst = objExpense.Date;
+		            }
+		        }
+		        else
+		        {
+		            if (objExpense.Date.CompareTo(NuyenFirst) < 0)
+		            {
+		                NuyenFirst = objExpense.Date;
+		            }
+		        }
+		    }
+
+            //Problem data isen't ordered so we have to sort it anyway
+            _objCharacter.ExpenseEntries.Sort(delegate(ExpenseLogEntry e1, ExpenseLogEntry e2)
+            {
+                if (e1 == null && e2 == null) return 0;
+                if (e1 == null) return -1;
+                if (e2 == null) return 1;
+
+                if (e1.Date == null && e2.Date == null) return 0;
+                if (e1.Date == null) return -1;
+                if (e2.Date == null) return 1;
+
+                return e1.Date.CompareTo(e2.Date);
+            });
+
+			double doubleKarmaX = 0;
+			double doubleNuyenX = 0;
 			int intKarmaValue = 0;
 			int intNuyenValue = 0;
 			foreach (ExpenseLogEntry objExpense in _objCharacter.ExpenseEntries)
 			{
 				if (objExpense.Type == ExpenseType.Karma)
 				{
-					intKarmaX++;
+				    double seconds = (objExpense.Date - KarmaFirst).TotalDays;
+				    if (seconds > doubleKarmaX) doubleKarmaX = seconds;
 					intKarmaValue += objExpense.Amount;
-					objKarmaSeries.Points.AddXY(intKarmaX, intKarmaValue);
+					objKarmaSeries.Points.AddXY(seconds, intKarmaValue);
 				}
 				else
 				{
-					intNuyenX++;
+				    double seconds = (objExpense.Date - NuyenFirst).TotalDays;
+				    if (seconds > doubleNuyenX) doubleNuyenX = seconds;
 					intNuyenValue += objExpense.Amount;
-					objNuyenSeries.Points.AddXY(intNuyenX, intNuyenValue);
+					objNuyenSeries.Points.AddXY(seconds, intNuyenValue);
 				}
 			}
-			chtKarma.ChartAreas[0].AxisX.Maximum = intKarmaX;
-			chtNuyen.ChartAreas[0].AxisX.Maximum = intNuyenX;
+            
+
+			chtKarma.ChartAreas[0].AxisX.Maximum = doubleKarmaX;
+			chtNuyen.ChartAreas[0].AxisX.Maximum = doubleNuyenX;
 			//chtKarma.ChartAreas[0].AxisX.MaximumAutoSize = 100;
 			chtKarma.Invalidate();
 			chtNuyen.Invalidate();
