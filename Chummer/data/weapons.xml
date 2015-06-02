@@ -3696,6 +3696,7 @@
 			<ammo>8(c)</ammo>
 			<avail>5R</avail>
 			<cost>250</cost>
+      <ammocategory>Heavy Pistols</ammocategory>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Barrel</mount>
