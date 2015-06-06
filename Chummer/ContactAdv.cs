@@ -61,8 +61,6 @@ namespace Chummer
                 lblFree.Visible = false;
                 chkFree.Visible = false;
             }
-            
-            
 
             LoadLanguage();
         }
@@ -268,7 +266,7 @@ namespace Chummer
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
             _objContact.IsGroup = chkGroup.Checked;
-            
+            chkGroup.Enabled = !_objContact.MadeMan;
 
             _cb.OnGroupStatusChanged(this);
 

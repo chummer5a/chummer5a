@@ -4741,7 +4741,11 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<mademan />
+				<mademan /> <!--should be removable-->
+		<selectcontact>
+			<type>group</type>
+			<mademan/>
+		</selectcontact>
 			</bonus>
 			<source>RF</source>
 			<page>148</page>

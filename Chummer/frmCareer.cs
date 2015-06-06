@@ -8594,6 +8594,7 @@ namespace Chummer
 
 			UpdateMentorSpirits();
 			UpdateCharacterInfo();
+            RefreshContacts();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -8821,6 +8822,7 @@ namespace Chummer
 
 			UpdateMentorSpirits();
 			UpdateCharacterInfo();
+		    RefreshContacts();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -21276,6 +21278,22 @@ namespace Chummer
 
 			lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
 		}
+
+	    public void RefreshContacts()
+	    {
+            foreach (Control contact in panContacts.Controls)
+            {
+                // Probably won't find subclass, but don't wan't to track
+                // down bug about contacts in 4 months because i by some 
+                // retarded version decided to overload ContactControl
+                if (contact.GetType() == typeof(ContactControl) ||
+                    contact.GetType().IsSubclassOf(typeof(ContactControl)))
+                {
+                    ContactControl contactControl = (ContactControl)contact;
+                    contactControl.UpdateQuickText();
+                }
+            }
+	    }
 
 		/// <summary>
 		/// Update the Character information.

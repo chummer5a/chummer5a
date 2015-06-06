@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Windows.Automation.Peers;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Xml;
@@ -53,12 +54,17 @@ namespace Chummer
             //Add same event to most of the controls (base added in init)
             txtContactLocation.MouseHover += ContactControl_MouseHover;
             txtContactName.MouseHover += ContactControl_MouseHover;
-            cboContactRole.MouseHover += ContactControl_MouseHover;
             //Uncomment lines belov to make hovering over quick info 
             //label/delete button work
             //cmdDelete.MouseHover += ContactControl_MouseHover;
             //lblQuick.MouseHover += ContactControl_MouseHover;
 
+            //ComboBox in input mode is borked
+            //We have to create our own MouseHower using MouseMove
+            //cboContactRole.MouseHover += ContactControl_MouseHover;
+            cboContactRole.MouseMove += cboContactRole_MouseMove;
+
+            
 
              //we need to raise some events that are based on this file but
             //now raised somewhere else. This object works as a proxy for that
@@ -74,6 +80,25 @@ namespace Chummer
             cbobj.GroupStatusChanged += cbobj_GroupStatusChanged;
             cbobj.ConnectionRatingChanged += cbobj_ConnectionRatingChanged;
             cbobj.LoyaltyRatingChanged += cbobj_LoyaltyRatingChanged;
+
+        }
+
+        void cboContactRole_MouseMove(object sender, MouseEventArgs e)
+        {
+            hovertimer.Interval = SystemInformation.MouseHoverTime;
+            hovertimer.Stop();
+            hovertimer.Start();
+        }
+
+        void hovertimer_Tick(object sender, EventArgs e)
+        {
+            hovertimer.Start();
+            //if this gives errors someday we might have to save sender and events
+            //from cboContactRole_MouseMove but until then we won't bother
+            if (cboContactRole.ClientRectangle.Contains(cboContactRole.PointToClient(Control.MousePosition)))
+            {
+                ContactControl_MouseHover(sender, e);
+            }
         }
 
         void cbobj_GroupStatusChanged(object sender)
@@ -82,7 +107,7 @@ namespace Chummer
 
             if (IsGroup)
             {
-                _objContact.Loyalty = 1;
+                _objContact.Loyalty = _objContact.MadeMan ? 3 : 1;
             }
 
             UpdateQuickText();
@@ -102,21 +127,22 @@ namespace Chummer
             UpdateQuickText();
         }
 
-        private void UpdateQuickText()
+        public void UpdateQuickText()
         {
-            lblQuick.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? "G" : _objContact.Loyalty.ToString());
+            lblQuick.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? (_objContact.MadeMan ? "M" : "G") : _objContact.Loyalty.ToString());
+
         }
 
         private void ContactControl_MouseHover(object sender, EventArgs e)
         {
             if (_displayCordinator == null)
             {
+                _displayCordinator = new HoverDisplayCordinator();
+
                 bool blnContactLocationFocused = txtContactLocation.Focused;
                 bool blnContactNameFocused = txtContactName.Focused;
                 bool blnContactRoleFocused = cboContactRole.Focused;
                 
-
-                _displayCordinator = new HoverDisplayCordinator();
                 _displayCordinator.OnAllLeave += (o, args) => { _displayCordinator = null; };
                 ContactAdv _contactAdv = 
                     new ContactAdv(_displayCordinator, this, _objContact, _objCharacter,cbobj);
@@ -214,6 +240,12 @@ namespace Chummer
 			set
 			{
 				_objContact = value;
+
+                //Init quick text
+                //We can't do it in constructor, because there this isen't
+                //set because the entire object this is suposed to display
+                //is not required in the constructor, for some reason
+                UpdateQuickText();
 			}
 		}
 

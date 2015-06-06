@@ -15,90 +15,90 @@ namespace Chummer
             Attribute = 1,
             Text = 2,
 			Armor = 3,
-			Reach = 5,
-			Nuyen = 6,
-			Essence = 7,
-			Reaction = 8,
-			PhysicalCM = 9,
-			StunCM = 10,
-			UnarmedDV = 11,
-			SkillGroup = 12,
-			SkillCategory = 13,
-			SkillAttribute = 14,
-			InitiativePass = 15,
-			MatrixInitiative = 16,
-			MatrixInitiativePass = 17,
-			LifestyleCost = 18,
-			CMThreshold = 19,
-			EnhancedArticulation = 20,
-			WeaponCategoryDV = 21,
-			CyberwareEssCost = 22,
-			SpecialTab = 23,
-			Initiative = 24,
-			Uneducated = 25,
-			LivingPersonaResponse = 26,
-			LivingPersonaSignal = 27,
-			LivingPersonaFirewall = 28,
-			LivingPersonaSystem = 29,
-			LivingPersonaBiofeedback = 30,
-			Smartlink = 31,
-			BiowareEssCost = 32,
-			GenetechCostMultiplier = 33,
-			BasicBiowareEssCost = 34,
-			TransgenicsBiowareCost = 35,
-			SoftWeave = 36,
-			SensitiveSystem = 37,
-			ConditionMonitor = 38,
-			UnarmedDVPhysical = 39,
-			MovementPercent = 40,
-			Adapsin = 41,
-			FreePositiveQualities = 42,
-			FreeNegativeQualities = 43,
-			NuyenMaxBP = 44,
-			CMOverflow = 45,
-			FreeSpiritPowerPoints = 46,
-			AdeptPowerPoints = 47,
-			ArmorEncumbrancePenalty = 48,
-			Uncouth = 49,
-			Initiation = 50,
-			Submersion = 51,
-			Infirm = 52,
-			Skillwire = 53,
-			DamageResistance = 54,
-			RestrictedItemCount = 55,
-			AdeptLinguistics = 56,
-			SwimPercent = 57,
-			FlyPercent = 58,
-			FlySpeed = 59,
-			JudgeIntentions = 60,
-			LiftAndCarry = 61,
-			Memory = 62,
-			Concealability = 63,
-			SwapSkillAttribute = 64,
-			DrainResistance = 65,
-			FadingResistance = 66,
-			MatrixInitiativePassAdd = 67,
-			InitiativePassAdd = 68,
-			Composure = 69,
-			UnarmedAP = 70,
-			CMThresholdOffset = 71,
-			Restricted = 72,
-			Notoriety = 73,
-			SpellCategory = 74,
-			ThrowRange = 75,
-			SkillsoftAccess = 76,
-			AddSprite = 77,
-			BlackMarketDiscount = 78,
-			SelectWeapon = 79,
-			ComplexFormLimit = 80,
-			SpellLimit = 81,
-			QuickeningMetamagic = 82,
-			BasicLifestyleCost = 83,
-			ThrowSTR = 84,
-			IgnoreCMPenaltyStun = 85,
-			IgnoreCMPenaltyPhysical = 86,
-			CyborgEssence = 87,
-			EssenceMax = 88,
+            Reach = 5,
+            Nuyen = 6,
+            Essence = 7,
+            Reaction = 8,
+            PhysicalCM = 9,
+            StunCM = 10,
+            UnarmedDV = 11,
+            SkillGroup = 12,
+            SkillCategory = 13,
+            SkillAttribute = 14,
+            InitiativePass = 15,
+            MatrixInitiative = 16,
+            MatrixInitiativePass = 17,
+            LifestyleCost = 18,
+            CMThreshold = 19,
+            EnhancedArticulation = 20,
+            WeaponCategoryDV = 21,
+            CyberwareEssCost = 22,
+            SpecialTab = 23,
+            Initiative = 24,
+            Uneducated = 25,
+            LivingPersonaResponse = 26,
+            LivingPersonaSignal = 27,
+            LivingPersonaFirewall = 28,
+            LivingPersonaSystem = 29,
+            LivingPersonaBiofeedback = 30,
+            Smartlink = 31,
+            BiowareEssCost = 32,
+            GenetechCostMultiplier = 33,
+            BasicBiowareEssCost = 34,
+            TransgenicsBiowareCost = 35,
+            SoftWeave = 36,
+            SensitiveSystem = 37,
+            ConditionMonitor = 38,
+            UnarmedDVPhysical = 39,
+            MovementPercent = 40,
+            Adapsin = 41,
+            FreePositiveQualities = 42,
+            FreeNegativeQualities = 43,
+            NuyenMaxBP = 44,
+            CMOverflow = 45,
+            FreeSpiritPowerPoints = 46,
+            AdeptPowerPoints = 47,
+            ArmorEncumbrancePenalty = 48,
+            Uncouth = 49,
+            Initiation = 50,
+            Submersion = 51,
+            Infirm = 52,
+            Skillwire = 53,
+            DamageResistance = 54,
+            RestrictedItemCount = 55,
+            AdeptLinguistics = 56,
+            SwimPercent = 57,
+            FlyPercent = 58,
+            FlySpeed = 59,
+            JudgeIntentions = 60,
+            LiftAndCarry = 61,
+            Memory = 62,
+            Concealability = 63,
+            SwapSkillAttribute = 64,
+            DrainResistance = 65,
+            FadingResistance = 66,
+            MatrixInitiativePassAdd = 67,
+            InitiativePassAdd = 68,
+            Composure = 69,
+            UnarmedAP = 70,
+            CMThresholdOffset = 71,
+            Restricted = 72,
+            Notoriety = 73,
+            SpellCategory = 74,
+            ThrowRange = 75,
+            SkillsoftAccess = 76,
+            AddSprite = 77,
+            BlackMarketDiscount = 78,
+            SelectWeapon = 79,
+            ComplexFormLimit = 80,
+            SpellLimit = 81,
+            QuickeningMetamagic = 82,
+            BasicLifestyleCost = 83,
+            ThrowSTR = 84,
+            IgnoreCMPenaltyStun = 85,
+            IgnoreCMPenaltyPhysical = 86,
+            CyborgEssence = 87,
+            EssenceMax = 88,
             AdeptPower = 89,
             SpecificQuality = 90,
             MartialArt = 91,
@@ -121,8 +121,8 @@ namespace Chummer
             TechSchool = 108,
             TrustFund = 109,
             ExCon = 110,
-            BlackMarket = 111
-
+            BlackMarket = 111,
+            ContactMadeMan = 112
         }
 
         public enum ImprovementSource
@@ -1869,6 +1869,74 @@ namespace Chummer
 
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement(frmPickSpell.SelectedSpell, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
+                    }
+
+                    // Select a Contact
+                    if (NodeExists(nodBonus, "selectcontact"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectcontact");
+                        XmlNode nodSelect = nodBonus["selectcontact"];
+                        
+                        frmSelectItem frmSelect = new frmSelectItem();
+
+                        String strMode = NodeExists(nodSelect,"type")
+                            ? nodSelect["type"].InnerText
+                            : "all";
+
+                        List<Contact> selectedContactsList;
+                        if (strMode == "all")
+                        {
+                            selectedContactsList = new List<Contact>(_objCharacter.Contacts);
+                        }
+                        else if (strMode == "group" || strMode == "nongroup")
+                        {
+                            bool blnGroup = strMode == "group";
+
+
+                            //Select any contact where IsGroup equals blnGroup
+                            //and add to a list
+                            selectedContactsList =
+                                new List<Contact>(from contact in _objCharacter.Contacts
+                                    where contact.IsGroup == blnGroup
+                                    select contact);
+                        }
+                        else
+                        {
+                            Rollback();
+                            blnSuccess = false;
+                            return false;
+                        }
+
+                        int count = 0;
+                        //Black magic LINQ to cast content of list to another type
+                        List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
+                                                      select new ListItem() { Name = x.Name, Value = (count++).ToString() });
+                        
+                        String strPrice = NodeExists(nodSelect,"cost")
+                            ? nodSelect["cost"].InnerText
+                            : "";
+
+                        frmSelect.GeneralItems = contacts;
+                        frmSelect.ShowDialog();
+
+                        int index = int.Parse(frmSelect.SelectedItem);
+                        if (frmSelect.DialogResult != DialogResult.Cancel)
+                        {
+                            Contact selectedContact = selectedContactsList[index];
+
+                            if (nodSelect["mademan"] != null)
+                            {
+                                selectedContact.MadeMan = true;
+                                CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
+                                
+                            }
+                        }
+                        else
+                        {
+                            Rollback();
+                            blnSuccess = false;
+                            return false;
+                        }
                     }
 
                     // Affect a Specific Attribute.
@@ -4574,6 +4642,16 @@ namespace Chummer
 						}
 					}
 				}
+
+                // Remove MadeMan tag from a contact
+			    if(objImprovement.ImproveType == Improvement.ImprovementType.ContactMadeMan)
+			    {
+			        Contact contact = (from c in _objCharacter.Contacts
+			            where c.GUID == objImprovement.ImprovedName
+			            select c).First();
+
+			        contact.MadeMan = false;
+			    }
 
 				// Decrease the character's Initiation Grade.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Initiation)

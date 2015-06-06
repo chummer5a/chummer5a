@@ -13,13 +13,15 @@ namespace Chummer
         private static CommonFunctions _objCommonFunctions = new CommonFunctions();
         
         /// <summary>
-        /// This methods is syntetic sugar for atempting to read the lot of fields
-        /// from an XmlNode.
+        /// This method is syntaxtic sugar for atempting to read a data field
+        /// from an XmlNode. This version sets the output variable to its 
+        /// default value in case of a failed read and can be used for 
+        /// initializing variables
         /// </summary>
         /// <typeparam name="T">The type to convert to</typeparam>
         /// <param name="node">The XmlNode to read from</param>
         /// <param name="field">The field to try and extract from the XmlNode</param>
-        /// <param name="read">The variable to save the read to, if successful</param>
+        /// <param name="read">The variable to save the read to</param>
         /// <returns>true if successful read</returns>
         public static bool TryGetField<T>(this XmlNode node, String field, out T read) where T : IConvertible
         {
@@ -111,6 +113,29 @@ namespace Chummer
                 read = default(T);
                 return false;
             }
+
+        }
+
+        /// <summary>
+        /// This method is syntaxtic sugar for atempting to read a data field
+        /// from an XmlNode. This version preserves the output variable in case
+        /// of a failed read 
+        /// </summary>
+        /// <typeparam name="T">The type to convert to</typeparam>
+        /// <param name="node">The XmlNode to read from</param>
+        /// <param name="field">The field to try and extract from the XmlNode</param>
+        /// <param name="read">The variable to save the read to, if successful</param>
+        /// <returns>true if successful read</returns>
+        public static bool TryPreserveField<T>(this XmlNode node, String field, ref T read) where T : IConvertible
+        {
+            T value;
+            if (node.TryGetField(field, out value))
+            {
+                read = value;
+                return true;
+            }
+
+            return false;
 
         }
     }
