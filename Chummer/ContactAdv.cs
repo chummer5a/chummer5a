@@ -61,6 +61,8 @@ namespace Chummer
                 lblFree.Visible = false;
                 chkFree.Visible = false;
             }
+            
+            
 
             LoadLanguage();
         }

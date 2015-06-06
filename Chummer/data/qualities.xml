@@ -469,7 +469,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<mentallimit>Rating</mentallimit>
+				<mentallimit>1</mentallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -481,7 +481,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<physicallimit>Rating</physicallimit>
+				<physicallimit>1</physicallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -493,7 +493,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<sociallimit>Rating</sociallimit>
+				<sociallimit>1</sociallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -4839,7 +4839,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selectrestricted />
+        <selecttext />
 			</bonus>
 			<source>RF</source>
 			<page>149</page>
@@ -4851,7 +4851,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selectrestricted />
+        <selecttext />
 			</bonus>
 			<required>
 				<allof>
@@ -4868,7 +4868,7 @@
 			<limit>3</limit>
 			<bonus>
 				<restrictedgear />
-				<selectrestricted />
+        <selecttext />
 			</bonus>
 			<required>
 				<allof>

@@ -104,12 +104,33 @@ namespace Chummer
 					}
 					else
 					{
-						if (_objSkill.Rating == 0)
-							intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewKnowledgeSkill;
-						else if (_objSkill.Rating >= 3 && _objSkill.CharacterObject.SchoolOfHardKnocks)
-                            intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                        if (_objSkill.Rating == 0)
+                            intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewKnowledgeSkill;
+                        else if (_objSkill.Rating >= 3)
+                        {
+                            //Street Knowledge Skills > Rank 2 gain a 1 karma discount with the School of Hard Knocks quality.
+                            if (_objSkill.CharacterObject.SchoolOfHardKnocks && _objSkill.SkillCategory == "Street")
+                            {
+                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                            }
+                            //Academic Knowledge Skills > Rank 2 gain a 1 karma discount with the College Education quality.
+                            else if (_objSkill.CharacterObject.CollegeEducation && _objSkill.SkillCategory == "Academic")
+                            {
+                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                            }
+                            //Professional Knowledge Skills > Rank 2 gain a 1 karma discount with the Tech School quality.
+                            else if (_objSkill.CharacterObject.TechSchool && _objSkill.SkillCategory == "Professional")
+                            {
+                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                            }
+                            //Linguist Skills > Rank 2 gain a 1 karma discount with the Linguist quality.
+                            else if (_objSkill.CharacterObject.Linguist && _objSkill.SkillCategory == "Language")
+                            {
+                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                            }
+                        }
                         else
-							intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
+                            intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
 					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
 					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
@@ -505,10 +526,15 @@ namespace Chummer
             }
             set
             {
-				if (value > _objSkill.RatingMaximum)
-					value = _objSkill.RatingMaximum;
+                if (value > _objSkill.RatingMaximum)
+                {
+                    value = _objSkill.RatingMaximum;
+                }
                 if (value < _objSkill.FreeLevels)
+                {
                     value = _objSkill.FreeLevels;
+                }
+                nudSkill.Value = value;
 
                 lblSkillRating.Text = value.ToString();
                 _objSkill.Rating = value;
@@ -857,59 +883,63 @@ namespace Chummer
             _intWorkingRating = _objSkill.Rating;
         }
 
-		/// <summary>
-		/// Update the Modified Rating shown.
-		/// </summary>
-		public void RefreshControl()
-		{
-			bool blnSkillsoft = false;
-			ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
+        /// <summary>
+        /// Update the Modified Rating shown.
+        /// </summary>
+        public void RefreshControl()
+        {
+            bool blnSkillsoft = false;
+            ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
 
-			int intRating = _objSkill.TotalRating;
-			lblModifiedRating.Text = intRating.ToString();
+            int intRating = _objSkill.TotalRating;
+            lblModifiedRating.Text = intRating.ToString();
 
-			int intSkillRating = _objSkill.Rating;
-			foreach (Gear objGear in _objSkill.CharacterObject.Gear)
-			{
-				// Look for any Skillsoft that would conflict with the Skill's Rating.
-				if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
-				{
-					if (objGear.Rating > _objSkill.Rating)
-					{
-						// Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
-						// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-						if (objGear.Name == "Activesoft")
-							intSkillRating = Math.Min(objGear.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
-						else
-							intSkillRating = objGear.Rating;
-						blnSkillsoft = true;
-						break;
-					}
-				}
+            int intSkillRating = _objSkill.Rating;
 
-				foreach (Gear objChild in objGear.Children)
-				{
-					if (objChild.Equipped && objChild.Category == "Skillsofts" && (objChild.Extra == _objSkill.Name || objChild.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
-					{
-						if (objChild.Rating > _objSkill.Rating)
-						{
-							// Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
-							// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-							if (objChild.Name == "Activesoft")
-								intSkillRating = Math.Min(objChild.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
-							else
-								intSkillRating = objChild.Rating;
-							blnSkillsoft = true;
-							break;
-						}
-					}
-				}
-			}
+            foreach (Gear objGear in _objSkill.CharacterObject.Gear)
+            {
+                // Look for any Skillsoft that would conflict with the Skill's Rating.
+                if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+                {
+                    if (objGear.Rating > _objSkill.Rating)
+                    {
+                        // Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
+                        // If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
+                        if (objGear.Name == "Activesoft")
+                            intSkillRating = Math.Min(objGear.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
+                        else
+                            intSkillRating = objGear.Rating;
+                        blnSkillsoft = true;
+                        break;
+                    }
+                }
 
+                foreach (Gear objChild in objGear.Children)
+                {
+                    if (objChild.Equipped && objChild.Category == "Skillsofts" && (objChild.Extra == _objSkill.Name || objChild.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+                    {
+                        if (objChild.Rating > _objSkill.Rating)
+                        {
+                            // Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
+                            // If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
+                            if (objChild.Name == "Activesoft")
+                                intSkillRating = Math.Min(objChild.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
+                            else
+                                intSkillRating = objChild.Rating;
+                            blnSkillsoft = true;
+                            break;
+                        }
+                    }
+                }
+            }
             if (_objSkill.FreeLevels > 0)
+            {
                 nudSkill.Minimum = _objSkill.FreeLevels;
+            }
             else
+            {
                 nudSkill.Minimum = 0;
+            }
 
             if (cboSpec.Text != "" && !_objSkill.ExoticSkill)
             {
@@ -932,11 +962,10 @@ namespace Chummer
                     lblModifiedRating.Text += " (" + (intRating + 3).ToString() + ")";
                 }
             }
+            lblAttribute.Text = _objSkill.DisplayAttribute;
 
-			lblAttribute.Text = _objSkill.DisplayAttribute;
-
-			// Build the Tooltip.
-			string strTooltip = "";
+            // Build the Tooltip.
+            string strTooltip = "";
 			if (blnSkillsoft)
 				strTooltip += LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating") + " (" + intSkillRating.ToString() + ")";
 			else
@@ -949,8 +978,8 @@ namespace Chummer
 			    strTooltip += " + " + LanguageManager.Instance.GetString("String_Attribute" + _objSkill.Attribute + "Short") + " (" + _objSkill.AttributeModifiers.ToString() + ")";
 			}
 
-			// Modifiers only apply when not Defaulting.
-			if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
+            // Modifiers only apply when not Defaulting.
+            if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
 			{
 				if (_objSkill.RatingModifiers != 0)
 				{
@@ -1022,7 +1051,7 @@ namespace Chummer
 
 			if (_objSkill.CharacterObject.Created)
 			{
-				lblSkillRating.Text = _objSkill.Rating.ToString();
+                lblSkillRating.Text = _objSkill.Rating.ToString();
 				// Enable or disable the Improve Skill button as necessary.
 				if (_objSkill.Rating < _objSkill.RatingMaximum)
 					cmdImproveSkill.Enabled = true;
