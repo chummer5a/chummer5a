@@ -8414,6 +8414,7 @@ namespace Chummer
 			UpdateMentorSpirits();
 			UpdateCharacterInfo();
             RefreshPowers();
+            RefreshContacts();
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();

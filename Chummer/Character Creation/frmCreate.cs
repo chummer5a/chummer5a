@@ -8317,6 +8317,7 @@ namespace Chummer
             UpdateCharacterInfo();
             RefreshMartialArts();
             RefreshPowers();
+            RefreshContacts();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
