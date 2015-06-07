@@ -107,6 +107,7 @@
     <Compile Include="Classes\clsOmaeHelper.cs" />
     <Compile Include="Classes\clsOptions.cs" />
     <Compile Include="Classes\clsUnique.cs" />
+    <Compile Include="Classes\clsXMLExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
