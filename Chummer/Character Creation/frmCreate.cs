@@ -8080,6 +8080,7 @@ namespace Chummer
             UpdateCharacterInfo();
             RefreshMartialArts();
             RefreshPowers();
+            RefreshContacts();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -8316,6 +8317,7 @@ namespace Chummer
             UpdateCharacterInfo();
             RefreshMartialArts();
             RefreshPowers();
+            RefreshContacts();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -15695,7 +15697,16 @@ namespace Chummer
                 else
                 {
                     //save this for later, as a group contract is counted as a positive quality
-                    intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                    if (objContactControl.ContactObject.MadeMan)
+                    {
+                        //Made man is free, contact (No i don't see any reason for not to have con4)
+                        //per RAW. We keep it that way, can always create a house rule for it later
+
+                    }
+                    else
+                    {
+                        intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                    }
                 }
             }
 
@@ -17384,6 +17395,22 @@ namespace Chummer
                 }
 
                 _blnSkipRefresh = false;
+            }
+        }
+
+        public void RefreshContacts()
+        {
+            foreach (Control contact in panContacts.Controls)
+            {
+                // Probably won't find subclass, but don't wan't to track
+                // down bug about contacts in 4 months because i by some 
+                // retarded version decided to overload ContactControl
+                if (contact.GetType() == typeof(ContactControl) ||
+                    contact.GetType().IsSubclassOf(typeof(ContactControl)))
+                {
+                    ContactControl contactControl = (ContactControl) contact;
+                    contactControl.UpdateQuickText();
+                }
             }
         }
 

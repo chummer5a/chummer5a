@@ -122,7 +122,8 @@ namespace Chummer
             TrustFund = 109,
             ExCon = 110,
             BlackMarket = 111,
-            SelectArmor = 112
+            ContactMadeMan = 112,
+            SelectArmor = 113
 
         }
 
@@ -374,11 +375,11 @@ namespace Chummer
 					return ImprovementType.AddSprite;
 				case "BlackMarketDiscount":
 					return ImprovementType.BlackMarketDiscount;
-                case "SelectWeapon":
-                    return ImprovementType.SelectWeapon;
+				case "SelectWeapon":
+					return ImprovementType.SelectWeapon;
                 case "SelectArmor":
                     return ImprovementType.SelectArmor;
-                case "ComplexFormLimit":
+				case "ComplexFormLimit":
 					return ImprovementType.ComplexFormLimit;
 				case "SpellLimit":
 					return ImprovementType.SpellLimit;
@@ -1878,6 +1879,74 @@ namespace Chummer
 
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement(frmPickSpell.SelectedSpell, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
+                    }
+
+                    // Select a Contact
+                    if (NodeExists(nodBonus, "selectcontact"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectcontact");
+                        XmlNode nodSelect = nodBonus["selectcontact"];
+                        
+                        frmSelectItem frmSelect = new frmSelectItem();
+
+                        String strMode = NodeExists(nodSelect,"type")
+                            ? nodSelect["type"].InnerText
+                            : "all";
+
+                        List<Contact> selectedContactsList;
+                        if (strMode == "all")
+                        {
+                            selectedContactsList = new List<Contact>(_objCharacter.Contacts);
+                        }
+                        else if (strMode == "group" || strMode == "nongroup")
+                        {
+                            bool blnGroup = strMode == "group";
+
+
+                            //Select any contact where IsGroup equals blnGroup
+                            //and add to a list
+                            selectedContactsList =
+                                new List<Contact>(from contact in _objCharacter.Contacts
+                                    where contact.IsGroup == blnGroup
+                                    select contact);
+                        }
+                        else
+                        {
+                            Rollback();
+                            blnSuccess = false;
+                            return false;
+                        }
+
+                        int count = 0;
+                        //Black magic LINQ to cast content of list to another type
+                        List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
+                                                      select new ListItem() { Name = x.Name, Value = (count++).ToString() });
+                        
+                        String strPrice = NodeExists(nodSelect,"cost")
+                            ? nodSelect["cost"].InnerText
+                            : "";
+
+                        frmSelect.GeneralItems = contacts;
+                        frmSelect.ShowDialog();
+
+                        int index = int.Parse(frmSelect.SelectedItem);
+                        if (frmSelect.DialogResult != DialogResult.Cancel)
+                        {
+                            Contact selectedContact = selectedContactsList[index];
+
+                            if (nodSelect["mademan"] != null)
+                            {
+                                selectedContact.MadeMan = true;
+                                CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
+                                
+                            }
+                        }
+                        else
+                        {
+                            Rollback();
+                            blnSuccess = false;
+                            return false;
+                        }
                     }
 
                     // Affect a Specific Attribute.
@@ -4960,6 +5029,16 @@ namespace Chummer
 							}
 						}
 					}
+				}
+
+                // Remove MadeMan tag from a contact
+			    if(objImprovement.ImproveType == Improvement.ImprovementType.ContactMadeMan)
+			    {
+			        Contact contact = (from c in _objCharacter.Contacts
+			            where c.GUID == objImprovement.ImprovedName
+			            select c).First();
+
+			        contact.MadeMan = false;
 				}
 
 				// Decrease the character's Initiation Grade.

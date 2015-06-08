@@ -8,11 +8,15 @@ Application Change:
 - Technical School, College Education, Linguist qualities do the discounty things they're supposed to.
 - Fixed issues with the optional rule to re-group skill groups if the skills were balanced when the character was saved.
 - Fixed an embarassing issue with broken skill groups levelling themselves back down to the grouped rating.
+- Fixed the behaviour of Custom Fit so that it only counts if the Custom Fitted item is also equipped. Not super happy with the code, but I'm also tired of looking at it, so eh.
+- Undocumented feature of the day: the <armoroverride> key supports Custom Fit. If an item with the Custom Fit (Stack) mod is equipped, and has an Extra value that matches another equipped piece of armour, the armour value of the item will be changed to the override value.
 
 Data Change:
 - Fixed incorrect calculation for varieties of Indomitable.
 - Hanuman name fixed again. Frankly CGL should take the initiative of spelling the name correctly, for I am incapable of spelling errors.
 - Enhanced Articulation no longer prompts for the skill bonus.
+- Keen-eared and Balance Receptor are properly marked as Metagenetic qualities.
+
 
 Build 166
 Application Change:

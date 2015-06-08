@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Windows.Automation.Peers;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Xml;
@@ -21,9 +22,9 @@ public delegate void OtherCostChangedHandler(Object sender);
 
 namespace Chummer
 {
-    public partial class ContactControl : UserControl
+    public partial class  ContactControl : UserControl
     {
-        private Contact _objContact;
+		private Contact _objContact;
         private readonly Character _objCharacter;
         private string _strContactName;
         private string _strContactRole;
@@ -31,36 +32,41 @@ namespace Chummer
         private bool _blnEnemy = false;
         private HoverDisplayCordinator _displayCordinator;
         private ContractControlCallBackObject cbobj;
-
+        
         // Events.
-        public event ConnectionRatingChangedHandler ConnectionRatingChanged;
+		public event ConnectionRatingChangedHandler ConnectionRatingChanged;
         public event ConnectionGroupRatingChangedHandler GroupStatusChanged;
         public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
         public event DeleteContactHandler DeleteContact;
-        public event FileNameChangedHandler FileNameChanged;
+		public event FileNameChangedHandler FileNameChanged;
         public event OtherCostChangedHandler OtherCostChanged;
 
-        #region Control Events
+		#region Control Events
         public ContactControl(Character objCharacter)
         {
             InitializeComponent();
             _objCharacter = objCharacter;
-
-
-            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-
-            //Hover dosen't work if there is a control in the way
+            
+            
+			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            
+             //Hover dosen't work if there is a control in the way
             //Add same event to most of the controls (base added in init)
             txtContactLocation.MouseHover += ContactControl_MouseHover;
             txtContactName.MouseHover += ContactControl_MouseHover;
-            cboContactRole.MouseHover += ContactControl_MouseHover;
             //Uncomment lines belov to make hovering over quick info 
             //label/delete button work
             //cmdDelete.MouseHover += ContactControl_MouseHover;
             //lblQuick.MouseHover += ContactControl_MouseHover;
 
+            //ComboBox in input mode is borked
+            //We have to create our own MouseHower using MouseMove
+            //cboContactRole.MouseHover += ContactControl_MouseHover;
+            cboContactRole.MouseMove += cboContactRole_MouseMove;
 
-            //we need to raise some events that are based on this file but
+            
+
+             //we need to raise some events that are based on this file but
             //now raised somewhere else. This object works as a proxy for that
             cbobj = new ContractControlCallBackObject();
             cbobj.OtherCostChanged += sender =>
@@ -74,6 +80,25 @@ namespace Chummer
             cbobj.GroupStatusChanged += cbobj_GroupStatusChanged;
             cbobj.ConnectionRatingChanged += cbobj_ConnectionRatingChanged;
             cbobj.LoyaltyRatingChanged += cbobj_LoyaltyRatingChanged;
+
+        }
+
+        void cboContactRole_MouseMove(object sender, MouseEventArgs e)
+        {
+            hovertimer.Interval = SystemInformation.MouseHoverTime;
+            hovertimer.Stop();
+            hovertimer.Start();
+        }
+
+        void hovertimer_Tick(object sender, EventArgs e)
+        {
+            hovertimer.Start();
+            //if this gives errors someday we might have to save sender and events
+            //from cboContactRole_MouseMove but until then we won't bother
+            if (cboContactRole.ClientRectangle.Contains(cboContactRole.PointToClient(Control.MousePosition)))
+            {
+                ContactControl_MouseHover(sender, e);
+            }
         }
 
         void cbobj_GroupStatusChanged(object sender)
@@ -82,7 +107,7 @@ namespace Chummer
 
             if (IsGroup)
             {
-                _objContact.Loyalty = 1;
+                _objContact.Loyalty = _objContact.MadeMan ? 3 : 1;
             }
 
             UpdateQuickText();
@@ -102,23 +127,34 @@ namespace Chummer
             UpdateQuickText();
         }
 
-        private void UpdateQuickText()
+        public void UpdateQuickText()
         {
-            lblQuick.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? "G" : _objContact.Loyalty.ToString());
+            lblQuick.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? (_objContact.MadeMan ? "M" : "G") : _objContact.Loyalty.ToString());
+
         }
 
         private void ContactControl_MouseHover(object sender, EventArgs e)
         {
+
             if (_displayCordinator == null)
             {
                 _displayCordinator = new HoverDisplayCordinator();
+
+                bool blnContactLocationFocused = txtContactLocation.Focused;
+                bool blnContactNameFocused = txtContactName.Focused;
+                bool blnContactRoleFocused = cboContactRole.Focused;
+                
                 _displayCordinator.OnAllLeave += (o, args) => { _displayCordinator = null; };
-                ContactAdv _contactAdv =
-                    new ContactAdv(_displayCordinator, this, _objContact, _objCharacter, cbobj);
+                ContactAdv _contactAdv = 
+                    new ContactAdv(_displayCordinator, this, _objContact, _objCharacter,cbobj);
                 _displayCordinator.AddControlRecursive(this);
                 _displayCordinator.AddControlRecursive(_contactAdv);
                 _contactAdv.Show(ParentForm);
-                _contactAdv.DesktopLocation = PointToScreen(new Point(0, (-_contactAdv.Height)));
+                _contactAdv.DesktopLocation = PointToScreen(new Point(0, (- _contactAdv.Height + 50)));
+
+                if (blnContactLocationFocused) txtContactLocation.Focus();
+                if (blnContactNameFocused) txtContactName.Focus();
+                if (blnContactRoleFocused) cboContactRole.Focus();
             }
         }
 
@@ -160,42 +196,11 @@ namespace Chummer
                 cboContactRole.Text = _strContactRole;
         }
 
-        private void ContactControl_Load(object sender, EventArgs e)
-        {
-            this.Width = cmdDelete.Left + cmdDelete.Width;
+		private void ContactControl_Load(object sender, EventArgs e)
+		{
+			this.Width = cmdDelete.Left + cmdDelete.Width;
             LoadContactList();
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		}
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
@@ -205,10 +210,10 @@ namespace Chummer
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
-        {
-            _objContact.Role = cboContactRole.Text;
+		{
+			_objContact.Role = cboContactRole.Text;
             ConnectionRatingChanged(this);
-        }
+		}
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
@@ -221,178 +226,29 @@ namespace Chummer
             _objContact.Location = txtContactLocation.Text;
             ConnectionRatingChanged(this);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// Contact object this is linked to.
-        /// </summary>
-        public Contact ContactObject
-        {
-            get
-            {
-                return _objContact;
-            }
-            set
-            {
-                _objContact = value;
-            }
-        }
+		#region Properties
+		/// <summary>
+		/// Contact object this is linked to.
+		/// </summary>
+		public Contact ContactObject
+		{
+			get
+			{
+				return _objContact;
+			}
+			set
+			{
+				_objContact = value;
+
+                //Init quick text
+                //We can't do it in constructor, because there this isen't
+                //set because the entire object this is suposed to display
+                //is not required in the constructor, for some reason
+                UpdateQuickText();
+			}
+		}
 
         public bool IsEnemy
         {
@@ -414,13 +270,13 @@ namespace Chummer
         {
             get
             {
-                return _objContact.Name;
+				return _objContact.Name;
             }
             set
             {
                 txtContactName.Text = value;
                 _strContactName = value;
-                _objContact.Name = value;
+				_objContact.Name = value;
             }
         }
 
@@ -459,69 +315,19 @@ namespace Chummer
         }
 
         /// <summary>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /// Indicates if this is a Contact or Enemy.
-        /// </summary>
-        public ContactType EntityType
-        {
-            get
-            {
-                return _objContact.EntityType;
-            }
-            set
-            {
-                _objContact.EntityType = value;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            }
-        }
+		/// Indicates if this is a Contact or Enemy.
+		/// </summary>
+		public ContactType EntityType
+		{
+			get
+			{
+				return _objContact.EntityType;
+			}
+			set
+			{
+				_objContact.EntityType = value;
+			}
+		}
 
         /// <summary>
         /// Connection Rating.
@@ -530,45 +336,45 @@ namespace Chummer
         {
             get
             {
-                return _objContact.Connection;
+				return _objContact.Connection;
             }
             set
             {
                 //nudConnection.Value = value;
-                _objContact.Connection = value;
+				_objContact.Connection = value;
             }
         }
 
-        /// <summary>
+		/// <summary>
         /// Loyalty Rating.
         /// </summary>
         public int LoyaltyRating
         {
             get
             {
-                return _objContact.Loyalty;
+				return _objContact.Loyalty;
             }
             set
             {
                 //nudLoyalty.Value = value;
-                _objContact.Loyalty = value;
+				_objContact.Loyalty = value;
             }
         }
 
-        /// <summary>
-        /// Whether or not this is a free Contact.
-        /// </summary>
-        public bool Free
-        {
-            get
-            {
-                return _objContact.Free;
-            }
-            set
-            {
-                _objContact.Free = value;
-            }
-        }
+		/// <summary>
+		/// Whether or not this is a free Contact.
+		/// </summary>
+		public bool Free
+		{
+			get
+			{
+				return _objContact.Free;
+			}
+			set
+			{
+				_objContact.Free = value;
+			}
+		}
 
         /// <summary>
         /// Is the contract a group contract
@@ -584,15 +390,14 @@ namespace Chummer
                 _objContact.IsGroup = value;
             }
         }
+		#endregion
 
-        #endregion
+        
+	}
 
-
-    }
-
-    //Since events can only be raised from inside a class and we moved some
-    //controls that raises events to ContactAdv we need to either move events
-    //or give it some way to raise them. This object is giving a way to raise
+       //Since events can only be raised from inside a class and we moved some
+      //controls that raises events to ContactAdv we need to either move events
+     //or give it some way to raise them. This object is giving a way to raise
     //them while maintaning OOP encapsulationg where not everything can raise them
     public class ContractControlCallBackObject
     {
@@ -605,17 +410,12 @@ namespace Chummer
         internal void OnConnectionRatingChanged(Object sender)
         {
             if (ConnectionRatingChanged != null)
-
-
             {
                 ConnectionRatingChanged(sender);
             }
         }
 
         internal void OnLoyaltyRatingChanged(Object sender)
-
-
-
         {
             if (LoyaltyRatingChanged != null)
             {
@@ -632,9 +432,6 @@ namespace Chummer
         }
 
         internal void OnFileNameChanged(Object sender)
-
-
-
         {
             if (FileNameChanged != null)
             {
@@ -649,6 +446,5 @@ namespace Chummer
                 OtherCostChanged(sender);
             }
         }
-
     }
 }

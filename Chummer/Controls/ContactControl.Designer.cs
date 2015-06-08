@@ -27,11 +27,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cboContactRole = new System.Windows.Forms.ComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
             this.lblQuick = new System.Windows.Forms.Label();
+            this.hovertimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // cmdDelete
@@ -79,6 +81,10 @@
             this.lblQuick.TabIndex = 8;
             this.lblQuick.Text = "(1/1)";
             // 
+            // hovertimer
+            // 
+            this.hovertimer.Tick += new System.EventHandler(this.hovertimer_Tick);
+            // 
             // ContactControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -104,5 +110,6 @@
         private System.Windows.Forms.TextBox txtContactName;
         private System.Windows.Forms.TextBox txtContactLocation;
         private System.Windows.Forms.Label lblQuick;
+        private System.Windows.Forms.Timer hovertimer;
     }
 }

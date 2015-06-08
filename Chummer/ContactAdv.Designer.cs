@@ -274,7 +274,7 @@
             this.Controls.Add(this.imgLink);
             this.Controls.Add(this.nudLoyalty);
             this.Controls.Add(this.nudConnection);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "ContactAdv";
             this.ShowInTaskbar = false;
             this.TopMost = true;

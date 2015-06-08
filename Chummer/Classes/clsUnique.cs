@@ -64,16 +64,10 @@ namespace Chummer
 			_intMetatypeMin = Convert.ToInt32(objNode["metatypemin"].InnerText);
 			_intMetatypeMax = Convert.ToInt32(objNode["metatypemax"].InnerText);
 			_intMetatypeAugMax = Convert.ToInt32(objNode["metatypeaugmax"].InnerText);
-            try
-            {
-                _intBase = Convert.ToInt32(objNode["base"].InnerText);
-            }
-            catch { }
-            try
-            {
-                _intKarma = Convert.ToInt32(objNode["karma"].InnerText);
-            }
-            catch { }
+		    
+            objNode.TryGetField("base", out _intBase);
+		    objNode.TryGetField("karma", out _intKarma);
+            
             _intValue = Convert.ToInt32(objNode["value"].InnerText);
 			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
 
@@ -8096,7 +8090,9 @@ namespace Chummer
 		private string _strName = "";
         private string _strRole = "";
         private string _strLocation = "";
-		private int _intConnection = 1;
+	    private string _strUnique;
+
+        private int _intConnection = 1;
 		private int _intLoyalty = 1;
 		
 		private string _strGroupName = "";
@@ -8108,8 +8104,9 @@ namespace Chummer
 		private bool _blnFree = false;
         private bool _blnIsGroup = false;
 		private Character _objCharacter;
+	    private bool _blnMadeMan;
 
-		#region Helper Methods
+	    #region Helper Methods
 		/// <summary>
 		/// Convert a string to a ContactType.
 		/// </summary>
@@ -8154,6 +8151,11 @@ namespace Chummer
 			objWriter.WriteElementString("colour", _objColour.ToArgb().ToString());
 			objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
+            objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+		    if (_strUnique != null)
+		    {
+		        objWriter.WriteElementString("guid", _strUnique);
+		    }
             objWriter.WriteEndElement();
 		}
 
@@ -8230,7 +8232,16 @@ namespace Chummer
 		    catch
 		    {
 		    }
-        }
+		    try
+		    {
+		        _strUnique = objNode["guid"].InnerText;
+		    }
+		    catch
+		    {
+		    }
+
+		    objNode.TryGetField("mademan", out _blnMadeMan);
+		}
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
@@ -8263,7 +8274,7 @@ namespace Chummer
         {
             get
             {
-                return _intConnection + _intLoyalty;
+                return Free ? 0 : (_intConnection + _intLoyalty);
             }
         }
 
@@ -8334,7 +8345,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _intLoyalty;
+				return IsGroup ? (MadeMan ? 3 : 1) :_intLoyalty;
 			}
 			set
 			{
@@ -8465,8 +8476,42 @@ namespace Chummer
 				_blnFree = value;
 			}
 		}
+        /// <summary>
+        /// Unique ID for this contact
+        /// </summary>
+	    public String GUID
+	    {
+            get
+            {
+                if (_strUnique == null)
+                {
+                    _strUnique = Guid.NewGuid().ToString();
+                }
 
-        #endregion
+                return _strUnique;
+            }
+	    }
+
+	    /// <summary>
+	    /// Is this contact a made man
+	    /// </summary>
+	    public bool MadeMan
+	    {
+	        get { return _blnMadeMan & _blnIsGroup; }
+	        set
+	        {
+	            if (_blnIsGroup)
+	            {
+	                _blnMadeMan = value;
+	            }
+	            else
+	            {
+	                _blnMadeMan = false;
+	            }
+	        }
+	    }
+
+	    #endregion
 	}
 
 	/// <summary>

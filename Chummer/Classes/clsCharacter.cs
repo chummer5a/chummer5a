@@ -5280,14 +5280,8 @@ namespace Chummer
         {
             get
             {
-                // Street Cred = Career Karma / 10, rounded normally (34 = 3 Street Cred, 35 = 4 Street Cred; .5 is rounded up).
-                int intRemainder = (int)(Convert.ToDouble(CareerKarma, GlobalOptions.Instance.CultureInfo) % 10.0);
-                double dblEarned = 0.0;
-                if (intRemainder < 5)
-                    dblEarned = Math.Floor(Convert.ToDouble(CareerKarma, GlobalOptions.Instance.CultureInfo) / 10.0);
-                else
-                    dblEarned = Math.Ceiling(Convert.ToDouble(CareerKarma, GlobalOptions.Instance.CultureInfo) / 10.0);
-                int intReturn = Convert.ToInt32(dblEarned);
+                // Street Cred = Career Karma / 10, rounded down
+                int intReturn = CareerKarma/10;
 
                 // Deduct burnt Street Cred.
                 intReturn -= _intBurntStreetCred;
