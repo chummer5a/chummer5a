@@ -1629,18 +1629,19 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// The Armor's total Armor value including Modifications.
-		/// </summary>
-		public int TotalArmor
-		{
-			get
-			{
+        /// <summary>
+        /// The Armor's total Armor value including Modifications.
+        /// </summary>
+        public int TotalArmor
+        {
+            get
+            {
                 bool blnUseBase = false;
+                bool blnCustomFitted = false;
                 bool blnHighest = true;
                 int intOverride = 0;
 
-                foreach(Armor a in _objCharacter.Armor)
+                foreach (Armor a in _objCharacter.Armor)
                 {
                     if (a.Equipped)
                     {
@@ -1652,6 +1653,17 @@ namespace Chummer
                         {
                             if (Convert.ToInt32(a.ArmorOverrideValue) > Convert.ToInt32(_strO))
                                 blnHighest = false;
+                        }
+                        if (a.Name == _strName)
+                        {
+                            //Check for Custom Fitted armour
+                            foreach (ArmorMod objMod in a.ArmorMods)
+                            {
+                                if (objMod.Name == "Custom Fit (Stack)" && (objMod.Extra.Length > 0))
+                                {
+                                    blnCustomFitted = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -1668,38 +1680,42 @@ namespace Chummer
                 {
                     intTotalArmor = Convert.ToInt32(_strA);
                 }
-                else 
+                else
                 {
                     if (intOverride > 0)
                     {
                         if (intOverride == 1)
-                            intTotalArmor = Convert.ToInt32(_strO);
-                        else if (blnHighest)
-                            intTotalArmor = Convert.ToInt32(_strO);
-                        else
                             intTotalArmor = Convert.ToInt32(_strA);
+                        else if (blnHighest)
+                            intTotalArmor = Convert.ToInt32(_strA);
+                        else
+                            intTotalArmor = Convert.ToInt32(_strO);
                     }
                     else
                         intTotalArmor = Convert.ToInt32(_strA);
                 }
-				
-				// Go through all of the Mods for this piece of Armor and add the Armor value.
-				foreach (ArmorMod objMod in _lstArmorMods)
-				{
-					if (objMod.Equipped)
+                if (blnCustomFitted)
+                {
+                    intTotalArmor = Convert.ToInt32(_strO);
+                }
+
+                // Go through all of the Mods for this piece of Armor and add the Armor value.
+                foreach (ArmorMod objMod in _lstArmorMods)
+                {
+                    if (objMod.Equipped)
                         intTotalArmor += objMod.Armor;
-				}
+                }
 
                 intTotalArmor -= _intDamage;
 
                 return intTotalArmor;
-			}
-		}
+            }
+        }
 
-		/// <summary>
-		/// The Armor's total Cost including Modifications.
-		/// </summary>
-		public int TotalCost
+        /// <summary>
+        /// The Armor's total Cost including Modifications.
+        /// </summary>
+        public int TotalCost
 		{
 			get
 			{

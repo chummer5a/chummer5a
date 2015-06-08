@@ -121,7 +121,8 @@ namespace Chummer
             TechSchool = 108,
             TrustFund = 109,
             ExCon = 110,
-            BlackMarket = 111
+            BlackMarket = 111,
+            SelectArmor = 112
 
         }
 
@@ -373,9 +374,11 @@ namespace Chummer
 					return ImprovementType.AddSprite;
 				case "BlackMarketDiscount":
 					return ImprovementType.BlackMarketDiscount;
-				case "SelectWeapon":
-					return ImprovementType.SelectWeapon;
-				case "ComplexFormLimit":
+                case "SelectWeapon":
+                    return ImprovementType.SelectWeapon;
+                case "SelectArmor":
+                    return ImprovementType.SelectArmor;
+                case "ComplexFormLimit":
 					return ImprovementType.ComplexFormLimit;
 				case "SpellLimit":
 					return ImprovementType.SpellLimit;
@@ -4081,7 +4084,70 @@ namespace Chummer
                         CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarketDiscount, strUnique);
                         _objCharacter.BlackMarket = true;
                     }
+                    // Select Armor (Mostly used for Custom Fit (Stack)).
+                    if (NodeExists(nodBonus, "selectarmor"))
+                    {
+                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectarmor");
+                        objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "selectarmor = " + nodBonus["selectarmor"].OuterXml.ToString());
+                        string strSelectedValue = "";
+                        if (_strForcedValue != "")
+                            _strLimitSelection = _strForcedValue;
 
+                            // Display the Select Item window and record the value that was entered.
+
+                            List<ListItem> lstArmors = new List<ListItem>();
+                            foreach (Armor objArmor in _objCharacter.Armor)
+                            {
+                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                    {
+                                        if (objMod.Name.StartsWith("Custom Fit"))
+                                        {
+                                            ListItem objItem = new ListItem();
+                                            objItem.Value = objArmor.Name;
+                                            objItem.Name = objArmor.DisplayName;
+                                            lstArmors.Add(objItem);
+                                        }
+                                    }
+                            }
+
+                        if (lstArmors.Count > 0)
+                        {
+
+                            frmSelectItem frmPickItem = new frmSelectItem();
+                            frmPickItem.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
+                            frmPickItem.GeneralItems = lstArmors;
+
+                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strLimitSelection = " + _strLimitSelection);
+                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strForcedValue = " + _strForcedValue);
+
+                            if (_strLimitSelection != "")
+                            {
+                                frmPickItem.ForceItem = _strLimitSelection;
+                                frmPickItem.Opacity = 0;
+                            }
+
+                            frmPickItem.ShowDialog();
+
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            {
+                                Rollback();
+                                blnSuccess = false;
+                                _strForcedValue = "";
+                                _strLimitSelection = "";
+                                return false;
+                            }
+
+                            _strSelectedValue = frmPickItem.SelectedItem;
+                            if (blnConcatSelectedValue)
+                                strSourceName += " (" + _strSelectedValue + ")";
+
+                            strSelectedValue = frmPickItem.SelectedItem;
+                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strSelectedValue = " + _strSelectedValue);
+                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "strSelectedValue = " + strSelectedValue);
+                        }
+                        
+                    }
                     // Select Weapon (custom entry for things like Spare Clip).
                     if (NodeExists(nodBonus, "selectweapon"))
                     {

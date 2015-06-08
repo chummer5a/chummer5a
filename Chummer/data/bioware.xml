@@ -146,11 +146,11 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <selectskill>
+        <specificskill>
           <name>Escape Artist</name>
-          <val>1</val>
-          <applytorating>yes</applytorating>
-        </selectskill>
+          <bonus>1</bonus>
+          <applytorating>no</applytorating>
+        </specificskill>
         <physicallimit>+1</physicallimit>
       </bonus>
       <source>SR5</source>

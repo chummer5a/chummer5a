@@ -5855,6 +5855,7 @@ namespace Chummer
             {
                 int intHighest = 0;
                 int intArmor = 0;
+                string strHighest;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // Form-Fitting Armor is not included in this since it stacks with other worn armor, even if it's lower.
@@ -5863,6 +5864,7 @@ namespace Chummer
                     if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith("+"))
                     {
                         intHighest = objArmor.TotalArmor;
+                        strHighest = objArmor.Name;
                     }
                 }
                 intArmor = intHighest;
@@ -5871,10 +5873,45 @@ namespace Chummer
                 int intStacking = 0;
                 foreach (Armor objArmor in _lstArmor)
                 {
-                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "Clothing" && objArmor.Equipped)
+                    if (objArmor.ArmorValue.StartsWith("+") && objArmor.Category != "High-Fashion Armor Clothing" && objArmor.Category != "Clothing" && objArmor.Equipped)
+                    {
                         intStacking += objArmor.TotalArmor;
+                    }
                 }
 
+                // Run through the list of Armor currently worn again and look at High-Fashion Armor Clothing items that start with "+" since they stack with eachother.
+                int intFashionClothing = 0;
+                int intFashionClothingStack = 0;
+                string strFashionClothing = "";
+                foreach (Armor objArmor in _lstArmor)
+                {
+                    
+                    if (objArmor.Equipped && objArmor.Category == "High-Fashion Armor Clothing")
+                    {
+                        //Find the highest fancy suit armour value.
+                        if (!objArmor.ArmorValue.StartsWith("+") && objArmor.TotalArmor > intFashionClothing)
+                        {
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                if (objMod.Name != "Custom Fit (Stack)")
+                                {
+                                    intFashionClothing = objArmor.TotalArmor;
+                                    strFashionClothing = objArmor.Name;
+                                }
+                        }
+                        //Find the fancy suits that stack with other fancy suits.
+                        else if (objArmor.ArmorOverrideValue.StartsWith("+"))
+                        {
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                if (objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strFashionClothing)
+                                {
+                                    intFashionClothingStack += Convert.ToInt32(objArmor.TotalArmor);
+                                }
+                            }
+                        }
+                    }
+                }
+                intFashionClothing += intFashionClothingStack;
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
                 int intClothing = 0;
                 foreach (Armor objArmor in _lstArmor)
@@ -5885,8 +5922,8 @@ namespace Chummer
                     }
                 }
 
-                if (intClothing > intArmor)
-                    intArmor = intClothing;
+                int[] intArmorMax = new[] { intClothing, intArmor, intFashionClothing };
+                intArmor = intArmorMax.Max();
 
                 // Add any Armor modifiers.
                 intArmor += _objImprovementManager.ValueOf(Improvement.ImprovementType.Armor);

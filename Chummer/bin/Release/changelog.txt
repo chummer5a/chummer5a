@@ -1,5 +1,7 @@
 
 Build 167:
+New collaborator on the project acquired! joha4270 has been assisting with a variety of issues, and is currently tackling the implementation of Life Modules, along with several other tricky problems. Huzzah!
+
 Application Change:
 - Fixed an issue in which the Maximum Modified Rating rule could not be disabled.
 - Fixed issues with Limit Enhancements not saving. 
@@ -9,6 +11,8 @@ Application Change:
 
 Data Change:
 - Fixed incorrect calculation for varieties of Indomitable.
+- Hanuman name fixed again. Frankly CGL should take the initiative of spelling the name correctly, for I am incapable of spelling errors.
+- Enhanced Articulation no longer prompts for the skill bonus.
 
 Build 166
 Application Change:
@@ -24,7 +28,7 @@ Application Change:
 - Knowledge skills actually fixed now. Is now completely buildmethod-agnostic, so won't break when you look at it funny.
 
 Data Change: 
-- Fixed an issue with Haruman in Sum-to-Ten/Priority.
+- Fixed an issue with Hanuman in Sum-to-Ten/Priority.
 
 Build 164
 Application Change:
