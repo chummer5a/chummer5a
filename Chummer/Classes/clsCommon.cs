@@ -1410,7 +1410,6 @@ namespace Chummer
                 {
                     var uri = new System.Uri(strPath, UriKind.Absolute);
                     string strParams = "\"" + uri + "#page=" + intPage.ToString() + "\"";
-                    MessageBox.Show(strParams.ToString());
                     Process.Start(GlobalOptions.Instance.URLAppPath, strParams);
                 }
                 else
