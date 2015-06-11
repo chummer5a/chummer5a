@@ -2248,7 +2248,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _strName.Contains("(Used)");
+				return _strName.Contains("Used");
 			}
 		}
 		#endregion

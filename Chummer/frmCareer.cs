@@ -22568,11 +22568,11 @@ namespace Chummer
 					lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
 					//lblWeaponAmmoType.Text = "External Source";
 
-					cmsAmmoSingleShot.Enabled = objWeapon.AllowMode("SS") || objWeapon.AllowMode("SA");
-					cmsAmmoShortBurst.Enabled = objWeapon.AllowMode("BF") || objWeapon.AllowMode("FA");
-					cmsAmmoLongBurst.Enabled = objWeapon.AllowMode("FA");
-					cmsAmmoFullBurst.Enabled = objWeapon.AllowMode("FA");
-					cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode("FA");
+					cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSingleShot")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeSemiAutomatic"));
+					cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeBurstFire")) || objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+					cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+					cmsAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
+					cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.Instance.GetString("String_ModeFullAutomatic"));
 
 					// Melee Weapons with Ammo are considered to be Single Shot.
 					if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")

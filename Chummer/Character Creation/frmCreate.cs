@@ -20151,6 +20151,7 @@ namespace Chummer
             int intRestrictedCount = 0;
             string strAvailItems = "";
             string strExConItems = "";
+            string strCyberwareGrade = "";
 
             // Check limits specific to the Priority build method.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -20481,6 +20482,10 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
+                if (objCyberware.Grade.Name == "Deltaware" || objCyberware.Grade.Name == "Betaware")
+                {
+                    strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort;
+                }
 
                 if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                 {
@@ -21166,10 +21171,17 @@ namespace Chummer
             }
 
             if (!String.IsNullOrWhiteSpace(strExConItems))
+            {
+                blnValid = false;
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+                strMessage += strExConItems;
+            }
+
+            if (!String.IsNullOrWhiteSpace(strCyberwareGrade))
 		    {
 		        blnValid = false;
-		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
-		        strMessage += strExConItems;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidCyberwareGrades");
+		        strMessage += strCyberwareGrade;
 		    }
 
             // Check item Capacities if the option is enabled.

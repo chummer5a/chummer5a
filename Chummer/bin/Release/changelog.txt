@@ -1,22 +1,35 @@
-
 Build 167:
 New collaborator on the project acquired! joha4270 has been assisting with a variety of issues, and is currently tackling the implementation of Life Modules, along with several other tricky problems. Huzzah!
 
 Application Change:
+- Changes made to the Contact controls; most features of a contact are now only visible on hover. Makes things a bit neater. Looking for feedback on implementation of this. Good? Not good? 
+- Support for free contacts enabled. 
+- Support for group contacts from Run Faster implemented.
+- Support for the Made Man quality from Run Faster implemented.
+- Karma and Nuyen graphs now scale with time.
+- Fixed a bug with calculation of Street Cred.
+- Fixed a bug with Nuyen and Karma graphs being in order of addition instead of date. Also makes neat plateus and valleys.
 - Fixed an issue in which the Maximum Modified Rating rule could not be disabled.
 - Fixed issues with Limit Enhancements not saving. 
 - Technical School, College Education, Linguist qualities do the discounty things they're supposed to.
 - Fixed issues with the optional rule to re-group skill groups if the skills were balanced when the character was saved.
 - Fixed an embarassing issue with broken skill groups levelling themselves back down to the grouped rating.
 - Fixed the behaviour of Custom Fit so that it only counts if the Custom Fitted item is also equipped. Not super happy with the code, but I'm also tired of looking at it, so eh.
-- Undocumented feature of the day: the <armoroverride> key supports Custom Fit. If an item with the Custom Fit (Stack) mod is equipped, and has an Extra value that matches another equipped piece of armour, the armour value of the item will be changed to the override value.
+- Undocumented inherited feature of the day: the <armoroverride> key supports Custom Fit. If an item with the Custom Fit (Stack) mod is equipped, and has an Extra value that matches another equipped piece of armour, the armour value of the item will be changed to the override value.
+- Character creation validation now checks for Betaware/Deltaware and stops you from having nice things.
 
 Data Change:
+- Fixed a big with Colt Agent Special not using Heavy Pistol ammunition.
 - Fixed incorrect calculation for varieties of Indomitable.
 - Hanuman name fixed again. Frankly CGL should take the initiative of spelling the name correctly, for I am incapable of spelling errors.
 - Enhanced Articulation no longer prompts for the skill bonus.
 - Keen-eared and Balance Receptor are properly marked as Metagenetic qualities.
+- Digital Doppelganger now prompts for a text entry, and requires that you be a SINner.
 
+New strings:
+Label_Contact_Free
+Message_InvalidExConWare
+Message_InvalidCyberwareGrades
 
 Build 166
 Application Change:
