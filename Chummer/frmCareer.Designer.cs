@@ -197,7 +197,7 @@
             this.tabCommon = new System.Windows.Forms.TabPage();
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
-            this.panContacts = new System.Windows.Forms.Panel();
+            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddContact = new System.Windows.Forms.Button();
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
@@ -206,7 +206,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.panEnemies = new System.Windows.Forms.Panel();
+            this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddEnemy = new System.Windows.Forms.Button();
             this.lblPossessed = new System.Windows.Forms.Label();
             this.txtAlias = new System.Windows.Forms.TextBox();
@@ -3364,14 +3364,14 @@
             this.tsMartialArtsAddAdvantage,
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(156, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
             this.cmsMartialArts.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsMartialArtsAddAdvantage
             // 
             this.tsMartialArtsAddAdvantage.Image = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddAdvantage.Name = "tsMartialArtsAddAdvantage";
-            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(155, 22);
+            this.tsMartialArtsAddAdvantage.Size = new System.Drawing.Size(154, 22);
             this.tsMartialArtsAddAdvantage.Tag = "Menu_AddAdvantage";
             this.tsMartialArtsAddAdvantage.Text = "&Add Technique";
             this.tsMartialArtsAddAdvantage.Click += new System.EventHandler(this.tsMartialArtsAddAdvantage_Click);
@@ -3380,7 +3380,7 @@
             // 
             this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(155, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(154, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
@@ -10980,7 +10980,7 @@
             // 
             this.mnuSpecialAddCyberwareSuite.Image = global::Chummer.Properties.Resources.briefcase_add;
             this.mnuSpecialAddCyberwareSuite.Name = "mnuSpecialAddCyberwareSuite";
-            this.mnuSpecialAddCyberwareSuite.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialAddCyberwareSuite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialAddCyberwareSuite.Tag = "Menu_SpecialAddCyberwareSuite";
             this.mnuSpecialAddCyberwareSuite.Text = "Add &Cyberware Suite";
             this.mnuSpecialAddCyberwareSuite.Click += new System.EventHandler(this.mnuSpecialAddCyberwareSuite_Click);
@@ -10989,7 +10989,7 @@
             // 
             this.mnuSpecialAddBiowareSuite.Image = global::Chummer.Properties.Resources.briefcase_add;
             this.mnuSpecialAddBiowareSuite.Name = "mnuSpecialAddBiowareSuite";
-            this.mnuSpecialAddBiowareSuite.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialAddBiowareSuite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialAddBiowareSuite.Tag = "Menu_SpecialAddBiowareSuite";
             this.mnuSpecialAddBiowareSuite.Text = "Add &Bioware Suite";
             this.mnuSpecialAddBiowareSuite.Click += new System.EventHandler(this.mnuSpecialAddBiowareSuite_Click);
@@ -10998,7 +10998,7 @@
             // 
             this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.emoticon_evilgrin;
             this.mnuSpecialCyberzombie.Name = "mnuSpecialCyberzombie";
-            this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConverToCyberzombie";
             this.mnuSpecialCyberzombie.Text = "Convert to Cyberzombie";
             this.mnuSpecialCyberzombie.Click += new System.EventHandler(this.mnuSpecialCyberzombie_Click);
@@ -11007,7 +11007,7 @@
             // 
             this.mnuSpecialConvertToFreeSprite.Image = global::Chummer.Properties.Resources.emoticon_waii;
             this.mnuSpecialConvertToFreeSprite.Name = "mnuSpecialConvertToFreeSprite";
-            this.mnuSpecialConvertToFreeSprite.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialConvertToFreeSprite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialConvertToFreeSprite.Tag = "Menu_SpecialConvertToFreeSprite";
             this.mnuSpecialConvertToFreeSprite.Text = "Convert to Free Sprite";
             this.mnuSpecialConvertToFreeSprite.Visible = false;
@@ -11017,7 +11017,7 @@
             // 
             this.mnuSpecialReduceAttribute.Image = global::Chummer.Properties.Resources.emoticon_unhappy;
             this.mnuSpecialReduceAttribute.Name = "mnuSpecialReduceAttribute";
-            this.mnuSpecialReduceAttribute.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialReduceAttribute.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialReduceAttribute.Tag = "Menu_SpecialReduceAttribute";
             this.mnuSpecialReduceAttribute.Text = "Reduce Attribute";
             this.mnuSpecialReduceAttribute.Click += new System.EventHandler(this.mnuSpecialReduceAttribute_Click);
@@ -11026,7 +11026,7 @@
             // 
             this.mnuSpecialPossess.Image = global::Chummer.Properties.Resources.possession;
             this.mnuSpecialPossess.Name = "mnuSpecialPossess";
-            this.mnuSpecialPossess.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialPossess.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossess.Tag = "Menu_SpecialPossessLiving";
             this.mnuSpecialPossess.Text = "Possess/Inhabit Living Vessel";
             this.mnuSpecialPossess.Click += new System.EventHandler(this.mnuSpecialPossess_Click);
@@ -11035,7 +11035,7 @@
             // 
             this.mnuSpecialPossessInanimate.Image = global::Chummer.Properties.Resources.possessinanimate;
             this.mnuSpecialPossessInanimate.Name = "mnuSpecialPossessInanimate";
-            this.mnuSpecialPossessInanimate.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialPossessInanimate.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossessInanimate.Tag = "Menu_SpecialPossessInanimate";
             this.mnuSpecialPossessInanimate.Text = "Possess/Inhabit Inanimate Vessel";
             this.mnuSpecialPossessInanimate.Click += new System.EventHandler(this.mnuSpecialPossessInanimate_Click);
@@ -11044,7 +11044,7 @@
             // 
             this.mnuSpecialReapplyImprovements.Image = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuSpecialReapplyImprovements.Name = "mnuSpecialReapplyImprovements";
-            this.mnuSpecialReapplyImprovements.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialReapplyImprovements.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.mnuSpecialReapplyImprovements.Text = "Re-apply Improvements";
             this.mnuSpecialReapplyImprovements.Click += new System.EventHandler(this.mnuSpecialReapplyImprovements_Click);
@@ -11053,7 +11053,7 @@
             // 
             this.mnuSpecialCloningMachine.Image = global::Chummer.Properties.Resources.user_add;
             this.mnuSpecialCloningMachine.Name = "mnuSpecialCloningMachine";
-            this.mnuSpecialCloningMachine.Size = new System.Drawing.Size(247, 22);
+            this.mnuSpecialCloningMachine.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialCloningMachine.Tag = "Menu_SpecialCloningMachine";
             this.mnuSpecialCloningMachine.Text = "Cloning Machine";
             this.mnuSpecialCloningMachine.Click += new System.EventHandler(this.mnuSpecialCloningMachine_Click);
@@ -12952,10 +12952,9 @@
         private System.Windows.Forms.Label lblAstral;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
-        private System.Windows.Forms.Panel panContacts;
         private System.Windows.Forms.Button cmdAddContact;
         private System.Windows.Forms.TabPage tabEnemies;
-        private System.Windows.Forms.Panel panEnemies;
+        private System.Windows.Forms.FlowLayoutPanel panEnemies;
         private System.Windows.Forms.Button cmdAddEnemy;
         private System.Windows.Forms.Label lblContactArchtypeLabel;
         private System.Windows.Forms.Label lblContactNameLabel;
@@ -12978,6 +12977,7 @@
         private System.Windows.Forms.ComboBox cboDrain;
         private System.Windows.Forms.TextBox txtTraditionName;
         private System.Windows.Forms.Label lblTraditionName;
+        private System.Windows.Forms.FlowLayoutPanel panContacts;
     }
 }
 

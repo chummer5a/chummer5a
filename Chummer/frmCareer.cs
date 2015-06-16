@@ -695,7 +695,6 @@ namespace Chummer
 					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-					objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objContact_DeleteContact;
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
@@ -709,6 +708,10 @@ namespace Chummer
 					objContactControl.EntityType = objContact.EntityType;
 					objContactControl.BackColor = objContact.Colour;
 				    objContactControl.IsGroup = objContact.IsGroup;
+                    if (objContact.MadeMan)
+                    {
+                        objContactControl.IsGroup = objContact.MadeMan;
+                    }
 
 					objContactControl.Top = intContact * objContactControl.Height;
 					panContacts.Controls.Add(objContactControl);
@@ -719,7 +722,6 @@ namespace Chummer
 					ContactControl objContactControl = new ContactControl(_objCharacter);
 					// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 					objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-					objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -1514,7 +1516,6 @@ namespace Chummer
 				foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
 				{
 					objContactControl.ConnectionRatingChanged -= objContact_ConnectionRatingChanged;
-					objContactControl.GroupStatusChanged -= ObjContactGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objContact_DeleteContact;
 					objContactControl.FileNameChanged -= objContact_FileNameChanged;
@@ -1523,7 +1524,6 @@ namespace Chummer
 				foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
 				{
 					objContactControl.ConnectionRatingChanged -= objEnemy_ConnectionRatingChanged;
-					objContactControl.GroupStatusChanged -= ObjEnemyGroupStatusChanged;
 					objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objEnemy_DeleteContact;
 					objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
@@ -5043,13 +5043,10 @@ namespace Chummer
 
 			// Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 			objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-			objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
 			objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objContact_DeleteContact;
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
 
-			// Set the ContactControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-			objContactControl.Location = new Point(0, objContactControl.Height * i + panContacts.AutoScrollPosition.Y);
 			panContacts.Controls.Add(objContactControl);
 			UpdateCharacterInfo();
 
@@ -5070,16 +5067,12 @@ namespace Chummer
 
 			// Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
 			objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-			objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
 			objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;
             objContactControl.IsEnemy = true;
 
-			// Set the ContactControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-			objContactControl.Location = new Point(0, objContactControl.Height * i + panEnemies.AutoScrollPosition.Y);
 			panEnemies.Controls.Add(objContactControl);
-
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -21297,7 +21290,6 @@ namespace Chummer
                     contact.GetType().IsSubclassOf(typeof(ContactControl)))
                 {
                     ContactControl contactControl = (ContactControl)contact;
-                    contactControl.UpdateQuickText();
                 }
             }
 	    }

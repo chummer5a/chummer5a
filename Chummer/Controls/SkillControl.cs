@@ -213,9 +213,9 @@ namespace Chummer
         {
             // Raise the RatingChanged Event when the NumericUpDown's Value changes.
             // The entire SkillControl is passed as an argument so the handling event can evaluate its contents.
-            if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
+            if (nudSkill.Value + nudKarma.Value > SkillObject.RatingMaximum)
             {
-                nudSkill.Value = nudSkill.Maximum - nudKarma.Value;
+                nudSkill.Value = SkillObject.RatingMaximum - nudKarma.Value;
             }
             _intBaseRating = Convert.ToInt32(nudSkill.Value);
             _objSkill.Base = Convert.ToInt32(nudSkill.Value);
@@ -227,6 +227,10 @@ namespace Chummer
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
+            if (nudSkill.Value + nudKarma.Value > SkillObject.RatingMaximum)
+            {
+                nudKarma.Value = SkillObject.RatingMaximum - nudSkill.Value;
+            }
             _intKarmaRating = Convert.ToInt32(nudKarma.Value);
             _objSkill.Karma = Convert.ToInt32(nudKarma.Value);
             _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));

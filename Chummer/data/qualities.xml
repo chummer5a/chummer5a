@@ -4752,13 +4752,13 @@
 			<name>Made Man</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus>
-				<mademan /> <!--should be removable-->
-		<selectcontact>
-			<type>group</type>
-			<mademan/>
-		</selectcontact>
-			</bonus>
+        <bonus>
+          <mademan /> <!--should be removable-->
+            <selectcontact>
+              <type>group</type>
+            </selectcontact>
+          <mademan/>  
+        </bonus>  
 			<source>RF</source>
 			<page>148</page>
 		</quality>

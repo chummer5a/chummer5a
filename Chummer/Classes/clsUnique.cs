@@ -8497,18 +8497,14 @@ namespace Chummer
 	    /// </summary>
 	    public bool MadeMan
 	    {
-	        get { return _blnMadeMan & _blnIsGroup; }
+	        get
+            {
+                return _blnMadeMan;
+            }
 	        set
 	        {
-	            if (_blnIsGroup)
-	            {
-	                _blnMadeMan = value;
-	            }
-	            else
-	            {
-	                _blnMadeMan = false;
-	            }
-	        }
+                _blnMadeMan = value;
+            }
 	    }
 
 	    #endregion

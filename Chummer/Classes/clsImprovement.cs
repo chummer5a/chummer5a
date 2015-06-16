@@ -1928,18 +1928,18 @@ namespace Chummer
 
                         frmSelect.GeneralItems = contacts;
                         frmSelect.ShowDialog();
-
+                        
                         int index = int.Parse(frmSelect.SelectedItem);
                         if (frmSelect.DialogResult != DialogResult.Cancel)
                         {
                             Contact selectedContact = selectedContactsList[index];
 
-                            if (nodSelect["mademan"] != null)
-                            {
+                            //if (nodSelect["mademan"] != null)
+                            //{
                                 selectedContact.MadeMan = true;
-                                CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
                                 
-                            }
+                                CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
+                            //}
                         }
                         else
                         {
