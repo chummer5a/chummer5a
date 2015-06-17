@@ -3,7 +3,7 @@
   <file>
     <name>Chummer5.exe</name>
     <type>Application</type>
-    <version>0.0.5.166</version>
+    <version>0.0.5.167</version>
     <description>Chummer</description>
     <notes>- Chummer Application</notes>
     <url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -195,7 +195,7 @@
   <file>
     <name>data/armor.xml</name>
     <type>Data Files</type>
-    <version>-500</version>
+    <version>-499</version>
     <description>Armor</description>
     <notes>- Armor data file</notes>
     <url>https://www.dropbox.com/s/1wp0btv02dcvo7r/armor.xml?dl=1</url>
@@ -203,7 +203,7 @@
   <file>
     <name>data/bioware.xml</name>
     <type>Data Files</type>
-    <version>-400</version>
+    <version>-399</version>
     <description>Bioware</description>
     <notes>- Bioware data file</notes>
     <url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -323,7 +323,7 @@
   <file>
     <name>data/metatypes.xml</name>
     <type>Data Files</type>
-    <version>-399</version>
+    <version>-398</version>
     <description>Metatypes</description>
     <notes>- Metatypes data file</notes>
     <url>https://www.dropbox.com/s/haqoojv28c8dwve/metatypes.xml?dl=1</url>
@@ -355,7 +355,7 @@
   <file>
     <name>data/priorities.xml</name>
     <type>Data Files</type>
-    <version>-396</version>
+    <version>-395</version>
     <description>Priorities</description>
     <notes>- Priorities data file</notes>
     <url>https://www.dropbox.com/s/sdlxvlmratzy0th/priorities.xml?dl=1</url>
@@ -371,7 +371,7 @@
   <file>
     <name>data/qualities.xml</name>
     <type>Data Files</type>
-    <version>-397</version>
+    <version>-396</version>
     <description>Qualities</description>
     <notes>- Qualities data file</notes>
     <url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -443,7 +443,7 @@
   <file>
     <name>data/weapons.xml</name>
     <type>Data Files</type>
-    <version>-396</version>
+    <version>-395</version>
     <description>Weapons</description>
     <notes>- Weapons data file</notes>
     <url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>
