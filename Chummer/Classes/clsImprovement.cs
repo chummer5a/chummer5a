@@ -1937,8 +1937,8 @@ namespace Chummer
                             //if (nodSelect["mademan"] != null)
                             //{
                                 selectedContact.MadeMan = true;
-                                
-                                CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
+                            _strSelectedValue = selectedContact.Name;
+                            CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName, Improvement.ImprovementType.ContactMadeMan,selectedContact.GUID);
                             //}
                         }
                         else

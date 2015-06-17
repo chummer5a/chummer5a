@@ -18,6 +18,7 @@ Application Change:
 - Undocumented inherited feature of the day: the <armoroverride> key supports Custom Fit. If an item with the Custom Fit (Stack) mod is equipped, and has an Extra value that matches another equipped piece of armour, the armour value of the item will be changed to the override value.
 - Character creation validation now checks for Betaware/Deltaware and stops you from having nice things.
 - Firemodes now work properly for languages other than English. (Original code didn't expect that someone would actually change the string for the firemode abbreviations, so kudos to you, random German guy who translated everything!)
+- Made some alterations to the appearance and function of contacts. Outstanding issues: Made Man and karma costs don't update properly. 
 
 Data Change:
 - Fixed a big with Colt Agent Special not using Heavy Pistol ammunition.

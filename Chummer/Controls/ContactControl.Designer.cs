@@ -45,6 +45,7 @@
             this.chkGroup = new System.Windows.Forms.CheckBox();
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.lblQuickStats = new System.Windows.Forms.Label();
+            this.lblLine = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).BeginInit();
             this.cmsContact.SuspendLayout();
@@ -54,7 +55,7 @@
             // 
             // nudConnection
             // 
-            this.nudConnection.Location = new System.Drawing.Point(0, 29);
+            this.nudConnection.Location = new System.Drawing.Point(4, 23);
             this.nudConnection.Maximum = new decimal(new int[] {
             12,
             0,
@@ -78,7 +79,7 @@
             // 
             // nudLoyalty
             // 
-            this.nudLoyalty.Location = new System.Drawing.Point(46, 29);
+            this.nudLoyalty.Location = new System.Drawing.Point(50, 23);
             this.nudLoyalty.Maximum = new decimal(new int[] {
             6,
             0,
@@ -102,7 +103,8 @@
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(414, 2);
+            this.cmdDelete.Location = new System.Drawing.Point(416, -1);
+            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(49, 23);
             this.cmdDelete.TabIndex = 7;
@@ -160,7 +162,8 @@
             // cboContactRole
             // 
             this.cboContactRole.FormattingEnabled = true;
-            this.cboContactRole.Location = new System.Drawing.Point(252, 3);
+            this.cboContactRole.Location = new System.Drawing.Point(254, 0);
+            this.cboContactRole.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(120, 21);
             this.cboContactRole.TabIndex = 2;
@@ -168,17 +171,19 @@
             // 
             // txtContactName
             // 
-            this.txtContactName.Location = new System.Drawing.Point(0, 3);
+            this.txtContactName.Location = new System.Drawing.Point(3, 0);
+            this.txtContactName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.txtContactName.Name = "txtContactName";
-            this.txtContactName.Size = new System.Drawing.Size(120, 20);
+            this.txtContactName.Size = new System.Drawing.Size(120, 21);
             this.txtContactName.TabIndex = 0;
             this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
             // txtContactLocation
             // 
-            this.txtContactLocation.Location = new System.Drawing.Point(126, 3);
+            this.txtContactLocation.Location = new System.Drawing.Point(128, 0);
+            this.txtContactLocation.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.txtContactLocation.Name = "txtContactLocation";
-            this.txtContactLocation.Size = new System.Drawing.Size(120, 20);
+            this.txtContactLocation.Size = new System.Drawing.Size(120, 21);
             this.txtContactLocation.TabIndex = 1;
             this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
@@ -187,7 +192,7 @@
             this.cmdExpand.FlatAppearance.BorderSize = 0;
             this.cmdExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
-            this.cmdExpand.Location = new System.Drawing.Point(466, 3);
+            this.cmdExpand.Location = new System.Drawing.Point(468, 1);
             this.cmdExpand.Margin = new System.Windows.Forms.Padding(0);
             this.cmdExpand.Name = "cmdExpand";
             this.cmdExpand.Size = new System.Drawing.Size(21, 21);
@@ -198,7 +203,7 @@
             // imgNotes
             // 
             this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(118, 31);
+            this.imgNotes.Location = new System.Drawing.Point(122, 25);
             this.imgNotes.Name = "imgNotes";
             this.imgNotes.Size = new System.Drawing.Size(16, 16);
             this.imgNotes.TabIndex = 10;
@@ -208,7 +213,7 @@
             // imgLink
             // 
             this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(92, 31);
+            this.imgLink.Location = new System.Drawing.Point(96, 25);
             this.imgLink.Name = "imgLink";
             this.imgLink.Size = new System.Drawing.Size(16, 16);
             this.imgLink.TabIndex = 6;
@@ -218,7 +223,7 @@
             // chkGroup
             // 
             this.chkGroup.AutoSize = true;
-            this.chkGroup.Location = new System.Drawing.Point(141, 31);
+            this.chkGroup.Location = new System.Drawing.Point(145, 25);
             this.chkGroup.Name = "chkGroup";
             this.chkGroup.Size = new System.Drawing.Size(55, 17);
             this.chkGroup.TabIndex = 12;
@@ -229,7 +234,7 @@
             // chkFree
             // 
             this.chkFree.AutoSize = true;
-            this.chkFree.Location = new System.Drawing.Point(191, 31);
+            this.chkFree.Location = new System.Drawing.Point(195, 25);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(47, 17);
             this.chkFree.TabIndex = 13;
@@ -240,16 +245,26 @@
             // lblQuickStats
             // 
             this.lblQuickStats.AutoSize = true;
-            this.lblQuickStats.Location = new System.Drawing.Point(378, 7);
+            this.lblQuickStats.Location = new System.Drawing.Point(380, 5);
             this.lblQuickStats.Name = "lblQuickStats";
             this.lblQuickStats.Size = new System.Drawing.Size(30, 13);
             this.lblQuickStats.TabIndex = 14;
             this.lblQuickStats.Text = "(1/1)";
             // 
+            // lblLine
+            // 
+            this.lblLine.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblLine.Location = new System.Drawing.Point(0, 45);
+            this.lblLine.Name = "lblLine";
+            this.lblLine.Size = new System.Drawing.Size(490, 2);
+            this.lblLine.TabIndex = 15;
+            // 
             // ContactControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.lblLine);
             this.Controls.Add(this.lblQuickStats);
             this.Controls.Add(this.chkFree);
             this.Controls.Add(this.chkGroup);
@@ -262,9 +277,9 @@
             this.Controls.Add(this.nudConnection);
             this.Controls.Add(this.nudLoyalty);
             this.Controls.Add(this.cboContactRole);
-            this.MinimumSize = new System.Drawing.Size(490, 25);
+            this.MinimumSize = new System.Drawing.Size(490, 22);
             this.Name = "ContactControl";
-            this.Size = new System.Drawing.Size(490, 25);
+            this.Size = new System.Drawing.Size(492, 22);
             this.Load += new System.EventHandler(this.ContactControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudConnection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLoyalty)).EndInit();
@@ -295,5 +310,6 @@
         private System.Windows.Forms.CheckBox chkGroup;
         private System.Windows.Forms.CheckBox chkFree;
         private System.Windows.Forms.Label lblQuickStats;
+        private System.Windows.Forms.Label lblLine;
     }
 }
