@@ -4287,11 +4287,20 @@ namespace Chummer
 				{
 					switch (strDescriptor.Trim())
 					{
+                        case "Active":
+                            strReturn += LanguageManager.Instance.GetString("String_DescActive") + ", ";
+                            break;
                         case "Adept":
                             strReturn += LanguageManager.Instance.GetString("String_DescAdept") + ", ";
                             break;
+                        case "Alchemical Preparation":
+                            strReturn += LanguageManager.Instance.GetString("String_DescAlchemicalPreparation") + ", ";
+                            break;
                         case "Anchored":
                             strReturn += LanguageManager.Instance.GetString("String_DescAnchored") + ", ";
+                            break;
+                        case "Area":
+                            strReturn += LanguageManager.Instance.GetString("String_DescArea") + ", ";
                             break;
                         case "Blood":
                             strReturn += LanguageManager.Instance.GetString("String_DescBlood") + ", ";
@@ -4299,8 +4308,23 @@ namespace Chummer
                         case "Contractual":
                             strReturn += LanguageManager.Instance.GetString("String_DescContractual") + ", ";
                             break;
+                        case "Direct":
+                            strReturn += LanguageManager.Instance.GetString("String_DescDirect") + ", ";
+                            break;
+                        case "Directional":
+                            strReturn += LanguageManager.Instance.GetString("String_DescDirectional") + ", ";
+                            break;
+                        case "Elemental":
+                            strReturn += LanguageManager.Instance.GetString("String_DescElemental") + ", ";
+                            break;
+                        case "Environmental":
+                            strReturn += LanguageManager.Instance.GetString("String_DescEnvironmental") + ", ";
+                            break;
                         case "Geomancy":
                             strReturn += LanguageManager.Instance.GetString("String_DescGeomancy") + ", ";
+                            break;
+                        case "Indirect":
+                            strReturn += LanguageManager.Instance.GetString("String_DescIndirect") + ", ";
                             break;
                         case "Mana":
                             strReturn += LanguageManager.Instance.GetString("String_DescMana") + ", ";
