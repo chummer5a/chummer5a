@@ -633,6 +633,7 @@ namespace Chummer
 						if (objXmlQualityItem.Attributes["removable"] != null)
 							objSource = QualitySource.MetatypeRemovable;
 						objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+						objQuality.ContributeToLimit = false;
 						_objCharacter.Qualities.Add(objQuality);
 						
 						// Add any created Weapons to the character.
@@ -654,6 +655,7 @@ namespace Chummer
 						if (objXmlQualityItem.Attributes["removable"] != null)
 							objSource = QualitySource.MetatypeRemovable;
 						objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+						objQuality.ContributeToLimit = false;
 						_objCharacter.Qualities.Add(objQuality);
 
 						// Add any created Weapons to the character.
@@ -687,6 +689,7 @@ namespace Chummer
 						if (objXmlQualityItem.Attributes["removable"] != null)
 							objSource = QualitySource.MetatypeRemovable;
 						objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+						objQuality.ContributeToLimit = false;
 						_objCharacter.Qualities.Add(objQuality);
 
 						// Add any created Weapons to the character.
@@ -708,6 +711,7 @@ namespace Chummer
 						if (objXmlQualityItem.Attributes["removable"] != null)
 							objSource = QualitySource.MetatypeRemovable;
 						objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+						objQuality.ContributeToLimit = false;
 						_objCharacter.Qualities.Add(objQuality);
 
 						// Add any created Weapons to the character.
