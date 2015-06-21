@@ -1,3 +1,11 @@
+Build 168:
+Application Change:
+- Did some stuff to make spell descriptors show up in character sheets.
+- Karma carry-over for build methods other than Point Buy fixed to 7. You may need to reset your options to defaults for this to take effect. Tools > Options > Karma Costs.
+
+Data Change:
+- Fixed a fault with the calculation of Net ranges that caused a crash.
+
 Build 167:
 New collaborator on the project acquired! joha4270 has been assisting with a variety of issues, and is currently tackling the implementation of Life Modules, along with several other tricky problems. Huzzah!
 

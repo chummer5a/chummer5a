@@ -617,7 +617,7 @@ namespace Chummer
             nudKarmaManeuver.Value = 4;
             nudKarmaNuyenPer.Value = 2000;
             nudKarmaContact.Value = 1;
-            nudKarmaCarryover.Value = 5;
+            nudKarmaCarryover.Value = 7;
             nudKarmaInitiation.Value = 3;
             nudKarmaMetamagic.Value = 15;
             nudKarmaJoinGroup.Value = 5;
