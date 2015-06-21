@@ -9683,9 +9683,14 @@ namespace Chummer
                 }
 
                 dblMultiplier = 1.0 + Convert.ToDouble(dblModifier / 100, GlobalOptions.Instance.CultureInfo);
+                
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
                 int intReturn = Convert.ToInt32((Convert.ToDouble(_intCost, GlobalOptions.Instance.CultureInfo) * dblMultiplier) * dblRoommates * dblPercentage);
+                if (_objType != LifestyleType.Standard)
+                {
+                    intReturn = Cost;
+                }
                 return intReturn;
 			}
 		}
