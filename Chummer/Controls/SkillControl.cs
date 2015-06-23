@@ -494,11 +494,17 @@ namespace Chummer
             set
             {
                 if (value < SkillRatingMinimum)
+                {
                     _intBaseRating = SkillRatingMinimum;
+                }
                 else if (value > SkillRatingMaximum)
+                {
                     _intBaseRating = SkillRatingMaximum;
+                }
                 else
+                {
                     _intBaseRating = value;
+                }
                 nudSkill.Value = _intBaseRating;
             }
         }
@@ -514,6 +520,7 @@ namespace Chummer
             }
             set
             {
+
                 _intKarmaRating = value;
                 nudKarma.Value = value;
             }
@@ -538,7 +545,7 @@ namespace Chummer
                 {
                     value = _objSkill.FreeLevels;
                 }
-                nudSkill.Value = value;
+                //nudSkill.Value = value;
 
                 lblSkillRating.Text = value.ToString();
                 _objSkill.Rating = value;
