@@ -1266,7 +1266,8 @@ namespace Chummer
 				{
 					switch (nodGear["category"].InnerText)
 					{
-						case "Commlinks":
+                        case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);
@@ -2822,6 +2823,7 @@ namespace Chummer
 					switch (nodChild["category"].InnerText)
 					{
                         case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);
@@ -7519,6 +7521,7 @@ namespace Chummer
 					switch (nodChild["category"].InnerText)
 					{
                         case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);
@@ -10469,6 +10472,7 @@ namespace Chummer
 					switch (nodChild["category"].InnerText)
 					{
                         case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);
@@ -12112,6 +12116,8 @@ namespace Chummer
 			_strSource = objXmlGear["source"].InnerText;
 			_strPage = objXmlGear["page"].InnerText;
 			_intDeviceRating = Convert.ToInt32(objXmlGear["devicerating"].InnerText);
+            
+            
             _intAttack = Convert.ToInt32(objXmlGear["attack"].InnerText);
             _intSleaze= Convert.ToInt32(objXmlGear["sleaze"].InnerText);
             _intDataProcessing = Convert.ToInt32(objXmlGear["dataprocessing"].InnerText);
@@ -12446,6 +12452,8 @@ namespace Chummer
 			{
 			}
             _intDeviceRating = Convert.ToInt32(objNode["devicerating"].InnerText);
+
+		    
             try
             {
                 _intAttack = Convert.ToInt32(objNode["attack"].InnerText);
@@ -12491,6 +12499,7 @@ namespace Chummer
 					switch (nodChild["category"].InnerText)
 					{
                         case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);
@@ -12769,6 +12778,86 @@ namespace Chummer
                 return intDeviceRating;
 			}
 		}
+
+        /// <summary>
+        /// Get the total data processing this or any submodule pocess
+        /// </summary>
+	    public int TotalDataProcessing
+	    {
+	        get
+	        {
+	            int rating = _intDataProcessing;
+	            foreach (Gear child in _objChildren)
+	            {
+	                Commlink link = (Commlink) child;
+	                if (link != null)
+	                {
+	                    rating = Math.Max(rating, link.TotalDataProcessing);
+	                }
+	            }
+	            return rating;
+	        }
+	    }
+
+        /// <summary>
+        /// Get the highest sleaze this module or any submodule pocess
+        /// </summary>
+	    public int TotalAttack
+	    {
+            get
+            {
+                int rating = _intAttack;
+                foreach (Gear child in _objChildren)
+                {
+                    Commlink link = (Commlink)child;
+                    if (link != null)
+                    {
+                        rating = Math.Max(rating, link.TotalAttack);
+                    }
+                }
+                return rating;
+            }
+	    }
+
+        /// <summary>
+        /// Get the highest sleaze this module or any submodule pocess
+        /// </summary>
+	    public int TotalSleaze
+	    {
+            get
+            {
+                int rating = _intSleaze;
+                foreach (Gear child in _objChildren)
+                {
+                    Commlink link = (Commlink)child;
+                    if (link != null)
+                    {
+                        rating = Math.Max(rating, link.TotalSleaze);
+                    }
+                }
+                return rating;
+            }
+	    }
+
+        /// <summary>
+        /// Get the highest firewall attribute this or any submodule pocess
+        /// </summary>
+	    public int TotalFirewall
+	    {
+	        get
+	        {
+                int rating = _intFirewall;
+                foreach (Gear child in _objChildren)
+                {
+                    Commlink link = (Commlink)child;
+                    if (link != null)
+                    {
+                        rating = Math.Max(rating, link.TotalFirewall);
+                    }
+                }
+                return rating;
+	        }
+	    }
 
 		/// <summary>
 		/// Commlink's Processor Limit.
@@ -14353,6 +14442,7 @@ namespace Chummer
 					switch (nodChild["category"].InnerText)
 					{
                         case "Commlinks":
+                        case "Commlink Accessories":
                         case "Cyberdecks":
                         case "Rigger Command Consoles":
                             Commlink objCommlink = new Commlink(_objCharacter);

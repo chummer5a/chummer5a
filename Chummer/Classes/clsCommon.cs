@@ -1456,7 +1456,7 @@ namespace Chummer
                     strWriteLine += ("").PadRight(10);
                     break;
             }
-
+			
             if (logType != LogType.Content)
             {
                 if (strClass.Length > 35)

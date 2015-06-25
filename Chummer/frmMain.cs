@@ -516,7 +516,7 @@ namespace Chummer
 
 			if (frmBP.DialogResult == DialogResult.Cancel)
 				return;
-            if (objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();

@@ -40,6 +40,10 @@ namespace Chummer
                 nudSkill.Enabled = false;
                 nudSkill.Visible = false;
             }
+			else if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+			{
+				nudSkill.Enabled = false;
+			}
             nudSkill.Maximum = _objSkillGroup.RatingMaximum;
 
 			if (_blnCareer)

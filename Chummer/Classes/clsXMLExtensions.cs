@@ -8,10 +8,11 @@ using Chummer;
 
 namespace Chummer
 {
-    internal static class XMLExtensions
+    internal static class XmlExtensions
     {
         private static CommonFunctions _objCommonFunctions = new CommonFunctions();
-        
+        //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
+
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
         /// from an XmlNode. This version sets the output variable to its 
@@ -136,7 +137,26 @@ namespace Chummer
             }
 
             return false;
-
         }
+
+		/// <summary>
+		/// Checks if the specific field exists and is equal to value
+		/// </summary>
+		/// <param name="node">The XmlNode to read from</param>
+		/// <param name="field">The field to check on the XmlNode</param>
+		/// <param name="value">The value to compare to</param>
+		/// <returns>true if the field exists and is equal to value</returns>
+	    public static bool TryCheckValue(this XmlNode node, String field, String value)
+	    {
+			//QUESTION: Create regex version?
+		    String fieldValue;
+		    if (node.TryGetField(field, out fieldValue))
+		    {
+			    return fieldValue == value;
+		    }
+
+		    return false;
+	    }
+
     }
 }

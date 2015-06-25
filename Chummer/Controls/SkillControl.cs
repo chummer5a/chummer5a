@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
@@ -19,9 +20,11 @@ public delegate void BuyWithKarmaChangedHandler(Object sender);
 
 namespace Chummer
 {
+	[DebuggerDisplay("Skill ({_objSkill.Name}), {_objSkill.Base}+{_objSkill.Karma}")]
     public partial class SkillControl : UserControl
     {
 		private Skill _objSkill;
+
 
         // RatingChanged Event.
         public event RatingChangedHandler RatingChanged;
@@ -39,10 +42,12 @@ namespace Chummer
         private int _intBaseRating = 0;
         private int _intKarmaRating = 0;
         private readonly Character _objCharacter;
+		private bool _lockKnowledge;
 
 		#region Control Events
-        public SkillControl()
+		public SkillControl()
         {
+			
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
@@ -56,15 +61,23 @@ namespace Chummer
         }
         private void SkillControl_Load(object sender, EventArgs e)
         {
-            if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
+            if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma || _objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                nudSkill.Visible = false;
+				if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
+	            {
+					nudSkill.Visible = false;
+	            }
+				else
+				{
+					nudSkill.Enabled = false;
+				}
+                
                 chkKarma.Checked = true;
                 chkKarma.Enabled = false;
 
                 if (_objSkill.KnowledgeSkill)
                 {
-                    if (!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) 
+                    if ((!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) && _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule) 
                     {
                         nudKarma.Minimum = 1;
                     }
@@ -456,6 +469,23 @@ namespace Chummer
 			set
 			{
 				_objSkill = value;
+			}
+		}
+
+		/// <summary>
+		/// Locks some controls related to knowledge
+		/// </summary>
+		public bool LockKnowledge
+		{
+			set
+			{
+				cboKnowledgeSkillCategory.Enabled = !value;
+				cboSkillName.Enabled = !value;
+				_lockKnowledge = value;
+			}
+			get
+			{
+				return _lockKnowledge;
 			}
 		}
 
@@ -883,11 +913,11 @@ namespace Chummer
             _intWorkingRating = _objSkill.Rating;
         }
 
-        /// <summary>
-        /// Update the Modified Rating shown.
-        /// </summary>
-        public void RefreshControl()
-        {
+	    /// <summary>
+	    /// Update the Modified Rating shown.
+	    /// </summary>
+	    public void RefreshControl()
+	    {
             bool blnSkillsoft = false;
             ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
 
@@ -895,8 +925,7 @@ namespace Chummer
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
-
-            foreach (Gear objGear in _objSkill.CharacterObject.Gear)
+	        foreach (Gear objGear in _objSkill.CharacterObject.Gear)
             {
                 // Look for any Skillsoft that would conflict with the Skill's Rating.
                 if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))

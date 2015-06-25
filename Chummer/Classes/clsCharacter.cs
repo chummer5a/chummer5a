@@ -262,6 +262,7 @@ namespace Chummer
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
         private List<CalendarWeek> _lstCalendar = new List<CalendarWeek>();
+        //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.ToString().Replace("0.0.", string.Empty);
@@ -3157,6 +3158,7 @@ namespace Chummer
                 XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
                 Skill objSkill = new Skill(this);
                 objSkill.Name = objXmlSkill["name"].InnerText;
+	            objSkill.Id = Guid.Parse(objXmlSkill["id"].InnerText);
                 objSkill.SkillCategory = objXmlSkill["category"].InnerText;
                 objSkill.SkillGroup = objXmlSkill["skillgroup"].InnerText;
                 objSkill.Attribute = objXmlSkill["attribute"].InnerText;
@@ -5735,6 +5737,15 @@ namespace Chummer
                 return _lstLifestyleQualities;
             }
         }
+
+        /// <summary>
+        /// Life modules
+        /// </summary>
+        //public List<LifeModule> LifeModules
+        //{
+        //    get { return _lstLifeModules; }
+        //}
+
         /// <summary>
         /// Locations.
         /// </summary>

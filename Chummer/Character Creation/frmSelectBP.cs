@@ -35,8 +35,13 @@ namespace Chummer
             objSumtoTen.Value = "SumtoTen";
             objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
 
-            lstBuildMethod.Add(objKarma);
+            ListItem objLifeModule = new ListItem();
+            objLifeModule.Value = "LifeModule";
+            objLifeModule.Name = LanguageManager.Instance.GetString("String_LifeModule");
+
             lstBuildMethod.Add(objPriority);
+            lstBuildMethod.Add(objLifeModule);
+            lstBuildMethod.Add(objKarma);
             lstBuildMethod.Add(objSumtoTen);
             cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.ValueMember = "Value";
@@ -107,6 +112,14 @@ namespace Chummer
                 _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
                 _objCharacter.GameplayOption = cboGamePlay.Text;
             }
+            else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
+            {
+                _objCharacter.BuildPoints = 0;
+                _objCharacter.BuildKarma = Convert.ToInt32(nudKarma.Value);
+                _objCharacter.NuyenMaximumBP = 200;
+                _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
+                _objCharacter.GameplayOption = cboGamePlay.Text;
+            }
             else
             {
                 MessageBox.Show("All is not well in the state of Denmark.");
@@ -159,6 +172,16 @@ namespace Chummer
                     lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_PrioritySummary");
                     nudKarma.Visible = false;
                     cboGamePlay.Visible = true;
+                }
+                else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
+                {
+                    lblDescription.Text =
+                        String.Format(LanguageManager.Instance.GetString("String_SelectBP_LifeModuleSummary"), 750);
+                    cboGamePlay.Visible = false;
+                    nudKarma.Visible = true;
+
+                    if (!_blnUseCurrentValues)
+                        nudKarma.Value = 750;
                 }
             }
         }

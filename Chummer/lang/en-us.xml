@@ -144,6 +144,10 @@
 			<key>String_SumtoTen</key>
 			<text>Sum to Ten</text>
 		</string>
+    <string>
+      <key>String_LifeModule</key>
+      <text>Life Module</text>
+    </string>
 		<string>
 			<key>Label_SumtoTenHeritage</key>
 			<text>Metatype:</text>
@@ -297,6 +301,10 @@
 			<key>String_Delete</key>
 			<text>Delete</text>
 		</string>
+    <string>
+      <key>String_Life_Module</key>
+      <text>Life Module</text>
+    </string>
 		<string>
 			<key>String_AddMore</key>
 			<text>&amp;Add &amp;&amp; More</text>
@@ -369,6 +377,10 @@
 			<key>Label_Source</key>
 			<text>Source:</text>
 		</string>
+    <string>
+      <key>Label_Stage</key>
+      <text>Stage:</text>
+    </string>
 		<string>
 			<key>Label_Name</key>
 			<text>Name:</text>
@@ -6394,6 +6406,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_SelectBP_PrioritySummary</key>
 			<text>Enter the maxiumum availability you are allowed to create your character with.</text>
 		</string>
+    <string>
+      <key>String_SelectBP_LifeModuleSummary</key>
+      <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
+    </string>
 		<string>
 			<key>Tip_SelectKarma_IgnoreRules</key>
 			<text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>

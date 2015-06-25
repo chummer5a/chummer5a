@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,17 +12,17 @@ namespace Chummer
 	/// <summary>
 	/// Character Attribute.
 	/// </summary>
+	[DebuggerDisplay("{_strAbbrev}")]
 	public class Attribute
 	{
 		private int _intMetatypeMin = 1;
 		private int _intMetatypeMax = 6;
 		private int _intMetatypeAugMax = 9;
-		private int _intValue = 1;
+		private int _intValue = 0;
 		private int _intAugModifier = 0;
         private int _intBase = 0;
         private int _intKarma = 0;
 		private string _strAbbrev = "";
-
 		public Character _objCharacter;
 
 		#region Constructor, Save, Load, and Print Methods
@@ -45,7 +46,7 @@ namespace Chummer
 			objWriter.WriteElementString("metatypemin", _intMetatypeMin.ToString());
 			objWriter.WriteElementString("metatypemax", _intMetatypeMax.ToString());
 			objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
-			objWriter.WriteElementString("value", _intValue.ToString());
+			objWriter.WriteElementString("value", Value.ToString());
             objWriter.WriteElementString("base", _intBase.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString());
             objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
@@ -68,11 +69,11 @@ namespace Chummer
             objNode.TryGetField("base", out _intBase);
 		    objNode.TryGetField("karma", out _intKarma);
             
-            _intValue = Convert.ToInt32(objNode["value"].InnerText);
+            Value = Convert.ToInt32(objNode["value"].InnerText);
 			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);
 
             if (_intBase == 0)
-                _intBase = _intValue;
+                _intBase = Value;
 		}
 
 		/// <summary>
@@ -83,7 +84,7 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("attribute");
 			objWriter.WriteElementString("name", _strAbbrev);
-			objWriter.WriteElementString("base", _intValue.ToString());
+			objWriter.WriteElementString("base", Value.ToString());
 			objWriter.WriteElementString("total", TotalValue.ToString());
 			objWriter.WriteElementString("min", TotalMinimum.ToString());
 			objWriter.WriteElementString("max", TotalMaximum.ToString());
@@ -107,8 +108,8 @@ namespace Chummer
 			{
 				_intMetatypeMin = value;
 				// If changing the Minimum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-				if (_intValue < value)
-					_intValue = value;
+				if (Value < value)
+					Value = value;
 			}
 		}
 
@@ -125,8 +126,8 @@ namespace Chummer
 			{
 				_intMetatypeMax = value;
 				// If changing the Maximum would cause the current value to be outside of its bounds, bring it back within acceptable limits.
-				if (_intValue > value)
-					_intValue = value;
+				if (Value > value)
+					Value = value;
 			}
 		}
 
@@ -182,11 +183,15 @@ namespace Chummer
 		{
 			get
 			{
-				return _intValue;
+				//This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
+				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
+				return _intValue + MetatypeMinimum + _objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev);
 			}
 			set
 			{
-				_intValue = value;
+				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
+
+				_intValue = value - (MetatypeMinimum + _objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev));
 			}
 		}
 
@@ -214,7 +219,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _intValue + _intAugModifier;
+				return Value + _intAugModifier;
 			}
 		}
 
@@ -532,7 +537,7 @@ namespace Chummer
 		{
 			get
 			{
-				int intMeat = _intValue + AttributeModifiers;
+				int intMeat = Value + AttributeModifiers;
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
@@ -580,17 +585,17 @@ namespace Chummer
 				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")))
 				{
 					if (intReturn < 0)
-						intReturn = 0;
+						return 0;
 				}
 				else
 				{
 					if (intReturn < 1)
-						intReturn = 1;
+						return 1;
 				}
 
 				// If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
 				if (_objCharacter.MetatypeCategory == "Cyberzombie" && _strAbbrev == "MAG")
-					intReturn = 1;
+					return 1;
 
 				return intReturn;
 			}
@@ -715,7 +720,7 @@ namespace Chummer
 		public string ToolTip()
 		{
 			string strReturn = "";
-			strReturn += _strAbbrev + " (" + _intValue.ToString() + ")";
+			strReturn += _strAbbrev + " (" + Value.ToString() + ")";
 			string strModifier = "";
 
 			List<string> lstUniqueName = new List<string>();
@@ -931,16 +936,31 @@ namespace Chummer
 		Positive = 0,
 		Negative = 1,
         Entertainment = 2,
+        LifeModule
 	}
 
 	/// <summary>
 	/// Source of the Quality.
 	/// </summary>
-	public enum QualitySource
+    public enum QualitySource
+    {
+        Selected = 0,
+        Metatype = 1,
+        MetatypeRemovable = 2,
+        LifeModule,
+    }
+
+	/// <summary>
+	/// Reason a quality is not valid
+	/// </summary>
+	[Flags]
+	public enum QualityFailureReason : uint
 	{
-		Selected = 0,
-		Metatype = 1,
-		MetatypeRemovable = 2,
+		Allowed = 0,
+		LimitExceeded =  1,
+		RequiredSingle = 2,
+		RequiredMultiple = 4,
+		ForbiddenSingle = 8
 	}
 
 	/// <summary>
@@ -967,6 +987,7 @@ namespace Chummer
 		private string _strAltName = "";
 		private string _strAltPage = "";
 		private Guid _guiWeaponID = new Guid();
+	    private Guid _qualiyGuid = new Guid();
 
 		#region Helper Methods
 		/// <summary>
@@ -985,6 +1006,8 @@ namespace Chummer
                     return QualityType.Entertainment;
                 case "Entertainment - Outing":
                     return QualityType.Entertainment;
+                case "Life Module":
+			        return QualityType.LifeModule;
 				default:
 					return QualityType.Positive;
 			}
@@ -1026,7 +1049,7 @@ namespace Chummer
 		/// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
 		/// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
 		/// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-		public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
+		public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
 		{
 			_strName = objXmlQuality["name"].InnerText;
             if (objXmlQuality["metagenetic"] != null)
@@ -1057,6 +1080,9 @@ namespace Chummer
 			_strPage = objXmlQuality["page"].InnerText;
 			if (objXmlQuality["mutant"] != null)
 				_strMutant = "yes";
+
+            if(objXmlQuality["id"] != null)
+                _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -1121,7 +1147,7 @@ namespace Chummer
 		/// Save the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
+		public virtual void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("quality");
 			objWriter.WriteElementString("guid", _guiID.ToString());
@@ -1151,7 +1177,7 @@ namespace Chummer
 		/// Load the Attribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
+		public virtual void Load(XmlNode objNode)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
@@ -1247,6 +1273,14 @@ namespace Chummer
 				return _guiID.ToString();
 			}
 		}
+
+        /// <summary>
+        /// Internal identifier for the quality type
+        /// </summary>
+	    public string QualityId
+	    {
+	        get { return _qualiyGuid.ToString(); }
+	    }
 
 		/// <summary>
 		/// Guid of a Weapon.
@@ -1620,7 +1654,210 @@ namespace Chummer
 			}
 		}
 		#endregion
+
+		#region Static Methods
+
+		/// <summary>
+		/// Retuns weither a quality is valid on said Character
+		/// THIS IS A WIP AND ONLY CHECKS QUALITIES. REQUIRED POWERS, METATYPES AND OTHERS WON'T BE CHECKED
+		/// </summary>
+		/// <param name="objCharacter">The Character</param>
+		/// <param name="XmlQuality">The XmlNode describing the quality</param>
+		/// <returns>Is the Quality valid on said Character</returns>
+		public static bool IsValid(Character objCharacter, XmlNode objXmlQuality)
+		{
+			QualityFailureReason q;
+			List<Quality> q2;
+			return IsValid(objCharacter, objXmlQuality, out q, out q2);
+		}
+
+		/// <summary>
+		/// Retuns weither a quality is valid on said Character
+		/// THIS IS A WIP AND ONLY CHECKS QUALITIES. REQUIRED POWERS, METATYPES AND OTHERS WON'T BE CHECKED
+		/// ConflictingQualities will only contain existing Qualities and won't contain required but missing Qualities
+		/// </summary>
+		/// <param name="objCharacter">The Character</param>
+		/// <param name="objXmlQuality">The XmlNode describing the quality</param>
+		/// <param name="reason">The reason the quality is not valid</param>
+		/// <param name="conflictingQualities">List of Qualities that conflicts with this Quality</param>
+		/// <returns>Is the Quality valid on said Character</returns>
+		public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReason reason, out List<Quality> conflictingQualities)
+		{
+			conflictingQualities = new List<Quality>();
+			reason = QualityFailureReason.Allowed;
+			//If limit are not present or no, check if same quality exists
+			if (!objXmlQuality.TryCheckValue("limit", "no"))
+			{
+				foreach (Quality objQuality in objCharacter.Qualities)
+				{
+					if (objQuality.Name == objXmlQuality["name"].InnerText)
+					{
+						reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
+						//So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present
+						conflictingQualities.Add(objQuality);
+					}
+				}
+			}
+
+			if (objXmlQuality["required"] != null)
+			{
+				if (objXmlQuality["required"]["oneof"] != null)
+				{
+					XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/quality");
+					//Add to set for O(N log M) runtime instead of O(N * M)
+					//like it matters...
+
+					HashSet<String> qualityRequired = new HashSet<String>();
+					foreach (XmlNode node in objXmlRequiredList)
+					{
+						qualityRequired.Add(node.InnerText);
+					}
+
+					bool blnFound = false;
+					foreach (Quality quality in objCharacter.Qualities)
+					{
+						if (qualityRequired.Contains(quality.Name))
+						{
+							blnFound = true;
+							break;
+						}
+					}
+
+					if (!blnFound)
+					{
+						reason |= QualityFailureReason.RequiredSingle;
+					}
+				}
+				if (objXmlQuality["required"]["allof"] != null)
+				{
+					XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/allof/quality");
+					//Add to set for O(N log M) runtime instead of O(N * M)
+
+
+					HashSet<String> qualityRequired = new HashSet<String>();
+					foreach (XmlNode node in objXmlRequiredList)
+					{
+						qualityRequired.Add(node.InnerText);
+					}
+
+					foreach (Quality quality in objCharacter.Qualities)
+					{
+						if (qualityRequired.Contains(quality.Name))
+						{
+							qualityRequired.Remove(quality.Name);
+						}
+					}
+
+					if (qualityRequired.Count > 0)
+					{
+						reason |= QualityFailureReason.RequiredMultiple;
+					}
+				}
+			}
+
+			if (objXmlQuality["forbidden"] != null)
+			{
+				if (objXmlQuality["forbidden"]["oneof"] != null)
+				{
+					XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("forbidden/oneof/quality");
+					//Add to set for O(N log M) runtime instead of O(N * M)
+
+					HashSet<String> qualityForbidden = new HashSet<String>();
+					foreach (XmlNode node in objXmlRequiredList)
+					{
+						qualityForbidden.Add(node.InnerText);
+					}
+
+					foreach (Quality quality in objCharacter.Qualities)
+					{
+						if (qualityForbidden.Contains(quality.Name))
+						{
+							reason |= QualityFailureReason.ForbiddenSingle;
+							conflictingQualities.Add(quality);
+						}
+					}
+				}
+			}
+			
+			return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
+		}
+
+		#endregion
+
 	}
+
+    public class LifeModule : Quality
+    {
+        public LifeModule(Character objCharacter) : base(objCharacter)
+        {
+            
+        }
+
+        public String Stage { get; private set; }
+
+        public override void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode,
+            List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
+        {
+            base.Create(objXmlQuality, objCharacter, objQualitySource, objNode, objWeapons, objWeaponNodes, strForceValue);
+            Stage = objXmlQuality["stage"].InnerText;
+        }
+
+        public override void Save(XmlTextWriter objWriter)
+        {
+            base.Save(objWriter);
+            objWriter.WriteElementString("stage", Stage);
+        }
+
+        public override void Load(XmlNode objNode)
+        {
+            base.Load(objNode);
+            Stage = objNode["stage"].InnerText;
+
+        }
+
+        public static XmlNode GetNodeOverrideable(string id)
+        {
+            XmlDocument xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
+            XmlNode node = xmlDocument.SelectSingleNode("//*[id = \"" + id + "\"]");
+            return GetNodeOverrideable(node);
+        }
+
+        /// <summary>
+        /// This method builds a xmlNode upwards adding/overriding elements
+        /// </summary>
+        /// <param name="id">ID of the node</param>
+        /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
+        private static XmlNode GetNodeOverrideable(XmlNode n)
+        {
+            XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
+            XmlNode parrentNode = n.SelectSingleNode("../..");
+            XmlNode sourceNode = null;
+	        if (parrentNode != null && parrentNode["id"] != null)
+	        {
+		        sourceNode = GetNodeOverrideable(parrentNode);
+		        if (sourceNode != null)
+		        {
+			        foreach (XmlNode node in sourceNode.ChildNodes)
+			        {
+				        if (workNode[node.LocalName] == null && node.LocalName != "versions")
+				        {
+					        workNode.AppendChild(node.Clone());
+				        }
+				        else if (node.LocalName == "bonus" && workNode["bonus"] != null)
+				        {
+					        foreach (XmlNode childNode in node.ChildNodes)
+					        {
+						        workNode["bonus"].AppendChild(childNode.Clone());
+					        }
+				        }
+			        }
+		        }
+	        }
+
+	        return workNode;
+        }
+
+    }
 
 	/// <summary>
 	/// Object that represents a single Skill Group.
@@ -1940,7 +2177,7 @@ namespace Chummer
 		private string _strPage = "";
         private bool _blnBuyWithKarma = false;
         private List<SkillSpecialization> _lstSpecializations = new List<SkillSpecialization>();
-
+		private Guid _id;
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -1956,6 +2193,7 @@ namespace Chummer
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("skill");
+			objWriter.WriteElementString("id", Id.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("skillgroup", _strSkillGroup);
 			objWriter.WriteElementString("skillcategory", _strSkillCategory);
@@ -1991,6 +2229,11 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
 		{
+			string strId;
+			if (objNode.TryGetField("id", out strId))
+			{
+				Id = Guid.Parse(strId);
+			}
 			_strName = objNode["name"].InnerText;
 			_strSkillGroup = objNode["skillgroup"].InnerText;
 			_strSkillCategory = objNode["skillcategory"].InnerText;
@@ -2213,7 +2456,7 @@ namespace Chummer
 							strReturn = objNode["translate"].InnerText;
 					}
 				}
-
+				//TODO: FUCKING CACHE THIS
 				return strReturn;
 			}
 		}
@@ -2238,14 +2481,19 @@ namespace Chummer
         /// </summary>
         public int Base
         {
-            get
-            {
-                return _intBase;
-            }
-            set
-            {
-                _intBase = value;
-            }
+			get
+			{
+				//This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
+				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
+				int bonus = _objImprovement.ValueOf(Improvement.ImprovementType.SkillLevel, false, IdImprovement ? Id.ToString() : Name);
+				return _intBase + bonus;
+			}
+			set
+			{
+				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
+
+				_intBase = value - _objImprovement.ValueOf(Improvement.ImprovementType.SkillLevel, false, IdImprovement ? Id.ToString() : Name);
+			}
         }
 
         /// <summary>
@@ -2300,14 +2548,14 @@ namespace Chummer
         /// </summary>
         public int FreeLevels
         {
-            get
-            {
-                return _intFreeLevels;
-            }
-            set
-            {
-                _intFreeLevels = value;
-            }
+	        get
+	        {
+		        return _intFreeLevels;
+	        }
+	        set
+	        {
+		        _intFreeLevels = value;
+	        }
         }
 
         /// <summary>
@@ -2464,7 +2712,7 @@ namespace Chummer
 							strReturn = objNode.Attributes["translate"].InnerText;
 					}
 				}
-
+				//TODO: CACHE THIS SHIT
 				return strReturn;
 			}
 		}
@@ -3477,6 +3725,22 @@ namespace Chummer
 				return strReturn;
 			}
 		}
+
+		public Guid Id
+		{
+			get
+			{
+				if (_id == null)
+				{
+					_id = Guid.Empty;
+				}
+				return _id;
+			}
+			set { _id = value; }
+		}
+
+		public bool IdImprovement { get; set; }
+		public bool LockKnowledge { get; internal set; }
 		#endregion
 
 		#region Methods

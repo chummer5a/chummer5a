@@ -280,6 +280,7 @@
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.tabCharacterTabs = new System.Windows.Forms.TabControl();
             this.tabCommon = new System.Windows.Forms.TabPage();
+            this.cmdLifeModule = new System.Windows.Forms.Button();
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
             this.lblContactPoints = new System.Windows.Forms.Label();
@@ -3277,6 +3278,7 @@
             // tabCommon
             // 
             this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCommon.Controls.Add(this.cmdLifeModule);
             this.tabCommon.Controls.Add(this.tabPeople);
             this.tabCommon.Controls.Add(this.label7);
             this.tabCommon.Controls.Add(this.txtAlias);
@@ -3319,6 +3321,18 @@
             this.tabCommon.TabIndex = 0;
             this.tabCommon.Tag = "Tab_Common";
             this.tabCommon.Text = "Common";
+            // 
+            // cmdLifeModule
+            // 
+            this.cmdLifeModule.Location = new System.Drawing.Point(187, 9);
+            this.cmdLifeModule.Name = "cmdLifeModule";
+            this.cmdLifeModule.Size = new System.Drawing.Size(91, 23);
+            this.cmdLifeModule.TabIndex = 95;
+            this.cmdLifeModule.Tag = "String_Life_Module";
+            this.cmdLifeModule.Text = "Life Module";
+            this.cmdLifeModule.UseVisualStyleBackColor = true;
+            this.cmdLifeModule.Visible = false;
+            this.cmdLifeModule.Click += new System.EventHandler(this.cmdLifeModule_Click);
             // 
             // tabPeople
             // 
@@ -11232,6 +11246,7 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label lblContactPoints;
         private System.Windows.Forms.Label lblContactPoints_Label;
+        private System.Windows.Forms.Button cmdLifeModule;
     }
 }
 
