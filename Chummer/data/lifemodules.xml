@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <stages>
+    <stage order="1">Nationality</stage>
+    <stage order="2">Formative Years</stage>
+    <stage order="3">Teen Years</stage>
+  </stages>
+  <modules>
+    <module>
+      <id>f35ba316-dd0f-48ab-9f06-d7329305a44e</id>
+      <stage>Nationality</stage>
+      <category>Life Module</category>
+      <name>United American Canadian States</name>
+      <karma>15</karma>
+      <!--<selectable/>-->
+      <versions>
+        <version>
+          <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
+          <name>General UCAS</name>
+          <bonus>
+            <attributelevel>
+              <name>LOG</name>
+              <val>1</val>
+            </attributelevel>
+            <attributelevel>
+              <name>INT</name>
+              <val>1</val>
+            </attributelevel>
+          </bonus>
+        </version>
+        <version>
+          <id>955c76a2-d507-458c-b74a-22Dff60fb1eb</id>
+          <name>Canada</name>
+        </version>
+      </versions>
+      <bonus>
+        <!--<specificskill>
+          <name>Computer</name>
+          <bonus>1</bonus>
+          <applytorating>yes</applytorating>
+        </specificskill>-->
+        <skilllevel>
+          <name>Computer</name>
+          <val>1</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>History</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <source>RF</source>
+      <page>66</page>
+    </module>
+    <module>
+      <id>15302513-70fe-43f7-b881-32ceed0cfa8e</id>
+      <stage>Nationality</stage>
+      <category>Life Module</category>
+      <name>Confederation of American States</name>
+      <karma>15</karma>
+      <source>RF</source>
+      <page>66</page>
+    </module>
+    <module>
+      <id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
+      <stage>Formative Years</stage>
+      <category>Life Module</category>
+      <name>Arcology Living</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>2</val>
+        </skillgrouplevel>
+      </bonus>
+      <addqualities>
+        <addquality>SINner (Corporate)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>67</page>
+    </module>
+    <module>
+      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
+      <stage>Teen Years</stage>
+      <category>Life Module</category>
+      <name>Magical Education</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
+      <stage>Teen Years</stage>
+      <category>Life Module</category>
+      <name>High School</name>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Athletics</name>
+          <val>1</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Chemestry</name>
+          <val>2</val>
+        </skilllevel>
+      </bonus>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+  </modules>
+</chummer>

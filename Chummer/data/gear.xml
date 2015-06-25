@@ -2125,8 +2125,8 @@
       <name>PI-Tac Level I (Renraku Taka)</name>
       <category>PI-Tac</category>
       <rating>0</rating>
-      <avail>18F</avail>
-      <cost>517500</cost>
+      <avail>12R</avail>
+      <cost>115000</cost>
       <source>RG</source>
       <page>105</page>
     </gear>
@@ -2135,8 +2135,8 @@
       <name>PI-Tac Level II (Novatech Tactician)</name>
       <category>PI-Tac</category>
       <rating>0</rating>
-      <avail>18F</avail>
-      <cost>824000</cost>
+      <avail>18R</avail>
+      <cost>325000</cost>
       <source>RG</source>
       <page>105</page>
     </gear>
@@ -2145,8 +2145,8 @@
       <name>PI-Tac Level III (ComPac-Esprit General)</name>
       <category>PI-Tac</category>
       <rating>0</rating>
-      <avail>24F</avail>
-      <cost>1234000</cost>
+      <avail>18F</avail>
+      <cost>855000</cost>
       <source>RG</source>
       <page>105</page>
     </gear>
