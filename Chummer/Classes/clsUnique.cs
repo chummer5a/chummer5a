@@ -4551,11 +4551,20 @@ namespace Chummer
 				{
 					switch (strDescriptor.Trim())
 					{
+                        case "Active":
+                            strReturn += LanguageManager.Instance.GetString("String_DescActive") + ", ";
+                            break;
                         case "Adept":
                             strReturn += LanguageManager.Instance.GetString("String_DescAdept") + ", ";
                             break;
+                        case "Alchemical Preparation":
+                            strReturn += LanguageManager.Instance.GetString("String_DescAlchemicalPreparation") + ", ";
+                            break;
                         case "Anchored":
                             strReturn += LanguageManager.Instance.GetString("String_DescAnchored") + ", ";
+                            break;
+                        case "Area":
+                            strReturn += LanguageManager.Instance.GetString("String_DescArea") + ", ";
                             break;
                         case "Blood":
                             strReturn += LanguageManager.Instance.GetString("String_DescBlood") + ", ";
@@ -4563,8 +4572,23 @@ namespace Chummer
                         case "Contractual":
                             strReturn += LanguageManager.Instance.GetString("String_DescContractual") + ", ";
                             break;
+                        case "Direct":
+                            strReturn += LanguageManager.Instance.GetString("String_DescDirect") + ", ";
+                            break;
+                        case "Directional":
+                            strReturn += LanguageManager.Instance.GetString("String_DescDirectional") + ", ";
+                            break;
+                        case "Elemental":
+                            strReturn += LanguageManager.Instance.GetString("String_DescElemental") + ", ";
+                            break;
+                        case "Environmental":
+                            strReturn += LanguageManager.Instance.GetString("String_DescEnvironmental") + ", ";
+                            break;
                         case "Geomancy":
                             strReturn += LanguageManager.Instance.GetString("String_DescGeomancy") + ", ";
+                            break;
+                        case "Indirect":
+                            strReturn += LanguageManager.Instance.GetString("String_DescIndirect") + ", ";
                             break;
                         case "Mana":
                             strReturn += LanguageManager.Instance.GetString("String_DescMana") + ", ";
@@ -4572,11 +4596,41 @@ namespace Chummer
                         case "Material Link":
                             strReturn += LanguageManager.Instance.GetString("String_DescMaterialLink") + ", ";
                             break;
+                        case "Mental":
+                            strReturn += LanguageManager.Instance.GetString("String_DescMental") + ", ";
+                            break;
                         case "Minion":
                             strReturn += LanguageManager.Instance.GetString("String_DescMinion") + ", ";
                             break;
+                        case "Multi-Sense":
+                            strReturn += LanguageManager.Instance.GetString("String_DescMultiSense") + ", ";
+                            break;
+                        case "Negative":
+                            strReturn += LanguageManager.Instance.GetString("String_DescNegative") + ", ";
+                            break;
+                        case "Obvious":
+                            strReturn += LanguageManager.Instance.GetString("String_DescObvious") + ", ";
+                            break;
                         case "Organic Link":
                             strReturn += LanguageManager.Instance.GetString("String_DescOrganicLink") + ", ";
+                            break;
+                        case "Passive":
+                            strReturn += LanguageManager.Instance.GetString("String_DescPassive") + ", ";
+                            break;
+                        case "Physical":
+                            strReturn += LanguageManager.Instance.GetString("String_DescPhysical") + ", ";
+                            break;
+                        case "Psychic":
+                            strReturn += LanguageManager.Instance.GetString("String_DescPsychic") + ", ";
+                            break;
+                        case "Realistic":
+                            strReturn += LanguageManager.Instance.GetString("String_DescRealistic") + ", ";
+                            break;
+                        case "Single-Sense":
+                            strReturn += LanguageManager.Instance.GetString("String_DescSingleSense") + ", ";
+                            break;
+                        case "Touch":
+                            strReturn += LanguageManager.Instance.GetString("String_DescTouch") + ", ";
                             break;
                         case "Spell":
                             strReturn += LanguageManager.Instance.GetString("String_DescSpell") + ", ";
@@ -8761,18 +8815,14 @@ namespace Chummer
 	    /// </summary>
 	    public bool MadeMan
 	    {
-	        get { return _blnMadeMan & _blnIsGroup; }
+	        get
+            {
+                return _blnMadeMan;
+            }
 	        set
 	        {
-	            if (_blnIsGroup)
-	            {
-	                _blnMadeMan = value;
-	            }
-	            else
-	            {
-	                _blnMadeMan = false;
-	            }
-	        }
+                _blnMadeMan = value;
+            }
 	    }
 
 	    #endregion

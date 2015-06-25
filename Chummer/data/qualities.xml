@@ -2499,7 +2499,8 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
-		</quality>
+      <metagenetic>yes</metagenetic>
+    </quality>
 		<quality>
 			<name>Beak</name>
 			<karma>3</karma>
@@ -3297,6 +3298,7 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
+      <metagenetic>yes</metagenetic>      
 		</quality>
 		<quality>
 			<name>Larger Tusks</name>
@@ -4548,7 +4550,17 @@
 			<name>Digital Doppelganger</name>
 			<karma>7</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>SINner (Criminal)</quality>
+          <quality>SINner (National)</quality>
+          <quality>SINner (Corporate Limited)</quality>
+          <quality>SINner (Corporate)</quality>
+        </oneof>
+      </required>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4740,13 +4752,13 @@
 			<name>Made Man</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus>
-				<mademan /> <!--should be removable-->
-		<selectcontact>
-			<type>group</type>
-			<mademan/>
-		</selectcontact>
-			</bonus>
+        <bonus>
+          <mademan /> <!--should be removable-->
+            <selectcontact>
+              <type>group</type>
+            </selectcontact>
+          <mademan/>  
+        </bonus>  
 			<source>RF</source>
 			<page>148</page>
 		</quality>

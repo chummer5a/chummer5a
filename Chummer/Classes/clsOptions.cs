@@ -867,7 +867,7 @@ namespace Chummer
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
-        private int _intKarmaCarryover = 5;
+        private int _intKarmaCarryover = 7;
         private int _intKarmaComplexFormOption = 2;
         private int _intKarmaComplexFormSkillfot = 1;
         private int _intKarmaContact = 1;

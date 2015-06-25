@@ -804,13 +804,10 @@ namespace Chummer
                     intContact++;
                     ContactControl objContactControl = new ContactControl(_objCharacter);
                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                    objContactControl.OtherCostChanged += objContact_OtherCostChanged;
                     objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-                    objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
                     objContactControl.DeleteContact += objContact_DeleteContact;
                     objContactControl.FileNameChanged += objContact_FileNameChanged;
-
                     objContactControl.ContactObject = objContact;
                     objContactControl.ContactName = objContact.Name;
                     objContactControl.ContactLocation = objContact.Location;
@@ -831,7 +828,6 @@ namespace Chummer
                     ContactControl objContactControl = new ContactControl(_objCharacter);
                     // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
                     objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-                    objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
                     objContactControl.DeleteContact += objEnemy_DeleteContact;
                     objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -1561,7 +1557,6 @@ namespace Chummer
                 foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
                 {
                     objContactControl.ConnectionRatingChanged -= objContact_ConnectionRatingChanged;
-                    objContactControl.GroupStatusChanged -= ObjContactGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
                     objContactControl.DeleteContact -= objContact_DeleteContact;
                     objContactControl.FileNameChanged -= objContact_FileNameChanged;
@@ -1570,7 +1565,6 @@ namespace Chummer
                 foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
                 {
                     objContactControl.ConnectionRatingChanged -= objEnemy_ConnectionRatingChanged;
-                    objContactControl.GroupStatusChanged -= ObjEnemyGroupStatusChanged;
                     objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
                     objContactControl.DeleteContact -= objEnemy_DeleteContact;
                     objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
@@ -5444,15 +5438,11 @@ namespace Chummer
             objContactControl.EntityType = ContactType.Contact;
 
             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
-            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
-            objContactControl.GroupStatusChanged += ObjContactGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
             objContactControl.DeleteContact += objContact_DeleteContact;
             objContactControl.FileNameChanged += objContact_FileNameChanged;
 
-            // Set the ContactControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-            objContactControl.Location = new Point(0, objContactControl.Height * i + panContacts.AutoScrollPosition.Y);
             panContacts.Controls.Add(objContactControl);
             UpdateCharacterInfo();
 
@@ -5518,9 +5508,7 @@ namespace Chummer
 
             // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged and OtherCostChanged(hackish) Events
             //TODO: Refactor the clusterfuck that is enemy cost calculations
-            objContactControl.OtherCostChanged += objContact_OtherCostChanged;
             objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
-            objContactControl.GroupStatusChanged += ObjEnemyGroupStatusChanged;
             objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
             objContactControl.DeleteContact += objEnemy_DeleteContact;
             objContactControl.FileNameChanged += objEnemy_FileNameChanged;
@@ -17405,7 +17393,6 @@ namespace Chummer
                     contact.GetType().IsSubclassOf(typeof(ContactControl)))
                 {
                     ContactControl contactControl = (ContactControl) contact;
-                    contactControl.UpdateQuickText();
                 }
             }
         }
@@ -20240,6 +20227,7 @@ namespace Chummer
             int intRestrictedCount = 0;
             string strAvailItems = "";
             string strExConItems = "";
+            string strCyberwareGrade = "";
 
             // Check limits specific to the Priority build method.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -20570,6 +20558,10 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
+                if (objCyberware.Grade.Name == "Deltaware" || objCyberware.Grade.Name == "Betaware")
+                {
+                    strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort;
+                }
 
                 if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
                 {
@@ -21255,10 +21247,17 @@ namespace Chummer
             }
 
             if (!String.IsNullOrWhiteSpace(strExConItems))
+            {
+                blnValid = false;
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+                strMessage += strExConItems;
+            }
+
+            if (!String.IsNullOrWhiteSpace(strCyberwareGrade))
 		    {
 		        blnValid = false;
-		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
-		        strMessage += strExConItems;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidCyberwareGrades");
+		        strMessage += strCyberwareGrade;
 		    }
 
             // Check item Capacities if the option is enabled.

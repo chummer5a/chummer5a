@@ -289,12 +289,12 @@
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
             this.cmdAddContact = new System.Windows.Forms.Button();
-            this.panContacts = new System.Windows.Forms.Panel();
+            this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
             this.tabEnemies = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.panEnemies = new System.Windows.Forms.Panel();
+            this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddEnemy = new System.Windows.Forms.Button();
             this.txtAlias = new System.Windows.Forms.TextBox();
             this.lblAlias = new System.Windows.Forms.Label();
@@ -11218,9 +11218,9 @@
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
         private System.Windows.Forms.Button cmdAddContact;
-        private System.Windows.Forms.Panel panContacts;
+        private System.Windows.Forms.FlowLayoutPanel panContacts;
         private System.Windows.Forms.TabPage tabEnemies;
-        private System.Windows.Forms.Panel panEnemies;
+        private System.Windows.Forms.FlowLayoutPanel panEnemies;
         private System.Windows.Forms.Button cmdAddEnemy;
         private System.Windows.Forms.Label lblBuyWithKarma;
         private System.Windows.Forms.Label label2;

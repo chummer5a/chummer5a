@@ -167,12 +167,12 @@ namespace Chummer
 					return "Betaware";
 				case "Deltaware":
 					return "Deltaware";
-				case "Standard (Second-Hand)":
+				case "Standard (Used)":
 				case "StandardSecondHand":
-					return "Standard (Second-Hand)";
-				case "Alphaware (Second-Hand)":
+					return "Standard (Used)";
+				case "Alphaware (Used)":
 				case "AlphawareSecondHand":
-					return "Alphaware (Second-Hand)";
+					return "Alphaware (Used)";
 				case "StandardAdapsin":
 					return "Standard (Adapsin)";
 				case "AlphawareAdapsin":
@@ -181,12 +181,12 @@ namespace Chummer
 					return "Betaware (Adapsin)";
 				case "DeltawareAdapsin":
 					return "Deltaware (Adapsin)";
-				case "Standard (Second-Hand) (Adapsin)":
+				case "Standard (Used) (Adapsin)":
 				case "StandardSecondHandAdapsin":
-					return "Standard (Second-Hand) (Adapsin)";
-				case "Alphaware (Second-Hand) (Adapsin)":
+					return "Standard (Used) (Adapsin)";
+				case "Alphaware (Used) (Adapsin)":
 				case "AlphawareSecondHandAdapsin":
-					return "Alphaware (Second-Hand) (Adapsin)";
+					return "Alphaware (Used) (Adapsin)";
 				default:
 					return "Standard";
 			}

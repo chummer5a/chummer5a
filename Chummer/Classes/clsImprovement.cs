@@ -124,6 +124,7 @@ namespace Chummer
 			ExCon = 110,
 			BlackMarket = 111,
 			ContactMadeMan = 112,
+			SelectArmor,
 			Attributelevel,
 			SkillLevel,
 			SkillGroupLevel
@@ -380,6 +381,8 @@ namespace Chummer
 					return ImprovementType.BlackMarketDiscount;
 				case "SelectWeapon":
 					return ImprovementType.SelectWeapon;
+                case "SelectArmor":
+                    return ImprovementType.SelectArmor;
 				case "ComplexFormLimit":
 					return ImprovementType.ComplexFormLimit;
 				case "SpellLimit":
@@ -1271,6 +1274,7 @@ namespace Chummer
 			}
 			objFunctions.LogWrite(CommonFunctions.LogType.Exiting, "Chummer.ImprovementManager", "CreateImprovements");
 			return blnSuccess;
+
 		}
 
 		private bool ProcessBonus(Improvement.ImprovementSource objImprovementSource, ref string strSourceName,
@@ -1938,12 +1942,12 @@ namespace Chummer
 				{
 					Contact selectedContact = selectedContactsList[index];
 
-					if (nodSelect["mademan"] != null)
-					{
+					//if (nodSelect["mademan"] != null)
+					//{
 						selectedContact.MadeMan = true;
 						CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
 							Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
-					}
+					//}
 				}
 				else
 				{

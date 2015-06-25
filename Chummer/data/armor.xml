@@ -282,8 +282,8 @@
       <id>446ec9ad-9a52-46fe-8f27-873a51ef6291</id>
       <name>Mortimer of London: Greatcoat Coat</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>+3</armor>
-      <armoroverride>10</armoroverride>
+      <armor>10</armor>
+      <armoroverride>+3</armoroverride>
       <armorcapacity>10</armorcapacity>
       <avail>8</avail>
       <cost>3000</cost>
@@ -305,8 +305,8 @@
       <id>994c7cfb-54a1-4a47-8ca5-9d5381ba2994</id>
       <name>Mortimer of London: Ulysses Coat</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>+3</armor>
-      <armoroverride>10</armoroverride>
+      <armor>10</armor>
+      <armoroverride>+3</armoroverride>
       <armorcapacity>12</armorcapacity>
       <avail>8</avail>
       <cost>3100</cost>
@@ -328,8 +328,8 @@
       <id>dceda713-a138-4161-8bd2-b909ffed7f85</id>
       <name>Mortimer of London: Argentum Coat</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>+4</armor>
-      <armoroverride>12</armoroverride>
+      <armor>12</armor>
+      <armoroverride>+4</armoroverride>
       <armorcapacity>14</armorcapacity>
       <avail>10</avail>
       <cost>3600</cost>
@@ -516,8 +516,8 @@
       <id>cb1e1f7e-a711-44a7-8ed7-a8fc50802c62</id>
       <name>Vashon Island: Synergist Business Line Longcoat</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>+3</armor>
-      <armoroverride>10</armoroverride>
+      <armor>10</armor>
+      <armoroverride>+3</armoroverride>
       <armorcapacity>6</armorcapacity>
       <avail>8</avail>
       <cost>2300</cost>
@@ -718,8 +718,8 @@
       <id>739b029d-b2a0-48cb-ac2e-51636fc495c2</id>
       <name>Zoé: Second Skin</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>+2</armor>
-      <armoroverride>6</armoroverride>
+      <armor>6</armor>
+      <armoroverride>+2</armoroverride>
       <armorcapacity>2</armorcapacity>
       <avail>14</avail>
       <cost>12000</cost>
@@ -1861,6 +1861,9 @@
       <category>General</category>
       <armor>0</armor>
       <hide>yes</hide>
+      <bonus>
+        <selectarmor />
+      </bonus>
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>

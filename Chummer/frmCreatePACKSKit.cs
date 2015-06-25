@@ -352,7 +352,7 @@ namespace Chummer
 							objWriter.WriteElementString("name", objCyberware.Name);
 							if (objCyberware.Rating > 0)
 								objWriter.WriteElementString("rating", objCyberware.Rating.ToString());
-							objWriter.WriteElementString("grade", objCyberware.Grade.ToString());
+							objWriter.WriteElementString("grade", objCyberware.Grade.Name);
 							if (objCyberware.Children.Count > 0)
 							{
 								// <cyberwares>
