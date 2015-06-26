@@ -2235,7 +2235,7 @@ namespace Chummer
             
             if (_objCharacter.Linguist)
             {
-
+                
             }
             else
             {
@@ -16028,9 +16028,8 @@ namespace Chummer
                     if (objSkillControl.SkillBase == 0 && objSkillControl.SkillRating >= 1)
                     {
                         intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
-
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic")) 
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
                         {
                             i++;
                         }
@@ -16039,7 +16038,7 @@ namespace Chummer
                     if (i <= objSkillControl.SkillBase)
                     {
                         //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
                         {
                             i++;
                         }
@@ -16050,9 +16049,8 @@ namespace Chummer
                         //Subsequent levels of skills
                         for (i = 2; i <= objSkillControl.SkillRating; i++)
                         {
-                            intPointsUsed += (i * _objOptions.KarmaImproveKnowledgeSkill);
                             //Skip a level for the 2-for-1 deals.
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
                             {
                                 i++;
                             }
@@ -16060,8 +16058,8 @@ namespace Chummer
                             {
                                 intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
                             }
-                            intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
                         }
+                        intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
                     }
                 }
 
@@ -16085,17 +16083,7 @@ namespace Chummer
             }
 
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
-
-            intPointsUsed = 0;
-
-                foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-                {
-                    for (int i = 1; i <= objSkillControl.SkillKarma; i++)
-                    {
-                        intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
-                    }
-                }
-                intPointsRemain -= intPointsUsed;
+            intPointsRemain -= intPointsUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());

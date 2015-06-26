@@ -134,5 +134,50 @@
       <source>SR5</source>
       <page>253</page>
     </complexform>
+    <complexform>
+      <id>57566f59-ddbf-42bb-929a-2966ce2fde46</id>
+      <name>Derezz</name>
+      <target>Persona</target>
+      <duration>I</duration>
+      <fv>L+2</fv>
+      <source>DT</source>
+      <page>58</page>
+    </complexform>
+    <complexform>
+      <id>2badbff2-02e1-4218-97f0-f53f71f22cc4</id>
+      <name>FAQ</name>
+      <target>Device</target>
+      <duration>P</duration>
+      <fv>L</fv>
+      <source>DT</source>
+      <page>58</page>
+    </complexform>
+    <complexform>
+      <id>5e5c8711-70a9-4068-b084-2ae23fce8fa7</id>
+      <name>IC Tray</name>
+      <target>Host</target>
+      <duration>I</duration>
+      <fv>L-2</fv>
+      <source>DT</source>
+      <page>58</page>
+    </complexform>
+    <complexform>
+      <id>9a2bcb96-36fe-4f43-bbfe-f2040a8ee491</id>
+      <name>Redundancy</name>
+      <target>Device</target>
+      <duration>S</duration>
+      <fv>L</fv>
+      <source>DT</source>
+      <page>58</page>
+    </complexform>
+    <complexform>
+      <id>bfa66f3e-4d04-43a4-972a-4e0b430284ca</id>
+      <name>Misread Marks</name>
+      <target>IC</target>
+      <duration>P</duration>
+      <fv>L+2</fv>
+      <source>DT</source>
+      <page>58</page>
+    </complexform>    
   </complexforms>
 </chummer>

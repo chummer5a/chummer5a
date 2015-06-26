@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-386</version>
 	<name>English (US)</name>
 	<strings>
 		<!-- Common Strings -->
@@ -4311,11 +4311,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_BuildPositiveQualities</key>
-			<text>Characters may select up to 35 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 35 Karma limit.</text>
+			<text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
-			<text>Characters may select up to -35 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -35 Karma limit.</text>
+			<text>Characters may select up to -25 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -25 Karma limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildFoci</key>

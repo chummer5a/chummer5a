@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-400</version>
+  <version>-399</version>
   <echoes>
     <echo>
       <id>36aa9af4-5c04-40d9-ba09-31b401cc1ff0</id>
@@ -96,6 +96,62 @@
       </bonus>
       <source>SR5</source>
       <page>258</page>
+    </echo>
+    <echo>
+      <id>18269d5a-2750-4636-8ae3-f9f268d44577</id>
+      <name>Fight or Flight Filter</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>58</page>
+    </echo>
+    <echo>
+      <id>e7dc7a5a-89dc-42e4-8332-8225bbff3c45</id>
+      <name>Mathemagics</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>58</page>
+    </echo>
+    <echo>
+      <id>262dd3e2-5433-4b9a-b637-c5f5a3af5510</id>
+      <name>MMRI</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
+    </echo>
+    <echo>
+      <id>032d5d7f-41b9-47f5-8bd0-b7e2cf2c3adf</id>
+      <name>Quiet</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
+    </echo>
+    <echo>
+      <id>0408da17-8327-4e8c-a64f-48431bba8e58</id>
+      <name>Resonance Riding</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
+    </echo>
+    <echo>
+      <id>e6f66ec1-af07-4008-abbe-e4d31cc82358</id>
+      <name>Resonance Scream</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
+    </echo>
+    <echo>
+      <id>45ed755c-cf0e-4f57-95d2-2c01b4eda760</id>
+      <name>Skinlink</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
+    </echo>
+    <echo>
+      <id>228b8261-deca-4723-b072-0a5135ddef3f</id>
+      <name>Sleepwalker</name>
+      <limit>no</limit>
+      <source>DT</source>
+      <page>59</page>
     </echo>
   </echoes>
 </chummer>
