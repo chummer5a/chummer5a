@@ -6212,10 +6212,10 @@
     </gear>
     <gear>
       <id>39a8d39a-5c1c-44c7-a7fe-e9f28899c69e</id>
-      <name>Nuke from Orbit</name>
+      <name>Nuke-from-Orbit</name>
       <category>Hacking Programs</category>
       <rating>0</rating>
-      <avail>4R</avail>
+      <avail>12F</avail>
       <cost>250</cost>
       <source>DT</source>
       <page>57</page>
