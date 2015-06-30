@@ -1056,6 +1056,94 @@
 			<page>458</page>
 		</weapon>
 		<weapon>
+			<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
+			<name>Cyberfangs</name>
+			<category>Unarmed</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical-2</accuracy>
+			<reach>0</reach>
+			<damage>(STR)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>90</page>
+		</weapon>
+		<weapon>
+			<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
+			<name>Junkyard Jaw</name>
+			<category>Unarmed</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-6</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>91</page>
+		</weapon>
+		<weapon>
+			<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
+			<name>Raptor Foot</name>
+			<category>Unarmed</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>SR5</source>
+			<page>458</page>
+		</weapon>
+		<weapon>
+			<id>fe835c72-a973-4976-bf5f-751aff1371d4</id>
+			<name>Extreme Cyberimplant Weapon</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical-1</accuracy>
+			<reach>1</reach>
+			<damage>(STR+5)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>90</page>
+		</weapon>
+		<weapon>
 			<id>e5e5e025-8622-406c-a2bb-030ad5392d79</id>
 			<name>Survival Knife</name>
 			<category>Blades</category>
@@ -1899,6 +1987,26 @@
 			<page>423</page>
 		</weapon>
 		<weapon>
+			<id>c3ea1ed4-b117-4ba7-99eb-7d7b4b130b55</id>
+			<name>Oral Slasher</name>
+			<category>Exotic Melee Weapons</category>
+			<type>Melee</type>
+			<conceal>-4</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>6P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>12R</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<source>CF</source>
+			<page>92</page>
+		</weapon>
+		<weapon>
 			<id>9c267b03-103e-43f4-bfe8-986c69dc17d2</id>
 			<name>Grapple Gun</name>
 			<category>Exotic Ranged Weapons</category>
@@ -1983,6 +2091,27 @@
 			<range>Light Pistols</range>
 			<source>GH3</source>
 			<page>36</page>
+		</weapon>
+		<weapon>
+			<id>dd4a69d9-6861-41de-9557-83617a3fa904</id>
+			<name>Flametosser</name>
+			<category>Flamethrowers</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-6</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>12F</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<range>Light Pistols</range>
+			<source>CF</source>
+			<page>91</page>
 		</weapon>
 		<weapon>
 			<id>a9a07174-a498-4e91-95c9-b6604e03a02c</id>
@@ -3696,7 +3825,6 @@
 			<ammo>8(c)</ammo>
 			<avail>5R</avail>
 			<cost>250</cost>
-      <ammocategory>Heavy Pistols</ammocategory>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
 				<mount>Barrel</mount>
@@ -6855,6 +6983,15 @@
 			</allowgear>
 			<source>SR5</source>
 			<page>433</page>
+		</accessory>
+	        <accessory>
+			<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
+			<name>Cyberimplanted</name>
+			<mount/>
+			<avail>+4</avail>
+			<cost>0</cost>
+			<source>CF</source>
+			<page>90</page>
 		</accessory>
 		<accessory>
 			<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
