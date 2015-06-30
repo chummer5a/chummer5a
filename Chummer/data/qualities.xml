@@ -166,7 +166,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Antipathy</name>
-			<karma>8</karma>
+			<karma>-8</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -175,7 +175,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>AIPS</name>
-			<karma>10</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -184,7 +184,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Blank Slate</name>
-			<karma>15</karma>
+			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -193,7 +193,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Cyberpsychosis</name>
-			<karma>10</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -202,7 +202,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Cyber-snob</name>
-			<karma>12</karma>
+			<karma>-12</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -211,7 +211,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Dead Emotion</name>
-			<karma>5</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -220,7 +220,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Dry Addict (Mild)</name>
-			<karma>2</karma>
+			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -229,7 +229,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Dry Addict (Moderate)</name>
-			<karma>5</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -238,7 +238,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Dry Addict (Severe)</name>
-			<karma>10</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -247,7 +247,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Dry Addict (Burnout)</name>
-			<karma>13</karma>
+			<karma>-13</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -256,7 +256,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Family Curse</name>
-			<karma>5</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -265,7 +265,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Implant-induced Immune Deficiency</name>
-			<karma>5</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -274,7 +274,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Lack of Focus</name>
-			<karma>6</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -283,7 +283,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Lightweight</name>
-			<karma>6</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -292,7 +292,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>One of them</name>
-			<karma>7</karma>
+			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -301,7 +301,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Quasimodo</name>
-			<karma>2</karma>
+			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -310,7 +310,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>So Jacked Up</name>
-			<karma>10</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -319,7 +319,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Superhuman Psychosis</name>
-			<karma>2</karma>
+			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -328,7 +328,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>TLE-X</name>
-			<karma>15</karma>
+			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
@@ -337,7 +337,7 @@
 <quality>
 			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
 			<name>Tough and Targeted</name>
-			<karma>10</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
 			<source>CF</source>
