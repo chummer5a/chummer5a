@@ -988,6 +988,13 @@ namespace Chummer
 		private string _strAltPage = "";
 		private Guid _guiWeaponID = new Guid();
 	    private Guid _qualiyGuid = new Guid();
+		private string _stage;
+
+		public String Stage
+		{
+			get { return _stage; }
+			private set { _stage = value; }
+		}
 
 		#region Helper Methods
 		/// <summary>
@@ -1006,7 +1013,7 @@ namespace Chummer
                     return QualityType.Entertainment;
                 case "Entertainment - Outing":
                     return QualityType.Entertainment;
-                case "Life Module":
+                case "LifeModule":
 			        return QualityType.LifeModule;
 				default:
 					return QualityType.Positive;
@@ -1025,6 +1032,8 @@ namespace Chummer
 					return QualitySource.Metatype;
 				case "MetatypeRemovable":
 					return QualitySource.MetatypeRemovable;
+				case "LifeModule":
+					return QualitySource.LifeModule;
 				default:
 					return QualitySource.Selected;
 			}
@@ -1080,6 +1089,11 @@ namespace Chummer
 			_strPage = objXmlQuality["page"].InnerText;
 			if (objXmlQuality["mutant"] != null)
 				_strMutant = "yes";
+
+			if (_objQualityType == QualityType.LifeModule)
+			{
+				objXmlQuality.TryGetField("stage", out _stage);
+			}
 
             if(objXmlQuality["id"] != null)
                 _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
@@ -1170,6 +1184,16 @@ namespace Chummer
 			if (_guiWeaponID != Guid.Empty)
 				objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
 			objWriter.WriteElementString("notes", _strNotes);
+			if (_objQualityType == QualityType.LifeModule)
+			{
+				objWriter.WriteElementString("stage", _stage);
+			}
+
+			if (!_qualiyGuid.Equals(Guid.Empty))
+			{
+				objWriter.WriteElementString("id", _qualiyGuid.ToString());
+			}
+
 			objWriter.WriteEndElement();
 		}
 
@@ -1210,6 +1234,15 @@ namespace Chummer
 			}
 			catch
 			{
+			}
+
+			if (_objQualityType == QualityType.LifeModule)
+			{
+				objNode.TryGetField("stage", out _stage);
+			}
+			if (objNode["id"] != null)
+			{
+				Guid.TryParse(objNode["id"].InnerText, out _qualiyGuid);
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -1782,82 +1815,53 @@ namespace Chummer
 			return conflictingQualities.Count <= 0 & reason == QualityFailureReason.Allowed;
 		}
 
+		/// <summary>
+		/// This method builds a xmlNode upwards adding/overriding elements
+		/// </summary>
+		/// <param name="id">ID of the node</param>
+		/// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
+		public static XmlNode GetNodeOverrideable(string id)
+		{
+			XmlDocument xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
+			XmlNode node = xmlDocument.SelectSingleNode("//*[id = \"" + id + "\"]");
+			return GetNodeOverrideable(node);
+		}
+
+		private static XmlNode GetNodeOverrideable(XmlNode n)
+		{
+			XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
+			XmlNode parrentNode = n.SelectSingleNode("../..");
+			XmlNode sourceNode = null;
+			if (parrentNode != null && parrentNode["id"] != null)
+			{
+				sourceNode = GetNodeOverrideable(parrentNode);
+				if (sourceNode != null)
+				{
+					foreach (XmlNode node in sourceNode.ChildNodes)
+					{
+						if (workNode[node.LocalName] == null && node.LocalName != "versions")
+						{
+							workNode.AppendChild(node.Clone());
+						}
+						else if (node.LocalName == "bonus" && workNode["bonus"] != null)
+						{
+							foreach (XmlNode childNode in node.ChildNodes)
+							{
+								workNode["bonus"].AppendChild(childNode.Clone());
+							}
+						}
+					}
+				}
+			}
+
+			return workNode;
+		}
+
 		#endregion
 
 	}
 
-    public class LifeModule : Quality
-    {
-        public LifeModule(Character objCharacter) : base(objCharacter)
-        {
-            
-        }
-
-        public String Stage { get; private set; }
-
-        public override void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode,
-            List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "")
-        {
-            base.Create(objXmlQuality, objCharacter, objQualitySource, objNode, objWeapons, objWeaponNodes, strForceValue);
-            Stage = objXmlQuality["stage"].InnerText;
-        }
-
-        public override void Save(XmlTextWriter objWriter)
-        {
-            base.Save(objWriter);
-            objWriter.WriteElementString("stage", Stage);
-        }
-
-        public override void Load(XmlNode objNode)
-        {
-            base.Load(objNode);
-            Stage = objNode["stage"].InnerText;
-
-        }
-
-        public static XmlNode GetNodeOverrideable(string id)
-        {
-            XmlDocument xmlDocument = XmlManager.Instance.Load("lifemodules.xml");
-            XmlNode node = xmlDocument.SelectSingleNode("//*[id = \"" + id + "\"]");
-            return GetNodeOverrideable(node);
-        }
-
-        /// <summary>
-        /// This method builds a xmlNode upwards adding/overriding elements
-        /// </summary>
-        /// <param name="id">ID of the node</param>
-        /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
-        private static XmlNode GetNodeOverrideable(XmlNode n)
-        {
-            XmlNode workNode = n.Clone();  //clone as to not mess up the acctual xml document
-            XmlNode parrentNode = n.SelectSingleNode("../..");
-            XmlNode sourceNode = null;
-	        if (parrentNode != null && parrentNode["id"] != null)
-	        {
-		        sourceNode = GetNodeOverrideable(parrentNode);
-		        if (sourceNode != null)
-		        {
-			        foreach (XmlNode node in sourceNode.ChildNodes)
-			        {
-				        if (workNode[node.LocalName] == null && node.LocalName != "versions")
-				        {
-					        workNode.AppendChild(node.Clone());
-				        }
-				        else if (node.LocalName == "bonus" && workNode["bonus"] != null)
-				        {
-					        foreach (XmlNode childNode in node.ChildNodes)
-					        {
-						        workNode["bonus"].AppendChild(childNode.Clone());
-					        }
-				        }
-			        }
-		        }
-	        }
-
-	        return workNode;
-        }
-
-    }
+    
 
 	/// <summary>
 	/// Object that represents a single Skill Group.

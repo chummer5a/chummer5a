@@ -9,7 +9,7 @@
     <module>
       <id>f35ba316-dd0f-48ab-9f06-d7329305a44e</id>
       <stage>Nationality</stage>
-      <category>Life Module</category>
+      <category>LifeModule</category>
       <name>United American Canadian States</name>
       <karma>15</karma>
       <!--<selectable/>-->
@@ -55,7 +55,7 @@
     <module>
       <id>15302513-70fe-43f7-b881-32ceed0cfa8e</id>
       <stage>Nationality</stage>
-      <category>Life Module</category>
+      <category>LifeModule</category>
       <name>Confederation of American States</name>
       <karma>15</karma>
       <source>RF</source>
@@ -64,7 +64,7 @@
     <module>
       <id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
       <stage>Formative Years</stage>
-      <category>Life Module</category>
+      <category>LifeModule</category>
       <name>Arcology Living</name>
       <karma>40</karma>
       <bonus>
@@ -90,7 +90,7 @@
     <module>
       <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
       <stage>Teen Years</stage>
-      <category>Life Module</category>
+      <category>LifeModule</category>
       <name>Magical Education</name>
       <bonus>
         <attributelevel>
@@ -116,7 +116,7 @@
     <module>
       <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
       <stage>Teen Years</stage>
-      <category>Life Module</category>
+      <category>LifeModule</category>
       <name>High School</name>
       <bonus>
         <attributelevel>

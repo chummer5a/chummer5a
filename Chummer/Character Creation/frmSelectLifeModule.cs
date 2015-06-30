@@ -116,7 +116,7 @@ namespace Chummer
                                  (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
             }
 
-            XmlNode selectedNodeInfo = LifeModule.GetNodeOverrideable((string) e.Node.Tag);
+            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable((string) e.Node.Tag);
             _selectedId = (string) e.Node.Tag;
 
             cmdOK.Enabled = blnSelectAble;
@@ -133,7 +133,7 @@ namespace Chummer
 
         public XmlNode SelectedNode
         {
-            get { return LifeModule.GetNodeOverrideable(_selectedId); }
+            get { return Quality.GetNodeOverrideable(_selectedId); }
         }
     }
 }

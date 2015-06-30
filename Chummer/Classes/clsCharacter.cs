@@ -7278,6 +7278,8 @@ namespace Chummer
                     return CharacterBuildMethod.Karma;
                 case "SumtoTen":
                     return CharacterBuildMethod.SumtoTen;
+				case "LifeModule":
+					return CharacterBuildMethod.LifeModule;
                 default:
                     return CharacterBuildMethod.Priority;
             }

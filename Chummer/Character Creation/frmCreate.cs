@@ -158,12 +158,6 @@ namespace Chummer
                 tabInfo.TabPages.RemoveAt(1);
             }
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                cmdLifeModule.Visible = true;
-                treQualities.Nodes.Add(new TreeNode("Life Modules"));
-            }
-
             int count = 0;
             foreach (Contact contact in _objCharacter.Contacts)
                 count += contact.ContactPoints;
@@ -346,7 +340,7 @@ namespace Chummer
             // Check for Special Attributes.
             lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
             lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma || _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
             {
                 nudMAG.Enabled = _objCharacter.MAGEnabled;
             }
@@ -359,7 +353,7 @@ namespace Chummer
 
             lblRESLabel.Enabled = _objCharacter.RESEnabled;
             lblRESAug.Enabled = _objCharacter.RESEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma || _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
             {
                 nudRES.Enabled = _objCharacter.RESEnabled;
             }
@@ -369,8 +363,14 @@ namespace Chummer
             // Define the XML objects that will be used.
             XmlDocument objXmlDocument = new XmlDocument();
 
-            // Populate the Qualities list.
-            foreach (Quality objQuality in _objCharacter.Qualities)
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+			{
+				cmdLifeModule.Visible = true;
+				treQualities.Nodes.Add(new TreeNode("Life Modules"));
+			}
+
+			// Populate the Qualities list.
+			foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 TreeNode objNode = new TreeNode();
                 objNode.Text = objQuality.DisplayName;
@@ -391,11 +391,16 @@ namespace Chummer
                     treQualities.Nodes[0].Nodes.Add(objNode);
                     treQualities.Nodes[0].Expand();
                 }
-                else
+                else if(objQuality.Type == QualityType.Negative)
                 {
                     treQualities.Nodes[1].Nodes.Add(objNode);
                     treQualities.Nodes[1].Expand();
                 }
+				else if (objQuality.Type == QualityType.LifeModule)
+				{
+					treQualities.Nodes[2].Nodes.Add(objNode);
+					treQualities.Nodes[2].Expand();
+				}
             }
 
             // Populate the Magician Traditions list.
@@ -7787,8 +7792,8 @@ namespace Chummer
 		            break;
 	            }
 	            Quality q = _objCharacter.Qualities.Find(x => (
-					x.GetType() == typeof (LifeModule) && 
-					((LifeModule)x).Stage == node.InnerText
+					x.Type == QualityType.LifeModule && 
+					x.Stage == node.InnerText
 				));
 	            if (q == null)
 	            {
@@ -7807,7 +7812,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
-            LifeModule objLifeModule = new LifeModule(_objCharacter);
+            Quality objLifeModule = new Quality(_objCharacter);
 
             objLifeModule.Create(objXmlLifeModule, _objCharacter, QualitySource.LifeModule, objNode, objWeapons, objWeaponNodes);
             objNode.ContextMenuStrip = cmsQuality; //Think this is responsible for the "add notes" menu. Think
@@ -8341,7 +8346,7 @@ namespace Chummer
             if (objQuality.Type == QualityType.LifeModule)
             {
                 objXmlDeleteQuality =
-                    LifeModule.GetNodeOverrideable(objQuality.QualityId);
+                    Quality.GetNodeOverrideable(objQuality.QualityId);
             }
             else
             {

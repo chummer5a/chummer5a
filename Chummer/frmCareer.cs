@@ -275,6 +275,11 @@ namespace Chummer
 			// Define the XML objects that will be used.
 			XmlDocument objXmlDocument = new XmlDocument();
 
+			if (_objOptions.BuildMethod == CharacterBuildMethod.LifeModule)
+			{
+				treQualities.Nodes.Add(new TreeNode("Life Modules"));
+			}
+
 			// Populate the Qualities list.
 			foreach (Quality objQuality in _objCharacter.Qualities)
 			{
@@ -297,10 +302,15 @@ namespace Chummer
 					treQualities.Nodes[0].Nodes.Add(objNode);
 					treQualities.Nodes[0].Expand();
 				}
-				else
+				else if (objQuality.Type == QualityType.Negative)
 				{
 					treQualities.Nodes[1].Nodes.Add(objNode);
 					treQualities.Nodes[1].Expand();
+				}
+				else if (objQuality.Type == QualityType.LifeModule)
+				{
+					treQualities.Nodes[2].Nodes.Add(objNode);
+					treQualities.Nodes[2].Expand();
 				}
 			}
 

@@ -1,3 +1,12 @@
+Build $NEXT
+Application Change
+ - Internal changes to how some values are stored
+ - Added support for building characters with Life Modules
+
+Data Change:
+ - Some of life module suporting changes are done
+ - Added the following strings TODO: INSERT STRINGS ADDED HERE
+
 Build 168:
 Application Change:
 - Did some stuff to make spell descriptors show up in character sheets.
