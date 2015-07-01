@@ -56,22 +56,22 @@
       <source>SR5</source>
       <page>451</page>
     </grade>
-		<grade>
-			<id>2b599ecd-4e80-4669-a78e-4db232c80a83</id>
-			<name>Gammaware</name>
-			<ess>0.4</ess>
-			<cost>5</cost>
-			<avail>+12</avail>
-			<source>CF</source>
-			<page>72</page>
-		</grade>
-	</grades>
-	<categories>
-		<category>Basic</category>
-		<category>Orthoskin Upgrades</category>
-		<category>Cultured</category>
-		<category>Symbionts</category>
-		<category>Genemods</category>
+    <grade>
+      <id>2b599ecd-4e80-4669-a78e-4db232c80a83</id>
+      <name>Gammaware</name>
+      <ess>0.4</ess>
+      <cost>5</cost>
+      <avail>+12</avail>
+      <source>CF</source>
+      <page>72</page>
+    </grade>
+  </grades>
+  <categories>
+    <category>Basic</category>
+    <category>Orthoskin Upgrades</category>
+    <category>Cultured</category>
+    <category>Symbionts</category>
+    <category>Genemods</category>
   </categories>
   <biowares>
     <bioware>
@@ -1519,5 +1519,5 @@
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
-	</biowares>
+  </biowares>
 </chummer>

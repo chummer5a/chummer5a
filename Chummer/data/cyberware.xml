@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
   <version>-390</version>
-	<grades>
-		<grade>
-			<id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
-			<name>Standard</name>
-			<ess>1</ess>
-			<cost>1</cost>
-			<avail>0</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
+  <grades>
+    <grade>
+      <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
+      <name>Standard</name>
+      <ess>1</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
 			<id>1f9f7472-a115-4cf4-bc15-177f76d41331</id>
 			<name>Standard (Biocompatible)</name>
 			<ess>0.9</ess>
@@ -21,60 +21,60 @@
 			<page>451</page>
 		</grade>
 		<grade>
-			<id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
-			<name>Standard (Burnout's Way)</name>
-			<ess>0.8</ess>
-			<cost>1</cost>
-			<avail>0</avail>
-			<source>SG</source>
-			<page>177</page>
-		</grade>
-		<grade>
-			<id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
-			<name>Used</name>
-			<ess>1.25</ess>
-			<cost>0.75</cost>
-			<avail>-4</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
-			<id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
-			<name>Used (Biocompatible)</name>
-			<ess>1.12</ess>
-			<cost>0.75</cost>
-			<avail>-4</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
-			<id>75da0ff2-4137-4990-85e6-331977564712</id>
-			<name>Alphaware</name>
-			<ess>0.8</ess>
-			<cost>1.2</cost>
-			<avail>+2</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
-			<id>75da0ff2-4137-4990-85e6-331977564712</id>
-			<name>Alphaware (Biocompatible)</name>
-			<ess>0.72</ess>
-			<cost>1.2</cost>
-			<avail>+2</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
-			<id>b1b679e8-72ff-46b5-bd9d-652914731b17</id>
-			<name>Betaware</name>
-			<ess>0.7</ess>
-			<cost>1.5</cost>
-			<avail>+4</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
+      <id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
+      <name>Standard (Burnout's Way)</name>
+      <ess>0.8</ess>
+      <cost>1</cost>
+      <avail>0</avail>
+      <source>SG</source>
+      <page>177</page>
+    </grade>
+    <grade>
+      <id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
+      <name>Used</name>
+      <ess>1.25</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
+      <name>Used (Biocompatible)</name>
+      <ess>1.12</ess>
+      <cost>0.75</cost>
+      <avail>-4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>75da0ff2-4137-4990-85e6-331977564712</id>
+      <name>Alphaware</name>
+      <ess>0.8</ess>
+      <cost>1.2</cost>
+      <avail>+2</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>75da0ff2-4137-4990-85e6-331977564712</id>
+      <name>Alphaware (Biocompatible)</name>
+      <ess>0.72</ess>
+      <cost>1.2</cost>
+      <avail>+2</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
+      <id>b1b679e8-72ff-46b5-bd9d-652914731b17</id>
+      <name>Betaware</name>
+      <ess>0.7</ess>
+      <cost>1.5</cost>
+      <avail>+4</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
+    <grade>
 			<id>48169405-e86d-460a-878b-4e7ab9687596</id>
 			<name>Betaware (Biocompatible)</name>
 			<ess>0.63</ess>
@@ -85,13 +85,13 @@
 		</grade>
 		<grade>
 			<id>7ea3a157-867f-4c66-9f62-66b14b36b763</id>
-			<name>Deltaware</name>
-			<ess>0.5</ess>
-			<cost>2.5</cost>
-			<avail>+8</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
+      <name>Deltaware</name>
+      <ess>0.5</ess>
+      <cost>2.5</cost>
+      <avail>+8</avail>
+      <source>SR5</source>
+      <page>451</page>
+    </grade>
 		<grade>
 			<id>3b3e1583-0a52-4b6f-816b-cb72f3f788af</id>
 			<name>Deltaware (Biocompatible)</name>
@@ -142,16 +142,16 @@
 		</grade>
   </grades>
   <categories>
-		<category>Headware</category>
-		<category>Eyeware</category>
-		<category>Earware</category>
-		<category>Bodyware</category>
-		<category>Cosmetic Enhancement</category>
-		<category>Cyberlimb</category>
-		<category>Cyberlimb Enhancement</category>
-		<category>Cyberlimb Accessory</category>
-		<category>Cyber Implant Weapon</category>
-		<category>Nanocybernetics</category>
+    <category>Headware</category>
+    <category>Eyeware</category>
+    <category>Earware</category>
+    <category>Bodyware</category>
+    <category>Cosmetic Enhancement</category>
+    <category>Cyberlimb</category>
+    <category>Cyberlimb Enhancement</category>
+    <category>Cyberlimb Accessory</category>
+    <category>Cyber Implant Weapon</category>
+    <category>Nanocybernetics</category>
   </categories>
   <cyberwares>
 		<cyberware>
@@ -165,8 +165,8 @@
 			<cost>0</cost>
 			<source>SR5</source>
 			<page>0</page>
-		</cyberware>
-		<cyberware>
+		</cyberware>  
+    <cyberware>
 			<id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
 			<name>Essence Antihole</name>
 			<category>Bodyware</category>
@@ -2741,5 +2741,5 @@
 			<source>CF</source>
 			<page>90</page>
 		</cyberware>
-	</cyberwares>
+  </cyberwares>
 </chummer>

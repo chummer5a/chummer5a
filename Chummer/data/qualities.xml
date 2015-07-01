@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-395</version>
+	<version>-399</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -81,6 +81,267 @@
 			<bonus />
 			<source>SR5</source>
 			<page>72</page>
+		</quality>
+		<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Biocompatability (Cyberware)</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+                <quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Biocompatability (Bioware)</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Better to be feared than loved</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Cyber-Singularity Seeker</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Drug Tolerant</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Prototype Transhuman</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Redliner</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>55</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Revels in Murder</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>56</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Uncanny Healer</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>56</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Antipathy</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>AIPS</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Blank Slate</name>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Cyberpsychosis</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Cyber-snob</name>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Dead Emotion</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Dry Addict (Mild)</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Dry Addict (Moderate)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Dry Addict (Severe)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Dry Addict (Burnout)</name>
+			<karma>-13</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Family Curse</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Implant-induced Immune Deficiency</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Lack of Focus</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Lightweight</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>One of them</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Quasimodo</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>So Jacked Up</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Superhuman Psychosis</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>TLE-X</name>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+<quality>
+			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
+			<name>Tough and Targeted</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>60</page>
 		</quality>
 		<quality>
 			<id>58e3d62a-2073-4af5-b8e0-00c446b3a5ab</id>
@@ -469,7 +730,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<mentallimit>1</mentallimit>
+				<mentallimit>Rating</mentallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -481,7 +742,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<physicallimit>1</physicallimit>
+				<physicallimit>Rating</physicallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -493,7 +754,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<sociallimit>1</sociallimit>
+				<sociallimit>Rating</sociallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -2499,7 +2760,6 @@
 			</required>
 			<source>RF</source>
 			<page>112</page>
-      <metagenetic>yes</metagenetic>
     </quality>
 		<quality>
 			<name>Beak</name>
@@ -3298,7 +3558,6 @@
 			</required>
 			<source>RF</source>
 			<page>116</page>
-      <metagenetic>yes</metagenetic>      
 		</quality>
 		<quality>
 			<name>Larger Tusks</name>
@@ -4496,9 +4755,7 @@
 			<name>Black Market Pipeline</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus>
-			<blackmarket />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4506,9 +4763,7 @@
 			<name>Born Rich</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus>
-				<bornrich />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4550,17 +4805,7 @@
 			<name>Digital Doppelganger</name>
 			<karma>7</karma>
 			<category>Positive</category>
-      <bonus>
-        <selecttext />
-      </bonus>
-      <required>
-        <oneof>
-          <quality>SINner (Criminal)</quality>
-          <quality>SINner (National)</quality>
-          <quality>SINner (Corporate Limited)</quality>
-          <quality>SINner (Corporate)</quality>
-        </oneof>
-      </required>
+			<bonus />
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4576,9 +4821,7 @@
 			<name>Erased</name>
 			<karma>8</karma>
 			<category>Positive</category>
-			<bonus>
-			<erased />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4596,7 +4839,6 @@
 						<bonus>1</bonus>
 					</skillcategory>
 				</limitmodifier>
-				<fame />
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -4613,7 +4855,6 @@
 			<karma>8</karma>
 			<category>Positive</category>
 			<bonus>
-			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -4640,7 +4881,6 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
-			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -4666,7 +4906,6 @@
 			<karma>16</karma>
 			<category>Positive</category>
 			<bonus>
-			<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -4731,7 +4970,6 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
-				<lightningreflexes />
 				<initiative>1</initiative>
 				<initiativepass>1</initiativepass>
 			</bonus>
@@ -4742,9 +4980,7 @@
 			<name>Linguist</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus>
-			<linguist />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4752,13 +4988,7 @@
 			<name>Made Man</name>
 			<karma>5</karma>
 			<category>Positive</category>
-        <bonus>
-          <mademan /> <!--should be removable-->
-            <selectcontact>
-              <type>group</type>
-            </selectcontact>
-          <mademan/>  
-        </bonus>  
+			<bonus />
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4782,9 +5012,7 @@
 			<name>Overclocker</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus>
-			<overclocker />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4850,7 +5078,6 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-				<restrictedgear />
         <selecttext />
 			</bonus>
 			<source>RF</source>
@@ -4862,7 +5089,6 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-				<restrictedgear />
         <selecttext />
 			</bonus>
 			<required>
@@ -4879,7 +5105,6 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-				<restrictedgear />
         <selecttext />
 			</bonus>
 			<required>
@@ -5000,9 +5225,7 @@
 			<name>Technical School Education</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus>
-			<techschool />
-			</bonus>
+			<bonus />
 			<source>RF</source>
 			<page>150</page>
 		</quality>
@@ -5118,9 +5341,7 @@
 			<name>Trust Fund I</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus>
-			<trustfund />
-			</bonus>
+			<bonus />
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5134,9 +5355,7 @@
 			<name>Trust Fund II</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus>
-			<trustfund />
-			</bonus>
+			<bonus />
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5150,9 +5369,7 @@
 			<name>Trust Fund III</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-			<trustfund />
-			</bonus>
+			<bonus />
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5166,9 +5383,7 @@
 			<name>Trust Fund IV</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus>
-			<trustfund />
-			</bonus>
+			<bonus />
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5534,7 +5749,6 @@
 			<category>Negative</category>
 			<bonus>
 				<freepositivequalities>-10</freepositivequalities>
-				<excon />
 			</bonus>
 			<addqualities>
 				<addquality>SINner (Criminal)</addquality>
