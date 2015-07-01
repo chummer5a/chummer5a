@@ -803,11 +803,11 @@ namespace Chummer
                     objSkillControl.Top = i * objSkillControl.Height;
                     objSkillControl.AutoScroll = false;
                     panKnowledgeSkills.Controls.Add(objSkillControl);
-                    //Handler for pre-5.163 Point Buy characters that had skill points in their knowledge skills
-                    if (objSkill.Base != 0 && !objSkill.CharacterObject.Options.FreeKarmaKnowledge && _objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
-                    {
-                        objSkill.Base = 0;
-                    }
+                    ////Handler for pre-5.163 Point Buy characters that had skill points in their knowledge skills
+                    //if (objSkill.Base != 0 && !objSkill.CharacterObject.Options.FreeKarmaKnowledge && _objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
+                    //{  //lets no keep this code here!
+                    //    objSkill.Base = 0;
+                    //}
                 }
             }
 
