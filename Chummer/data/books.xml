@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-399</version>
+  <version>-390</version>
   <books>
     <book>
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
@@ -70,5 +70,10 @@
       <name>Data Trails</name>
       <code>DT</code>
     </book>
-  </books>
+		<book>
+			<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
+			<name>Chrome Flesh</name>
+			<code>CF</code>
+		</book>
+	</books>
 </chummer>

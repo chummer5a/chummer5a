@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-396</version>
+	<version>-390</version>
 	<categories>
 		<category>Blades</category>
 		<category>Clubs</category>
@@ -6645,7 +6645,48 @@
 			<useskill>Unarmed Combat</useskill>
 			<source>RF</source>
 			<page>105</page>
-		</weapon>	
+		</weapon>
+		<weapon>
+			<id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
+			<name>Oral Slasher</name>
+			<category>Exotic Melee Weapons</category>
+			<type>Melee</type>
+			<conceal>-4</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>6P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>12R</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<source>CF</source>
+			<page>92</page>
+		</weapon>
+		<weapon>
+			<id>a67facdd-fbd1-48dd-bb10-e5eaca69ec3d</id>
+			<name>Flametosser</name>
+			<category>Flamethrowers</category>
+			<type>Ranged</type>
+			<conceal>2</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-6</ap>
+			<mode>SA/BF</mode>
+			<rc>0</rc>
+			<ammo>5(m)</ammo>
+			<avail>12F</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<range>Light Pistols</range>
+			<source>CF</source>
+			<page>91</page>
+		</weapon>
 	</weapons>
 	<accessories>
 		<accessory>
@@ -7278,5 +7319,14 @@
 			<source>SASS</source>
 			<page>31</page>
 		</accessory>
+		<accessory>
+			<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
+			<name>Cyberimplanted</name>
+			<mount/>
+			<avail>+4</avail>
+			<cost>0</cost>
+			<source>CF</source>
+			<page>90</page>
+		</accessory>		
 	</accessories>
 </chummer>

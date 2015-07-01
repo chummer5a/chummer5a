@@ -7000,5 +7000,266 @@
       <source>DT</source>
       <page>49</page>
     </quality>
+		<quality>
+			<id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
+			<name>Biocompatability (Cyberware)</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
+			<name>Biocompatability (Bioware)</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>32a4d207-a67b-4cdb-a0c8-731320f85ffc</id>
+			<name>Better to be feared than loved</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>b47319f5-372d-4e23-9fd9-a8e4aecd4c85</id>
+			<name>Cyber-Singularity Seeker</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>00c827f6-aaa7-4003-87c9-f14e36263252</id>
+			<name>Drug Tolerant</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>08c4dfad-3661-48d9-a265-43cce84e20d8</id>
+			<name>Prototype Transhuman</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>54</page>
+		</quality>
+		<quality>
+			<id>38deea18-76f0-49a3-95ba-50006e4e7f90</id>
+			<name>Redliner</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>55</page>
+		</quality>
+		<quality>
+			<id>999fd139-d2c7-42ba-8ff8-cd9cbe65711c</id>
+			<name>Revels in Murder</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>56</page>
+		</quality>
+		<quality>
+			<id>0ebdfce5-c613-4fd9-9763-cae2d21c2153</id>
+			<name>Uncanny Healer</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>CF</source>
+			<page>56</page>
+		</quality>
+		<quality>
+			<id>b9afa9de-39c0-4e49-8271-f76910352ec2</id>
+			<name>Antipathy</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
+			<name>AIPS</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>af6974ba-43fe-4a6e-97f7-82df2bbb97f9</id>
+			<name>Blank Slate</name>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>01cd8471-224e-4ffe-9d89-79f565d78e29</id>
+			<name>Cyberpsychosis</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>aaac8dfd-dee6-4277-b967-9ec9089260a7</id>
+			<name>Cyber-snob</name>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>425fbcac-53a5-4788-a80c-0dc788e883b0</id>
+			<name>Dead Emotion</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>cd75169e-efa4-40aa-a4c8-ee055a5dd748</id>
+			<name>Dry Addict (Mild)</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>f1026e12-7605-4454-acba-fbcf0b8b59f3</id>
+			<name>Dry Addict (Moderate)</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>78106262-f5a7-4d17-984c-ccb7765a51e0</id>
+			<name>Dry Addict (Severe)</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>af760e11-1d73-40f2-bbf0-ac6a73d05d39</id>
+			<name>Dry Addict (Burnout)</name>
+			<karma>-13</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>57</page>
+		</quality>
+		<quality>
+			<id>00ae8fce-15aa-4a7f-90e3-9336824a626e</id>
+			<name>Family Curse</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>37129686-fe48-4374-acca-7b06d1373db0</id>
+			<name>Implant-induced Immune Deficiency</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>06078d89-0f12-4f57-99d0-e088847dec7e</id>
+			<name>Lack of Focus</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>8e176d15-e646-4aed-824c-171c6bd9e4bc</id>
+			<name>Lightweight</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>8e176d15-e646-4aed-824c-171c6bd9e4bc</id>
+			<name>One of them</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>bd64ccab-5138-475d-8eb1-400ae4a11ac2</id>
+			<name>Quasimodo</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+		<quality>
+			<id>21c98d92-0a8b-454b-8623-b99480f3a518</id>
+			<name>So Jacked Up</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+		<quality>
+			<id>6b9c009f-613b-4d3f-82c6-53e191c4e095</id>
+			<name>Superhuman Psychosis</name>
+			<karma>-2</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+		<quality>
+			<id>262bb242-69eb-41fc-b751-e6fdeac3f071</id>
+			<name>TLE-X</name>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>59</page>
+		</quality>
+		<quality>
+			<id>815f235c-dda7-4140-a667-c274ced1d9d6</id>
+			<name>Tough and Targeted</name>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>CF</source>
+			<page>60</page>
+		</quality>
 	</qualities>
 </chummer>

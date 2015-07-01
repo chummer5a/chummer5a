@@ -1,3 +1,12 @@
+Build 169:
+Application Change:
+- Fixed an issue with skill and karma values defaulting to 0 in character creation. 
+- Fiddled with Auto-update a bit, might work better. Please test and advise.
+
+Data Change:
+- New book: Chrome Flesh.
+- Content for Chrome Flesh added. Data provided courtesy of Fweeba.
+
 Build 168:
 Application Change:
 - Did some stuff to make spell descriptors show up in character sheets.
