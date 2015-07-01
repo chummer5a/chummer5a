@@ -275,7 +275,7 @@ namespace Chummer
 			// Define the XML objects that will be used.
 			XmlDocument objXmlDocument = new XmlDocument();
 
-			if (_objOptions.BuildMethod == CharacterBuildMethod.LifeModule)
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
 			{
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
 			}

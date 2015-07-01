@@ -27,10 +27,12 @@
               <val>1</val>
             </attributelevel>
           </bonus>
+          <story>$STREET was born on in the United Canadian American States around the old Canadian border. His parents were middle class, employed by $MEGA, where they produced automobile parts.</story>
         </version>
         <version>
           <id>955c76a2-d507-458c-b74a-22Dff60fb1eb</id>
-          <name>Canada</name>
+          <name>Canada[NOSTAT]</name>
+          <story>$STREET was born in the land called canada in the old days in the year $YEAR. Of course, back then he wasn't called $STREET, by his parrents he was called $REAL while his friends called him Goose from the way he walked</story>>
         </version>
       </versions>
       <bonus>
@@ -56,10 +58,11 @@
       <id>15302513-70fe-43f7-b881-32ceed0cfa8e</id>
       <stage>Nationality</stage>
       <category>LifeModule</category>
-      <name>Confederation of American States</name>
+      <name>Confederation of American States[NOSTAT]</name>
       <karma>15</karma>
       <source>RF</source>
       <page>66</page>
+      <story>$REAL was born in the Confederation of American States in the year $BIRTH</story>
     </module>
     <module>
       <id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
@@ -80,10 +83,12 @@
           <name>Electronics</name>
           <val>2</val>
         </skillgrouplevel>
+        <freenegativequalities>-25</freenegativequalities>
       </bonus>
       <addqualities>
         <addquality>SINner (Corporate)</addquality>
       </addqualities>
+      <story>He spendt his early years in an Arcology owned by $MEGA. His parrents where buissy workers and little $REAL spendt most of his time entertaining himself with a comlink or playing with the other kids</story>
       <source>RF</source>
       <page>67</page>
     </module>
@@ -101,12 +106,14 @@
           <name>CHA</name>
           <val>1</val>
         </attributelevel>
+        <freenegativequalities>-15</freenegativequalities>
       </bonus>
       <required>
         <oneof>
           <quality>Magician</quality>
         </oneof>
       </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
@@ -114,7 +121,7 @@
       <page>71</page>
     </module>
     <module>
-      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
+      <id>abf41e28-123f-bb00-da29-124ce213dca2</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>High School</name>
@@ -140,8 +147,35 @@
           <val>2</val>
         </skilllevel>
       </bonus>
+      <story>In the $SEASON of 2065 the dreaded happened. $REAL began his life at high school</story>
       <source>RF</source>
       <page>71</page>
     </module>
   </modules>
+  <storybuilder>
+    <macros>
+      <mega>
+        <persistent>
+          <ares>Ares</ares>
+          <aztech>Aztechnology</aztech>
+          <evo>EVO</evo>
+          <horizon>Horizon</horizon>
+          <neonet>Neonet</neonet>
+          <mct>Mitsuhama</mct>
+          <renraku>Renraku</renraku>
+          <sk>Saeder-Krupp</sk>
+          <shia>Shiawase</shia>
+          <wux>Wuxing</wux>
+        </persistent>
+      </mega>
+      <season>
+        <random>
+          <spring>Spring</spring>
+          <summer>Summer</summer>
+          <atum>Atum</atum>
+          <winter>Winter</winter>
+        </random>
+      </season>
+    </macros>
+  </storybuilder>
 </chummer>
