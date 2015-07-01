@@ -131,15 +131,6 @@
 				<page>72</page>
 			</grade>
 		</grade>
-		<grade>
-			<id>ce03b2ba-8e77-4f02-8db4-666b67d7eb7a</id>
-			<name>Standard (Biocompatible)</name>
-			<ess>0.9</ess>
-			<cost>1</cost>
-			<avail>0</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
   </grades>
   <categories>
     <category>Headware</category>
