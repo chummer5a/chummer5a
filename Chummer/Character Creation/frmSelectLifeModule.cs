@@ -40,18 +40,24 @@ namespace Chummer
             _strStageName = stageNode.InnerText;
 
 
-            treModules.Nodes.Clear();
-            treModules.Nodes.AddRange(BuildList(_xmlDocument.SelectNodes("chummer/modules/module[stage = \"" + _strStageName + "\"]")));
+            BuildTree(_strStageName);
         }
 
-        private TreeNode[] BuildList(XmlNodeList xmlNodes)
+	    private void BuildTree(String stage)
+	    {
+		    treModules.Nodes.Clear();
+		    treModules.Nodes.AddRange(
+			    BuildList(_xmlDocument.SelectNodes("chummer/modules/module[stage = \"" + stage + "\"]")));
+	    }
+
+	    private TreeNode[] BuildList(XmlNodeList xmlNodes)
         {
             List<TreeNode> nodes = new List<TreeNode>();
             for (int i = 0; i < xmlNodes.Count; i++)
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-	            if (Quality.IsValid(_objCharacter, xmlNode))
+	            if (Quality.IsValid(_objCharacter, xmlNode) || !chkLimitList.Checked)
 	            {
 
 		            TreeNode treNode = new TreeNode();
@@ -135,5 +141,19 @@ namespace Chummer
         {
             get { return Quality.GetNodeOverrideable(_selectedId); }
         }
-    }
+
+		private void treModules_DoubleClick(object sender, EventArgs e)
+		{
+			if (cmdOK.Enabled)
+			{
+				AddAgain = false;
+				cmdOK_Click(sender, e);
+			}
+		}
+
+		private void chkLimitList_Click(object sender, EventArgs e)
+		{
+			BuildTree(_strStageName);
+		}
+	}
 }
