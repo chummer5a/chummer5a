@@ -2546,12 +2546,12 @@
 		<cyberware>
 			<id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
 			<name>Casemod</name>
+			<capacity>0</capacity>
 			<category>Cosmetic Enhancement</category>
-			<rating>200</rating>
 			<ess>0</ess>
-			<capacity>[*]</capacity>
-			<avail>4</avail>
-			<cost>Rating * 50</cost>
+			<avail>Rating</avail>
+			<rating>4</rating>
+			<cost>Variable(0-10000)</cost>
 			<source>CF</source>
 			<page>72</page>
 		</cyberware>
