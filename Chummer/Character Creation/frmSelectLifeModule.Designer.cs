@@ -32,7 +32,7 @@
 			this.cmdOKAdd = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
 			this.cmdOK = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.txtSearch = new System.Windows.Forms.TextBox();
 			this.lblSearch = new System.Windows.Forms.Label();
 			this.lblBP = new System.Windows.Forms.Label();
 			this.lblBPLabel = new System.Windows.Forms.Label();
@@ -88,12 +88,13 @@
 			this.cmdOK.UseVisualStyleBackColor = true;
 			this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
 			// 
-			// textBox1
+			// txtSearch
 			// 
-			this.textBox1.Location = new System.Drawing.Point(343, 12);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(162, 20);
-			this.textBox1.TabIndex = 18;
+			this.txtSearch.Location = new System.Drawing.Point(343, 12);
+			this.txtSearch.Name = "txtSearch";
+			this.txtSearch.Size = new System.Drawing.Size(162, 20);
+			this.txtSearch.TabIndex = 18;
+			this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
 			// 
 			// lblSearch
 			// 
@@ -201,7 +202,7 @@
 			this.Controls.Add(this.lblSource);
 			this.Controls.Add(this.lblSourceLabel);
 			this.Controls.Add(this.lblSearch);
-			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.txtSearch);
 			this.Controls.Add(this.cmdOKAdd);
 			this.Controls.Add(this.cmdCancel);
 			this.Controls.Add(this.cmdOK);
@@ -224,7 +225,7 @@
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.Label lblBP;
         private System.Windows.Forms.Label lblBPLabel;
