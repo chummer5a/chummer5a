@@ -40,7 +40,7 @@ namespace Chummer
 	                if (modules[j]["stage"].InnerText == stageName)
 		                break;
                 }
-				if (j != i)
+				if (j != i && j < modules.Count)
 				{
 					XmlNode tmp = modules[i];
 					modules[i] = modules[j];
@@ -98,7 +98,7 @@ namespace Chummer
 			story.Length--;
 		}
 
-		private string Macro(string innerText)
+		public string Macro(string innerText)
 		{
 			if (innerText == "$STREET")
 			{
@@ -131,13 +131,15 @@ namespace Chummer
 
 			if (userMacro != null)
 			{
-				if (userMacro.FirstChild.Name == "random")
+				if (userMacro.FirstChild != null && 
+					userMacro.FirstChild.Name == "random")
 				{
 					XmlNodeList nodes = userMacro.FirstChild.ChildNodes;
 					selected = nodes[new Random().Next(0, nodes.Count)].Name;
 
 				}
-				else if (userMacro.FirstChild.Name == "persistent")
+				else if (userMacro.FirstChild != null 
+					  && userMacro.FirstChild.Name == "persistent")
 				{
 					if (persistenceDictionary.ContainsKey(userMacro.Name))
 					{
@@ -152,7 +154,7 @@ namespace Chummer
 				}
 				else
 				{
-					return "(Unknown Macro type " + userMacro.FirstChild.Name + ")";
+					return userMacro.InnerText;
 				}
 				String removed = innerText.Substring(endString.Length + 1);
 				return userMacro.FirstChild[selected].InnerText + removed;

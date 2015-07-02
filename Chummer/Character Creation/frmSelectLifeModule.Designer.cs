@@ -41,6 +41,7 @@
 			this.lblStageLabel = new System.Windows.Forms.Label();
 			this.lblStage = new System.Windows.Forms.Label();
 			this.chkLimitList = new System.Windows.Forms.CheckBox();
+			this.cboStage = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// treModules
@@ -168,18 +169,30 @@
 			this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.chkLimitList.Location = new System.Drawing.Point(296, 111);
 			this.chkLimitList.Name = "chkLimitList";
-			this.chkLimitList.Size = new System.Drawing.Size(169, 17);
+			this.chkLimitList.Size = new System.Drawing.Size(189, 17);
 			this.chkLimitList.TabIndex = 26;
-			this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
-			this.chkLimitList.Text = "Show only Qualities I can take";
+			this.chkLimitList.Tag = "Checkbox_SelectLifeModule_LimitList";
+			this.chkLimitList.Text = "Show only Life Modules I can take";
 			this.chkLimitList.UseVisualStyleBackColor = true;
 			this.chkLimitList.Click += new System.EventHandler(this.chkLimitList_Click);
+			// 
+			// cboStage
+			// 
+			this.cboStage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboStage.FormattingEnabled = true;
+			this.cboStage.Location = new System.Drawing.Point(343, 80);
+			this.cboStage.Name = "cboStage";
+			this.cboStage.Size = new System.Drawing.Size(158, 21);
+			this.cboStage.TabIndex = 27;
+			this.cboStage.Visible = false;
+			this.cboStage.SelectionChangeCommitted += new System.EventHandler(this.cboStage_SelectionChangeCommitted);
 			// 
 			// frmSelectLifeModule
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(517, 454);
+			this.Controls.Add(this.cboStage);
 			this.Controls.Add(this.chkLimitList);
 			this.Controls.Add(this.lblStage);
 			this.Controls.Add(this.lblStageLabel);
@@ -220,5 +233,6 @@
         private System.Windows.Forms.Label lblStageLabel;
         private System.Windows.Forms.Label lblStage;
         private System.Windows.Forms.CheckBox chkLimitList;
-    }
+		private System.Windows.Forms.ComboBox cboStage;
+	}
 }

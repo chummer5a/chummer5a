@@ -14,11 +14,13 @@ namespace Chummer
     public partial class frmSelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
+	    private bool _cboStageInit = false;
         private Character _objCharacter;
         private int _intStage;
         private String _strStageName;
         private XmlDocument _xmlDocument;
         private String _selectedId;
+
         
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
@@ -40,14 +42,14 @@ namespace Chummer
             _strStageName = stageNode.InnerText;
 
 
-            BuildTree(_strStageName);
+            BuildTree("[stage = \"" + _strStageName + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
         }
 
-	    private void BuildTree(String stage)
+	    private void BuildTree(String stageString)
 	    {
 		    treModules.Nodes.Clear();
 		    treModules.Nodes.AddRange(
-			    BuildList(_xmlDocument.SelectNodes("chummer/modules/module[stage = \"" + stage + "\"]")));
+			    BuildList(_xmlDocument.SelectNodes("chummer/modules/module" + stageString)));
 	    }
 
 	    private TreeNode[] BuildList(XmlNodeList xmlNodes)
@@ -153,7 +155,97 @@ namespace Chummer
 
 		private void chkLimitList_Click(object sender, EventArgs e)
 		{
-			BuildTree(_strStageName);
+			BuildTree("[stage = \"" + _strStageName + "\" and (" + _objCharacter.Options.BookXPath() +")]");
+
+			lblStage.Visible = chkLimitList.Checked;
+			cboStage.Visible = !chkLimitList.Checked;
+
+			if (cboStage.Visible)
+			{
+				if (cboStage.DataSource == null)
+				{
+					List<ListItem> Stages = new List<ListItem>()
+					{
+						new ListItem()
+						{
+							Name = LanguageManager.Instance.GetString("String_All"),
+							Value = "0"
+						}
+					};
+
+					XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");
+					foreach (XmlNode xnode in xnodes)
+					{
+						XmlAttribute attrib = xnode.Attributes["order"];
+						if (attrib != null)
+						{
+							ListItem item = new ListItem();
+							item.Name = xnode.InnerText;
+							item.Value = xnode.Attributes["order"].Value;
+							Stages.Add(item);
+						}
+					}
+
+					Stages.Sort((x, y) =>
+					{
+						int xint = 0;
+						int yint = 0;
+						if (int.TryParse(x.Value, out xint))
+						{
+							if (int.TryParse(y.Value, out yint))
+							{
+								return xint - yint;
+							}
+							else
+							{
+								return 1;
+							}
+						}
+						else
+						{
+							if (int.TryParse(y.Value, out yint))
+							{
+								return -1;
+							}
+							else
+							{
+								return 0;
+							}
+						}
+					});
+
+					cboStage.ValueMember = "Value";
+					cboStage.DisplayMember = "Name";
+					cboStage.DataSource = Stages;
+				}
+
+				ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
+				if (selectedItem != null)
+				{
+					cboStage.SelectedItem = selectedItem;
+				}
+
+			}
+			else
+			{
+				BuildTree("[stage = \"" + _strStageName + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+			}
+
+		}
+
+		private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
+		{
+			String strSelected = (String) cboStage.SelectedValue;
+			if (strSelected == "0")
+			{
+				BuildTree("[" + _objCharacter.Options.BookXPath() + "]");
+			}
+			else
+			{
+				String Stage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = \"" + strSelected + "\" and (" + _objCharacter.Options.BookXPath() +")]").InnerText;
+				BuildTree("[stage = \"" + Stage + "\"]");
+			}
+			
 		}
 	}
 }

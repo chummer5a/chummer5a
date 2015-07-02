@@ -30,9 +30,14 @@
           <story>$STREET was born on in the United Canadian American States around the old Canadian border. His parents were middle class, employed by $MEGA, where they produced automobile parts.</story>
         </version>
         <version>
-          <id>955c76a2-d507-458c-b74a-22Dff60fb1eb</id>
+          <id>955c76a2-d507-458c-b74a-22dff60fb1eb</id>
           <name>Canada[NOSTAT]</name>
-          <story>$STREET was born in the land called canada in the old days in the year $YEAR. Of course, back then he wasn't called $STREET, by his parrents he was called $REAL while his friends called him Goose from the way he walked</story>>
+          <story>$STREET was born in the land called canada in the old days in the year $YEAR. Of course, back then he wasn't called $STREET, by his parrents he was called $REAL while his friends called him Goose from the way he walked</story>
+        </version>
+        <version>
+          <id>dd23e87a-b9fc-4ae5-88cc-0cf032e0a828</id>
+          <name>SINless</name>
+          <story>$STREET $TEST, on the street, $MAGIC</story>
         </version>
       </versions>
       <bonus>
@@ -62,7 +67,7 @@
       <karma>15</karma>
       <source>RF</source>
       <page>66</page>
-      <story>$REAL was born in the Confederation of American States in the year $BIRTH</story>
+      <story>$REAL was born in the Confederation of American States in the year $YEAR</story>
     </module>
     <module>
       <id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
@@ -176,6 +181,8 @@
           <winter>Winter</winter>
         </random>
       </season>
+      <test>Something something, cake? </test>
+      <magic>Then $TEST and a big can of whoopass</magic>
     </macros>
   </storybuilder>
 </chummer>

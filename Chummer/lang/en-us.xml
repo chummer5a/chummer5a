@@ -8,6 +8,10 @@
 			<key>String_Limit</key>
 			<text>Limit:</text>
 		</string>
+    <string>
+      <key>String_All</key>
+      <text>All</text>
+    </string>
 		<string>
 			<key>String_PushTheLimit</key>
 			<text>Push the Limit</text>
@@ -6922,6 +6926,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_SelectQuality_LimitList</key>
 			<text>Show only Qualities I can take</text>
 		</string>
+    <string>
+      <key>Checkbox_SelectLifeModule_LimitList</key>
+      <text>Show only Life Modules I can take</text>
+    </string>
 		<string>
 			<key>Checkbox_SelectQuality_Metagenetic</key>
 			<text>Show only Metagenetic Qualities</text>
