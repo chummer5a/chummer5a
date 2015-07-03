@@ -38,10 +38,16 @@ namespace Chummer
             String selectString = "chummer/stages/stage[@order = \"" + _intStage + "\"]";
 
             XmlNode stageNode = _xmlDocument.SelectSingleNode(selectString);
-            _strWorkStage = _strDefaultStageName = stageNode.InnerText;
-			
+	        if (stageNode != null)
+	        {
+		        _strWorkStage = _strDefaultStageName = stageNode.InnerText;
 
-            BuildTree(GetSelectString());
+		        BuildTree(GetSelectString());
+	        }
+	        else
+	        {
+		        _strWorkStage = _strDefaultStageName = "null";
+	        }
         }
 
 	    private void BuildTree(String stageString)
@@ -139,18 +145,31 @@ namespace Chummer
                                  (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
             }
 
-            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable((string) e.Node.Tag);
-            _selectedId = (string) e.Node.Tag;
+	        try
+	        {
 
-            cmdOK.Enabled = blnSelectAble;
-            cmdOKAdd.Enabled = blnSelectAble;
 
-            lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
-            lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
-                             " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
+		        XmlNode selectedNodeInfo = Quality.GetNodeOverrideable((string) e.Node.Tag);
+		        _selectedId = (string) e.Node.Tag;
 
-            lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
+		        cmdOK.Enabled = blnSelectAble;
+		        cmdOKAdd.Enabled = blnSelectAble;
 
+		        lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : "";
+		        lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : "") +
+		                         " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : "");
+
+		        lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : "";
+	        }
+	        catch (Exception)
+	        {
+		        lblBP.Text = "ERROR";
+		        lblStage.Text = "ERROR";
+		        lblSource.Text = "ERROR";
+
+				cmdOK.Enabled = false;
+				cmdOKAdd.Enabled = false;
+			}
 
         }
 
@@ -311,7 +330,11 @@ namespace Chummer
 		    working += _objCharacter.Options.BookXPath();
 		    if (before)
 		    {
-			    working += ")";
+			    working += ")]";
+		    }
+		    else
+		    {
+			    working += "]";
 		    }
 
 
