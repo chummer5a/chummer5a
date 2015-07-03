@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-390</version>
+	<version>-385</version>
 	<categories>
 		<category>Blades</category>
 		<category>Clubs</category>
@@ -6684,6 +6684,26 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<range>Light Pistols</range>
+			<source>CF</source>
+			<page>91</page>
+		</weapon>
+		<weapon>
+			<id>8a842089-5a2c-43ee-9613-7f3db793fa71</id>
+			<name>Cyberfangs</name>
+			<category>Cyberweapon</category>
+			<type>Melee</type>
+			<conceal>-4</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
 			<source>CF</source>
 			<page>91</page>
 		</weapon>
