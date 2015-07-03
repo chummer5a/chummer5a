@@ -37,7 +37,7 @@
         <version>
           <id>dd23e87a-b9fc-4ae5-88cc-0cf032e0a828</id>
           <name>SINless</name>
-          <story>$STREET $TEST, on the street, $MAGIC</story>
+          <story>Paul, a  $METATYPE  on the street,  $DOLLAR $YEAR_20   $METAVARIANT</story>
         </version>
       </versions>
       <bonus>
@@ -173,6 +173,20 @@
           <wux>Wuxing</wux>
         </persistent>
       </mega>
+      <rmega>
+        <random>
+          <ares>Ares</ares>
+          <aztech>Aztechnology</aztech>
+          <evo>EVO</evo>
+          <horizon>Horizon</horizon>
+          <neonet>Neonet</neonet>
+          <mct>Mitsuhama</mct>
+          <renraku>Renraku</renraku>
+          <sk>Saeder-Krupp</sk>
+          <shia>Shiawase</shia>
+          <wux>Wuxing</wux>
+        </random>
+      </rmega>
       <season>
         <random>
           <spring>Spring</spring>
@@ -181,8 +195,23 @@
           <winter>Winter</winter>
         </random>
       </season>
-      <test>Something something, cake? </test>
-      <magic>Then $TEST and a big can of whoopass</magic>
+      <metatype>
+        <random>
+          <troll>Troll</troll>
+          <ork>Ork</ork>
+          <elf>Elf</elf>
+          <dwarf>Dwarf</dwarf>
+          <human>Human</human>
+        </random>
+      </metatype>
+      <metavariant>
+        <random>
+          <nevergonnagiveyouup>never gonna let you down</nevergonnagiveyouup>
+          <default>$METATYPE</default>
+        </random>
+      </metavariant>
+      <test>Something something, cake?</test>
+      <magic>Then " $TEST " and a big can of whoopass</magic>
     </macros>
   </storybuilder>
 </chummer>
