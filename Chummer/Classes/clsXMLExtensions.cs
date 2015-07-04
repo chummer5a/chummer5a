@@ -23,8 +23,9 @@ namespace Chummer
         /// <param name="node">The XmlNode to read from</param>
         /// <param name="field">The field to try and extract from the XmlNode</param>
         /// <param name="read">The variable to save the read to</param>
+        /// <param name="onError">The value to return in case of failure. This parameter is optional</param>
         /// <returns>true if successful read</returns>
-        public static bool TryGetField<T>(this XmlNode node, String field, out T read) where T : IConvertible
+        public static bool TryGetField<T>(this XmlNode node, String field, out T read, T onError = default(T)) where T : IConvertible
         {
             /*
              * This extension method allows easier access of xml, instead of
@@ -81,9 +82,9 @@ namespace Chummer
 #else           //So if DEBUG flag is missing we don't reflect info
                 String errorMsg = String.Format("Tried to read missing field \"{0}\" of type \"{1}\"", field, typeof(T));
 #endif
-                _objCommonFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.XmlExtensions", errorMsg);
+                Log.Error(errorMsg);
                 //Assign something
-                read = default(T);
+	            read = onError;
                 return false;
             }
 
@@ -107,11 +108,11 @@ namespace Chummer
 #else
                 String errorMsg = String.Format("Tried to read missing field \"{0}\"", field);
 #endif
-                _objCommonFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.XmlExtensions", errorMsg);
+                Log.Error(errorMsg);
                 
                 //Finaly, we have to assign an out parameter something, so default
                 //null or 0 most likeley
-                read = default(T);
+                read = onError;
                 return false;
             }
 
