@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-385</version>
+	<version>-380</version>
 	<categories>
 		<category>Blades</category>
 		<category>Clubs</category>
@@ -6693,7 +6693,7 @@
 			<category>Cyberweapon</category>
 			<type>Melee</type>
 			<conceal>-4</conceal>
-			<accuracy>Physical</accuracy>
+			<accuracy>Physical-2</accuracy>
 			<reach>0</reach>
 			<damage>(STR)P</damage>
 			<ap>0</ap>

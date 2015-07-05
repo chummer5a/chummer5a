@@ -11,15 +11,7 @@
       <source>SR5</source>
       <page>451</page>
     </grade>
-    <grade>
-			<id>1f9f7472-a115-4cf4-bc15-177f76d41331</id>
-			<name>Standard (Biocompatible)</name>
-			<ess>0.9</ess>
-			<cost>1</cost>
-			<avail>0</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
+ 
 		<grade>
       <id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
       <name>Standard (Burnout's Way)</name>
@@ -39,27 +31,9 @@
       <page>451</page>
     </grade>
     <grade>
-      <id>a9aec622-410a-444a-a569-c8d8cc0457b4</id>
-      <name>Used (Biocompatible)</name>
-      <ess>1.12</ess>
-      <cost>0.75</cost>
-      <avail>-4</avail>
-      <source>SR5</source>
-      <page>451</page>
-    </grade>
-    <grade>
       <id>75da0ff2-4137-4990-85e6-331977564712</id>
       <name>Alphaware</name>
       <ess>0.8</ess>
-      <cost>1.2</cost>
-      <avail>+2</avail>
-      <source>SR5</source>
-      <page>451</page>
-    </grade>
-    <grade>
-      <id>75da0ff2-4137-4990-85e6-331977564712</id>
-      <name>Alphaware (Biocompatible)</name>
-      <ess>0.72</ess>
       <cost>1.2</cost>
       <avail>+2</avail>
       <source>SR5</source>
@@ -74,15 +48,6 @@
       <source>SR5</source>
       <page>451</page>
     </grade>
-    <grade>
-			<id>48169405-e86d-460a-878b-4e7ab9687596</id>
-			<name>Betaware (Biocompatible)</name>
-			<ess>0.63</ess>
-			<cost>1.5</cost>
-			<avail>+4</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
 		<grade>
 			<id>7ea3a157-867f-4c66-9f62-66b14b36b763</id>
       <name>Deltaware</name>
@@ -93,15 +58,6 @@
       <page>451</page>
     </grade>
 		<grade>
-			<id>3b3e1583-0a52-4b6f-816b-cb72f3f788af</id>
-			<name>Deltaware (Biocompatible)</name>
-			<ess>0.45</ess>
-			<cost>2.5</cost>
-			<avail>+8</avail>
-			<source>SR5</source>
-			<page>451</page>
-		</grade>
-		<grade>
 			<id>81b6d909-699b-4fa5-8bb8-a5b2f3996da7</id>
 			<name>Gammaware</name>
 			<ess>0.4</ess>
@@ -110,14 +66,6 @@
 			<source>CF</source>
 			<page>72</page>
 		</grade>
-		<grade>
-			<id>87a3b6d7-0f26-4125-ad15-53d53b74ba27</id>
-			<name>Gammaware (Biocompatible)</name>
-			<ess>0.4</ess>
-			<cost>5</cost>
-			<avail>+12</avail>
-			<source>CF</source>
-			<page>72</page>
 			<grade>
 				<id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
 				<name>Omegaware</name>
@@ -130,7 +78,6 @@
 				<source>CF</source>
 				<page>72</page>
 			</grade>
-		</grade>
   </grades>
   <categories>
     <category>Headware</category>

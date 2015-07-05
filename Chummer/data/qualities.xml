@@ -1,69 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-395</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
 	</categories>
+<!--Shadowrun Core Positive Qualities -->					
 	<qualities>
-		<quality>
-			<name>Infected: Banshee</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>65</karma>
-			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-					<min>1</min>
-					<max>6</max>
-					<aug>6</aug>
-					<val>1</val>
-				</addattribute>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<initiative>1</initiative>
-				<initiativepass>1</initiativepass>
-				<specificattribute>
-					<name>INT</name>
-					<max>1</max>
-					<min>1</min>
-				</specificattribute>
-				<specificattribute>
-					<name>WIL</name>
-					<max>1</max>
-					<min>1</min>
-				</specificattribute>
-				<specificattribute>
-					<name>ESS</name>
-					<max>-1</max>
-					<val>-1</val>
-				</specificattribute>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Elf</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<metatype>Free Spirit</metatype>
-					<metatypecategory>Shapeshifter</metatypecategory>
-				</oneof>
-			</forbidden>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
-			<powers>
-			</powers>
-			<source>RF</source>
-			<page>80</page>
-		</quality>
 		<quality>
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
 			<name>Ambidextrous</name>
@@ -81,267 +24,6 @@
 			<bonus />
 			<source>SR5</source>
 			<page>72</page>
-		</quality>
-		<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Biocompatability (Cyberware)</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-                <quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Biocompatability (Bioware)</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Better to be feared than loved</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Cyber-Singularity Seeker</name>
-			<karma>12</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Drug Tolerant</name>
-			<karma>6</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Prototype Transhuman</name>
-			<karma>10</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>54</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Redliner</name>
-			<karma>10</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>55</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Revels in Murder</name>
-			<karma>8</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>56</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Uncanny Healer</name>
-			<karma>12</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>CF</source>
-			<page>56</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Antipathy</name>
-			<karma>-8</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>AIPS</name>
-			<karma>-10</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Blank Slate</name>
-			<karma>-15</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Cyberpsychosis</name>
-			<karma>-10</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Cyber-snob</name>
-			<karma>-12</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Dead Emotion</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Dry Addict (Mild)</name>
-			<karma>-2</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Dry Addict (Moderate)</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Dry Addict (Severe)</name>
-			<karma>-10</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Dry Addict (Burnout)</name>
-			<karma>-13</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>57</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Family Curse</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>58</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Implant-induced Immune Deficiency</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>58</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Lack of Focus</name>
-			<karma>-6</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>58</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Lightweight</name>
-			<karma>-6</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>58</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>One of them</name>
-			<karma>-7</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>58</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Quasimodo</name>
-			<karma>-2</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>59</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>So Jacked Up</name>
-			<karma>-10</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>59</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Superhuman Psychosis</name>
-			<karma>-2</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>59</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>TLE-X</name>
-			<karma>-15</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>59</page>
-		</quality>
-<quality>
-			<id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
-			<name>Tough and Targeted</name>
-			<karma>-10</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>CF</source>
-			<page>60</page>
 		</quality>
 		<quality>
 			<id>58e3d62a-2073-4af5-b8e0-00c446b3a5ab</id>
@@ -1376,7 +1058,8 @@
 			</forbidden>
 			<contributetolimit>no</contributetolimit>			
 		</quality>
-		<quality>
+<!--Shadowrun Core Negative Qualities -->					
+	<quality>
 			<id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
 			<name>Addiction (Mild)</name>
 			<karma>-4</karma>
@@ -2080,6 +1763,16 @@
 			<source>SR5</source>
 			<page>87</page>
 		</quality>
+		<!--Street Grimoire Positive Qualities -->					
+		<quality>
+			<id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
+			<name>Spirit Champion</name>
+			<karma>14</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>SG</source>
+			<page>199</page>
+		</quality>
 		<quality>
 			<id>15b8fbbd-9d6f-43e4-acf3-97badf073ac4</id>
 			<name>The Artisan's Way</name>
@@ -2360,6 +2053,17 @@
 			<source>SG</source>
 			<page>178</page>
 		</quality>
+<!--Street Grimoire Negative Qualities -->					
+		<quality>
+			<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
+			<name>Spirit Pariah</name>
+			<karma>-14</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>SG</source>
+			<page>199</page>
+		</quality>
+		<!--Bullets and Bandages Positive Qualities -->	
 		<quality>
 			<id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
 			<name>Gifted Healer</name>
@@ -2371,6 +2075,7 @@
 			<source>BB</source>
 			<page>11</page>
 		</quality>
+		<!--Bullets and Bandages Negative Qualities -->	
 		<quality>
 			<id>97e9b186-8924-4885-a948-3c781244a5cb</id>
 			<name>Aged (Rating 1)</name>
@@ -2530,24 +2235,7 @@
 			<source>BB</source>
 			<page>12</page>
 		</quality>
-		<quality>
-			<id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
-			<name>Spirit Champion</name>
-			<karma>14</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>SG</source>
-			<page>199</page>
-		</quality>
-		<quality>
-			<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
-			<name>Spirit Pariah</name>
-			<karma>-14</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>SG</source>
-			<page>199</page>
-		</quality>
+<!--Sail Away, Sweet Sister Positive Qualities -->
 		<quality>
 			<id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
 			<name>College Education</name>
@@ -2572,6 +2260,7 @@
 			<source>SASS</source>
 			<page>31</page>
 		</quality>
+<!--Run Faster Positive Qualities -->		
 		<quality>
 			<name>Changeling (Class I SURGE)</name>
 			<karma>10</karma>
@@ -3543,6 +3232,86 @@
 			<source>RF</source>
 			<page>115</page>
 			<metagenetic>yes</metagenetic>
+		</quality>
+		<quality>
+			<name>Infected: Banshee</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<category>Positive</category>
+			<bonus>
+				<optionalpowers>
+					<critterpower>Enhanced Senses</critterpower>
+					<critterpower>Immunity</critterpower>
+				</optionalpowers>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
+				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
+				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
+				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
+				<addquality>Distinctive Style</addquality>
+			</addqualities>
+			<powers>
+				<power select="Hearing, Smell">Enhanced Senses</power>
+			</powers>
+			<source>RF</source>
+			<page>80</page>
+		</quality>
+		<quality>
+			<name>Infected: Improved Physical Attribute (BRS)</name>
+			<id>e9dc29c0-8ed1-4096-a923-53f3b31345ca</id>
+			<hide>yes</hide>
+			<karma>0</karma>
+			<category>Positive</category>
+			<bonus>
+				<selectattribute>
+					<attribute>BOD</attribute>
+					<attribute>REA</attribute>
+					<attribute>STR</attribute>
+					<val>1</val>
+				</selectattribute>
+			</bonus>
+			<limit>no</limit>
+			<source>RF</source>
+			<page>116</page>
+		</quality>
+		<quality>
+			<name>Infected: Improved Mental Attribute (WIC)</name>
+			<id>e9dc29c0-8ed1-4096-a923-53f3b31345ca</id>
+			<karma>0</karma>
+			<category>Positive</category>
+			<bonus>
+				<selectattribute>
+					<attribute>WIL</attribute>
+					<attribute>INT</attribute>
+					<attribute>CHA</attribute>
+					<val>1</val>
+				</selectattribute>
+			</bonus>
+			<limit>no</limit>
+			<source>RF</source>
+			<page>116</page>
 		</quality>
 		<quality>
 			<name>Keen-Eared</name>
@@ -5445,8 +5214,7 @@
 			<source>RF</source>
 			<page>151</page>
 		</quality>
-
-
+<!--Run Faster Negative Qualities -->
 		<quality>
 			<name>Albinism I</name>
 			<karma>-4</karma>
@@ -6893,6 +6661,7 @@
 			<source>RF</source>
 			<page>159</page>
 		</quality>
+		<!--Run Faster Natural Qualities -->
 		<quality>
 			<id>f9cdcb14-7181-4105-b59a-3628663f3be7</id>
 			<name>Natural Weapon: Kick (Centaur)</name>
@@ -6908,7 +6677,6 @@
 			<source>RF</source>
 			<page>105</page>
 		</quality>
-
 		<quality>
 			<id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
 			<name>Magic Sense</name>
@@ -6939,7 +6707,6 @@
 			<source>RF</source>
 			<page>105</page>
 		</quality>
-
 		<quality>
 			<id>9e50dbab-8a5d-430e-83b0-731cce142848</id>
 			<name>Astral Perception</name>
@@ -6970,6 +6737,7 @@
 			<source>RF</source>
 			<page>106</page>
 		</quality>
+		<!--Data Trails Positive Qualities -->
     <quality>
       <id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
       <name>Data Anomaly</name>
@@ -7080,6 +6848,7 @@
       <source>DT</source>
       <page>46</page>
     </quality>
+		<!--Data Trails Negative Qualities -->
     <quality>
       <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
       <name>Code of Honor: Like a Boss</name>
@@ -7214,12 +6983,20 @@
       <source>DT</source>
       <page>49</page>
     </quality>
+		<!--Chrome Flesh Positive Qualities -->
 		<quality>
 			<id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
 			<name>Biocompatability (Cyberware)</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<cyberwareessmultiplier>90</cyberwareessmultiplier>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Biocompatability (Bioware)</quality>
+				</oneof>
+			</forbidden>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -7228,13 +7005,20 @@
 			<name>Biocompatability (Bioware)</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<biowareessmultiplier>90</biowareessmultiplier>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Biocompatability (Cyberware)</quality>
+				</oneof>
+			</forbidden>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
 		<quality>
 			<id>32a4d207-a67b-4cdb-a0c8-731320f85ffc</id>
-			<name>Better to be feared than loved</name>
+			<name>Better to be Feared Than Loved</name>
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus />
@@ -7304,6 +7088,7 @@
 			<source>CF</source>
 			<page>57</page>
 		</quality>
+		<!--Chrome Flesh Negative Qualities -->
 		<quality>
 			<id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
 			<name>AIPS</name>
@@ -7453,7 +7238,20 @@
 			<name>Superhuman Psychosis</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<skillgroup>
+					<name>Close Combat</name>
+					<bonus>1</bonus>
+				</skillgroup>
+				<specificskill>
+					<name>Etiquette</name>
+					<bonus>-2</bonus>
+				</specificskill>
+				<specificskill>
+					<name>Leadership</name>
+					<bonus>-2</bonus>
+				</specificskill>
+			</bonus>
 			<source>CF</source>
 			<page>59</page>
 		</quality>

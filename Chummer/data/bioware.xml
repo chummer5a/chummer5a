@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-398</version>
+  <version>-395</version>
   <grades>
     <grade>
       <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
@@ -65,6 +65,15 @@
       <source>CF</source>
       <page>72</page>
     </grade>
+		<grade>
+			<id>a6fba72c-9fbe-41dc-8310-cd047b50c81e</id>
+			<name>Omegaware</name>
+			<ess>1</ess>
+			<cost>0.75</cost>
+			<avail>-4</avail>
+			<source>CF</source>
+			<page>71</page>
+		</grade>
   </grades>
   <categories>
     <category>Basic</category>

@@ -195,7 +195,7 @@
 	<file>
 		<name>data/armor.xml</name>
 		<type>Data Files</type>
-		<version>-399</version>
+		<version>-395</version>
 		<description>Armor</description>
 		<notes>- Armor data file</notes>
 		<url>https://www.dropbox.com/s/1wp0btv02dcvo7r/armor.xml?dl=1</url>
@@ -203,7 +203,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-398</version>
+		<version>-395</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -219,7 +219,7 @@
 	<file>
 		<name>data/complexforms.xml</name>
 		<type>Data Files</type>
-		<version>-399</version>
+		<version>-395</version>
 		<description>Complex Forms</description>
 		<notes>- Complex Forms data file</notes>
 		<url>https://www.dropbox.com/s/tujuo04kkxxgf5s/complexforms.xml?dl=1</url>
@@ -323,7 +323,7 @@
 	<file>
 		<name>data/metatypes.xml</name>
 		<type>Data Files</type>
-		<version>-398</version>
+		<version>-395</version>
 		<description>Metatypes</description>
 		<notes>- Metatypes data file</notes>
 		<url>https://www.dropbox.com/s/haqoojv28c8dwve/metatypes.xml?dl=1</url>
