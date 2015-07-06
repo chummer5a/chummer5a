@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace Chummer
 {
-    public partial class frmOptions : Form
-    {
-        private readonly CharacterOptions _objOptions = new CharacterOptions();
-        private CommonFunctions _objFunctions = new CommonFunctions();
-        private bool _blnSkipRefresh = false;
+	public partial class frmOptions : Form
+	{
+		private readonly CharacterOptions _objOptions = new CharacterOptions();
+		private CommonFunctions _objFunctions = new CommonFunctions();
+		private bool _blnSkipRefresh = false;
 
         #region Form Events
         public frmOptions()
@@ -148,7 +148,7 @@ namespace Chummer
             {
             }
             chkUseLogging.Checked = blnUseLogging;
-
+            chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
             bool blnLocalisedUpdatesOnly = false;
             try
             {
@@ -1752,6 +1752,7 @@ namespace Chummer
             GlobalOptions.Instance.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
+            GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
             objRegistry.SetValue("localisedupdatesonly", chkLocalisedUpdatesOnly.Checked.ToString());
@@ -1765,6 +1766,7 @@ namespace Chummer
             objRegistry.SetValue("openpdfsasurls", chkOpenPDFsAsURLs.Checked.ToString());
             objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
+            objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 
             // Save the SourcebookInfo.
             Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");

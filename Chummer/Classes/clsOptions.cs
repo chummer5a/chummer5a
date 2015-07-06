@@ -91,6 +91,7 @@ namespace Chummer
 		private static string _strDefaultCharacterSheet = "Shadowrun 5";
 		private static bool _blnDatesIncludeTime = true;
 		private static bool _blnPrintToFileFirst = false;
+		private static bool _lifeModuleEnabled;
 
 		// Omae Information.
 		private static string _strOmaeUserName = "";
@@ -122,6 +123,15 @@ namespace Chummer
 				_blnAutomaticUpdate = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("autoupdate").ToString());
 			}
 			catch
+			{
+			}
+
+			try
+			{
+				_lifeModuleEnabled =
+					Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("lifemodule").ToString());
+			}
+			catch 
 			{
 			}
 
@@ -293,6 +303,12 @@ namespace Chummer
 			{
 				_blnAutomaticUpdate = value;
 			}
+		}
+
+		public bool LifeModuleEnabled
+		{
+			get { return _lifeModuleEnabled; }
+			set { _lifeModuleEnabled = value; }
 		}
 
         /// <summary>

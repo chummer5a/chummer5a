@@ -35,12 +35,16 @@ namespace Chummer
             objSumtoTen.Value = "SumtoTen";
             objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
 
-            ListItem objLifeModule = new ListItem();
-            objLifeModule.Value = "LifeModule";
-            objLifeModule.Name = LanguageManager.Instance.GetString("String_LifeModule");
 
-            lstBuildMethod.Add(objPriority);
-            lstBuildMethod.Add(objLifeModule);
+			if (GlobalOptions.Instance.LifeModuleEnabled)
+	        {
+		        ListItem objLifeModule = new ListItem();
+		        objLifeModule.Value = "LifeModule";
+		        objLifeModule.Name = LanguageManager.Instance.GetString("String_LifeModule");
+				lstBuildMethod.Add(objLifeModule);
+			}
+
+	        lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objKarma);
             lstBuildMethod.Add(objSumtoTen);
             cboBuildMethod.DataSource = lstBuildMethod;

@@ -5699,6 +5699,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseLogging</key>
 			<text>Use Debug Logging</text>
 		</string>
+    <string>
+      <key>Checkbox_Options_UseLifeModule</key>
+      <text>Life modules available</text>
+    </string>
 		<string>
 			<key>Checkbox_Options_LocalisedUpdatesOnly</key>
 			<text>Only download updates in my selected language</text>
