@@ -10,8 +10,11 @@ namespace Chummer
 {
     internal static class XmlExtensions
     {
-        private static CommonFunctions _objCommonFunctions = new CommonFunctions();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
+
+	    public delegate bool TryParseFunction<T>(String input, out T result);
+
+	    
 
         /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
@@ -64,35 +67,20 @@ namespace Chummer
              *     failure();
              * }
              */
-            if (node[field] == null)
-            {
-#if DEBUG
-                //Extra magic in debug builds, but can provide errors in release
-                //builds due to inlining
-                System.Reflection.MethodBase mth 
-                    = new StackTrace().GetFrame(1).GetMethod();
-                String errorMsg = String.Format
-                (
-                    "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
-                    field,
-                    typeof (T),
-                    mth.ReflectedType.Name,
-                    mth
-                );
-#else           //So if DEBUG flag is missing we don't reflect info
-                String errorMsg = String.Format("Tried to read missing field \"{0}\" of type \"{1}\"", field, typeof(T));
-#endif
-                Log.Error(errorMsg);
-                //Assign something
-	            read = onError;
-                return false;
-            }
+	        string fieldValue = null;
+	        if (!CheckGetField<T>(node, field, ref fieldValue))
+	        {
+				read = onError;
+				return false;
+	        }
 
-            String fieldValue = node[field].InnerText;
-            try
+
+	        try
             {
-                read = (T) Convert.ChangeType(fieldValue, typeof (T));
-                return true;
+	            
+		        read = (T) Convert.ChangeType(fieldValue, typeof (T));
+	            return true;
+
             }
             catch (Exception)
             {
@@ -118,7 +106,74 @@ namespace Chummer
 
         }
 
-        /// <summary>
+
+		/// <summary>
+		/// This method is syntaxtic sugar for atempting to read a data field
+		/// from an XmlNode. This version sets the output variable to its 
+		/// default value in case of a failed read and can be used for 
+		/// initializing variables. It can work on any type, but it requires
+		/// a tryParse style function that is fed the nodes InnerText
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="node"></param>
+		/// <param name="field"></param>
+		/// <param name="parser"></param>
+		/// <param name="read"></param>
+		/// <param name="onerror"></param>
+		/// <returns></returns>
+		public static bool TryGetField<T>(this XmlNode node, String field, TryParseFunction<T> parser, out T read,
+			T onError = default(T))
+		{
+			String fieldValue = null;
+			if (!CheckGetField<T>(node, field, ref fieldValue))
+			{
+				read = onError;
+				return false;
+			}
+
+			if (parser != null)
+			{
+				return parser(fieldValue, out read);
+			}
+
+			read = onError;
+			return false;
+
+
+		}
+
+		//T needed for debug info (so not)
+		private static bool CheckGetField<T>(XmlNode node, String field,  ref string fieldValue)
+	    {
+		    if (node[field] == null)
+		    {
+#if DEBUG
+			    //Extra magic in debug builds, but can provide errors in release
+			    //builds due to inlining
+			    System.Reflection.MethodBase mth
+				    = new StackTrace().GetFrame(2).GetMethod();
+			    String errorMsg = String.Format
+				    (
+					    "Tried to read missing field \"{0}\" of type \"{1}\" in {1}.{2}",
+					    field,
+					    typeof (T),
+					    mth.ReflectedType.Name,
+					    mth
+				    );
+#else //So if DEBUG flag is missing we don't reflect info
+                String errorMsg = String.Format("Tried to read missing field \"{0}\" of type \"{1}\"", field, typeof(T));
+#endif
+			    Log.Error(errorMsg);
+			    //Assign something
+			    
+			    return false;
+		    }
+
+		    fieldValue = node[field].InnerText;
+		    return true;
+	    }
+
+	    /// <summary>
         /// This method is syntaxtic sugar for atempting to read a data field
         /// from an XmlNode. This version preserves the output variable in case
         /// of a failed read 
