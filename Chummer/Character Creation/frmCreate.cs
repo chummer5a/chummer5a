@@ -388,6 +388,8 @@ namespace Chummer
 			{
 				cmdLifeModule.Visible = true;
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
+				chkAutoBackstory.Visible = true;
+				chkAutoBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
 			}
 
 			// Populate the Qualities list.
@@ -799,7 +801,7 @@ namespace Chummer
                     objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
                     objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
                     objSkillControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
-
+	                objSkillControl.MergeClicked += knoSkill_MergeClick;
                     objSkillControl.KnowledgeSkill = true;
                     objSkillControl.SkillCategory = objSkill.SkillCategory;
                     objSkillControl.AllowDelete = true;
@@ -5398,16 +5400,17 @@ namespace Chummer
             if (_objCharacter.MaxSkillRating > 0)
                 objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
-            SkillControl objSkillControl = new SkillControl();
+            SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
+			
 
             // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
             objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
             objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
             objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
             objSkillControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
-
-            objSkillControl.KnowledgeSkill = true;
+			objSkillControl.MergeClicked += knoSkill_MergeClick;
+			objSkillControl.KnowledgeSkill = true;
             objSkillControl.AllowDelete = true;
             objSkillControl.SkillRatingMaximum = 6;
             // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
@@ -7877,8 +7880,8 @@ namespace Chummer
                     }
                 }
 
-	            if (true)
-	            {
+				if (chkAutoBackstory.Checked)
+				{
 					if(_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
 		            txtBackground.Text = _objStoryBuilder.GetStory();
 	            }
@@ -8455,7 +8458,7 @@ namespace Chummer
             RefreshMartialArts();
             RefreshPowers();
             RefreshContacts();
-
+			RefreshKnowledgeSkills();
             _blnIsDirty = true;
             UpdateWindowTitle();
         }
@@ -18133,6 +18136,7 @@ namespace Chummer
 					nControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
 					nControl.BreakGroupClicked += objSkill_BreakGroupClicked;
 					nControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
+					nControl.MergeClicked += knoSkill_MergeClick;
 
 					nControl.AllowDelete = skill.AllowDelete;
 					nControl.SkillRatingMaximum = skill.RatingMaximum;
@@ -18170,7 +18174,7 @@ namespace Chummer
 					control.DeleteSkill -= objKnowledgeSkill_DeleteSkill;
 					control.BreakGroupClicked -= objSkill_BreakGroupClicked;
 					control.BuyWithKarmaChanged -= objKnowledgeSkill_BuyWithKarmaChanged;
-
+					control.MergeClicked -= knoSkill_MergeClick;
 					panKnowledgeSkills.Controls.Remove(control);
 				}
             }
@@ -18178,12 +18182,20 @@ namespace Chummer
 			for (int i = 0; i < panKnowledgeSkills.Controls.Count; i++)
 			{
 				panKnowledgeSkills.Controls[i].Top = i*panKnowledgeSkills.Controls[0].Height;
-			}
+            }
 			
 
 		}
 
-        /// <summary>
+	    private void knoSkill_MergeClick(object sender, EventArgs eventArgs)
+	    {
+			
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+			RefreshKnowledgeSkills();
+	    }
+
+	    /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
         private void UpdateWindowTitle(bool blnCanSkip = true)
@@ -25353,5 +25365,20 @@ namespace Chummer
         {
 
         }
-    }
+
+		private void txtBackground_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			chkAutoBackstory.Checked = false;
+		}
+
+		private void chkAutoBackstory_CheckedChanged(object sender, EventArgs e)
+		{
+			_objCharacter.Options.AutomaticBackstory = chkAutoBackstory.Checked;
+			if (chkAutoBackstory.Checked)
+			{
+				if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
+				txtBackground.Text = _objStoryBuilder.GetStory();
+			}
+		}
+	}
 }
