@@ -35,15 +35,16 @@ namespace Chummer
 		public event DiceRollerHandler DiceRollerClicked;
 		public event BreakGroupHandler BreakGroupClicked;
         public event BuyWithKarmaChangedHandler BuyWithKarmaChanged;
-
+		public event EventHandler MergeClicked;
 		private string _strOldSpec = "";
 		private bool _blnSkipRefresh = false;
         private int _intWorkingRating = 0;
         private int _intBaseRating = 0;
         private int _intKarmaRating = 0;
-        private readonly Character _objCharacter;
+        private Character _objCharacter;
 		private bool _lockKnowledge;
-
+		private bool _mergeable;
+		private bool _type = false;
 		#region Control Events
 		public SkillControl()
         {
@@ -61,6 +62,10 @@ namespace Chummer
         }
         private void SkillControl_Load(object sender, EventArgs e)
         {
+			//Find character ourselves instead...
+	        if (_objCharacter == null && _objSkill != null)
+		        _objCharacter = _objSkill.CharacterObject;
+
             if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma || _objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
 				if (_objSkill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma)
@@ -77,7 +82,7 @@ namespace Chummer
 
                 if (_objSkill.KnowledgeSkill)
                 {
-                    if ((!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) && _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule) 
+                    if ((!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) && _objSkill.CharacterObject.BuildMethod != CharacterBuildMethod.LifeModule) 
                     {
                         nudKarma.Minimum = 1;
                     }
@@ -94,6 +99,14 @@ namespace Chummer
                     nudSkill.Visible = true;
                     nudSkill.Enabled = true;
                 }
+
+				type = true;
+				if (_objSkill.Fold.Count != 0)
+				{
+					cmdExpand.Visible = true;
+					type = false;
+				}
+				
 			}
 
 			if (_objSkill.CharacterObject.Created)
@@ -201,12 +214,14 @@ namespace Chummer
                 string strTip = LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization").Replace("{0}", _objSkill.CharacterObject.Options.KarmaSpecialization.ToString());
 				tipTooltip.SetToolTip(cmdChangeSpec, strTip);
 			}
-			if (KnowledgeSkill)
-				this.Width = cmdDelete.Left + cmdDelete.Width;
-			else
-				this.Width = cmdChangeSpec.Left + cmdChangeSpec.Width;
+	        if (KnowledgeSkill)
+	        {
+		        this.Width = cmdExpand.Left + cmdExpand.Width;
+	        }
+	        else
+		        this.Width = cmdChangeSpec.Left + cmdChangeSpec.Width;
 
-            if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
+	        if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
             {
                 if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
                     nudSkill.Enabled = false;
@@ -217,6 +232,10 @@ namespace Chummer
 
             chkKarma.Checked = _objSkill.BuyWithKarma;
 			lblAttribute.Text = _objSkill.DisplayAttribute;
+
+	        
+
+
 
 			RefreshControl();
 			_blnSkipRefresh = false;
@@ -305,6 +324,8 @@ namespace Chummer
 
 		private void cboSkillName_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_lockKnowledge) return;
+
 			_objSkill.Name = cboSkillName.Text;
 
 			XmlDocument objXmlDocument = new XmlDocument();
@@ -329,10 +350,70 @@ namespace Chummer
 			}
 		}
 
+		
 		private void cboSkillName_TextChanged(object sender, EventArgs e)
 		{
 			_objSkill.Name = cboSkillName.Text;
+			
+			RefreshControl();
+			
 		}
+
+		private void cmdExpand_Click(object sender, EventArgs e)
+		{
+			if (type)
+			{
+				//Fuck big O
+				while (SkillRating < SkillRatingMaximum)
+				{
+					int diff = SkillRatingMaximum - SkillRating;
+					Skill option = null;
+					foreach (Skill x in objCharacter.Skills)
+					{
+						//This instead of shot circuiting if for ease of debugging
+						if(!x.KnowledgeSkill) continue;
+						
+						if(x.Rating > diff) continue;
+						
+						if(x == SkillObject) continue;
+
+						if (x.Name != SkillObject.Name) continue;
+
+						option = x;
+						break;
+					}
+					
+					if (option != null)
+					{
+						SkillObject.Absorb(option);
+					}
+					else
+					{
+
+						break;
+					}
+				}
+			}
+			else
+			{
+				for (int i = SkillObject.Fold.Count - 1; i >= 0; i--)
+				{
+					SkillObject.Free(SkillObject.Fold[i]);
+				}
+			}
+
+			SkillBase = _objSkill.Base;
+			SkillKarma = _objSkill.Karma;
+			SkillRating = _objSkill.Rating;
+
+			type = !type;
+			if (MergeClicked != null)
+			{
+				MergeClicked(this, new EventArgs());
+			}
+		}
+
+
 
 		private void cmdImproveSkill_Click(object sender, EventArgs e)
 		{
@@ -461,6 +542,29 @@ namespace Chummer
 		#endregion
 
 		#region Properties
+
+		private bool type
+		{
+			get
+			{
+				return _type;
+			}
+			set
+			{
+				_type = value;
+				if (value)
+				{
+					cmdExpand.Image = Properties.Resources.Collapse;
+					tipTooltip.SetToolTip(cmdExpand, LanguageManager.Instance.GetString("Tip_CombineItems"));
+				}
+				else
+				{
+					cmdExpand.Image = Properties.Resources.Expand;
+					tipTooltip.SetToolTip(cmdExpand, LanguageManager.Instance.GetString("Tip_SplitItems"));
+				}
+			}
+		}
+
 		/// <summary>
 		/// Skill object that this control is linked to.
 		/// </summary>
@@ -484,7 +588,8 @@ namespace Chummer
 			set
 			{
 				cboKnowledgeSkillCategory.Enabled = !value;
-				cboSkillName.Enabled = !value;
+				
+				cboSkillName.Enabled = (!value) || String.IsNullOrWhiteSpace(SkillName) || (SkillName.EndsWith("]") && SkillName.StartsWith("["));
 				_lockKnowledge = value;
 			}
 			get
@@ -708,16 +813,11 @@ namespace Chummer
 						cboKnowledgeSkillCategory.SelectedIndex = 0;
 
 					// Populate the list of Knowledge Skills.
-					objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
+					
 
 					cboSkillName.Items.Clear();
-					foreach (XmlNode objXmlSkill in objXmlSkillList)
-					{
-						if (objXmlSkill["translate"] != null)
-							cboSkillName.Items.Add(objXmlSkill["translate"].InnerText);
-						else
-							cboSkillName.Items.Add(objXmlSkill["name"].InnerText);
-					}
+					cboSkillName.Items.AddRange(_objSkill.KnowledgeSkillCatagories.ToArray());
+					
 					_blnSkipRefresh = false;
 
 					if (_objSkill.SkillCategory != "")
@@ -904,6 +1004,21 @@ namespace Chummer
 				return _strOldSpec;
 			}
 		}
+
+
+		public bool Mergeable
+		{
+			get
+			{
+				return _mergeable;
+			}
+			protected set
+			{
+				_mergeable = value;
+				//More magic later
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -1098,6 +1213,34 @@ namespace Chummer
 				else
 					cmdImproveSkill.Enabled = false;
 			}
+
+			if (KnowledgeSkill && _objCharacter != null && SkillRating < SkillRatingMaximum && !_objCharacter.Created)
+			{
+				List<Skill> joinList =
+					objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
+
+				type = _objSkill.Fold.Count == 0;
+
+				if (type)
+				{
+
+					if (joinList.Count > 0)
+					{
+						cmdExpand.Visible = true;
+					}
+					else
+					{
+						cmdExpand.Visible = false;
+					}
+				}
+				else
+				{
+
+					cmdExpand.Visible = true;
+				}
+
+				//If 2 knowledgeskills have same name, offer to join them
+			}
 		}
 
         /// <summary>
@@ -1117,6 +1260,11 @@ namespace Chummer
         }
         #endregion
 
-        public Character objCharacter { get; set; }
-    }
+        public Character objCharacter
+		{
+	        get { return _objCharacter; }
+		}
+
+		
+	}
 }
