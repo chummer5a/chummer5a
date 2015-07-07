@@ -861,7 +861,9 @@ namespace Chummer
         private int _intMetatypeCostMultiplier = 1;
         private int _intNuyenPerBP = 2000;
         private int _intRestrictedCostMultiplier = 1;
-        private readonly XmlDocument _objBookDoc = new XmlDocument();
+		private bool _automaticBackstory = true;
+
+		private readonly XmlDocument _objBookDoc = new XmlDocument();
         private string _strBookXPath = "";
         private string _strExcludeLimbSlot = "";
 
@@ -1134,6 +1136,7 @@ namespace Chummer
 			objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
 			// <technomancerallowautosoft />
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
+			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
 
 			// <bpcost>
 			objWriter.WriteStartElement("bpcost");
@@ -1836,6 +1839,12 @@ namespace Chummer
 			{
 			}
 
+			try
+			{
+				_automaticBackstory = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/autobackstory").InnerText);
+			}
+			catch { }
+
 			// Attempt to populate the BP vlaues.
 			try
 			{
@@ -1925,6 +1934,7 @@ namespace Chummer
 			catch
 			{
 			}
+
 
 			// Load Books.
 			_lstBooks.Clear();
@@ -4397,7 +4407,15 @@ namespace Chummer
 				_intAvailability = value;
 			}
 		}
+
+
+		public bool AutomaticBackstory
+		{
+			get { return _automaticBackstory; }
+			internal set { _automaticBackstory = value; }
+		}
+
 		#endregion
 
-    }
+	}
 }
