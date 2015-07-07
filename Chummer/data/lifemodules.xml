@@ -18,44 +18,93 @@
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
           <name>General UCAS</name>
           <bonus>
-            <attributelevel>
+            <attributelevel>  <!--Defaults to <val>1</val>-->
               <name>LOG</name>
-              <val>1</val>
             </attributelevel>
-            <attributelevel>
-              <name>INT</name>
-              <val>1</val>
-            </attributelevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <group>Street</group>
+              <val>2</val>
+              <name>[City]</name>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <spanish>Spanish</spanish>
+                <german>German</german>
+                <italian>Italian</italian>
+                <flee>French</flee>
+                <orange>Mandarin</orange>
+                <polish>Polish</polish>
+                <yiddish>Yiddish</yiddish>
+              </options>
+              <id>a9df9852-6f4d-423d-8251-c92a709c1476</id>
+              <group>Language</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <pushtext>United Canadian American States</pushtext>
+            <freenegativequalities>-5</freenegativequalities>
           </bonus>
-          <story>$STREET was born on in the United Canadian American States around the old Canadian border. His parents were middle class, employed by $MEGA, where they produced automobile parts.</story>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
         </version>
         <version>
-          <id>955c76a2-d507-458c-b74a-22dff60fb1eb</id>
-          <name>Canada[NOSTAT]</name>
-          <story>$STREET was born in the land called canada in the old days in the year $YEAR. Of course, back then he wasn't called $STREET, by his parrents he was called $REAL while his friends called him Goose from the way he walked</story>
-        </version>
-        <version>
-          <id>dd23e87a-b9fc-4ae5-88cc-0cf032e0a828</id>
-          <name>SINless</name>
-          <story>Paul, a  $METATYPE  on the street,  $DOLLAR $YEAR_20   $METAVARIANT</story>
+          <id>5cf12de1-b41b-4a0f-9a2a-03bf08faa3d0</id>
+          <name>Canada</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Navigation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
         </version>
       </versions>
       <bonus>
-        <!--<specificskill>
-          <name>Computer</name>
-          <bonus>1</bonus>
-          <applytorating>yes</applytorating>
-        </specificskill>-->
         <skilllevel>
           <name>Computer</name>
-          <val>1</val>
         </skilllevel>
         <knowledgeskilllevel>
           <name>History</name>
           <group>Academic</group>
-          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>UCAS</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>English</name>
+          <group>Language</group>
+          <val>0</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <spanish>Spanish</spanish>
+            <german>German</german>
+            <italian>Italian</italian>
+            <flee>French</flee>
+            <orange>Mandarin</orange>
+            <polish>Polish</polish>
+            <yiddish>Yiddish</yiddish>
+          </options>
+          <id>a9df9852-6f4d-423d-8251-c92a709c1476</id>
+          <group>Language</group>
         </knowledgeskilllevel>
       </bonus>
+      <story>Allan, please add story UCAS</story>
       <source>RF</source>
       <page>66</page>
     </module>
@@ -88,12 +137,24 @@
           <name>Electronics</name>
           <val>2</val>
         </skillgrouplevel>
-        <freenegativequalities>-25</freenegativequalities>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Academic</group>
+          <val>3</val>
+          <name>[Corperation]</name>
+        </knowledgeskilllevel>
+        <freenegativequalities>-15</freenegativequalities>
       </bonus>
       <addqualities>
-        <addquality>SINner (Corporate)</addquality>
+        <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
-      <story>He spendt his early years in an Arcology owned by $MEGA. His parrents where buissy workers and little $REAL spendt most of his time entertaining himself with a comlink or playing with the other kids</story>
+      <story>He spendt his early years in an Arcology owned by  $MEGA . His parrents where buissy workers and little  $REAL  spendt most of his time entertaining himself with a comlink or playing with the other kids</story>
       <source>RF</source>
       <page>67</page>
     </module>
