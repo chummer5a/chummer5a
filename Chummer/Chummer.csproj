@@ -1468,7 +1468,6 @@
     </Content>
     <Content Include="data\gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\improvements.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1542,7 +1541,6 @@
     </Content>
     <Content Include="data\weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Expand.png" />
     <Content Include="export\Squad Manager.xsl">
@@ -1579,7 +1577,6 @@
     </Content>
     <None Include="Resources\Collapse.png" />
     <None Include="Resources\Expand.png" />
-    <Content Include="possiblebugs.txt" />
     <Content Include="sheets\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

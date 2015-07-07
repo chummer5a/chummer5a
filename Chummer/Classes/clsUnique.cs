@@ -2258,6 +2258,7 @@ namespace Chummer
 			_blnIsGrouped = Convert.ToBoolean(objNode["grouped"].InnerText);
             _blnDefault = Convert.ToBoolean(objNode["default"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
+			bool basefail = false;
             try
             {
                 _intBase = Convert.ToInt32(objNode["base"].InnerText);
@@ -2265,6 +2266,7 @@ namespace Chummer
             catch
             {
                 _intBase = _intRating;
+	            basefail = true;
             }
             try
             {
@@ -2274,6 +2276,15 @@ namespace Chummer
             {
                 _intKarma = 0;
             }
+
+			if (!basefail)
+			{
+				if (_intRating != _intKarma + _intBase)
+				{
+					_intBase = _intRating - _intKarma;
+				}
+			}
+
             _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
             _intRatingMaximum = Convert.ToInt32(objNode["ratingmax"].InnerText);
 			_blnKnowledgeSkill = Convert.ToBoolean(objNode["knowledge"].InnerText);

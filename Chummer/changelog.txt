@@ -2,19 +2,31 @@ Build $NEXT
 Application Change
  - Internal changes to how some values are stored
  - Added support for building characters with Life Modules
+ - Now possible to fold multiple knowledge skills with the same name into one.
 
 Data Change:
  - Some of life module suporting changes are done
  - Added the following strings TODO: INSERT STRINGS ADDED HERE
+
+Build 169:
+Application Change:
+- Fixed an issue with skill and karma values defaulting to 0 in character creation. 
+- Fiddled with Auto-update a bit, might work better. Please test and advise.
+
+Data Change:
+- New book: Chrome Flesh.
+- Content for Chrome Flesh added. Data provided courtesy of Fweeba.
 
 Build 168:
 Application Change:
 - Did some stuff to make spell descriptors show up in character sheets.
 - Karma carry-over for build methods other than Point Buy fixed to 7. You may need to reset your options to defaults for this to take effect. Tools > Options > Karma Costs.
 - Fixed an issue with skills changing their values incorrectly.
+- Fixed an issue with discounts for knowledge skills not working properly.
 
 Data Change:
 - Fixed a fault with the calculation of Net ranges that caused a crash.
+- Data Trails content added. Some additional functionality for commlink dongles and such is still required, so they haven't been included yet. Much thanks to Iridios for his work with this.
 
 Build 167:
 New collaborator on the project acquired! joha4270 has been assisting with a variety of issues, and is currently tackling the implementation of Life Modules, along with several other tricky problems. Huzzah!

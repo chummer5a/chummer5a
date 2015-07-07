@@ -307,9 +307,9 @@
 										<xsl:for-each select="calendar/week">
 											<tr>
 												<td>
-													<xsl:value-of select="date"/>
+													<xsl:value-of select="year"/>: Month <xsl:value-of select="month"/>, Week <xsl:value-of select="week"/>
 												</td>
-												<td style="text-align:right;">
+												<td style="text-align:left;">
 
 													<xsl:value-of select="notes"/>
 												</td>
@@ -1834,6 +1834,7 @@
 												</tr>
 												<xsl:for-each
 												select="expenses/expense[type = 'Karma']">
+												<xsl:sort select="date"/>
 												<tr>
 												<td>
 												<xsl:value-of select="date"/>
@@ -1874,6 +1875,7 @@
 												</tr>
 												<xsl:for-each
 												select="expenses/expense[type = 'Nuyen']">
+												<xsl:sort select="date"/>
 												<tr>
 												<td>
 												<xsl:value-of select="date"/>

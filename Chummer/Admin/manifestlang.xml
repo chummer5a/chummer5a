@@ -3,10 +3,10 @@
   <file>
     <name>lang/en-us.xml</name>
     <type>Language File</type>
-    <version>-487</version>
+    <version>-380</version>
     <description>English (US) language file</description>
     <notes>- English (US) language file</notes>
-    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMaTNXM0V3bVozWlk</url>
+    <url>https://www.dropbox.com/s/t7vlmrpkxa3xr15/en-us.xml?dl=1</url>
   </file>
   <file>
     <name>lang/fr.xml</name>
@@ -14,7 +14,7 @@
     <version>-494</version>
     <description>French language file</description>
     <notes>- French language file</notes>
-    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMZWdvbjloX3RrNjA</url>
+    <url>https://www.dropbox.com/s/xpvamhnxopec3pd/fr.xml?dl=1</url>
   </file>
   <file>
     <name>lang/de.xml</name>
@@ -22,7 +22,7 @@
     <version>-496</version>
     <description>German language file</description>
     <notes>German language file</notes>
-    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMQS1zSV85X1NJc2c</url>
+    <url>https://www.dropbox.com/s/et7jmg2oe5uhb6g/de.xml?dl=1</url>
   </file>
   <file>
     <name>lang/jp.xml</name>
@@ -30,6 +30,6 @@
     <version>-497</version>
     <description>Japanese language file</description>
     <notes>Japanese language file</notes>
-    <url>https://docs.google.com/uc?export=download&amp;id=0B1j5wMS6KHqMYUpkcWtXV2h5Qms</url>
+    <url>https://www.dropbox.com/s/0swdj722t1gs6o9/jp.xml?dl=1</url>
   </file>
 </manifest>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-399</version>
+	<version>-380</version>
 	<name>English (US)</name>
 	<strings>
 		<!-- Common Strings -->
@@ -8,10 +8,30 @@
 			<key>String_Limit</key>
 			<text>Limit:</text>
 		</string>
-    <string>
-      <key>String_All</key>
-      <text>All</text>
-    </string>
+		<string>
+			<key>String_All</key>
+			<text>All</text>
+		</string>
+		<string>
+			<key>String_LifeModule</key>
+			<text>Life Module</text>
+		</string>
+		<string>
+			<key>String_Life_Module</key>
+			<text>Life Module</text>
+		</string>
+		<string>
+			<key>Label_Stage</key>
+			<text>Stage:</text>
+		</string>
+		<string>
+			<key>Tip_CombineItems</key>
+			<text>You have multiple skills with the same name. You can combine those to one</text>
+		</string>
+		<string>
+			<key>Tip_SplitItems</key>
+			<text>This item is made up of multiple combined skills. Press here to seperate them</text>
+		</string>
 		<string>
 			<key>String_PushTheLimit</key>
 			<text>Push the Limit</text>
@@ -148,10 +168,6 @@
 			<key>String_SumtoTen</key>
 			<text>Sum to Ten</text>
 		</string>
-    <string>
-      <key>String_LifeModule</key>
-      <text>Life Module</text>
-    </string>
 		<string>
 			<key>Label_SumtoTenHeritage</key>
 			<text>Metatype:</text>
@@ -305,10 +321,6 @@
 			<key>String_Delete</key>
 			<text>Delete</text>
 		</string>
-    <string>
-      <key>String_Life_Module</key>
-      <text>Life Module</text>
-    </string>
 		<string>
 			<key>String_AddMore</key>
 			<text>&amp;Add &amp;&amp; More</text>
@@ -381,10 +393,6 @@
 			<key>Label_Source</key>
 			<text>Source:</text>
 		</string>
-    <string>
-      <key>Label_Stage</key>
-      <text>Stage:</text>
-    </string>
 		<string>
 			<key>Label_Name</key>
 			<text>Name:</text>
@@ -3255,14 +3263,6 @@
 			<key>Node_SelectedNegativeQualities</key>
 			<text>Selected Negative Qualities</text>
 		</string>
-    <string>
-      <key>Tip_CombineItems</key>
-      <text>You have multiple skills with the same name. You can combine those to one</text>
-    </string>
-    <string>
-      <key>Tip_SplitItems</key>
-      <text>This item is made up of multiple combined skills. Press here to seperate them</text>
-    </string>
 		<string>
 			<key>Tip_CommonAttributes</key>
 			<text>Characters cannot spend more than 50% of their Karma on Primary Attributes (not including EDG, MAG, and RES).
@@ -4335,11 +4335,23 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_BuildPositiveQualities</key>
-			<text>Characters may select up to 35 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 35 Karma limit.</text>
+			<text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseLifeModule</key>
+			<text>Life modules available</text>
+		</string>
+		<string>
+			<key>String_SelectBP_LifeModuleSummary</key>
+			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
+		</string>
+		<string>
+			<key>Checkbox_SelectLifeModule_LimitList</key>
+			<text>Show only Life Modules I can take</text>
 		</string>
 		<string>
 			<key>Tip_BuildNegativeQualities</key>
-			<text>Characters may select up to -35 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -35 Karma limit.</text>
+			<text>Characters may select up to -25 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -25 Karma limit.</text>
 		</string>
 		<string>
 			<key>Tip_BuildFoci</key>
@@ -5707,10 +5719,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseLogging</key>
 			<text>Use Debug Logging</text>
 		</string>
-    <string>
-      <key>Checkbox_Options_UseLifeModule</key>
-      <text>Life modules available</text>
-    </string>
 		<string>
 			<key>Checkbox_Options_LocalisedUpdatesOnly</key>
 			<text>Only download updates in my selected language</text>
@@ -6426,10 +6434,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_SelectBP_PrioritySummary</key>
 			<text>Enter the maxiumum availability you are allowed to create your character with.</text>
 		</string>
-    <string>
-      <key>String_SelectBP_LifeModuleSummary</key>
-      <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
-    </string>
 		<string>
 			<key>Tip_SelectKarma_IgnoreRules</key>
 			<text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
@@ -6938,10 +6942,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_SelectQuality_LimitList</key>
 			<text>Show only Qualities I can take</text>
 		</string>
-    <string>
-      <key>Checkbox_SelectLifeModule_LimitList</key>
-      <text>Show only Life Modules I can take</text>
-    </string>
 		<string>
 			<key>Checkbox_SelectQuality_Metagenetic</key>
 			<text>Show only Metagenetic Qualities</text>
