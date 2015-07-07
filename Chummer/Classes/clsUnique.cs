@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -2160,6 +2161,7 @@ namespace Chummer
 	/// <summary>
 	/// Object that represents a single Skill.
 	/// </summary>
+	[DebuggerDisplay("{_strName}")]
 	public class Skill
 	{
 		private string _strSkillGroup = "";
@@ -2216,7 +2218,19 @@ namespace Chummer
             objWriter.WriteElementString("attribute", _strAttribute);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteStartElement("skillspecializations");
+
+			if (_fold.Count > 0)
+			{
+				objWriter.WriteStartElement("folded");
+				foreach (Skill skill in _fold)
+				{
+					skill.Save(objWriter);
+				}
+
+				objWriter.WriteEndElement();
+			}
+
+			objWriter.WriteStartElement("skillspecializations");
             foreach (SkillSpecialization objSpec in _lstSpecializations)
             {
                 objSpec.Save(objWriter);
@@ -2307,6 +2321,17 @@ namespace Chummer
 			}
 			catch
 			{
+			}
+
+			if (objNode["folded"] != null)
+			{
+				foreach (XmlNode foldNode in objNode["folded"].ChildNodes)
+				{
+					Skill s = new Skill(_objCharacter);
+					s.Load(foldNode);
+
+					_fold.Add(s);
+				}
 			}
 		}
 
@@ -3745,9 +3770,80 @@ namespace Chummer
 
 		public bool IdImprovement { get; set; }
 		public bool LockKnowledge { get; internal set; }
+		private List<Skill> _fold = new List<Skill>();
+		private ReadOnlyCollection<Skill> _foldRo;
+		public ReadOnlyCollection<Skill> Fold
+		{
+			get
+			{
+				if (_foldRo == null)
+				{
+					_foldRo = _fold.AsReadOnly();
+				}
+				return _foldRo;
+			}
+		}
+
+		private List<String> _knowledgeSkillCatagories;
+
+		public List<String> KnowledgeSkillCatagories
+		{
+			get { return _knowledgeSkillCatagories == null ? DefaultKnowledgeSkillCatagories : _knowledgeSkillCatagories; }
+			set { _knowledgeSkillCatagories = value; }
+		}
+
+		public static List<String> DefaultKnowledgeSkillCatagories
+		{
+			get
+			{
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+				XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
+				List<String> Items = new List<String>();
+				foreach (XmlNode objXmlSkill in objXmlSkillList)
+				{
+					if (objXmlSkill["translate"] != null)
+						Items.Add(objXmlSkill["translate"].InnerText);
+					else
+						Items.Add(objXmlSkill["name"].InnerText);
+				}
+				//TODO: Cache
+				return Items;
+			}
+		}
 		#endregion
 
 		#region Methods
+
+		public bool Absorb(Skill skill)
+		{
+			if (CharacterObject.Skills.Remove(skill))
+			{
+				_fold.Add(skill);
+				Karma += skill.Karma;	  //This is not a question about if, but when this will cause bugs
+				Base += skill.Base;		 //but i hope nothing will show until after rewrite of clsImprovement
+				Rating += skill.Rating; //then skill will need rewrite anyway to use features
+			}						   //Removing life modules will probably give bugs here
+									  //Easier fix, expand all when removing? Might not happen all that often?
+									 //Save state and recollect later? Dirty as fuck, but might just be the duct
+									//tape this codebase deserves? Not the duct tape it needs... Yeah, batman reference
+								   //But this have more shit that Gotham, as long as we don't count The Joker. The Joker is awesome.
+
+									 //sudden toughts, don't even need to expand all, if remove does a check if it exists in objCharacter.Skills or a sub
+
+			return false;
+		}
+
+		public void Free(Skill skill)
+		{
+			if (_fold.Remove(skill))
+			{
+				CharacterObject.Skills.Add(skill);
+				Karma -= skill.Karma;
+				Base -= skill.Base;
+				Rating -= skill.Rating;
+			}
+		}
+
 		/// <summary>
 		/// Calculate the amount of BP/Karma spent on the Skill.
 		/// </summary>

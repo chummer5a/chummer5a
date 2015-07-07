@@ -7699,6 +7699,21 @@ namespace Chummer
         /// <note>Dashboard</note>
         /// </summary>
         public int InitialInit { get; set; }
-        #endregion
-    }
+
+		//Can't be at improvementmanager due reasons
+	    private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
+
+		/// <summary>
+		/// Push a value that will be used instad of dialog instead in next <selecttext />
+		/// </summary>
+	    public Stack<String> Pushtext
+	    {
+		    get
+		    {
+				return _pushtext.Value;
+		    }
+	    }
+
+	    #endregion
+	}
 }

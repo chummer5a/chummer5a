@@ -127,7 +127,7 @@ namespace Chummer
 			SelectArmor,
 			Attributelevel,
 			SkillLevel,
-			SkillGroupLevel
+			SkillGroupLevel,
 		}
 
 		public enum ImprovementSource
@@ -903,7 +903,13 @@ namespace Chummer
 					{
 						objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selecttext");
 						if (_strForcedValue != "")
+						{
 							_strLimitSelection = _strForcedValue;
+						}
+						else if (_objCharacter.Pushtext.Count > 0)
+						{
+							_strLimitSelection = _objCharacter.Pushtext.Pop();
+						}
 
 						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 							"_strForcedValue = " + _strSelectedValue);
@@ -962,7 +968,11 @@ namespace Chummer
 				{
 					blnSuccess = ProcessBonus(objImprovementSource, ref strSourceName, blnConcatSelectedValue, intRating,
 						strFriendlyName, bonusNode, strUnique);
-					if (blnSuccess == false) return false;
+					if (blnSuccess == false)
+					{
+						Rollback();
+						return false;
+					}
 				}
 
 
@@ -982,12 +992,12 @@ namespace Chummer
 					"ERROR Trace   = " + ex.StackTrace.ToString());
 				if (Debugger.IsAttached)
 				{
-					Debugger.Break();
+					throw;
 				}
 				else
 				{
 					MessageBox.Show(
-						"If you're seeing this, an error just occurred that couldn't be handled. If you have the debug log turned on, please email chummerlog.txt (zipped please) to srchummer5@gmail.com. If you don't have the debug log turned on, please turn it on in the Options dialog and try to repeat what you did so the error can be captured. Thank you.");
+						"If you're seeing this, an error just occurred that couldn't be handled. If you have the debug log turned on, please post chummerlog.txt to www.github.com/chummer5a/chummer5a/issues. If you don't have the debug log turned on, please turn it on in the Options dialog and try to repeat what you did so the error can be captured. Thank you.");
 				}
 				Rollback();
 				blnSuccess = false;
@@ -1768,32 +1778,80 @@ namespace Chummer
 				}
 			}
 
+			if (bonusNode.LocalName == "pushtext")
+			{
+
+				String push = bonusNode.InnerText;
+				if (!String.IsNullOrWhiteSpace(push))
+				{
+					_objCharacter.Pushtext.Push(push);
+				}
+			}
+
 			if (bonusNode.LocalName == "knowledgeskilllevel")
 			{
 				Log.Info(new object[] { "knowledgeskilllevel", bonusNode.OuterXml});
 				int value;
 				String group;
-				if (bonusNode.TryGetField("group", out group) &&
-				    bonusNode.TryGetField("val", out value))
+				if (bonusNode.TryGetField("group", out group))
 				{
-					Skill objNSkill = new Skill(_objCharacter);
-
-					objNSkill.Id = Guid.NewGuid();
-					objNSkill.IdImprovement = true;
-					objNSkill.AllowDelete = false;
-					objNSkill.KnowledgeSkill = true;
-					objNSkill.LockKnowledge = true;
-					objNSkill.SkillCategory = group;
-					String name;
-					if (bonusNode.TryGetField("name", out name))
+					if (!bonusNode.TryGetField("val", out value))
 					{
-						objNSkill.Name = name;
+						value = 1;
+					}
+
+					
+
+					Guid id;
+
+					bool blnFound = false;
+
+					if (bonusNode.TryGetField("id", Guid.TryParse, out id, Guid.NewGuid()))
+					{
+						foreach (Improvement improvement in _objCharacter.Improvements)
+						{
+							if (improvement.ImprovedName == id.ToString())
+							{
+								blnFound = true;
+							}
+						}
 					}
 					
-					CreateImprovement(objNSkill.Id.ToString(), objImprovementSource, strSourceName,
+					if (!blnFound)
+					{
+						Skill objNSkill = new Skill(_objCharacter);
+						objNSkill.Id = id;
+						objNSkill.IdImprovement = true;
+						objNSkill.AllowDelete = false;
+						objNSkill.KnowledgeSkill = true;
+						objNSkill.LockKnowledge = true;
+						objNSkill.SkillCategory = group;
+						int max;
+						bonusNode.TryGetField("max", out max, 9);
+						objNSkill.RatingMaximum = max;
+
+						String name;
+						if (bonusNode.TryGetField("name", out name))
+						{
+							objNSkill.Name = name;
+						}
+						if (bonusNode["options"] != null)
+						{
+							List<String> Options = new List<String>();
+							foreach (XmlNode node in bonusNode["options"].ChildNodes)
+							{
+								Options.Add(node.InnerText);
+							}
+							objNSkill.KnowledgeSkillCatagories = Options;
+						}
+
+						_objCharacter.Skills.Add(objNSkill);
+					}
+
+					CreateImprovement(id.ToString(), objImprovementSource, strSourceName,
 						Improvement.ImprovementType.SkillLevel, "", value);
 
-					_objCharacter.Skills.Add(objNSkill);
+					
 				}
 			}
 			
@@ -3197,34 +3255,42 @@ return false;
 						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 							"selecttext = " + bonusNode["selecttext"].OuterXml.ToString());
 						frmSelectText frmPickText = new frmSelectText();
-						frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-							.Replace("{0}", strFriendlyName);
 
-						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
-							"_strForcedValue = " + _strForcedValue);
-						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
-							"_strLimitSelection = " + _strLimitSelection);
 
-						if (_strLimitSelection != "")
+						if (_objCharacter.Pushtext.Count > 0)
 						{
-							frmPickText.SelectedValue = _strLimitSelection;
-							frmPickText.Opacity = 0;
+							strSelection = _objCharacter.Pushtext.Pop();
 						}
-
-						frmPickText.ShowDialog();
-
-						// Make sure the dialogue window was not canceled.
-						if (frmPickText.DialogResult == DialogResult.Cancel)
+						else
 						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
+							frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+								.Replace("{0}", strFriendlyName);
+
+							objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+								"_strForcedValue = " + _strForcedValue);
+							objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+								"_strLimitSelection = " + _strLimitSelection);
+
+							if (_strLimitSelection != "")
+							{
+								frmPickText.SelectedValue = _strLimitSelection;
+								frmPickText.Opacity = 0;
+							}
+
+							frmPickText.ShowDialog();
+
+							// Make sure the dialogue window was not canceled.
+							if (frmPickText.DialogResult == DialogResult.Cancel)
+							{
+								Rollback();
+								_strForcedValue = "";
+								_strLimitSelection = "";
+								return false;
+							}
+
+							strSelection = frmPickText.SelectedValue;
+							_strLimitSelection = strSelection;
 						}
-
-						strSelection = frmPickText.SelectedValue;
-						_strLimitSelection = strSelection;
-
 						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 							"_strLimitSelection = " + _strLimitSelection);
 						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
@@ -4388,6 +4454,32 @@ return false;
 			{
 				// Remove the Improvement.
 				_objCharacter.Improvements.Remove(objImprovement);
+
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
+				{
+					for (int i = _objCharacter.Skills.Count - 1; i >= 0; i--)
+					{
+						//wrote as foreach first, modify collection, not want rename
+						Skill skill = _objCharacter.Skills[i];
+						for (int j = skill.Fold.Count - 1; j >= 0; j--)
+						{
+							Skill fold = skill.Fold[i];
+							if (fold.Id.ToString() == objImprovement.ImprovedName)
+							{
+								skill.Free(fold);
+								_objCharacter.Skills.Remove(fold);
+							}
+						}
+
+						if (skill.Id.ToString() == objImprovement.ImprovedName)
+						{
+							while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+							//empty list, can't call clear as exposed list is RO
+
+							_objCharacter.Skills.Remove(skill);
+						}
+					}
+				}
 
 				// Remove "free" adept powers if any.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
