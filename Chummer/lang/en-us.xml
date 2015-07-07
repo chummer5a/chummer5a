@@ -3255,6 +3255,14 @@
 			<key>Node_SelectedNegativeQualities</key>
 			<text>Selected Negative Qualities</text>
 		</string>
+    <string>
+      <key>Tip_CombineItems</key>
+      <text>You have multiple skills with the same name. You can combine those to one</text>
+    </string>
+    <string>
+      <key>Tip_SplitItems</key>
+      <text>This item is made up of multiple combined skills. Press here to seperate them</text>
+    </string>
 		<string>
 			<key>Tip_CommonAttributes</key>
 			<text>Characters cannot spend more than 50% of their Karma on Primary Attributes (not including EDG, MAG, and RES).
