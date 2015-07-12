@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-400</version>
+  <version>-399</version>
   <mentors>
     <mentor>
       <id>136a3dc5-d9c4-45ad-bc24-705f54692590</id>
@@ -137,7 +137,7 @@
           <name>Magician: +2 dice for Combat spells</name>
           <bonus>
             <spellcategory>
-              <name>Detection</name>
+              <name>Combat</name>
               <val>2</val>
             </spellcategory>
           </bonus>

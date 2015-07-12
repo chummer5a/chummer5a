@@ -3,7 +3,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.169</version>
+		<version>0.0.5.170</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -211,7 +211,7 @@
 	<file>
 		<name>data/books.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-389</version>
 		<description>Books</description>
 		<notes>- Books data file</notes>
 		<url>https://www.dropbox.com/s/qetzzti2r40btx7/books.xml?dl=1</url>
@@ -251,7 +251,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>-384</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>

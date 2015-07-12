@@ -183,6 +183,12 @@
     <Compile Include="frmGMDashboard.Designer.cs">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSelectOptionalPower.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectOptionalPower.Designer.cs">
+      <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSelectLifestyleAdvanced.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -730,6 +736,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmGMDashboard.resx">
       <DependentUpon>frmGMDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectOptionalPower.resx">
+      <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLifestyleAdvanced.resx">
       <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
@@ -1416,7 +1425,9 @@
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Admin\manifestdata.xml" />
+    <Content Include="Admin\manifestdata.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Admin\manifestlang.xml" />
     <Content Include="Collapse.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1446,6 +1457,7 @@
     </Content>
     <Content Include="data\cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\echoes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1467,6 +1479,7 @@
     </Content>
     <Content Include="data\mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metamagic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1537,9 +1550,6 @@
     <Content Include="lang\en-us.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="lang\en-us2.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="lang\fr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

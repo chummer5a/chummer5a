@@ -936,7 +936,7 @@
       <adeptway>.5</adeptway>
       <levels>no</levels>
       <limit>1</limit>
-      <source>SFP1</source>
+      <source>SG</source>
       <page>1</page>
     </power>
     <power>
@@ -946,7 +946,7 @@
       <adeptway>.25</adeptway>
       <levels>no</levels>
       <limit>1</limit>
-      <source>SFP1</source>
+      <source>SG</source>
       <page>1</page>
     </power>
    <power>

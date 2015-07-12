@@ -223,8 +223,17 @@ namespace Chummer
                 XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 
                 XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
+				XmlNode objXmlMetatypeBP = objXmlDocumentSumtoTen.SelectSingleNode("/chummer/sum10priorities/SumtoTen[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
 
-                if (objXmlMetatype["forcecreature"] == null)
+				if (objXmlMetatypeBP["karma"] != null)
+				{
+					lblMetavariantBP.Text = objXmlMetatypeBP["karma"].InnerText;
+				}
+				else
+				{
+					lblMetavariantBP.Text = "0";
+				}
+				if (objXmlMetatype["forcecreature"] == null)
                 {
                     lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);
                     lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["agimin"].InnerText, objXmlMetatype["agimax"].InnerText, objXmlMetatype["agiaug"].InnerText);
@@ -745,7 +754,6 @@ namespace Chummer
                     lblWIL.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["wilmin"].InnerText, objXmlMetatype["wilmax"].InnerText, objXmlMetatype["wilaug"].InnerText);
                     lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
                     lblMetavariantQualities.Text = "None";
-                    lblMetavariantBP.Text = "0";
                 }
             }
         }
@@ -903,8 +911,10 @@ namespace Chummer
                 if (nudForce.Visible)
                     intForce = Convert.ToInt32(nudForce.Value);
 
-                // Set Metatype information.
-                if (cboMetavariant.SelectedValue.ToString() != "None")
+				_objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantBP.Text);
+
+				// Set Metatype information.
+				if (cboMetavariant.SelectedValue.ToString() != "None")
                 {
                     _objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetavariant["bodmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["bodmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["bodaug"].InnerText, intForce, 0));
                     _objCharacter.AGI.AssignLimits(ExpressionToString(objXmlMetavariant["agimin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["agimax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["agiaug"].InnerText, intForce, 0));
@@ -919,7 +929,6 @@ namespace Chummer
                     _objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetavariant["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resaug"].InnerText, intForce, 0));
                     _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetavariant["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgaug"].InnerText, intForce, 0));
                     _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetavariant["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essaug"].InnerText, intForce, 0));
-                    _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantBP.Text);
                 }
                 else if (_strXmlFile != "critters.xml" || lstMetatypes.SelectedValue.ToString() == "Ally Spirit")
                 {

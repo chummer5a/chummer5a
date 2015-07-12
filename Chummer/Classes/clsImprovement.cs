@@ -2739,20 +2739,20 @@ namespace Chummer
                                 return false;
                             }
 
-                            string strSelected = frmPickCategory.SelectedItem;
+							_strSelectedValue = frmPickCategory.SelectedItem;
 
-                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "strSelected = " + strSelected);
+                            objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "strSelected = " + _strSelectedValue);
 
-                            foreach (Power objPower in _objCharacter.Powers)
+							foreach (Power objPower in _objCharacter.Powers)
                             {
                                 if (objPower.InternalId == strSourceName)
                                 {
-                                    objPower.Name = objPower.Name + " (" + strSelected + ")";
+	                                objPower.Extra = _strSelectedValue;
                                 }
                             }
 
                             objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
-                            CreateImprovement(strSelected, objImprovementSource, strSourceName, Improvement.ImprovementType.WeaponCategoryDV, strUnique, ValueToInt(nodWeapon["bonus"].InnerXml, intRating));
+                            CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.WeaponCategoryDV, strUnique, ValueToInt(nodWeapon["bonus"].InnerXml, intRating));
                         }
                         else
                         {
@@ -4311,7 +4311,64 @@ namespace Chummer
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
                         CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
                     }
-                }
+					// Select an Optional Power.
+	                if (nodBonus.SelectNodes("optionalpowers/optionalpower").Count > 0)
+	                {
+		                XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+						//objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager","selectoptionalpower");
+						// Display the Select Attribute window and record which Skill was selected.
+						frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
+						//frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
+
+						List<string> strValue = new List<string>();
+						foreach (XmlNode objXmlOptionalPower in nodBonus["optionalpowers"].SelectNodes("optionalpower"))
+		                {
+			                strValue.Add(objXmlOptionalPower.InnerText);
+		                }
+						frmPickPower.LimitToList(strValue);
+
+		                
+						// Check to see if there is only one possible selection because of _strLimitSelection.
+						if (_strForcedValue != "")
+							_strLimitSelection = _strForcedValue;
+
+						//objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strForcedValue = " + _strForcedValue);
+						//objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager", "_strLimitSelection = " + _strLimitSelection);
+
+						if (_strLimitSelection != "")
+						{
+							frmPickPower.SinglePower(_strLimitSelection);
+							frmPickPower.Opacity = 0;
+						}
+
+						frmPickPower.ShowDialog();
+
+						// Make sure the dialogue window was not canceled.
+						if (frmPickPower.DialogResult == DialogResult.Cancel)
+						{
+							Rollback();
+							blnSuccess = false;
+							_strForcedValue = "";
+							_strLimitSelection = "";
+							return false;
+						}
+
+						_strSelectedValue = frmPickPower.SelectedPower;
+						// Record the improvement.
+						XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
+						TreeNode objPowerNode = new TreeNode();
+						CritterPower objPower = new CritterPower(_objCharacter);
+						string strForcedValue = "";
+
+						if (objXmlCritterPower.Attributes["rating"] != null)
+							intRating = Convert.ToInt32(objXmlCritterPower.Attributes["rating"].InnerText);
+						if (objXmlCritterPower.Attributes["select"] != null)
+							strForcedValue = objXmlCritterPower.Attributes["select"].InnerText;
+
+						objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
+						_objCharacter.CritterPowers.Add(objPower);
+					}
+				}
 
                 // If we've made it this far, everything went OK, so commit the Improvements.
                 objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling Commit");

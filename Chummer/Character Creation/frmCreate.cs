@@ -5792,12 +5792,11 @@ namespace Chummer
             // Attach an EventHandler for the PowerRatingChanged Event.
             objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
             objPowerControl.DeletePower += objPower_DeletePower;
-
             objPowerControl.PowerName = frmPickPower.SelectedPower;
             objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
             objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
-
+	        
             if (frmPickPower.MaxLevels() > 0)
                 foreach (Skill objSkill in _objCharacter.Skills)
                     if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
@@ -5848,7 +5847,7 @@ namespace Chummer
 
             if (frmPickPower.AddAgain)
                 cmdAddPower_Click(sender, e);
-        }
+		}
 
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
@@ -7946,7 +7945,15 @@ namespace Chummer
                             List<TreeNode> objAddWeaponNodes = new List<TreeNode>();
                             Quality objAddQuality = new Quality(_objCharacter);
                             objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue);
+							foreach (TreeNode objCharacterQuality in treQualities.Nodes)
+							{
+								if (objCharacterQuality.Name == objXmlAddQuality.InnerText)
+								{
+									objCharacterQuality.Nodes.Add(objAddQualityNode);
+								}
+							}
 
+							/*
                             if (objAddQuality.Type == QualityType.Positive)
                             {
                                 treQualities.Nodes[0].Nodes.Add(objAddQualityNode);
@@ -7956,8 +7963,8 @@ namespace Chummer
                             {
                                 treQualities.Nodes[1].Nodes.Add(objAddQualityNode);
                                 treQualities.Nodes[1].Expand();
-                            }
-                            _objCharacter.Qualities.Add(objAddQuality);
+                            }*/
+							_objCharacter.Qualities.Add(objAddQuality);
 
                             // Add any created Weapons to the character.
                             foreach (Weapon objWeapon in objAddWeapons)
