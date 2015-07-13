@@ -19,11 +19,20 @@
   <file>
     <name>lang/de.xml</name>
     <type>Language File</type>
-    <version>-496</version>
+    <version>-495</version>
     <description>German language file</description>
     <notes>German language file</notes>
     <url>https://www.dropbox.com/s/et7jmg2oe5uhb6g/de.xml?dl=1</url>
   </file>
+	<file>
+		<name>lang/de_data.xml</name>
+		<type>Language File</type>
+		<version>-495</version>
+		<description>German language data file</description>
+		<notes>German language data file</notes>
+		<url>https://www.dropbox.com/s/ja2ayyn4v5bzugc/de_data.xml?dl=1</url>
+	</file>	
+	
   <file>
     <name>lang/jp.xml</name>
     <type>Language File</type>

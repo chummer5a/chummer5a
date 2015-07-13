@@ -325,7 +325,7 @@ namespace Chummer
 
 			_decPointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
             _decAdeptWayDiscount = Convert.ToDecimal(objXmlPower["adeptway"].InnerText, GlobalOptions.Instance.CultureInfo);
-
+			
             _strSelectedPower = lstPowers.SelectedValue.ToString();
             this.DialogResult = DialogResult.OK;
         }

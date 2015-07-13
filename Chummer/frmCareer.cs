@@ -4143,21 +4143,13 @@ namespace Chummer
 			}
 
 			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill or Infirm and a Physical Active Skill, double its cost.
-			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") || (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
-				intKarmaCost *= 2;
-
-            if (_objCharacter.JackOfAllTrades) 
+			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
+			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") ||
+			    (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
             {
-                if (objSkillControl.SkillRating <= 5)
-                {
-                    intKarmaCost -= 1;
-                    
+				intKarmaCost *= 2;
                 }
-                else
-                {
-                    intKarmaCost += 2;
-                }
-            }
+
 
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -8307,17 +8299,8 @@ namespace Chummer
 							List<TreeNode> objAddWeaponNodes = new List<TreeNode>();
 							Quality objAddQuality = new Quality(_objCharacter);
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objAddWeapons, objAddWeaponNodes, strForceValue);
-
-							if (objAddQuality.Type == QualityType.Positive)
-							{
-								treQualities.Nodes[0].Nodes.Add(objAddQualityNode);
-								treQualities.Nodes[0].Expand();
-							}
-							else
-							{
-								treQualities.Nodes[1].Nodes.Add(objAddQualityNode);
-								treQualities.Nodes[1].Expand();
-							}
+							objNode.Nodes.Add(objAddQualityNode);
+							objNode.Expand();
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.
@@ -8531,13 +8514,17 @@ namespace Chummer
 				// Remove the Improvements that were created by the Quality.
 				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
 
-				XmlNode objXmlDeleteQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+
+				_objCharacter.Qualities.Remove(objQuality);
+				treQualities.SelectedNode.Remove();
+			}
 
 				// Remove any Critter Powers that are gained through the Quality (Infected).
+			XmlNode objXmlDeleteQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 				if (objXmlDeleteQuality.SelectNodes("powers/power").Count > 0)
 				{
 					objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-					foreach (XmlNode objXmlPower in objXmlDeleteQuality.SelectNodes("powers/power"))
+				foreach (XmlNode objXmlPower in objXmlDeleteQuality.SelectNodes("optionalpowers/optionalpower"))
 					{
 						string strExtra = "";
 						if (objXmlPower.Attributes["select"] != null)
@@ -8575,9 +8562,44 @@ namespace Chummer
 						}
 					}
 				}
+			// Remove any Critter Powers that are gained through the Quality (Infected).
+			if (objXmlDeleteQuality.SelectNodes("addqualities/addquality").Count > 0)
+			{
+				objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+				foreach (XmlNode objXmlQuality in objXmlDeleteQuality.SelectNodes("addqualities/addquality"))
+				{
+					string strExtra = "";
+					if (objXmlQuality.Attributes["select"] != null)
+						strExtra = objXmlQuality.Attributes["select"].InnerText;
 
-				_objCharacter.Qualities.Remove(objQuality);
-				treQualities.SelectedNode.Remove();
+					foreach (Quality objDeleteQuality in _objCharacter.Qualities)
+					{
+						if (objDeleteQuality.Name == objXmlQuality.InnerText && objDeleteQuality.Extra == strExtra)
+						{
+							// Remove any Improvements created by the Critter Power.
+							_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objDeleteQuality.InternalId);
+
+							// Remove the Critter Power from the character.
+							_objCharacter.Qualities.Remove(objDeleteQuality);
+							break;
+						}
+						// Remove the Critter Power from the Tree.
+						foreach (TreeNode objNode in treQualities.Nodes)
+						{
+							if (objNode.Nodes.Count > 0)
+							{
+								foreach (TreeNode objChildNode in objNode.Nodes)
+								{
+									if (objNode.Tag.ToString() == objDeleteQuality.InternalId)
+									{
+										objNode.Remove();
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 
 			// Remove any Weapons created by the Quality if applicable.
@@ -8772,17 +8794,8 @@ namespace Chummer
 							List<TreeNode> objAddWeaponNodes = new List<TreeNode>();
 							Quality objAddQuality = new Quality(_objCharacter);
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue);
-
-							if (objAddQuality.Type == QualityType.Positive)
-							{
-								treQualities.Nodes[0].Nodes.Add(objAddQualityNode);
-								treQualities.Nodes[0].Expand();
-							}
-							else
-							{
-								treQualities.Nodes[1].Nodes.Add(objAddQualityNode);
-								treQualities.Nodes[1].Expand();
-							}
+							objNode.Nodes.Add(objAddQualityNode);
+							objNode.Expand();
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.

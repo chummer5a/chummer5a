@@ -372,8 +372,8 @@ namespace Chummer
 				chkAutoBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
 			}
 
-			// Populate the Qualities list.
-			foreach (Quality objQuality in _objCharacter.Qualities)
+            // Populate the Qualities list.
+            foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 TreeNode objNode = new TreeNode();
                 objNode.Text = objQuality.DisplayName;
@@ -5376,7 +5376,7 @@ namespace Chummer
 
             SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
-			
+
 
             // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
             objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
@@ -5384,7 +5384,7 @@ namespace Chummer
             objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
             objSkillControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
 			objSkillControl.MergeClicked += knoSkill_MergeClick;
-			objSkillControl.KnowledgeSkill = true;
+            objSkillControl.KnowledgeSkill = true;
             objSkillControl.AllowDelete = true;
             objSkillControl.SkillRatingMaximum = 6;
             // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
@@ -5779,7 +5779,6 @@ namespace Chummer
             // Attach an EventHandler for the PowerRatingChanged Event.
             objPowerControl.PowerRatingChanged += objPower_PowerRatingChanged;
             objPowerControl.DeletePower += objPower_DeletePower;
-
             objPowerControl.PowerName = frmPickPower.SelectedPower;
             objPowerControl.PointsPerLevel = frmPickPower.PointsPerLevel;
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
@@ -7877,8 +7876,8 @@ namespace Chummer
 		        {
 			        sgc.BaseRating = _objImprovementManager.ValueOf(Improvement.ImprovementType.SkillGroupLevel, false,
 				        sgc.SkillGroupObject.Name);
-		        }
-	        }
+            }
+        }
 
 
 
@@ -8033,11 +8032,11 @@ namespace Chummer
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         Quality objSubQuality = AddQuality(objXmlAddQuality, objXmlSelectedQuality, objWeapons, objWeaponNodes);
                         if (objSubQuality != null)
-                        {
+                            {
                             _objCharacter.Qualities.Add(objSubQuality);
+                            }
                         }
-                    }
-                }
+                            }
 
                 // Add any Critter Powers that are gained through the Quality (Infected).
                 if (objXmlQuality.SelectNodes("powers/power").Count > 0)
@@ -8257,7 +8256,7 @@ namespace Chummer
             }
 
             // Remove the Improvements that were created by the Quality.
-			_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+            _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
 
             if (objQuality.Name == "One Trick Pony")
             {
@@ -15259,72 +15258,72 @@ namespace Chummer
             return !blnAtMaximum;
         }
 
-	    /// <summary>
-	    /// Calculate the BP used by Primary Attributes.
-	    /// </summary>
-	    private int CalculatePrimaryAttributeBP()
-	    {
-		    // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
-		    // Special Attributes are not subject to the 1/2 of max BP rule.
-		    int intBP = 0;
+        /// <summary>
+        /// Calculate the BP used by Primary Attributes.
+        /// </summary>
+        private int CalculatePrimaryAttributeBP()
+        {
+            // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
+            // Special Attributes are not subject to the 1/2 of max BP rule.
+            int intBP = 0;
 
 		    if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
 		        _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-		    {
-			    // Get the total of "free points" spent
-			    int intAtt = 0;
-			    intAtt += Convert.ToInt32(nudBOD.Value - nudBOD.Minimum);
-			    intAtt += Convert.ToInt32(nudAGI.Value - nudAGI.Minimum);
-			    intAtt += Convert.ToInt32(nudREA.Value - nudREA.Minimum);
-			    intAtt += Convert.ToInt32(nudSTR.Value - nudSTR.Minimum);
-			    intAtt += Convert.ToInt32(nudCHA.Value - nudCHA.Minimum);
-			    intAtt += Convert.ToInt32(nudINT.Value - nudINT.Minimum);
-			    intAtt += Convert.ToInt32(nudLOG.Value - nudLOG.Minimum);
-			    intAtt += Convert.ToInt32(nudWIL.Value - nudWIL.Minimum);
+            {
+                // Get the total of "free points" spent
+                int intAtt = 0;
+                intAtt += Convert.ToInt32(nudBOD.Value - nudBOD.Minimum);
+                intAtt += Convert.ToInt32(nudAGI.Value - nudAGI.Minimum);
+                intAtt += Convert.ToInt32(nudREA.Value - nudREA.Minimum);
+                intAtt += Convert.ToInt32(nudSTR.Value - nudSTR.Minimum);
+                intAtt += Convert.ToInt32(nudCHA.Value - nudCHA.Minimum);
+                intAtt += Convert.ToInt32(nudINT.Value - nudINT.Minimum);
+                intAtt += Convert.ToInt32(nudLOG.Value - nudLOG.Minimum);
+                intAtt += Convert.ToInt32(nudWIL.Value - nudWIL.Minimum);
 
-			    _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
+                _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
 			    lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}",
 				    (_objCharacter.Attributes).ToString(), _objCharacter.TotalAttributes.ToString());
 		    }
-		    // For each attribute, figure out the actual karma cost of attributes raised with karma
-		    for (int i = 1; i <= nudKBOD.Value; i++)
-		    {
+                // For each attribute, figure out the actual karma cost of attributes raised with karma
+                for (int i = 1; i <= nudKBOD.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKAGI.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKAGI.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudAGI.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKREA.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKREA.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudREA.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKSTR.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKSTR.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKCHA.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKCHA.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudCHA.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKINT.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKINT.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudINT.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKLOG.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKLOG.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudLOG.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    for (int i = 1; i <= nudKWIL.Value; i++)
-		    {
+                }
+                for (int i = 1; i <= nudKWIL.Value; i++)
+                {
 			    intBP += ((Convert.ToInt32(nudWIL.Value) + i)*_objOptions.KarmaAttribute);
-		    }
-		    return intBP;
+                }
+                return intBP;
 
 
-	    }
+            }
 
-	    /// <summary>
+        /// <summary>
         /// Calculate the BP used by Special Attributes.
         /// </summary>
         private int CalculateSpecialAttributeBP()
@@ -15627,22 +15626,22 @@ namespace Chummer
             intFreestyleBP += intPointsUsed;
 
 
-			// Calculate the BP used by Positive Qualities.
-			intPointsUsed = 0;
+            // Calculate the BP used by Positive Qualities.
+            intPointsUsed = 0;
 			int intPositiveQualities = intGroupContacts; //group contacts are a quality too
 			int intNegativeQualities = 0;
 			int intLifeModuleQualities = 0;
 			int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-			foreach (Quality objQuality in _objCharacter.Qualities)
-			{
-				if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
-				{
+            foreach (Quality objQuality in _objCharacter.Qualities)
+            {
+                if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+                {
 					intPositiveQualities += (objQuality.BP * _objOptions.KarmaQuality);
-				}
+                }
 				else if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
 				{
 					intNegativeQualities += (objQuality.BP * _objOptions.KarmaQuality);
-				}
+            }
 				else if (objQuality.Type == QualityType.LifeModule && objQuality.ContributeToBP)
 				{
 					intLifeModuleQualities += (objQuality.BP);
@@ -15653,14 +15652,14 @@ namespace Chummer
 					intKnowledgeSkillPoints += 5;
 				}
 				else if (objQuality.Name == "Aged (Rating 2)")
-				{
+            {
 					intKnowledgeSkillPoints += 10;
 				}
 				else if (objQuality.Name == "Aged (Rating 3)")
-				{
+                {
 					intKnowledgeSkillPoints += 15;
-				}
-			}
+                }
+            }
 
 			intPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities;
 			
@@ -15671,31 +15670,31 @@ namespace Chummer
 			lblPositiveQualitiesBP.Text = String.Format("{0} " + strPoints, intPositiveQualities - intPositiveFree);
 			lblPBuildPositiveQualities.Text = String.Format("{0} " + strPoints, intPositiveQualities - intPositiveFree);
 
-			// Deduct the amount for free Qualities.
+            // Deduct the amount for free Qualities.
 			int intNegativeFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities) * _objOptions.KarmaQuality;
 	        intPointsUsed += intNegativeFree;
 
 			lblNegativeQualitiesBP.Text = String.Format("{0} " + strPoints, intNegativeQualities - intNegativeFree);
 			lblPBuildNegativeQualities.Text = String.Format("{0} " + strPoints, intNegativeQualities - intNegativeFree);
 
-			// If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-			if (_objOptions.ExceedNegativeQualitiesLimit)
-			{
+            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+            if (_objOptions.ExceedNegativeQualitiesLimit)
+            {
 				if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativePoints < -1 * _objCharacter.MaxKarma)
-				{
+                {
 					intNegativeQualities = _objCharacter.MaxKarma;
-				}
+                }
 				else if (intNegativePoints < -70)
-				{
+                {
 					intNegativeQualities = _objCharacter.MaxKarma;
-				}
-			}
+                }
+            }
 
 			intPointsRemain -= intPointsUsed;
 			intFreestyleBP += intPointsUsed;
 
-			// Update Primary Attributes and Special Attributes values.
-			if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
+            // Update Primary Attributes and Special Attributes values.
+            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
             {
                 intPointsRemain -= CalculatePrimaryAttributeBP();
                 intPointsUsed = CalculatePrimaryAttributeBP();
@@ -15916,7 +15915,7 @@ namespace Chummer
             int intPointsInKnowledgeSkills = 0;
             intPointsUsed = 0;
 
-			foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
+            foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
             {
                 for (int i = 1; i <= objSkillControl.SkillRating; i++)
                 {
@@ -15990,7 +15989,7 @@ namespace Chummer
                         intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
                     }
                 }
-                intPointsRemain -= intPointsUsed;
+            intPointsRemain -= intPointsUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intPointsInKnowledgeSkills).ToString(), intKnowledgeSkillPoints.ToString());
@@ -16291,8 +16290,8 @@ namespace Chummer
                     strMovement = String.Format("{0}/{1}", (_objCharacter.AGI.TotalValue * 2), (_objCharacter.AGI.TotalValue * 4));
 
 				lblMovement.Text = _objCharacter.Movement = strMovement;
-                
-				// If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
+
+                // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.Rating;
 
@@ -16937,7 +16936,7 @@ namespace Chummer
 		    }
 	    }
 
-	    /// <summary>
+        /// <summary>
         /// Calculate the amount of Nuyen the character has remaining.
         /// </summary>
         private int CalculateNuyen()
@@ -18181,7 +18180,7 @@ namespace Chummer
 			RefreshKnowledgeSkills();
 	    }
 
-	    /// <summary>
+        /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
         private void UpdateWindowTitle(bool blnCanSkip = true)
@@ -25365,5 +25364,5 @@ namespace Chummer
 				txtBackground.Text = _objStoryBuilder.GetStory();
 			}
 		}
-	}
+    }
 }

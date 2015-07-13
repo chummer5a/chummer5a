@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-496</version>
+  <version>-495</version>
   <name>Deutsch (DE)</name>
   <strings>
     <string>
@@ -4161,7 +4161,7 @@
     </string>
     <string>
       <key>Checkbox_Options_EnforceSkillRating</key>
-      <text>Enforce maximum Skill modified Rating</text>
+      <text>Limit für verbesserte Fertigkeiten anwenden</text>
     </string>
     <string>
       <key>Checkbox_Options_PrintAllSkills</key>
@@ -6302,7 +6302,7 @@
     </string>
     <string>
       <key>MessageTitle_CannotRemoveQualityWeapon</key>
-      <text>Cannot Remove Quality Weapon</text>
+      <text>Kann durch Gabe erhaltene Waffe nicht entfernen</text>
       <text>Wollen Sie die Waffe, die durch eine Gabe hinzugefügt wurde, entfernen ?</text>
     </string>
     <string>
@@ -6653,15 +6653,15 @@
     </string>
     <string>
       <key>String_Special</key>
-      <text>Spezial Attribute</text>
+      <text>Spezialattribute</text>
     </string>
     <string>
       <key>String_SpecialAttributePoints</key>
-      <text>Spezielle Attribut Punkte</text>
+      <text>Spezialattributspunkte</text>
     </string>
     <string>
       <key>String_AttributePoints</key>
-      <text>Attribut Punkte</text>
+      <text>Attributspunkte</text>
     </string>
     <string>
       <key>String_Metamagic</key>
@@ -6725,11 +6725,11 @@
     </string>
     <string>
       <key>String_SkillGroupPoints</key>
-      <text>Fertigkeitsgruppenpunkte</text>
+      <text>Punkte für Fertigkeitsgruppen</text>
     </string>
     <string>
       <key>String_Spells</key>
-      <text>Zauber</text>
+      <text>Zaubersprüche</text>
     </string>
     <string>
       <key>String_ComplexForms</key>
@@ -6741,23 +6741,23 @@
     </string>
     <string>
       <key>Label_Accuracy</key>
-      <text>Präzision:</text>
+      <text>Präzision</text>
     </string>
     <string>
       <key>Label_DeviceRating</key>
-      <text>Gerätestufe:</text>
+      <text>Gerätestufe</text>
     </string>
     <string>
       <key>Label_Attack</key>
-      <text>Angriff:</text>
+      <text>Angriff</text>
     </string>
     <string>
       <key>Label_Sleaze</key>
-      <text>Sleaze:</text>
+      <text>Schleicher</text>
     </string>
     <string>
       <key>Label_DataProcessing</key>
-      <text>Data Proc:</text>
+      <text>Datenverarbeitung</text>
     </string>
     <string>
       <key>Label_ArmorShort</key>
@@ -6769,7 +6769,7 @@
     </string>
     <string>
       <key>Label_ArmorLong</key>
-      <text>Panzerung:</text>
+      <text>Panzerungswert:</text>
     </string>
     <string>
       <key>Label_PriorityHeritage</key>
@@ -6777,7 +6777,7 @@
     </string>
     <string>
       <key>Label_PriorityTalent</key>
-      <text>Magie/Resonanze:</text>
+      <text>Magie oder Resonanz:</text>
     </string>
     <string>
       <key>Label_PriorityAttributes</key>
@@ -6789,7 +6789,7 @@
     </string>
     <string>
       <key>Label_PriorityResources</key>
-      <text>Resourcen:</text>
+      <text>Ressourcen:</text>
     </string>
     <string>
       <key>Label_Location</key>
@@ -6797,7 +6797,7 @@
     </string>
     <string>
       <key>Label_Archtype</key>
-      <text>Archetype:</text>
+      <text>Archetyp:</text>
     </string>
     <string>
       <key>String_Contacts</key>
@@ -6805,7 +6805,7 @@
     </string>
     <string>
       <key>String_ArmorEncumbrance</key>
-      <text>Armor Encumbrance</text>
+      <text>Belastung durch Panzerung</text>
     </string>
     <string>
       <key>String_MountSide</key>
@@ -6817,7 +6817,7 @@
     </string>
     <string>
       <key>String_MountStock</key>
-      <text>Stock</text>
+      <text>Schulterstütze</text>
     </string>
     <string>
       <key>MessageTitle_DeleteGrade</key>
@@ -6829,7 +6829,7 @@
     </string>
     <string>
       <key>Message_DeleteLimitModifier</key>
-      <text>Are you sure you want to delete this Limit Modifier?</text>
+      <text>Sind Sie sicher, dass sie diesen Limit Modifikator löschen möchten?</text>
     </string>
     <string>
       <key>Message_DeleteInitiateGrade</key>
@@ -6837,7 +6837,7 @@
     </string>
     <string>
       <key>Message_DeleteSubmersionGrade</key>
-      <text>Are you sure you want to delete this Submersion Grade and all of its bonuses?</text>
+      <text>Sind Sie sicher, dass sie diesen Wandlungsgrad und alle damit verbundenen Boni löschen möchten?</text>
     </string>
     <string>
       <key>Message_DeleteArt</key>
@@ -6861,7 +6861,7 @@
     </string>
     <string>
       <key>MessageTitle_SelectLimitModifier</key>
-      <text>Select Limit Modifier</text>
+      <text>Limit Modifikator auswählen</text>
     </string>
     <string>
       <key>Message_PositiveQualityMoreThanNegativeQuality</key>
@@ -6873,7 +6873,7 @@
     </string>
     <string>
       <key>Message_CannotRemoveSpell</key>
-      <text>This item cannot be removed because it was acquired as an initiation bonus.</text>
+      <text>Dieser Eintrag kann nicht entfernt werden, da er bei einer Initiation erworben wurde.</text>
     </string>
     <string>
       <key>MessageTitle_CannotRemoveSpell</key>
@@ -6883,29 +6883,29 @@
       <key>Message_PriorityComplexFormLimit</key>
       <text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
     </string>
-    <string>
+<string>
       <key>Message_InvalidAttributeExcess</key>
-      <text>{0} over allotted Attribute point limit</text>
+      <text>{0} über erlaubten Attributspunktem</text>
     </string>
     <string>
       <key>Message_InvalidSpecialExcess</key>
-      <text>{0} over allotted Special Attribute point limit</text>
+      <text>{0} über erlaubten Spezialattributspunkten</text>
     </string>
     <string>
       <key>Message_InvalidSkillGroupExcess</key>
-      <text>{0} over allotted Skill Group point limit</text>
+      <text>{0} über erlaubten Punkten für Fertigkeitsgruppen</text>
     </string>
     <string>
       <key>Message_InvalidActiveSkillExcess</key>
-      <text>{0} over allotted Active Skill point limit</text>
+      <text>{0} über erlaubten Aktionsfertigkeitspunkten</text>
     </string>
     <string>
       <key>Message_InvalidKnowledgeSkillExcess</key>
-      <text>{0} over allotted Knowledge Skill point limit</text>
+      <text>{0} über erlaubten Wissensfertigkeitspunkten</text>
     </string>
     <string>
       <key>Message_ExtraNuyen</key>
-      <text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra nuyen?</text>
+      <text>Sie haben {0} verfügbar, aber ist Ihnen nur erlaubt, {1} in den Karrieremodus zu übertragen.\nSind Sie sicher, dass sie diese extra Nuyen verlieren möchten?</text>
     </string>
     <string>
       <key>MessageTitle_ExtraNuyen</key>
@@ -6917,11 +6917,11 @@
     </string>
     <string>
       <key>MessageTitle_NotEnoughMagic</key>
-      <text>Nicht genug MAG</text>
+      <text>Nicht genug Magie</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaandNuyenExpense</key>
-      <text>Are you sure you want to spend Karma and Nuyen on improving {0} to {1} for {2} Karma and {3} Nuyen?</text>
+      <text>Sind Sie sicher, dass sie Karma und Nuyen ausgeben wollen um {0} auf {1} zu verbessern, für {2} Karma und {3} Nuyen?</text>
     </string>
     <string>
       <key>Message_UndoNotHighestGrade</key>
@@ -6929,23 +6929,23 @@
     </string>
     <string>
       <key>MessageTitle_NotHighestGrade</key>
-      <text>Cannot Undo This Entry</text>
+      <text>Sie können diesen Eintrag nicht entfernen</text>
     </string>
     <string>
       <key>String_SpellAlchemical</key>
-      <text>Alchemie</text>
+      <text>Alchemisch</text>
     </string>
     <string>
       <key>String_ExpenseLearnTechnique</key>
-      <text>Gelernte Techniken</text>
+      <text>Erlernte Technik</text>
     </string>
     <string>
       <key>String_Schooling</key>
-      <text>Ausbildung</text>
+      <text>Schooling</text>
     </string>
     <string>
       <key>String_DescAlchemicalPreparation</key>
-      <text>Alchemie Erzeugniss</text>
+      <text>Alchemistisches Erzeugnis</text>
     </string>
     <string>
       <key>String_DescAdept</key>
@@ -6953,11 +6953,11 @@
     </string>
     <string>
       <key>String_DescAnchored</key>
-      <text>Anchored</text>
+      <text>Verankert</text>
     </string>
     <string>
       <key>String_DescBlood</key>
-      <text>Blut</text>
+      <text>Blood</text>
     </string>
     <string>
       <key>String_DescContractual</key>
@@ -6965,15 +6965,15 @@
     </string>
     <string>
       <key>String_DescGeomancy</key>
-      <text>Geomancy</text>
+      <text>Geomantie</text>
     </string>
     <string>
       <key>String_DescMaterialLink</key>
-      <text>Material Link</text>
+      <text>Materielle Verbindung</text>
     </string>
     <string>
       <key>String_DescMinion</key>
-      <text>Minion</text>
+      <text>Diener</text>
     </string>
     <string>
       <key>String_DescOrganicLink</key>
@@ -6985,7 +6985,7 @@
     </string>
     <string>
       <key>String_DescSpotter</key>
-      <text>Aufklärer</text>
+      <text>Späher</text>
     </string>
     <string>
       <key>Label_ValAugmented</key>
@@ -6993,7 +6993,7 @@
     </string>
     <string>
       <key>Tip_OptionsKnucks</key>
-      <text>Enabling this house rule allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es Schlagringen von Boni zu profitieren, die Waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
     </string>
     <string>
       <key>Tip_OptionsIgnoreArt</key>
@@ -7001,35 +7001,35 @@
     </string>
     <string>
       <key>Tip_OptionsCyberlegMovement</key>
-      <text>Enabling this house rule allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es Charakteren mit zwei Cyberbeinen die Geschicklichkeit der Cyberbeine als Modifikator für die Laufgeschwindigkeit zu benutzen.</text>
     </string>
     <string>
       <key>Tip_OptionsDontDoubleQualities</key>
-      <text>Enabling this house rule will allow characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es Charakteren im Karrieremodus, Vorteile zu kaufen und Nachteile abzubauen, ohne dafür die doppelten Kosten zu zahlen. </text>
     </string>
     <string>
       <key>Tip_OptionsExceptionalAttribute</key>
-      <text>Enabling this house rule will allow Attribute Points to be spent on the bonus point granted by the Exceptional Attributes quality.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es, Attributspunkte auf ein durch Aussergewöhnliches Attribut erhöhtes Attribut zu verteilen.</text>
     </string>
     <string>
       <key>Tip_OptionsExceptionalNotMaxed</key>
-      <text>Enabling this house rule will allow two attributes to be at the metatype maximum rather than one if one of those attributes is improved by Exceptional Attribute.</text>
+      <text>Aktivierung dieser hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
     </string>
     <string>
       <key>Tip_OptionsUsePointsOnBrokenGroups</key>
-      <text>Enabling this house rule will allow Skill Points to be spent on skills belonging to a broken skill group.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es, Fertigkeitspunkte auf Fertigkeiten zu verteilen, die zu einer aufgelösten Fertigkeitsgruppe gehören.</text>
     </string>
     <string>
       <key>Tip_OptionsAllowInitiation</key>
-      <text>Enabling this house rule will allow Initiation/Submersion in Create mode.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es, bei der Charaktererschaffung Initiations- und Wandlungsränge zu erwerben.</text>
     </string>
     <string>
       <key>Label_FreeSkills</key>
-      <text>Free Skill Points Remaining:</text>
+      <text>Verfügbare Fertigkeitspunkte:</text>
     </string>
     <string>
       <key>Label_FreeSkillGroups</key>
-      <text>Free Skill Groups Remaining:</text>
+      <text>Verfügbare Punkte für Fertigkeitsgruppen:</text>
     </string>
     <string>
       <key>Label_TraditionName</key>
@@ -7041,11 +7041,11 @@
     </string>
     <string>
       <key>Label_SpiritDetection</key>
-      <text>Detection:</text>
+      <text>Wahrnehmung:</text>
     </string>
     <string>
       <key>Label_SpiritHealth</key>
-      <text>Gesundheit:</text>
+      <text>Heilung:</text>
     </string>
     <string>
       <key>Label_SpiritIllusion</key>
@@ -7065,19 +7065,19 @@
     </string>
     <string>
       <key>String_AddLimitModifier</key>
-      <text>Add Limit Modifier</text>
+      <text>Limit Modifikator hinzufügen</text>
     </string>
     <string>
       <key>String_EnterLimitModifier</key>
-      <text>Enter a Limit Modifier</text>
+      <text>Limit Modifikator eingeben</text>
     </string>
     <string>
       <key>Node_Physical</key>
-      <text>Physisch</text>
+      <text>Körperlich</text>
     </string>
     <string>
       <key>Node_Mental</key>
-      <text>Mental</text>
+      <text>Geistig</text>
     </string>
     <string>
       <key>Node_Social</key>
@@ -7089,11 +7089,11 @@
     </string>
     <string>
       <key>String_LimitPhysicalShort</key>
-      <text>Physisch</text>
+      <text>Körperlich</text>
     </string>
     <string>
       <key>String_LimitMentalShort</key>
-      <text>Mental</text>
+      <text>Geistig</text>
     </string>
     <string>
       <key>String_LimitSocialShort</key>
@@ -7103,21 +7103,21 @@
       <key>Checkbox_InitiationSchooling</key>
       <text>Ausbildung (-10%)</text>
     </string>
-    <string>
+        <string>
       <key>Button_AddInitiateGrade</key>
-      <text>Add Initiate Grade</text>
+      <text>Initiatengrad hinzufügen</text>
     </string>
     <string>
       <key>Button_AddSubmersionGrade</key>
-      <text>Add Submersion Grade</text>
+      <text>Wandlungsgrad hinzufügen</text>
     </string>
     <string>
       <key>Tip_ArmorDegradationPlus</key>
-      <text>Repair Armor Rating.</text>
+      <text>Panzerungswert reparieren</text>
     </string>
     <string>
       <key>Tip_ArmorDegradationMinus</key>
-      <text>Damage Armor Rating.</text>
+      <text>Panzrungswert beschädigen</text>
     </string>
     <string>
       <key>Label_AdeptWayDiscount</key>
@@ -7129,15 +7129,15 @@
     </string>
     <string>
       <key>Label_OtherMatrixInitVRCold</key>
-      <text>Matrix Initiative (Cold):</text>
+      <text>Matrix Initiative (Kalt):</text>
     </string>
     <string>
       <key>Label_OtherMatrixInitVRHot</key>
-      <text>Matrix Initiative (Hot):</text>
+      <text>Matrix Initiative (Heiß):</text>
     </string>
     <string>
       <key>Label_OtherRiggingInit</key>
-      <text>Rigging Initiative (AR):</text>
+      <text>Geriggte Initiative (AR):</text>
     </string>
     <string>
       <key>Label_OtherArmor</key>
@@ -7145,7 +7145,7 @@
     </string>
     <string>
       <key>Tip_OtherArmor</key>
-      <text>Only the highest single Armor value is used to determine your Armor Rating.</text>
+      <text>Nur der höchste einzelne Panzerungswert wird auf die Panzerung angerechnet.</text>
     </string>
     <string>
       <key>Label_CMArmor</key>
@@ -7161,35 +7161,35 @@
     </string>
     <string>
       <key>Message_Metatype_SelectSkill</key>
-      <text>You must select a Skill/Skill Group before continuing.</text>
+      <text>Sie müssen eine Fertigkeit/Fertigkeitsgruppe auswählen, um fortfahren zu können.</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectSkill</key>
-      <text>Wähle einen/e Fertigkeit/sgruppe</text>
+      <text>Wählen sie eine Fertigkeit/Fertigkeitsgruppe</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>
-      <text>May buy Qualities (RC 40)</text>
+      <text>Kann Vorteile kaufen (RC 40)</text>
     </string>
     <string>
       <key>Checkbox_Options_ContactPoints</key>
-      <text>Contact points instead of fixed Contacts (RC 40)</text>
+      <text>Connection Punkte anstatt fester Anzahl von Connections.(RC 40)</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
-      <text>Use Debug Logging</text>
+      <text>Benutze Debug Logging</text>
     </string>
     <string>
       <key>Checkbox_Options_LicenseRestricted</key>
-      <text>License each Restricted item</text>
+      <text>Jeden eingeschränkten Gegenstand Lizensieren lassen.</text>
     </string>
     <string>
       <key>Checkbox_Options_Knucks</key>
-      <text>Knucks Benefit from Unarmed Attack Bonuses</text>
+      <text>Schlagringe erhalten Boni, die Waffenlosenkampf betreffen</text>
     </string>
     <string>
       <key>Checkbox_Options_DontDoubleQualities</key>
-      <text>Don't double the cost of Qualities in Career Mode</text>
+      <text>Kosten für Vor-/Nachteile im Karrieremodus nicht verdoppeln</text>
     </string>
     <string>
       <key>Checkbox_Options_IgnoreArt</key>
@@ -7197,23 +7197,23 @@
     </string>
     <string>
       <key>Checkbox_Options_CyberlegMovement</key>
-      <text>Use Cyberleg Stats for Movement</text>
+      <text>Werte von Cyberbeinen für Bewegung verwenden</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceptionalAttributes</key>
-      <text>Attribute Points may be spent on Exceptional Attributes</text>
+      <text>Attributspunkte können für Aussergewöhnliche Attribute ausgegeben werden</text>
     </string>
     <string>
       <key>Checkbox_Options_ExceptionalNotMaxed</key>
-      <text>Exceptional Attributes not at cap, are not maxed</text>
+      <text>Exceptional attributes not at cap, are not maxed</text>
     </string>
     <string>
       <key>Checkbox_Options_PointsOnBrokenGroups</key>
-      <text>Use Skill Points on broken groups</text>
+      <text>Benutze Fertigkeitspunkte für aufgelöste Fertigkeitsgruppen</text>
     </string>
     <string>
       <key>Checkbox_Options_AllowInitiation</key>
-      <text>Allow Initiation/Submersion in Create mode</text>
+      <text>Erlaube Initiation/Wandlung im Erschaffungsmodus</text>
     </string>
     <string>
       <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
@@ -7225,15 +7225,15 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Qualities</key>
-      <text>Qualities</text>
+      <text>Lebensstiloptionen</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Lifestyle</key>
-      <text>Lifestyle:</text>
+      <text>Lebensstil:</text>
     </string>
     <string>
       <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maxiumum availability you are allowed to create your character with.</text>
+      <text>Geben Sie die maximale Verfügbarkeit ein, mit der Ihr Charakter erschaffen werden soll.</text>
     </string>
     <string>
       <key>Title_SelectArt</key>
@@ -7301,7 +7301,7 @@
     </string>
     <string>
       <key>String_PowerPoint</key>
-      <text>Power Point</text>
+      <text>Kraftpunkt</text>
     </string>
     <string>
       <key>Label_SelectProgram_Target</key>
@@ -7309,27 +7309,27 @@
     </string>
     <string>
       <key>Label_SelectProgram_Duration</key>
-      <text>Duration:</text>
+      <text>Dauer:</text>
     </string>
     <string>
       <key>Label_SelectProgram_FV</key>
-      <text>FV:</text>
+      <text>Schwund:</text>
     </string>
     <string>
       <key>Checkbox_SelectSpell_Alchemical</key>
-      <text>Alchemische Erzeugnisse</text>
+      <text>Alchemistisches Erzeugnis</text>
     </string>
     <string>
       <key>String_Improvement_SelectLimitNamed</key>
-      <text>Choose a Limit for {0} to affect.</text>
+      <text>Wählen Sie ein Limit, das von {0} betroffen ist.</text>
     </string>
     <string>
       <key>String_Improvement_SelectLimit</key>
-      <text>Choose a Limit to affect.</text>
+      <text>Wählen Sie ein betroffenes Limit</text>
     </string>
     <string>
       <key>String_CustomItem_SelectText</key>
-      <text>Enter a name for this custom item.</text>
+      <text>Geben Sie einen Namen für diesen Gegenstand an.</text>
     </string>
     <string>
       <key>String_MetamagicSkillBase</key>
@@ -7337,63 +7337,63 @@
     </string>
     <string>
       <key>String_MetamagicSkillMagicianA</key>
-      <text>2 magical skills to start at rating 5</text>
+      <text>2 Magische Fertigkeiten auf Stufe 5</text>
     </string>
     <string>
       <key>String_MetamagicSkillTechnomancerA</key>
-      <text>2 resonance skills to start at rating 5</text>
+      <text>2 Resonanzfertigkeiten auf Stufe 5</text>
     </string>
     <string>
       <key>String_MetamagicSkillMagicianB</key>
-      <text>2 magical skills to start at rating 4</text>
+      <text>2 Magische Fertigkeiten auf Stufe 4</text>
     </string>
     <string>
       <key>String_MetamagicSkillTechnomancerB</key>
-      <text>2 resonance skills to start at rating 4</text>
+      <text>2 Resonanzfertigkeiten auf Stufe 4</text>
     </string>
     <string>
       <key>String_MetamagicSkillAdeptB</key>
-      <text>1 active skill to start at rating 4</text>
+      <text>1 Aktionsfertigkeit auf Stufe 4</text>
     </string>
     <string>
       <key>String_MetamagicSkillAspectedB</key>
-      <text>1 magical skill group to start at rating 4</text>
+      <text>1 Magische Fertigkeitsgruppe auf Stufe 4</text>
     </string>
     <string>
       <key>String_MetamagicSkillAdeptC</key>
-      <text>1 active skill to start at rating 2</text>
+      <text>1 Aktionsfertigkeit auf Stufe 2</text>
     </string>
     <string>
       <key>String_MetamagicSkillAspectedC</key>
-      <text>1 magical skill group to start at rating 2</text>
+      <text>1 Magische Fertigkeitsgruppe auf Stufe 2</text>
     </string>
     <string>
       <key>String_MetamagicSkillAspectedD</key>
-      <text>1 magical skill group to start at rating 0</text>
+      <text>1 Magische Fertigkeitsgruppe auf Stufe 0</text>
     </string>
     <string>
       <key>Message_Metatype_Duplicate</key>
-      <text>Du kannst die Fertigkeit nicht zweimal wählen.</text>
+      <text>Sie können die gleiche Fertigkeit nicht zweifach auswählen.</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_Duplicate</key>
-      <text>Duplicate Selection</text>
+      <text>Duplizierte Auswahl</text>
     </string>
     <string>
       <key>Label_Condition</key>
-      <text>Bedingung:</text>
+      <text>Zustand:</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseSkillSpecialization</key>
-      <text>Bist du sicher das {0} Karma für eine Fertigkeitsspezialisierung ausgegeben werden sollen?</text>
+      <text>Sind Sie sicher, dass Sie {0} Karma für eine Fertigkeitsspezialisierung ausgeben wollen?</text>
     </string>
     <string>
       <key>String_ExpenseLearnSpecialization</key>
-      <text>Spezialisierung gelernt</text>
+      <text>Erlernte Spezialisierung</text>
     </string>
     <string>
       <key>Tip_Skill_AddSpecialization</key>
-      <text>Füge Spezialisierung für {0} Karma hinzu</text>
+      <text>Spezialisierung für {0} Karma hinzufügen</text>
     </string>
   </strings>
 </chummer>

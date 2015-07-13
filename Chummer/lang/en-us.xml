@@ -7482,6 +7482,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Choose an Attribute for {0} to affect.</text>
 		</string>
 		<string>
+			<key>String_Improvement_SelectOptionalPower</key>
+			<text>Choose a Power to gain.</text>
+		</string>
+		<string>
 			<key>String_Improvement_SelectAttribute</key>
 			<text>Choose an Attribute to affect.</text>
 		</string>

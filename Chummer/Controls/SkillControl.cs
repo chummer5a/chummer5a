@@ -158,6 +158,24 @@ namespace Chummer
                         else
                             intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
+					//Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher.
+					if (_objSkill.CharacterObject.JackOfAllTrades)
+					{
+						if (_objSkill.Rating <= 5)
+						{
+							intKarmaCost -= 1;
+							//Jack of All Trades cannot go below 1 Karma cost. 
+							if (intKarmaCost < 1)
+							{
+								intKarmaCost = 1;
+							}
+						}
+						else
+						{
+							intKarmaCost += 2;
+						}
+					}
+
 					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
 					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
 						intKarmaCost *= 2;

@@ -1,12 +1,18 @@
-Build $NEXT
-Application Change
- - Internal changes to how some values are stored
- - Added support for building characters with Life Modules
- - Now possible to fold multiple knowledge skills with the same name into one.
+Build 170:
+Application Change:
+- Metasapient cost is properly counted in Sum to Ten and Priority.
+- Fixed an issue with the default Free Contact Multiplier value. Existing installations may still have a Contact Multiplier value of 1. To fix this, open Tools > Options > House Rules and enable/disable the "Free Contact Points equal to Charisma times X" rule.
+- Fixed an issue with the Critical Strike power that caused a crash, due to the name being changed.
+- Jack of All Trades shows the proper tooltip value.
 
 Data Change:
- - Some of life module suporting changes are done
- - Added the following strings TODO: INSERT STRINGS ADDED HERE
+- Priviliged Family Name's SIN requirement changed to National or Corporate, rather than Corporate (Limited).
+- Ambidextrous quality is now enabled for multiple limbs. Shine on, you crazy Indian diamonds.
+- Dragonslayer Mentor Spirit fixed to give +2 to Combat Spells instead of Detection.
+- Fixed a missing value for the Linguist property that was preventing its bonus from working.
+- Casemods can be removed from Cyberware.
+- Living Focus and Keratin Control have been added to the Street Grimoire book. The Shadowrun Forum Post 1 book has been removed.
+- German Language files from Haekel on Reddit have been included.
 
 Build 169:
 Application Change:

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-390</version>
+  <version>-389</version>
   <books>
     <book>
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
@@ -46,12 +46,6 @@
       <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
       <name>Stolen Souls</name>
       <code>SS</code>
-    </book>
-    <book>
-      <id>e2b9ec78-b83f-4ea9-8531-95b074a1b9d8</id>
-      <name>Shadowrun Forum Post 1</name>
-      <code>SFP1</code>
-      <url>http://forums.shadowruntabletop.com/index.php?topic=17175.msg303991#msg303991</url>
     </book>
     <book>
       <name>Run Faster</name>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-395</version>
+	<version>-394</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -11,6 +11,7 @@
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
 			<name>Ambidextrous</name>
 			<karma>4</karma>
+			<limit>no</limit>
 			<category>Positive</category>
 			<bonus />
 			<source>SR5</source>
@@ -412,7 +413,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<mentallimit>Rating</mentallimit>
+				<mentallimit>1</mentallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -424,7 +425,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<physicallimit>Rating</physicallimit>
+				<physicallimit>1</physicallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -436,7 +437,7 @@
 			<limit>no</limit>
 			<category>Positive</category>
 			<bonus>
-				<sociallimit>Rating</sociallimit>
+				<sociallimit>1</sociallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>75</page>
@@ -2447,6 +2448,7 @@
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</required>
+			<metagenetic>yes</metagenetic>
 			<source>RF</source>
 			<page>112</page>
     </quality>
@@ -3240,8 +3242,8 @@
 			<category>Positive</category>
 			<bonus>
 				<optionalpowers>
-					<critterpower>Enhanced Senses</critterpower>
-					<critterpower>Immunity</critterpower>
+					<optionalpower>Enhanced Senses</optionalpower>
+					<optionalpower>Immunity</optionalpower>
 				</optionalpowers>
 				<enabletab>
 					<name>critter</name>
@@ -3325,6 +3327,7 @@
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</required>
+			<metagenetic>yes</metagenetic>
 			<source>RF</source>
 			<page>116</page>
 		</quality>
@@ -4524,7 +4527,9 @@
 			<name>Black Market Pipeline</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<blackmarket />
+			</bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4532,7 +4537,9 @@
 			<name>Born Rich</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<bornrich />
+			</bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -4574,7 +4581,17 @@
 			<name>Digital Doppelganger</name>
 			<karma>7</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
+			<required>
+				<oneof>
+					<quality>SINner (Criminal)</quality>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
+				</oneof>
+			</required>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4590,7 +4607,9 @@
 			<name>Erased</name>
 			<karma>8</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<erased />
+			</bonus>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4599,6 +4618,7 @@
 			<karma>4</karma>
 			<category>Positive</category>
 			<bonus>
+				<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -4624,6 +4644,7 @@
 			<karma>8</karma>
 			<category>Positive</category>
 			<bonus>
+				<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -4650,6 +4671,7 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
+				<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -4675,6 +4697,7 @@
 			<karma>16</karma>
 			<category>Positive</category>
 			<bonus>
+				<fame />
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -4739,6 +4762,7 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
+				<lightningreflexes />
 				<initiative>1</initiative>
 				<initiativepass>1</initiativepass>
 			</bonus>
@@ -4749,7 +4773,9 @@
 			<name>Linguist</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+				<bonus>
+					<linguist />
+				</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4757,7 +4783,14 @@
 			<name>Made Man</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<mademan />
+					<!--should be removable-->
+					<selectcontact>
+						<type>group</type>
+					</selectcontact>
+				<mademan/>
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4781,7 +4814,9 @@
 			<name>Overclocker</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<overclocker />
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -4835,7 +4870,7 @@
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -4847,7 +4882,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-        <selecttext />
+				<restrictedgear />
 			</bonus>
 			<source>RF</source>
 			<page>149</page>
@@ -4858,7 +4893,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-        <selecttext />
+				<restrictedgear />
 			</bonus>
 			<required>
 				<allof>
@@ -4874,7 +4909,7 @@
 			<category>Positive</category>
 			<limit>3</limit>
 			<bonus>
-        <selecttext />
+				<restrictedgear />
 			</bonus>
 			<required>
 				<allof>
@@ -4994,7 +5029,9 @@
 			<name>Technical School Education</name>
 			<karma>4</karma>
 			<category>Positive</category>
-			<bonus />
+				<bonus>
+					<techschool />
+				</bonus>
 			<source>RF</source>
 			<page>150</page>
 		</quality>
@@ -5110,7 +5147,9 @@
 			<name>Trust Fund I</name>
 			<karma>5</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5124,7 +5163,9 @@
 			<name>Trust Fund II</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5138,7 +5179,9 @@
 			<name>Trust Fund III</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5152,7 +5195,9 @@
 			<name>Trust Fund IV</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<trustfund />
+			</bonus>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5516,6 +5561,7 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus>
+				<excon />
 				<freepositivequalities>-10</freepositivequalities>
 			</bonus>
 			<addqualities>

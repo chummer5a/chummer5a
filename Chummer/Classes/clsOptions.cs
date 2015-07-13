@@ -209,6 +209,10 @@ namespace Chummer
 			try
 			{
 				_strLanguage = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("language").ToString();
+				if (_strLanguage == "en-us2")
+				{
+					_strLanguage = "en-us";
+				}
 			}
 			catch
 			{
@@ -855,7 +859,7 @@ namespace Chummer
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
-        private int _intFreeContactsMultiplier = 1;
+        private int _intFreeContactsMultiplier = 3;
         private int _intFreeKnowledgeMultiplier = 3;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
