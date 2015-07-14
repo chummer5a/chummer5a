@@ -115,6 +115,7 @@ namespace Chummer
                 _objCharacter.NuyenMaximumBP = 10;
                 _objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
                 _objCharacter.GameplayOption = cboGamePlay.Text;
+	            _objCharacter.SumtoTen = Convert.ToInt32(nudSumtoTen.Value);
             }
             else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
             {
@@ -123,10 +124,6 @@ namespace Chummer
                 _objCharacter.NuyenMaximumBP = 200;
                 _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
                 _objCharacter.GameplayOption = cboGamePlay.Text;
-            }
-            else
-            {
-                MessageBox.Show("All is not well in the state of Denmark.");
             }
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
             _objCharacter.MaximumAvailability = Convert.ToInt32(nudMaxAvail.Value);
@@ -163,28 +160,35 @@ namespace Chummer
                             nudKarma.Value = 800;
                     }
                     nudKarma.Visible = true;
-                    cboGamePlay.Visible = false;
+					lblStartingKarma.Visible = nudKarma.Visible;
+					nudSumtoTen.Visible = false;
+					lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "Priority")
                 {
                     lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_PrioritySummary");
                     nudKarma.Visible = false;
-                    cboGamePlay.Visible = true;
+					lblStartingKarma.Visible = nudKarma.Visible;
+					nudSumtoTen.Visible = false;
+					lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "SumtoTen")
                 {
                     lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_PrioritySummary");
-                    nudKarma.Visible = false;
-                    cboGamePlay.Visible = true;
+					lblStartingKarma.Visible = nudKarma.Visible;
+	                nudSumtoTen.Visible = true;
+	                lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
                 {
                     lblDescription.Text =
                         String.Format(LanguageManager.Instance.GetString("String_SelectBP_LifeModuleSummary"), 750);
-                    cboGamePlay.Visible = false;
                     nudKarma.Visible = true;
+					lblStartingKarma.Visible = nudKarma.Visible;
+					nudSumtoTen.Visible = false;
+					lblSumToX.Visible = nudSumtoTen.Visible;
 
-                    if (!_blnUseCurrentValues)
+					if (!_blnUseCurrentValues)
                         nudKarma.Value = 750;
                 }
             }

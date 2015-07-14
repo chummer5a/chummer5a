@@ -4,6 +4,13 @@ Application Change:
 - Fixed an issue with the default Free Contact Multiplier value. Existing installations may still have a Contact Multiplier value of 1. To fix this, open Tools > Options > House Rules and enable/disable the "Free Contact Points equal to Charisma times X" rule.
 - Fixed an issue with the Critical Strike power that caused a crash, due to the name being changed.
 - Jack of All Trades shows the proper tooltip value.
+- Variable Sum to X character creation enabled. Changing Build Methods still doesn't work quite right, so it's recommended to make a new character if you want to do this.
+- Genemods and Symbionts are locked to Standard grade properly. 
+- Internal changes to how some values are stored. Shouldn't affect characters.
+- Added support for building characters with Life Modules.
+	| If a character has multiple knowledge skills with the same name, they can optionally be folded in to one another by clicking the Collapse button on the right side of the skill. 
+	| Only debug life modules have been created thus far; any assistance in writing up the data for this would be greatly appreciated. 
+	| Selecting Life Modules will pre-generate a Background for your character. This can still be edited normally, but makes for a useful springboard. Development is still in the early stages, but is more or less functional. Full thanks to joha4270 for implementing this.
 
 Data Change:
 - Priviliged Family Name's SIN requirement changed to National or Corporate, rather than Corporate (Limited).
@@ -13,6 +20,17 @@ Data Change:
 - Casemods can be removed from Cyberware.
 - Living Focus and Keratin Control have been added to the Street Grimoire book. The Shadowrun Forum Post 1 book has been removed.
 - German Language files from Haekel on Reddit have been included.
+
+New Strings:
+- Label_SelectBP_StartingKarma
+- Label_SelectBP_SumToX
+- String_Improvement_SelectOptionalPower
+- String_All
+- String_LifeModule
+- String_Life_Module
+- Label_Stage
+- Tip_CombineItems
+- Tip_SplitItems
 
 Build 169:
 Application Change:

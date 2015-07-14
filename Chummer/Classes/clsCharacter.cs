@@ -115,7 +115,8 @@ namespace Chummer
         private bool _blnCreated = false;
 
         // Build Points
-        private int _intBuildPoints = 400;
+	    private int _intSumtoTen = 10;
+        private int _intBuildPoints = 800;
         private int _intKnowledgeSkills = 0;
         private int _intKnowledgeSkillPoints = 0;
         private int _intSkillPoints = 0;
@@ -463,9 +464,10 @@ namespace Chummer
             objWriter.WriteElementString("startingnuyen", _intStartingNuyen.ToString());
             // <adeptwaydiscount />
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
-
-            // <buildpoints />
-            objWriter.WriteElementString("bp", _intBuildPoints.ToString());
+			// <sumtoten />
+			objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString());
+			// <buildpoints />
+			objWriter.WriteElementString("bp", _intBuildPoints.ToString());
             // <buildkarma />
             objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString());
             // <buildmethod />
@@ -1377,8 +1379,11 @@ namespace Chummer
             {
             }
 
-            // Build Points/Karma.
-            _intBuildPoints = Convert.ToInt32(objXmlCharacter["bp"].InnerText);
+			// Sum to X point value.
+			_intSumtoTen = Convert.ToInt32(objXmlCharacter["sumtoten"].InnerText);
+
+			// Build Points/Karma.
+			_intBuildPoints = Convert.ToInt32(objXmlCharacter["bp"].InnerText);
             try
             {
                 _intBuildKarma = Convert.ToInt32(objXmlCharacter["buildkarma"].InnerText);
@@ -2980,7 +2985,8 @@ namespace Chummer
         /// </summary>
         private void ResetCharacter()
         {
-            _intBuildPoints = 400;
+            _intBuildPoints = 800;
+	        _intSumtoTen = 10;
             _intKnowledgeSkills = 0;
             _intKnowledgeSkillPoints = 0;
             _intSkillPoints = 0;
@@ -6096,10 +6102,24 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Amount of Karma that is used to create the character.
-        /// </summary>
-        public int BuildKarma
+		/// <summary>
+		/// Number of Build Points that are used to create the character.
+		/// </summary>
+		public int SumtoTen
+		{
+			get
+			{
+				return _intSumtoTen;
+			}
+			set
+			{
+				_intSumtoTen = value;
+			}
+		}
+		/// <summary>
+		/// Amount of Karma that is used to create the character.
+		/// </summary>
+		public int BuildKarma
         {
             get
             {

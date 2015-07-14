@@ -190,13 +190,25 @@ namespace Chummer
             XmlNodeList objXmlCyberwareList;
 			List<ListItem> lstCyberwares = new List<ListItem>();
 
-			if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") || cboCategory.SelectedValue.ToString() == "Symbiont" || cboCategory.SelectedValue.ToString() == "Genetic Infusions" || _blnLockGrade)
-				cboGrade.Enabled = false;
-			else
-				cboGrade.Enabled = true;
+	        if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
+	            cboCategory.SelectedValue.ToString() == "Symbionts" || 
+				cboCategory.SelectedValue.ToString() == "Genemods" ||
+	            _blnLockGrade)
+	        {
+		        cboGrade.Enabled = false;
 
-			if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") || cboCategory.SelectedValue.ToString() == "Symbiont" || cboCategory.SelectedValue.ToString() == "Genetic Infusions")
-				cboGrade.SelectedValue = "Standard";
+	        }
+	        else
+	        {
+		        cboGrade.Enabled = true;
+	        }
+
+	        if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
+	            cboCategory.SelectedValue.ToString() == "Symbionts" || 
+				cboCategory.SelectedValue.ToString() == "Genemods")
+	        {
+		        cboGrade.SelectedValue = "Standard";
+	        }
 
             // Retrieve the list of Cyberware for the selected Category.
 			if (_blnShowOnlySubsystems)
@@ -262,8 +274,6 @@ namespace Chummer
 				cboGrade.SelectedValue = objXmlCyberware["forcegrade"].InnerText;
 				cboGrade.Enabled = false;
 			}
-			else
-				cboGrade.Enabled = true;
 
 			string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
 			string strPage = objXmlCyberware["page"].InnerText;

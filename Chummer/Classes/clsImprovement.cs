@@ -2682,11 +2682,11 @@ namespace Chummer
 				 * abominations
 				 */
 
-				/*
+				
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "weaponcategorydv");
 				objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 					"weaponcategorydv = " + bonusNode.OuterXml.ToString());
-                        XmlNodeList objXmlCategoryList = nodBonus.SelectNodes("weaponcategorydv");
+                        XmlNodeList objXmlCategoryList = bonusNode.SelectNodes("weaponcategorydv");
 				XmlNode nodWeapon = bonusNode;
 
                         if (NodeExists(nodWeapon, "selectskill"))
@@ -2773,7 +2773,6 @@ namespace Chummer
 							Improvement.ImprovementType.WeaponCategoryDV, strUnique, ValueToInt(objXmlCategory["bonus"].InnerXml, intRating));
                             }
                         }
-				 * */
                     }
 
                     // Check for Mentor Spirit bonuses.
@@ -4416,7 +4415,7 @@ namespace Chummer
                         CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
                     }
 					// Select an Optional Power.
-	                if (nodBonus.SelectNodes("optionalpowers/optionalpower").Count > 0)
+	                if (bonusNode.SelectNodes("optionalpowers/optionalpower").Count > 0)
 	                {
 		                XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
 						//objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager","selectoptionalpower");
@@ -4425,7 +4424,7 @@ namespace Chummer
 						//frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
 
 						List<string> strValue = new List<string>();
-						foreach (XmlNode objXmlOptionalPower in nodBonus["optionalpowers"].SelectNodes("optionalpower"))
+						foreach (XmlNode objXmlOptionalPower in bonusNode["optionalpowers"].SelectNodes("optionalpower"))
 		                {
 			                strValue.Add(objXmlOptionalPower.InnerText);
 		                }
@@ -4451,7 +4450,6 @@ namespace Chummer
 						if (frmPickPower.DialogResult == DialogResult.Cancel)
 						{
 							Rollback();
-							blnSuccess = false;
 							_strForcedValue = "";
 							_strLimitSelection = "";
 							return false;
@@ -4471,7 +4469,7 @@ namespace Chummer
 
 						objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
 						_objCharacter.CritterPowers.Add(objPower);
-					}
+					
 				}
 
 			//nothing went wrong, so return true

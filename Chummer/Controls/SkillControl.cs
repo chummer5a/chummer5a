@@ -560,7 +560,9 @@ namespace Chummer
 		#endregion
 
 		#region Properties
-
+		/// <summary>
+		/// Controls whe.
+		/// </summary>
 		private bool type
 		{
 			get

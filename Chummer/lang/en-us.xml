@@ -2064,7 +2064,7 @@
 		</string>	
 		<string>
 			<key>Message_SumtoTen</key>
-			<text>Your Priority selection must equal 10. It is currently {0}.</text>
+			<text>Your Priority selection must equal {0}. It is currently {1}.</text>
 		</string>		
 		<string>
 			<key>MessageTitle_ExtraKarma</key>
@@ -6416,7 +6416,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Label_SelectBP_MaxAvail</key>
-			<text>Max Avail.:</text>
+			<text>Maximum\nAvailability</text>
+		</string>
+		<string>
+			<key>Label_SelectBP_StartingKarma</key>
+			<text>Starting\nKarma</text>
+		</string>
+		<string>
+			<key>Label_SelectBP_SumToX</key>
+			<text>Sum to Ten</text>
 		</string>
 		<string>
 			<key>Checkbox_SelectBP_IgnoreRules</key>

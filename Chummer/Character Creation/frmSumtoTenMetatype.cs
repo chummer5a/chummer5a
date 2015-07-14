@@ -876,9 +876,9 @@ namespace Chummer
         /// </summary>
         void MetatypeSelected()
         {
-            if (SumtoTen() != 10) 
+            if (SumtoTen() != _objCharacter.SumtoTen) 
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_SumtoTen").Replace("{0}", (SumtoTen().ToString())));
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_SumtoTen").Replace("{0}", (_objCharacter.SumtoTen.ToString())).Replace("{1}", (SumtoTen().ToString())));
                 return;
             }
             if (cboTalents.SelectedIndex == -1)
