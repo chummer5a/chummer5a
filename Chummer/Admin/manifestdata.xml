@@ -3,7 +3,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.170</version>
+		<version>0.0.5.170.1</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -287,6 +287,14 @@
 		<description>Licenses</description>
 		<notes>- Licenses data file</notes>
 		<url>https://www.dropbox.com/s/n0vkxkw87qd9588/licenses.xml?dl=1</url>
+	</file>
+	<file>
+		<name>data/lifemodules.xml</name>
+		<type>Data Files</type>
+		<version>-999</version>
+		<description>Lifestyles</description>
+		<notes>- Lifestyles data file</notes>
+		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
 	</file>
 	<file>
 		<name>data/lifestyles.xml</name>

@@ -1380,8 +1380,13 @@ namespace Chummer
             }
 
 			// Sum to X point value.
-			_intSumtoTen = Convert.ToInt32(objXmlCharacter["sumtoten"].InnerText);
-
+			try
+			{
+				_intSumtoTen = Convert.ToInt32(objXmlCharacter["sumtoten"].InnerText);
+			}
+			catch
+			{
+			}
 			// Build Points/Karma.
 			_intBuildPoints = Convert.ToInt32(objXmlCharacter["bp"].InnerText);
             try
