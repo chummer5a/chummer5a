@@ -1,3 +1,19 @@
+Build 171:
+Application Change:
+- Fixed an issue with Priority characters not loading properly. Malformed XML file.
+
+Data Change:
+- Accuracy for the Cougar Fine Blades altered. 
+- Chakram weapon added.
+- The PPSK-4 has had a Collapsed Frame accessory added to it that confers -6 Concealability to represent the collapsible box thing you can put it in. Accessory mods can also no longer be installed on the gun.
+- Blowgun range changed.
+- Sound suppressor added to the Barret.
+- Missing Ammo from Run and Gun added.
+- Skilljacks and Skillwires have had their costs adjusted to match Chrome Flesh values, because apparently errata isn't a thing that's done these days. 
+- Wireless Skillsoft Networks have been added as Lifestyle Qualities. Yes, Advanced Lifestyles are still a little broken. It's on the list. 
+
+IMPORTANT NOTE:.NET 4.5.1 IS CURRENTLY A REQUIRED COMPONENT. CHUMMER WILL CRASH ON VERSIONS BELOW 4.5.1.
+
 Build 170:
 Application Change:
 - Metasapient cost is properly counted in Sum to Ten and Priority.

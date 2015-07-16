@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-384</version>
+  <version>-380</version>
   <grades>
     <grade>
       <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
@@ -243,7 +243,7 @@
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 2</avail>
-      <cost>Rating * 20000</cost>
+      <cost>Rating * 10000</cost>
       <bonus>
         <skillsoftaccess />
       </bonus>
@@ -671,9 +671,9 @@
       <name>Skillwires</name>
       <category>Bodyware</category>
       <rating>6</rating>
-      <ess>Rating * 0.1</ess>
+      <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
-      <avail>(Rating * 4)</avail>
+      <avail>(Rating * 3)</avail>
       <cost>Rating * 20000</cost>
       <bonus>
         <skillwire>Rating</skillwire>
@@ -1393,7 +1393,7 @@
 			<rating>10</rating>
 			<ess>0.1</ess>
 			<capacity>[1]</capacity>
-			<avail>-</avail>
+			<avail>0</avail>
 			<cost>Rating * 100</cost>
 			<source>CF</source>
 			<page>73</page>

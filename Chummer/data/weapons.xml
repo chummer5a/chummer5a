@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-380</version>
+	<version>-375</version>
 	<categories>
 		<category>Blades</category>
 		<category>Clubs</category>
@@ -838,7 +838,7 @@
 			<type>Melee</type>
 			<spec>Swords</spec>
 			<conceal>2</conceal>
-			<accuracy>6</accuracy>
+			<accuracy>7</accuracy>
 			<reach>0</reach>
 			<damage>(STR+3)P</damage>
 			<ap>-1</ap>
@@ -858,7 +858,7 @@
 			<type>Melee</type>
 			<spec>Swords</spec>
 			<conceal>0</conceal>
-			<accuracy>6</accuracy>
+			<accuracy>7</accuracy>
 			<reach>0</reach>
 			<damage>(STR+2)P</damage>
 			<ap>-1</ap>
@@ -2571,6 +2571,27 @@
 			<page>424</page>
 		</weapon>
 		<weapon>
+			<id>AB91307F-B8D1-46E5-A3C1-9A0047F5B1EF</id>
+			<name>Chakram</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>(STR)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>8R</avail>
+			<cost>750</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Thrown Knife</range>
+			<source>RG</source>
+			<page>20</page>
+		</weapon>
+		<weapon>
 			<id>f096953c-1418-4dd3-887b-71c6a4436583</id>
 			<name>Throwing Knife</name>
 			<category>Gear</category>
@@ -4088,9 +4109,10 @@
 			<ammo>30(c)</ammo>
 			<avail>17F</avail>
 			<cost>2800</cost>
-			<allowaccessory>true</allowaccessory>
+			<allowaccessory>false</allowaccessory>
 			<accessorymounts/>
 			<accessories>
+				<accessory>Collapsed Frame</accessory>
 				<accessory>Folding Stock</accessory>
 				<accessory>Laser Sight</accessory>
 			</accessories>
@@ -4837,6 +4859,7 @@
 			<accessories>
 				<accessory>Bipod</accessory>
 				<accessory>Smartgun System, Internal</accessory>
+				<accessory>Sound Suppressor</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>40</page>
@@ -5154,7 +5177,7 @@
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts/>
 			<useskill>Exotic Ranged Weapon</useskill>
-			<range>Shuriken</range>
+			<range>Tasers</range>
 			<source>RG</source>
 			<page>26</page>
 		</weapon>
@@ -6731,6 +6754,16 @@
 			<id>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</id>
 			<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
 			<mount>Barrel</mount>
+			<avail>6F</avail>
+			<cost>700</cost>
+			<source>RG</source>
+			<page>32</page>
+		</accessory>
+		<accessory>
+			<id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>
+			<name>Collapsed Frame</name>
+			<mount>Internal</mount>
+			<conceal>-6</conceal>
 			<avail>6F</avail>
 			<cost>700</cost>
 			<source>RG</source>

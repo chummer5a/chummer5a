@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-399</version>
+  <version>-395</version>
   <categories>
     <category>Ammunition</category>
     <category>Armor Enhancements</category>
@@ -640,8 +640,59 @@
       <source>RG</source>
       <page>28</page>
     </gear>
+		<gear>
+			<id>608324BB-E4CE-40B7-AC76-FF3F67B2C8E0</id>
+			<name>Ammo: Fuel Canister</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>16F</avail>
+			<costfor>4</costfor>
+			<cost>40</cost>
+			<source>RG</source>
+			<page>55</page>
+		</gear>
+		<gear>
+			<id>8C9AE7B4-EF1F-4983-9008-795D3592B417</id>
+			<name>Ammo: AV Rounds</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<bonus>
+				<ap>-1</ap>
+			</bonus>
+			<avail>14R</avail>
+			<costfor>10</costfor>
+			<cost>175</cost>
+			<source>RG</source>
+			<page>55</page>
+		</gear>
+		<gear>
+			<id>911BB20E-E325-4399-8F7A-82FDCE13AE51</id>
+			<name>Ammo: Gyrojet</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<bonus>
+				<damage>-2S(e)</damage>
+				<ap>-5</ap>
+			</bonus>
+			<avail>15</avail>
+			<costfor>10</costfor>
+			<cost>160</cost>
+			<source>RG</source>
+			<page>28</page>
+		</gear>
+		<gear>
+			<id>FE737992-B03B-484C-8F5C-B3BD554B9381</id>
+			<name>Ammo: Gauss</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>18F</avail>
+			<costfor>10</costfor>
+			<cost>400</cost>
+			<source>RG</source>
+			<page>55</page>
+		</gear>
     <gear>
-      <id>03900ccd-ebb0-492e-a0bc-90e4b4492a85</id>
+			<id></id>
       <name>Net Gun Reload (Standard)</name>
       <category>Ammunition</category>
       <rating>0</rating>

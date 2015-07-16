@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-921</version>
+	<version>-915</version>
 	<categories>
 	<category>Entertainment - Asset</category>
 	<category>Entertainment - Service</category>
@@ -780,6 +780,39 @@
 			<lp>-1</lp>
 			<source>RF</source>
 			<page>226</page>
-		</quality>		
+		</quality>
+		<!--Chrome Flesh -->
+		<quality>
+			<name>Basic Skillsoft Network</name>
+			<category>Positive</category>
+			<lp>0</lp>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</quality>
+		<quality>
+			<name>Silver Skillsoft Network</name>
+			<category>Positive</category>
+			<lp>0</lp>
+			<cost>10000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</quality>
+		<quality>
+			<name>Gold Skillsoft Network</name>
+			<category>Positive</category>
+			<lp>0</lp>
+			<cost>15000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</quality>
+		<quality>
+			<name>Platinum Skillsoft Network</name>
+			<category>Positive</category>
+			<lp>0</lp>
+			<cost>20000</cost>
+			<source>CF</source>
+			<page>78</page>
+		</quality>
 	</qualities>
 </chummer>

@@ -220,7 +220,7 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 
 				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
-				XmlNode objXmlMetatypeBP = objXmlDocumentPriority.SelectSingleNode("/chummer/sum10priorities/sumtoten[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
+				XmlNode objXmlMetatypeBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
 				
 				if (objXmlMetatypeBP["karma"] != null)
 				{
@@ -230,6 +230,7 @@ namespace Chummer
 				{
 					lblMetavariantBP.Text = "0";
 				}
+
 				if (objXmlMetatype["forcecreature"] == null)
 				{
 					lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);

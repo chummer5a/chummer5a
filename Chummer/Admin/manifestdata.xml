@@ -3,7 +3,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.170.1</version>
+		<version>0.0.5.171</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -251,7 +251,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-384</version>
+		<version>-380</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -267,7 +267,7 @@
 	<file>
 		<name>data/gear.xml</name>
 		<type>Data Files</type>
-		<version>-399</version>
+		<version>-395</version>
 		<description>Gear</description>
 		<notes>- Gear data file</notes>
 		<url>https://www.dropbox.com/s/qp3vbk0jy902ynt/gear.xml?dl=1</url>
@@ -299,7 +299,7 @@
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-921</version>
+		<version>-915</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -451,7 +451,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>-375</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>
