@@ -21,4 +21,7 @@
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Legacy|x86'">
+    <StartArguments>/debug</StartArguments>
+  </PropertyGroup>
 </Project>
