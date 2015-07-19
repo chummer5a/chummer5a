@@ -127,6 +127,7 @@ namespace Chummer
         private decimal _decNuyenBP = 0m;
         private int _intBuildKarma = 0;
         private int _intAdeptWayDiscount = 0;
+	    private int _intGameplayOptionQualityLimit = 25;
         private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
         // Metatype Information.
@@ -474,8 +475,10 @@ namespace Chummer
             objWriter.WriteElementString("buildmethod", _objBuildMethod.ToString());
             // <gameplayoption />
             objWriter.WriteElementString("gameplayoption", _strGameplayOption);
-            // <maxnuyen />
-            objWriter.WriteElementString("maxnuyen", _intMaxNuyen.ToString());
+			// <gameplayoptionqualitylimit />
+			objWriter.WriteElementString("gameplayoptionqualitylimit", _intGameplayOptionQualityLimit.ToString());
+			// <maxnuyen />
+			objWriter.WriteElementString("maxnuyen", _intMaxNuyen.ToString());
             // <maxkarma />
             objWriter.WriteElementString("maxkarma", _intMaxKarma.ToString());
             // <contactmultiplier />
@@ -1406,7 +1409,15 @@ namespace Chummer
             catch
             {
             }
-            try
+			//Maximum number of Karma that can be spent/gained on Qualities.
+			try
+			{
+				_intGameplayOptionQualityLimit = Convert.ToInt32(objXmlCharacter["gameplayoptionqualitylimit"].InnerText);
+			}
+			catch
+			{
+			}
+			try
             {
                 _objBuildMethod = ConvertToCharacterBuildMethod(objXmlCharacter["buildmethod"].InnerText);
             }
@@ -2164,7 +2175,7 @@ namespace Chummer
             // load issue where the contact multiplier was set to 0
             if (_intContactMultiplier == 0 && _strGameplayOption != string.Empty)
             {
-                XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load("priorities.xml");
+                XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load("gameplayoptions.xml");
                 XmlNode objXmlGameplayOption = objXmlDocumentPriority.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
                 string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
@@ -3008,6 +3019,7 @@ namespace Chummer
             _intTotalSpecial = 0;
             _intAttributes = 0;
             _intTotalAttributes = 0;
+	        _intGameplayOptionQualityLimit = 25;
 
             // Reset Metatype Information.
             _strMetatype = "";
@@ -3521,10 +3533,25 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Character's maximum karma at character creation.
-        /// </summary>
-        public int MaxKarma
+		/// <summary>
+		/// Quality Limit conferred by the Character's Gameplay Option
+		/// </summary>
+		public int GameplayOptionQualityLimit
+		{
+			get
+			{
+				return _intGameplayOptionQualityLimit;
+			}
+			set
+			{
+				_intGameplayOptionQualityLimit = value;
+			}
+		}
+
+		/// <summary>
+		/// Character's maximum karma at character creation.
+		/// </summary>
+		public int MaxKarma
         {
             get
             {
@@ -4926,13 +4953,13 @@ namespace Chummer
                 intINI += _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + WoundModifiers;
 
                 // If INI exceeds the Metatype maximum set it back to the maximum.
-                if (intINI > _attINI.MetatypeAugmentedMaximum)
-                    intINI = _attINI.MetatypeAugmentedMaximum;
+                //if (intINI > _attINI.MetatypeAugmentedMaximum)
+                //    intINI = _attINI.MetatypeAugmentedMaximum;
                 if (intINI < 0)
                     intINI = 0;
-                //if (_attINT.Value + _attREA.Value != intINI)
-                //    strReturn = (_attINT.Value + _attREA.Value).ToString() + " (" + intINI.ToString() + ")";
-                //else
+                if (_attINT.Value + _attREA.Value != intINI)
+                    strReturn = (_attINT.Value + _attREA.Value).ToString() + " (" + intINI.ToString() + ")";
+                else
                 strReturn = (intINI).ToString();
 
                 int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));

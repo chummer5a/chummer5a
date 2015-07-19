@@ -5244,9 +5244,14 @@
 			<karma>6</karma>
 			<category>Positive</category>
 			<bonus>
-				<selectskill limittoskill="Diving, Swimming">
-					<val>2</val>
-				</selectskill>
+				<specificskill>
+					<name>Diving</name>
+					<bonus>2</bonus>
+				</specificskill>
+				<specificskill>
+					<name>Swimming</name>
+					<bonus>2</bonus>
+				</specificskill>
 			</bonus>
 			<source>RF</source>
 			<page>151</page>

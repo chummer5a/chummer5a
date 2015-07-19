@@ -6153,15 +6153,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedPositiveQualities</key>
-			<text>Allow characters to exceed 35 Karma worth of Positive Qualities</text>
+			<text>Allow characters to exceed their Positive Quality limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Allow characters to exceed 35 Karma worth of Negative Qualities</text>
+			<text>Allow characters to exceed their Positive Quality limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-			<text>Characters only receive up to 35 Karma from Negative Qualities</text>
+			<text>Characters do not gain Karma from taking Negative Qualities in excess of their Gameplay Option's limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StartupFullscreen</key>

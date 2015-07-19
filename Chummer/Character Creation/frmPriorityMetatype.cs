@@ -1598,7 +1598,6 @@ namespace Chummer
                 XmlNodeList objXmlTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
                 if (objXmlTalentList[0]["magic"] != null)
                 {
-                    _objCharacter.MAG.Value = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
                     _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
                     if (_objCharacter.MAG.Value > 0)
                         _objCharacter.MAGEnabled = true;
@@ -1619,7 +1618,6 @@ namespace Chummer
                 objXmlTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
                 if (objXmlTalentList[0]["resonance"] != null)
                 {
-                    _objCharacter.RES.Value = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
                     _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
                     _objCharacter.RESEnabled = true;
                     _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);
@@ -1763,9 +1761,10 @@ namespace Chummer
                     _objCharacter.SkillGroupPointsMaximum = _objCharacter.SkillGroupPoints;
                 }
 
-                // Load the Priority information.
-                XmlNode objXmlGameplayOption = objXmlDocumentPriority.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
-                string strKarma = objXmlGameplayOption["karma"].InnerText;
+				// Load the Priority information.
+				XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
+				XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
+				string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
                 string strContactMultiplier = objXmlGameplayOption["contactmultiplier"].InnerText;
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
