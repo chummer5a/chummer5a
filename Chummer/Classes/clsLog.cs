@@ -19,7 +19,7 @@ namespace Chummer
 			if (GlobalOptions.Instance.UseLogging)
 			{
 				//TODO: Add listner to UseLogging to be able to start it mid run
-				string strFile = Application.StartupPath + Path.DirectorySeparatorChar + "chummerlog.txt";
+				string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
 				logWriter = new StreamWriter(strFile);
 				stringBuilder = new StringBuilder();
 				logEnabled = true;
@@ -36,9 +36,15 @@ namespace Chummer
 		public static void Enter
 		(
 			object[] info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 		)
 		{
 			writeLog(info, file, method, line, "Entering ");
@@ -54,9 +60,15 @@ namespace Chummer
 		public static void Enter
 		(
 			string info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 		)
 		{
 			writeLog(new object[] {info}, file, method, line, "Entering ");
@@ -72,9 +84,15 @@ namespace Chummer
 		public static void Exit
 		(
 			string info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 		)
 		{
 			writeLog(new object[]{info},file, method, line, "Exiting   ");
@@ -90,9 +108,15 @@ namespace Chummer
 		public static void Error
 			(
 			object[] info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(info,file, method, line, "Error     ");
@@ -108,9 +132,15 @@ namespace Chummer
 		public static void Error
 			(
 			object info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(new object[]{info},file, method, line, "Error     ");
@@ -149,9 +179,15 @@ namespace Chummer
 		public static void Warning
 			(
 			object[] info= null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(info, file, method, line, "Warning   ");
@@ -167,9 +203,15 @@ namespace Chummer
 		public static void Warning
 			(
 			object info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(new object[]{info},file, method, line, "Warning   ");
@@ -185,9 +227,15 @@ namespace Chummer
 		public static void Info
 			(
 			object[] info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(info,file, method, line, "Info      ");
@@ -203,9 +251,15 @@ namespace Chummer
 		public static void Info
 			(
 			String info = null,
+#if LEGACY
+			string file = "LEGACY",
+			string method = "LEGACY",
+			int line = 0
+#else
 			[CallerFilePath] string file = "",
 			[CallerMemberName] string method = "",
 			[CallerLineNumber] int line = 0
+#endif
 			)
 		{
 			writeLog(new object[]{info},file, method, line, "Info      ");

@@ -254,7 +254,7 @@ namespace Chummer
 		/// <param name="strPrefix">Prefix to attach to the decompressed files.</param>
 		public void DecompressDataFile(byte[] bytBuffer, string strPrefix)
 		{
-			string strFilePath = Path.Combine(Application.StartupPath, "data");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "data");
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
 			Package objPackage = ZipPackage.Open(objStream, FileMode.Open, FileAccess.Read);
@@ -286,7 +286,7 @@ namespace Chummer
 		/// /// <param name="bytBuffer">Byte array that contains the zip file.</param>
 		public void DecompressCharacterSheet(byte[] bytBuffer)
 		{
-			string strFilePath = Path.Combine(Application.StartupPath, "sheets");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "sheets");
 			strFilePath = Path.Combine(strFilePath, "omae");
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
@@ -317,7 +317,7 @@ namespace Chummer
 		/// <param name="bytBuffer">Byte array that contains the zip file.</param>
 		public void DecompressNPCs(byte[] bytBuffer)
 		{
-			string strFilePath = Path.Combine(Application.StartupPath, "saves");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "saves");
 
 			// If the directory does not exist, create it.
 			if (!Directory.Exists(strFilePath))
@@ -365,7 +365,7 @@ namespace Chummer
 		/// <param name="strExtract">Zip file to extract from.</param>
 		public void DecompressNPCs(string strExtract)
 		{
-			string strFilePath = Path.Combine(Application.StartupPath, "saves");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "saves");
 
 			// If the directory does not exist, create it.
 			if (!Directory.Exists(strFilePath))

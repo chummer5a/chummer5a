@@ -143,7 +143,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Sprite_LinkSprite"));
 
 				// Set the relative path.
-				Uri uriApplication = new Uri(@Application.StartupPath);
+				Uri uriApplication = new Uri(@Environment.CurrentDirectory);
 				Uri uriFile = new Uri(@_objSpirit.FileName);
 				Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
 				_objSpirit.RelativeFileName = "../" + uriRelative.ToString();

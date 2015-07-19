@@ -311,6 +311,17 @@ namespace Chummer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chummer5a is currently running in legacy mode.
+        /// While this is possible, the Chummer5a team won&apos;t provide support if anything goes wrong
+        /// This feature may be removed without warning.
+        /// </summary>
+        internal static string Disclaimer {
+            get {
+                return ResourceManager.GetString("Disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap disk {

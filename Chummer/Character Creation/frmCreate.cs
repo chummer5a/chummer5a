@@ -21249,8 +21249,8 @@ namespace Chummer
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
-                    if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "backup")))
-                        Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "backup"));
+                    if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "saves", "backup")))
+                        Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "saves", "backup"));
 
                     string strFileName = _objCharacter.FileName;
                     string[] strParts = strFileName.Split(Path.DirectorySeparatorChar);
@@ -21265,7 +21265,7 @@ namespace Chummer
                         strNewName += " (" + LanguageManager.Instance.GetString("Title_CreateMode") + ").chum5";
                     }
 
-                    strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
+                    strNewName = Path.Combine(Environment.CurrentDirectory, "saves", "backup", strNewName);
 
                     _objCharacter.FileName = strNewName;
                     _objCharacter.Save();

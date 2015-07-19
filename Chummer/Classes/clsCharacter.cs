@@ -2298,14 +2298,14 @@ namespace Chummer
             string strMugshotPath = "";
             if (_strMugshot != "")
             {
-                if (!Directory.Exists(Application.StartupPath + Path.DirectorySeparatorChar + "mugshots"))
-                    Directory.CreateDirectory(Application.StartupPath + Path.DirectorySeparatorChar + "mugshots");
+                if (!Directory.Exists(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots"))
+                    Directory.CreateDirectory(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots");
                 byte[] bytImage = Convert.FromBase64String(_strMugshot);
                 MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
                 objImageStream.Write(bytImage, 0, bytImage.Length);
                 Image imgMugshot = Image.FromStream(objImageStream, true);
-                imgMugshot.Save(Application.StartupPath + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img");
-                strMugshotPath = "file://" + (Application.StartupPath + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img").Replace(Path.DirectorySeparatorChar, '/');
+                imgMugshot.Save(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img");
+                strMugshotPath = "file://" + (Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img").Replace(Path.DirectorySeparatorChar, '/');
             }
             // <mugshot />
             objWriter.WriteElementString("mugshot", strMugshotPath);

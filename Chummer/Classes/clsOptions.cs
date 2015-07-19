@@ -114,8 +114,8 @@ namespace Chummer
 		#region Constructor and Instance
 		static GlobalOptions()
 		{
-			if (!Directory.Exists(Path.Combine(Application.StartupPath, "settings")))
-				Directory.CreateDirectory(Path.Combine(Application.StartupPath, "settings"));
+			if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "settings")))
+				Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "settings"));
 
 			// Automatic Update.
 			try
@@ -277,9 +277,7 @@ namespace Chummer
 			BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
 		}
 
-		GlobalOptions()
-		{
-		}
+		
 
 		/// <summary>
 		/// Global instance of the GlobalOptions.
@@ -943,11 +941,11 @@ namespace Chummer
 		public CharacterOptions()
 		{
 			// Create the settings directory if it does not exist.
-			if (!Directory.Exists(Path.Combine(Application.StartupPath, "settings")))
-				Directory.CreateDirectory(Path.Combine(Application.StartupPath, "settings"));
+			if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "settings")))
+				Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "settings"));
 
 			// If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
-			string strFilePath = Path.Combine(Application.StartupPath, "settings");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
 			strFilePath = Path.Combine(strFilePath, "default.xml");
 			if (!File.Exists(strFilePath))
 			{
@@ -970,7 +968,7 @@ namespace Chummer
 		/// </summary>
 		public void Save()
 		{
-			string strFilePath = Path.Combine(Application.StartupPath, "settings");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
 			strFilePath = Path.Combine(strFilePath, _strFileName);
 			FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
@@ -1293,7 +1291,7 @@ namespace Chummer
 		public bool Load(string strFileName)
 		{
 			_strFileName = strFileName;
-			string strFilePath = Path.Combine(Application.StartupPath, "settings");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
 			strFilePath = Path.Combine(strFilePath, _strFileName);
 			XmlDocument objXmlDocument = new XmlDocument();
 			try

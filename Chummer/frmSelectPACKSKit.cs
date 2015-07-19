@@ -708,7 +708,7 @@ namespace Chummer
 			// Delete the selectec custom PACKS Kit.
 			// Find a custom PACKS Kit with the name. This is done without the XmlManager since we need to check each file individually.
 			XmlDocument objXmlDocument = new XmlDocument();
-			string strCustomPath = Path.Combine(Application.StartupPath, "data");
+			string strCustomPath = Path.Combine(Environment.CurrentDirectory, "data");
 			foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
 			{
 				objXmlDocument.Load(strFile);

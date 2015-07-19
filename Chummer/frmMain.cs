@@ -168,7 +168,7 @@ namespace Chummer
 		{
 			Character objCharacter = new Character();
 
-			if (Directory.GetFiles(Path.Combine(Application.StartupPath, "settings"), "*.xml").Count() > 1)
+			if (Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml").Count() > 1)
 			{
 				frmSelectSetting frmPickSetting = new frmSelectSetting();
 				frmPickSetting.ShowDialog(this);
@@ -180,8 +180,8 @@ namespace Chummer
 			}
 			else
 			{
-				string strSettingsFile = Directory.GetFiles(Path.Combine(Application.StartupPath, "settings"), "*.xml")[0];
-				strSettingsFile = strSettingsFile.Replace(Path.Combine(Application.StartupPath, "settings"), string.Empty);
+				string strSettingsFile = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml")[0];
+				strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
 				strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
 				objCharacter.SettingsFile = strSettingsFile;
 			}
@@ -492,7 +492,7 @@ namespace Chummer
 		{
 			Character objCharacter = new Character();
 
-			if (Directory.GetFiles(Path.Combine(Application.StartupPath, "settings"), "*.xml").Count() > 1)
+			if (Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml").Count() > 1)
 			{
 				frmSelectSetting frmPickSetting = new frmSelectSetting();
 				frmPickSetting.ShowDialog(this);
@@ -504,8 +504,8 @@ namespace Chummer
 			}
 			else
 			{
-				string strSettingsFile = Directory.GetFiles(Path.Combine(Application.StartupPath, "settings"), "*.xml")[0];
-				strSettingsFile = strSettingsFile.Replace(Path.Combine(Application.StartupPath, "settings"), string.Empty);
+				string strSettingsFile = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml")[0];
+				strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
 				strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
 				objCharacter.SettingsFile = strSettingsFile;
 			}

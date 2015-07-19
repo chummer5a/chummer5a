@@ -22,11 +22,11 @@ namespace Chummer
 		{
 			// Build the list of XML files found in the settings directory.
 			List<ListItem> lstSettings = new List<ListItem>();
-			foreach (string strFileName in Directory.GetFiles(Path.Combine(Application.StartupPath, "settings"), "*.xml"))
+			foreach (string strFileName in Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml"))
 			{
 				// Remove the path from the file name.
 				string strSettingsFile = strFileName;
-				strSettingsFile = strSettingsFile.Replace(Path.Combine(Application.StartupPath, "settings"), string.Empty);
+				strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
 				strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
 
 				// Load the file so we can get the Setting name.

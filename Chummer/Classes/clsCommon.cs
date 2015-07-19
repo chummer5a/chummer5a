@@ -1466,7 +1466,7 @@ namespace Chummer
 
             strWriteLine += strLine;
 
-            string strFile = Application.StartupPath + Path.DirectorySeparatorChar + "chummerlog.txt";
+            string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
 
             System.IO.StreamWriter file = new System.IO.StreamWriter(strFile, true);
             file.WriteLine(strWriteLine);
@@ -1479,7 +1479,7 @@ namespace Chummer
             if (!GlobalOptions.Instance.UseLogging)
                 return;
 
-            string strFile = Application.StartupPath + Path.DirectorySeparatorChar + "chummerlog.txt";
+            string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
             File.WriteAllText(strFile, string.Empty);
 
             LogWrite(LogType.Message, "Chummer5", Application.ProductVersion);

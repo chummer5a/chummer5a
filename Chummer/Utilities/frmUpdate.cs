@@ -62,7 +62,7 @@ namespace Chummer
                 this.Close();
 			}
 
-			//if (Application.StartupPath.Contains("\\Debug"))
+			//if (Environment.CurrentDirectory.Contains("\\Debug"))
 			//{
 			//    MessageBox.Show("Cannot run Update from a debug path.");
 			//    this.Close();
@@ -336,7 +336,7 @@ namespace Chummer
                     else
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is another EXE");
-                        FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Application.StartupPath + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText);
+                        FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText);
                         string strVersion = myFileVersionInfo.FileVersion.ToString().Replace(".", "");
                         int intVersion = Convert.ToInt32(strVersion);
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "Existing Version = " + intVersion.ToString());
@@ -355,7 +355,7 @@ namespace Chummer
                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is XML");
                     try
 					{
-						objXmlFileDocument.Load(Application.StartupPath + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
+						objXmlFileDocument.Load(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
 						objXmlFileNode = objXmlFileDocument.SelectSingleNode("/chummer/version");
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "Existing Version = " + Convert.ToInt32(objXmlFileNode.InnerText).ToString());
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "New Version = " + Convert.ToInt32(objXmlNode["version"].InnerText).ToString());
@@ -391,7 +391,7 @@ namespace Chummer
                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is XSL");
                     try
 					{
-						StreamReader objFile = new StreamReader(Application.StartupPath + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
+						StreamReader objFile = new StreamReader(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
 						string strLine = "";
 						while ((strLine = objFile.ReadLine()) != null)
 						{
@@ -454,7 +454,7 @@ namespace Chummer
 							else
 							{
 								// If this is a non-English language file, only select it if the user already has it installed.
-								string strLangPath = Path.Combine(Application.StartupPath, objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
+								string strLangPath = Path.Combine(Environment.CurrentDirectory, objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
 								if (File.Exists(strLangPath))
 									blnChecked = true;
 							}
@@ -512,7 +512,7 @@ namespace Chummer
 
 			// Determine the temporary location for the new executable if it is downloaded.
 			string strNewPath = Path.Combine(Path.GetTempPath(), "chummer5.exe");
-			string strFilePath = Application.StartupPath + Path.DirectorySeparatorChar;
+			string strFilePath = Environment.CurrentDirectory + Path.DirectorySeparatorChar;
             objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "Temp path = " + strNewPath);
 
 			WebClient wc = new WebClient();
@@ -590,8 +590,8 @@ namespace Chummer
 								{
 									wc.Encoding = Encoding.UTF8;
                                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "Download the changelog");
-                                    wc.DownloadFile("https://www.dropbox.com/s/0ugjj17dvi1qrr0/changelog.txt?dl=1", Path.Combine(Application.StartupPath, "changelog.txt"));
-									webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" + File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt")).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />") + "</font>";
+                                    wc.DownloadFile("https://www.dropbox.com/s/0ugjj17dvi1qrr0/changelog.txt?dl=1", Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
+									webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" + File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt")).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />") + "</font>";
 								}
 								catch (Exception ex)
 								{
@@ -640,7 +640,7 @@ namespace Chummer
 		{
             objFunctions.LogWrite(CommonFunctions.LogType.Entering, "frmUpdate", "ValidateFiles");
             bool blnReturn = true;
-			string strFilePath = Application.StartupPath + Path.DirectorySeparatorChar;
+			string strFilePath = Environment.CurrentDirectory + Path.DirectorySeparatorChar;
 			
 			// Loop through all of the root-level nodes in the update tree.
 			foreach (TreeNode nodRoot in treeUpdate.Nodes)
@@ -806,7 +806,7 @@ namespace Chummer
 
 				// Unzip the data files that have been downloaded.
                 //OmaeHelper objHelper = new OmaeHelper();
-                //foreach (string strFile in Directory.GetFiles(Path.Combine(Application.StartupPath, "data"), "*.zip"))
+                //foreach (string strFile in Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "data"), "*.zip"))
                 //{
                 //    objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "strFile = " + strFile);
                 //    try
