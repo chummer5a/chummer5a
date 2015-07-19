@@ -9223,7 +9223,7 @@ namespace Chummer
 						strThisQuality += objNode["name"].InnerText;
 
 
-                    XmlNode nodCost = objNode["lifestylecost"];
+                    XmlNode nodCost = objNode["cost"];
                     if (nodCost != null)
                     {
                         string strCost = nodCost.InnerText;
@@ -9236,11 +9236,6 @@ namespace Chummer
                         {
                             strThisQuality += " [" + intCost.ToString() + "%]";
                         }
-                    }
-                    else
-                    {
-                        string strCost = objNode["cost"].InnerText;
-                        strThisQuality += " [" + strCost + "]";
                     }
 
 					objWriter.WriteElementString("lifestylequality", strThisQuality);

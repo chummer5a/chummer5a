@@ -1659,9 +1659,10 @@ namespace Chummer
                     _objCharacter.SkillGroupPointsMaximum = _objCharacter.SkillGroupPoints;
                 }
 
-                // Load the SumtoTen information.
-                XmlNode objXmlGameplayOption = objXmlDocumentSumtoTen.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
-                string strKarma = objXmlGameplayOption["karma"].InnerText;
+				// Load the SumtoTen information.
+				XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
+				XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
+				string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
                 string strContactMultiplier = objXmlGameplayOption["contactmultiplier"].InnerText;
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);

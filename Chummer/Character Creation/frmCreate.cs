@@ -125,11 +125,8 @@ namespace Chummer
                 {
                     _objCharacter.GameplayOption = "Standard";
                 }
-                XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(
-                    _objCharacter.BuildMethod == CharacterBuildMethod.Priority ? 
-                    "priorities.xml" :
-                    "SumtoTen.xml");
-                XmlNode objXmlGameplayOption = objXmlDocumentPriority.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
+                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
+                XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
                 string strKarma = objXmlGameplayOption["karma"].InnerText;
                 string strNuyen = objXmlGameplayOption["maxnuyen"].InnerText;
                 if (!_objOptions.FreeContactsMultiplierEnabled)
@@ -7905,7 +7902,6 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickQuality.SelectedQuality + "\"]");
-
             TreeNode objNode = new TreeNode();
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
@@ -7922,8 +7918,8 @@ namespace Chummer
             // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
             string strAmount = "";
             int intMaxQualityAmount = 0;
-            strAmount = "25 " + LanguageManager.Instance.GetString("String_Karma");
-            intMaxQualityAmount = 25;
+            strAmount = _objCharacter.GameplayOptionQualityLimit.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            intMaxQualityAmount = _objCharacter.GameplayOptionQualityLimit;
 
             // Make sure that adding the Quality would not cause the character to exceed their BP limits.
             int intBP = 0;
@@ -15804,6 +15800,24 @@ namespace Chummer
                     for (int i = 1; i <= objSkillControl.SkillKarma; i++)
                     {
                         intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill);
+	                    if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
+	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") ||
+	                        (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+	                    {
+		                    intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
+	                    }
+						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that.
+	                    if (_objCharacter.JackOfAllTrades)
+	                    {
+		                    if (i <= 5)
+		                    {
+			                    intPointsUsed -= 1;
+		                    }
+		                    else
+		                    {
+			                    intPointsUsed += 2; 
+		                    }
+	                    }
                     }
                     if (objSkillControl.SkillSpec != "" && objSkillControl.BuyWithKarma && !objSkillControl.SkillObject.ExoticSkill)
                         intPointsRemain -= _objCharacter.Options.KarmaSpecialization;
@@ -15833,6 +15847,11 @@ namespace Chummer
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intPointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
+	                    if (_objCharacter.JackOfAllTrades)
+	                    {
+							intPointsRemain += 1;
+							intPointsUsed -= 1;
+						}
                         //Subsequent levels of skills
                         for (int i = objSkillControl.SkillRatingMinimum + 2; i <= objSkillControl.SkillRating; i++)
                         {
@@ -15846,7 +15865,21 @@ namespace Chummer
                                 intPointsRemain -= i * _objOptions.KarmaImproveActiveSkill;
                                 intPointsUsed += i * _objOptions.KarmaImproveActiveSkill;
                             }
-                        }
+
+							if (_objCharacter.JackOfAllTrades)
+							{
+								if (objSkillControl.SkillRating <= 5)
+								{
+									intPointsRemain += 1;
+									intPointsUsed -= 1;
+								}
+								else
+								{
+									intPointsRemain -= 2;
+									intPointsUsed += 2;
+								}
+							}
+						}
 
                         // If the ability to break Skill Groups is enabled, refund the cost of the first X points of the Skill, where X is the minimum Rating for all Skill that used to a part of the Group.
                         if (_objOptions.BreakSkillGroupsInCreateMode)

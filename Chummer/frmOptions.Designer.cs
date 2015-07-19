@@ -98,6 +98,7 @@
 			this.tabGeneral = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.chkLifeModule = new System.Windows.Forms.CheckBox();
 			this.cmdURLAppPath = new System.Windows.Forms.Button();
 			this.txtURLAppPath = new System.Windows.Forms.TextBox();
 			this.lblURLAppPath = new System.Windows.Forms.Label();
@@ -244,7 +245,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkLifeModule = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -993,6 +993,17 @@
 			this.tabGlobal.TabIndex = 0;
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
+			// 
+			// chkLifeModule
+			// 
+			this.chkLifeModule.AutoSize = true;
+			this.chkLifeModule.Location = new System.Drawing.Point(9, 61);
+			this.chkLifeModule.Name = "chkLifeModule";
+			this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
+			this.chkLifeModule.TabIndex = 22;
+			this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
+			this.chkLifeModule.Text = "Life modules visible";
+			this.chkLifeModule.UseVisualStyleBackColor = true;
 			// 
 			// cmdURLAppPath
 			// 
@@ -2507,10 +2518,10 @@
 			this.chkExceedNegativeQualities.AutoSize = true;
 			this.chkExceedNegativeQualities.Location = new System.Drawing.Point(366, 118);
 			this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
-			this.chkExceedNegativeQualities.Size = new System.Drawing.Size(316, 17);
+			this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
 			this.chkExceedNegativeQualities.TabIndex = 16;
 			this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
-			this.chkExceedNegativeQualities.Text = "Allow characters to exceed 35 BP worth of Negative Qualities";
+			this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
 			this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
 			this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
 			// 
@@ -2519,10 +2530,10 @@
 			this.chkExceedPositiveQualities.AutoSize = true;
 			this.chkExceedPositiveQualities.Location = new System.Drawing.Point(366, 95);
 			this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
-			this.chkExceedPositiveQualities.Size = new System.Drawing.Size(310, 17);
+			this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
 			this.chkExceedPositiveQualities.TabIndex = 15;
 			this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
-			this.chkExceedPositiveQualities.Text = "Allow characters to exceed 35 BP worth of Positive Qualities";
+			this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
 			this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
 			// 
 			// label3
@@ -2742,17 +2753,6 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
-			// 
-			// chkLifeModule
-			// 
-			this.chkLifeModule.AutoSize = true;
-			this.chkLifeModule.Location = new System.Drawing.Point(9, 61);
-			this.chkLifeModule.Name = "chkLifeModule";
-			this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
-			this.chkLifeModule.TabIndex = 22;
-			this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
-			this.chkLifeModule.Text = "Life modules visible";
-			this.chkLifeModule.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
