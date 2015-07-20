@@ -1733,12 +1733,7 @@ namespace Chummer
         private void SaveRegistrySettings()
         {
             // If we're just now enabling logging, flush the log
-            if (!GlobalOptions.Instance.UseLogging && chkUseLogging.Checked)
-            {
-                CommonFunctions objFunctions = new CommonFunctions();
-                objFunctions.LogFlush();
-            }
-
+            
             // Set Registry values.
             GlobalOptions.Instance.AutomaticUpdate = chkAutomaticUpdate.Checked;
             GlobalOptions.Instance.LocalisedUpdatesOnly = chkLocalisedUpdatesOnly.Checked;
