@@ -449,7 +449,6 @@ namespace Chummer
             if (GlobalOptions.Instance.UseLogging)
             {
 				CommonFunctions objFunctions = new CommonFunctions();
-                objFunctions.LogFlush();
             }
 		}
 

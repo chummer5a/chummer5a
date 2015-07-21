@@ -1424,65 +1424,8 @@ namespace Chummer
         #region Logging Functions
         public void LogWrite(LogType logType, string strClass, string strLine)
         {
-            // Exit if we're not doing logging
-            if (!GlobalOptions.Instance.UseLogging)
-                return;
-
-            // Write the string to a file.append mode is enabled so that the log
-            // lines get appended to  test.txt than wiping content and writing the log
-            string strWriteLine = "";
-            switch (logType)
-            {
-                case LogType.Message:
-                    strWriteLine += ("Message").PadRight(10);
-                    break;
-                case LogType.Alert:
-                    strWriteLine += ("Alert").PadRight(10);
-                    break;
-                case LogType.Error:
-                    strWriteLine += ("Error").PadRight(10);
-                    break;
-                case LogType.Entering:
-                    strWriteLine += ("Entering").PadRight(10);
-                    break;
-                case LogType.Exiting:
-                    strWriteLine += ("Exiting").PadRight(10);
-                    break;
-                case LogType.Content:
-                    strWriteLine += "   ";
-                    break;
-                default:
-                    strWriteLine += ("").PadRight(10);
-                    break;
-            }
+	        Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);
 			
-            if (logType != LogType.Content)
-            {
-                if (strClass.Length > 35)
-                    strWriteLine += strClass.Substring(0, 35).PadRight(40);
-                else
-                    strWriteLine += strClass.PadRight(40);
-            }
-
-            strWriteLine += strLine;
-
-            string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
-
-            System.IO.StreamWriter file = new System.IO.StreamWriter(strFile, true);
-            file.WriteLine(strWriteLine);
-            file.Close();
-        }
-
-        public void LogFlush()
-        {
-            // Exit if we're not doing logging
-            if (!GlobalOptions.Instance.UseLogging)
-                return;
-
-            string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
-            File.WriteAllText(strFile, string.Empty);
-
-            LogWrite(LogType.Message, "Chummer5", Application.ProductVersion);
         } 
         #endregion
 
