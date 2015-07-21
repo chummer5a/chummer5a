@@ -12,6 +12,7 @@ namespace Chummer
         private readonly CharacterOptions _objOptions;
         private bool _blnUseCurrentValues = false;
 		int intQualityLimits = 0;
+	    int intNuyenBP = 0;
 
 		#region Control Events
 		public frmSelectBP(Character objCharacter, bool blnUseCurrentValues = false)
@@ -79,6 +80,7 @@ namespace Chummer
             cboGamePlay.Text = strDefault;
 			XmlNode objXmlSelectedGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
 			intQualityLimits = Convert.ToInt32(objXmlSelectedGameplayOption["karma"].InnerText);
+			intNuyenBP = Convert.ToInt32(objXmlSelectedGameplayOption["maxnuyen"].InnerText);
             toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.Instance.GetString("Tip_SelectKarma_IgnoreRules"));
 
             if (blnUseCurrentValues)
@@ -101,11 +103,11 @@ namespace Chummer
 					_objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 					break;
 				case "Priority":
-					_objCharacter.NuyenMaximumBP = 10;
+					_objCharacter.NuyenMaximumBP = intNuyenBP;
 					_objCharacter.BuildMethod = CharacterBuildMethod.Priority;
 					break;
 				case "SumtoTen":
-					_objCharacter.NuyenMaximumBP = 10;
+					_objCharacter.NuyenMaximumBP = intNuyenBP;
 					_objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
 					_objCharacter.SumtoTen = Convert.ToInt32(nudSumtoTen.Value);
 			        break;
@@ -199,9 +201,9 @@ namespace Chummer
             // Load the Priority information.
             XmlDocument objXmlDocumentGameplayOption = XmlManager.Instance.Load("gameplayoptions.xml");
             XmlNode objXmlGameplayOption = objXmlDocumentGameplayOption.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
-            string strAvail = objXmlGameplayOption["maxavailability"].InnerText;
-            nudMaxAvail.Value = Convert.ToInt32(strAvail);
+			nudMaxAvail.Value = Convert.ToInt32(objXmlGameplayOption["maxavailability"].InnerText);
 			intQualityLimits = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
-		}
+	        intNuyenBP = Convert.ToInt32(objXmlGameplayOption["maxnuyen"].InnerText);
+        }
     }
 }
