@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -38,7 +39,9 @@ namespace Bootstrap
 
 
 				startinfo.WorkingDirectory = Environment.CurrentDirectory;
-				startinfo.Arguments = Environment.CommandLine;
+				Regex exefilter = new Regex(".*\\.exe\"? ");
+				String filtered = exefilter.Replace(Environment.CommandLine, "");
+				startinfo.Arguments = filtered;
 
 				Process p = Process.Start(startinfo);
 				
@@ -63,7 +66,9 @@ namespace Bootstrap
 
 
 					startinfo.WorkingDirectory = Environment.CurrentDirectory;
-					startinfo.Arguments = Environment.CommandLine;
+					Regex exefilter = new Regex(".*\\.exe\"? ");
+					String filtered = exefilter.Replace(Environment.CommandLine, "");
+					startinfo.Arguments = filtered;
 
 					Process p = Process.Start(startinfo);
 					//}
