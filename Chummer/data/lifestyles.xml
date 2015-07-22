@@ -9,6 +9,15 @@
 	<category>Negative</category>
 	</categories>
 	<lifestyles>
+    <lifestyle>
+      <id>00000000-0000-0000-0000-000000000000</id>
+      <name>ID ERROR. Re-add life style to fix</name>
+      <cost>1</cost>
+			<dice>1</dice>
+			<multiplier>0</multiplier>
+			<source>SR5</source>
+			<page>1</page>
+    </lifestyle>
 		<lifestyle>
       <id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
 			<name>Bolt Hole</name>
