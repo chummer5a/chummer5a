@@ -10,6 +10,7 @@
 	</categories>
 	<lifestyles>
 		<lifestyle>
+      <id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
 			<name>Bolt Hole</name>
 			<cost>1000</cost>
 			<dice>1</dice>
@@ -18,6 +19,7 @@
 			<page>217</page>
 		</lifestyle>	
 		<lifestyle>
+      <id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
 			<name>Street</name>
 			<cost>0</cost>
 			<dice>1</dice>
@@ -26,6 +28,7 @@
 			<page>268</page>
 		</lifestyle>
 		<lifestyle>
+      <id>9367556e-f82f-4f9d-840e-24c8f824ca68</id>
 			<name>Squatter</name>
 			<cost>500</cost>
 			<dice>2</dice>
@@ -34,6 +37,7 @@
 			<page>268</page>
 		</lifestyle>
 		<lifestyle>
+      <id>451eef87-d18e-4bee-a972-1ee165b08522</id>
 			<name>Low</name>
 			<cost>2000</cost>
 			<dice>3</dice>
@@ -42,6 +46,7 @@
 			<page>268</page>
 		</lifestyle>
 		<lifestyle>
+      <id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
 			<name>Medium</name>
 			<cost>5000</cost>
 			<dice>4</dice>
@@ -50,6 +55,7 @@
 			<page>268</page>
 		</lifestyle>
 		<lifestyle>
+      <id>4a37d519-c9be-4ecc-97bb-e9d78708c374</id>
 			<name>High</name>
 			<cost>10000</cost>
 			<dice>5</dice>
@@ -58,6 +64,7 @@
 			<page>268</page>
 		</lifestyle>
 		<lifestyle>
+      <id>4b513ac9-9eb3-471b-931b-839a04873b84</id>
 			<name>Luxury</name>
 			<cost>100000</cost>
 			<dice>6</dice>
@@ -66,6 +73,7 @@
 			<page>267</page>
 		</lifestyle>
 		<lifestyle>
+      <id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
 			<name>Commercial</name>
 			<cost>8000</cost>
 			<dice>0</dice>

@@ -8947,7 +8947,8 @@ namespace Chummer
 	public class Lifestyle
 	{
 		private Guid _guiID = new Guid();
-		private string _strName = "";
+		private Guid _sourceID = new Guid();
+        private string _strName = "";
 		private int _intCost = 0;
 		private int _intDice = 0;
 		private int _intMultiplier = 0;
@@ -8969,7 +8970,6 @@ namespace Chummer
 		private LifestyleType _objType = LifestyleType.Standard;
 		private List<string> _lstLifestyleQualities = new List<string>();
 		private string _strNotes = "";
-
 		private readonly Character _objCharacter;
 
 		#region Helper Methods
@@ -9012,6 +9012,15 @@ namespace Chummer
 			_intMultiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
 			_strSource = objXmlLifestyle["source"].InnerText;
 			_strPage = objXmlLifestyle["page"].InnerText;
+			if (!objXmlLifestyle.TryGetField<Guid>("id", Guid.TryParse, out _sourceID))
+			{
+				Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle});
+
+				if (System.Diagnostics.Debugger.IsAttached)
+					System.Diagnostics.Debugger.Break();
+			}
+			
+			 
 
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID;
@@ -9045,6 +9054,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("type", _objType.ToString());
+			objWriter.WriteElementString("sourceid", SourceID.ToString());
 			objWriter.WriteStartElement("lifestylequalities");
             foreach (string strQuality in _lstLifestyleQualities)
             {
@@ -9061,81 +9071,54 @@ namespace Chummer
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
-			try
+			//Can't out property and no backing field
+			Guid source;
+			if (objNode.TryGetField<Guid>("sourceid", Guid.TryParse, out source))
 			{
-				_guiID = Guid.Parse(objNode["guid"].InnerText);
+				SourceID = source;
 			}
-			catch
+
+			objNode.TryGetField<Guid>("guid", Guid.TryParse, out _guiID);
+
+			//If not present something gone totaly wrong, throw something
+			if
+				(
+				!objNode.TryGetField("name", out _strName) &&
+				!objNode.TryGetField("cost", out _intCost) &&
+				!objNode.TryGetField("dice", out _intDice) &&
+				!objNode.TryGetField("multiplier", out _intMultiplier) &&
+				!objNode.TryGetField("months", out _intMonths)
+				)
 			{
+				throw new ArgumentNullException("One or more of name, cost, dice, multiplier or months is missing");
 			}
-			_strName = objNode["name"].InnerText;
-			_intCost = Convert.ToInt32(objNode["cost"].InnerText);
-			_intDice = Convert.ToInt32(objNode["dice"].InnerText);
-			_intMultiplier = Convert.ToInt32(objNode["multiplier"].InnerText);
-			_intMonths = Convert.ToInt32(objNode["months"].InnerText);
-            try
+
+			objNode.TryGetField("area", out _intArea);
+			objNode.TryGetField("security", out _intSecurity);
+			objNode.TryGetField("comforts", out _intComforts);
+			objNode.TryGetField("roommates", out _intRoommates);
+			objNode.TryGetField("percentage", out _intPercentage);
+			objNode.TryGetField("lifestylename", out _strLifestyleName);
+			if (!objNode.TryGetField("purchased", out _blnPurchased))
 			{
-                _intArea = Convert.ToInt32(objNode["area"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intSecurity = Convert.ToInt32(objNode["security"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intComforts = Convert.ToInt32(objNode["comforts"].InnerText);
-            }
-            catch
-            {
-            }
-			try
-			{
-				_intRoommates = Convert.ToInt32(objNode["roommates"].InnerText);
+				throw new ArgumentNullException("purchased");
 			}
-			catch
+
+			if (objNode.TryGetField("baselifestyle", out _strBaseLifestyle))
 			{
+				if (_strBaseLifestyle == "Middle")
+					_strBaseLifestyle = "Medium";
 			}
-			try
+
+			if (!objNode.TryGetField("source", out _strSource))
 			{
-				_intPercentage = Convert.ToInt32(objNode["percentage"].InnerText);
+				throw new ArgumentNullException("source");
 			}
-			catch
-			{
-			}
-			try
-			{
-				_strLifestyleName = objNode["lifestylename"].InnerText;
-			}
-			catch
-			{
-			}
-			_blnPurchased = Convert.ToBoolean(objNode["purchased"].InnerText);
-			try
-			{
-                if (objNode["baselifestyle"].InnerText == "Middle")
-                {
-                    _strBaseLifestyle = "Medium";
-                }
-                else
-                _strBaseLifestyle = objNode["baselifestyle"].InnerText;
-			}
-			catch
-			{
-			}
-			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
+
+			objNode.TryGetField("page", out _strPage);
+
+
+			//Not possible with TryGetField
 			try
 			{
                 foreach (XmlNode objXmlQuality in objNode.SelectNodes("lifestylequalities/lifestylequality"))
@@ -9144,6 +9127,15 @@ namespace Chummer
 			catch
 			{
 			}
+
+			objNode.TryGetField("notes", out _strNotes);
+
+			String strtemp;
+			if (objNode.TryGetField("type", out strtemp))
+			{
+				_objType = ConverToLifestyleType(strtemp);
+			}
+
 			try
 			{
 				_strNotes = objNode["notes"].InnerText;
@@ -9182,7 +9174,7 @@ namespace Chummer
 			objWriter.WriteElementString("purchased", _blnPurchased.ToString());
 			objWriter.WriteElementString("lifestylename", _strLifestyleName);
 			objWriter.WriteElementString("type", _objType.ToString());
-
+			objWriter.WriteElementString("sourceid", SourceID.ToString());
 			string strBaseLifestyle = "";
 
 			// Retrieve the Advanced Lifestyle information if applicable.
@@ -9190,7 +9182,7 @@ namespace Chummer
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
-                XmlNode objXmlAspect = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
+                XmlNode objXmlAspect = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
 				if (objXmlAspect["translate"] != null)
                     strBaseLifestyle = objXmlAspect["translate"].InnerText;
 				else
@@ -9260,6 +9252,22 @@ namespace Chummer
 			}
 		}
 
+		public Guid SourceID {
+			get
+			{
+				return _sourceID;
+			}
+			set
+			{
+				if (_sourceID != Guid.Empty)
+				{
+					throw new InvalidOperationException("Source ID can only be set once");
+				}
+
+				_sourceID = value;
+			}
+		}
+
 		/// <summary>
 		/// Name.
 		/// </summary>
@@ -9287,7 +9295,7 @@ namespace Chummer
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strName + "\"]");
+					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
 					if (objNode != null)
 					{
 						if (objNode["translate"] != null)
@@ -9342,7 +9350,7 @@ namespace Chummer
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strName + "\"]");
+					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
 					if (objNode != null)
 					{
 						if (objNode["altpage"] != null)

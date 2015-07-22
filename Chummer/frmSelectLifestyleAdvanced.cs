@@ -190,6 +190,7 @@ namespace Chummer
             _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
             _objLifestyle.BaseLifestyle = cboBaseLifestyle.Text;
+			
             //_objLifestyle.LifestyleQualities.Clear();
 
             // Get the starting Nuyen information.
@@ -197,6 +198,18 @@ namespace Chummer
             _objLifestyle.Dice = Convert.ToInt32(objXmlAspect["dice"].InnerText);
             _objLifestyle.Multiplier = Convert.ToInt32(objXmlAspect["multiplier"].InnerText);
             _objLifestyle.StyleType = _objType;
+
+	        Guid source;
+	        if (objXmlAspect.TryGetField("id", Guid.TryParse, out source))
+	        {
+				{
+					Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
+
+					if (System.Diagnostics.Debugger.IsAttached)
+						System.Diagnostics.Debugger.Break();
+				}
+				_objLifestyle.SourceID = source;
+	        }
 
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[0].Nodes)
             {
