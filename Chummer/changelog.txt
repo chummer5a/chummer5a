@@ -4,6 +4,7 @@ Application Change:
 - Fixed an issue with lifestyle quality costs that caused a crash on print.
 - The cap for Qualities is now based on your Gameplay Option. For example, a Prime Runner can spend up to 35 Karma on Positive qualities, and gain 35 from Negative qualities.
 - Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff won't work, and we (the Chummer5a team) won't provide support.
+- Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
@@ -11,6 +12,7 @@ Data Change:
 - Cyberware Holdout Pistol typo fixed. 
 - Gameplay Options have been moved into their own XML file, gameplayoptions.xml.
 - Added the missing qualities "Poor Self Control (Sadisic)" and "Poor Self Control (Attention-Seeking)"
+- Lifestyles.xml now have ID fields
 
 Changed Strings:
 - Checkbox_Options_ExceedNegativeQualitiesLimit

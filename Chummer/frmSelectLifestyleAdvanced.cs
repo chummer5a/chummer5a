@@ -203,7 +203,7 @@ namespace Chummer
 	        if (objXmlAspect.TryGetField("id", Guid.TryParse, out source))
 	        {
 				{
-					Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
+					Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlAspect });
 
 					if (System.Diagnostics.Debugger.IsAttached)
 						System.Diagnostics.Debugger.Break();
