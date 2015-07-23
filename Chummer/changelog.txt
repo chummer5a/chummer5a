@@ -5,6 +5,7 @@ Application Change:
 - The cap for Qualities is now based on your Gameplay Option. For example, a Prime Runner can spend up to 35 Karma on Positive qualities, and gain 35 from Negative qualities.
 - Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff won't work, and we (the Chummer5a team) won't provide support.
 - Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
+- More specific spirit data is available for charsheets to use.
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.

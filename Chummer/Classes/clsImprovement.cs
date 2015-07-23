@@ -1622,71 +1622,71 @@ namespace Chummer
 
                     // Select a Contact
 			if (bonusNode.LocalName == ("selectcontact"))
-                    {
-                        objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectcontact");
+			{
+				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectcontact");
 				XmlNode nodSelect = bonusNode;
-                        
-                        frmSelectItem frmSelect = new frmSelectItem();
+
+				frmSelectItem frmSelect = new frmSelectItem();
 
 				String strMode = NodeExists(nodSelect, "type")
-                            ? nodSelect["type"].InnerText
-                            : "all";
+					? nodSelect["type"].InnerText
+					: "all";
 
-                        List<Contact> selectedContactsList;
-                        if (strMode == "all")
-                        {
-                            selectedContactsList = new List<Contact>(_objCharacter.Contacts);
-                        }
-                        else if (strMode == "group" || strMode == "nongroup")
-                        {
-                            bool blnGroup = strMode == "group";
+				List<Contact> selectedContactsList;
+				if (strMode == "all")
+				{
+					selectedContactsList = new List<Contact>(_objCharacter.Contacts);
+				}
+				else if (strMode == "group" || strMode == "nongroup")
+				{
+					bool blnGroup = strMode == "group";
 
 
-                            //Select any contact where IsGroup equals blnGroup
-                            //and add to a list
-                            selectedContactsList =
-                                new List<Contact>(from contact in _objCharacter.Contacts
-                                    where contact.IsGroup == blnGroup
-                                    select contact);
-                        }
-                        else
-                        {
-                            Rollback();
-                            return false;
-                        }
+					//Select any contact where IsGroup equals blnGroup
+					//and add to a list
+					selectedContactsList =
+						new List<Contact>(from contact in _objCharacter.Contacts
+							where contact.IsGroup == blnGroup
+							select contact);
+				}
+				else
+				{
+					Rollback();
+					return false;
+				}
 
-                        int count = 0;
-                        //Black magic LINQ to cast content of list to another type
-                        List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
+				int count = 0;
+				//Black magic LINQ to cast content of list to another type
+				List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
 					select new ListItem() {Name = x.Name, Value = (count++).ToString()});
-                        
+
 				String strPrice = NodeExists(nodSelect, "cost")
-                            ? nodSelect["cost"].InnerText
-                            : "";
+					? nodSelect["cost"].InnerText
+					: "";
 
-                        frmSelect.GeneralItems = contacts;
-                        frmSelect.ShowDialog();
-                        
-                        int index = int.Parse(frmSelect.SelectedItem);
-                        if (frmSelect.DialogResult != DialogResult.Cancel)
-                        {
-                            Contact selectedContact = selectedContactsList[index];
+				frmSelect.GeneralItems = contacts;
+				frmSelect.ShowDialog();
 
-                            //if (nodSelect["mademan"] != null)
-                            //{
-                                selectedContact.MadeMan = true;
-						CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
-							Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
-                            //}
-                        }
-                        else
-                        {
-                            Rollback();
-                            return false;
-                        }
-                    }
+				int index = int.Parse(frmSelect.SelectedItem);
+				if (frmSelect.DialogResult != DialogResult.Cancel)
+				{
+					Contact selectedContact = selectedContactsList[index];
 
-                    // Affect a Specific Attribute.
+					//if (nodSelect["mademan"] != null)
+					//{
+					selectedContact.MadeMan = true;
+					CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
+						Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
+					//}
+				}
+				else
+				{
+					Rollback();
+					return false;
+				}
+			}
+
+			// Affect a Specific Attribute.
 			if (bonusNode.LocalName == ("specificattribute"))
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "specificattribute");
