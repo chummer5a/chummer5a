@@ -4133,10 +4133,10 @@ namespace Chummer
 		{
 			// Translate the Critter name if applicable.
 			string strName = _strName;
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
+			XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strName + "\"]");
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
-				XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strName + "\"]");
 				if (objXmlCritterNode != null)
 				{
 					if (objXmlCritterNode["translate"] != null)
@@ -4144,13 +4144,67 @@ namespace Chummer
 				}
 			}
 
+
+
 			objWriter.WriteStartElement("spirit");
 			objWriter.WriteElementString("name", strName);
 			objWriter.WriteElementString("crittername", _strCritterName);
 			objWriter.WriteElementString("services", _intServicesOwed.ToString());
 			objWriter.WriteElementString("force", _intForce.ToString());
+
+			if (objXmlCritterNode != null)
+			{
+				//Attributes for spirits, named differently as to not confuse <attribtue>
+
+				objWriter.WriteStartElement("spiritattributes");
+				foreach (string Attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "edg", "ini"})
+				{
+					String strInner;
+					if (objXmlCritterNode.TryGetField(Attribute + "min", out strInner))
+					{
+						//Here is some black magic (used way too many places)
+						//To calculate the int value of a string
+						//TODO: implement a sane expression evaluator
+
+						XPathNavigator navigator = objXmlCritterNode.CreateNavigator();
+						XPathExpression exp = navigator.Compile(strInner.Replace("F", _intForce.ToString()));
+						int value;
+						if (!int.TryParse(navigator.Evaluate(exp).ToString(), out value))
+						{
+							value = _intForce; //if failed to parse, default to force
+						}
+						value = Math.Max(value, 1); //Min value is 1
+						objWriter.WriteElementString(Attribute, value.ToString());
+					}
+				}
+
+				objWriter.WriteEndElement();
+
+				//Dump skills, (optional)powers if present to output
+
+				if (objXmlCritterNode["powers"] != null)
+				{
+					objWriter.WriteElementString("powers", (objXmlCritterNode["powers"].InnerXml));
+				}
+
+				if (objXmlCritterNode["optionalpowers"] != null)
+				{
+					objWriter.WriteElementString("optionalpowers", (objXmlCritterNode["optionalpowers"].InnerXml));
+				}
+
+				if (objXmlCritterNode["skills"] != null)
+				{
+					objWriter.WriteElementString("skills", (objXmlCritterNode["skills"].InnerXml));
+				}
+
+			}
+
 			objWriter.WriteElementString("bound", _blnBound.ToString());
 			objWriter.WriteElementString("type", _objEntityType.ToString());
+
+
+
+
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
