@@ -4184,17 +4184,17 @@ namespace Chummer
 
 				if (objXmlCritterNode["powers"] != null)
 				{
-					objWriter.WriteElementString("powers", (objXmlCritterNode["powers"].InnerXml));
+                    objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
 				}
 
 				if (objXmlCritterNode["optionalpowers"] != null)
 				{
-					objWriter.WriteElementString("optionalpowers", (objXmlCritterNode["optionalpowers"].InnerXml));
+                    objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
 				}
 
 				if (objXmlCritterNode["skills"] != null)
 				{
-					objWriter.WriteElementString("skills", (objXmlCritterNode["skills"].InnerXml));
+                    objWriter.WriteRaw(objXmlCritterNode["skills"].OuterXml);
 				}
 
 			}
