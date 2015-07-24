@@ -14,6 +14,7 @@ Data Change:
 - Gameplay Options have been moved into their own XML file, gameplayoptions.xml.
 - Added the missing qualities "Poor Self Control (Sadisic)" and "Poor Self Control (Attention-Seeking)"
 - Lifestyles.xml now have ID fields
+- New gorgeous character sheets by reddit user /u/Angel-Forest. Thanks a lot for your work.
 
 Changed Strings:
 - Checkbox_Options_ExceedNegativeQualitiesLimit
