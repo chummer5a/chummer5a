@@ -21901,9 +21901,9 @@
       <wilmin>F</wilmin>
       <wilmax>F</wilmax>
       <wilaug>F</wilaug>
-      <inimin>(F*2)+3</inimin>
-      <inimax>(F*2)+3</inimax>
-      <iniaug>(F*2)+3</iniaug>
+      <inimin>(F*2)+4</inimin>
+      <inimax>(F*2)+4</inimax>
+      <iniaug>(F*2)+4</iniaug>
       <edgmin>F</edgmin>
       <edgmax>F</edgmax>
       <edgaug>F</edgaug>
@@ -21952,14 +21952,13 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Exotic Ranged Weapon</skill>
-        <skill rating="F">Flight</skill>
+        <skill rating="F">Running</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
-      <page>302</page>
+      <source>SR5</source>
+      <page>303</page>
     </metatype>
     <metatype>
       <id>932501fe-b225-4364-8cbd-7e7afd85ccab</id>
@@ -22064,9 +22063,9 @@
       <agimin>F+1</agimin>
       <agimax>F+1</agimax>
       <agiaug>F+1</agiaug>
-      <reamin>F+2</reamin>
-      <reamax>F+2</reamax>
-      <reaaug>F+2</reaaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
       <strmin>F+2</strmin>
       <strmax>F+2</strmax>
       <straug>F+2</straug>
@@ -22082,9 +22081,9 @@
       <wilmin>F</wilmin>
       <wilmax>F</wilmax>
       <wilaug>F</wilaug>
-      <inimin>(F*2)+2</inimin>
-      <inimax>(F*2)+2</inimax>
-      <iniaug>(F*2)+2</iniaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)</iniaug>
       <edgmin>F</edgmin>
       <edgmax>F</edgmax>
       <edgaug>F</edgaug>
@@ -22132,12 +22131,11 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
-      <page>302</page>
+      <source>SR5</source>
+      <page>303</page>
     </metatype>
     <metatype>
       <id>8d5c8189-d579-451b-968f-43973599564b</id>
@@ -22239,9 +22237,9 @@
       <agimin>F-2</agimin>
       <agimax>F-2</agimax>
       <agiaug>F-2</agiaug>
-      <reamin>F+2</reamin>
-      <reamax>F+2</reamax>
-      <reaaug>F+2</reaaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
       <strmin>F+4</strmin>
       <strmax>F+4</strmax>
       <straug>F+4</straug>
@@ -22251,14 +22249,14 @@
       <intmin>F</intmin>
       <intmax>F</intmax>
       <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
+      <logmin>F-1</logmin>
+      <logmax>F-1</logmax>
+      <logaug>F-1</logaug>
       <wilmin>F</wilmin>
       <wilmax>F</wilmax>
       <wilaug>F</wilaug>
-      <inimin>(F*2)+2</inimin>
-      <inimax>(F*2)+2</inimax>
+      <inimin>(F*2)-1</inimin>
+      <inimax>(F*2)-1</inimax>
       <iniaug>(F*2)+2</iniaug>
       <edgmin>F</edgmin>
       <edgmax>F</edgmax>
@@ -22305,12 +22303,11 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
+      <source>SR5</source>
       <page>303</page>
     </metatype>
     <metatype>
@@ -22421,9 +22418,9 @@
       <chamin>F</chamin>
       <chamax>F</chamax>
       <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
       <logmin>F</logmin>
       <logmax>F</logmax>
       <logaug>F</logaug>
@@ -22479,13 +22476,12 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Exotic Ranged Weapon</skill>
         <skill rating="F">Flight</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
+      <source>SR5</source>
       <page>303</page>
     </metatype>
     <metatype>
@@ -22598,9 +22594,9 @@
       <chamin>F</chamin>
       <chamax>F</chamax>
       <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
       <logmin>F</logmin>
       <logmax>F</logmax>
       <logaug>F</logaug>
@@ -22657,13 +22653,12 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Spellcasting</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
-      <page>303</page>
+      <source>SR5</source>
+      <page>304</page>
     </metatype>
     <metatype>
       <id>57ad19d7-2f61-4107-bd0f-2fe98395a73c</id>
@@ -22760,12 +22755,12 @@
       <category>Spirits</category>
       <forcecreature />
       <bp>0</bp>
-      <bodmin>F+2</bodmin>
-      <bodmax>F+2</bodmax>
-      <bodaug>F+2</bodaug>
-      <agimin>F</agimin>
-      <agimax>F</agimax>
-      <agiaug>F</agiaug>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
       <reamin>F+2</reamin>
       <reamax>F+2</reamax>
       <reaaug>F+2</reaaug>
@@ -22835,13 +22830,12 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SR4</source>
-      <page>303</page>
+      <source>SR5</source>
+      <page>304</page>
     </metatype>
     <metatype>
       <id>81dae903-8ca8-4f12-b12c-ef4342d9b60d</id>
@@ -23078,6 +23072,7 @@
         <power>Elemental Attack</power>
         <power select="DV ForceP, AP 0">Natural Weapon</power>
         <power>Psychokinesis</power>
+        <power>Combat Skill</power>
       </optionalpowers>
       <skills>
         <skill rating="F">Assensing</skill>
@@ -23085,13 +23080,12 @@
         <skill rating="F">Blades</skill>
         <skill rating="F">Clubs</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SM</source>
-      <page>96</page>
+      <source>SG</source>
+      <page>193</page>
     </metatype>
     <metatype>
       <id>a1edb2f5-0cf1-4815-8469-6867bac04da2</id>
@@ -23267,12 +23261,11 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SM</source>
-      <page>97</page>
+      <source>SG</source>
+      <page>193</page>
     </metatype>
     <metatype>
       <id>ad6652a2-05b6-4242-ac93-412330c27d21</id>
@@ -23372,27 +23365,27 @@
       <category>Spirits</category>
       <forcecreature />
       <bp>0</bp>
-      <bodmin>F+3</bodmin>
-      <bodmax>F+3</bodmax>
-      <bodaug>F+3</bodaug>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
       <agimin>F-1</agimin>
       <agimax>F-1</agimax>
       <agiaug>F-1</agiaug>
-      <reamin>F+2</reamin>
-      <reamax>F+2</reamax>
-      <reaaug>F+2</reaaug>
-      <strmin>F+4</strmin>
-      <strmax>F+4</strmax>
-      <straug>F+4</straug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
       <chamin>F</chamin>
       <chamax>F</chamax>
       <chaaug>F</chaaug>
       <intmin>F</intmin>
       <intmax>F</intmax>
       <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
+      <logmin>F-1</logmin>
+      <logmax>F-1</logmax>
+      <logaug>F-1</logaug>
       <wilmin>F</wilmin>
       <wilmax>F</wilmax>
       <wilaug>F</wilaug>
@@ -23447,12 +23440,12 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Dodge</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SM</source>
-      <page>98</page>
+      <source>SG</source>
+      <page>193</page>
     </metatype>
     <metatype>
       <id>ad231e6e-8c0e-4234-8001-2242ebc9c9f2</id>
@@ -23573,9 +23566,9 @@
       <wilmin>F</wilmin>
       <wilmax>F</wilmax>
       <wilaug>F</wilaug>
-      <inimin>(F*2)</inimin>
-      <inimax>(F*2)</inimax>
-      <iniaug>(F*2)</iniaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
       <edgmin>F</edgmin>
       <edgmax>F</edgmax>
       <edgaug>F</edgaug>
@@ -23619,17 +23612,18 @@
         <power select="Smell">Enhanced Senses</power>
         <power>Influence</power>
         <power>Psychokinesis</power>
+        <power>Technical Skill</power>
+        <power>Physical Skill</power>
       </optionalpowers>
       <skills>
         <skill rating="F">Artisan</skill>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
-      <source>SM</source>
-      <page>96</page>
+      <source>SG</source>
+      <page>193</page>
     </metatype>
     <metatype>
       <id>c0f6077d-3031-4ef9-9843-5effb4b2c8a2</id>
