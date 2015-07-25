@@ -6,6 +6,7 @@ Application Change:
 - Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff won't work, and we (the Chummer5a team) won't provide support.
 - Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
 - More specific spirit data is available for charsheets to use.
+- Chummer now have a crash reporter. If Chummer encounters an error it can't recover from, it will (if given permision) send a data package (hopefully) identifying the source of the crash. 
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
