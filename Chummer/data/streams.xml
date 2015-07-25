@@ -17,4 +17,134 @@
       <page>258</page>
     </tradition>
   </traditions>
+  <spirits>
+    <!--Sprites Corebook-->
+    <spirit>
+      <id></id>
+      <name>Courier Sprite</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F+0</cha>
+      <int>F+3</int>
+      <log>F+1</log>
+      <wil>F+2</wil>
+      <ini>(F*2)+1</ini>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Hacking</skill>
+      </skills>
+      <powers>
+        <power>Cookie</power>
+        <power>Hash</power>
+      </powers>
+      <optionalpowers></optionalpowers>
+      <weaknesses></weaknesses>
+      <source>SR5</source>
+      <page>259</page>
+    </spirit>
+    <spirit>
+      <id></id>
+      <name>Crack Sprite</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F+0</cha>
+      <int>F+3</int>
+      <log>F+2</log>
+      <wil>F+1</wil>
+      <ini>(F*2)+2</ini>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Electronic Warfare</skill>
+        <skill attr="log">Hacking</skill>
+      </skills>
+      <powers>
+        <power>Suppression</power>
+      </powers>
+      <optionalpowers></optionalpowers>
+      <weaknesses></weaknesses>
+      <source>SR5</source>
+      <page>259</page>
+    </spirit>
+    <spirit>
+      <id></id>
+      <name>Data Sprite</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F-1</cha>
+      <int>F+0</int>
+      <log>F+4</log>
+      <wil>F+1</wil>
+      <ini>(F*2)+4</ini>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Electronic Warfare</skill>
+      </skills>
+      <powers>
+        <power>Camoulage</power>
+        <power>Watermark</power>
+      </powers>
+      <optionalpowers></optionalpowers>
+      <weaknesses></weaknesses>
+      <source>SR5</source>
+      <page>259</page>
+    </spirit>
+    <spirit>
+      <id></id>
+      <name>Fault Sprite</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F+3</cha>
+      <int>F+0</int>
+      <log>F+1</log>
+      <wil>F+2</wil>
+      <ini>(F*2)+1</ini>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Cyber Combat</skill>
+        <skill attr="log">Hacking</skill>
+      </skills>
+      <powers>
+        <power>Electron Storm</power>
+      </powers>
+      <optionalpowers></optionalpowers>
+      <weaknesses></weaknesses>
+      <source>SR5</source>
+      <page>259</page>
+    </spirit>
+    <spirit>
+      <id></id>
+      <name>Machine Sprite</name>
+      <bod>0</bod>
+      <agi>0</agi>
+      <rea>0</rea>
+      <str>0</str>
+      <cha>F+1</cha>
+      <int>F+0</int>
+      <log>F+3</log>
+      <wil>F+2</wil>
+      <ini>(F*2)+3</ini>
+      <skills>
+        <skill attr="log">Computers</skill>
+        <skill attr="log">Electronic Warfare</skill>
+        <skill attr="log">Hardware</skill>
+      </skills>
+      <powers>
+        <power>Diagnostics</power>
+        <power>Gremlins</power>
+        <power>Stability</power>
+      </powers>
+      <optionalpowers></optionalpowers>
+      <weaknesses></weaknesses>
+      <source>SR5</source>
+      <page>259</page>
+    </spirit>
+  </spirits>
 </chummer>

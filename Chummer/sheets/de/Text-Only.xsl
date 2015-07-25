@@ -220,7 +220,7 @@
 				<xsl:if test="spells/spell">
 					<br />
 					<br />== Zaubersprüche ==
-					<br />(Tradition: <xsl:value-of select="tradition" />, Entzugswiderstand gegen <xsl:value-of select="drain" />)
+					<br />(Tradition: <xsl:value-of select="tradition/name" />, Entzugswiderstand gegen <xsl:value-of select="tradition/drain" />)
 					<xsl:call-template name="spells" />
 				</xsl:if>
 				

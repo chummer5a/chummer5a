@@ -1,0 +1,399 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<chummer>
+  <powers>
+    <!--spirit powers corebook-->
+    <power>
+      <name>Accident</name>
+      <source>SR5</source>
+      <page>394</page>
+    </power>
+    <power>
+      <name>Animal Control</name>
+      <source>SR5</source>
+      <page>394</page>
+    </power>
+    <power>
+      <name>Armor</name>
+      <source>SR5</source>
+      <page>394</page>
+    </power>
+    <power>
+      <name>Astral Form</name>
+      <source>SR5</source>
+      <page>394</page>
+    </power>
+    <power>
+      <name>Binding</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Compulsion</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Concealment</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Confusion</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Corrosive Spit</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Dragonspeech</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Dual Natured</name>
+      <source>SR5</source>
+      <page>395</page>
+    </power>
+    <power>
+      <name>Elemental Attack</name>
+      <source>SR5</source>
+      <page>396</page>
+    </power>
+    <power>
+      <name>Energy Aura</name>
+      <source>SR5</source>
+      <page>396</page>
+    </power>
+    <power>
+      <name>Engulf</name>
+      <source>SR5</source>
+      <page>396</page>
+    </power>
+    <power>
+      <name>Enhanced Senses</name>
+      <source>SR5</source>
+      <page>396</page>
+    </power>
+    <power>
+      <name>Essence Drain</name>
+      <source>SR5</source>
+      <page>396</page>
+    </power>
+    <power>
+      <name>Fear</name>
+      <source>SR5</source>
+      <page>397</page>
+    </power>
+    <power>
+      <name>Guard</name>
+      <source>SR5</source>
+      <page>397</page>
+    </power>
+    <power>
+      <name>Hardened Armor</name>
+      <source>SR5</source>
+      <page>397</page>
+    </power>
+    <power>
+      <name>Hardened Mystic Armor</name>
+      <source>SR5</source>
+      <page>397</page>
+    </power>
+    <power>
+      <name>Immunity</name>
+      <source>SR5</source>
+      <page>397</page>
+    </power>
+    <power>
+      <name>Infection</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Influence</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Innate Spell</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Materialization</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Mimicry</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Mist Form</name>
+      <source>SR5</source>
+      <page>398</page>
+    </power>
+    <power>
+      <name>Movement</name>
+      <source>SR5</source>
+      <page>399</page>
+    </power>
+    <power>
+      <name>Mystic Armor</name>
+      <source>SR5</source>
+      <page>399</page>
+    </power>
+    <power>
+      <name>Natural Weapon</name>
+      <source>SR5</source>
+      <page>399</page>
+    </power>
+    <power>
+      <name>Noxious Breath</name>
+      <source>SR5</source>
+      <page>399</page>
+    </power>
+    <power>
+      <name>Paralyzing Howl</name>
+      <source>SR5</source>
+      <page>399</page>
+    </power>
+    <power>
+      <name>Paralyzing Touch</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Petrification</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Psychokinesis</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Regeneration</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Sapience</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Search</name>
+      <source>SR5</source>
+      <page>400</page>
+    </power>
+    <power>
+      <name>Venom</name>
+      <source>SR5</source>
+      <page>401</page>
+    </power>
+    <power>
+      <name>Weather Control</name>
+      <source>SR5</source>
+      <page>401</page>
+    </power>
+    <!--spirits power Street Grimoire-->
+    <power>
+      <name>Anaphylaxis</name>
+      <source>SG</source>
+      <page>193</page>
+    </power>
+    <power>
+      <name>Astral Gateaway</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Aura Masking</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Banishing Resistance</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Desire Reflection</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Deathly Aura</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Devouring</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Divining</name>
+      <source>SG</source>
+      <page>194</page>
+    </power>
+    <power>
+      <name>Elemental Attack (Pollutant)</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Elemental Attack (Radiation)</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Endowment</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Energy Drain</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Hive Mind</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Inhabitation</name>
+      <source>SG</source>
+      <page>195</page>
+    </power>
+    <power>
+      <name>Magical Guard</name>
+      <source>SG</source>
+      <page>196</page>
+    </power>
+    <power>
+      <name>Mind Link</name>
+      <source>SG</source>
+      <page>196</page>
+    </power>
+    <power>
+      <name>Mutagen</name>
+      <source>SG</source>
+      <page>196</page>
+    </power>
+    <power>
+      <name>Pestilence</name>
+      <source>SG</source>
+      <page>197</page>
+    </power>
+    <power>
+      <name>Possession</name>
+      <source>SG</source>
+      <page>197</page>
+    </power>
+    <power>
+      <name>Quake</name>
+      <source>SG</source>
+      <page>197</page>
+    </power>
+    <power>
+      <name>Realistic Form</name>
+      <source>SG</source>
+      <page>198</page>
+    </power>
+    <power>
+      <name>Reinforcement</name>
+      <source>SG</source>
+      <page>198</page>
+    </power>
+    <power>
+      <name>Sense Link</name>
+      <source>SG</source>
+      <page>198</page>
+    </power>
+    <power>
+      <name>Shadow Cloak</name>
+      <source>SG</source>
+      <page>198</page>
+    </power>
+    <power>
+      <name>Silence</name>
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
+      <name>Sonic Projection</name>
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <power>
+      <name>Storm</name>
+      <source>SG</source>
+      <page>199</page>
+    </power>
+    <!--sprite powers corebook-->
+    <power>
+      <name>Camouflage</name>
+      <source>SR5</source>
+      <page>256</page>
+    </power>
+    <power>
+      <name>Cookie</name>
+      <source>SR5</source>
+      <page>256</page>
+    </power>
+    <power>
+      <name>Diagnostics</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Storm</name>
+      <source>SR5</source>
+      <page>256</page>
+    </power>
+    <power>
+      <name>Electron Storm</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Gremlins</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Hash</name>
+      <source>SR5</source>
+      <page>256</page>
+    </power>
+    <power>
+      <name>Storm</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Stability</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Suppression</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+    <power>
+      <name>Watermark</name>
+      <source>SR5</source>
+      <page>257</page>
+    </power>
+  </powers>
+</chummer>
