@@ -14,9 +14,10 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
-
-			
-
+	        
+			//Setup a crash handler that will send a mail
+	        AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
+	        throw new Exception();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 #if DEBUG
