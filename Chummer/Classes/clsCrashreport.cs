@@ -67,6 +67,19 @@ namespace Chummer
 		/// </summary>
 		public Guid Id { get; private set; }
 
+		private String _subject;
+		public String Subject
+		{
+			get
+			{
+				if (_subject == null)
+					return Id.ToString();
+
+				return _subject;
+			}
+			set { _subject = value; }
+		}
+
 		public CrashReport(Guid repordGuid)
 		{
 			Id = repordGuid;
@@ -99,12 +112,24 @@ namespace Chummer
 				//Seconadary id for linux systems?
 				try
 				{
-					report.AppendFormat("Machine ID Primary= {0}",
-						Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\ CurrentVersion", "ProductId", "Missing"));
+
+					RegistryKey cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+
+					if (!cv.GetValueNames().Contains("ProductId"))
+					{
+						//on 32 bit builds?
+						//cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
+
+						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+					}
+
+					String[] keys = cv.GetValueNames();
+					report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
 					report.AppendLine();
 				}
-				finally
+				catch (Exception ex)
 				{
+					
 				}
 
 				report.AppendFormat("CommandLine={0}", Environment.CommandLine);
@@ -161,7 +186,7 @@ namespace Chummer
 				//Forwarding rule used instead?
 				message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 
-				message.Subject = Id.ToString("D");
+				message.Subject = Subject;
 				message.Body = DefaultInfo();
 
 				//Compression?

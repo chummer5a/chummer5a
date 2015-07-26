@@ -34,7 +34,7 @@ namespace Chummer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 
-
+			throw new Exception();
 
 #if LEGACY
 	        DialogResult result =
