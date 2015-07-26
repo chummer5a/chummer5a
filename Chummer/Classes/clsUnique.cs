@@ -4133,8 +4133,12 @@ namespace Chummer
 		{
 			// Translate the Critter name if applicable.
 			string strName = _strName;
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("critters.xml");
-			XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strName + "\"]");
+			XmlDocument objXmlDocument;
+			if (_objEntityType == SpiritType.Spirit)
+				objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+			else
+				objXmlDocument = XmlManager.Instance.Load("streams.xml");
+			XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strName + "\"]");
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
 				if (objXmlCritterNode != null)
@@ -4156,11 +4160,12 @@ namespace Chummer
 			{
 				//Attributes for spirits, named differently as to not confuse <attribtue>
 
+				Dictionary<String, int> attributes = new Dictionary<string, int>();
 				objWriter.WriteStartElement("spiritattributes");
-				foreach (string Attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "edg", "ini"})
+				foreach (string Attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"})
 				{
 					String strInner;
-					if (objXmlCritterNode.TryGetField(Attribute + "min", out strInner))
+					if (objXmlCritterNode.TryGetField(Attribute, out strInner))
 					{
 						//Here is some black magic (used way too many places)
 						//To calculate the int value of a string
@@ -4175,6 +4180,8 @@ namespace Chummer
 						}
 						value = Math.Max(value, 1); //Min value is 1
 						objWriter.WriteElementString(Attribute, value.ToString());
+
+						attributes[Attribute] = value;
 					}
 				}
 
@@ -4182,21 +4189,61 @@ namespace Chummer
 
 				//Dump skills, (optional)powers if present to output
 
+				XmlDocument objXmlPowersDocument = XmlManager.Instance.Load("spiritpowers.xml");
 				if (objXmlCritterNode["powers"] != null)
 				{
-					objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
+					//objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
+					objWriter.WriteStartElement("powers");
+					foreach (XmlNode objXmlPowerNode in objXmlCritterNode["powers"].ChildNodes)
+					{
+						PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
+					}
+					objWriter.WriteEndElement();
 				}
 
 				if (objXmlCritterNode["optionalpowers"] != null)
 				{
-					objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
+					//objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
+					objWriter.WriteStartElement("optionalpowers");
+					foreach (XmlNode objXmlPowerNode in objXmlCritterNode["optionalpowers"].ChildNodes)
+					{
+						PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
+					}
+					objWriter.WriteEndElement();
 				}
 
 				if (objXmlCritterNode["skills"] != null)
 				{
-					objWriter.WriteRaw(objXmlCritterNode["skills"].OuterXml);
+					//objWriter.WriteRaw(objXmlCritterNode["skills"].OuterXml);
+					objWriter.WriteStartElement("skills");
+					foreach (XmlNode objXmlSkillNode in objXmlCritterNode["skills"].ChildNodes)
+					{
+						String attrName = objXmlSkillNode.Attributes["attr"].Value;
+						int attr = attributes.ContainsKey(attrName) ? attributes[attrName] : _intForce;
+						int dicepool = attr + _intForce;
+
+						objWriter.WriteStartElement("skill");
+						objWriter.WriteElementString("name", objXmlSkillNode.InnerText);
+						objWriter.WriteElementString("attr", attrName);
+						objWriter.WriteElementString("pool", dicepool.ToString());
+						objWriter.WriteEndElement();
+					}
+					objWriter.WriteEndElement();
 				}
 
+				if (objXmlCritterNode["weaknesses"] != null)
+				{
+					objWriter.WriteRaw(objXmlCritterNode["weaknesses"].OuterXml);
+				}
+
+				//Page in book for reference
+				String source;
+				String page;
+
+				if (objXmlCritterNode.TryGetField("source", out source))
+					objWriter.WriteElementString("source", source);
+				if (objXmlCritterNode.TryGetField("page", out page))
+					objWriter.WriteElementString("page", page);
 			}
 
 			objWriter.WriteElementString("bound", _blnBound.ToString());
@@ -4207,6 +4254,27 @@ namespace Chummer
 
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
+			objWriter.WriteEndElement();
+		}
+
+		private void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
+		{
+			XmlNode objXmlPowerNode;
+			string strSource = "";
+			string strPage = "";
+			objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
+			if (objXmlPowerNode == null)
+				objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
+			if (objXmlPowerNode != null)
+			{
+				objXmlPowerNode.TryGetField("source", out strSource);
+				objXmlPowerNode.TryGetField("page", out strPage);
+			}
+
+			objWriter.WriteStartElement("power");
+			objWriter.WriteElementString("name", strPowerName);
+			objWriter.WriteElementString("source", strSource);
+			objWriter.WriteElementString("page", strPage);
 			objWriter.WriteEndElement();
 		}
 		#endregion

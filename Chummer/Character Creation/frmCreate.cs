@@ -4795,17 +4795,19 @@ namespace Chummer
             bool blnFound = false;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
-                // Set the flag to show that we have found the Contact.
-                if (objContactControl == objSender)
-                    blnFound = true;
+				// Set the flag to show that we have found the Contact.
+				if (objContactControl == objSender)
+				{
+					blnFound = true;
+				}
 
                 // Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
                 if (blnFound)
                 {
                     _objCharacter.Contacts.Remove(objContactControl.ContactObject);
                     objContactControl.Top -= 25;
-                }
-            }
+				}
+			}
             // Remove the ContactControl that raised the Event.
             panContacts.Controls.Remove(objSender);
             UpdateCharacterInfo();

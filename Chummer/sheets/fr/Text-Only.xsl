@@ -229,7 +229,7 @@
 				<xsl:if test="spells/spell">
 					<br />
 					<br />== Sorts ==
-					<br />(Tradition: <xsl:value-of select="tradition" />, Résiste au Drain avec <xsl:value-of select="drain" />)
+					<br />(Tradition: <xsl:value-of select="tradition/name" />, Résiste au Drain avec <xsl:value-of select="tradition/drain" />)
 					<xsl:call-template name="spells" />
 				</xsl:if>
 

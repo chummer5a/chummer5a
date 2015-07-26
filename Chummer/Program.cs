@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -34,7 +33,7 @@ namespace Chummer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 
-			throw new Exception();
+			
 
 #if LEGACY
 	        DialogResult result =

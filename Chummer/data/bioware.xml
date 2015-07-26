@@ -592,6 +592,9 @@
 			<name>Adapsin</name>
 			<category>Genemods</category>
 			<ess>0.2</ess>
+			<bonus>
+					<cyberwareessmultiplier>90</cyberwareessmultiplier>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>16</avail>
 			<cost>30000</cost>
@@ -1507,7 +1510,7 @@
 		</bioware>
 		<bioware>
 			<id>e78a9465-d399-4e94-bea8-7e98c8fc960d</id>
-			<name>Trauma Reducer</name>
+			<name>Tremor Reducer</name>
 			<rating>3</rating>
 			<category>Cultured</category>
 			<ess>Rating * 0.1</ess>

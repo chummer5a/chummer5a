@@ -4586,7 +4586,6 @@ namespace Chummer
 		{
 			if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
 				return;
-
 			// Handle the DeleteContact Event for the ContactControl object.
 			ContactControl objSender = (ContactControl)sender;
 			bool blnFound = false;

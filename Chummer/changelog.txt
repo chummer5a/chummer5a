@@ -13,14 +13,17 @@ Data Change:
 - Machine Pistols were missing a few accessory slots; they can now mount stocks and such.
 - Cyberware Holdout Pistol typo fixed. 
 - Gameplay Options have been moved into their own XML file, gameplayoptions.xml.
-- Added the missing qualities "Poor Self Control (Sadisic)" and "Poor Self Control (Attention-Seeking)"
-- Lifestyles.xml now have ID fields
-- New gorgeous character sheets by reddit user /u/Angel-Forest. Thanks a lot for your work.
+- Added the missing qualities "Poor Self Control (Sadistic)" and "Poor Self Control (Attention-Seeking)"
+- Lifestyles.xml GUIDs populated to support the language fix.
+- Adapsin bioware properly discounts cyberware costs. 
 
-Changed Strings:
+String Changes:
+Altered:
 - Checkbox_Options_ExceedNegativeQualitiesLimit
 - Checkbox_Options_ExceedPositiveQualities
 - Checkbox_Options_ExceedNegativeQualities
+New:
+- MessageBox_NoValidContactFound
 
 Build 171:
 Application Change:

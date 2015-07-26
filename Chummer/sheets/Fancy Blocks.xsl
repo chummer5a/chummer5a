@@ -261,6 +261,7 @@
 					<xsl:if test="magenabled = 'True'">
 						<xsl:call-template name="page_breaker" />
 						<xsl:choose>
+							<!--simplified layour for adepts-->
 							<xsl:when test="qualities/quality[name='Adept']">
 								<td class="fill33">
 									<xsl:call-template name="print_magic" />
@@ -273,6 +274,27 @@
 								<td class="fill33">
 									<xsl:call-template name="print_initiation" />
 								</td>
+							</xsl:when>
+							<!--spirits take a lot of space, so we put most other tables to right-->
+							<xsl:when test="count(spirits/spirit) &gt; 0">
+								<tr>
+									<td class="fill66" colspan="2">
+										<xsl:call-template name="print_spells" />
+										<br />
+										<xsl:call-template name="print_spirits" />
+									</td>
+									<td class="fill33">
+										<xsl:call-template name="print_magic" />
+										<br />
+										<xsl:if test="qualities/quality[name='Mystic Adept']">
+											<xsl:call-template name="print_adept_powers" />
+											<br />
+										</xsl:if>
+										<xsl:call-template name="print_foci" />
+										<br />
+										<xsl:call-template name="print_initiation" />
+									</td>
+								</tr>
 							</xsl:when>
 							<xsl:otherwise>
 								<tr>
@@ -507,6 +529,7 @@
 						<xsl:if test="spec!=''">
 							(<xsl:value-of select="spec" />)
 						</xsl:if>
+						<span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="attribute" /></span>
 					</td>
 					<td><xsl:value-of select="rating" /></td>
 					<td>
@@ -1137,9 +1160,7 @@
 	
 	<xsl:template name="print_sprites">
 		<table class="stats matrix">
-			<tr><td colspan="3"><div class="bigheader">[Sprites]</div></td></tr>
-			<tr class="smallheader"><td>Sprite</td><td>Rating</td><td>Services</td></tr>
-			
+			<tr><td colspan="2"><div class="bigheader">[Sprites]</div></td></tr>
 			<xsl:for-each select="spirits/spirit">
 				<xsl:sort select="name" />
 				<xsl:sort select="crittername" />
@@ -1149,13 +1170,62 @@
 						<xsl:value-of select="name" />
 						<xsl:if test="crittername!=''"> (<xsl:value-of select="crittername" />)</xsl:if>
 						<xsl:choose>
-							<xsl:when test="bound='True'"> Bound</xsl:when>
-							<xsl:otherwise> Unbound</xsl:otherwise>
+							<xsl:when test="bound='True'"> (Bound)</xsl:when>
+							<xsl:otherwise> (Unbound)</xsl:otherwise>
 						</xsl:choose>
+						<xsl:call-template name="print_source_page" />
+						<br />
+						<table>
+							<tr class="smallheader"><td>Skill</td><td>Pool</td></tr>
+							<xsl:for-each select="skills/skill">
+								<tr>
+									<td>
+										<xsl:value-of select="name" />
+										<span style="color:grey; text-transform: uppercase;"><xsl:text> </xsl:text>
+											<xsl:choose>
+												<xsl:when test="attr=cha">A</xsl:when>
+												<xsl:when test="attr=int">S</xsl:when>
+												<xsl:when test="attr=log">D</xsl:when>
+												<xsl:when test="attr=wil">F</xsl:when>
+											</xsl:choose>
+										</span>
+									</td>
+									<td><xsl:value-of select="pool" /></td>
+								</tr>
+							</xsl:for-each>
+						</table>
 					</td>
-					<td><xsl:value-of select="force" /></td>
-					<td><xsl:value-of select="services" /></td>
+					<td>
+						<table style="width:100%;">
+							<td>Level</td><td><xsl:value-of select="force" /></td><td>Tasks</td><td><xsl:value-of select="services" /></td>
+							<tr><td>Attack</td><td><xsl:value-of select="spiritattributes/cha" /></td><td>Data Processing</td><td><xsl:value-of select="spiritattributes/log" /></td></tr>
+							<tr><td>Sleaze</td><td><xsl:value-of select="spiritattributes/int" /></td><td>Firewall</td><td><xsl:value-of select="spiritattributes/wil" /></td></tr>
+							<tr>
+								<td>Matrix CM</td><td><xsl:value-of select="8 + ceiling(force div 2)" /></td>
+								<td>Initiative</td><td><xsl:value-of select="spiritattributes/ini" /><xsl:text>+4d6</xsl:text></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
+				<tr>
+					<td>
+						<ul style="margin-left:5px;">
+							<xsl:if test="count(powers/power) &gt; 0">
+								<li><strong>Powers</strong></li>
+								<xsl:for-each select="powers/power">
+									<li>
+										<xsl:value-of select="name" />
+										<xsl:call-template name="print_source_page" />
+									</li>
+								</xsl:for-each>
+							</xsl:if>
+						</ul>
+					</td>
+				</tr>
+				
+				<xsl:if test="position() != last()">
+					<tr><td colspan="2"><hr /></td></tr>
+				</xsl:if>
 			</xsl:for-each>
 		</table>
 	</xsl:template>
@@ -1206,7 +1276,7 @@
 			<tr><td colspan="4"><div class="bigheader">[Magic]</div></td></tr>
 			<tr>
 				<td>Awakened</td>
-				<td>
+				<td colspan="3">
 					<xsl:choose>
 						<xsl:when test="qualities/quality[name='Adept']">Adept</xsl:when>
 						<xsl:when test="qualities/quality[name='Mystic Adept']">Mystic Adept</xsl:when>
@@ -1216,21 +1286,36 @@
 					</xsl:choose>
 				</td>
 			</tr>
-			<tr>
-				<td>Tradition</td><td><xsl:value-of select="tradition" /></td><td>Drain</td>
-				<td>
-					<xsl:choose>
-						<xsl:when test="qualities/quality[name='Adept']">BOD + WIL (<xsl:value-of select="attributes/attribute[name='BOD']/total +attributes/attribute[name='WIL']/total"/>)</xsl:when>
-						<xsl:otherwise><xsl:value-of select="drain" /></xsl:otherwise>
-					</xsl:choose>
-				</td>
-			</tr>
-			<tr><td>Combat</td><td><xsl:value-of select="spiritcombat" /></td><td>Detection</td><td><xsl:value-of select="spiritdetection" /></td></tr>
-			<tr><td>Health</td><td><xsl:value-of select="spirithealth" /></td><td>Illusion</td><td><xsl:value-of select="spiritillusion" /></td></tr>
-			<tr>
-				<td>Manipulation</td><td><xsl:value-of select="spiritmanipulation" /></td>
-				<td colspan="2">Possession/Materialization</td>
-			</tr>
+			<xsl:if test="tradition/name != ''">
+				<tr>
+					<td>Tradition</td>
+					<td colspan="3">
+						<xsl:value-of select="tradition/name" /> (<xsl:value-of select="tradition/spiritform" />)
+						<span style="color:grey">
+							<xsl:text> </xsl:text><xsl:value-of select="tradition/source" />
+							<xsl:text> </xsl:text><xsl:value-of select="tradition/page" />
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>Combat</td><td><xsl:value-of select="tradition/spiritcombat" /></td>
+					<td>Detection</td><td><xsl:value-of select="tradition/spiritdetection" /></td>
+				</tr>
+				<tr>
+					<td>Health</td><td><xsl:value-of select="tradition/spirithealth" /></td>
+					<td>Illusion</td><td><xsl:value-of select="tradition/spiritillusion" /></td>
+				</tr>
+				<tr>
+					<td>Manipulation</td><td><xsl:value-of select="tradition/spiritmanipulation" /></td>
+					<td>Drain</td>
+					<td>
+						<xsl:choose>
+							<xsl:when test="qualities/quality[name='Adept']">BOD + WIL (<xsl:value-of select="attributes/attribute[name='BOD']/total +attributes/attribute[name='WIL']/total"/>)</xsl:when>
+							<xsl:otherwise><xsl:value-of select="tradition/drain" /></xsl:otherwise>
+						</xsl:choose>
+					</td>
+				</tr>
+			</xsl:if>
 		</table>
 	</xsl:template>
 	
@@ -1283,20 +1368,24 @@
 					<td>
 						<xsl:value-of select="name" />
 						<xsl:if test="crittername!=''"> (<xsl:value-of select="crittername" />)</xsl:if>
-						<span style="color:grey">
-							<xsl:choose>
-								<xsl:when test="bound"> Bound</xsl:when>
-								<xsl:otherwise> Unbound</xsl:otherwise>
-							</xsl:choose>
-						</span>
-						<ul>
-							<xsl:if test="count(powers/power) &gt; 0">
-								<li><strong>Powers</strong></li>
-								<xsl:for-each select="powers/power">
-									<li><xsl:value-of select="." /></li>
-								</xsl:for-each>
-							</xsl:if>
-						</ul>
+						<xsl:choose>
+							<xsl:when test="bound"> (Bound)</xsl:when>
+							<xsl:otherwise> (Unbound)</xsl:otherwise>
+						</xsl:choose>
+						<xsl:call-template name="print_source_page" />
+						<br />
+						<table>
+							<tr class="smallheader"><td>Skill</td><td>Pool</td></tr>
+							<xsl:for-each select="skills/skill">
+								<tr>
+									<td>
+										<xsl:value-of select="name" />
+										<span style="color:grey; text-transform: uppercase;"><xsl:text> </xsl:text><xsl:value-of select="attr" /></span>
+									</td>
+									<td><xsl:value-of select="pool" /></td>
+								</tr>
+							</xsl:for-each>
+						</table>
 					</td>
 					<td>
 						<table style="width:100%;">
@@ -1305,34 +1394,47 @@
 							<tr><td>Agility</td><td><xsl:value-of select="spiritattributes/agi" /></td><td>Logic</td><td><xsl:value-of select="spiritattributes/log" /></td></tr>
 							<tr><td>Reaction</td><td><xsl:value-of select="spiritattributes/rea" /></td><td>Intuition</td><td><xsl:value-of select="spiritattributes/int" /></td></tr>
 							<tr><td>Strength</td><td><xsl:value-of select="spiritattributes/str" /></td><td>Charisma</td><td><xsl:value-of select="spiritattributes/cha" /></td></tr>
-							<tr><td>Initiative</td><td><xsl:value-of select="spiritattributes/ini" /><xsl:text> + 2d6</xsl:text></td></tr>
 							<tr><td>Physical CM</td><td><xsl:value-of select="ceiling(spiritattributes/bod div 2) + 8" /></td><td>Stun CM</td><td><xsl:value-of select="spiritattributes/cha" /></td></tr>
+							<tr><td>Initiative</td><td><xsl:value-of select="spiritattributes/ini" /><xsl:text> + 2d6</xsl:text></td></tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<ul>
-							<xsl:if test="count(optionalpowers/power) &gt; 0">
-								<li><strong>Optional Powers</strong></li>
-								<xsl:for-each select="optionalpowers/power">
-									<li><xsl:value-of select="." /></li>
+						<ul style="margin-left:5px;">
+							<xsl:if test="count(powers/power) &gt; 0">
+								<li><strong>Powers</strong></li>
+								<xsl:for-each select="powers/power">
+									<li>
+										<xsl:value-of select="name" />
+										<xsl:call-template name="print_source_page" />
+									</li>
 								</xsl:for-each>
 							</xsl:if>
 						</ul>
 					</td>
 					<td>
-						<ul style="margin-left:0;">
-							<xsl:if test="count(skills/skill) &gt; 0">
-								<li><strong>Skills</strong></li>
-								<xsl:for-each select="skills/skill">
-									<li><xsl:value-of select="." /></li>
+						<ul style="margin-left:5px;">
+							<xsl:if test="count(optionalpowers/power) &gt; 0">
+								<li><strong>Optional Powers</strong></li>
+								<xsl:for-each select="optionalpowers/power">
+									<li>
+										<xsl:value-of select="name" />
+										<xsl:call-template name="print_source_page" />
+									</li>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:if test="count(weaknesses/weakness) &gt; 0">
+								<li><strong>Weaknesses</strong></li>
+								<xsl:for-each select="weaknesses/weakness">
+									<li>
+										<xsl:value-of select="." />
+									</li>
 								</xsl:for-each>
 							</xsl:if>
 						</ul>
 					</td>
 				</tr>
-				
 				<xsl:if test="position() != last()">
 					<tr><td colspan="2"><hr /></td></tr>
 				</xsl:if>
