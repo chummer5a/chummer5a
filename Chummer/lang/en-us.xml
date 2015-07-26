@@ -1375,6 +1375,14 @@
 			<text>Are you sure you want to delete this Contact?</text>
 		</string>
 		<string>
+			<key>MessageTitle_NoContactFound</key>
+			<text>No Available Contacts Found</text>
+		</string>
+		<string>
+			<key>Message_NoContactFound</key>
+			<text>No selectable contacts found. Please create a contact and try again.</text>
+		</string>
+		<string>
 			<key>Message_DeleteEnemy</key>
 			<text>Are you sure you want to delete this Enemy?</text>
 		</string>

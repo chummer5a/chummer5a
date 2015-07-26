@@ -1655,6 +1655,13 @@ namespace Chummer
 					return false;
 				}
 
+				if (selectedContactsList.Count == 0)
+				{
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_NoContactFound"), LanguageManager.Instance.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+					Rollback();
+					return false;
+				}
+
 				int count = 0;
 				//Black magic LINQ to cast content of list to another type
 				List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList
@@ -1672,12 +1679,12 @@ namespace Chummer
 				{
 					Contact selectedContact = selectedContactsList[index];
 
-					//if (nodSelect["mademan"] != null)
-					//{
+					if (nodSelect["mademan"] != null)
+					{
 					selectedContact.MadeMan = true;
 					CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
 						Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
-					//}
+					}
 				}
 				else
 				{

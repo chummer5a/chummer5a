@@ -6,19 +6,24 @@ Application Change:
 - Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff won't work, and we (the Chummer5a team) won't provide support.
 - Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
 - More specific spirit data is available for charsheets to use.
+- Fixed an issue with the selectcontact improvement (Used by Made Man, mostly) that warns the user if there are no valid contacts to select.
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
 - Machine Pistols were missing a few accessory slots; they can now mount stocks and such.
 - Cyberware Holdout Pistol typo fixed. 
 - Gameplay Options have been moved into their own XML file, gameplayoptions.xml.
-- Added the missing qualities "Poor Self Control (Sadisic)" and "Poor Self Control (Attention-Seeking)"
-- Lifestyles.xml now have ID fields
+- Added the missing qualities "Poor Self Control (Sadistic)" and "Poor Self Control (Attention-Seeking)"
+- Lifestyles.xml GUIDs populated to support the language fix.
+- Adapsin bioware properly discounts cyberware costs. 
 
-Changed Strings:
+String Changes:
+Altered:
 - Checkbox_Options_ExceedNegativeQualitiesLimit
 - Checkbox_Options_ExceedPositiveQualities
 - Checkbox_Options_ExceedNegativeQualities
+New:
+- MessageBox_NoValidContactFound
 
 Build 171:
 Application Change:
