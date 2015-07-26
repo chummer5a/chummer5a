@@ -2419,10 +2419,9 @@ namespace Chummer
             string strTraditionName = _strMagicTradition;
             if (strTraditionName == "Custom")
                 strTraditionName = _strTraditionName;
-            objWriter.WriteElementString("tradition", strTraditionName);
-            // <stream />
-            objWriter.WriteElementString("stream", _strTechnomancerStream);
-            // <drain />
+			objWriter.WriteStartElement("tradition");
+            objWriter.WriteElementString("name", strTraditionName);
+
             if (_strMagicTradition != "")
             {
                 string strDrainAtt = "";
@@ -2459,7 +2458,39 @@ namespace Chummer
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
 
                 objWriter.WriteElementString("drain", strDrainAtt + " (" + intDrain.ToString() + ")");
+
+				// Get spirit type per spell category
+				XmlNodeList lstXmlSpiritTypes = objXmlTradition.SelectNodes("spirits/spirit");
+				
+				string strSpiritCombat = lstXmlSpiritTypes[0] != null ? lstXmlSpiritTypes[0].InnerText : _strSpiritCombat;
+				string strSpiritDetection = lstXmlSpiritTypes[1] != null ? lstXmlSpiritTypes[1].InnerText : _strSpiritDetection;
+				string strSpiritHealth = lstXmlSpiritTypes[2] != null ? lstXmlSpiritTypes[2].InnerText : _strSpiritHealth;
+				string strSpiritIllusion = lstXmlSpiritTypes[3] != null ? lstXmlSpiritTypes[3].InnerText : _strSpiritIllusion;
+				string strSpiritManipulation = lstXmlSpiritTypes[4] != null ? lstXmlSpiritTypes[4].InnerText : _strSpiritManipulation;
+
+				objWriter.WriteElementString("spiritcombat", strSpiritCombat);
+				objWriter.WriteElementString("spiritdetection", strSpiritDetection);
+				objWriter.WriteElementString("spirithealth", strSpiritHealth);
+				objWriter.WriteElementString("spiritillusion", strSpiritIllusion);
+				objWriter.WriteElementString("spiritmanipulation", strSpiritManipulation);
+
+				//Spirit form, default to materialization unless field with other data persists
+				string strSpiritForm;
+				objXmlTradition.TryGetField("spiritform", out strSpiritForm, "Materialization");
+				objWriter.WriteElementString("spiritform", strSpiritForm);
+
+				//Rulebook reference
+				string strSource, strPage;
+				objXmlTradition.TryGetField("source", out strSource);
+				objXmlTradition.TryGetField("page", out strPage);
+
+				objWriter.WriteElementString("source", strSource);
+				objWriter.WriteElementString("page", strPage);
             }
+			objWriter.WriteEndElement();
+
+			// <stream />
+			objWriter.WriteElementString("stream", _strTechnomancerStream);
             if (_strTechnomancerStream != "")
             {
                 string strDrainAtt = "";

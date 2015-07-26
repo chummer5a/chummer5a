@@ -27,6 +27,16 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// This will disabled logging and free any resources used by it
+		/// </summary>
+		public static void Kill()
+		{
+			logWriter.Flush();
+			logWriter.Close();
+			logEnabled = false;
+		}
+
+		/// <summary>
 		/// Log that the execution path is entering a method
 		/// </summary>
 		/// <param name="info">An optional array of objects providing additional data</param>

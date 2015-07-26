@@ -2490,8 +2490,8 @@
 	<xsl:template name="spells">
 								<tr>
 									<td colspan="7" valign="top">
-										Tradition: <xsl:value-of select="tradition" />&#160;&#160;&#160;
-										Entzugswiderstand mit <xsl:value-of select="drain" />
+										Tradition: <xsl:value-of select="tradition/name" />&#160;&#160;&#160;
+										Entzugswiderstand mit <xsl:value-of select="tradition/drain" />
 									</td>
 								</tr>
     <xsl:variable name="sortedlist">
