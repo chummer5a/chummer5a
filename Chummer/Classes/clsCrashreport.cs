@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -156,8 +157,9 @@ namespace Chummer
 				};
 
 				MailMessage message = new MailMessage(address, address);
+				
 				//Forwarding rule used instead?
-				//message.CC.Add("chummer5isalive+chummerdump@gmail.com");
+				message.CC.Add("chummer5isalive+chummerdump@gmail.com");
 
 				message.Subject = Id.ToString("D");
 				message.Body = DefaultInfo();
@@ -167,13 +169,16 @@ namespace Chummer
 				{
 					message.Attachments.Add(new Attachment(pair.Value, pair.Key));
 				}
-#if !DEBUG
 
+				if (Debugger.IsAttached)
+				{
+					Debugger.Break();
+				}
+				else
+				{
+					client.Send(message);
+				}
 
-				client.Send(message);
-#else
-				MessageBox.Show("Not sending mail while debugging, email limit and spaming other devs :P\n" + message);
-#endif
 				return true;
 			}
 			catch

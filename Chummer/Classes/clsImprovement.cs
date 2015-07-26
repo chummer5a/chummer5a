@@ -990,17 +990,9 @@ namespace Chummer
 				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Source  = " + ex.Source);
 				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager",
 					"ERROR Trace   = " + ex.StackTrace.ToString());
-				if (Debugger.IsAttached)
-				{
-					throw;
-				}
-				else
-				{
-					MessageBox.Show(
-						"If you're seeing this, an error just occurred that couldn't be handled. If you have the debug log turned on, please post chummerlog.txt to www.github.com/chummer5a/chummer5a/issues. If you don't have the debug log turned on, please turn it on in the Options dialog and try to repeat what you did so the error can be captured. Thank you.");
-				}
+				
 				Rollback();
-				blnSuccess = false;
+				throw;
 			}
 			objFunctions.LogWrite(CommonFunctions.LogType.Exiting, "Chummer.ImprovementManager", "CreateImprovements");
 			return blnSuccess;

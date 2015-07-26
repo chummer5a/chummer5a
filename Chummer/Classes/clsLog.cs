@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -304,6 +305,14 @@ namespace Chummer
 			}
 
 			logWriter.WriteLine(stringBuilder.ToString());
+		}
+
+		public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
+		{
+			if (!logEnabled)
+				return;
+
+			logWriter.WriteLine("First chance exception: " +e.Exception);
 		}
 	}
 }

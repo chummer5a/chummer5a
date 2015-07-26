@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -14,18 +15,27 @@ namespace Chummer
         [STAThread]
         static void Main()
         {
-	        
-			//Setup a crash handler that will send a mail
-	        AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
-	        throw new Exception();
+			//If debuging and launched from other place (Bootstrap), launch debugger
+			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
+			{
+				Debugger.Launch();
+			}
+
+			//Various init stuff (that mostly "can" be removed as they serve 
+			//debugging more than function
+
+			//crash handler that will offer to send a mail
+			AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
+			
+			//Log exceptions that is caught. Wanting to know about this cause of performance
+	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-#if DEBUG
-	        if (!Debugger.IsAttached)
-	        {
-		        Debugger.Launch();
-			}
-#endif
+
+
+
+
 #if LEGACY
 	        DialogResult result =
 		        MessageBox.Show(
