@@ -155,38 +155,35 @@ namespace Chummer
                             nudKarma.Value = 800;
                     }
                     nudKarma.Visible = true;
-					lblStartingKarma.Visible = nudKarma.Visible;
 					nudSumtoTen.Visible = false;
-					lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "Priority")
                 {
                     lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_PrioritySummary");
                     nudKarma.Visible = false;
-					lblStartingKarma.Visible = nudKarma.Visible;
 					nudSumtoTen.Visible = false;
-					lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "SumtoTen")
                 {
                     lblDescription.Text = LanguageManager.Instance.GetString("String_SelectBP_PrioritySummary");
-					lblStartingKarma.Visible = nudKarma.Visible;
+	                nudKarma.Visible = false;
 	                nudSumtoTen.Visible = true;
-	                lblSumToX.Visible = nudSumtoTen.Visible;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
                 {
                     lblDescription.Text =
                         String.Format(LanguageManager.Instance.GetString("String_SelectBP_LifeModuleSummary"), 750);
                     nudKarma.Visible = true;
-					lblStartingKarma.Visible = nudKarma.Visible;
 					nudSumtoTen.Visible = false;
-					lblSumToX.Visible = nudSumtoTen.Visible;
+					
 
 					if (!_blnUseCurrentValues)
                         nudKarma.Value = 750;
                 }
-            }
+
+				lblStartingKarma.Visible = nudKarma.Visible;
+				lblSumToX.Visible = nudSumtoTen.Visible;
+			}
         }
 
         private void frmSelectBP_Load(object sender, EventArgs e)

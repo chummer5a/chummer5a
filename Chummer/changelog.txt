@@ -3,10 +3,12 @@ Application Change:
 - Due to the return of Move-By-Wire, Initiative is no longer capped to your REA+INT's augmented maximum. 
 - Fixed an issue with lifestyle quality costs that caused a crash on print.
 - The cap for Qualities is now based on your Gameplay Option. For example, a Prime Runner can spend up to 35 Karma on Positive qualities, and gain 35 from Negative qualities.
-- Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff won't work, and we (the Chummer5a team) won't provide support.
+- Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff might not work, and we (the Chummer5a team) won't provide support.
 - Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
 - More specific spirit data is available for charsheets to use.
 - Chummer now have a crash reporter. If Chummer encounters an error it can't recover from, it will (if given permision) send a data package (hopefully) identifying the source of the crash. 
+- Chummer now won't pretend you have 25 BP in SumToTen/Priority build modes
+- Fixed edge case where Sum To Ten would ask for a karma amount like Karma/Life Module builds
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
@@ -16,6 +18,7 @@ Data Change:
 - Added the missing qualities "Poor Self Control (Sadistic)" and "Poor Self Control (Attention-Seeking)"
 - Lifestyles.xml GUIDs populated to support the language fix.
 - Adapsin bioware properly discounts cyberware costs. 
+- Colt Inception now have correct fire modes
 
 String Changes:
 Altered:
