@@ -9970,6 +9970,35 @@ namespace Chummer
 				frmPickWeaponCategory.Description = LanguageManager.Instance.GetString("String_SelectWeaponCategoryAmmo");
 				if (strForceValue != "")
 					frmPickWeaponCategory.OnlyCategory = strForceValue;
+
+				//should really go in a data file
+				if (_strName.StartsWith("Ammo:"))
+				{
+					if (_strName.StartsWith("Ammo: Assault Cannon"))
+					{
+						frmPickWeaponCategory.WeaponType = "cannon";
+					}
+					else if (_strName.StartsWith("Ammo: Taser Dart"))
+					{
+						frmPickWeaponCategory.WeaponType = "taser";
+					}
+					else if(_strName.StartsWith("Ammo: Fuel Canister"))
+					{
+						frmPickWeaponCategory.WeaponType = "flame";
+					}
+					else
+					{
+						frmPickWeaponCategory.WeaponType = "gun";
+					}
+				}
+				else if (_strName.StartsWith("Arrow:"))
+				{
+					frmPickWeaponCategory.WeaponType = "bow";
+				}
+				else if (_strName.StartsWith("Bolt:"))
+				{
+					frmPickWeaponCategory.WeaponType = "crossbow";
+				}
 				frmPickWeaponCategory.ShowDialog();
 
 				_strExtra = frmPickWeaponCategory.SelectedCategory;

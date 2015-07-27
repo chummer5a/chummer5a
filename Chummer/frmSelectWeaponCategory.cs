@@ -10,6 +10,8 @@ namespace Chummer
 		private string _strSelectedCategory = "";
 		private string _strForceCategory = "";
 
+		public String WeaponType { get; set; }
+
 		private XmlDocument _objXmlDocument = new XmlDocument();
 
 		#region Control Events
@@ -37,6 +39,15 @@ namespace Chummer
 
 			foreach (XmlNode objXmlCategory in objXmlCategoryList)
 			{
+				if (WeaponType != null)
+				{
+					if (objXmlCategory.Attributes["type"] == null)
+						continue;
+
+					if (objXmlCategory.Attributes["type"].Value != WeaponType)
+						continue;
+				}
+
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlCategory.InnerText;
 				if (objXmlCategory.Attributes != null)
@@ -52,7 +63,7 @@ namespace Chummer
 			}
 
 			// Add the Cyberware Category.
-			if (_strForceCategory == "" || _strForceCategory == "Cyberware")
+			if (/*_strForceCategory == "" ||*/ _strForceCategory == "Cyberware")
 			{
 				ListItem objItem = new ListItem();
 				objItem.Value = "Cyberware";

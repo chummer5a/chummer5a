@@ -2,32 +2,32 @@
 <chummer>
 	<version>-375</version>
 	<categories>
-		<category>Blades</category>
-		<category>Clubs</category>
-		<category>Improvised Weapons</category>
-		<category>Exotic Melee Weapons</category>
+    <category type="melee">Blades</category>
+    <category type="melee">Clubs</category>
+    <category type="melee">Improvised Weapons</category>
+    <category type="melee">Exotic Melee Weapons</category>
 		<category>Exotic Ranged Weapons</category>
-		<category>Unarmed</category>
-		<category>Bows</category>
-		<category>Crossbows</category>
-		<category>Tasers</category>
-		<category>Holdouts</category>
-		<category>Light Pistols</category>
-		<category>Heavy Pistols</category>
-		<category>Machine Pistols</category>
-		<category>Submachine Guns</category>
-		<category>Assault Rifles</category>
-		<category>Sporting Rifles</category>
-		<category>Sniper Rifles</category>
-		<category>Shotguns</category>
-		<category>Light Machine Guns</category>
-		<category>Medium Machine Guns</category>
-		<category>Heavy Machine Guns</category>
-		<category>Assault Cannons</category>
-		<category>Flamethrowers</category>
-		<category>Laser Weapons</category>
-		<category>Grenade Launchers</category>
-		<category>Missile Launchers</category>
+		<category type="melee">Unarmed</category>
+		<category type="bow">Bows</category>
+		<category type="crossbow">Crossbows</category>
+		<category type="taser">Tasers</category>
+		<category type="gun">Holdouts</category>
+		<category type="gun">Light Pistols</category>
+    <category type="gun">Heavy Pistols</category>
+    <category type="gun">Machine Pistols</category>
+    <category type="gun">Submachine Guns</category>
+    <category type="gun">Assault Rifles</category>
+    <category type="gun">Sporting Rifles</category>
+    <category type="gun">Sniper Rifles</category>
+    <category type="gun">Shotguns</category>
+    <category type="gun">Light Machine Guns</category>
+    <category type="gun">Medium Machine Guns</category>
+    <category type="gun">Heavy Machine Guns</category>
+		<category type="cannon">Assault Cannons</category>
+		<category type="flame">Flamethrowers</category>
+		<category type="laser">Laser Weapons</category>
+		<category type="glauncher">Grenade Launchers</category>
+		<category type="mlauncher">Missile Launchers</category>
 	</categories>
 	<weapons>
 		<weapon>
