@@ -335,7 +335,7 @@
 			<reach>0</reach>
 			<damage>10P</damage>
 			<ap>-1</ap>
-			<mode>SA/FA</mode>
+			<mode>SA/BF</mode>
 			<rc>1</rc>
 			<ammo>36(c)</ammo>
 			<avail>11R</avail>
