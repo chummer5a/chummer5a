@@ -4806,12 +4806,13 @@ namespace Chummer
 				if (objContactControl == objSender)
 				{
 					blnFound = true;
+					_objCharacter.Contacts.Remove(objContactControl.ContactObject);
 				}
 
                 // Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
                 if (blnFound)
                 {
-                    _objCharacter.Contacts.Remove(objContactControl.ContactObject);
+                    
                     objContactControl.Top -= 25;
 				}
 			}
@@ -22820,6 +22821,8 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotChangeMetatype") + strQualities, LanguageManager.Instance.GetString("MessageTitle_CannotChangeMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+
+
 
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)

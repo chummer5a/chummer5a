@@ -4599,12 +4599,14 @@ namespace Chummer
 			{
 				// Set the flag to show that we have found the Contact.
 				if (objContactControl == objSender)
+				{
 					blnFound = true;
+					_objCharacter.Contacts.Remove(objContactControl.ContactObject);
+				}
 
 				// Once the Contact has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
 				if (blnFound)
 				{
-					_objCharacter.Contacts.Remove(objContactControl.ContactObject);
 					objContactControl.Top -= 25;
 				}
 			}
