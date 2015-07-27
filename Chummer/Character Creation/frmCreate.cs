@@ -4787,9 +4787,14 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void objContact_DeleteContact(Object sender)
+	    private void objContact_DeleteContact(Object sender)
+	    {
+		    objContact_DeleteContact(sender, false);
+	    }
+
+        private void objContact_DeleteContact(Object sender, bool force)
         {
-            if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
+            if (!force && !_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteContact")))
                 return;
 
             // Handle the DeleteContact Event for the ContactControl object.
@@ -17212,17 +17217,57 @@ namespace Chummer
 
         public void RefreshContacts()
         {
-            foreach (Control contact in panContacts.Controls)
-            {
-                // Probably won't find subclass, but don't wan't to track
-                // down bug about contacts in 4 months because i by some 
-                // retarded version decided to overload ContactControl
-                if (contact.GetType() == typeof(ContactControl) ||
-                    contact.GetType().IsSubclassOf(typeof(ContactControl)))
-                {
-                    ContactControl contactControl = (ContactControl) contact;
-                }
-            }
+			HashSet<Contact> existing = new HashSet<Contact>();
+
+
+	        for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
+	        {
+				Control contact = panContacts.Controls[i];
+                ContactControl contactControl = (ContactControl)contact;
+
+				if (contactControl != null)
+				{
+					if (_objCharacter.Contacts.Contains(contactControl.ContactObject))
+					{
+						contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
+						contactControl.UpdateQuickText();
+						existing.Add(contactControl.ContactObject);
+					}
+					else
+					{
+						objContact_DeleteContact(contactControl, true);
+					}
+						
+				}
+			}
+
+			//Sync panContacts to character.contacts
+			//objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
+			//objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
+			//objContactControl.DeleteContact += objContact_DeleteContact;
+			//objContactControl.FileNameChanged += objContact_FileNameChanged;
+
+	        var newcontacts = from contact in _objCharacter.Contacts
+							  where contact.EntityType == ContactType.Contact 
+							  && !existing.Contains(contact)
+							  select contact;
+
+	        foreach (Contact contact in newcontacts)
+	        {
+		        ContactControl ctrl = new ContactControl(_objCharacter);
+				ctrl.ContactObject = contact;
+
+				ctrl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
+				ctrl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
+				ctrl.DeleteContact += objContact_DeleteContact;
+				ctrl.FileNameChanged += objContact_FileNameChanged;
+
+
+		        ctrl.LoyaltyRating = ctrl.LoyaltyRating;
+		        ctrl.ConnectionRating = ctrl.ConnectionRating;
+				panContacts.Controls.Add(ctrl);
+			}
+
         }
 
         public void RefreshPowers()

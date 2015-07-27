@@ -9,6 +9,7 @@ Application Change:
 - Chummer now have a crash reporter. If Chummer encounters an error it can't recover from, it will (if given permision) send a data package (hopefully) identifying the source of the crash. 
 - Chummer now won't pretend you have 25 BP in SumToTen/Priority build modes
 - Fixed edge case where Sum To Ten would ask for a karma amount like Karma/Life Module builds
+- Prime Data Heaven now adds a contact with 5/3
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.

@@ -29,11 +29,13 @@ namespace Chummer
         private string _strContactRole;
         private string _strContactLocation;
         private bool _blnEnemy = false;
+	    private bool _loading = true;
+
 
         // Events.
         public event ConnectionRatingChangedHandler ConnectionRatingChanged;
-        public event ConnectionGroupRatingChangedHandler ConnectionGroupRatingChanged;
-        public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
+        public event ConnectionRatingChangedHandler GroupStatusChanged;
+		public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
         public event DeleteContactHandler DeleteContact;
         public event FileNameChangedHandler FileNameChanged;
 
@@ -78,8 +80,17 @@ namespace Chummer
                 return;
             }
 
-            // Read the list of Categories from the XML file.
-            List<ListItem> lstCategories = new List<ListItem>();
+			if (_objContact.ReadOnly)
+			{
+				chkFree.Enabled = chkGroup.Enabled =
+				nudConnection.Enabled = nudLoyalty.Enabled = false;
+
+				cmdDelete.Visible = false;
+			}
+
+
+			// Read the list of Categories from the XML file.
+			List<ListItem> lstCategories = new List<ListItem>();
 
             ListItem objBlank = new ListItem();
             objBlank.Value = "";
@@ -103,6 +114,7 @@ namespace Chummer
             cboContactRole.DisplayMember = "Name";
             cboContactRole.DataSource = lstCategories;
             chkGroup.Checked = _objContact.IsGroup;
+	        chkFree.Checked = _objContact.Free;
             if (_objContact.MadeMan)
             {
                 chkGroup.Checked = _objContact.MadeMan;
@@ -110,6 +122,8 @@ namespace Chummer
 
             if (_strContactRole != "")
                 cboContactRole.Text = _strContactRole;
+
+	        _loading = false;
         }
 
         private void ContactControl_Load(object sender, EventArgs e)
@@ -285,30 +299,6 @@ namespace Chummer
                     tipTooltip.SetToolTip(imgLink, LanguageManager.Instance.GetString("Tip_Contact_LinkFile"));
                 FileNameChanged(this);
             }
-        }
-
-        private void cmdGroup_Click(object sender, EventArgs e)
-        {
-            frmSelectContactConnection frmPickContactConnection = new frmSelectContactConnection();
-            frmPickContactConnection.GroupName = _objContact.GroupName;
-            frmPickContactConnection.Colour = _objContact.Colour;
-            frmPickContactConnection.Free = _objContact.Free;
-            frmPickContactConnection.ShowDialog(this);
-
-            if (frmPickContactConnection.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Update the Connection Modifier values.
-            _objContact.GroupName = frmPickContactConnection.GroupName;
-            _objContact.Colour = frmPickContactConnection.Colour;
-            _objContact.Free = frmPickContactConnection.Free;
-
-            if (_objContact.Colour.Name != "White" && _objContact.Colour.Name != "Black")
-                this.BackColor = _objContact.Colour;
-            else
-                this.BackColor = SystemColors.Control;
-
-            ConnectionGroupRatingChanged(this);
         }
 
         private void imgNotes_Click(object sender, EventArgs e)
@@ -529,8 +519,14 @@ namespace Chummer
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
+	        if (_loading)
+		        return;
+
             _objContact.IsGroup = chkGroup.Checked;
             chkGroup.Enabled = !_objContact.MadeMan;
+
+	        if (GroupStatusChanged != null)
+		        GroupStatusChanged(this);
 
             //Loyalty can be changed by event above
             nudLoyalty.Enabled = !_objContact.IsGroup;

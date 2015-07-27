@@ -4785,11 +4785,10 @@
 			<category>Positive</category>
 			<bonus>
 				<mademan />
-					<!--should be removable-->
-					<selectcontact>
-						<type>group</type>
-					</selectcontact>
-				<mademan/>
+        <selectcontact>
+          <type>group</type>
+          <mademan />
+        </selectcontact>
 			</bonus>
 			<source>RF</source>
 			<page>148</page>
@@ -6877,7 +6876,14 @@
       <name>Prime Datahaven Membership</name>
       <karma>7</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <addcontact>
+          <loyality>3</loyality>
+          <connection>5</connection>
+          <free />
+          <group />
+        </addcontact>
+      </bonus>
       <source>DT</source>
       <page>45</page>
     </quality>

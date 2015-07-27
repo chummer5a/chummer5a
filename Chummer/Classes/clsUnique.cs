@@ -8656,8 +8656,9 @@ namespace Chummer
         private bool _blnIsGroup = false;
 		private Character _objCharacter;
 	    private bool _blnMadeMan;
+		private bool _readonly = false;
 
-	    #region Helper Methods
+		#region Helper Methods
 		/// <summary>
 		/// Convert a string to a ContactType.
 		/// </summary>
@@ -8703,7 +8704,10 @@ namespace Chummer
 			objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
-		    if (_strUnique != null)
+
+			if (ReadOnly) objWriter.WriteElementString("readonly", "");
+
+			if (_strUnique != null)
 		    {
 		        objWriter.WriteElementString("guid", _strUnique);
 		    }
@@ -8791,6 +8795,8 @@ namespace Chummer
 		    {
 		    }
 
+
+			if (objNode["readonly"] != null) _readonly = true;
 		    objNode.TryGetField("mademan", out _blnMadeMan);
 		}
 
@@ -8817,6 +8823,19 @@ namespace Chummer
 		#endregion
 
 		#region Properties
+
+		public bool ReadOnly
+		{
+			get
+			{
+				return _readonly;
+			}
+			set
+			{
+				_readonly = value; 
+			}
+		}
+
 
         /// <summary>
         /// Total points used for this contact.
@@ -8896,7 +8915,7 @@ namespace Chummer
 		{
 			get
 			{
-				return IsGroup ? (MadeMan ? 3 : 1) :_intLoyalty;
+				return _intLoyalty;
 			}
 			set
 			{
@@ -8918,6 +8937,11 @@ namespace Chummer
             set
             {
                 _blnIsGroup = value;
+
+	            if (value)
+	            {
+		            _intLoyalty = 1;
+	            }
             }
 	    }
 
@@ -9055,7 +9079,11 @@ namespace Chummer
 	        set
 	        {
                 _blnMadeMan = value;
-            }
+		        if (value)
+		        {
+			        _intLoyalty = 3;
+		        }
+	        }
 	    }
 
 	    #endregion
