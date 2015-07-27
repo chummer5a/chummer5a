@@ -174,13 +174,15 @@ namespace Chummer
             // Set the movement speed defaults
             lblMovement.Text = _objCharacter.Movement;
 
-            // Set the Statusbar Labels if we're using Karma to build.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+			tssBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+			tssBPRemainLabel.Text = LanguageManager.Instance.GetString("Label_KarmaRemaining");
+			tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
+			lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+
+			// Set the Statusbar Labels if we're using Karma to build.
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                tssBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
-                tssBPRemainLabel.Text = LanguageManager.Instance.GetString("Label_KarmaRemaining");
-                tabBPSummary.Text = LanguageManager.Instance.GetString("Tab_BPSummary_Karma");
-                lblQualityBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+                
                 //TODO: Fix the UI for karmagen
 
                 nudAGI.Enabled = false;
