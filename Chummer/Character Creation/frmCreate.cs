@@ -22822,8 +22822,9 @@ namespace Chummer
                 return;
             }
 
-
-
+			//moving this belove the display select fixes #304, but prevents switch between 
+			//techno and magican, arguably a worse bug.
+			//needs a "restore state" function, but can't be arsed to implement atm
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
