@@ -22870,8 +22870,8 @@ namespace Chummer
             int intLOG = _objCharacter.LOG.Value - _objCharacter.LOG.MetatypeMinimum;
             int intWIL = _objCharacter.WIL.Value - _objCharacter.WIL.MetatypeMinimum;
             int intEDG = _objCharacter.EDG.Value - _objCharacter.EDG.MetatypeMinimum;
-            int intMAG = _objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum;
-            int intRES = _objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum;
+	        int intMAG = Math.Max(_objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum, 0);
+	        int intRES = Math.Max(_objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum, 0);
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
             List<Improvement> lstImprovement = new List<Improvement>();
