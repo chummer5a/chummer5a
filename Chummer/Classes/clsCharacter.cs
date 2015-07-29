@@ -226,15 +226,8 @@ namespace Chummer
         private string _strSkill1 = "";
         private string _strSkill2 = "";
         private string _strSkillGroup = "";
-        private int __intMaxNuyen = 0;
-
-	    private int _intMaxNuyen
-	    {
-			get { return __intMaxNuyen; }
-			set { __intMaxNuyen = value; }
-	    }
-
-        private int _intMaxKarma = 0;
+        private int _intMaxNuyen = 0;
+		private int _intMaxKarma = 0;
         private int _intContactMultiplier = 0;
 
         // Lists.
