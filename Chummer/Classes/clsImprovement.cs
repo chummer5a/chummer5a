@@ -1679,7 +1679,16 @@ namespace Chummer
 						CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
 							Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
 					}
-				}
+
+					if (String.IsNullOrWhiteSpace(_strSelectedValue))
+					{
+						_strSelectedValue = selectedContact.Name;
+					}
+					else
+					{
+						_strSelectedValue += (", " + selectedContact.Name);
+					}
+                }
 				else
 				{
 					Rollback();
