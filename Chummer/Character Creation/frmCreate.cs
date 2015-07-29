@@ -587,20 +587,23 @@ namespace Chummer
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
                 {
                     nudNuyen.Maximum = 10;
-                    nudNuyen.Value = _objCharacter.NuyenBP;
+                    
                 }
-                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     nudNuyen.Maximum = 200;
-                    nudNuyen.Value = _objCharacter.NuyenBP;
+                   
                 }
             }
             else
             {
                 //nudNuyen.Maximum = decimal.MaxValue;
             }
-            // Load the Skills information.
-            objXmlDocument = XmlManager.Instance.Load("skills.xml");
+	        if (_objCharacter.BornRich) nudNuyen.Maximum += 30;
+			nudNuyen.Value = _objCharacter.NuyenBP;
+
+			// Load the Skills information.
+			objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             // Populate the Skills Controls.
             XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/skills/skill[" + _objCharacter.Options.BookXPath() + "]");
@@ -2263,12 +2266,14 @@ namespace Chummer
             
             if (_objCharacter.BornRich)
             {
-
+				nudNuyen.Maximum += 30;
             }
             else
             {
+				nudNuyen.Maximum -= 30;
+			}
 
-            }
+	        
         }
 
         private void objCharacter_ErasedChanged(object sender)
@@ -14730,6 +14735,8 @@ namespace Chummer
         #region Other Control Events
         private void nudNuyen_ValueChanged(object sender, EventArgs e)
         {
+	        if (_blnLoading) return;
+
             // Calculate the amount of Nuyen for the selected BP cost.
             _objCharacter.NuyenBP = nudNuyen.Value;
             UpdateCharacterInfo();

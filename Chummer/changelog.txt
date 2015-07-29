@@ -10,6 +10,7 @@ Application Change:
 - Chummer now won't pretend you have 25 BP in SumToTen/Priority build modes
 - Fixed edge case where Sum To Ten would ask for a karma amount like Karma/Life Module builds
 - Prime Data Heaven now adds a contact with 5/3
+- Born rich now works
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
@@ -20,6 +21,7 @@ Data Change:
 - Lifestyles.xml GUIDs populated to support the language fix.
 - Adapsin bioware properly discounts cyberware costs. 
 - Colt Inception now have correct fire modes
+
 
 String Changes:
 Altered:
