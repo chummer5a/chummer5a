@@ -1,17 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-999</version>
+  <version>-999</version>
   <stages>
     <stage order="1">Nationality</stage>
     <stage order="2">Formative Years</stage>
     <stage order="3">Teen Years</stage>
+    <stage order="4">Further Education</stage>
+    <stage order="5">Real Life</stage>
   </stages>
   <modules>
     <module>
       <id>f35ba316-dd0f-48ab-9f06-d7329305a44e</id>
       <stage>Nationality</stage>
       <category>LifeModule</category>
-      <name>United American Canadian States</name>
+      <name>United Canadian American States</name>
       <karma>15</karma>
       <!--<selectable/>-->
       <versions>
@@ -19,7 +21,8 @@
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
           <name>General UCAS</name>
           <bonus>
-            <attributelevel>  <!--Defaults to <val>1</val>-->
+            <attributelevel>
+              <!--Defaults to <val>1</val>-->
               <name>LOG</name>
             </attributelevel>
             <skilllevel>
@@ -67,11 +70,73 @@
             <skilllevel>
               <name>Etiquette</name>
             </skilllevel>
+            <pushtext>United Canadian American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
           </bonus>
           <addqualities>
             <addquality>SINner (National)</addquality>
           </addqualities>
+        </version>
+        <version>
+          <id>7fdfff94-5c90-4af5-808a-f96e5d0643bb</id>
+          <name>Denver (UCAS Sector)</name>
+          <bonus>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <name>Denver</name>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <skilllevel>
+              <name>Negotiation&gt;</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>United Canadian American States</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>b332fa10-e0f5-43aa-bb38-52cdb0060da1</id>
+          <name>Seattle</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Intimidation</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <group>Street</group>
+              <name>Seattle</name>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>United Canadian American States</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>4fe5e4fd-0275-48bd-9fec-678b86c5f024</id>
+          <name>SINless</name>
+          <bonus>
+            <attributelevel>
+              <name>AGI</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <group>Street</group>
+              <name>[City]</name>
+            </knowledgeskilllevel>
+          </bonus>
         </version>
       </versions>
       <bonus>
@@ -110,14 +175,578 @@
       <page>66</page>
     </module>
     <module>
-      <id>15302513-70fe-43f7-b881-32ceed0cfa8e</id>
+      <id>85f1c4ab-5f3c-411c-8c01-8ee54e2d4f89</id>
       <stage>Nationality</stage>
       <category>LifeModule</category>
-      <name>Confederation of American States[NOSTAT]</name>
+      <name>Confederation of American States</name>
       <karma>15</karma>
+      <version>
+        <version>
+          <id>d0f2538f-5fc2-4f98-acc4-fbf497861866</id>
+          <name>General CAS</name>
+          <bonus>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Computer</name>
+              <val>2</val>
+            </skilllevel>
+            <pushtext>Confederation of American States</pushtext>
+            <freenegativequalities>-5</freenegativequalities>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>665a11ae-8f7e-44db-8c08-2bae2fb03ba7</id>
+          <name>Denver</name>
+          <bonus>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Computer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Denver</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <pushtext>Confederation of American States</pushtext>
+            <freenegativequalities>-5</freenegativequalities>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>b70de7f3-844f-40ec-92c6-5b3b4bacbe4b</id>
+          <name>SINLess</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <name>[city]</name>
+              <group>Street</group>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </version>
+      <bonus>
+        <knowledgeskilllevel>
+          <name>History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>CAS</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>English</name>
+          <group>Language</group>
+          <val>0</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <spanish>Spanish</spanish>
+            <german>German</german>
+            <italian>Italian</italian>
+            <polish>Polish</polish>
+            <yiddish>Yiddish</yiddish>
+          </options>
+          <group>Language</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story UCAS</story>
       <source>RF</source>
       <page>66</page>
-      <story>$REAL was born in the Confederation of American States in the year $YEAR</story>
+    </module>
+    <module>
+      <id>83c132b5-fcf5-4a43-b9de-6c8ab206a586</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Tír Tairngire</name>
+      <karma>15</karma>
+      <versions>
+        <version>
+          <id>604831d9-0fdc-4579-aa7e-bc5d99bcee5d</id>
+          <name>Elves/Humans</name>
+          <bonus>
+            <skilllevel>
+              <name>Computer</name>
+              <val>2</val>
+            </skilllevel>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+          </bonus>
+          <required>
+            <oneof>
+              <metatype>Elf</metatype>
+              <metatype>Human</metatype>
+            </oneof>
+          </required>
+        </version>
+        <version>
+          <id>db539cd7-d694-4f9c-9e4c-e24a3bcd0128</id>
+          <name>Orks/Trolls/Dwarfs</name>
+          <bonus>
+            <skilllevel>
+              <name>Con</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Disguise</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Intimidation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Counterculture</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+          <required>
+            <oneof>
+              <metatype>Ork</metatype>
+              <metatype>Troll</metatype>
+              <metatype>Dwarf</metatype>
+            </oneof>
+          </required>
+        </version>
+      </versions>
+      <bonus>
+        <knowledgeskilllevel>
+          <name>Sperethiel</name>
+          <group>Language</group>
+          <val>0</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>English</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Tír Tairngire</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <pushtext>Tír Tairngire</pushtext>
+        <freenegativequalities>-5</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>SINner (National)</addquality>
+      </addqualities>
+      <story>Allan, please add story Tír Tairngire</story>
+      <source>RF</source>
+      <page>67</page>
+    </module>
+    <module>
+      <id>67023613-54af-4950-9a6e-a33bee9ecf59</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Native American Nations</name>
+      <karma>15</karma>
+      <versions>
+        <version>
+          <id>1c0a266e-0ca2-4aee-bcd0-fc2960c9834e</id>
+          <name>Algonkian-Manitou Council</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <ani>Anishinaabe</ani>
+                <iro>Iroquoian</iro>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <ani>Anishinaabe</ani>
+                <iro>Iroquoian</iro>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <skillgrouplevel>
+              <name>Outdoor</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[Tribe]</name>
+              <group>Street</group>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Algonkian-Manitou Council</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>97b5d738-0166-482b-be3b-bca2b247f275</id>
+          <name>Athabaskan Council</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <esk>Eskimo-Aleut</esk>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <esk>Eskimo-Aleut</esk>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Athabaskan Council</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>89e16098-3034-4f25-8c2f-e8bb7e94d832</id>
+          <name>Pueblo Corporate Council</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <uto>Uto-Aztecan</uto>
+                <zuni>Zuni</zuni>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <uto>Uto-Aztecan</uto>
+                <zuni>Zuni</zuni>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Etiquette</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Buisness Practices</name>
+              <group>Professional</group>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Pueblo Corporate Council</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>042ede14-e0fb-4fb9-95d6-8ddad27d96a3</id>
+          <name>Salish-Shidhe Council</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <sal>Salish</sal>
+                <sio>Siouan</sio>
+                <ork>Or'zet</ork>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <sal>Salish</sal>
+                <sio>Siouan</sio>
+                <ork>Or'zet</ork>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <attributelevel>
+              <name>LOG</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Salish-Shidhe Council</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>969d1f17-c944-44a7-8997-e62e250e7946</id>
+          <name>Sioux Nation</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <ani>Anishinaabe</ani>
+                <ath>Athabaskan</ath>
+                <iro>Iroquoian</iro>
+                <sio>Siouan</sio>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <ani>Anishinaabe</ani>
+                <ath>Athabaskan</ath>
+                <iro>Iroquoian</iro>
+                <sio>Siouan</sio>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <skillgrouplevel>
+              <name>Outdoor</name>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Blades</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Sioux Culture</name>
+              <group>Street</group>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Sioux Nation</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>24e4b3e9-49fc-4c71-b088-3f958e3c1ac6</id>
+          <name>Trans-Polar Aleut Nation</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <name>Eskimo-Aleut</name>
+              <group>Language</group>
+              <val>0</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>English</name>
+              <group>Language</group>
+              <val>0</val>
+            </knowledgeskilllevel>
+            <!--TODO: Exotic melee weapon (harpoon) 2-->
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Polar Critters</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Trans-Polar Aleut Nation</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>9bffa38c-0332-4348-9a92-9734074cb292</id>
+          <name>Tsimshian Nation</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <tli>Tlingit</tli>
+                <tsi>Tsimshianic</tsi>
+                <sio>Siouan</sio>
+              </options>
+              <val>0</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <options>
+                <ath>Athabaskan</ath>
+                <tli>Tlingit</tli>
+                <tsi>Tsimshianic</tsi>
+                <sio>Siouan</sio>
+                <eng>English</eng>
+              </options>
+              <val>1</val>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <attributelevel>
+              <name>STR</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+          </bonus>
+          <addqualities>
+            <addquality>Allergy (Uncommon, Mild)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>9c59f21b-1130-4277-b896-0d45bafcd9c6</id>
+          <name>Denver</name>
+          <bonus>
+            <attributelevel>
+              <name>INT</name>
+            </attributelevel>
+            <knowledgeskilllevel>
+              <name>[Language]</name>
+              <group>Language</group>
+              <val>0</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[OtherLanguage]</name>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <skilllevel>
+              <name>Computer</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Denver</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>7ede647e-920c-43bf-8f2e-ac26cdb611d4</id>
+          <name>Las Vegas</name>
+          <bonus>
+            <!--lang1,2-->
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Con</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Gambling Games</name>
+              <group>Street</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Las Vegas</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id>1b4f84a0-0b2a-4a49-ab5f-b92d4d75e44a</id>
+          <name>Salt Lake City</name>
+          <bonus>
+            <knowledgeskilllevel>
+              <name>[Language]</name>
+              <group>Language</group>
+              <val>0</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[OtherLanguage]</name>
+              <group>Language</group>
+            </knowledgeskilllevel>
+            <skilllevel>
+              <name>Artisan</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Computer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Mormons</name>
+              <val>2</val>
+              <group>Street</group>
+            </knowledgeskilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <pushtext>Salt Lake City</pushtext>
+          </bonus>
+          <addqualities>
+            <addquality>SINner (National)</addquality>
+          </addqualities>
+        </version>
+      </versions>
+      <bonus>
+        <skilllevel>
+          <name>Archery</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>UCAS</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <source>RF</source>
+      <story />
+      <page>67</page>
     </module>
     <module>
       <id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
@@ -160,32 +789,503 @@
       <page>67</page>
     </module>
     <module>
-      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
-      <stage>Teen Years</stage>
+      <id>14c2accf-2875-4239-a5be-47dce27312eb</id>
+      <stage>Formative Years</stage>
       <category>LifeModule</category>
-      <name>Magical Education</name>
+      <name>Corp Drone</name>
+      <karma>40</karma>
       <bonus>
         <attributelevel>
-          <name>WIL</name>
+          <name>LOG</name>
           <val>1</val>
         </attributelevel>
         <attributelevel>
           <name>CHA</name>
           <val>1</val>
         </attributelevel>
-        <freenegativequalities>-15</freenegativequalities>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Academic</group>
+          <val>3</val>
+          <name>[Corperation]</name>
+        </knowledgeskilllevel>
       </bonus>
-      <required>
-        <oneof>
-          <quality>Magician</quality>
-        </oneof>
-      </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
-      <addqualities>
-        <addquality>SINner (Corporate Limited)</addquality>
-      </addqualities>
+      <story>Allan, please add story</story>
       <source>RF</source>
-      <page>71</page>
+      <page>68</page>
+    </module>
+    <module>
+      <id>111f66cd-be47-4e1e-8ee7-15cc67ed2cc8</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Farm Living</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Industrial Mechanic</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Farming</name>
+          <group>Professional</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <freepositivequalities>1</freepositivequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Uneducated</addquality>
+        <addquality>Toughness</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>68</page>
+    </module>
+    <module>
+      <id>f98daafb-cf5f-4d83-976b-8cb9a49f1c4f</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Fugitive</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Acting</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[city]</name>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-24</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Paranoia</addquality>
+        <addquality>Bad Rep</addquality>
+        <addquality>SINner (Criminal)</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>68</page>
+    </module>
+    <module>
+      <id>f2435c28-5bf9-4c72-8f6d-f5d02439833b</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Isolated Rural Upbringing </name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>Farming</name>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-22</freenegativequalities>
+        <freepositivequalities>9</freepositivequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Uncouth</addquality>
+        <addquality>Uneducated</addquality>
+        <addquality>Toughness</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>68</page>
+    </module>
+    <module>
+      <id>7acbd745-50d4-4fb1-839c-65a6f07e1e50</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Military Brat</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Negotiation&gt;</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Military</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Military History</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-14</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Uncouth</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>69</page>
+    </module>
+    <module>
+      <id>06b4cc0f-3008-4209-ac32-04614a3dc354</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Orphan</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Street</group>
+          <name>[city]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>Foster System</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <karma>40</karma>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>69</page>
+    </module>
+    <module>
+      <id>4f078a7f-bfa5-4eba-97f9-a97f06eab6e8</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Rich Kid</name>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Artisan</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Language</group>
+          <name>[Any]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Interest</group>
+          <name>[Any]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-7</freenegativequalities>
+        <freepositivequalities>10</freepositivequalities>
+        <pushtext>Poor</pushtext>
+      </bonus>
+      <addqualities>
+        <addquality>Prejudiced (Common, Outspoken)</addquality>
+        <addquality>Trust Fund II</addquality>
+      </addqualities>
+      <karma>40</karma>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>69</page>
+    </module>
+    <module>
+      <id>fe3d36d3-6e0a-4d65-8516-3350f1b5b812</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Street Urchin</name>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Street</group>
+          <name>[City]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-22</freenegativequalities>
+        <freepositivequalities>9</freepositivequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Paranoia</addquality>
+        <addquality>Flashbacks</addquality>
+        <addquality>Uneducated</addquality>
+        <addquality>Toughness</addquality>
+      </addqualities>
+      <karma>40</karma>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>69</page>
+    </module>
+    <module>
+      <id>1521128b-0b5e-41ce-a2dd-61512f2dff2c</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>White Collar</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <spec>Professional</spec>
+          <val>0</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Language</group>
+          <name>[Any]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Interest</group>
+          <name>[Any]</name>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>69</page>
+    </module>
+    <module>
+      <id>f0393b9e-2698-4955-bd31-112b619ac7b8</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Corporate Education</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>[Any]</name>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>[Any]</name>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>[Corporation]</name>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <group>Professional</group>
+          <name>[Job]</name>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
+    </module>
+    <module>
+      <id>07797a05-d7a7-4f49-b69f-3f79aec242f3</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Farm Living</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Industrial Mechanic</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Farming</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <freepositivequalities>3</freepositivequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Animal Empathy</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
+    </module>
+    <module>
+      <id>8d4a26a0-8280-42d8-b61d-052591f84edd</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Gang Warfare</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+          <val>2</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-25</freenegativequalities>
+        <freepositivequalities>10</freepositivequalities>
+        <addqualities>
+          <addquality>Black Market Pipeline</addquality>
+          <addquality>Paranoia</addquality>
+          <addquality>Uneducated</addquality>
+          <addquality>SINner (Criminal)</addquality>
+        </addqualities>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
     </module>
     <module>
       <id>abf41e28-123f-bb00-da29-124ce213dca2</id>
@@ -210,13 +1310,594 @@
           <val>2</val>
         </skilllevel>
         <skilllevel>
-          <name>Chemestry</name>
+          <name>Chemistry</name>
           <val>2</val>
         </skilllevel>
       </bonus>
       <story>In the $SEASON of 2065 the dreaded happened. $REAL began his life at high school</story>
       <source>RF</source>
       <page>71</page>
+    </module>
+    <module>
+      <id>68fdb83d-5447-4414-b2ff-2377873521b5</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Home Tutored</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Language]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-8</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Social Stress</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
+    </module>
+    <module>
+      <id>0f415a05-5a6f-4279-9fb4-c43e0435bab5</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Isolated Rural Upbringing</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoor</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Critters</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-5</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Incompetent</addquality>
+      </addqualities>
+      <!--TODO electronics autoselect-->
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Magical Education (Archtype)</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <knowledgeskilllevel>
+          <name>Magical Theory</name>
+          <group>Academic</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Arcana</name>
+          <val>2</val>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>c6c554ac-2158-447c-986e-de153a537a10</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Isolated Rural Upbringing</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoor</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Critters</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <freenegativequalities>-5</freenegativequalities>
+      </bonus>
+      <addqualities>
+        <addquality>Incompetent</addquality>
+      </addqualities>
+      <!--TODO electronics autoselect-->
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <!-- TODO: path specific stuff, requires selection, not possible atm-->
+      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Magical Education (Magican)</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <knowledgeskilllevel>
+          <name>Magical Theory</name>
+          <group>Academic</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Arcana</name>
+          <val>2</val>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Magician</quality>
+        </oneof>
+      </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>1d2a61a6-3fd0-4c07-9a9e-8db5da92590e</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Magical Education (Aspected)</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <knowledgeskilllevel>
+          <name>Magical Theory</name>
+          <group>Academic</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Arcana</name>
+          <val>2</val>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aspected Magician</quality>
+        </oneof>
+      </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>abbd6496-e90f-4159-a677-e4b35ccd05f9</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Magical Education (Mystic Adept)</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <knowledgeskilllevel>
+          <name>Magical Theory</name>
+          <group>Academic</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Arcana</name>
+          <val>2</val>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>603bead6-2827-4468-a69b-4e8a7a93c2ee</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Magical Education (Adept)</name>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <knowledgeskilllevel>
+          <name>Magical Theory</name>
+          <group>Academic</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Arcana</name>
+          <val>2</val>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Adept</quality>
+        </oneof>
+      </required>
+      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <addqualities>
+        <addquality>SINner (Corporate Limited)</addquality>
+      </addqualities>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>15bd4283-f287-4be7-b174-9e5ab97bda1a</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Military School</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <freenegativequalities>-15</freenegativequalities>
+        <freepositivequalities>5</freepositivequalities>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Swiming</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Military</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Military History</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Strategy</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Military Rank</addquality>
+        <addquality>Code or Honor</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>b3b641d1-70e2-46c9-99b3-b89b7b84e24c</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Preparatory School</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+          <val>1</val>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+          <val>1</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <!--Todo: s/Outdoor/Outdoors/-->
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>First Impression</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>71</page>
+    </module>
+    <module>
+      <id>21c3cb79-e0d9-49b8-9ad3-9232bab4f12b</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Street Kid</name>
+      <karma>50</karma>
+      <bonus></bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
+    </module>
+    <module>
+      <id>4825c1a2-a0c6-4dde-a674-40071fc3cb34</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name />
+      <karma>50</karma>
+      <bonus></bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>70</page>
     </module>
   </modules>
   <storybuilder>
