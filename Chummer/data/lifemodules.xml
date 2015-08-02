@@ -2216,8 +2216,9 @@
             <skilllevel>
               <name>Computer</name>
             </skilllevel>
+            <!--todo: spread ranks among several skills-->
+            <!--13 ranks to spread among at least 3 skills, minimum 3 ranks per skill-->
             <knowledgeskilllevel>
-              <!--todo: spread ranks among several skills-->
               <name>[Ancient Language/Philosophy/Religion]</name>
               <group>Academic</group>
               <val>13</val>
@@ -2231,8 +2232,9 @@
             <skilllevel>
               <name>Computer</name>
             </skilllevel>
+            <!--todo: spread ranks among several skills-->
+            <!--13 ranks spread among at least 3 skills, minimum 3 ranks per skill-->
             <knowledgeskilllevel>
-              <!--todo: spread ranks among several skills-->
               <name>[Sociology/Psychology/Archaeology/Criminology/Politics]</name>
               <group>Academic</group>
               <val>13</val>
@@ -2506,6 +2508,7 @@
           <name>Metahumanities</name>
           <bonus>
             <!--todo: spread among several skills-->
+            <!--spread 10 ranks among all 3 skills, minimum 2 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Ancient Language/Philosophy/Religion]</name>
               <group>Academic</group>
@@ -2518,6 +2521,7 @@
           <name>Social Sciences</name>
           <bonus>
             <!--todo: spread among several skills-->
+            <!--spread 10 ranks among at least 3 skills, maximum 6 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Sociology/Psychology/Archaeology/Criminology/Politics]</name>
               <group>Academic</group>
@@ -2845,6 +2849,7 @@
               <name>Computer</name>
             </skilllevel>
             <!--todo: spread among several skills-->
+            <!--spread 13 ranks among all 3 skills, maximum 7 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Ancient Language/Philosophy/Religion]</name>
               <group>Academic</group>
@@ -2860,6 +2865,7 @@
               <name>Computer</name>
             </skilllevel>
             <!--todo: spread among several skills-->
+            <!--spread 13 ranks among any number of skills, maximum 6 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Sociology/Psychology/Archaeology/Criminology/Politics]</name>
               <group>Academic</group>
@@ -3175,6 +3181,7 @@
               <name>Computer</name>
             </skilllevel>
             <!--todo: spread among several skills-->
+            <!--spread 13 ranks in any number of skills, maximum 6 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Ancient Language/Philosophy/Religion]</name>
               <group>Academic</group>
@@ -3190,6 +3197,7 @@
               <name>Computer</name>
             </skilllevel>
             <!--todo: spread among several skills-->
+            <!--spread 13 ranks in any number of skills, maximum 6 ranks in skill-->
             <knowledgeskilllevel>
               <name>[Sociology/Psychology/Archaeology/Criminology/Politics]</name>
               <group>Academic</group>
