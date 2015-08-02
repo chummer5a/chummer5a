@@ -957,11 +957,12 @@ namespace Chummer
 	[Flags]
 	public enum QualityFailureReason : uint
 	{
-		Allowed = 0,
-		LimitExceeded =  1,
-		RequiredSingle = 2,
-		RequiredMultiple = 4,
-		ForbiddenSingle = 8
+		Allowed = 0x0,
+		LimitExceeded =  0x1,
+		RequiredSingle = 0x2,
+		RequiredMultiple = 0x4,
+		ForbiddenSingle = 0x8, 
+        MetatypeRequired = 0x10
 	}
 
 	/// <summary>
@@ -1737,31 +1738,54 @@ namespace Chummer
 			{
 				if (objXmlQuality["required"]["oneof"] != null)
 				{
-					XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/quality");
-					//Add to set for O(N log M) runtime instead of O(N * M)
-					//like it matters...
-
-					HashSet<String> qualityRequired = new HashSet<String>();
-					foreach (XmlNode node in objXmlRequiredList)
+					if (objXmlQuality["required"]["oneof"]["quality"] != null)
 					{
-						qualityRequired.Add(node.InnerText);
-					}
+						XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/quality");
+						//Add to set for O(N log M) runtime instead of O(N * M)
+						//like it matters...
 
-					bool blnFound = false;
-					foreach (Quality quality in objCharacter.Qualities)
-					{
-						if (qualityRequired.Contains(quality.Name))
+						HashSet<String> qualityRequired = new HashSet<String>();
+						foreach (XmlNode node in objXmlRequiredList)
 						{
-							blnFound = true;
-							break;
+							qualityRequired.Add(node.InnerText);
+						}
+
+						bool blnFound = false;
+						foreach (Quality quality in objCharacter.Qualities)
+						{
+							if (qualityRequired.Contains(quality.Name))
+							{
+								blnFound = true;
+								break;
+							}
+						}
+
+						if (!blnFound)
+						{
+							reason |= QualityFailureReason.RequiredSingle;
 						}
 					}
 
-					if (!blnFound)
+					if (objXmlQuality["required"]["oneof"]["metatype"] != null)
 					{
-						reason |= QualityFailureReason.RequiredSingle;
+						XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof/metatype");
+
+						bool blnFound = false;
+						foreach (XmlNode node in objXmlRequiredList)
+						{
+							if (node.Value == objCharacter.Metatype)
+							{
+								blnFound = true;
+								break;
+							}
+						}
+
+						if (!blnFound)
+						{
+							reason |= QualityFailureReason.MetatypeRequired;
+						}
 					}
-				}
+                }
 				if (objXmlQuality["required"]["allof"] != null)
 				{
 					XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/allof/quality");

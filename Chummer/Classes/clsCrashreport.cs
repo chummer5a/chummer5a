@@ -56,7 +56,7 @@ namespace Chummer
 
 
 				report.Send();
-
+				MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
 			}
 		}
 

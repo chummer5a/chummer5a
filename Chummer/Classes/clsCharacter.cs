@@ -227,7 +227,7 @@ namespace Chummer
         private string _strSkill2 = "";
         private string _strSkillGroup = "";
         private int _intMaxNuyen = 0;
-        private int _intMaxKarma = 0;
+		private int _intMaxKarma = 0;
         private int _intContactMultiplier = 0;
 
         // Lists.

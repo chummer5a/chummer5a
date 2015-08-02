@@ -9083,10 +9083,10 @@ namespace Chummer
 			//If not present something gone totaly wrong, throw something
 			if
 				(
-				!objNode.TryGetField("name", out _strName) &&
-				!objNode.TryGetField("cost", out _intCost) &&
-				!objNode.TryGetField("dice", out _intDice) &&
-				!objNode.TryGetField("multiplier", out _intMultiplier) &&
+				!objNode.TryGetField("name", out _strName) ||
+				!objNode.TryGetField("cost", out _intCost) ||
+				!objNode.TryGetField("dice", out _intDice) ||
+				!objNode.TryGetField("multiplier", out _intMultiplier) ||
 				!objNode.TryGetField("months", out _intMonths)
 				)
 			{

@@ -587,20 +587,23 @@ namespace Chummer
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
                 {
                     nudNuyen.Maximum = 10;
-                    nudNuyen.Value = _objCharacter.NuyenBP;
+                    
                 }
-                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     nudNuyen.Maximum = 200;
-                    nudNuyen.Value = _objCharacter.NuyenBP;
+                   
                 }
             }
             else
             {
                 //nudNuyen.Maximum = decimal.MaxValue;
             }
-            // Load the Skills information.
-            objXmlDocument = XmlManager.Instance.Load("skills.xml");
+	        if (_objCharacter.BornRich) nudNuyen.Maximum += 30;
+			nudNuyen.Value = _objCharacter.NuyenBP;
+
+			// Load the Skills information.
+			objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
             // Populate the Skills Controls.
             XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/skills/skill[" + _objCharacter.Options.BookXPath() + "]");
@@ -2263,12 +2266,14 @@ namespace Chummer
             
             if (_objCharacter.BornRich)
             {
-
+				nudNuyen.Maximum += 30;
             }
             else
             {
+				nudNuyen.Maximum -= 30;
+			}
 
-            }
+	        
         }
 
         private void objCharacter_ErasedChanged(object sender)
@@ -14730,6 +14735,8 @@ namespace Chummer
         #region Other Control Events
         private void nudNuyen_ValueChanged(object sender, EventArgs e)
         {
+	        if (_blnLoading) return;
+
             // Calculate the amount of Nuyen for the selected BP cost.
             _objCharacter.NuyenBP = nudNuyen.Value;
             UpdateCharacterInfo();
@@ -22837,8 +22844,9 @@ namespace Chummer
                 return;
             }
 
-
-
+			//moving this belove the display select fixes #304, but prevents switch between 
+			//techno and magican, arguably a worse bug.
+			//needs a "restore state" function, but can't be arsed to implement atm
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
@@ -22885,8 +22893,8 @@ namespace Chummer
             int intLOG = _objCharacter.LOG.Value - _objCharacter.LOG.MetatypeMinimum;
             int intWIL = _objCharacter.WIL.Value - _objCharacter.WIL.MetatypeMinimum;
             int intEDG = _objCharacter.EDG.Value - _objCharacter.EDG.MetatypeMinimum;
-            int intMAG = _objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum;
-            int intRES = _objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum;
+	        int intMAG = Math.Max(_objCharacter.MAG.Value - _objCharacter.MAG.MetatypeMinimum, 0);
+	        int intRES = Math.Max(_objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum, 0);
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
             List<Improvement> lstImprovement = new List<Improvement>();

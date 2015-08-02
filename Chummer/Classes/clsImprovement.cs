@@ -1693,7 +1693,16 @@ namespace Chummer
 						CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, strSourceName,
 							Improvement.ImprovementType.ContactMadeMan, selectedContact.GUID);
 					}
-				}
+
+					if (String.IsNullOrWhiteSpace(_strSelectedValue))
+					{
+						_strSelectedValue = selectedContact.Name;
+					}
+					else
+					{
+						_strSelectedValue += (", " + selectedContact.Name);
+					}
+                }
 				else
 				{
 					Rollback();
@@ -1785,8 +1794,9 @@ namespace Chummer
 				Log.Info(new object[] {"attributelevel", bonusNode.OuterXml});
 				String strAttrib;
 				int value;
-				if (bonusNode.TryGetField("name", out strAttrib) &&
-				    bonusNode.TryGetField("val", out value))
+				bonusNode.TryGetField("val", out value, 1);
+
+				if (bonusNode.TryGetField("name", out strAttrib))
 				{
 					CreateImprovement(strAttrib, objImprovementSource, strSourceName,
 						Improvement.ImprovementType.Attributelevel, "", value);

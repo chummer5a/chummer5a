@@ -12,6 +12,7 @@ Application Change:
 - Prime Data Haven now automatically creates/removes an appropriate 5C/3L contact. 
 - Cyberware can now add qualities.
 - Cyberware can have a metatype restriction.
+- Born Rich quality works properly.
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.

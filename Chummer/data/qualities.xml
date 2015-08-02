@@ -4529,6 +4529,8 @@
 			<category>Positive</category>
 			<bonus>
 				<blackmarket />
+        <selecttext />
+        <selectcontact />
 			</bonus>
 			<source>RF</source>
 			<page>145</page>
