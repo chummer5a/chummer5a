@@ -10,9 +10,12 @@ Application Change:
 - Chummer now won't pretend you have 25 BP in SumToTen/Priority build modes
 - Fixed edge case where Sum To Ten would ask for a karma amount like Karma/Life Module builds
 - Prime Data Haven now automatically creates/removes an appropriate 5C/3L contact. 
-- Cyberware can now add qualities.
+- Cyberware can now add qualities. Not particularly happy with the implementation, but it works.
 - Cyberware can have a metatype restriction.
 - Born Rich quality works properly.
+- The Select Bioware/Cyberware form can now display a special notes text field to indicate weird workaroundy stuff that I can't be bothered fixing with code. 
+	- For example, Striking Calluses are treated as a Rating item, with the Notes field explaining why. Currently has no support for translations.
+- Essence Discount house rule enabled. Can be used to emulate the Prototype Transhuman quality for you munchkin mages that need your pain editors and whatnot until I get around to implementing it properly.
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
@@ -25,7 +28,8 @@ Data Change:
 - Fire Modes for the Colt Inception have been fixed.
 - Metatype Reduction has been added. Due to the differing benefits, it is split up into two different items for Orks and Trolls, respectively.
 - Troll Reduction has been added.
-- Assorted bits of cosmetic bioware have been added. Need to implement something for showing skill-modifying Limits
+- Assorted bits of cosmetic bioware from Chrome Flesh have been added. 
+- Life Modules have been added from all existing source books, courtesy of joha4270 and angelforest. Functionality is complete-ish, but there are some awkward modules in Further Education and such that may not quite work as expected. Feedback and suggestions for this is greatly appreciated.
 
 String Changes:
 Altered:

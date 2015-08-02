@@ -235,8 +235,8 @@ namespace Chummer
 			lstCyberware.DataSource = lstCyberwares;
         }
 
-        private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
-        {
+		private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			if (lstCyberware.Text == "")
 				return;
 
@@ -250,25 +250,25 @@ namespace Chummer
 			if (chkTransgenic.Checked)
 				chkFree.Visible = true;
 
-            // Retireve the information for the selected piece of Cyberware.
-        	XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
+			// Retireve the information for the selected piece of Cyberware.
+			XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
 
-            // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
-            if (objXmlCyberware.InnerXml.Contains("<rating>"))
-            {
-                nudRating.Enabled = true;
-                nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+			// If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
+			if (objXmlCyberware.InnerXml.Contains("<rating>"))
+			{
+				nudRating.Enabled = true;
+				nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
 				if (objXmlCyberware["minrating"] != null)
 					nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
 				else
 					nudRating.Minimum = 1;
-            }
-            else
-            {
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
-                nudRating.Enabled = false;
-            }
+			}
+			else
+			{
+				nudRating.Minimum = 0;
+				nudRating.Value = 0;
+				nudRating.Enabled = false;
+			}
 
 			if (objXmlCyberware["forcegrade"] != null)
 			{
@@ -280,8 +280,22 @@ namespace Chummer
 			string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
 			string strPage = objXmlCyberware["page"].InnerText;
 			if (objXmlCyberware["altpage"] != null)
+				{
 				strPage = objXmlCyberware["altpage"].InnerText;
+				}
 			lblSource.Text = strBook + " " + strPage;
+			if (objXmlCyberware["notes"] != null)
+				{
+				lblCyberwareNotes.Visible = true;
+				lblCyberwareNotesLabel.Visible = true;
+                lblCyberwareNotes.Text = objXmlCyberware["notes"].InnerText;
+				}
+
+			if (objXmlCyberware["notes"] == null)
+			{
+				lblCyberwareNotes.Visible = false;
+				lblCyberwareNotesLabel.Visible = false;
+			}
 
 			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 

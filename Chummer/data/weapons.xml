@@ -6566,7 +6566,7 @@
 			<cost>0</cost>
 			<allowaccessory>false</allowaccessory>
 			<useskill>Exotic Melee Weapon</useskill>
-			<source>RC</source>
+			<source>RF</source>
 			<page>115</page>
 		</weapon>	
 		<weapon>
@@ -6729,6 +6729,206 @@
 			<allowaccessory>true</allowaccessory>
 			<source>CF</source>
 			<page>91</page>
+		</weapon>
+		<weapon>
+			<name>Claws (Bio-Weapon)</name>
+			<id></id>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Retractable Claws (Bio-Weapon)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Electrical Discharge</name>
+			<category>Tasers</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>1S(e) (Special)</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>113</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Fangs (Bio-Weapon)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>3</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Horns (Bio-Weapon)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>3</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Stinger (Large)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>1</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-4</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Stinger (Medium)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Horns (Bio-Weapon)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Medium Tusk(s)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
+		</weapon>
+		<weapon>
+			<id></id>
+			<name>Large Tusk(s)</name>
+			<category>Bio-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>121</page>
 		</weapon>
 	</weapons>
 	<accessories>

@@ -83,7 +83,8 @@
     <category>Genemods</category>
 		<category>Biosculpting</category>
 		<category>Cosmetic Bioware</category>
-  </categories>
+		<category>Bio-Weapons</category>
+	</categories>
   <biowares>
     <bioware>
       <id>ae0bb365-e40c-4aa2-9c30-0be902d992ac</id>
@@ -1818,5 +1819,60 @@
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
+		<bioware>
+			<id></id>
+			<name>Striking Callus</name>
+			<category>Bio-Weapons</category>
+			<ess>0.05*Rating</ess>
+			<rating>4</rating>
+			<bonus>
+				<unarmeddv>Rating*0.5</unarmeddv>
+				<unarmeddvphysical />
+			</bonus>
+			<notes>Rating is used to represent hands and feet. Every 2 Rating will grant +1 Unarmed damage.</notes>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Rating*250</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Small Tusk(s)</name>
+			<category>Bio-Weapons</category>
+			<ess>0</ess>
+			<rating>2</rating>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Rating*100</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Medium Tusk(s)</name>
+			<category>Bio-Weapons</category>
+			<ess>0.1*Rating</ess>
+			<rating>2</rating>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Rating*500</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Large Tusk(s)</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2*Rating</ess>
+			<rating>2</rating>
+			<capacity>0</capacity>
+			<avail>8R</avail>
+			<cost>Rating*1000</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
   </biowares>
 </chummer>
+
+
