@@ -2080,10 +2080,43 @@
 			<page>73</page>
 		</cyberware>
 		<cyberware>
-			<id>11973d09-1457-4b3d-8460-42822df721b9</id>
-			<name>Metatype reduction</name>
+			<id>0F1F1D88-523B-4A0B-AF89-C6A1F8ABCF8E</id>
+			<name>Ork Metatype Reduction</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.3</ess>
+			<bonus>
+				<freepositivequalities>-6</freepositivequalities>
+			</bonus>
+			<required>
+				<oneof>
+					<metatype>Ork</metatype>
+				</oneof>
+			</required>
+				<addqualities>
+					<addquality>Human-Looking</addquality>
+				</addqualities>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>6000</cost>
+			<source>CF</source>
+			<page>73</page>
+		</cyberware>
+		<cyberware>
+			<id>11973d09-1457-4b3d-8460-42822df721b9</id>
+			<name>Troll Metatype Reduction</name>
+			<category>Cosmetic Enhancement</category>
+			<ess>0.3</ess>
+			<required>
+				<oneof>
+					<metatype>Troll</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>1</max>
+				</specificattribute>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>6000</cost>

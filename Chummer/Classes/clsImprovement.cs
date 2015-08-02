@@ -1479,12 +1479,26 @@ namespace Chummer
 				int intBonus = intAug;
 				string strName = strFriendlyName;
 				TreeNode nodTemp = new TreeNode();
-
 				Improvement.ImprovementType objType = Improvement.ImprovementType.PhysicalLimit;
-				if (strLimit == "Mental")
-					objType = Improvement.ImprovementType.MentalLimit;
-				else if (strLimit == "Social")
-					objType = Improvement.ImprovementType.SocialLimit;
+
+				switch (strLimit)
+				{
+					case "Mental":
+						{
+							objType = Improvement.ImprovementType.MentalLimit;
+							break;
+						}
+					case "Social":
+						{
+							objType = Improvement.ImprovementType.SocialLimit;
+							break;
+						}
+					default:
+						{
+							objType = Improvement.ImprovementType.PhysicalLimit;
+							break;
+						}
+				}
 
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
 				CreateImprovement(strLimit, objImprovementSource, strSourceName, objType, strFriendlyName, intBonus, 0, intMin,

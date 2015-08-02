@@ -6,10 +6,12 @@ Application Change:
 - Compability mode added. Chummer should now **run** on .NET 4.0, but some stuff might not work, and we (the Chummer5a team) won't provide support.
 - Fixed a bug where advanced (and normal?) lifestyles would crash on other languages
 - More specific spirit data is available for charsheets to use.
-- Chummer now have a crash reporter. If Chummer encounters an error it can't recover from, it will (if given permision) send a data package (hopefully) identifying the source of the crash. 
+- Chummer now has a crash reporter. If Chummer encounters an error it can't recover from, it will (if given permision) send a data package (hopefully) identifying the source of the crash. 
 - Chummer now won't pretend you have 25 BP in SumToTen/Priority build modes
 - Fixed edge case where Sum To Ten would ask for a karma amount like Karma/Life Module builds
-- Prime Data Heaven now adds a contact with 5/3
+- Prime Data Haven now automatically creates/removes an appropriate 5C/3L contact. 
+- Cyberware can now add qualities.
+- Cyberware can have a metatype restriction.
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
@@ -19,7 +21,10 @@ Data Change:
 - Added the missing qualities "Poor Self Control (Sadistic)" and "Poor Self Control (Attention-Seeking)"
 - Lifestyles.xml GUIDs populated to support the language fix.
 - Adapsin bioware properly discounts cyberware costs. 
-- Colt Inception now have correct fire modes
+- Fire Modes for the Colt Inception have been fixed.
+- Metatype Reduction has been added. Due to the differing benefits, it is split up into two different items for Orks and Trolls, respectively.
+- Troll Reduction has been added.
+- Assorted bits of cosmetic bioware have been added. Need to implement something for showing skill-modifying Limits
 
 String Changes:
 Altered:
