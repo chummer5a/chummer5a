@@ -81,6 +81,8 @@
     <category>Cultured</category>
     <category>Symbionts</category>
     <category>Genemods</category>
+		<category>Biosculpting</category>
+		<category>Cosmetic Bioware</category>
   </categories>
   <biowares>
     <bioware>
@@ -1530,6 +1532,291 @@
 			<cost>10000</cost>
 			<source>CF</source>
 			<page>118</page>
+		</bioware>
+		<bioware>
+			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<name>Minor Biosculpting Modification</name>
+			<category>Biosculpt</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Variable(50-500)</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<name>Moderate Biosculpting Modification</name>
+			<category>Biosculpt</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Variable(50-500)</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<name>Severe Biosculpting Modification</name>
+			<category>Biosculpt</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Variable(50-500)</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<name>Troll Reduction</name>
+			<category>Biosculpt</category>
+			<rating>2</rating>
+			<ess>FixedValues(0.2,0.5)</ess>
+			<required>
+				<oneof>
+					<metatype>Troll</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>Rating</max>
+				</specificattribute>
+			</bonus>
+			<capacity>0</capacity>
+			<avail>FixedValues(8,12)</avail>
+			<cost>FixedValues(15000,25000)</cost>
+			<source>CF</source>
+			<page>73</page>
+		</bioware>
+		<bioware>
+			<id>C24D24C6-5F00-41F2-A6AC-0289A0BC5DF7</id>
+			<name>Troll Reduction (Ork)</name>
+			<category>Biosculpt</category>
+			<ess>0.2</ess>
+			<required>
+				<oneof>
+					<metatype>Ork</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<specificattribute>
+					<name>CHA</name>
+					<max>1</max>
+				</specificattribute>
+			</bonus>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>15000</cost>
+			<source>CF</source>
+			<page>73</page>
+		</bioware>
+		<bioware>
+			<id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
+			<name>Ethnicity/Sex Change</name>
+			<category>Biosculpt</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>10000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
+			<name>Metatype Modification</name>
+			<category>Biosculpt</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>20000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
+			<name>Bio-Tattoos</name>
+			<category>Cosmetic Bioware</category>
+			<ess>FixedValues(0,0.1,0.2)</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<rating>3</rating>
+			<avail>FixedValues(4,5,6)</avail>
+			<cost>FixedValues(500,1000,1500)</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id>ebf3f1ed-700f-4b37-b61a-0b262937dea6</id>
+			<name>Chameleon Skin</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.2</ess>
+      <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>1</value>
+          <condition>Stealth Skill: Must be completely naked</condition>
+        </limitmodifier>
+      </bonus>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>98ae7b28-33ab-47ab-aa7b-5e1f4a90b8ce</id>
+			<name>Chameleon Skin (Dynamic)</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.3</ess>
+      <bonus>
+        <limitmodifier>
+          <limit>Stealth</limit>
+          <value>2</value>
+          <condition>Stealth Skill: Must be completely naked</condition>
+        </limitmodifier>
+      </bonus>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>4000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>e3897bf8-0961-4b77-863a-4fbc4c0860f2</id>
+			<name>Clean Metabolism</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>a2ff0680-3083-40c4-9f8b-5677aacdeaa8</id>
+			<name>Chloroplast Skin</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>458010b9-f07f-4976-bd5b-7053c4837b79</id>
+			<name>Dietware</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>89137e94-5bf3-4c6d-93d9-571c96fc5b2f</id>
+			<name>Hair Growth</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>a3e4a944-6463-4cd9-b3bc-6b940c6427f3</id>
+			<name>Hair Growth (Full-Body)</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>9f86544d-da24-4312-b4d5-6ab47956b7fa</id>
+			<name>Perfect Eyes</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>e53383b8-ed64-4840-a2bf-baaa8885c61b</id>
+			<name>Sensitive Skin</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>108</page>
+		</bioware>
+		<bioware>
+			<id>98e8f46f-e742-4456-95b7-f6f3eaa7d795</id>
+			<name>Silky Skin</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>110</page>
+		</bioware>
+		<bioware>
+			<id>487ba675-b689-48e0-bd45-e6729d671a51</id>
+			<name>Skin Pigmentation</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id>9cd588c4-c93f-4fef-b216-9da2707066f7</id>
+			<name>Skin Pigmentation (Permanent)</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0.1</ess>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>111</page>
 		</bioware>
   </biowares>
 </chummer>

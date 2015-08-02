@@ -8047,7 +8047,7 @@ namespace Chummer
                             _objCharacter.Qualities.Add(objSubQuality);
                             }
                         }
-                            }
+                }
 
                 // Add any Critter Powers that are gained through the Quality (Infected).
                 if (objXmlQuality.SelectNodes("powers/power").Count > 0)
@@ -18624,7 +18624,22 @@ namespace Chummer
                 treWeapons.Nodes[0].Expand();
             }
 
-            _objFunctions.SortTree(treCyberware);
+			// Add any additional Qualities that are forced on the character.
+			if (objXmlCyberware.SelectNodes("addqualities/addquality").Count > 0)
+			{
+				XmlDocument objXmlQuality = XmlManager.Instance.Load("qualities.xml");
+				foreach (XmlNode objXmlAddQuality in objXmlCyberware.SelectNodes("addqualities/addquality"))
+				{
+					XmlNode objXmlSelectedQuality = objXmlQuality.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+					Quality objSubQuality = AddQuality(objXmlAddQuality, objXmlSelectedQuality, objWeapons, objWeaponNodes);
+					if (objSubQuality != null)
+					{
+						_objCharacter.Qualities.Add(objSubQuality);
+					}
+				}
+			}
+
+			_objFunctions.SortTree(treCyberware);
             treCyberware.SelectedNode = objNode;
             _blnSkipRefresh = true;
             PopulateCyberwareGradeList();
