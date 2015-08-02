@@ -3479,7 +3479,47 @@
       <name>Celebrity</name>
       <karma>100</karma>
       <bonus>
-        <!--todo: celebrity bonus-->
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <log>LOG</log>
+            <int>INT</int>
+            <wil>WIL</wil>
+          </options>
+        </attributelevel>
+        <attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <log>LOG</log>
+            <int>INT</int>
+            <wil>WIL</wil>
+          </options>
+        </attributelevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <!--todo: +6 to buy any skills you think appropriate to your field of celebrity (no more than 3 ranks in any individual skill; ranks in Con and Escape Artist may be purchased with these points)-->
+        <knowledgeskilllevel>
+          <options>
+            <sports>Sports</sports>
+            <music>Music</music>
+            <film>Film</film>
+          </options>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
       </bonus>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -4033,8 +4073,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <!--todo: probably should be national sin-->
-        <addquality>SINner</addquality>
+        <addquality>SINner (National)</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -4080,7 +4119,6 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <!--todo: by raw there is no SIN, which is weird-->
       <versions>
         <version>
           <id>eb4fe138-77a9-4f45-b630-4d5111d61fa5</id>
@@ -4463,7 +4501,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addqiality>SINner</addqiality>
+        <addqiality>SINner (National)</addqiality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -5952,7 +5990,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>SINner</addquality>
+        <addquality>SINner (National)</addquality>
       </addqualities>
       <versions>
         <version>
@@ -6153,6 +6191,861 @@
       <page>82</page>
     </module>
 
+    <!--Data Trails modules-->
+    <module>
+      <id>4b56f994-84d5-4acc-8d6f-278eae90f624</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Early Emergence</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Decompiling</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Technical]</name>
+          <group>Interest</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>51</page>
+    </module>
+    <module>
+      <id>eb8c935b-6e60-475b-b909-27f6d7f54a8f</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Part of the Machine</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Hobby]</name>
+          <group>Interest</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Technical]</name>
+          <group>Interest</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>51</page>
+    </module>
+    <module>
+      <id>cb023d87-0312-4a50-a17d-87444fed10da</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Hacker Club</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Technical]</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Data Anomaly</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>51</page>
+    </module>
+    <module>
+      <id>91abc09e-7564-4126-9c03-15d26989dcf8</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Technomancer Boarding School</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>RES</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Compiling</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Decompiling</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Registering</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Technical]</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>51</page>
+    </module>
+    <module>
+      <id>e40f60aa-2269-4d3d-a34b-e2be24af496d</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Escaped Technomancer</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Compiling</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Decompiling</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Registering</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Guts</addquality>
+        <addquality>Pain Is Gain</addquality>
+        <addquality>Vendetta</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>52</page>
+    </module>
+    <module>
+      <id>aaa6ec70-467e-4345-b5e1-f14ce038ef51</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Hacker Assassin</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <val>3</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Go Big or Go Home</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>52</page>
+    </module>
+    <module>
+      <id>b8aea58a-e447-46f6-b96d-cf3bf3ff19e4</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Hacker Hobbyst</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <options>
+            <mech1>Aeronautics Mechanic</mech1>
+            <mech2>Automotive Mechanic</mech2>
+            <mech3>Industrial Mechanic</mech3>
+            <mech4>Nautical Mechanic</mech4>
+          </options>
+        </skilllevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Golden Screwdriver</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>53</page>
+    </module>
+    <module>
+      <id>3d08b696-1c7c-4bb6-af37-1b4d68fd985c</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>High-Profile Hack</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Secure Matrix Locations</name>
+          <group>Interest</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addqiality>Online Fame</addqiality>
+        <!--todo: choose datahaven-->
+        <addqiality>Prime Datahaven Membership</addqiality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>53</page>
+    </module>
+    <module>
+      <id>ac0eb0cc-bae1-41e4-bffd-e684c5f51b2b</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>IT Ace</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Overclocker</addquality>
+        <addquality>Quick Config</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>53</page>
+    </module>
+    <module>
+      <id>243b126d-a71e-4398-b646-76780b6e7379</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Matrix Ghost</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Matrix security]</name>
+          <group>Interest</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>I C U</addquality>
+        <addquality>Ninja Vanish</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>53</page>
+    </module>
+    <module>
+      <id>3c0549e6-d58a-4658-a7e5-4593ac8f1388</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Otaku Time</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Compiling</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Decompiling</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybercombat</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Electronic Warfare</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Software</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Hacking</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Tasking</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>[Tech corporations]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Otaku to Technomancer</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>DT</source>
+      <page>53</page>
+    </module>
+
+<!--Chrome Flesh modules-->
+    <module>
+      <id>c211d6f3-c773-4ff7-a1a1-64b16f47757e</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Slave</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Con</name>
+          <spec>Fast Talking</spec>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed</name>
+        </skilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Blandness</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>60</page>
+    </module>
+    <module>
+      <id>d91ba242-11bb-43a9-abed-4cb5c6b34819</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Bag of Organs</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+          <val>2</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Biology</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Bioware</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Organleggers</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqialities>
+        <addquality>Flashbacks</addquality>
+        <addquality>Uneducated</addquality>
+      </addqialities>
+      <!--todo: Special: You may pick 32,000 nuyen worth of bioware. Normal Essence costs apply-->
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>60</page>
+    </module>
+    <module>
+      <id>f8413f32-3ed3-488f-989a-2fe961e94dee</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Child of the Shadows</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Computer</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Stealth</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Safehouses</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
+    <module>
+      <id>a576c25e-2ca1-4d53-83de-1b58e9f72082</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Test Subject</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Biotechnology</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Cybertechnology</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Influence</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Metahuman Biology</name>
+          <group>Academic</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Transhumanist Philosophy</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <!--choose biocompatibility type-->
+        <addquality>Biocompatibility</addquality>
+      </addqualities>
+      <!--todo: Special: 16,000 nuyen in augmentations-->
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
+    <module>
+      <id>737d188a-85b5-47d8-91f2-39863983b464</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Factory Child Worker</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Engineering</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Armorer</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Machinist</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Industrial Facilities</name>
+          <group>Street</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <!--todo: Special: 15,000 nuyen in cyberlimbs-->
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
+    <module>
+      <id>70fe2ad0-1311-486c-b183-8b2620fc5056</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Pit Fighter</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Cybertechnology</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Pit Fighting</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Syndicates</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>High Pain Tolerance 2</addquality>
+        <addquality>Quick Healer</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
+    <module>
+      <id>4e6da910-e160-4aec-8dfb-caafda2e952e</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Urban Brawler</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skillgrouplevel>
+          <name>Close Combat</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Urban Brawl</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Natural Athlete</addquality>
+        <addquality>SINner (National)</addquality>
+        <addquality>Fame (Local)</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
+    <module>
+      <id>b94d89fc-7ade-4942-9f85-b56c2f78847e</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Street Doc</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Biotech</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Influence</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <knowledgeskilllevel>
+          <name>Biology</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Drugs</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Street Gangs</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>CF</source>
+      <page>61</page>
+    </module>
 
   </modules>
   <storybuilder>
