@@ -3472,6 +3472,2686 @@
       <source>RF</source>
       <page>76</page>
     </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Celebrity</name>
+      <karma>100</karma>
+      <bonus>
+        <!--todo: celebrity bonus-->
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>76</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Combat Correspondent</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Journalism</name>
+          <group>Professional</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Guts</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>76</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Corporate</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Corporation]</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Limited Corporate SIN</addquality>
+      </addqualities>
+      <versions>
+        <version>
+          <id></id>
+          <name>Company Man</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Demolitions</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+              <val>2</val>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Hacker/Decker</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Cracking</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>First Aid</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Physics</name>
+              <group>Academic</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Matrix Security Design</name>
+              <group>Professional</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Security Guard</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Athletics</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Close Combat</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Security Procedures</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Law Enforcement Procedures</name>
+              <group>Professional</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Security Rigger</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Electronics</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+              <val>3</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Drones</name>
+              <group>Professional</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Wage Mage</name>
+          <bonus>
+            <skilllevel>
+              <name>Arcana</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Astral Combat</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Enchanting</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Magical Law</name>
+              <group>Professional</group>
+              <val>1</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Wage Slave</name>
+          <bonus>
+            <skilllevel>
+              <name>Charisma</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Willpower</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Con</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Administration</name>
+              <group>Professional</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>77</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Cover Operations</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Chemistry</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Language</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <!--todo: should be any type of knowledge-->
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Codes</name>
+          <group>Professional</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Hawk Eye</addquality>
+        <addquality>Poor Link</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>77</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Drifter</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <cha>CHA</cha>
+            <log>LOG</log>
+            <int>INT</int>
+            <cha>CHA</cha>
+          </options>
+        </attributelevel>
+        <attributelevel>
+          <options>
+            <bod>BOD</bod>
+            <agi>AGI</agi>
+            <rea>REA</rea>
+            <str>STR</str>
+            <cha>CHA</cha>
+            <log>LOG</log>
+            <int>INT</int>
+            <cha>CHA</cha>
+          </options>
+        </attributelevel>
+        <skilllevel>
+          <name>Con</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Grey Market</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Black Market</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>High Pain Tolerance</addquality>
+        <addquality>Sense of Direction</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>77</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Ganger</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Blades</name>
+          <val>3</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Cracking</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Demolitions</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Electronics</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Heavy Weapons</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Stealth</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Criminal SIN</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>78</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Government Agent</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Influence</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Government Procedures</name>
+          <group>Professional</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Law Enforcement Protocols</name>
+          <group>Professional</group>
+          <val>5</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>National Threats</name>
+          <group>Professional</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <!--todo: probably should be national sin-->
+        <addquality>SINner</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>78</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Law Enforcement</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Clubs</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Police Procedures</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <!--todo: by raw there is no SIN, which is weird-->
+      <versions>
+        <version>
+          <id></id>
+          <name>Beat Cop</name>
+          <bonus>
+            <skilllevel>
+              <name>Intimidation</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Navigation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>[City]</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Cyber Crime</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Cracking</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Matrix Criminals</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Cyber Division</name>
+          <bonus>
+            <skilllevel>
+              <name>Cybertechnology</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Mage Division</name>
+          <bonus>
+            <skilllevel>
+              <name>Arcana</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Magical Threats</name>
+              <group>Professional</group>
+              <val>2</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Rigger</name>
+          <bonus>
+            <skilllevel>
+              <name>Automotive Mechanic</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Drones</name>
+              <group>Professional</group>
+              <val>1</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>SWAT Team</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gymnastics</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+              <val>2</val>
+            </skilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>78</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Organized Crime</name>
+      <karma>100</karma>
+      <bonus>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Con</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Demolitions</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Escape Artist</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>3</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Forgery</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Hardware</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Piloting Ground Craft</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Stealth</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Syndicate]</name>
+          <group>Street</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Made Man</addquality>
+        <addquality>Criminal SIN</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>78</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Political Activist</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Disguise</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Forgery</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Instruction</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Piloting Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Police Procedures</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Policlub]</name>
+          <group>Interest</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Criminal SIN</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Postgraduate Studies</name>
+      <karma>100</karma>
+      <!--todo: should be aviable only after further education or something-->
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Instruction</name>
+          <val>2</val>
+        </skilllevel>
+        <!--todo: +10 to skills from your education module (no more than 4 added to any one skill)-->
+        <knowledgeskilllevel>
+          <name>[Major]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Private Investigator/Detective</name>
+      <karma>100</karma>
+      <!--todo: should be aviable only after Tour of Duty, Law Enforcement, Covert Operations, Shadow Work, or Corporate-->
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Athletics</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Influence</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Law Enforcement Procedures</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addqiality>SINner</addqiality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Regular Job</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Negotiation</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Job]</name>
+          <group>Professional</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Job]</name>
+          <group>Professional</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Interest</group>
+          <val>1</val>
+        </knowledgeskilllevel>
+        <!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>79</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Shadow Work (Shadowrunner)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+      </bonus>
+      <versions>
+        <version>
+          <id></id>
+          <name>Face</name>
+          <bonus>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Con</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Influence</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Intimidation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+          </bonus>
+          <addqualities>
+            <addquality>First Impression</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id></id>
+          <name>Decker</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Cracking</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Forgery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Intuition</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Matrix Security Procedures</name>
+              <group>Street</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+          <addqualities>
+            <!--todo: choose action for codeslinger-->
+            <addquality>Codeslinger</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id></id>
+          <name>Smuggler</name>
+          <bonus>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <options>
+                <mech1>Aeronautics Mechanic</mech1>
+                <mech2>Automotive Mechanic</mech2>
+                <mech3>Nautical Mechanic</mech3>
+              </options>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Navigation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Border Patrol Tactics</name>
+              <group>Street</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Smuggler Safe Houses</name>
+              <group>Street</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Smuggler Routes</name>
+              <group>Street</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Street Samurai</name>
+          <bonus>
+            <attributelevel>
+              <name>AGI</name>
+            </attributelevel>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <skillgrouplevel>
+              <name>Athletics</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Blades</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Unarmed Combat</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Safe Houses</name>
+              <group>Street</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+          <addqualities>
+            <!--todo: choose code of honor-->
+            <addquality>Code of Honor</addquality>
+          </addqualities>
+        </version>
+        <version>
+          <id></id>
+          <name>Weapon Specialist</name>
+          <bonus>
+            <skilllevel>
+              <name>Archery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Chemistry</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Close Combat</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Firearms</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Blade Design</name>
+              <group>Professional</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Gun Design</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Gun Trivia</name>
+              <group>Interest</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Street Magic</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+      </bonus>
+      <versions>
+        <version>
+          <id></id>
+          <name>Aspected Magician</name>
+          <bonus>
+            <skillgrouplevel>
+              <options>
+                <alchemy>Alchemy</alchemy>
+                <conjuring>Conjuring</conjuring>
+                <spellcasting>Spellcasting</spellcasting>
+              </options>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Arcana</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>First Aid</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Magical Security</name>
+              <group>Professional</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Magical Theory</name>
+              <group>Street</group>
+              <val>1</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Occult Investigator</name>
+          <bonus>
+            <skilllevel>
+              <name>Arcana</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>3</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Influence</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Locksmith</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Tracking</name>
+              <val>2</val>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Forensics</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[City]</name>
+              <group>Street</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Eco-Shaman</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Astral Combat</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <skilllevel>
+              <name>First Aid</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Forgery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Megacorp Law</name>
+              <group>Street</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Magical Theory</name>
+              <group>Street</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Street Mage</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Palming</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Charity Shelters</name>
+              <group>Street</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[City]</name>
+              <group>Street</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Street Shaman</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Palming</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Charity Shelters</name>
+              <group>Street</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>[sprawl]</name>
+              <group>Street</group>
+              <val>4</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Talismonger</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>3</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Chemistry</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Enchanting</name>
+              <val>3</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Etiquette</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>First Aid</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Negotiation</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pistols</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Telesma</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+            <knowledgeskilllevel>
+              <name>Alchemy</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>80</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Terrorist</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Demolitions</name>
+          <val>3</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Disguise</name>
+          <val>2</val>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>2</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Leadership</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Palming</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Law Enforcement Procedures</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>Criminal SIN</addquality>
+      </addqualities>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Think Tank</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+          <val>2</val>
+        </attributelevel>
+        <skilllevel>
+          <name>Etiquette</name>
+          <val>2</val>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>6</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Any]</name>
+          <group>Academic</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>81</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Tour of Duty (Mercenary)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Foreign Military</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id></id>
+          <name>Air Force</name>
+          <bonus>
+            <skilllevel>
+              <name>Aeronautics Mechanic</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Army</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Running</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Engineering Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineering</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Military Vehicles</name>
+              <group>Professional</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Mage Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Arcana</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>1</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Medical Corps</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Biotech</name>
+              <val>2</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Navy</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Rigger Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Special Forces</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolition</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>82</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Tour of Duty (NAN)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>NAN Military</name>
+          <group>Professional</group>
+          <val>3</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id></id>
+          <name>Air Force</name>
+          <bonus>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Tracking</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Army</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Engineering Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineer</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Mage Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Medical Corps</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Biotech</name>
+              <val>2</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Navy</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Rigger Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Archery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Special Forces</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>82</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Tour of Duty (Tir Tairngire)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Peacekeepers</name>
+          <group>Professional</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <versions>
+        <version>
+          <id></id>
+          <name>Air Force</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Reaction</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Border Patrol </name>
+          <bonus>
+            <attributelevel>
+              <name>CHA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Engineering Corps</name>
+          <bonus>
+            <attributelevel>
+              <name>LOG</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineering</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Tir Military Vehicles</name>
+              <group>Professional</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Ghosts</name>
+          <bonus>
+            <attributelevel>
+              <name>WIL</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Mage Corps</name>
+          <bonus>
+            <attributelevel>
+              <name>LOG</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Arcana</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>1</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Medical Corps</name>
+          <bonus>
+            <attributelevel>
+              <name>LOG</name>
+            </attributelevel>
+            <skillgrouplevel>
+              <name>Biotech</name>
+              <val>2</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Navy</name>
+          <bonus>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Body</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Netwatch</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Cracking</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skillgrouplevel>
+              <name>Electronics</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Intuition</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Matrix Threats</name>
+              <group>Professional</group>
+              <val>6</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Peace Keepers</name>
+          <bonus>
+            <attributelevel>
+              <name>BOD</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Clubs</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Rigger Corp</name>
+          <bonus>
+            <attributelevel>
+              <name>REA</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>83</page>
+    </module>
+    <module>
+      <id></id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Tour of Duty (UCAS, CAS and CFS)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>STR</name>
+        </attributelevel>
+        <skillgrouplevel>
+          <name>Firearms</name>
+          <val>1</val>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Navigation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Military</name>
+          <group>Professional</group>
+          <val>4</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <addqualities>
+        <addquality>SINner</addquality>
+      </addqualities>
+      <versions>
+        <version>
+          <id></id>
+          <name>Air Force</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Army</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Heavy Weapons</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Throwing Weapons</name>
+              <val>2</val>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Engineering Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Engineering</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Gunnery</name>
+            </skilllevel>
+            <knowledgeskilllevel>
+              <name>Military Vehicles</name>
+              <group>Professional</group>
+              <val>5</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Mage Corps</name>
+          <bonus>
+            <skilllevel>
+              <name>Assensing</name>
+              <val>2</val>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Conjuring</name>
+              <val>1</val>
+            </skillgrouplevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skillgrouplevel>
+              <name>Sorcery</name>
+              <val>1</val>
+            </skillgrouplevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <!--todo: require Nurse or Medicine module from Further Education-->
+          <name>Medical Corps</name>
+          <bonus>
+            <skillgrouplevel>
+              <name>Biotech</name>
+              <val>2</val>
+            </skillgrouplevel>
+            <knowledgeskilllevel>
+              <name>Medicine</name>
+              <group>Professional</group>
+              <val>3</val>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Navy</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Swimming</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Rigger Corps </name>
+          <bonus>
+            <skilllevel>
+              <name>Electronic Warfare</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Gunnery</name>
+              <val>2</val>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Aircraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Anthroform</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+          </bonus>
+        </version>
+        <version>
+          <id></id>
+          <name>Special Forces</name>
+          <bonus>
+            <skilllevel>
+              <name>Armorer</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Blades</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Demolitions</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Perception</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Ground Craft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Pilot Watercraft</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Sneaking</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Tracking</name>
+            </skilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <story>Allan, please add story</story>
+      <source>RF</source>
+      <page>82</page>
+    </module>
 
 
   </modules>
