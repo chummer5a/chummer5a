@@ -1930,7 +1930,8 @@
       </bonus>
       <addqualities>
         <addquality>Bad Rep</addquality>
-        <addquality>Enemy</addquality>
+        <!--can't find this quality anywhere, another copy-paste from cgl?-->
+        <!--<addquality>Enemy</addquality>-->
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -3602,7 +3603,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>Limited Corporate SIN</addquality>
+        <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
       <versions>
         <version>
@@ -3950,7 +3951,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>High Pain Tolerance</addquality>
+        <addquality>High Pain Tolerance (Rating 1)</addquality>
         <addquality>Sense of Direction</addquality>
       </addqualities>
       <story>Allan, please add story</story>
@@ -4013,7 +4014,7 @@
         </skilllevel>
       </bonus>
       <addqualities>
-        <addquality>Criminal SIN</addquality>
+        <addquality>SINner (Criminal)</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -4325,7 +4326,7 @@
       </bonus>
       <addqualities>
         <addquality>Made Man</addquality>
-        <addquality>Criminal SIN</addquality>
+        <addquality>SINner (Criminal)</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -4401,7 +4402,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>Criminal SIN</addquality>
+        <addquality>SINner (Criminal)</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -5148,7 +5149,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>Criminal SIN</addquality>
+        <addquality>SINner (Criminal)</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>
@@ -6379,7 +6380,7 @@
       </bonus>
       <addqualities>
         <addquality>Guts</addquality>
-        <addquality>Pain Is Gain</addquality>
+        <addquality>Pain is Gain</addquality>
         <addquality>Vendetta</addquality>
       </addqualities>
       <story>Allan, please add story</story>
@@ -6771,7 +6772,8 @@
         </knowledgeskilllevel>
       </bonus>
       <addqialities>
-        <addquality>Flashbacks</addquality>
+        <!--per raw, there is no rating for flashbacks-->
+        <addquality>Flashbacks I</addquality>
         <addquality>Uneducated</addquality>
       </addqialities>
       <!--todo: Special: You may pick 32,000 nuyen worth of bioware. Normal Essence costs apply-->
@@ -6850,8 +6852,8 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <!--choose biocompatibility type-->
-        <addquality>Biocompatibility</addquality>
+        <!--todo: choose biocompatibility type-->
+        <addquality>Biocompatability (Cyberware)</addquality>
       </addqualities>
       <!--todo: Special: 16,000 nuyen in augmentations-->
       <story>Allan, please add story</story>
@@ -6946,7 +6948,7 @@
         </knowledgeskilllevel>
       </bonus>
       <addqualities>
-        <addquality>High Pain Tolerance 2</addquality>
+        <addquality>High Pain Tolerance (Rating 2)</addquality>
         <addquality>Quick Healer</addquality>
       </addqualities>
       <story>Allan, please add story</story>
