@@ -3757,7 +3757,7 @@
 			<category>Holdouts</category>
 			<type>Ranged</type>
 			<spec>Revolvers</spec>
-			<conceal>-2</conceal>
+			<conceal>-4</conceal>
 			<accuracy>6</accuracy>
 			<reach>0</reach>
 			<damage>5P</damage>
@@ -6732,7 +6732,7 @@
 		</weapon>
 		<weapon>
 			<name>Claws (Bio-Weapon)</name>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
 			<conceal>0</conceal>
@@ -6751,7 +6751,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Retractable Claws (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6771,7 +6771,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Electrical Discharge</name>
 			<category>Tasers</category>
 			<type>Melee</type>
@@ -6791,7 +6791,7 @@
 			<page>113</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Fangs (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6811,7 +6811,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Horns (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6831,7 +6831,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Stinger (Large)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6851,7 +6851,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Stinger (Medium)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6871,7 +6871,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Horns (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6891,7 +6891,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Medium Tusk(s)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6911,7 +6911,7 @@
 			<page>121</page>
 		</weapon>
 		<weapon>
-			<id></id>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Large Tusk(s)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
@@ -6929,6 +6929,48 @@
 			<useskill>Unarmed Combat</useskill>
 			<source>CF</source>
 			<page>121</page>
+		</weapon>
+		<weapon>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<name>Raptor Foot</name>
+			<category>Cyber-Weapon</category>
+			<type>Melee</type>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<conceal>0</conceal>
+			<accuracy>Physical-1</accuracy>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>CF</source>
+			<page>90</page>
+		</weapon>
+		<weapon>
+			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
+			<name>Grapple Fist</name>
+			<category>Cyber-Weapon</category>
+			<type>Ranged</type>
+			<spec>Grapple Gun</spec>
+			<conceal>0</conceal>
+			<accuracy>3</accuracy>
+			<reach>0</reach>
+			<damage>7S</damage>
+			<ap>-2</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>1(ml)</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<range>Light Crossbows</range>
+			<useskill>Exotic Ranged Weapon</useskill>
+			<allowaccessory>False</allowaccessory>
+			<source>CF</source>
+			<page>90</page>
 		</weapon>
 	</weapons>
 	<accessories>

@@ -458,6 +458,7 @@
       <source>SR5</source>
       <page>460</page>
     </bioware>
+		<!--Chrome Flesh Genemods -->
 		<bioware>
 			<id>4e9c11ed-730a-478f-a53d-d36220040506</id>
 			<name>Genewipe</name>
@@ -962,6 +963,7 @@
 			<source>CF</source>
 			<page>158</page>
 		</bioware>
+		<!--Chrome Flesh Symbionts -->
 		<bioware>
 			<id>738c15f8-49ea-417e-9728-b4c78bc72c18</id>
 			<name>Cleaner Leech</name>
@@ -1083,6 +1085,7 @@
 			<source>CF</source>
 			<page>124</page>
 		</bioware>
+		<!--Chrome Flesh Basic Bioware -->
 		<bioware>
 			<id>abdbc210-c1fa-45f1-9840-4f78d9eb8867</id>
 			<name>Chemical Gland</name>
@@ -1423,6 +1426,7 @@
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
+		<!--Chrome Flesh Cultured Bioware -->
 		<bioware>
 			<id>81b40aa8-98d1-4a5d-89d6-9b6d438006da</id>
 			<name>Cerebellum Booster</name>
@@ -1534,6 +1538,7 @@
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
+		<!--Chrome Flesh Bio-Sculpting -->
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Minor Biosculpting Modification</name>
@@ -1649,6 +1654,7 @@
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
+		<!--Chrome Flesh Cosmetic Bioware -->
 		<bioware>
 			<id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
 			<name>Bio-Tattoos</name>
@@ -1819,6 +1825,67 @@
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
+		<!--Chrome Flesh Bio-Weapons -->
+		<bioware>
+			<id></id>
+			<name>Small Tusk(s)</name>
+			<category>Cosmetic Bioware</category>
+			<ess>0</ess>
+			<rating>2</rating>
+			<capacity>0</capacity>
+			<avail>2</avail>
+			<cost>Rating*100</cost>
+			<addweapon></addweapon>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Large Stinger</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>12F</avail>
+			<cost>8000</cost>
+			<addweapon>Large Stinger</addweapon>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Small Stinger</name>
+			<category>Bio-Weapons</category>
+			<ess>0.05</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>100</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Medium Stinger</name>
+			<category>Bio-Weapons</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>8R</avail>
+			<addweapon>Medium Stinger</addweapon>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
+		<bioware>
+			<id></id>
+			<name>Large Stinger</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>12F</avail>
+			<cost>8000</cost>
+			<addweapon>Large Stinger</addweapon>
+			<source>CF</source>
+			<page>111</page>
+		</bioware>
 		<bioware>
 			<id></id>
 			<name>Striking Callus</name>
@@ -1838,24 +1905,13 @@
 		</bioware>
 		<bioware>
 			<id></id>
-			<name>Small Tusk(s)</name>
-			<category>Bio-Weapons</category>
-			<ess>0</ess>
-			<rating>2</rating>
-			<capacity>0</capacity>
-			<avail>2</avail>
-			<cost>Rating*100</cost>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
 			<name>Medium Tusk(s)</name>
 			<category>Bio-Weapons</category>
 			<ess>0.1*Rating</ess>
 			<rating>2</rating>
 			<capacity>0</capacity>
 			<avail>2</avail>
+			<addweapon>Medium Tusk(s)</addweapon>
 			<cost>Rating*500</cost>
 			<source>CF</source>
 			<page>111</page>
@@ -1869,6 +1925,7 @@
 			<capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>Rating*1000</cost>
+			<addweapon>Large Tusk(s)</addweapon>
 			<source>CF</source>
 			<page>111</page>
 		</bioware>

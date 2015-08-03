@@ -1612,7 +1612,7 @@
 		</string>
 		<string>
 			<key>Message_SpellLimit</key>
-			<text>You cannot have more spells than twice your Spellcasting or Ritual Spellcasting Skill Ratings.</text>
+			<text>You cannot have more spells, rituals or alchemical preparations than twice your MAG score. Ref: Page 69, SR5 Core.</text>
 		</string>
 		<string>
 			<key>Message_PrioritySpellLimit</key>

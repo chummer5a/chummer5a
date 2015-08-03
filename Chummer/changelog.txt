@@ -28,14 +28,17 @@ Data Change:
 - Fire Modes for the Colt Inception have been fixed.
 - Metatype Reduction has been added. Due to the differing benefits, it is split up into two different items for Orks and Trolls, respectively.
 - Troll Reduction has been added.
-- Assorted bits of cosmetic bioware from Chrome Flesh have been added. 
+- Assorted bits of cosmetic bioware and bio-weapons from Chrome Flesh have been added. 
 - Life Modules have been added from all existing source books, courtesy of joha4270 and angelforest. Functionality is complete-ish, but there are some awkward modules in Further Education and such that may not quite work as expected. Feedback and suggestions for this is greatly appreciated.
+- Fixed an issue that stopped Aspected Magicians from gaining access to the Spells and Spirits tab. Replace-all is nobody's friend.
 
 String Changes:
 Altered:
 - Checkbox_Options_ExceedNegativeQualitiesLimit
 - Checkbox_Options_ExceedPositiveQualities
 - Checkbox_Options_ExceedNegativeQualities
+- Message_SpellLimit
+
 New:
 - MessageBox_NoValidContactFound
 
