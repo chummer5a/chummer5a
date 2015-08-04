@@ -16,6 +16,7 @@ Application Change:
 - The Select Bioware/Cyberware form can now display a special notes text field to indicate weird workaroundy stuff that I can't be bothered fixing with code. 
 	- For example, Striking Calluses are treated as a Rating item, with the Notes field explaining why. Currently has no support for translations.
 - Essence Discount house rule enabled. Can be used to emulate the Prototype Transhuman quality for you munchkin mages that need your pain editors and whatnot until I get around to implementing it properly.
+- Fixed an issue with the incorrect cap being used for spell selection. There's still a couple of UI failures that need to be resolved, but they're a relatively low priority. 
 
 Data Change:
 - The Water Sprite quality confers +2 to Diving and Swimming, instead of prompting you to select one of them.
