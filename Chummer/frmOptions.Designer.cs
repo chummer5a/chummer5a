@@ -245,6 +245,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2477,6 +2478,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts);
 			this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit);
 			this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualities);
 			this.tabHouseRules.Controls.Add(this.chkExceedPositiveQualities);
@@ -2753,6 +2755,19 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// chkAllowCyberwareESSDiscounts
+			// 
+			this.chkAllowCyberwareESSDiscounts.AutoSize = true;
+			this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 141);
+			this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
+			this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(258, 17);
+			this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
+			this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
+			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyberware Essence costs to be discounted";
+			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Enabling this house rule will allow Skill Points to be spent on skills belonging " +
+        "to a broken skill group.");
+			this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3060,5 +3075,6 @@
         private System.Windows.Forms.CheckBox chkExceedNegativeQualities;
         private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
 		private System.Windows.Forms.CheckBox chkLifeModule;
+		private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
 	}
 }

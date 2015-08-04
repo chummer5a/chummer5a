@@ -222,7 +222,7 @@
     <Compile Include="frmSelectLifestyleQuality.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectLifestyleQuality.designer.cs">
+    <Compile Include="frmSelectLifestyleQuality.Designer.cs">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
     </Compile>
     <Compile Include="lang\language.Designer.cs">
@@ -360,7 +360,7 @@
     <Compile Include="frmSelectLifestyle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectLifestyle.designer.cs">
+    <Compile Include="frmSelectLifestyle.Designer.cs">
       <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSelectArmorMod.cs">
@@ -1677,7 +1677,7 @@
     <Folder Include="settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

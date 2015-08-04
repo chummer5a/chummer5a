@@ -5542,43 +5542,6 @@ namespace Chummer
 
         private void cmdAddSpell_Click(object sender, EventArgs e)
         {
-            // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-            // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-            int intSpellCount = 0;
-            foreach (TreeNode nodCategory in treSpells.Nodes)
-            {
-                foreach (TreeNode nodSpell in nodCategory.Nodes)
-                {
-                    intSpellCount++;
-                }
-            }
-
-            // Run through the list of Active Skills and pick out the two applicable ones.
-            int intSkillValue = 0;
-            foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-            {
-                if ((objSkillControl.SkillName == "Spellcasting" || objSkillControl.SkillName == "Ritual Spellcasting") && objSkillControl.SkillRating > intSkillValue)
-                    intSkillValue = objSkillControl.SkillRating + objSkillControl.SkillObject.RatingModifiers;
-            }
-
-            // Check against the maximum allowable number of spells
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                if (intSpellCount >= ((_objCharacter.MAG.TotalValue * 2) + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_PrioritySpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-            else
-            {
-                if (intSpellCount >= ((2 * intSkillValue) + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
-                {
-                    MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
             frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
             frmPickSpell.ShowDialog(this);
             // Make sure the dialogue window was not canceled.
@@ -5638,7 +5601,7 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
 
-            intSpellCount = 0;
+            int intSpellCount = 0;
             foreach (TreeNode nodCategory in treSpells.Nodes)
             {
                 foreach (TreeNode nodSpell in nodCategory.Nodes)
@@ -8047,7 +8010,7 @@ namespace Chummer
                             _objCharacter.Qualities.Add(objSubQuality);
                             }
                         }
-                            }
+                }
 
                 // Add any Critter Powers that are gained through the Quality (Infected).
                 if (objXmlQuality.SelectNodes("powers/power").Count > 0)
@@ -18624,7 +18587,22 @@ namespace Chummer
                 treWeapons.Nodes[0].Expand();
             }
 
-            _objFunctions.SortTree(treCyberware);
+			// Add any additional Qualities that are forced on the character.
+			if (objXmlCyberware.SelectNodes("addqualities/addquality").Count > 0)
+			{
+				XmlDocument objXmlQuality = XmlManager.Instance.Load("qualities.xml");
+				foreach (XmlNode objXmlAddQuality in objXmlCyberware.SelectNodes("addqualities/addquality"))
+				{
+					XmlNode objXmlSelectedQuality = objXmlQuality.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+					Quality objSubQuality = AddQuality(objXmlAddQuality, objXmlSelectedQuality, objWeapons, objWeaponNodes);
+					if (objSubQuality != null)
+					{
+						_objCharacter.Qualities.Add(objSubQuality);
+					}
+				}
+			}
+
+			_objFunctions.SortTree(treCyberware);
             treCyberware.SelectedNode = objNode;
             _blnSkipRefresh = true;
             PopulateCyberwareGradeList();

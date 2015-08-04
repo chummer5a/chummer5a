@@ -203,7 +203,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-385</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -243,7 +243,7 @@
 	<file>
 		<name>data/critters.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-395</version>
 		<description>Critters</description>
 		<notes>- Critters data file</notes>
 		<url>https://www.dropbox.com/s/l5n92nv2szbbw5s/critters.xml?dl=1</url>
@@ -251,7 +251,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>-375</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -291,15 +291,15 @@
 	<file>
 		<name>data/lifemodules.xml</name>
 		<type>Data Files</type>
-		<version>-999</version>
-		<description>Lifestyles</description>
-		<notes>- Lifestyles data file</notes>
+		<version>-900</version>
+		<description>Life Modules</description>
+		<notes>- Life Modules data file</notes>
 		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
 	</file>
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-915</version>
+		<version>-910</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -363,7 +363,7 @@
 	<file>
 		<name>data/priorities.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-390</version>
 		<description>Priorities</description>
 		<notes>- Priorities data file</notes>
 		<url>https://www.dropbox.com/s/sdlxvlmratzy0th/priorities.xml?dl=1</url>
@@ -379,7 +379,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-390</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -401,6 +401,14 @@
 		<url>https://www.dropbox.com/s/fism6kejy7ir57s/skills.xml?dl=1</url>
 	</file>
 	<file>
+		<name>data/spiritpowers.xml</name>
+		<type>Data Files</type>
+		<version>-900</version>
+		<description>Spirit Powers</description>
+		<notes>- Spirit Power data file</notes>
+		<url>https://www.dropbox.com/s/7xt0bnszurftbzg/spiritpowers.xml?dl=1</url>
+	</file>
+	<file>
 		<name>data/spells.xml</name>
 		<type>Data Files</type>
 		<version>-400</version>
@@ -411,7 +419,7 @@
 	<file>
 		<name>data/streams.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-390</version>
 		<description>Streams</description>
 		<notes>- Streams data file</notes>
 		<url>https://www.dropbox.com/s/r0h6osxsx0zdxfi/streams.xml?dl=1</url>
@@ -419,7 +427,7 @@
 	<file>
 		<name>data/SumtoTen.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-390</version>
 		<description>Sum to Ten Priorities</description>
 		<notes>- Sum to Ten Priority data file</notes>
 		<url>https://www.dropbox.com/s/metwywhddzlmozo/SumtoTen.xml?dl=1</url>
@@ -427,7 +435,7 @@
 	<file>
 		<name>data/traditions.xml</name>
 		<type>Data Files</type>
-		<version>-399</version>
+		<version>-390</version>
 		<description>Traditions</description>
 		<notes>- Magic Traditions data file</notes>
 		<url>https://www.dropbox.com/s/fu7j24hxc9cf5h6/traditions.xml?dl=1</url>

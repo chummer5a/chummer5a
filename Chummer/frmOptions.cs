@@ -357,6 +357,7 @@ namespace Chummer
                 _objOptions.Books.Add("SR5");
 
             _objOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
+			_objOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
             _objOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
             _objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _objOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
@@ -1228,6 +1229,7 @@ namespace Chummer
             catch
             {
             }
+			chkAllowCyberwareESSDiscounts.Checked = blnAllowCyberwareESSDiscounts;
 
             bool blnESSLossReducesMaximumOnly = false;
             try
