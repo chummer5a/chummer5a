@@ -15,6 +15,8 @@ namespace Chummer
 	{
 		public static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
 		{
+			if (Debugger.IsAttached) return;
+
 			if (
 				MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!",
 					MessageBoxButtons.YesNo) == DialogResult.Yes)
