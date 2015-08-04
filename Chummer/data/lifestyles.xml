@@ -17,6 +17,7 @@
 			<multiplier>0</multiplier>
 			<source>SR5</source>
 			<page>1</page>
+      <hidden />
     </lifestyle>
 		<lifestyle>
       <id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
