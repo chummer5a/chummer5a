@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-385</version>
+  <version>-380</version>
   <grades>
     <grade>
       <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
@@ -77,13 +77,13 @@
   </grades>
   <categories>
     <category>Basic</category>
-    <category>Orthoskin Upgrades</category>
+	<category>Orthoskin Upgrades</category>
     <category>Cultured</category>
     <category>Symbionts</category>
-    <category>Genemods</category>
-		<category>Biosculpting</category>
-		<category>Cosmetic Bioware</category>
-		<category>Bio-Weapons</category>
+	<category>Genemods</category>
+	<category>Biosculpting</category>
+	<category>Cosmetic Bioware</category>
+	<category>Bio-Weapons</category>
 	</categories>
   <biowares>
     <bioware>
@@ -1542,7 +1542,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Minor Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1556,7 +1556,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Moderate Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1570,7 +1570,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Severe Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1584,7 +1584,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Troll Reduction</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<rating>2</rating>
 			<ess>FixedValues(0.2,0.5)</ess>
 			<required>
@@ -1607,7 +1607,7 @@
 		<bioware>
 			<id>C24D24C6-5F00-41F2-A6AC-0289A0BC5DF7</id>
 			<name>Troll Reduction (Ork)</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0.2</ess>
 			<required>
 				<oneof>
@@ -1629,7 +1629,7 @@
 		<bioware>
 			<id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
 			<name>Ethnicity/Sex Change</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1643,7 +1643,7 @@
 		<bioware>
 			<id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
 			<name>Metatype Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
