@@ -6730,6 +6730,7 @@
 			<source>CF</source>
 			<page>91</page>
 		</weapon>
+    <!--Chrome Flesh Bio-Weapons -->
 		<weapon>
 			<name>Claws (Bio-Weapon)</name>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
@@ -6773,12 +6774,12 @@
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Electrical Discharge</name>
-			<category>Tasers</category>
+			<category>Bio-Weapon</category>
 			<type>Melee</type>
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
-			<damage>1S(e) (Special)</damage>
+			<damage>1-8S(e) (Special)</damage>
 			<ap>-4</ap>
 			<mode>0</mode>
 			<rc>0</rc>
@@ -6788,7 +6789,7 @@
 			<allowaccessory>false</allowaccessory>
 			<useskill>Unarmed Combat</useskill>
 			<source>CF</source>
-			<page>113</page>
+			<page>122</page>
 		</weapon>
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
@@ -6810,19 +6811,39 @@
 			<source>CF</source>
 			<page>121</page>
 		</weapon>
+    <weapon>
+      <id>576770af-b5da-4b76-afdf-5559e7401e2d</id>
+      <name>Retractable Fangs (Bio-Weapon)</name>
+      <category>Bio-Weapon</category>
+      <type>Melee</type>
+      <reach>0</reach>
+      <damage>(STR+2)P</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <conceal>0</conceal>
+      <accuracy>3</accuracy>
+      <avail>0</avail>
+      <cost>0</cost>
+      <allowaccessory>false</allowaccessory>
+      <useskill>Unarmed Combat</useskill>
+      <source>CF</source>
+      <page>121</page>
+    </weapon>
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
 			<name>Horns (Bio-Weapon)</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
 			<reach>0</reach>
-			<damage>(STR+2)P</damage>
+			<damage>(STR+1)P</damage>
 			<ap>-4</ap>
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
 			<conceal>0</conceal>
-			<accuracy>3</accuracy>
+			<accuracy>4</accuracy>
 			<avail>0</avail>
 			<cost>0</cost>
 			<allowaccessory>false</allowaccessory>
@@ -6832,7 +6853,7 @@
 		</weapon>
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
-			<name>Stinger (Large)</name>
+			<name>Large Stinger</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
 			<reach>1</reach>
@@ -6852,7 +6873,7 @@
 		</weapon>
 		<weapon>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
-			<name>Stinger (Medium)</name>
+			<name>Medium Stinger</name>
 			<category>Bio-Weapon</category>
 			<type>Melee</type>
 			<reach>1</reach>

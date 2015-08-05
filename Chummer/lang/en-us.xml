@@ -6165,7 +6165,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Allow characters to exceed their Positive Quality limit</text>
+			<text>Allow characters to exceed their Negative Quality limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
