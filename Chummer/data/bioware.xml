@@ -2012,7 +2012,8 @@
 			<category>Bio-Weapons</category>
 			<ess>0.2*Rating</ess>
 			<rating>2</rating>
-			<capacity>0</capacity>
+      <notes>Rating is used to indicate number of tusks.</notes>
+      <capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>Rating*1000</cost>
 			<addweapon>Large Tusk(s)</addweapon>
