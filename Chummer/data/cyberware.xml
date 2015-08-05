@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-375</version>
+  <version>-370</version>
   <grades>
     <grade>
       <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
@@ -2081,7 +2081,7 @@
 		</cyberware>
 		<cyberware>
 			<id>0F1F1D88-523B-4A0B-AF89-C6A1F8ABCF8E</id>
-			<name>Ork Metatype Reduction</name>
+			<name>Metatype Reduction (Ork)</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.3</ess>
 			<bonus>
@@ -2103,7 +2103,7 @@
 		</cyberware>
 		<cyberware>
 			<id>11973d09-1457-4b3d-8460-42822df721b9</id>
-			<name>Troll Metatype Reduction</name>
+			<name>Metatype Reduction (Troll)</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.3</ess>
 			<required>
