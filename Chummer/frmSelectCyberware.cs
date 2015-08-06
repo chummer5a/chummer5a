@@ -1451,8 +1451,8 @@ namespace Chummer
 
 			lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
 			lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;
-			nudESSDiscount.Left = lblESSDiscountLabel.Left = lblESSDiscountLabel.Width + 6;
-			lblESSDiscountPercentLabel.Left = nudESSDiscount.Left + nudESSDiscount.Width;
+            nudESSDiscount.Left = lblESSDiscountLabel.Left + lblESSDiscountLabel.Width + 6;
+            lblESSDiscountPercentLabel.Left = nudESSDiscount.Left + nudESSDiscount.Width;
 
 			lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
 		}
