@@ -5462,7 +5462,12 @@ namespace Chummer
 
 						// Remove any Improvements created by the piece of Cyberware.
 						_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
+
+
 						_objCharacter.Cyberware.Remove(objCyberware);
+
+						//Add essence hole.
+						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100m));
 					}
 					else
 					{
@@ -5493,6 +5498,30 @@ namespace Chummer
 			}
 
 			UpdateCharacterInfo();
+		}
+
+		private void IncreaseEssenceHole(int centiessence)
+		{
+			//id of essence antihole, get by id to avoid name confusions
+			Guid essenceHoldID = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
+            Cyberware objHole = _objCharacter.Cyberware.Find(x => x.SourceID == essenceHoldID);
+
+			if (objHole == null)
+			{
+				XmlDocument xmlCyberware = XmlManager.Instance.Load("cyberware.xml");
+				XmlNode xmlEssHole = xmlCyberware.SelectSingleNode("//id[.='b57eadaa-7c3b-4b80-8d79-cbbd922c1196']/..");
+				objHole = new Cyberware(_objCharacter);
+				TreeNode treNode = new TreeNode();
+
+				objHole.Create(xmlEssHole, _objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>());
+				treCyberware.Nodes.Add(treNode);
+				_objCharacter.Cyberware.Add(objHole);
+			}
+			else  
+			{
+				objHole.Rating += centiessence;
+			}
+
 		}
 
 		private void cmdAddComplexForm_Click(object sender, EventArgs e)

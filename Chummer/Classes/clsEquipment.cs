@@ -2333,6 +2333,7 @@ namespace Chummer
 	/// </summary>
 	public class Cyberware
 	{
+		private Guid _sourceID = new Guid();
 		private Guid _guiID = new Guid();
 		private string _strName = "";
 		private string _strCategory = "";
@@ -2433,6 +2434,8 @@ namespace Chummer
 			_strPage = objXmlCyberware["page"].InnerText;
 			_nodBonus = objXmlCyberware["bonus"];
 			_nodAllowGear = objXmlCyberware["allowgear"];
+			objXmlCyberware.TryGetField("id", Guid.TryParse, out _sourceID);
+
 			_objImprovementSource = objSource;
 			try
 			{
@@ -2643,6 +2646,7 @@ namespace Chummer
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("cyberware");
+			objWriter.WriteElementString("sourceid", _sourceID.ToString());
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
@@ -2708,6 +2712,8 @@ namespace Chummer
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			Improvement objImprovement = new Improvement();
+
+			objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID);
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
@@ -3031,6 +3037,14 @@ namespace Chummer
 			}
 		}
 
+		public Guid SourceID
+		{
+			get
+			{
+				return _sourceID;
+			}
+		}
+
 		/// <summary>
 		/// The name of the object as it should be displayed on printouts (translated name only).
 		/// </summary>
@@ -3055,8 +3069,11 @@ namespace Chummer
 			{
 				string strReturn = DisplayNameShort;
 
-				if (_intRating > 0)
-					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+				if (_intRating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
+				{
+					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating + ")";
+				}
+
 				if (_strLocation != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
