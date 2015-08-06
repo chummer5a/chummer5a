@@ -897,6 +897,10 @@
 			<key>MessageTitle_Main_RunningWild</key>
 			<text>Sourcebook Required</text>
 		</string>
+    <string>
+      <key>Menu_Main_IssueTracker</key>
+      <text>Issue Tracker</text>
+    </string>
 		<string>
 			<key>Menu_Main_File</key>
 			<text>&amp;File</text>

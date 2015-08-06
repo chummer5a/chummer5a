@@ -1,3 +1,10 @@
+Build 173:
+Application Change:
+- Dumpshock link changed to issue tracker
+
+Data Change:
+- Not longer showing debug item in lifestyles
+
 Build 172:
 Application Change:
 - Due to the return of Move-By-Wire, Initiative is no longer capped to your REA+INT's augmented maximum. 
