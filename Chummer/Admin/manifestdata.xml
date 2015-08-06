@@ -3,7 +3,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.171</version>
+		<version>0.0.5.172</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -263,6 +263,14 @@
 		<description>Echoes</description>
 		<notes>- Echoes data file</notes>
 		<url>https://www.dropbox.com/s/2dghsiiz91u0kq1/echoes.xml?dl=1</url>
+	</file>
+	<file>
+		<name>data/gameplayoptions.xml</name>
+		<type>Data Files</type>
+		<version>-400</version>
+		<description>Gameplay Options</description>
+		<notes>- Gameplay Options data file</notes>
+		<url>https://www.dropbox.com/s/j6cw94nwhbvdluu/gameplayoptions.xml?dl=1</url>
 	</file>
 	<file>
 		<name>data/gear.xml</name>
