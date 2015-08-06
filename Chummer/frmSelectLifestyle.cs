@@ -42,6 +42,9 @@ namespace Chummer
 			XmlNodeList objXmlLifestyleList = _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]");
 			foreach (XmlNode objXmlLifestyle in objXmlLifestyleList)
 			{
+				if(objXmlLifestyle["hidden"] != null) continue;
+
+
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlLifestyle["name"].InnerText;
 				if (objXmlLifestyle["translate"] != null)
@@ -148,6 +151,8 @@ namespace Chummer
 			_objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);
 			_objLifestyle.Source = objXmlLifestyle["source"].InnerText;
 			_objLifestyle.Page = objXmlLifestyle["page"].InnerText;
+			_objLifestyle.SourceID = Guid.Parse(objXmlLifestyle["id"].InnerText);
+
 			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
 			

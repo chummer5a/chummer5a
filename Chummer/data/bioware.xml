@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-385</version>
+  <version>-380</version>
   <grades>
     <grade>
       <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
@@ -77,13 +77,13 @@
   </grades>
   <categories>
     <category>Basic</category>
-    <category>Orthoskin Upgrades</category>
+	<category>Orthoskin Upgrades</category>
     <category>Cultured</category>
     <category>Symbionts</category>
-    <category>Genemods</category>
-		<category>Biosculpting</category>
-		<category>Cosmetic Bioware</category>
-		<category>Bio-Weapons</category>
+	<category>Genemods</category>
+	<category>Biosculpting</category>
+	<category>Cosmetic Bioware</category>
+	<category>Bio-Weapons</category>
 	</categories>
   <biowares>
     <bioware>
@@ -1542,7 +1542,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Minor Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1556,7 +1556,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Moderate Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1570,7 +1570,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Severe Biosculpting Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1584,7 +1584,7 @@
 		<bioware>
 			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
 			<name>Troll Reduction</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<rating>2</rating>
 			<ess>FixedValues(0.2,0.5)</ess>
 			<required>
@@ -1607,7 +1607,7 @@
 		<bioware>
 			<id>C24D24C6-5F00-41F2-A6AC-0289A0BC5DF7</id>
 			<name>Troll Reduction (Ork)</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0.2</ess>
 			<required>
 				<oneof>
@@ -1629,7 +1629,7 @@
 		<bioware>
 			<id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
 			<name>Ethnicity/Sex Change</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1643,7 +1643,7 @@
 		<bioware>
 			<id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
 			<name>Metatype Modification</name>
-			<category>Biosculpt</category>
+			<category>Biosculpting</category>
 			<ess>0</ess>
 			<bonus>
 				<selecttext />
@@ -1826,108 +1826,199 @@
 			<page>111</page>
 		</bioware>
 		<!--Chrome Flesh Bio-Weapons -->
-		<bioware>
-			<id></id>
-			<name>Small Tusk(s)</name>
-			<category>Cosmetic Bioware</category>
+    <bioware>
+      <id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
+      <name>Claws</name>
+      <category>Bio-Weapons</category>
+      <ess>0.1*Rating</ess>
+      <rating>2</rating>
+      <notes>Rating is used to indicate number of claws.</notes>
+      <capacity>0</capacity>
+      <avail>4R</avail>
+      <cost>500</cost>
+      <addweapon>Claws (Bio-Weapon)</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
+      <name>Claws (Retractable)</name>
+      <category>Bio-Weapons</category>
+      <ess>0.15*Rating</ess>
+      <rating>2</rating>
+      <notes>Rating is used to indicate number of claws.</notes>
+      <capacity>0</capacity>
+      <avail>6R</avail>
+      <cost>1000</cost>
+      <addweapon>Retractable Claws (Bio-Weapon)</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
+      <name>Electrical Discharge</name>
+      <category>Bio-Weapons</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>10000</cost>
+      <addweapon>Electrical Discharge</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>82780b5b-41dd-49ae-964f-c14ca91a0f14</id>
+      <name>Fangs</name>
+      <category>Bio-Weapons</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>500</cost>
+      <addweapon>Fangs (Bio-Weapon)</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>3f0fda69-a098-4c9a-855e-5dd2d46ae3da</id>
+      <name>Fangs (Retractable)</name>
+      <category>Bio-Weapons</category>
+      <ess>0.15</ess>
+      <capacity>0</capacity>
+      <avail>6</avail>
+      <cost>1000</cost>
+      <addweapon>Retractable Fangs (Bio-Weapon)</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>cbe09df9-556d-44d4-9d68-073415850deb</id>
+      <name>Horns</name>
+      <category>Bio-Weapons</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>4</avail>
+      <cost>500</cost>
+      <addweapon>Horns (Bio-Weapon)</addweapon>
+      <source>CF</source>
+      <page>120</page>
+    </bioware>
+    <bioware>
+      <id>605b82f9-9f12-4a14-b567-091dd5fcde80</id>
+      <name>Muzzle</name>
+      <category>Bio-Weapons</category>
+      <ess>0.3</ess>
+      <capacity>0</capacity>
+      <avail>8R</avail>
+      <cost>2000</cost>
+      <addweapon></addweapon>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+      <id>828ca5e9-4409-42aa-a6df-87fc907fede2</id>
+      <name>Sprayer</name>
+      <category>Bio-Weapons</category>
+      <ess>0.25</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>4000</cost>
+      <addweapon></addweapon>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+      <id>b9085cbe-8e67-4205-8e49-603e31f9d6f7</id>
+      <name>Stinger, Tiny</name>
+      <category>Bio-Weapons</category>
+      <ess>0.05</ess>
+      <capacity>0</capacity>
+      <avail>8</avail>
+      <cost>100</cost>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+      <id></id>
+      <name>Stinger, Medium</name>
+      <category>Bio-Weapons</category>
+      <ess>0.1</ess>
+      <capacity>0</capacity>
+      <avail>8R</avail>
+      <addweapon>Medium Stinger</addweapon>
+      <cost>2000</cost>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+      <id>c466a6cf-bf31-4300-b53e-0f83af141342</id>
+      <name>Stinger, Large</name>
+      <category>Bio-Weapons</category>
+      <ess>0.2</ess>
+      <capacity>0</capacity>
+      <avail>12F</avail>
+      <cost>8000</cost>
+      <addweapon>Large Stinger</addweapon>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+      <id>8832f6ac-0082-4b9b-9e1c-7f90874a23a1</id>
+      <name>Striking Callus</name>
+      <category>Bio-Weapons</category>
+      <ess>0.05*Rating</ess>
+      <rating>4</rating>
+      <bonus>
+        <unarmeddv>Rating*0.5</unarmeddv>
+        <unarmeddvphysical />
+      </bonus>
+      <notes>Rating is used to represent hands and feet. Every 2 Rating will grant +1 Unarmed damage.</notes>
+      <capacity>0</capacity>
+      <avail>2</avail>
+      <cost>Rating*250</cost>
+      <source>CF</source>
+      <page>121</page>
+    </bioware>
+    <bioware>
+			<id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
+			<name>Tusk(s), Small</name>
+			<category>Bio-Weapons</category>
 			<ess>0</ess>
 			<rating>2</rating>
+      <notes>Rating is used to indicate number of tusks.</notes>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Rating*100</cost>
 			<addweapon></addweapon>
 			<source>CF</source>
-			<page>111</page>
+			<page>121</page>
 		</bioware>
 		<bioware>
-			<id></id>
-			<name>Large Stinger</name>
-			<category>Bio-Weapons</category>
-			<ess>0.2</ess>
-			<capacity>0</capacity>
-			<avail>12F</avail>
-			<cost>8000</cost>
-			<addweapon>Large Stinger</addweapon>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
-			<name>Small Stinger</name>
-			<category>Bio-Weapons</category>
-			<ess>0.05</ess>
-			<capacity>0</capacity>
-			<avail>8</avail>
-			<cost>100</cost>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
-			<name>Medium Stinger</name>
-			<category>Bio-Weapons</category>
-			<ess>0.1</ess>
-			<capacity>0</capacity>
-			<avail>8R</avail>
-			<addweapon>Medium Stinger</addweapon>
-			<cost>2000</cost>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
-			<name>Large Stinger</name>
-			<category>Bio-Weapons</category>
-			<ess>0.2</ess>
-			<capacity>0</capacity>
-			<avail>12F</avail>
-			<cost>8000</cost>
-			<addweapon>Large Stinger</addweapon>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
-			<name>Striking Callus</name>
-			<category>Bio-Weapons</category>
-			<ess>0.05*Rating</ess>
-			<rating>4</rating>
-			<bonus>
-				<unarmeddv>Rating*0.5</unarmeddv>
-				<unarmeddvphysical />
-			</bonus>
-			<notes>Rating is used to represent hands and feet. Every 2 Rating will grant +1 Unarmed damage.</notes>
-			<capacity>0</capacity>
-			<avail>2</avail>
-			<cost>Rating*250</cost>
-			<source>CF</source>
-			<page>111</page>
-		</bioware>
-		<bioware>
-			<id></id>
-			<name>Medium Tusk(s)</name>
+			<id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
+			<name>Tusk(s), Medium</name>
 			<category>Bio-Weapons</category>
 			<ess>0.1*Rating</ess>
 			<rating>2</rating>
+      <notes>Rating is used to indicate number of tusks.</notes>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<addweapon>Medium Tusk(s)</addweapon>
 			<cost>Rating*500</cost>
 			<source>CF</source>
-			<page>111</page>
+			<page>121</page>
 		</bioware>
 		<bioware>
-			<id></id>
-			<name>Large Tusk(s)</name>
+			<id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
+			<name>Tusk(s), Large</name>
 			<category>Bio-Weapons</category>
 			<ess>0.2*Rating</ess>
 			<rating>2</rating>
-			<capacity>0</capacity>
+      <notes>Rating is used to indicate number of tusks.</notes>
+      <capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>Rating*1000</cost>
 			<addweapon>Large Tusk(s)</addweapon>
 			<source>CF</source>
-			<page>111</page>
+			<page>121</page>
 		</bioware>
   </biowares>
 </chummer>

@@ -3282,35 +3282,35 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsKnucks</key>
-			<text>Enabling this house rule allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+			<text>Allows Knucks to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
-			<text>Enabling this house rule allows all metamagics, enhancements, enchantments, and rituals to ignore the Art requirement detailed in Street Grimoire.</text>
+			<text>Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art requirement detailed in Street Grimoire.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsCyberlegMovement</key>
-			<text>Enabling this house rule allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
+			<text>Allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsDontDoubleQualities</key>
-			<text>Enabling this house rule will allow characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
+			<text>Allows characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalAttribute</key>
-			<text>Enabling this house rule will allow Attribute Points to be spent on the bonus point granted by the Exceptional Attributes quality.</text>
+			<text>Allows Attribute Points to be spent on the bonus point granted by the Exceptional Attributes quality.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalNotMaxed</key>
-			<text>Enabling this house rule will allow two attributes to be at the metatype maximum rather than one if one of those attributes is improved by Exceptional Attribute.</text>
+			<text>Allows two attributes to be at the metatype maximum rather than one if one of those attributes is improved by Exceptional Attribute.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsUsePointsOnBrokenGroups</key>
-			<text>Enabling this house rule will allow Skill Points to be spent on skills belonging to a broken skill group.</text>
+			<text>Allows Skill Points to be spent on skills belonging to a broken skill group.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsAllowInitiation</key>
-			<text>Enabling this house rule will allow Initiation/Submersion in Create mode.</text>
+			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
@@ -6097,7 +6097,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCyberwareESSDiscounts</key>
-			<text>Allow Cyberware Essence costs to be discounted</text>
+			<text>Allow Cyber/Bioware Essence costs to be customized</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_StrengthAffectsRecoil</key>
@@ -6165,7 +6165,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualities</key>
-			<text>Allow characters to exceed their Positive Quality limit</text>
+			<text>Allow characters to exceed their Negative Quality limit</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>

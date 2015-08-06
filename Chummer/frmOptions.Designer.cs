@@ -2657,7 +2657,7 @@
 			this.chkAllowInitiation.TabIndex = 7;
 			this.chkAllowInitiation.Tag = "Checkbox_Options_AllowInitiation";
 			this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
-			this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Enabling this house rule will allow Initiation/Submersion in Create mode.");
+			this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Allows Initiation/Submersion using Karma during Create mode.");
 			this.chkAllowInitiation.UseVisualStyleBackColor = true;
 			// 
 			// chkUsePointsOnBrokenGroups
@@ -2669,8 +2669,8 @@
 			this.chkUsePointsOnBrokenGroups.TabIndex = 6;
 			this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
 			this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
-			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Enabling this house rule will allow Skill Points to be spent on skills belonging " +
-        "to a broken skill group.");
+			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Allows Skill Points to be spent on skills belonging " +
+                                                                        "to a broken skill group.");
 			this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
 			// 
 			// chkDontDoubleQualities
@@ -2682,9 +2682,8 @@
 			this.chkDontDoubleQualities.TabIndex = 5;
 			this.chkDontDoubleQualities.Tag = "Checkbox_Options_DontDoubleQualities";
 			this.chkDontDoubleQualities.Text = "Don\'t double the cost of Qualities in Career Mode";
-			this.tipTooltip.SetToolTip(this.chkDontDoubleQualities, "Enabling this house rule will allow characters in Career mode to purchase Positiv" +
-        "e Qualities and buy off Negative at their normal price instead of doubling them." +
-        "");
+			this.tipTooltip.SetToolTip(this.chkDontDoubleQualities, "Allows characters in Career mode to purchase Positive " +
+                                                                    "Qualities and buy off Negative at their normal price instead of doubling them.");
 			this.chkDontDoubleQualities.UseVisualStyleBackColor = true;
 			// 
 			// chkCyberlegMovement
@@ -2696,8 +2695,8 @@
 			this.chkCyberlegMovement.TabIndex = 2;
 			this.chkCyberlegMovement.Tag = "Checkbox_Options_CyberlegMovement";
 			this.chkCyberlegMovement.Text = "Use Cyberleg Stats for Movement";
-			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Enabling this house rule will allow characters with two cyberlegs to use their cy" +
-        "berleg\'s AGI when calculating movement rates.");
+			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s " +
+                                                                 "AGI when calculating movement rates.");
 			this.chkCyberlegMovement.UseVisualStyleBackColor = true;
 			// 
 			// chkIgnoreArt
@@ -2709,8 +2708,8 @@
 			this.chkIgnoreArt.TabIndex = 1;
 			this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
 			this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
-			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Enabling this house rule allows all metamagics, enhancements, enchantments, and r" +
-        "ituals to ignore the Art requirement detailed in Street Grimoire.");
+			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals " +
+                                                          "to ignore the Art requirement detailed in Street Grimoire.");
 			this.chkIgnoreArt.UseVisualStyleBackColor = true;
 			// 
 			// cboSetting
@@ -2764,9 +2763,8 @@
 			this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(258, 17);
 			this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
 			this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
-			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyberware Essence costs to be discounted";
-			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Enabling this house rule will allow Skill Points to be spent on skills belonging " +
-        "to a broken skill group.");
+			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
+			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
 			this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions

@@ -89,7 +89,7 @@
               <val>2</val>
             </knowledgeskilllevel>
             <skilllevel>
-              <name>Negotiation&gt;</name>
+              <name>Negotiation</name>
             </skilllevel>
             <skilllevel>
               <name>Etiquette</name>
@@ -180,7 +180,7 @@
       <category>LifeModule</category>
       <name>Confederation of American States</name>
       <karma>15</karma>
-      <version>
+      <versions>
         <version>
           <id>d0f2538f-5fc2-4f98-acc4-fbf497861866</id>
           <name>General CAS</name>
@@ -237,7 +237,7 @@
             </knowledgeskilllevel>
           </bonus>
         </version>
-      </version>
+      </versions>
       <bonus>
         <knowledgeskilllevel>
           <name>History</name>
@@ -1779,7 +1779,7 @@
           <name>Blades</name>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <freepositivequalities>5</freepositivequalities>
+        
         <skillgrouplevel>
           <name>Firearms</name>
           <val>1</val>
@@ -1820,9 +1820,12 @@
           <group>Professional</group>
           <val>1</val>
         </knowledgeskilllevel>
+        <!--<freepositivequalities>5</freepositivequalities>-->
       </bonus>
       <addqualities>
-        <addquality>Military Rank</addquality>
+        <!--<addquality>Military Rank</addquality>  
+          TODO: Rank not in chummer
+        -->
         <addquality>Code or Honor</addquality>
       </addqualities>
       <story>Allan, please add story</story>
