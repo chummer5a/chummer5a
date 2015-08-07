@@ -1,6 +1,7 @@
 Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker
+- Chummer now handles essence holes correctly (old ones have to be readded to work)
 
 Data Change:
 - Not longer showing debug item in lifestyles
