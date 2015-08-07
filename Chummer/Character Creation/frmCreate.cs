@@ -7756,7 +7756,7 @@ namespace Chummer
             XmlNodeList xnodes = xdoc.SelectNodes("chummer/stages/stage");
             //from 1 to second highest life module order possible (ye hardcoding is bad, but extra stage is a niche case)
             int i;
-            for (i = 1; i < 3; i++)
+            for (i = 1; i < 5; i++)
             {
                 XmlNode node = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + i + "\"]");
 	            if (node == null)
