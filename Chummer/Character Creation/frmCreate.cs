@@ -15827,7 +15827,7 @@ namespace Chummer
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intPointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
-	                    if (_objCharacter.JackOfAllTrades)
+	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
 	                    {
 							intPointsRemain += 1;
 							intPointsUsed -= 1;
@@ -15927,49 +15927,55 @@ namespace Chummer
             // Calculate the points used by Knowledge Skills.
             int intPointsInKnowledgeSkills = 0;
             intPointsUsed = 0;
-
-            foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
+			foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
             {
-                for (int i = 1; i <= objSkillControl.SkillRating; i++)
+				for (int i = 1; i <= objSkillControl.SkillRating; i++)
                 {
                     //First level of skill purchased with Karma
                     if (objSkillControl.SkillBase == 0 && objSkillControl.SkillRating >= 1)
                     {
                         intPointsUsed += _objOptions.KarmaNewKnowledgeSkill;
-
-                        //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                        {
-                            i++;
-                        }
                     }
                     //Loop through skill points until we run out, then start spending karma
                     if (i <= objSkillControl.SkillBase)
                     {
-                        //Skip a level for the 2-for-1 deals.
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                        {
-                            i++;
-                        }
                         intPointsInKnowledgeSkills++;
                     }
                     else
-                    {
-                        //Subsequent levels of skills
-                        for (i = 2; i <= objSkillControl.SkillRating; i++)
-                        {
-                            //Skip a level for the 2-for-1 deals.
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                            {
-                                i++;
-                            }
-                            else if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-                            {
-                                intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
-                            }
-                        }
-                        intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
-                    }
+					{
+						int intStart = 2;
+						//Subsequent levels of skills
+						if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+						{
+							intStart = 3;
+						}	
+						for (i = intStart; i <= objSkillControl.SkillRating; i++)
+						{
+							intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
+							//Skip a level for the 2-for-1 deals.
+							if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") || (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") || (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
+							{
+								i++;
+							}
+							if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
+							{
+								intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
+							}
+							if (_objCharacter.JackOfAllTrades)
+							{
+								if (objSkillControl.SkillRating <= 5)
+								{
+									intPointsRemain += 1;
+									intPointsUsed -= 1;
+								}
+								else
+								{
+									intPointsRemain -= 2;
+									intPointsUsed += 2;
+								}
+							}
+						}
+					}
                 }
 
                 if (objSkillControl.SkillSpec.Trim() != string.Empty)
@@ -15992,16 +15998,6 @@ namespace Chummer
             }
 
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - intPointsInKnowledgeSkills;
-
-            intPointsUsed = 0;
-
-                foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-                {
-                    for (int i = 1; i <= objSkillControl.SkillKarma; i++)
-                    {
-                        intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveKnowledgeSkill);
-                    }
-                }
             intPointsRemain -= intPointsUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
