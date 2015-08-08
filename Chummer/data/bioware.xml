@@ -1387,6 +1387,17 @@
 			<source>CF</source>
 			<page>113</page>
 		</bioware>
+    <bioware>
+      <id>3d9e763c-fcda-4fcd-96cc-4f02e4e6661a</id>
+      <name>Nictitating Membranes</name>
+      <category>Basic</category>
+      <ess>0.05</ess>
+      <capacity>0</capacity>
+      <avail>6</avail>
+      <cost>1000</cost>
+      <source>CF</source>
+      <page>113</page>
+    </bioware>
 		<bioware>
 			<id>8f12d662-9fc6-475f-8435-a11829c14956</id>
 			<name>Tailored Critter Pheremones</name>
