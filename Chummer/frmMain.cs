@@ -149,7 +149,7 @@ namespace Chummer
 
 		private void mnuHelpDumpshock_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://forums.dumpshock.com/index.php?showtopic=36737");
+			System.Diagnostics.Process.Start("https://github.com/chummer5a/chummer5a/issues/");
 		}
 
 		private void mnuFilePrintMultiple_Click(object sender, EventArgs e)

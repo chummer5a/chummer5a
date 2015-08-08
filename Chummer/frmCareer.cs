@@ -5462,7 +5462,12 @@ namespace Chummer
 
 						// Remove any Improvements created by the piece of Cyberware.
 						_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
+
+
 						_objCharacter.Cyberware.Remove(objCyberware);
+
+						//Add essence hole.
+						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100m));
 					}
 					else
 					{
@@ -5493,6 +5498,58 @@ namespace Chummer
 			}
 
 			UpdateCharacterInfo();
+		}
+
+		private void IncreaseEssenceHole(int centiessence)
+		{
+			//id of essence hole, get by id to avoid name confusions
+			Guid essenceHoldID = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
+            Cyberware objHole = _objCharacter.Cyberware.Find(x => x.SourceID == essenceHoldID);
+
+			if (objHole == null)
+			{
+				XmlDocument xmlCyberware = XmlManager.Instance.Load("cyberware.xml");
+				XmlNode xmlEssHole = xmlCyberware.SelectSingleNode("//id[.='b57eadaa-7c3b-4b80-8d79-cbbd922c1196']/..");
+				objHole = new Cyberware(_objCharacter);
+				TreeNode treNode = new TreeNode();
+
+				objHole.Create(xmlEssHole, _objCharacter, GlobalOptions.CyberwareGrades.GetGrade("Standard"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>());
+				treCyberware.Nodes.Add(treNode);
+				_objCharacter.Cyberware.Add(objHole);
+			}
+			else  
+			{
+				objHole.Rating += centiessence;
+			}
+
+		}
+
+		private void DecreaseEssenceHole(int centiessence)
+		{
+			//id of essence hole, get by id to avoid name confusions
+			Guid essenceHoldID = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
+			Cyberware objHole = _objCharacter.Cyberware.Find(x => x.SourceID == essenceHoldID);
+
+			if (objHole != null)
+			{
+				if (objHole.Rating > centiessence)
+				{
+					objHole.Rating -= centiessence;
+				}
+				else
+				{
+					_objCharacter.Cyberware.Remove(objHole);
+					for (int i = treCyberware.Nodes.Count - 1; i >= 0; i--)
+					{
+						//Equals as Tag is exposed while obj, but not refequals
+						if (objHole.InternalId.Equals(treCyberware.Nodes[i].Tag))
+						{
+							treCyberware.Nodes.RemoveAt(i);
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		private void cmdAddComplexForm_Click(object sender, EventArgs e)
@@ -11815,6 +11872,8 @@ namespace Chummer
 						// Remove any Improvements created by the piece of Cyberware.
 						_objImprovementManager.RemoveImprovements(objCyberware.SourceType, objCyberware.InternalId);
 						_objCharacter.Cyberware.Remove(objCyberware);
+
+						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
 
 						// Remove the item from the TreeView.
 						treCyberware.Nodes.Remove(treCyberware.SelectedNode);
@@ -23599,6 +23658,9 @@ namespace Chummer
 			if (objCyberware.InternalId == Guid.Empty.ToString())
 				return false;
 
+			
+			
+
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";
@@ -23643,6 +23705,8 @@ namespace Chummer
 					objExpense.Undo = objUndo;
 				}
 			}
+
+			DecreaseEssenceHole((int)(objCyberware.CalculatedESS * 100));
 
 			try
 			{
@@ -27060,10 +27124,17 @@ namespace Chummer
 		/// </summary>
 		private void PopulateCyberware()
 		{
+			Guid sid = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
 			// Populate Cyberware.
 			foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 			{
-				if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+				if (objCyberware.SourceID == sid)
+				{
+					TreeNode nHole = new TreeNode(objCyberware.DisplayName);
+					nHole.Tag = objCyberware.InternalId;
+					treCyberware.Nodes.Add(nHole);
+				}
+				else if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
 				{
 					_objFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[0], cmsCyberware, cmsCyberwareGear);
 				}

@@ -1,6 +1,10 @@
-Build 173:
 Application Change:
+- Dumpshock link changed to issue tracker
+- Chummer now handles essence holes automatically. Old items may need to be re-added.
 - College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. Todo: 
+
+Data Change:
+- Not longer showing debug item in lifestyles
 
 Data Change:
 

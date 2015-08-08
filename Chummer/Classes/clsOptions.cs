@@ -92,6 +92,7 @@ namespace Chummer
 		private static bool _blnDatesIncludeTime = true;
 		private static bool _blnPrintToFileFirst = false;
 		private static bool _lifeModuleEnabled;
+		private static bool _blnMissionsOnly = false;
 
 		// Omae Information.
 		private static string _strOmaeUserName = "";
@@ -161,6 +162,12 @@ namespace Chummer
 			catch
 			{
 			}
+
+			try
+			{
+				_blnMissionsOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("missionsonly").ToString());
+			}
+			catch { }
 
 			// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
 			try
@@ -357,6 +364,19 @@ namespace Chummer
 				_blnDatesIncludeTime = value;
 			}
 		}
+
+		public bool MissionsOnly {
+			get
+			{
+				return _blnMissionsOnly;
+				
+			}
+			set
+			{
+				_blnMissionsOnly = value;
+			}
+		}
+		
 
 		/// <summary>
 		/// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
@@ -2347,14 +2367,19 @@ namespace Chummer
 			if (_strBookXPath != "")
 				return _strBookXPath;
 
-			string strPath = "";
+			string strPath = "(";
 
 			foreach (string strBook in _lstBooks)
 			{
 				if (strBook != "")
 					strPath += "source = \"" + strBook + "\" or ";
 			}
-			strPath = strPath.Substring(0, strPath.Length - 4);
+			strPath = strPath.Substring(0, strPath.Length - 4) + ")";
+
+			if (GlobalOptions.Instance.MissionsOnly)
+			{
+				strPath += " and not(nomission)";
+			}
 
 			_strBookXPath = strPath;
 			

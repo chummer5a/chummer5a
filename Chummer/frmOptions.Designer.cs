@@ -224,6 +224,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
 			this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
 			this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
 			this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
@@ -245,7 +246,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
+			this.chkMissions = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -961,6 +962,7 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.chkMissions);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
 			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
 			this.tabGlobal.Controls.Add(this.txtURLAppPath);
@@ -1008,7 +1010,7 @@
 			// 
 			// cmdURLAppPath
 			// 
-			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 214);
+			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 254);
 			this.cmdURLAppPath.Name = "cmdURLAppPath";
 			this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
 			this.cmdURLAppPath.TabIndex = 21;
@@ -1018,7 +1020,7 @@
 			// 
 			// txtURLAppPath
 			// 
-			this.txtURLAppPath.Location = new System.Drawing.Point(153, 216);
+			this.txtURLAppPath.Location = new System.Drawing.Point(153, 256);
 			this.txtURLAppPath.Name = "txtURLAppPath";
 			this.txtURLAppPath.ReadOnly = true;
 			this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1027,7 +1029,7 @@
 			// lblURLAppPath
 			// 
 			this.lblURLAppPath.AutoSize = true;
-			this.lblURLAppPath.Location = new System.Drawing.Point(6, 219);
+			this.lblURLAppPath.Location = new System.Drawing.Point(6, 259);
 			this.lblURLAppPath.Name = "lblURLAppPath";
 			this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
 			this.lblURLAppPath.TabIndex = 19;
@@ -1146,7 +1148,7 @@
 			// 
 			// cmdPDFAppPath
 			// 
-			this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 250);
+			this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 290);
 			this.cmdPDFAppPath.Name = "cmdPDFAppPath";
 			this.cmdPDFAppPath.Size = new System.Drawing.Size(27, 23);
 			this.cmdPDFAppPath.TabIndex = 11;
@@ -1156,7 +1158,7 @@
 			// 
 			// txtPDFAppPath
 			// 
-			this.txtPDFAppPath.Location = new System.Drawing.Point(153, 252);
+			this.txtPDFAppPath.Location = new System.Drawing.Point(153, 292);
 			this.txtPDFAppPath.Name = "txtPDFAppPath";
 			this.txtPDFAppPath.ReadOnly = true;
 			this.txtPDFAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1165,7 +1167,7 @@
 			// lblPDFAppPath
 			// 
 			this.lblPDFAppPath.AutoSize = true;
-			this.lblPDFAppPath.Location = new System.Drawing.Point(6, 255);
+			this.lblPDFAppPath.Location = new System.Drawing.Point(6, 295);
 			this.lblPDFAppPath.Name = "lblPDFAppPath";
 			this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
 			this.lblPDFAppPath.TabIndex = 9;
@@ -2503,6 +2505,18 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
+			// chkAllowCyberwareESSDiscounts
+			// 
+			this.chkAllowCyberwareESSDiscounts.AutoSize = true;
+			this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 141);
+			this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
+			this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
+			this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
+			this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
+			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
+			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
+			this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
+			// 
 			// chkExceedNegativeQualitiesLimit
 			// 
 			this.chkExceedNegativeQualitiesLimit.AutoSize = true;
@@ -2669,8 +2683,7 @@
 			this.chkUsePointsOnBrokenGroups.TabIndex = 6;
 			this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
 			this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
-			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Allows Skill Points to be spent on skills belonging " +
-                                                                        "to a broken skill group.");
+			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
 			this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
 			// 
 			// chkDontDoubleQualities
@@ -2682,8 +2695,8 @@
 			this.chkDontDoubleQualities.TabIndex = 5;
 			this.chkDontDoubleQualities.Tag = "Checkbox_Options_DontDoubleQualities";
 			this.chkDontDoubleQualities.Text = "Don\'t double the cost of Qualities in Career Mode";
-			this.tipTooltip.SetToolTip(this.chkDontDoubleQualities, "Allows characters in Career mode to purchase Positive " +
-                                                                    "Qualities and buy off Negative at their normal price instead of doubling them.");
+			this.tipTooltip.SetToolTip(this.chkDontDoubleQualities, "Allows characters in Career mode to purchase Positive Qualities and buy off Negat" +
+        "ive at their normal price instead of doubling them.");
 			this.chkDontDoubleQualities.UseVisualStyleBackColor = true;
 			// 
 			// chkCyberlegMovement
@@ -2695,8 +2708,8 @@
 			this.chkCyberlegMovement.TabIndex = 2;
 			this.chkCyberlegMovement.Tag = "Checkbox_Options_CyberlegMovement";
 			this.chkCyberlegMovement.Text = "Use Cyberleg Stats for Movement";
-			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s " +
-                                                                 "AGI when calculating movement rates.");
+			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s AGI when calculating" +
+        " movement rates.");
 			this.chkCyberlegMovement.UseVisualStyleBackColor = true;
 			// 
 			// chkIgnoreArt
@@ -2708,8 +2721,8 @@
 			this.chkIgnoreArt.TabIndex = 1;
 			this.chkIgnoreArt.Tag = "Checkbox_Options_IgnoreArt";
 			this.chkIgnoreArt.Text = "Ignore Art Requirements from Street Grimoire";
-			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals " +
-                                                          "to ignore the Art requirement detailed in Street Grimoire.");
+			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art " +
+        "requirement detailed in Street Grimoire.");
 			this.chkIgnoreArt.UseVisualStyleBackColor = true;
 			// 
 			// cboSetting
@@ -2755,17 +2768,16 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkAllowCyberwareESSDiscounts
+			// chkMissions
 			// 
-			this.chkAllowCyberwareESSDiscounts.AutoSize = true;
-			this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 141);
-			this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
-			this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(258, 17);
-			this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
-			this.chkAllowCyberwareESSDiscounts.Tag = "Checkbox_Options_AllowCyberwareESSDiscounts";
-			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
-			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
-			this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
+			this.chkMissions.AutoSize = true;
+			this.chkMissions.Location = new System.Drawing.Point(9, 222);
+			this.chkMissions.Name = "chkMissions";
+			this.chkMissions.Size = new System.Drawing.Size(175, 17);
+			this.chkMissions.TabIndex = 23;
+			this.chkMissions.Tag = "Checkbox_Options_Missions";
+			this.chkMissions.Text = "Don\'t show missions ilegal items";
+			this.chkMissions.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3074,5 +3086,6 @@
         private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
 		private System.Windows.Forms.CheckBox chkLifeModule;
 		private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
+		private System.Windows.Forms.CheckBox chkMissions;
 	}
 }

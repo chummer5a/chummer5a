@@ -189,6 +189,12 @@ namespace Chummer
             }
             chkDatesIncludeTime.Checked = blnDatesIncludeTime;
 
+	        try
+	        {
+		        chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
+	        }
+			catch { }
+
             bool blnPrintToFileFirst = false;
             try
             {
@@ -1750,6 +1756,7 @@ namespace Chummer
             GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
+	        GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
             objRegistry.SetValue("localisedupdatesonly", chkLocalisedUpdatesOnly.Checked.ToString());
@@ -1764,6 +1771,7 @@ namespace Chummer
             objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
+			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
 
             // Save the SourcebookInfo.
             Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");

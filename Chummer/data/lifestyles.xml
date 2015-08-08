@@ -692,6 +692,7 @@
 		</quality>
 		<quality>
 			<name>Cramped</name>
+      <nomission/>
 			<lp>1</lp>
 			<category>Negative</category>
 			<multiplier>-10</multiplier>
