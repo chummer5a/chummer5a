@@ -4353,6 +4353,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseLifeModule</key>
 			<text>Life modules available</text>
 		</string>
+    <string>
+      <key>Checkbox_Options_Missions</key>
+      <text>Don't show missions ilegal items</text>
+    </string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>

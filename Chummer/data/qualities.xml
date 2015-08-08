@@ -860,6 +860,7 @@
 			<bonus>
 				<selecttext />
 			</bonus>
+      <nomission/>
 			<source>RG</source>
 			<page>127</page>
 		</quality>
@@ -871,6 +872,7 @@
 			<bonus>
 				<selecttext />
 			</bonus>
+      <nomission/>
 			<source>RG</source>
 			<page>127</page>
 		</quality>
@@ -1248,6 +1250,7 @@
 			</bonus>
 			<source>SR5</source>
 			<page>79</page>
+      <nomission/>
 		</quality>
 		<quality>
 			<id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
@@ -1257,8 +1260,10 @@
 			<bonus>
 				<selecttext />
 			</bonus>
+      <nomission/>
 			<source>SR5</source>
 			<page>79</page>
+      <nomission/>
 		</quality>
 		<quality>
 			<id>86b259fd-17c8-4ae5-b246-49782e7c5047</id>
@@ -1288,6 +1293,7 @@
 			<bonus>
 				<lifestylecost>10</lifestylecost>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Inconvenience)</quality>
@@ -1305,6 +1311,7 @@
 			<bonus>
 				<lifestylecost>20</lifestylecost>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Nuisance)</quality>
@@ -1322,6 +1329,7 @@
 			<bonus>
 				<lifestylecost>30</lifestylecost>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Nuisance)</quality>
@@ -1440,6 +1448,7 @@
 					<bonus>-2</bonus>
 				</selectskill>
 			</bonus>
+      <nomission/>
 			<source>SR5</source>
 			<page>82</page>
 		</quality>
@@ -1651,6 +1660,7 @@
 			<bonus />
 			<source>SR5</source>
 			<page>85</page>
+      <nomission/>
 		</quality>
 		<quality>
 			<id>40c06974-a85b-4f2b-9558-51c140c16d87</id>
@@ -1697,6 +1707,7 @@
 			<category>Negative</category>
 			<bonus />
 			<source>RG</source>
+      <nomission/>
 			<page>127</page>
 		</quality>
 		<quality>
@@ -1734,6 +1745,7 @@
 			<bonus />
 			<source>RG</source>
 			<page>169</page>
+      <nomission/>
 		</quality>
 		<quality>
 			<id>d8362a78-54e9-4dbe-8388-6ba0a7b9df31</id>
@@ -1752,6 +1764,7 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>SR5</source>
 			<page>87</page>
 		</quality>
@@ -4631,6 +4644,7 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
@@ -4665,6 +4679,7 @@
 					<quality>Fame: Global</quality>			
 				</oneof>
 			</forbidden>
+      <nomission/>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -4684,6 +4699,7 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
@@ -4709,6 +4725,7 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
@@ -4726,6 +4743,7 @@
       <bonus>
         <friendsinhighplaces />
       </bonus>
+      <nomission/>
 			<source>RF</source>
 			<page>147</page>
 		</quality>
@@ -5151,6 +5169,7 @@
 			<bonus>
 				<trustfund />
 			</bonus>
+      <nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5167,6 +5186,7 @@
 			<bonus>
 				<trustfund />
 			</bonus>
+      <nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5183,6 +5203,7 @@
 			<bonus>
 				<trustfund />
 			</bonus>
+      <nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5199,6 +5220,7 @@
 			<bonus>
 				<trustfund />
 			</bonus>
+      <nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -5298,6 +5320,7 @@
 		<quality>
 			<name>Amnesia (Surface Loss)</name>
 			<karma>-4</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -5311,6 +5334,7 @@
 		<quality>
 			<name>Amnesia (Neural Deletion)</name>
 			<karma>-8</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -5342,6 +5366,7 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>153</page>
 		</quality>
@@ -5385,6 +5410,7 @@
 			<karma>-20</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>153</page>
 		</quality>
@@ -5448,6 +5474,7 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (20 hrs)</quality>
@@ -5462,6 +5489,7 @@
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (10 hrs)</quality>
@@ -5476,6 +5504,7 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (10 hrs)</quality>
@@ -5551,6 +5580,7 @@
 			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>154</page>
 		</quality>
@@ -5566,6 +5596,7 @@
 			<name>Ex-Con</name>
 			<karma>-15</karma>
 			<category>Negative</category>
+      <nomission/>
 			<bonus>
 				<excon />
 				<freepositivequalities>-10</freepositivequalities>
@@ -5581,6 +5612,7 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -5589,6 +5621,7 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -5605,6 +5638,7 @@
 			<karma>-8</karma>
 			<category>Negative</category>
 			<bonus />
+      <nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -5618,6 +5652,7 @@
 		</quality>
 		<quality>
 			<name>In Debt I</name>
+      <nomission/>
 			<karma>-1</karma>
 			<category>Negative</category>
 			<bonus>
@@ -5646,6 +5681,7 @@
 		</quality>
 		<quality>
 			<name>In Debt II</name>
+      <nomission/>
 			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus>
@@ -5674,6 +5710,7 @@
 		</quality>
 		<quality>
 			<name>In Debt III</name>
+      <nomission/>
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus>
@@ -5702,6 +5739,7 @@
 		</quality>
 		<quality>
 			<name>In Debt IV</name>
+      <nomission/>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus>
@@ -5731,6 +5769,7 @@
 		<quality>
 			<name>In Debt V</name>
 			<karma>-5</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>25000</nuyenamt>
@@ -5759,6 +5798,7 @@
 		<quality>
 			<name>In Debt VI</name>
 			<karma>-6</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>30000</nuyenamt>
@@ -5787,6 +5827,7 @@
 		<quality>
 			<name>In Debt VII</name>
 			<karma>-7</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>35000</nuyenamt>
@@ -5815,6 +5856,7 @@
 		<quality>
 			<name>In Debt VIII</name>
 			<karma>-8</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>40000</nuyenamt>
@@ -5844,6 +5886,7 @@
 			<name>In Debt IX</name>
 			<karma>-9</karma>
 			<category>Negative</category>
+      <nomission/>
 			<bonus>
 				<nuyenamt>45000</nuyenamt>
 			</bonus>
@@ -5875,6 +5918,7 @@
 			<bonus>
 				<nuyenamt>50000</nuyenamt>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -5903,6 +5947,7 @@
 			<bonus>
 				<nuyenamt>55000</nuyenamt>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -5931,6 +5976,7 @@
 			<bonus>
 				<nuyenamt>60000</nuyenamt>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -5959,6 +6005,7 @@
 			<bonus>
 				<nuyenamt>65000</nuyenamt>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -5987,6 +6034,7 @@
 			<bonus>
 				<nuyenamt>70000</nuyenamt>
 			</bonus>
+      <nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -6010,6 +6058,7 @@
 		</quality>
 		<quality>
 			<name>In Debt XV</name>
+      <nomission/>
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus>
@@ -6304,6 +6353,7 @@
 		<quality>
 			<name>Paraplegic</name>
 			<karma>-10</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<basiclifestylecost>10</basiclifestylecost>
@@ -6392,6 +6442,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Personal)</name>
 			<karma>-4</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6412,6 +6463,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Personal)</name>
 			<karma>-8</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6422,6 +6474,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Personal)</name>
 			<karma>-10</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6432,6 +6485,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Public Single Aspect)</name>
 			<karma>-5</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6442,6 +6496,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive II, Public Single Aspect)</name>
 			<karma>-7</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6452,6 +6507,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Public Single Aspect)</name>
 			<karma>-9</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6462,6 +6518,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Public Single Aspect)</name>
 			<karma>-11</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6472,6 +6529,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Public Broad Aspect)</name>
 			<karma>-6</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6482,6 +6540,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive II, Public Broad Aspect)</name>
 			<karma>-8</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6492,6 +6551,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Public Broad Aspect)</name>
 			<karma>-10</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6502,6 +6562,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Public Broad Aspect)</name>
 			<karma>-12</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6520,6 +6581,7 @@
 		<quality>
 			<name>Poor Self Control (Vindictive)</name>
 			<karma>-5</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6536,6 +6598,7 @@
 		<quality>
 			<name>Records on File (Ares)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6544,6 +6607,7 @@
 		<quality>
 			<name>Records on File (EVO)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6552,6 +6616,7 @@
 		<quality>
 			<name>Records on File (Renraku)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6560,6 +6625,7 @@
 		<quality>
 			<name>Records on File (MCT)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6568,6 +6634,7 @@
 		<quality>
 			<name>Records on File (Wuxing)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6576,6 +6643,7 @@
 		<quality>
 			<name>Records on File (Aztechnology)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6584,6 +6652,7 @@
 		<quality>
 			<name>Records on File (Horizon)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6592,6 +6661,7 @@
 		<quality>
 			<name>Records on File (Neonet)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6600,6 +6670,7 @@
 		<quality>
 			<name>Records on File (Saeder-Krupp)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6608,6 +6679,7 @@
 		<quality>
 			<name>Records on File (Shiawase)</name>
 			<karma>-1</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -6695,7 +6767,8 @@
 		</quality>
 		<quality>
 			<name>Vendetta</name>
-			<karma>-7</karma>
+      <karma>-7</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6706,6 +6779,7 @@
 		<quality>
 			<name>Wanted</name>
 			<karma>-10</karma>
+      <nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -6852,6 +6926,7 @@
       <bonus />
       <source>DT</source>
       <page>45</page>
+      <nomission/>
     </quality>
     <quality>
       <id>d62880dd-3e28-4b0c-8c71-dc0e4b72397b</id>
@@ -6911,9 +6986,11 @@
     <quality>
       <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
       <name>Code of Honor: Like a Boss</name>
+      <nomission/>
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
+      <nomission/>
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -6929,6 +7006,7 @@
     <quality>
       <id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
       <name>Curiosity Killed the Cat</name>
+      <nomission/>
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
@@ -6946,6 +7024,7 @@
     <quality>
       <id>f573305b-944f-490e-94e1-18f8bb7bc590</id>
       <name>Data Liberator</name>
+      <nomission/>
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
@@ -6996,6 +7075,7 @@
     <quality>
       <id>e138ecce-6fba-4fe6-be09-1d60dc8c3853</id>
       <name>Leeeeeeeroy Jenkins</name>
+      <nomission/>
       <karma>-20</karma>
       <category>Negative</category>
       <bonus />
@@ -7014,6 +7094,7 @@
     <quality>
       <id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
       <name>Prank Warrior</name>
+      <nomission/>
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
@@ -7023,6 +7104,7 @@
     <quality>
       <id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
       <name>Wanted by God</name>
+      <nomission/>
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
