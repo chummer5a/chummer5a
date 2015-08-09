@@ -5,7 +5,7 @@
 		<category>Positive</category>
 		<category>Negative</category>
 	</categories>
-<!--Shadowrun Core Positive Qualities -->					
+<!--Region Shadowrun Core Positive Qualities -->					
 	<qualities>
 		<quality>
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
@@ -1061,7 +1061,8 @@
 			</forbidden>
 			<contributetolimit>no</contributetolimit>			
 		</quality>
-<!--Shadowrun Core Negative Qualities -->					
+		<!-- endregion-->
+<!--Region Shadowrun Core Negative Qualities -->					
 	<quality>
 			<id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
 			<name>Addiction (Mild)</name>
@@ -2067,7 +2068,8 @@
 			<source>SG</source>
 			<page>178</page>
 		</quality>
-<!--Street Grimoire Negative Qualities -->					
+		<!--End Region -->
+<!--Region Street Grimoire Negative Qualities -->					
 		<quality>
 			<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
 			<name>Spirit Pariah</name>
@@ -2077,7 +2079,8 @@
 			<source>SG</source>
 			<page>199</page>
 		</quality>
-		<!--Bullets and Bandages Positive Qualities -->	
+<!-- End Region -->
+<!--Region Bullets and Bandages Positive Qualities -->	
 		<quality>
 			<id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
 			<name>Gifted Healer</name>
@@ -2089,7 +2092,8 @@
 			<source>BB</source>
 			<page>11</page>
 		</quality>
-		<!--Bullets and Bandages Negative Qualities -->	
+<!-- End Region-->
+<!--Region Bullets and Bandages Negative Qualities -->	
 		<quality>
 			<id>97e9b186-8924-4885-a948-3c781244a5cb</id>
 			<name>Aged (Rating 1)</name>
@@ -2249,7 +2253,8 @@
 			<source>BB</source>
 			<page>12</page>
 		</quality>
-<!--Sail Away, Sweet Sister Positive Qualities -->
+		<!-- End Region-->
+<!--Region Sail Away, Sweet Sister Positive Qualities -->
 		<quality>
 			<id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
 			<name>College Education</name>
@@ -2274,7 +2279,8 @@
 			<source>SASS</source>
 			<page>31</page>
 		</quality>
-<!--Run Faster Positive Qualities -->		
+		<!-- End Region-->
+<!--Region Run Faster Positive Qualities -->		
 		<quality>
 			<name>Changeling (Class I SURGE)</name>
 			<karma>10</karma>
@@ -3253,16 +3259,19 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
+			<addweapon>Bite (Infected)</addweapon>
 			<bonus>
-				<optionalpowers>
-					<optionalpower>Enhanced Senses</optionalpower>
-					<optionalpower>Immunity</optionalpower>
-				</optionalpowers>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
 				<initiative>1</initiative>
 				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -3285,10 +3294,16 @@
 				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
 				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
 				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-				<addquality>Distinctive Style</addquality>
 			</addqualities>
 			<powers>
-				<power select="Hearing, Smell">Enhanced Senses</power>
+				<power>Dual Natured</power>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Silver">Vulnerability</power>
+				<power select="Wood">Vulnerability</power>
 			</powers>
 			<source>RF</source>
 			<page>80</page>
@@ -5287,7 +5302,8 @@
 			<source>RF</source>
 			<page>151</page>
 		</quality>
-<!--Run Faster Negative Qualities -->
+		<!-- End Region-->
+<!--Region Run Faster Negative Qualities -->
 		<quality>
 			<name>Albinism I</name>
 			<karma>-4</karma>
@@ -6787,7 +6803,8 @@
 			<source>RF</source>
 			<page>159</page>
 		</quality>
-		<!--Run Faster Natural Qualities -->
+		<!-- End Region -->
+<!--Region Run Faster Natural Qualities -->
 		<quality>
 			<id>f9cdcb14-7181-4105-b59a-3628663f3be7</id>
 			<name>Natural Weapon: Kick (Centaur)</name>
@@ -6817,7 +6834,6 @@
 			<source>SG</source>
 			<page>172</page>
 		</quality>
-
 		<quality>
 			<id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
 			<name>Natural Weapon: Bite (Naga)</name>
@@ -6847,7 +6863,6 @@
 			<source>SR5</source>
 			<page>309</page>
 		</quality>
-
 		<quality>
 			<id>4e7dae85-29a3-4f1d-88ed-f7a4d1abde7e</id>
 			<name>Natural Weapon: Claws (Sasquatch)</name>
@@ -6863,7 +6878,8 @@
 			<source>RF</source>
 			<page>106</page>
 		</quality>
-		<!--Data Trails Positive Qualities -->
+		<!-- End Region -->
+<!--Region Data Trails Positive Qualities -->
     <quality>
       <id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
       <name>Data Anomaly</name>
@@ -6982,7 +6998,8 @@
       <source>DT</source>
       <page>46</page>
     </quality>
-		<!--Data Trails Negative Qualities -->
+		<!-- End Region -->
+<!--Region Data Trails Negative Qualities -->
     <quality>
       <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
       <name>Code of Honor: Like a Boss</name>
@@ -7124,7 +7141,8 @@
       <source>DT</source>
       <page>49</page>
     </quality>
-		<!--Chrome Flesh Positive Qualities -->
+		<!-- End Region -->
+<!--Region Chrome Flesh Positive Qualities -->
     <quality>
       <id>4765ff9e-90f4-4783-b0cc-826419fafade</id>
       <name>Poor Self Control (Attention-Seeking)</name>
@@ -7243,7 +7261,8 @@
 			<source>CF</source>
 			<page>57</page>
 		</quality>
-		<!--Chrome Flesh Negative Qualities -->
+		<!-- End Region -->
+<!--Region Chrome Flesh Negative Qualities -->
 		<quality>
 			<id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
 			<name>AIPS</name>
@@ -7428,5 +7447,6 @@
 			<source>CF</source>
 			<page>60</page>
 		</quality>
+	<!-- End Region -->
 	</qualities>
 </chummer>

@@ -870,8 +870,8 @@ namespace Chummer
 
             bool blnSuccess = true;
 
-            try
-            {
+            /*try
+            {*/
                 if (nodBonus == null)
                 {
                     _strForcedValue = "";
@@ -984,7 +984,7 @@ namespace Chummer
 				// Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
 				_strForcedValue = "";
 				_strLimitSelection = "";
-			}
+			/*}
 			catch (Exception ex)
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Error, "Chummer.ImprovementManager", "ERROR Message = " + ex.Message);
@@ -994,7 +994,7 @@ namespace Chummer
 				
 				Rollback();
 				throw;
-			}
+			}*/
 			objFunctions.LogWrite(CommonFunctions.LogType.Exiting, "Chummer.ImprovementManager", "CreateImprovements");
 			return blnSuccess;
 
@@ -4466,20 +4466,27 @@ namespace Chummer
 				CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
 			}
 			// Select an Optional Power.
-			if (bonusNode.SelectNodes("optionalpowers/optionalpower").Count > 0)
+			if (bonusNode.LocalName == ("optionalpowers"))
 			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
 				//objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager","selectoptionalpower");
 				// Display the Select Attribute window and record which Skill was selected.
 				frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
-				//frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
+				frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
+				string strForcedValue = "";
 
-				List<string> strValue = new List<string>();
-				foreach (XmlNode objXmlOptionalPower in bonusNode["optionalpowers"].SelectNodes("optionalpower"))
+				List<KeyValuePair<string, string>> lstValue = new List<KeyValuePair<string,string>>();
+				foreach (XmlNode objXmlOptionalPower in objXmlPowerList)
 				{
-					strValue.Add(objXmlOptionalPower.InnerText);
+					string strQuality = objXmlOptionalPower.InnerText;
+					if (objXmlOptionalPower.Attributes["select"] != null)
+					{
+						strForcedValue = objXmlOptionalPower.Attributes["select"].InnerText;
+					}
+					//values.Add(new KeyValuePair<string, Stream>(title, contents));
+					lstValue.Add(new KeyValuePair<string, string>(strQuality,strForcedValue));
 				}
-				frmPickPower.LimitToList(strValue);
+				frmPickPower.LimitToList(lstValue);
 
 
 				// Check to see if there is only one possible selection because of _strLimitSelection.
@@ -4508,20 +4515,13 @@ namespace Chummer
 
 				_strSelectedValue = frmPickPower.SelectedPower;
 				// Record the improvement.
-				XmlNode objXmlCritterPower =
-					objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+				XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
 				TreeNode objPowerNode = new TreeNode();
 				CritterPower objPower = new CritterPower(_objCharacter);
-				string strForcedValue = "";
-
-				if (objXmlCritterPower.Attributes["rating"] != null)
-					intRating = Convert.ToInt32(objXmlCritterPower.Attributes["rating"].InnerText);
-				if (objXmlCritterPower.Attributes["select"] != null)
-					strForcedValue = objXmlCritterPower.Attributes["select"].InnerText;
-
-				objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
+				
+                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, intRating, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
-
 			}
 
 			//nothing went wrong, so return true

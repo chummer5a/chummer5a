@@ -7918,7 +7918,7 @@ namespace Chummer
 
                 // Include the BP used by Enemies.
                 if (lblEnemiesBP.Text.Contains(LanguageManager.Instance.GetString("String_BP")))
-                    intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.Instance.GetString("String_BP"), ""));
+                    intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.Instance.GetString("String_Karma"), ""));
                 else
                     intBP += int.Parse(lblEnemiesBP.Text.Replace(" " + LanguageManager.Instance.GetString("String_Karma"), ""));
 
