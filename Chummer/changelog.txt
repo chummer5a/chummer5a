@@ -2,9 +2,13 @@ Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker
 - Chummer now handles essence holes correctly (old ones have to be readded to work)
+- Missions filter. (Global setting, sorry)
+- Fixed a bug with life modules where Tír Tairngire would now show demographics
 
 Data Change:
 - Not longer showing debug item in lifestyles
+- Lifemodules no longer contains a "Magical Education (Archtype)"
+- Tír is now spelled correctly a few more places
 
 Build 172:
 Application Change:
