@@ -1422,63 +1422,6 @@
       <page>71</page>
     </module>
     <module>
-      <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
-      <stage>Teen Years</stage>
-      <category>LifeModule</category>
-      <name>Magical Education (Archtype)</name>
-      <bonus>
-        <attributelevel>
-          <name>WIL</name>
-          <val>1</val>
-        </attributelevel>
-        <attributelevel>
-          <name>CHA</name>
-          <val>1</val>
-        </attributelevel>
-        <knowledgeskilllevel>
-          <name>Magical Theory</name>
-          <group>Academic</group>
-          <val>5</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>[Any]</name>
-          <group>Academic</group>
-          <val>4</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>[Any]</name>
-          <group>Academic</group>
-          <val>4</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>[Any]</name>
-          <group>Academic</group>
-          <val>3</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>[Any]</name>
-          <group>Language</group>
-          <val>2</val>
-        </knowledgeskilllevel>
-        <skilllevel>
-          <name>Arcana</name>
-          <val>2</val>
-        </skilllevel>
-        <freenegativequalities>-15</freenegativequalities>
-      </bonus>
-      <required>
-        <oneof>
-          <quality>Magician</quality>
-        </oneof>
-      </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
-      <addqualities>
-        <addquality>SINner (Corporate Limited)</addquality>
-      </addqualities>
-      <source>RF</source>
-      <page>71</page>
-    </module>
-    <module>
       <id>c6c554ac-2158-447c-986e-de153a537a10</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
@@ -5653,7 +5596,7 @@
       <id>61b6f290-95d2-4cfd-b7d6-336782a42c1b</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
-      <name>Tour of Duty (Tir Tairngire)</name>
+      <name>Tour of Duty (Tír Tairngire)</name>
       <karma>100</karma>
       <bonus>
         <attributelevel>
@@ -5765,7 +5708,7 @@
               <name>Gunnery</name>
             </skilllevel>
             <knowledgeskilllevel>
-              <name>Tir Military Vehicles</name>
+              <name>Tír Military Vehicles</name>
               <group>Professional</group>
               <val>3</val>
             </knowledgeskilllevel>

@@ -1773,7 +1773,7 @@ namespace Chummer
 						bool blnFound = false;
 						foreach (XmlNode node in objXmlRequiredList)
 						{
-							if (node.Value == objCharacter.Metatype)
+							if (node.InnerText == objCharacter.Metatype)
 							{
 								blnFound = true;
 								break;
@@ -1875,6 +1875,8 @@ namespace Chummer
 								workNode["bonus"].AppendChild(childNode.Clone());
 							}
 						}
+						else
+						{ }
 					}
 				}
 			}
