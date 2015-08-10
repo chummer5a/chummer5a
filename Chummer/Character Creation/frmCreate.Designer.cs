@@ -766,6 +766,7 @@
 			this.cmdDeleteVehicle = new System.Windows.Forms.Button();
 			this.treVehicles = new System.Windows.Forms.TreeView();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
+			this.chkAutoBackstory = new System.Windows.Forms.CheckBox();
 			this.lblPublicAwareTotal = new System.Windows.Forms.Label();
 			this.lblNotorietyTotal = new System.Windows.Forms.Label();
 			this.lblStreetCredTotal = new System.Windows.Forms.Label();
@@ -876,7 +877,6 @@
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.chkAutoBackstory = new System.Windows.Forms.CheckBox();
 			this.cmdAddMartialArt = new SplitButton();
 			this.cmdAddSpell = new SplitButton();
 			this.cmdAddComplexForm = new SplitButton();
@@ -9015,6 +9015,20 @@
 			this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
 			this.tabCharacterInfo.Text = "Character Info";
 			// 
+			// chkAutoBackstory
+			// 
+			this.chkAutoBackstory.AutoSize = true;
+			this.chkAutoBackstory.Checked = true;
+			this.chkAutoBackstory.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.chkAutoBackstory.Location = new System.Drawing.Point(637, 178);
+			this.chkAutoBackstory.Margin = new System.Windows.Forms.Padding(0);
+			this.chkAutoBackstory.Name = "chkAutoBackstory";
+			this.chkAutoBackstory.Size = new System.Drawing.Size(133, 17);
+			this.chkAutoBackstory.TabIndex = 91;
+			this.chkAutoBackstory.Text = "Automatic background";
+			this.chkAutoBackstory.UseVisualStyleBackColor = true;
+			this.chkAutoBackstory.CheckedChanged += new System.EventHandler(this.chkAutoBackstory_CheckedChanged);
+			// 
 			// lblPublicAwareTotal
 			// 
 			this.lblPublicAwareTotal.AutoSize = true;
@@ -10129,20 +10143,6 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// chkAutoBackstory
-			// 
-			this.chkAutoBackstory.AutoSize = true;
-			this.chkAutoBackstory.Checked = true;
-			this.chkAutoBackstory.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkAutoBackstory.Location = new System.Drawing.Point(637, 178);
-			this.chkAutoBackstory.Margin = new System.Windows.Forms.Padding(0);
-			this.chkAutoBackstory.Name = "chkAutoBackstory";
-			this.chkAutoBackstory.Size = new System.Drawing.Size(133, 17);
-			this.chkAutoBackstory.TabIndex = 91;
-			this.chkAutoBackstory.Text = "Automatic background";
-			this.chkAutoBackstory.UseVisualStyleBackColor = true;
-			this.chkAutoBackstory.CheckedChanged += new System.EventHandler(this.chkAutoBackstory_CheckedChanged);
-			// 
 			// cmdAddMartialArt
 			// 
 			this.cmdAddMartialArt.AutoSize = true;
@@ -10813,7 +10813,6 @@
         private System.Windows.Forms.Label lblCritterPowerCategoryLabel;
         private System.Windows.Forms.Label lblCritterPowerName;
         private System.Windows.Forms.Label lblCritterPowerNameLabel;
-        private System.Windows.Forms.TreeView treCritterPowers;
         private System.Windows.Forms.Button cmdDeleteCritterPower;
         private System.Windows.Forms.Button cmdAddCritterPower;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponName;
@@ -11265,6 +11264,7 @@
         private System.Windows.Forms.Label lblContactPoints_Label;
         private System.Windows.Forms.Button cmdLifeModule;
 		private System.Windows.Forms.CheckBox chkAutoBackstory;
+		private System.Windows.Forms.TreeView treCritterPowers;
 	}
 }
 

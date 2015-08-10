@@ -269,34 +269,36 @@ namespace Chummer
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.ToString().Replace("0.0.", string.Empty);
 
-        // Events.
-        public event MAGEnabledChangedHandler MAGEnabledChanged;
-        public event RESEnabledChangedHandler RESEnabledChanged;
-        public event AdeptTabEnabledChangedHandler AdeptTabEnabledChanged;
-        public event MagicianTabEnabledChangedHandler MagicianTabEnabledChanged;
-        public event TechnomancerTabEnabledChangedHandler TechnomancerTabEnabledChanged;
-        public event InitiationTabEnabledChangedHandler InitiationTabEnabledChanged;
-        public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
-        public event UneducatedChangedHandler UneducatedChanged;
-        public event UncouthChangedHandler UncouthChanged;
-        public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
-        public event InfirmChangedHandler InfirmChanged;
-        public event FriendsInHighPlacesChangedHandler FriendsInHighPlacesChanged;
-        public event CharacterNameChangedHandler CharacterNameChanged;
-        public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
-        public event ExConChangedHandler ExConChanged;
-        public event TrustFundChangedHandler TrustFundChanged;
-        public event TechSchoolChangedHandler TechSchoolChanged;
-        public event RestrictedGearChangedHandler RestrictedGearChanged;
-        public event OverclockerChangedHandler OverclockerChanged;
-        public event MadeManChangedHandler MadeManChanged;
-        public event LinguistChangedHandler LinguistChanged;
-        public event LightningReflexesChangedHandler LightningReflexesChanged;
-        public event FameChangedHandler FameChanged;
-        public event BornRichChangedHandler BornRichChanged;
-        public event ErasedChangedHandler ErasedChanged;
+		// Events.
+		public event AdeptTabEnabledChangedHandler AdeptTabEnabledChanged;
+		public event CollegeEducationChangedHandler CollegeEducationChanged;
+		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
+		public event MAGEnabledChangedHandler MAGEnabledChanged;
+		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
+		public event BornRichChangedHandler BornRichChanged;
+		public event CharacterNameChangedHandler CharacterNameChanged;
+		public event ErasedChangedHandler ErasedChanged;
+		public event ExConChangedHandler ExConChanged;
+		public event FameChangedHandler FameChanged;
+		public event FriendsInHighPlacesChangedHandler FriendsInHighPlacesChanged;
+		public event InfirmChangedHandler InfirmChanged;
+		public event InitiationTabEnabledChangedHandler InitiationTabEnabledChanged;
+		public event JackOfAllTradesChangedHandler JackOfAllTradesChanged;
+		public event LightningReflexesChangedHandler LightningReflexesChanged;
+		public event LinguistChangedHandler LinguistChanged;
+		public event MadeManChangedHandler MadeManChanged;
+		public event MagicianTabEnabledChangedHandler MagicianTabEnabledChanged;
+		public event OverclockerChangedHandler OverclockerChanged;
+		public event RESEnabledChangedHandler RESEnabledChanged;
+		public event RestrictedGearChangedHandler RestrictedGearChanged;
+		public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
+		public event TechnomancerTabEnabledChangedHandler TechnomancerTabEnabledChanged;
+		public event TechSchoolChangedHandler TechSchoolChanged;
+		public event TrustFundChangedHandler TrustFundChanged;
+		public event UncouthChangedHandler UncouthChanged;
+		public event UneducatedChangedHandler UneducatedChanged;
 
-        private frmViewer _frmPrintView;
+		private frmViewer _frmPrintView;
 
         #region Initialization, Save, Load, Print, and Reset Methods
         /// <summary>
@@ -6972,7 +6974,7 @@ namespace Chummer
                 try
                 {
                     if (blnOldValue != value) { }
-                    //JackOfAllTradesChanged(this);
+                    JackOfAllTradesChanged(this);
                 }
                 catch
                 {
@@ -6981,7 +6983,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Friends in High Places is enabled.
+        /// Whether or not College Education is enabled.
         /// </summary>
         public bool CollegeEducation
         {
@@ -6996,7 +6998,7 @@ namespace Chummer
                 try
                 {
                     if (blnOldValue != value) { }
-                    //CollegeEducationChanged(this);
+                    CollegeEducationChanged(this);
                 }
                 catch
                 {

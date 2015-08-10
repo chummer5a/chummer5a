@@ -1,9 +1,11 @@
-Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker
 - Chummer now handles essence holes correctly (old ones have to be readded to work)
 - Missions filter. (Global setting, sorry)
 - Fixed a bug with life modules where Tír Tairngire would now show demographics
+- Chummer now handles essence holes automatically. Old items may need to be re-added.
+- College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. 
+- Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities, because it's ugly.
 
 Data Change:
 - Not longer showing debug item in lifestyles

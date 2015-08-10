@@ -88,15 +88,15 @@ namespace Chummer
 		/// <summary>
 		/// Limit the list to a few Powers.
 		/// </summary>
-		/// <param name="strValue">List of Powers.</param>
-		public void LimitToList(List<string> strValue)
+		/// <param name="lstValue">List of Powers.</param>
+		public void LimitToList(List<KeyValuePair<string, string>> lstValue)
 		{
 			_lstPowers.Clear();
-			foreach (string strPower in strValue)
-			{
+			foreach (KeyValuePair<string, string> lstObject in lstValue)
+            {
 				ListItem objItem = new ListItem();
-				objItem.Value = strPower;
-				objItem.Name = strPower;
+				objItem.Value = lstObject.Key;
+				objItem.Name = lstObject.Key + " (" + lstObject.Value + ")";
                 _lstPowers.Add(objItem);
 			}
 			cboPower.DataSource = null;
