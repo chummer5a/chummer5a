@@ -902,7 +902,7 @@
       <id>f2435c28-5bf9-4c72-8f6d-f5d02439833b</id>
       <stage>Formative Years</stage>
       <category>LifeModule</category>
-      <name>Isolated Rural Upbringing </name>
+      <name>Isolated Rural Upbringing</name>
       <karma>40</karma>
       <bonus>
         <attributelevel>
@@ -1370,59 +1370,6 @@
     </module>
     <module>
       <id>0f415a05-5a6f-4279-9fb4-c43e0435bab5</id>
-      <stage>Teen Years</stage>
-      <category>LifeModule</category>
-      <name>Isolated Rural Upbringing</name>
-      <karma>50</karma>
-      <bonus>
-        <attributelevel>
-          <name>BOD</name>
-          <val>1</val>
-        </attributelevel>
-        <attributelevel>
-          <name>WIL</name>
-          <val>1</val>
-        </attributelevel>
-        <skilllevel>
-          <name>Blades</name>
-        </skilllevel>
-        <skilllevel>
-          <name>First Aid</name>
-        </skilllevel>
-        <skilllevel>
-          <name>Gymnastics</name>
-        </skilllevel>
-        <skilllevel>
-          <name>Longarms</name>
-        </skilllevel>
-        <skillgrouplevel>
-          <name>Outdoor</name>
-          <val>1</val>
-        </skillgrouplevel>
-        <skilllevel>
-          <name>Perception</name>
-          <val>2</val>
-        </skilllevel>
-        <skilllevel>
-          <name>Sneaking</name>
-        </skilllevel>
-        <knowledgeskilllevel>
-          <name>Critters</name>
-          <group>Street</group>
-          <val>2</val>
-        </knowledgeskilllevel>
-        <freenegativequalities>-5</freenegativequalities>
-      </bonus>
-      <addqualities>
-        <addquality>Incompetent</addquality>
-      </addqualities>
-      <!--TODO electronics autoselect-->
-      <story>Allan, please add story</story>
-      <source>RF</source>
-      <page>71</page>
-    </module>
-    <module>
-      <id>c6c554ac-2158-447c-986e-de153a537a10</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>Isolated Rural Upbringing</name>
