@@ -160,16 +160,7 @@ namespace Chummer
             foreach (Contact contact in _objCharacter.Contacts)
                 count += contact.ContactPoints;
 
-            if ((_objCharacter.ContactPoints - count) >= 0)
-            {
-                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
-            }
-            else
-            {
-                int karmaSpent = _objCharacter.ContactPoints - count;
-                karmaSpent = karmaSpent *= -1;
-                lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-            }
+            
 
             // Set the movement speed defaults
             lblMovement.Text = _objCharacter.Movement;
@@ -15576,17 +15567,19 @@ namespace Chummer
             {
                 lblContactsBP.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
                 lblContactPoints.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-            }
+				lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
+			}
             else
             {
                 lblContactsBP.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
                 lblContactPoints.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
+	            lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed);
             }
+			
 
-
-            // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
-            // a Negative Quality.
-            intPointsUsed = 0;
+			// Calculate the BP used by Enemies. These are added to the BP since they are tehnically
+			// a Negative Quality.
+			intPointsUsed = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
                 if (!objContactControl.Free)
