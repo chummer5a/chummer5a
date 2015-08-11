@@ -10003,6 +10003,10 @@ namespace Chummer
 					{
 						frmPickWeaponCategory.WeaponType = "flame";
 					}
+					else if (_strName.StartsWith("Ammo: Injection Dart"))
+					{
+						frmPickWeaponCategory.WeaponType = "exotic";
+					}
 					else
 					{
 						frmPickWeaponCategory.WeaponType = "gun";

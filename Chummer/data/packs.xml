@@ -2,16 +2,1367 @@
 <chummer>
 	<version>-400</version>
 	<categories>
+    <category>Core Packs</category>
+    <category>Weapon and Ammo Packs</category>
 		<category>Attribute Kits</category>
 		<category>Skill Kits</category>
 		<category>Adept Kits</category>
 		<category>Complex Form Kits</category>
 		<category>Spell Kits</category>
 		<category>Gear Kits</category>
+    
 		<category>Custom</category>
 	</categories>
 	<packs>
-<!--Example PACK
+    <pack>
+      <name>Intro Runner Pack</name>
+      <category>Core Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Vest</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Colt America L36</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Meta Link</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>100</qty>
+        </gear>
+        <gear>
+          <name>Glasses</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Mapsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Standard</name>
+          <category>ID/Credsticks</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>20</qty>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Respirator</name>
+          <category>Survival Gear</category>
+          <rating>1</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Basic Runner Pack</name>
+      <category>Core Packs</category>
+      <nuyenbp>5</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Vest</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>3</rating>
+        </gear>
+        <gear>
+          <name>Renraku Sensei</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Micro-Transceiver</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Mapsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Silver</name>
+          <category>ID/Credsticks</category>
+        </gear>
+        <gear>
+          <name>Glasses</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Earbuds</name>
+          <category>Audio Devices</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Restraint, Metal</name>
+          <category>Security Devices</category>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Respirator</name>
+          <category>Survival Gear</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>1</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Advanced Runner Pack</name>
+      <category>Core Packs</category>
+      <nuyenbp>10</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Vest</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>Erika Elite</name>
+          <category>Commlinks</category>
+          <gears>
+            <gear>
+              <name>Sim Module</name>
+              <category>Commlink Accessories</category>
+            </gear>
+            <gear>
+              <name>Subvocal Mic</name>
+              <category>Electronics Accessories</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Micro-Transceiver</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Tag Eraser</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Gold</name>
+          <category>ID/Credsticks</category>
+        </gear>
+        <gear>
+          <name>Mapsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name>Contacts</name>
+          <category>Vision Devices</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Earbuds</name>
+          <category>Audio Devices</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Select Sound Filter</name>
+              <category>Audio Enhancements</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Camera</name>
+          <category>Sensor Functions</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Vision Magnification</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Restraint, Metal</name>
+          <category>Security Devices</category>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight, Low-light</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Climbing Gear</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Diving Gear</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Gas Mask</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Respirator</name>
+          <category>Survival Gear</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Standard Rope (100m)</name>
+          <category>Grapple Gun</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>1</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Clasic Samurai Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <armors>
+        <armor>
+          <name>Clothing</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Katana</name>
+        </weapon>
+        <weapon>
+          <name>Sword</name>
+        </weapon>
+        <weapon>
+          <name>Combat Knife</name>
+        </weapon>
+        <weapon>
+          <name>Club</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="The Art of War, The Book of Five Rings, The Tale of the Heike, and other assorted samurai writings and poetry">Datasoft</name>
+          <category>Software</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Up Close &amp; Personal Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Combat Axe</name>
+        </weapon>
+        <weapon>
+          <name>Katana</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Combat Knife</name>
+        </weapon>
+        <weapon>
+          <name>Club</name>
+        </weapon>
+        <weapon>
+          <name>Extendable Baton</name>
+        </weapon>
+        <weapon>
+          <name>Telescoping Staff</name>
+        </weapon>
+        <weapon>
+          <name>Knucks</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Throwing Knife</name>
+          <category>Ammunition</category>
+          <qty>4</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Blademaster Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Combat Knife</name>
+        </weapon>
+        <weapon>
+          <name>Combat Knife</name>
+        </weapon>
+        <weapon>
+          <name>Club</name>
+        </weapon>
+        <weapon>
+          <name>Extendable Baton</name>
+        </weapon>
+      </weapons>
+    </pack>
+    <pack>
+      <name>Monowhip Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>10</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Monofilament Whip</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>DocWagon Contract, Basic</name>
+          <category>DocWagon Contract</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Basic Bowman Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Bow (Rating 4)</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Injection</name>
+          <category>Ammunition</category>
+          <rating>4</rating>
+          <qty>10</qty>
+          <gears>
+            <gear>
+              <name>Narcoject</name>
+              <category>Toxins</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Standard</name>
+          <category>Ammunition</category>
+          <rating>4</rating>
+          <qty>50</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Advanced Bowman Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Bow (Rating 6)</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Injection</name>
+          <category>Ammunition</category>
+          <rating>6</rating>
+          <qty>5</qty>
+          <gears>
+            <gear>
+              <name>Narcoject</name>
+              <category>Toxins</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Standard</name>
+          <category>Ammunition</category>
+          <rating>6</rating>
+          <qty>50</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Ares Pistol Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Ares Predator V</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Ares Light Fire 70</name>
+          <accessories>
+            <accessory>
+              <name>Concealable Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>300</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>60</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Big Boom Pistol Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Remington Roomsweeper</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Ruger Super Warhawk</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Speed Loader</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Speed Loader</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Speed Loader</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Speed Loader</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>190</qty>
+        </gear>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
+          <category>Ammunition</category>
+          <qty>80</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Browning And Beretta Pistol Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Browning Ultra-Power</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Beretta 201T</name>
+          <accessories>
+            <accessory>
+              <name>Concealable Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>140</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>210</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Colt Pistol Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Colt Government 2066</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Laser Sight</name>
+              <mount>Top/Under</mount>
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Colt America L36</name>
+          <accessories>
+            <accessory>
+              <name>Concealable Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>280</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>110</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Subtle Pistol Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Ares Viper Slivergun</name>
+          <accessories>
+            <accessory>
+              <name>Concealable Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Walther Palm Pistol</name>
+          <accessories>
+            <accessory>
+              <name>Concealable Holster</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Flechette Rounds</name>
+          <category>Ammunition</category>
+          <qty>170</qty>
+        </gear>
+        <gear>
+          <name select="Holdouts">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Light Security Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>HK 227</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Fichetti Security 600</name>
+          <accessories>
+            <accessory>
+              <name>Quick-Draw Holster</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>280</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>90</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Japanacorp Light Security Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>SCK Model 100</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Beretta 201T</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>280</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>70</qty>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name select="Submachine Guns">Ammo: Gel Rounds</name>
+          <category>Ammunition</category>
+          <qty>60</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Smartgun Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Ingram Smartgun X</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Ares Predator V</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>200</qty>
+        </gear>
+        <gear>
+          <name select="Heavy Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Street Slugger Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Defiance T-250</name>
+        </weapon>
+        <weapon>
+          <name>Colt America L36</name>
+        </weapon>
+        <weapon>
+          <name>Streetline Special</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knucks</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Shotguns">Ammo: Flechette Rounds</name>
+          <category>Ammunition</category>
+          <qty>100</qty>
+        </gear>
+        <gear>
+          <name select="Shotguns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name select="Light Pistols">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>100</qty>
+        </gear>
+        <gear>
+          <name select="Holdouts">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Heavy Security Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>FN HAR</name>
+          <accessories>
+            <accessory>
+              <name>Shock Pad</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>210</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Cheap Soldier Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Colt M23</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+        <weapon>
+          <name>Sword</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>300</qty>
+        </gear>
+        <gear>
+          <name>Kamikaze</name>
+          <category>Drugs</category>
+          <qty>3</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Ares Alpha Gunner Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>4</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Ares Alpha</name>
+          <accessories>
+            <accessory>
+              <name>Shock Pad</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Assault Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>500</qty>
+        </gear>
+        <gear>
+          <name select="Assault Rifles">Ammo: APDS</name>
+          <category>Ammunition</category>
+          <qty>40</qty>
+        </gear>
+        <gear>
+          <name select="Assault Rifles">Ammo: Explosive Rounds</name>
+          <category>Ammunition</category>
+          <qty>120</qty>
+        </gear>
+        <gear>
+          <name>Minigrenade: High Explosive</name>
+          <category>Ammunition</category>
+          <qty>12</qty>
+        </gear>
+        <gear>
+          <name>Minigrenade: Fragmentation</name>
+          <category>Ammunition</category>
+          <qty>12</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Sportsman Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Remington 950</name>
+          <accessories />
+        </weapon>
+        <weapon>
+          <name>Bow (Rating 4)</name>
+        </weapon>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name select="Bows">Arrow: Standard</name>
+          <category>Ammunition</category>
+          <rating>4</rating>
+          <qty>20</qty>
+        </gear>
+        <gear>
+          <name select="Sniper Rifles">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>250</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Tranq Darter Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Parashield Dart Rifle</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Exotic Ranged Weapons">Ammo: Injection Darts</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Narcoject</name>
+          <category>Toxins</category>
+          <qty>14</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Tranq Pistol Darter Kit</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Parashield Dart Pistol</name>
+        </weapon>
+        <weapon>
+          <name>Parashield Dart Pistol</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Exotic Ranged Weapons">Ammo: Injection Darts</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Narcoject</name>
+          <category>Toxins</category>
+          <qty>14</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Squad Weapon Assault Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Ingram Valiant</name>
+          <accessories>
+            <accessory>
+              <name>Bipod</name>
+              <mount>Under</mount>
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+    </pack>
+    <pack>
+      <name>Medium Machine Gunner Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>4</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Stoner-Ares M202</name>
+          <accessories>
+            <accessory>
+              <name>Tripod</name>
+              <mount>Under</mount>
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Medium Machine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>250</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Rocketeer Pack</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>8</nuyenbp>
+      <weapons>
+        <weapon>
+          <name>Aztechnology Striker</name>
+        </weapon>
+        <weapon>
+          <name>Aztechnology Striker</name>
+        </weapon>
+        <weapon>
+          <name>Aztechnology Striker</name>
+        </weapon>
+        <weapon>
+          <name>Aztechnology Striker</name>
+        </weapon>
+        <weapon>
+          <name>Aztechnology Striker</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Rocket: Fragmentation</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Box of Grenades #1</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Grenade: Fragmentation</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Grenade: High Explosive</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Box of Grenades #2</name>
+      <category>Weapon and Ammo Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Grenade: Flash-Bang</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Grenade: Smoke</name>
+          <category>Ammunition</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Grenade: Gas</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+          <gears>
+            <gear>
+              <name>CS/Tear Gas</name>
+              <category>Toxins</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Gas Mask</name>
+          <category>Survival Gear</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Grenade: Gas</name>
+          <category>Ammunition</category>
+          <qty>7</qty>
+          <gears>
+            <gear>
+              <name>Pepper Punch</name>
+              <category>Toxins</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Grenade: Thermal Smoke</name>
+          <category>Ammunition</category>
+          <qty>5</qty>
+        </gear>
+      </gears>
+    </pack>
+
+    <!--Example PACK
  		<pack>
 			<name>Data Thief Programs</name>
 			<category>Gear Kits</category>
