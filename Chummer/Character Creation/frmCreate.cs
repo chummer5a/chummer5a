@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -15521,12 +15522,18 @@ namespace Chummer
             int intContactPoints = _objCharacter.ContactPoints;
             int intContactPointsLeft = intContactPoints;
             int intGroupContacts = 0;
+	        int intHighPlacesFriends = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
                 //Don't care about free contacts
                 if (objContactControl.ContactObject.Free) continue;
 
-                if (objContactControl.IsGroup == false)
+	            if (objContactControl.ContactObject.Connection >= 8 && _objCharacter.FriendsInHighPlaces)
+	            {
+		            intHighPlacesFriends += (objContactControl.ContactObject.Connection +
+		                                    objContactControl.ContactObject.Loyalty);
+	            }
+                else if (objContactControl.IsGroup == false)
                 {
                     int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
 
@@ -15561,25 +15568,48 @@ namespace Chummer
             }
 
             _objCharacter.ContactPointsUsed = intContactPointsLeft;
-            intPointsRemain -= intPointsUsed;
+            
             string strOf = LanguageManager.Instance.GetString("String_Of");
-            if (intPointsUsed < 0)
-            {
-                lblContactsBP.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-                lblContactPoints.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-				lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-			}
-            else
-            {
-                lblContactsBP.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
-                lblContactPoints.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
-	            lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed);
-            }
-			
 
-			// Calculate the BP used by Enemies. These are added to the BP since they are tehnically
-			// a Negative Quality.
-			intPointsUsed = 0;
+	        StringBuilder sb = new StringBuilder();
+	        sb.Append(_objCharacter.ContactPointsUsed);
+	        if (_objCharacter.FriendsInHighPlaces)
+	        {
+		        sb.Append('/');
+		        sb.Append(Math.Max(0,(_objCharacter.CHA.Value * 4) -intHighPlacesFriends));
+	        }
+	        sb.Append(' ');
+	        sb.Append(strOf);
+			sb.Append(' ');
+
+			sb.Append(intContactPoints);
+			if (_objCharacter.FriendsInHighPlaces)
+			{
+				sb.Append('/');
+				sb.Append(_objCharacter.CHA.Value * 4);
+			}
+
+	        if (intPointsUsed > 0 || (_objCharacter.CHA.Value*4 < intHighPlacesFriends))
+	        {
+		        intPointsUsed += Math.Max(0, intHighPlacesFriends - (_objCharacter.CHA.Value * 4));
+
+		        sb.Append(" (");
+		        sb.Append(intPointsUsed);
+		        sb.Append(' ');
+		        sb.Append(strPoints);
+		        sb.Append(')');
+
+	        }
+
+			intPointsRemain -= intPointsUsed;
+			
+			lblContactsBP.Text = sb.ToString();
+			lblContactPoints.Text = sb.ToString();
+			lblPBuildContacts.Text = sb.ToString();
+
+		// Calculate the BP used by Enemies. These are added to the BP since they are tehnically
+		// a Negative Quality.
+		intPointsUsed = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
                 if (!objContactControl.Free)
