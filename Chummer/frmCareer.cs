@@ -4517,8 +4517,8 @@ namespace Chummer
 					{
 						if (objGroupControl.GroupRating > 0)
 						{
-                            // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
-                            if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
+							// Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
+							if (objGroupControl.GroupRating > objSkillControl.SkillRating)
                             {
                                 objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
                                 objSkillControl.SkillRating = objGroupControl.GroupRating;
