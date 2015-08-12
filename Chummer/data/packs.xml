@@ -4,14 +4,15 @@
 	<categories>
     <category>Core Packs</category>
     <category>Weapon and Ammo Packs</category>
-		<category>Attribute Kits</category>
-		<category>Skill Kits</category>
-		<category>Adept Kits</category>
-		<category>Complex Form Kits</category>
-		<category>Spell Kits</category>
-		<category>Gear Kits</category>
-    
-		<category>Custom</category>
+    <category>Armor Packs</category>
+    <catagory>Cyber Packs</catagory>
+    <category>Lifestyle Packs</category>
+    <category>Color Packs</category>
+    <category>Vehicle Packs</category>
+    <category>Decker Packs</category>
+    <category>Drone Packs</category>
+    <category>Magic Packs</category>
+    <category>Custom</category>
 	</categories>
 	<packs>
     <pack>
@@ -1361,7 +1362,669 @@
         </gear>
       </gears>
     </pack>
-
+    <pack>
+      <name>City Slicker Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <armors>
+        <armor>
+          <name>Lined Coat</name>
+          <mods>
+            <mod>
+              <name>Chemical Protection</name>
+              <rating>2</rating>
+            </mod>
+          </mods>
+        </armor>
+        <armor>
+          <name>Armor Clothing</name>
+        </armor>
+      </armors>
+      <gears>
+        <gear>
+          <name>Respirator</name>
+          <category>Survival Gear</category>
+          <rating>3</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Go Anywhere Jacket Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+          <mods>
+            <mod>
+              <name>Chemical Protection</name>
+              <rating>4</rating>
+            </mod>
+            <mod>
+              <name>Fire Resistance</name>
+              <rating>4</rating>
+            </mod>
+            <mod>
+              <name>Insulation</name>
+              <rating>4</rating>
+            </mod>
+          </mods>
+        </armor>
+      </armors>
+    </pack>
+    <pack>
+      <name>Neon Nights Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <armors>
+        <armor>
+          <name>Urban Explorer Jumpsuit</name>
+          <mods>
+            <mod>
+              <name>Electrochromic Clothing</name>
+            </mod>
+            <mod>
+              <name>Nonconductivity</name>
+              <rating>2</rating>
+            </mod>
+            <mod>
+              <name>Shock Frills</name>
+            </mod>
+          </mods>
+          <gears>
+            <gear>
+              <name>Biomonitor</name>
+              <category>Biotech</category>
+            </gear>
+          </gears>
+        </armor>
+        <armor>
+          <name>Urban Explorer Jumpsuit: Helmet</name>
+        </armor>
+      </armors>
+    </pack>
+    <pack>
+      <name>Nightbird Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <armors>
+        <armor>
+          <name>Chameleon Suit</name>
+          <mods>
+            <mod>
+              <name>Thermal Damping</name>
+              <rating>4</rating>
+            </mod>
+          </mods>
+        </armor>
+      </armors>
+      <gears>
+        <gear>
+          <name>Gecko Tape Gloves</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight, Low-light</name>
+          <category>Survival Gear</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Stylish Suit Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <armors>
+        <armor>
+          <name>Actioneer Business Clothes</name>
+          <mods>
+            <mod>
+              <name>Electrochromic Clothing</name>
+            </mod>
+          </mods>
+        </armor>
+      </armors>
+    </pack>
+    <pack>
+      <name>Tacticool Helmet Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <armors>
+        <armor>
+          <name>Helmet</name>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Smartlink</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Micro-Transceiver</name>
+              <category>Communications and Countermeasures</category>
+            </gear>
+            <gear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Flashlight</name>
+              <category>Survival Gear</category>
+            </gear>
+          </gears>
+        </armor>
+      </armors>
+      <gears>
+        <gear>
+          <name>Hermes Ikon</name>
+          <category>Commlinks</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Tusker Toughskin Pack</name>
+      <category>Armor Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+          <mods>
+            <mod>
+              <name>Nonconductivity</name>
+              <rating>4</rating>
+            </mod>
+          </mods>
+        </armor>
+      </armors>
+    </pack>
+    <pack>
+      <name>Sim-Setional Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>6</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Olfactory Booster</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Taste Booster</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Simrig</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Basic Combat Eyes Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>4</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+          <cyberwares>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+          </cyberwares>
+          <gears>
+            <gear>
+              <name>Camera</name>
+              <category>Vision Devices</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Advanced Combat Eyes Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>7</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+          <cyberwares>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+            <cyberware>
+              <name>Flare Compensation</name>
+            </cyberware>
+            <cyberware>
+              <name>Low-Light Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Thermographic Vision</name>
+            </cyberware>
+          </cyberwares>
+          <gears>
+            <gear>
+              <name>Camera</name>
+              <category>Vision Devices</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Eagle Eyes Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>7</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+          <cyberwares>
+            <cyberware>
+              <name>Vision Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+            <cyberware>
+              <name>Vision Magnification</name>
+            </cyberware>
+          </cyberwares>
+          <gears>
+            <gear>
+              <name>Camera</name>
+              <category>Vision Devices</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Rabbit Ears Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>9</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Cyberears</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+          <cyberwares>
+            <cyberware>
+              <name>Select Sound Filter</name>
+              <rating>2</rating>
+            </cyberware>
+            <cyberware>
+              <name>Audio Enhancement</name>
+              <rating>2</rating>
+            </cyberware>
+          </cyberwares>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Bulletproof Jeff Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>12</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Bone Lacing (Aluminum)</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Dermal Plating</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Basic Razorboi Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Hand Razors</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Hand Razors</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+      <weapons>
+        <weapon>
+          <name>Hand Razors</name>
+        </weapon>
+        <weapon>
+          <name>Hand Razors</name>
+        </weapon>
+        <weapon>
+          <name>Katana</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Cybernetics">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Advanced Razorboi Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>6</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Spurs</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Spurs</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+      <weapons>
+        <weapon>
+          <name>Katana</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Cybernetics">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>2</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Basic Speedboost Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>20</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Advanced Speedboost Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>75</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Basic Vatjob Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>14</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Dermal Plating</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Advanced Vatjob Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>28</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Dermal Plating</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Basic Rigger Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>28</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Control Rig</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Advanced Rigger Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>52</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Control Rig</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Reaction Enhancers</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+    </pack>
+    <pack>
+      <name>Street Samurai Classic Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>100</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Cybereyes Basic System</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+          <cyberwares>
+            <cyberware>
+              <name>Smartlink</name>
+            </cyberware>
+            <cyberware>
+              <name>Flare Compensation</name>
+            </cyberware>
+            <cyberware>
+              <name>Low-Light Vision</name>
+            </cyberware>
+            <cyberware>
+              <name>Thermographic Vision</name>
+            </cyberware>
+          </cyberwares>
+          <gears>
+            <gear>
+              <name>Camera</name>
+              <category>Vision Devices</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </cyberware>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Wired Reflexes</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Dermal Plating</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Muscle Replacement</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Spurs</name>
+          <grade>Standard</grade>
+        </cyberware>
+        <cyberware>
+          <name>Spurs</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+      <weapons>
+        <weapon>
+          <name>Katana</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+        <weapon>
+          <name>Spurs</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name select="Cybernetics">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>2</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Bioware Cat Pack(Catgirl pack)</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>14</nuyenbp>
+      <biowares>
+        <bioware>
+          <name>Cat's Eyes</name>
+          <grade>Standard</grade>
+        </bioware>
+        <bioware>
+          <name>Enhanced Articulation</name>
+          <grade>Standard</grade>
+        </bioware>
+      </biowares>
+    </pack>
+    <pack>
+      <name>Bio-Computer Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>41</nuyenbp>
+      <cyberwares>
+        <cyberware>
+          <name>Datajack</name>
+          <grade>Standard</grade>
+        </cyberware>
+      </cyberwares>
+      <biowares>
+        <bioware>
+          <name>Cerebral Booster</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </bioware>
+        <bioware>
+          <name>Mnemonic Enhancer</name>
+          <rating>2</rating>
+          <grade>Standard</grade>
+        </bioware>
+      </biowares>
+    </pack>
+    <pack>
+      <name>Bioware Company Man Pack</name>
+      <category>Cyber Packs</category>
+      <nuyenbp>50</nuyenbp>
+      <biowares>
+        <bioware>
+          <name>Bone Density Augmentation</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </bioware>
+        <bioware>
+          <name>Synaptic Booster</name>
+          <rating>1</rating>
+          <grade>Standard</grade>
+        </bioware>
+      </biowares>
+    </pack>
+    <pack>
+      <name>Basic Cyberdeck Programs Pack</name>
+      <category>Decker Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Software">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Hardware">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Broken Sony CIY-720 cyberdeck">Custom Item</name>
+          <category>Custom</category>
+        </gear>
+      </gears>
+    </pack>
     <!--Example PACK
  		<pack>
 			<name>Data Thief Programs</name>

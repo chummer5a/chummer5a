@@ -335,6 +335,7 @@
       <subsystems>
         <subsystem>Eyeware</subsystem>
       </subsystems>
+      <allowgear>Vision Devices</allowgear>
       <source>SR5</source>
       <page>453</page>
     </cyberware>

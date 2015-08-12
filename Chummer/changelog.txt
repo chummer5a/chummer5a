@@ -17,10 +17,13 @@ Data Change:
   - Earbuds (1) with sound link don't have sound link, as Chummer5a cannot add cyberware to gear
   - Big Boom Pistoleer pack have 190 rounds of heavy regular amunition, as Chummer5a don't contain cased ammo.
   - First you tell me holdouts can't take accesories, now you tell me to add concealable holsters, i'm confused Catalyst.
-  - Cheap Soldier Pack don't contain disposable inhaler as chummer don't contain said item
-  - Sportsman pack don't contain Orange Vest(5¥) as chummer don't contain said item
-  - Tranq Darter Pack and Tranq Pistol Darter Pack don't contain Reusable Syringe (25¥) as chummer don't contain said item
-  - Medium Machine gunner pack don't contain ammo belts
+  - Cheap Soldier Pack don't contain disposable inhaler as chummer don't contain said item.
+  - Sportsman pack don't contain Orange Vest(5¥) as chummer don't contain said item.
+  - Tranq Darter Pack and Tranq Pistol Darter Pack don't contain Reusable Syringe (25¥) as chummer don't contain said item.
+  - Medium Machine gunner pack don't contain ammo belts.
+  - Ammo packs not added as stacks split among multiple types of weapons is not possible in Chummer5a.
+  - Several Cyberware packs not added as they contain one item and developers have limited time.
+  - As none of the devs have heard about Reflex enhancer, Rigger Pack gets Reaction Enchancers instead.
 
 
 
