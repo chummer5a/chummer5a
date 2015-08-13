@@ -12,6 +12,7 @@
     <category>Decker Packs</category>
     <category>Drone Packs</category>
     <category>Magic Packs</category>
+    <category>Community Packs</category>
     <category>Custom</category>
 	</categories>
 	<packs>
@@ -2025,6 +2026,564 @@
         </gear>
       </gears>
     </pack>
+    <pack>
+      <name>Bug-out Bag</name>
+      <category>Lifstyle Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Clothing</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Streetline Special</name>
+        </weapon>
+        <weapon>
+          <name>Knife</name>
+          <accessories>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Sony Emperor</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name select="Holdouts">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+        <gear>
+          <name>Restraint, Metal</name>
+          <category>Security Devices</category>
+        </gear>
+        <gear>
+          <name>Datachip</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Security Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Long Haul</name>
+          <category>Drugs</category>
+          <qty>2</qty>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Standard</name>
+          <category>ID/Credsticks</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Cocktail Kid Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Disposable Syringe</name>
+          <category>Biotech</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Jazz</name>
+          <category>Drugs</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Long Haul</name>
+          <category>Drugs</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Kamikaze</name>
+          <category>Drugs</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Zen</name>
+          <category>Drugs</category>
+          <qty>20</qty>
+        </gear>
+        <gear>
+          <name>Novacoke</name>
+          <category>Drugs</category>
+          <qty>20</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Drone Mechanic Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Aeronautics Mechanic">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Electronic Warfare">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Automotive Mechanic">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Nautical Mechanic">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Mechanic Shop Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Automotive Mechanic">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Automotive Mechanic">Tool Shop</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="car parts">Shopsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name select="car makes and models">Knowsoft</name>
+          <category>Skillsofts</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Chemsuit</name>
+          <category>Survival Gear</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Respirator</name>
+          <category>Survival Gear</category>
+          <rating>1</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Eavesdropper Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Data Tap</name>
+          <category>Communications and Countermeasures</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <qty>5</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Surveillance Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Binoculars, Optical</name>
+          <category>Vision Devices</category>
+          <gears>
+            <gear>
+              <name>Vision Magnification</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Binoculars</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Vision Magnification</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Camera</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Vision Magnification</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Directional Microphone</name>
+          <category>Sensor Functions</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Select Sound Filter</name>
+              <category>Audio Enhancements</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Laser Microphone</name>
+          <category>Sensor Functions</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Audio Enhancement</name>
+              <category>Audio Enhancements</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Breaking and Entering Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <gears>
+        <gear>
+          <name>Autopicker</name>
+          <category>Breaking and Entering Gear</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>Keycard Copier</name>
+          <category>Breaking and Entering Gear</category>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Sequencer</name>
+          <category>Breaking and Entering Gear</category>
+          <rating>4</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Jammer Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Jammer, Area</name>
+          <category>Communications and Countermeasures</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>Bug Scanner</name>
+          <category>Communications and Countermeasures</category>
+          <rating>5</rating>
+        </gear>
+        <gear>
+          <name>Tag Eraser</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>White Noise Generator</name>
+          <category>Communications and Countermeasures</category>
+          <rating>5</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Medic Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>6</rating>
+        </gear>
+        <gear>
+          <name>Biomonitor</name>
+          <category>Biotech</category>
+        </gear>
+        <gear>
+          <name>Medkit Supplies</name>
+          <category>Biotech</category>
+          <qty>2</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Medical Patches Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Slap Patch, Antidote Patch</name>
+          <category>Biotech</category>
+          <rating>4</rating>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Slap Patch, Stim Patch</name>
+          <category>Biotech</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>Slap Patch, Tranq Patch</name>
+          <category>Biotech</category>
+          <rating>5</rating>
+          <qty>4</qty>
+        </gear>
+        <gear>
+          <name>Slap Patch, Trauma Patch</name>
+          <category>Biotech</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Mountaineering Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Climbing Gear</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Magnesium Torch</name>
+          <category>Survival Gear</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Micro Flare Launcher</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Micro Flares</name>
+          <category>Survival Gear</category>
+          <qty>3</qty>
+        </gear>
+        <gear>
+          <name>Rapelling Gloves</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Grapple Gun</name>
+          <category>Grapple Gun</category>
+          <gears>
+            <gear>
+              <name>Microwire (100m)</name>
+              <category>Grapple Gun</category>
+              <qty>4</qty>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Standard Rope (100m)</name>
+          <category>Grapple Gun</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>2</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Infiltration Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Disguise">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Lockpick Set</name>
+          <category>Breaking and Entering Gear</category>
+        </gear>
+        <gear>
+          <name>Contacts</name>
+          <category>Vision Devices</category>
+          <rating>2</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight, Low-light</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Datachip</name>
+          <category>RFID Tags</category>
+          <qty>20</qty>
+        </gear>
+        <gear>
+          <name>Stealth Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Micro-Transceiver</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Camera</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Demolitionist Pack</name>
+      <category>Color Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Demolitions">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Commercial Explosive</name>
+          <category>Explosives</category>
+          <rating>5</rating>
+          <qty>12</qty>
+        </gear>
+        <gear>
+          <name>Detonator, Blasting Cap</name>
+          <category>Explosives</category>
+          <qty>8</qty>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Racing Bike Pack</name>
+      <category>Vehicle Packs</category>
+      <nuyenbp>5</nuyenbp>
+      <armors>
+        <armor>
+          <name>Armor Clothing</name>
+        </armor>
+        <armor>
+          <name>Helmet</name>
+        </armor>
+        <armor>
+          <name>Helmet</name>
+        </armor>
+      </armors>
+      <gears>
+        <gear>
+          <name select="City streets">Mapsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name select="motorcycles and motorcycle parts">Shopsoft</name>
+          <category>Software</category>
+        </gear>
+        <gear>
+          <name select="Automotive mechanics">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+      </gears>
+      <vehicles>
+        <vehicle>
+          <name>Suzuki Mirage (Racing Bike)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
+    <pack>
+      <name>Off Road Pack</name>
+      <category>Vehicle Packs</category>
+      <nuyenbp>20</nuyenbp>
+      <vehicles>
+        <vehicle>
+          <name>Toyota Gopher (Heavy-Duty Pickup)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </vehicle>
+        <vehicle>
+          <name>Yamaha Growler (Off-Road Bike)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
     <!--Example PACK
  		<pack>
 			<name>Data Thief Programs</name>
@@ -2045,5 +2604,540 @@
 				</gear>
 			</gears>
 		</pack> -->
+    <pack>
+      <name>Runnerhub Basic Gear Pack</name>
+      <category>Community Packs</category>
+      <lifestyles>
+        <lifestyle>
+          <name>Low</name>
+          <months>1</months>
+        </lifestyle>
+      </lifestyles>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+        </armor>
+        <armor>
+          <name>Helmet</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Steyr TMP</name>
+          <accessories>
+            <accessory>
+              <name>Silencer</name>
+              <mount>Barrel</mount>
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Hermes Ikon</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Meta Link</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Trodes</name>
+          <category>Electronics Accessories</category>
+        </gear>
+        <gear>
+          <name>Micro-Transceiver</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>4</rating>
+          <gears>
+            <gear>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>4</rating>
+            </gear>
+            <gear>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>4</rating>
+            </gear>
+            <gear>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>4</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name select="Machine Pistols">Ammo: APDS</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+        <gear>
+          <name select="Machine Pistols">Ammo: Stick-n-Shock</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Silver</name>
+          <category>ID/Credsticks</category>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Standard</name>
+          <category>ID/Credsticks</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Contacts</name>
+          <category>Vision Devices</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Flare Compensation</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Vision Magnification</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Glasses</name>
+          <category>Vision Devices</category>
+          <rating>4</rating>
+          <gears>
+            <gear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>3</rating>
+            </gear>
+            <gear>
+              <name>Thermographic Vision</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Earbuds</name>
+          <category>Audio Devices</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Select Sound Filter</name>
+              <category>Audio Enhancements</category>
+              <rating>1</rating>
+            </gear>
+            <gear>
+              <name>Audio Enhancement</name>
+              <category>Audio Enhancements</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Datachip</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Standard Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Stealth Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Restraint, Metal</name>
+          <category>Security Devices</category>
+        </gear>
+        <gear>
+          <name>Restraint, Plastic</name>
+          <category>Security Devices</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Slap Patch, Trauma Patch</name>
+          <category>Biotech</category>
+        </gear>
+        <gear>
+          <name>Slap Patch, Stim Patch</name>
+          <category>Biotech</category>
+          <rating>6</rating>
+          <qty>2</qty>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>3</rating>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>6</rating>
+        </gear>
+        <gear>
+          <name>Bug Scanner</name>
+          <category>Communications and Countermeasures</category>
+          <rating>6</rating>
+        </gear>
+        <gear>
+          <name>Tag Eraser</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Long Haul</name>
+          <category>Drugs</category>
+        </gear>
+        <gear>
+          <name>Standard Rope (100m)</name>
+          <category>Grapple Gun</category>
+        </gear>
+        <gear>
+          <name>Survival Kit</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Gas Mask</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Crowbar</name>
+          <category>Breaking and Entering Gear</category>
+        </gear>
+        <gear>
+          <name>Miniwelder</name>
+          <category>Breaking and Entering Gear</category>
+        </gear>
+      </gears>
+      <vehicles>
+        <vehicle>
+          <name>Chrysler-Nissan Jackrabbit (Subcompact)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
+    <pack>
+      <name>Runnerhub Pennypincher Pack</name>
+      <category>Community Packs</category>
+      <nuyenbp>5</nuyenbp>
+      <lifestyles>
+        <lifestyle>
+          <name>Low</name>
+          <months>1</months>
+        </lifestyle>
+      </lifestyles>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+        </armor>
+        <armor>
+          <name>Helmet</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Steyr TMP</name>
+          <accessories>
+            <accessory>
+              <name>Silencer</name>
+              <mount>Barrel</mount>
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+            <accessory>
+              <name>Spare Clip</name>
+              <mount />
+            </accessory>
+          </accessories>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Renraku Sensei</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Trodes</name>
+          <category>Electronics Accessories</category>
+        </gear>
+        <gear>
+          <name>Meta Link</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Micro-Transceiver</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Camera, Micro</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+        </gear>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </gear>
+            <gear>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name select="Machine Pistols">Ammo: APDS</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+        <gear>
+          <name select="Machine Pistols">Ammo: Stick-n-Shock</name>
+          <category>Ammunition</category>
+          <qty>30</qty>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Silver</name>
+          <category>ID/Credsticks</category>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Standard</name>
+          <category>ID/Credsticks</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Contacts</name>
+          <category>Vision Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Earbuds</name>
+          <category>Audio Devices</category>
+          <rating>1</rating>
+          <gears>
+            <gear>
+              <name>Select Sound Filter</name>
+              <category>Audio Enhancements</category>
+              <rating>1</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Datachip</name>
+          <category>RFID Tags</category>
+          <qty>4</qty>
+        </gear>
+        <gear>
+          <name>Standard Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Stealth Tags</name>
+          <category>RFID Tags</category>
+          <qty>3</qty>
+        </gear>
+        <gear>
+          <name>Slap Patch, Trauma Patch</name>
+          <category>Biotech</category>
+        </gear>
+        <gear>
+          <name>Slap Patch, Stim Patch</name>
+          <category>Biotech</category>
+          <rating>6</rating>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>ShadowNET starter pack</name>
+      <category>Community Packs</category>
+      <armors>
+        <armor>
+          <name>Armor Jacket</name>
+        </armor>
+        <armor>
+          <name>Ballistic Mask</name>
+        </armor>
+      </armors>
+      <weapons>
+        <weapon>
+          <name>Survival Knife</name>
+        </weapon>
+        <weapon>
+          <name>Savalette Guardian</name>
+          <accessories />
+        </weapon>
+        <weapon>
+          <name>Hold-Fast Sprayer</name>
+        </weapon>
+      </weapons>
+      <gears>
+        <gear>
+          <name>Renraku Sensei</name>
+          <category>Commlinks</category>
+        </gear>
+        <gear>
+          <name>Fake SIN</name>
+          <category>ID/Credsticks</category>
+          <rating>4</rating>
+        </gear>
+        <gear>
+          <name>AR Gloves</name>
+          <category>Electronics Accessories</category>
+        </gear>
+        <gear>
+          <name>Trodes</name>
+          <category>Electronics Accessories</category>
+        </gear>
+        <gear>
+          <name>Subvocal Mic</name>
+          <category>Electronics Accessories</category>
+        </gear>
+        <gear>
+          <name>Earbuds</name>
+          <category>Audio Devices</category>
+          <rating>2</rating>
+          <gears>
+            <gear>
+              <name>Audio Enhancement</name>
+              <category>Audio Enhancements</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Contacts</name>
+          <category>Vision Devices</category>
+          <rating>3</rating>
+          <gears>
+            <gear>
+              <name>Image Link</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Vision Enhancement</name>
+              <category>Vision Enhancements</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </gear>
+        <gear>
+          <name>Data Tap</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Tag Eraser</name>
+          <category>Communications and Countermeasures</category>
+        </gear>
+        <gear>
+          <name>Standard Tags</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Datachip</name>
+          <category>RFID Tags</category>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Certified Credstick, Standard</name>
+          <category>ID/Credsticks</category>
+          <rating>1</rating>
+          <qty>10</qty>
+        </gear>
+        <gear>
+          <name>Crowbar</name>
+          <category>Breaking and Entering Gear</category>
+        </gear>
+        <gear>
+          <name>Flashlight</name>
+          <category>Survival Gear</category>
+        </gear>
+        <gear>
+          <name>Restraint, Plasteel</name>
+          <category>Security Devices</category>
+          <qty>5</qty>
+        </gear>
+        <gear>
+          <name>Hold-Fast Adhesive Spray</name>
+          <category>Tools of the Trade</category>
+          <qty>2</qty>
+        </gear>
+        <gear>
+          <name>Ultra-Glide Industrial Lubricant (liter)</name>
+          <category>Tools of the Trade</category>
+          <qty>2</qty>
+        </gear>
+        <gear>
+          <name>Telescoping Mirror on a Stick</name>
+          <category>Tools of the Trade</category>
+        </gear>
+        <gear>
+          <name>Medkit</name>
+          <category>Biotech</category>
+          <rating>3</rating>
+        </gear>
+        <gear>
+          <name>Slap Patch, Stim Patch</name>
+          <category>Biotech</category>
+          <rating>6</rating>
+          <qty>2</qty>
+        </gear>
+        <gear>
+          <name>Slap Patch, Trauma Patch</name>
+          <category>Biotech</category>
+        </gear>
+      </gears>
+    </pack>
 	</packs>
 </chummer>
