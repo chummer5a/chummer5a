@@ -6552,15 +6552,14 @@ namespace Chummer
                 if (strRCGroup5 != string.Empty)
                     strRCTip += " + " + strRCGroup5 + " (" + intRCGroup5.ToString() + ")";
 
-					intRCBase += (_objCharacter.STR.TotalValue / 3) +1;
-                    intRCFull += (_objCharacter.STR.TotalValue / 3);
-                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue.ToString() + "] (" + (_objCharacter.STR.TotalValue / 3).ToString() + ")";
+				int intStrRC = ((_objCharacter.STR.TotalValue - 1)/3) + 1;
+
+					intRCBase += intStrRC + 1; //Not understanding this, but leaving it
+                    intRCFull += intStrRC;
+                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue + "] (" + intStrRC + ")";
 
 				// If the full RC is not higher than the base, only the base value is shown.
-                if (intRCFull <= intRCBase)
-                    strRC = intRCBase.ToString();
-                else
-				strRC = intRCFull.ToString();
+				strRC = (intRCFull <= intRCBase ? intRCBase : intRCFull).ToString();
 
                 _strRCTip = strRCTip;
 
