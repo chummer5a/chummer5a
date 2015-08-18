@@ -2584,6 +2584,215 @@
         </vehicle>
       </vehicles>
     </pack>
+    <pack>
+      <name>Basic Decker Pack</name>
+      <category>Decker Packs</category>
+      <nuyenbp>62</nuyenbp>
+      <gears>
+        <gear>
+          <name>Hermes Chariot</name>
+          <category>Cyberdecks</category>
+        </gear>
+        <gear>
+          <name select="Hardware">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Software">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Advanced Decker Pack</name>
+      <category>Decker Packs</category>
+      <nuyenbp>100</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Hardware">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name select="Software">Tool Kit</name>
+          <category>Tools</category>
+        </gear>
+        <gear>
+          <name>Sony CIY-720</name>
+          <category>Cyberdecks</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Advanced Cyberdeck Programs Pack</name>
+      <category>Decker Packs</category>
+      <nuyenbp>1</nuyenbp>
+      <gears>
+        <gear>
+          <name>Armor</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Biofeedback</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Blackout</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Guard</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Hammer</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Mugger</name>
+          <category>Hacking Programs</category>
+        </gear>
+        <gear>
+          <name>Shell</name>
+          <category>Hacking Programs</category>
+        </gear>
+      </gears>
+    </pack>
+    <pack>
+      <name>Basic Spy Drone Pack</name>
+      <category>Drone Packs</category>
+      <nuyenbp>2</nuyenbp>
+      <vehicles>
+        <vehicle>
+          <name>Shiawase Kanmushi (Microdrone)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>3</rating>
+            </gear>
+            <gear>
+              <name>Low Light</name>
+              <category>Vision Enhancements</category>
+            </gear>
+            <gear>
+              <name>Select Sound Filter</name>
+              <category>Audio Enhancements</category>
+              <rating>2</rating>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
+    <pack>
+      <name>Advanced Spy Drone Pack</name>
+      <category>Drone Packs</category>
+      <nuyenbp>11</nuyenbp>
+      <vehicles>
+        <vehicle>
+          <name>Lockheed Optic-X2 (Small)</name>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>3</rating>
+              <gears>
+                <gear>
+                  <name>Camera</name>
+                  <category>Sensor Functions</category>
+                  <rating>2</rating>
+                  <gears>
+                    <gear>
+                      <name>Vision Enhancement</name>
+                      <category>Vision Enhancements</category>
+                      <rating>1</rating>
+                    </gear>
+                    <gear>
+                      <name>Vision Magnification</name>
+                      <category>Vision Enhancements</category>
+                    </gear>
+                  </gears>
+                </gear>
+                <gear>
+                  <name>Directional Microphone</name>
+                  <category>Sensor Functions</category>
+                  <rating>1</rating>
+                  <gears>
+                    <gear>
+                      <name>Select Sound Filter</name>
+                      <category>Audio Enhancements</category>
+                      <rating>1</rating>
+                    </gear>
+                  </gears>
+                </gear>
+              </gears>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
+    <pack>
+      <name>Basic Combat Drone Pack</name>
+      <category>Drone Packs</category>
+      <nuyenbp>3</nuyenbp>
+      <gears>
+        <gear>
+          <name select="Submachine Guns">Ammo: Regular Ammo</name>
+          <category>Ammunition</category>
+          <qty>170</qty>
+        </gear>
+      </gears>
+      <vehicles>
+        <vehicle>
+          <name>GM-Nissan Doberman (Medium)</name>
+          <mods />
+          <weapons>
+            <weapon>
+              <name>Colt Cobra TZ-120</name>
+              <accessories />
+            </weapon>
+          </weapons>
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>3</rating>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
+    <pack>
+      <name>Advanced Combat Drone Pack</name>
+      <category>Drone Packs</category>
+      <nuyenbp>14</nuyenbp>
+      <vehicles>
+        <vehicle>
+          <name>Steel Lynx Combat Drone (Large)</name>
+          <mods />
+          <gears>
+            <gear>
+              <name>Sensor Array</name>
+              <category>Sensors</category>
+              <rating>3</rating>
+              <gears>
+                <gear>
+                  <name>Low Light</name>
+                  <category>Vision Enhancements</category>
+                </gear>
+                <gear>
+                  <name>Smartlink</name>
+                  <category>Vision Enhancements</category>
+                </gear>
+                <gear>
+                  <name>Thermographic Vision</name>
+                  <category>Vision Enhancements</category>
+                </gear>
+              </gears>
+            </gear>
+          </gears>
+        </vehicle>
+      </vehicles>
+    </pack>
     <!--Example PACK
  		<pack>
 			<name>Data Thief Programs</name>

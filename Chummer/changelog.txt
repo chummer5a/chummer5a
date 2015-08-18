@@ -7,6 +7,9 @@ Application Change:
 - College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. 
 - Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities, because it's ugly.
 - N of M concact points in priority build works again.
+- Fixed an issue where chummer failed to open when clicking on a .chum5 file
+- Implemented functionality for the quality "Friends in high places"
+- Chummer now checks for contacts with a rating higher than 7 at chargen
 
 Data Change:
 - Not longer showing debug item in lifestyles
@@ -33,6 +36,9 @@ Data Change:
   - Demolitions kit wrong detonator?
 - Some custom packs added from reddits shadowrun comunities
   - Thanks to reddits /u/NotB0b and ShadowNET SysOp for permision
+
+New strings:
+- Message_HighContact
 
 
 Build 172:
