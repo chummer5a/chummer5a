@@ -413,7 +413,7 @@ namespace Chummer
             if (!blnAllowMultiple)
             {
                 // Multiples aren't allowed, so make sure the character does not already have it.
-                foreach (Quality objQuality in _objCharacter.LifestyleQualities)
+                foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                 {
                     if (objQuality.Name == objXmlQuality["name"].InnerText)
                     {
@@ -441,7 +441,7 @@ namespace Chummer
                         {
                             // Run through all of the Qualities the character has and see if the current forbidden item exists.
                             // If so, turn on the RequirementForbidden flag so it cannot be selected.
-                            foreach (Quality objQuality in _objCharacter.LifestyleQualities)
+                            foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                             {
                                 if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                 {
@@ -542,7 +542,7 @@ namespace Chummer
                         {
                             // Run through all of the Qualities the character has and see if the current required item exists.
                             // If so, turn on the RequirementMet flag so it can be selected.
-                            foreach (Quality objQuality in _objCharacter.LifestyleQualities)
+                            foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                             {
                                 if (objQuality.Name == objXmlRequired.InnerText)
                                     blnOneOfMet = true;
@@ -847,7 +847,7 @@ namespace Chummer
                         {
                             // Run through all of the Qualities the character has and see if the current required item exists.
                             // If so, turn on the RequirementMet flag so it can be selected.
-                            foreach (Quality objQuality in _objCharacter.LifestyleQualities)
+                            foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                             {
                                 if (objQuality.Name == objXmlRequired.InnerText)
                                     blnFound = true;

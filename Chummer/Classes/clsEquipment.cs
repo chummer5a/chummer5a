@@ -8985,7 +8985,7 @@ namespace Chummer
 		private string _strSource = "";
 		private string _strPage = "";
 		private LifestyleType _objType = LifestyleType.Standard;
-		private List<string> _lstLifestyleQualities = new List<string>();
+		private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
 		private string _strNotes = "";
 		private readonly Character _objCharacter;
 
@@ -9073,9 +9073,9 @@ namespace Chummer
 			objWriter.WriteElementString("type", _objType.ToString());
 			objWriter.WriteElementString("sourceid", SourceID.ToString());
 			objWriter.WriteStartElement("lifestylequalities");
-            foreach (string strQuality in _lstLifestyleQualities)
+            foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
             {
-                objWriter.WriteElementString("lifestylequality", strQuality);
+                objQuality.Save(objWriter);
             }
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
@@ -9134,15 +9134,13 @@ namespace Chummer
 
 			objNode.TryGetField("page", out _strPage);
 
-
-			//Not possible with TryGetField
-			try
+			// Qualities
+			XmlNodeList objXmlNodeList = objNode.SelectNodes("lifestylequalities/lifestylequality");
+			foreach (XmlNode objXmlQuality in objXmlNodeList)
 			{
-                foreach (XmlNode objXmlQuality in objNode.SelectNodes("lifestylequalities/lifestylequality"))
-                    _lstLifestyleQualities.Add(objXmlQuality.InnerText);
-			}
-			catch
-			{
+					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+					objQuality.Load(objXmlQuality);
+					_lstLifestyleQualities.Add(objQuality);
 			}
 
 			objNode.TryGetField("notes", out _strNotes);
@@ -9218,7 +9216,7 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				XmlNode objNode;
 
-                foreach (string strQuality in _lstLifestyleQualities)
+                foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
 				{
 					string strThisQuality = "";
 					//string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
@@ -9577,7 +9575,7 @@ namespace Chummer
 		/// <summary>
 		/// Advanced Lifestyle Qualities.
 		/// </summary>
-		public List<string> LifestyleQualities
+		public List<LifestyleQuality> LifestyleQualities
 		{
 			get
 			{
@@ -9688,18 +9686,18 @@ namespace Chummer
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 int intCost = _intCost;
-                foreach (string strQuality in _lstLifestyleQualities)
+                foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
                 {
-                    if (strQuality.Contains("%"))
+                    if (strQuality.Name.Contains("%"))
                     {
-                        string strPercent = strQuality.Substring(strQuality.IndexOf("[") + 1);
+                        string strPercent = strQuality.Name.Substring(strQuality.Name.IndexOf("[") + 1);
                         strPercent = strPercent.Substring(0, strPercent.IndexOf("%"));
                         double dblPercent = Convert.ToDouble(strPercent);
                         dblModifier += dblPercent;
                     }
-                    else if (strQuality.Contains("¥"))
+                    else if (strQuality.Name.Contains("¥"))
                     {
-                        string strFlat = strQuality.Substring(strQuality.IndexOf("[") + 1);
+                        string strFlat = strQuality.Name.Substring(strQuality.Name.IndexOf("[") + 1);
                         strFlat = strFlat.Substring(0, strFlat.IndexOf("¥"));
                         intCost += Convert.ToInt32(strFlat);
                     }

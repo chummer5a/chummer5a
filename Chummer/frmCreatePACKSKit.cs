@@ -436,8 +436,8 @@ namespace Chummer
 						{
 							// <qualities>
 							objWriter.WriteStartElement("qualities");
-							foreach (string strQuality in objLifestyle.LifestyleQualities)
-								objWriter.WriteElementString("quality", strQuality);
+							foreach (LifestyleQuality strQuality in objLifestyle.LifestyleQualities)
+								objWriter.WriteElementString("quality", strQuality.ToString());
 							// </qualities>
 							objWriter.WriteEndElement();
 						}

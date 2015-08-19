@@ -248,7 +248,7 @@ namespace Chummer
         private List<Cyberware> _lstCyberware = new List<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private List<Quality> _lstQualities = new List<Quality>();
-        private List<Quality> _lstLifestyleQualities = new List<Quality>();
+        private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
         private List<Gear> _lstGear = new List<Gear>();
         private List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -5801,7 +5801,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public List<Quality> LifestyleQualities
+        public List<LifestyleQuality> LifestyleQualities
         {
             get
             {

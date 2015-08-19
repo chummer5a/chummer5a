@@ -1151,7 +1151,7 @@ namespace Chummer
                     objLifestyleNode.ForeColor = Color.SaddleBrown;
                 objLifestyleNode.ToolTipText = objLifestyle.Notes;
                 treLifestyles.Nodes[0].Nodes.Add(objLifestyleNode);
-            }
+			}
             treLifestyles.Nodes[0].Expand();
 
             PopulateGearList();
@@ -19106,49 +19106,6 @@ namespace Chummer
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-                    foreach (string strQuality in objLifestyle.LifestyleQualities)
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
-                        string strQualityName = strQuality.ToString();
-                        objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-                        XmlNode nodCost = objNode["lifestylecost"];
-                        if (nodCost != null)
-                        {
-                            string strCost = nodCost.InnerText;
-                            int intCost = Convert.ToInt32(strCost);
-                            if (intCost > 0)
-                            {
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [+" + intCost.ToString() + "%]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [+" + intCost.ToString() + "%]";
-                            }
-                            else
-                            {
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [" + intCost.ToString() + "%]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [" + intCost.ToString() + "%]";
-                            }
-                        }
-                        else
-                        {
-                            if (objNode["cost"] != null)
-                            {
-                                string strCost = objNode["cost"].InnerText;
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
-                            }
-                            else
-                            {
-                                strQualities += objNode["name"].InnerText;
-                            }
-                        }
-                    }
-
                     foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
@@ -22107,8 +22064,8 @@ namespace Chummer
                         objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"].InnerText);
                         objLifestyle.AreaEntertainment = Convert.ToInt32(objXmlLifestyle["areaentertainment"].InnerText);
 
-                        foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
-                            objLifestyle.LifestyleQualities.Add(objXmlQuality.InnerText);
+                        foreach (LifestyleQuality objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
+                            objLifestyle.LifestyleQualities.Add(objXmlQuality);
 
                         objNode.Text = strName;
                     }
