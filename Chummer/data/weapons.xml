@@ -6,7 +6,7 @@
     <category type="melee">Clubs</category>
     <category type="melee">Improvised Weapons</category>
     <category type="melee">Exotic Melee Weapons</category>
-		<category>Exotic Ranged Weapons</category>
+		<category type="exotic">Exotic Ranged Weapons</category>
 		<category type="melee">Unarmed</category>
 		<category type="bow">Bows</category>
 		<category type="crossbow">Crossbows</category>

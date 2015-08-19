@@ -1725,7 +1725,7 @@ namespace Chummer
 			{
 				foreach (Quality objQuality in objCharacter.Qualities)
 				{
-					if (objQuality.Name == objXmlQuality["name"].InnerText)
+					if (objQuality.QualityId == objXmlQuality["id"].InnerText)
 					{
 						reason |= QualityFailureReason.LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
 						//So instead of changing it, |= adds rhs to list of reasons on lhs, if it is not present

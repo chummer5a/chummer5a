@@ -2289,10 +2289,10 @@
       <name>Pulse Weave</name>
       <category>General</category>
       <armor>0</armor>
-      <maxrating>1</maxrating>
+      <maxrating>6</maxrating>
       <armorcapacity>[3]</armorcapacity>
       <avail>+8R</avail>
-      <cost>3000</cost>
+      <cost>Rating * 3000</cost>
       <source>RG</source>
       <page>84</page>
     </mod>

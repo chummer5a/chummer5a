@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -26,8 +27,14 @@ namespace Chummer
 			//crash handler that will offer to send a mail
 			AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
 			
+			//Needs to be called before Log is setup, as it moves where log might be.
+	        FixCwd();
+
+
 			//Log exceptions that is caught. Wanting to know about this cause of performance
 	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+
+			Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow, Environment.CommandLine) );
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -55,5 +62,23 @@ namespace Chummer
 			else
 				Application.Exit();
         }
+
+		static void FixCwd()
+		{
+			//If launched by file assiocation, the cwd is file location. 
+			//Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
+
+			if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, "data"))
+			    && Directory.Exists(Path.Combine(Environment.CurrentDirectory, "lang")))
+			{
+				//both normally used data dirs present (add file loading abstraction to the list)
+				//so do nothing
+
+				return;
+			}
+
+			Environment.CurrentDirectory = Application.StartupPath;
+
+		}
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -160,16 +161,7 @@ namespace Chummer
             foreach (Contact contact in _objCharacter.Contacts)
                 count += contact.ContactPoints;
 
-            if ((_objCharacter.ContactPoints - count) >= 0)
-            {
-                lblPBuildContacts.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString());
-            }
-            else
-            {
-                int karmaSpent = _objCharacter.ContactPoints - count;
-                karmaSpent = karmaSpent *= -1;
-                lblPBuildContacts.Text = String.Format(LanguageManager.Instance.GetString("String_OverContactPoints"), (_objCharacter.ContactPoints - count).ToString(), _objCharacter.ContactPoints.ToString(), karmaSpent.ToString());
-            }
+            
 
             // Set the movement speed defaults
             lblMovement.Text = _objCharacter.Movement;
@@ -15530,12 +15522,18 @@ namespace Chummer
             int intContactPoints = _objCharacter.ContactPoints;
             int intContactPointsLeft = intContactPoints;
             int intGroupContacts = 0;
+	        int intHighPlacesFriends = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
                 //Don't care about free contacts
                 if (objContactControl.ContactObject.Free) continue;
 
-                if (objContactControl.IsGroup == false)
+	            if (objContactControl.ContactObject.Connection >= 8 && _objCharacter.FriendsInHighPlaces)
+	            {
+		            intHighPlacesFriends += (objContactControl.ContactObject.Connection +
+		                                    objContactControl.ContactObject.Loyalty);
+	            }
+                else if (objContactControl.IsGroup == false)
                 {
                     int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
 
@@ -15570,23 +15568,48 @@ namespace Chummer
             }
 
             _objCharacter.ContactPointsUsed = intContactPointsLeft;
-            intPointsRemain -= intPointsUsed;
+            
             string strOf = LanguageManager.Instance.GetString("String_Of");
-            if (intPointsUsed < 0)
-            {
-                lblContactsBP.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-                lblContactPoints.Text = String.Format("{0} " + strOf + " {1}", _objCharacter.ContactPointsUsed, intContactPoints);
-            }
-            else
-            {
-                lblContactsBP.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
-                lblContactPoints.Text = String.Format("{0} " + strOf + " {1} ({2} {3})", _objCharacter.ContactPointsUsed, intContactPoints, intPointsUsed, strPoints);
-            }
 
+	        StringBuilder sb = new StringBuilder();
+	        sb.Append(_objCharacter.ContactPointsUsed);
+	        if (_objCharacter.FriendsInHighPlaces)
+	        {
+		        sb.Append('/');
+		        sb.Append(Math.Max(0,(_objCharacter.CHA.Value * 4) -intHighPlacesFriends));
+	        }
+	        sb.Append(' ');
+	        sb.Append(strOf);
+			sb.Append(' ');
 
-            // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
-            // a Negative Quality.
-            intPointsUsed = 0;
+			sb.Append(intContactPoints);
+			if (_objCharacter.FriendsInHighPlaces)
+			{
+				sb.Append('/');
+				sb.Append(_objCharacter.CHA.Value * 4);
+			}
+
+	        if (intPointsUsed > 0 || (_objCharacter.CHA.Value*4 < intHighPlacesFriends))
+	        {
+		        intPointsUsed += Math.Max(0, intHighPlacesFriends - (_objCharacter.CHA.Value * 4));
+
+		        sb.Append(" (");
+		        sb.Append(intPointsUsed);
+		        sb.Append(' ');
+		        sb.Append(strPoints);
+		        sb.Append(')');
+
+	        }
+
+			intPointsRemain -= intPointsUsed;
+			
+			lblContactsBP.Text = sb.ToString();
+			lblContactPoints.Text = sb.ToString();
+			lblPBuildContacts.Text = sb.ToString();
+
+		// Calculate the BP used by Enemies. These are added to the BP since they are tehnically
+		// a Negative Quality.
+		intPointsUsed = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
                 if (!objContactControl.Free)
@@ -20050,126 +20073,155 @@ namespace Chummer
             string strCyberwareGrade = "";
 
             // Check limits specific to the Priority build method.
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                // Check if the character has more than 1 Martial Art
-                int intMartialArts = _objCharacter.MartialArts.Count;
-                if (intMartialArts > 1)
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((1 - intMartialArts) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_MartialArtsCount"));
+	        if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+	            _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	        {
+		        // Check if the character has more than 1 Martial Art
+		        int intMartialArts = _objCharacter.MartialArts.Count;
+		        if (intMartialArts > 1)
+			        strMessage += "\n\t" +
+			                      LanguageManager.Instance.GetString("Message_InvalidPointExcess")
+				                      .Replace("{0}",
+					                      ((1 - intMartialArts)*-1).ToString() + " " +
+					                      LanguageManager.Instance.GetString("String_MartialArtsCount"));
 
-                // Check if the character has more than 5 Techniques in a Martial Art
-                if (_objCharacter.MartialArts.Count > 0)
-                {
-                    int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
-                    if (intTechniques > 5)
-                        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((5 - intTechniques) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_TechniquesCount"));
-                }
+		        // Check if the character has more than 5 Techniques in a Martial Art
+		        if (_objCharacter.MartialArts.Count > 0)
+		        {
+			        int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
+			        if (intTechniques > 5)
+				        strMessage += "\n\t" +
+				                      LanguageManager.Instance.GetString("Message_InvalidPointExcess")
+					                      .Replace("{0}",
+						                      ((5 - intTechniques)*-1).ToString() + " " +
+						                      LanguageManager.Instance.GetString("String_TechniquesCount"));
+		        }
 
-                // Check if the character has gone over limits from optional rules
-                int intContactPointsUsed = 0;
-                int intGroupContacts = 0;
-                foreach (ContactControl objContactControl in panContacts.Controls)
-                {
-                    if (!objContactControl.Free)
-                    {
-                        if (objContactControl.IsGroup)
-                        {
-                            intGroupContacts += objContactControl.ContactObject.ContactPoints;
-                        }
-                        else
-                        {
-                            // The Contact's BP cost = their Connection + Loyalty Rating.
-                            intContactPointsUsed += (objContactControl.ConnectionRating +
-                                                     objContactControl.LoyaltyRating)*_objOptions.BPContact;
-                        }
-                    }
-                }
+		        // Check if the character has gone over limits from optional rules
+		        int intContactPointsUsed = 0;
+		        int intGroupContacts = 0;
+		        int intHighPlaces = 0;
+		        foreach (ContactControl objContactControl in panContacts.Controls)
+		        {
+			        if (!objContactControl.Free)
+			        {
+				        if (objContactControl.IsGroup)
+				        {
+					        intGroupContacts += objContactControl.ContactObject.ContactPoints;
+				        }
+				        else if (objContactControl.ConnectionRating >= 8 && _objCharacter.FriendsInHighPlaces)
+				        {
+					        intHighPlaces += (objContactControl.ConnectionRating +
+					                          objContactControl.LoyaltyRating);
+				        }
+				        else
+				        {
+					        // The Contact's BP cost = their Connection + Loyalty Rating.
+					        intContactPointsUsed += (objContactControl.ConnectionRating +
+					                                 objContactControl.LoyaltyRating)*_objOptions.BPContact;
+				        }
 
-                // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-                int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
+			        }
+		        }
 
-                if (intContactPointsUsed >= intFreePoints)
-                {
-                    intContactPointsUsed -= intFreePoints;
-                }
-                else
-                {
-                    intContactPointsUsed = 0;
-                }
+		        // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
+		        int intFreePoints = (_objCharacter.CHA.TotalValue*_objOptions.FreeContactsMultiplier);
 
-                //if (intContactPointsUsed > _objCharacter.ContactPoints)
-                //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
-            
+		        if (intContactPointsUsed >= intFreePoints)
+		        {
+			        intContactPointsUsed -= intFreePoints;
+		        }
+		        else
+		        {
+			        intContactPointsUsed = 0;
+		        }
 
-                // Check if the character has  positive qualities outnumbering negative qualities
-                // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
-                // a Negative Quality.
-                int intPointsUsed = 0;
-                int intNegativePoints = 0;
-                foreach (ContactControl objContactControl in panEnemies.Controls)
-                {
-                    if (!objContactControl.Free)
-                    {
-                        // The Enemy's BP cost = their Connection + Loyalty Rating.
-                        intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.BPContact;
-                        intNegativePoints += intPointsUsed;
-                    }
-                }
+		        intContactPointsUsed += Math.Max(0, intHighPlaces - (_objCharacter.CHA.TotalValue*4));
 
-                // Calculate the BP used by Positive Qualities.
-                intPointsUsed = 0;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
-                    {
-                        intPointsUsed += objQuality.BP;
-                    }
-                }
-                //group contacts are counted as a posetive quality
-                intPointsUsed += intGroupContacts;
-                // Deduct the amount for free Qualities.
-                intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
-                int intPositivePointsUsed = intPointsUsed;
+		        //if (intContactPointsUsed > _objCharacter.ContactPoints)
+		        //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
 
-                // Calculate the BP used for Negative Qualities.
-                intPointsUsed = 0;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
-                    {
-                        intPointsUsed += objQuality.BP;
-                        intNegativePoints += objQuality.BP;
-                    }
-                }
 
-                // Deduct the amount for free Qualities.
-                intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
-                intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+		        // Check if the character has  positive qualities outnumbering negative qualities
+		        // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
+		        // a Negative Quality.
+		        int intPointsUsed = 0;
+		        int intNegativePoints = 0;
+		        foreach (ContactControl objContactControl in panEnemies.Controls)
+		        {
+			        if (!objContactControl.Free)
+			        {
+				        // The Enemy's BP cost = their Connection + Loyalty Rating.
+				        intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
+				                         _objOptions.BPContact;
+				        intNegativePoints += intPointsUsed;
+			        }
+		        }
 
-                // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-                if (_objOptions.ExceedNegativeQualitiesLimit)
-                {
-                    if (intNegativePoints < (_objCharacter.MaxKarma * -1))
-                    {
-                        intNegativePoints += _objCharacter.MaxKarma;
-                    }
-                }
+		        // Calculate the BP used by Positive Qualities.
+		        intPointsUsed = 0;
+		        foreach (Quality objQuality in _objCharacter.Qualities)
+		        {
+			        if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+			        {
+				        intPointsUsed += objQuality.BP;
+			        }
+		        }
+		        //group contacts are counted as a posetive quality
+		        intPointsUsed += intGroupContacts;
+		        // Deduct the amount for free Qualities.
+		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
+		        int intPositivePointsUsed = intPointsUsed;
 
-                // if positive points > 25
-                if (intPositivePointsUsed > _objCharacter.MaxKarma)
-                {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_PositiveQualityLimit").Replace("{0}", (_objCharacter.MaxKarma).ToString());
-                    blnValid = false;
-                }
+		        // Calculate the BP used for Negative Qualities.
+		        intPointsUsed = 0;
+		        foreach (Quality objQuality in _objCharacter.Qualities)
+		        {
+			        if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
+			        {
+				        intPointsUsed += objQuality.BP;
+				        intNegativePoints += objQuality.BP;
+			        }
+		        }
 
-                // if negative points > 25
-                if (intNegativePoints < (_objCharacter.MaxKarma * -1))
-                {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", (_objCharacter.MaxKarma).ToString());
-                    blnValid = false;
-                }
+		        // Deduct the amount for free Qualities.
+		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+		        intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
 
-            }
+		        // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+		        if (_objOptions.ExceedNegativeQualitiesLimit)
+		        {
+			        if (intNegativePoints < (_objCharacter.MaxKarma*-1))
+			        {
+				        intNegativePoints += _objCharacter.MaxKarma;
+			        }
+		        }
+
+		        // if positive points > 25
+		        if (intPositivePointsUsed > _objCharacter.MaxKarma)
+		        {
+			        strMessage += "\n\t" +
+			                      LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
+				                      .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+			        blnValid = false;
+		        }
+
+		        // if negative points > 25
+		        if (intNegativePoints < (_objCharacter.MaxKarma*-1))
+		        {
+			        strMessage += "\n\t" +
+			                      LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
+				                      .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+			        blnValid = false;
+		        }
+
+	        }
+
+	        if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7))
+	        {
+		        blnValid = false;
+		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_HighContact");
+	        }
 
             // Check if the character has gone over the Build Point total.
             int intBuildPoints = CalculateBP();

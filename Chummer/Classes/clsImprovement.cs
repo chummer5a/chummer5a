@@ -1812,8 +1812,8 @@ namespace Chummer
 				Log.Info(new object[] {"skilllevel", bonusNode.OuterXml});
 				String strSkill;
 				int value;
-				if (bonusNode.TryGetField("name", out strSkill) &&
-				    bonusNode.TryGetField("val", out value))
+				bonusNode.TryGetField("val", out value, 1);
+                if (bonusNode.TryGetField("name", out strSkill))
 				{
 					CreateImprovement(strSkill, objImprovementSource, strSourceName,
 						Improvement.ImprovementType.SkillLevel, "", value);
