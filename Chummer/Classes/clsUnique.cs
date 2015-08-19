@@ -937,7 +937,7 @@ namespace Chummer
 		Positive = 0,
 		Negative = 1,
         Entertainment = 2,
-        LifeModule
+        LifeModule = 3
 	}
 
 	/// <summary>
@@ -948,7 +948,8 @@ namespace Chummer
         Selected = 0,
         Metatype = 1,
         MetatypeRemovable = 2,
-        LifeModule,
+		BuiltIn = 3,
+        LifeModule = 4
     }
 
 	/// <summary>
@@ -1009,12 +1010,6 @@ namespace Chummer
 			{
 				case "Negative":
 					return QualityType.Negative;
-                case "Entertainment - Asset":
-                    return QualityType.Entertainment;
-                case "Entertainment - Service":
-                    return QualityType.Entertainment;
-                case "Entertainment - Outing":
-                    return QualityType.Entertainment;
                 case "LifeModule":
 			        return QualityType.LifeModule;
 				default:
@@ -1036,6 +1031,8 @@ namespace Chummer
 					return QualitySource.MetatypeRemovable;
 				case "LifeModule":
 					return QualitySource.LifeModule;
+				case "Built-In":
+					return QualitySource.BuiltIn;
 				default:
 					return QualitySource.Selected;
 			}

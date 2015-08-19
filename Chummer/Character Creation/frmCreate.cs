@@ -19128,8 +19128,51 @@ namespace Chummer
                         strBaseLifestyle = objNode["translate"].InnerText;
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
+					
+					foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+					{
+						if (strQualities.Length > 0)
+							strQualities += ", ";
+						string strQualityName = objQuality.DisplayName;
+						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+						XmlNode nodCost = objNode["lifestylecost"];
+						if (nodCost != null)
+						{
+							string strCost = nodCost.InnerText;
+							int intCost = Convert.ToInt32(strCost);
+							if (intCost > 0)
+							{
+								if (objNode["translate"] != null)
+									strQualities += objNode["translate"].InnerText + " [+" + intCost.ToString() + "%]";
+								else
+									strQualities += objNode["name"].InnerText + " [+" + intCost.ToString() + "%]";
+							}
+							else
+							{
+								if (objNode["translate"] != null)
+									strQualities += objNode["translate"].InnerText + " [" + intCost.ToString() + "%]";
+								else
+									strQualities += objNode["name"].InnerText + " [" + intCost.ToString() + "%]";
+							}
+						}
+						else
+						{
+							if (objNode["cost"] != null)
+							{
+								string strCost = objNode["cost"].InnerText;
+								if (objNode["translate"] != null)
+									strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
+								else
+									strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
+							}
+							else
+							{
+								strQualities += objNode["name"].InnerText;
+							}
+						}
+					}
 
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+					foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
                         {

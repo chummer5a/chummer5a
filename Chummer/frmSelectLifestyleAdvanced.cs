@@ -9,6 +9,7 @@ namespace Chummer
     public partial class frmSelectLifestyleAdvanced : Form
     {
         private bool _blnAddAgain = false;
+		private bool blnLoading = false;
         private Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
 		private LifestyleQuality _objLifestyleQuality;
@@ -70,28 +71,31 @@ namespace Chummer
                 }
             }
 			//Populate the Qualities list.
-			foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
+			if (_objSourceLifestyle != null)
 			{
-				TreeNode objNode = new TreeNode();
-				objNode.Text = objQuality.DisplayName;
-				objNode.Tag = objQuality.InternalId;
+				foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
+				{
+					TreeNode objNode = new TreeNode();
+					objNode.Text = objQuality.DisplayName;
+					objNode.Tag = objQuality.InternalId;
 
-				objNode.ToolTipText = objQuality.Notes;
+					objNode.ToolTipText = objQuality.Notes;
 
-				if (objQuality.Type == QualityType.Positive)
-				{
-					treLifestyleQualities.Nodes[0].Nodes.Add(objNode);
-					treLifestyleQualities.Nodes[0].Expand();
-				}
-				else if (objQuality.Type == QualityType.Negative)
-				{
-					treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
-					treLifestyleQualities.Nodes[1].Expand();
-				}
-				else
-				{
-					treLifestyleQualities.Nodes[2].Nodes.Add(objNode);
-					treLifestyleQualities.Nodes[2].Expand();
+					if (objQuality.Type == QualityType.Positive)
+					{
+						treLifestyleQualities.Nodes[0].Nodes.Add(objNode);
+						treLifestyleQualities.Nodes[0].Expand();
+					}
+					else if (objQuality.Type == QualityType.Negative)
+					{
+						treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+						treLifestyleQualities.Nodes[1].Expand();
+					}
+					else
+					{
+						treLifestyleQualities.Nodes[2].Nodes.Add(objNode);
+						treLifestyleQualities.Nodes[2].Expand();
+					}
 				}
 			}
 			cboBaseLifestyle.ValueMember = "Value";
@@ -161,7 +165,61 @@ namespace Chummer
 
         private void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CalculateValues();
+
+			if (!_blnSkipRefresh)
+			{
+				//This needs a handler for translations, will fix later.
+				if (cboBaseLifestyle.SelectedValue.ToString() == "Bolt Hole")
+				{
+					bool blnAddQuality = true;
+					foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
+					{
+						//Bolt Holes automatically come with the Not a Home quality.
+						if (objNode.Name == "Not a Home")
+						{
+							blnAddQuality = false;
+							break;
+						}
+					}
+					if (blnAddQuality)
+					{
+						XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+						XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Not a Home\"]");
+						LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+						TreeNode objNode = new TreeNode();
+						try
+						{
+							objQuality.Create(objXmlQuality, _objCharacter, QualitySource.BuiltIn, objNode);
+						}
+						catch
+						{
+						}
+						objQuality.LP = 0;
+						treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+						treLifestyleQualities.Nodes[1].Expand();
+						_objLifestyle.LifestyleQualities.Add(objQuality);
+					}
+				}
+				else
+				{
+					foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities.ToList())
+					{
+						if (objQuality.Name == "Not a Home")
+						{
+							_objLifestyle.LifestyleQualities.Remove(objQuality);
+							foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
+							{
+								//Bolt Holes automatically come with the Not a Home quality.
+								if (objNode.Text == "Not a Home")
+								{
+									treLifestyleQualities.Nodes[1].Nodes.Remove(objNode);
+								}
+							}
+						}
+					}
+				}
+			}
+			CalculateValues(); 
         }
 
         private void nudPercentage_ValueChanged(object sender, EventArgs e)
@@ -267,10 +325,17 @@ namespace Chummer
 			}
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
             {
-				XmlNode objXmlLifestyleQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text + "\"]");
-				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+				if ((objNode.Text == "Not a Home") && (_objLifestyle.BaseLifestyle == "Bolt Hole"))
+				{
+					//Already handled as part of the Bolt Hole shenanigans, doesn't need to be added again.
+				}
+				else
+				{ 
+					XmlNode objXmlLifestyleQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text + "\"]");
+					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
-				objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+					objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+				}
 			}
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[2].Nodes)
             {
@@ -491,8 +556,6 @@ namespace Chummer
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
 
             TreeNode objNode = new TreeNode();
-            List<Weapon> objWeapons = new List<Weapon>();
-            List<TreeNode> objWeaponNodes = new List<TreeNode>();
             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
             try { objQuality.Create(objXmlQuality, _objCharacter, QualitySource.Selected, objNode); }
@@ -545,448 +608,5 @@ namespace Chummer
                 CalculateValues();
             }
         }
-    }
-    public class LifestyleQuality
-    {
-        private Guid _guiID = new Guid();
-        private string _strName = "";
-        private string _strCost = "";
-        private string _strExtra = "";
-        private string _strSource = "";
-        private string _strPage = "";
-        private string _strNotes = "";
-        private bool _blnContributeToLimit = true;
-        private bool _blnPrint = true;
-        private int _intLP = 0;
-        private int _intCost = 0;
-        private QualityType _objLifestyleQualityType = QualityType.Positive;
-        private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
-        private XmlNode _nodBonus;
-        private readonly Character _objCharacter;
-        private string _strAltName = "";
-        private string _strAltPage = "";
-
-        #region Helper Methods
-        /// <summary>
-        /// Convert a string to a LifestyleQualityType.
-        /// </summary>
-        /// <param name="strValue">String value to convert.</param>
-        public QualityType ConvertToLifestyleQualityType(string strValue)
-        {
-            switch (strValue)
-            {
-                case "Negative":
-                    return QualityType.Negative;
-                case "Positive":
-					return QualityType.Positive;
-                default:
-                    return QualityType.Entertainment;
-            }
-        }
-
-        /// <summary>
-        /// Convert a string to a LifestyleQualitySource.
-        /// </summary>
-        /// <param name="strValue">String value to convert.</param>
-        public QualitySource ConvertToLifestyleQualitySource(string strValue)
-        {
-            switch (strValue)
-            {
-                default:
-                    return QualitySource.Selected;
-            }
-        }
-        #endregion
-
-        #region Constructor, Create, Save, Load, and Print Methods
-        public LifestyleQuality(Character objCharacter)
-        {
-            // Create the GUID for the new LifestyleQuality.
-            _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
-        }
-
-        /// <summary>
-        /// Create a LifestyleQuality from an XmlNode and return the TreeNodes for it.
-        /// </summary>
-        /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
-        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
-        /// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
-        /// <param name="strForceValue">Force a value to be selected for the LifestyleQuality.</param>
-        public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
-        {
-            _strName = objXmlLifestyleQuality["name"].InnerText;
-            _intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
-            try
-            {
-                _intCost = Convert.ToInt32(objXmlLifestyleQuality["cost"].InnerText);
-            }
-            catch 
-            {}
-            _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
-            _objLifestyleQualitySource = objLifestyleQualitySource;
-            if (objXmlLifestyleQuality["print"] != null)
-            {
-                if (objXmlLifestyleQuality["print"].InnerText == "no")
-                    _blnPrint = false;
-            }
-            if (objXmlLifestyleQuality["contributetolimit"] != null)
-            {
-                if (objXmlLifestyleQuality["contributetolimit"].InnerText == "no")
-                    _blnContributeToLimit = false;
-            }
-            _strSource = objXmlLifestyleQuality["source"].InnerText;
-            _strPage = objXmlLifestyleQuality["page"].InnerText;
-            if (GlobalOptions.Instance.Language != "en-us")
-            {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/LifestyleQuality[name = \"" + _strName + "\"]");
-                if (objLifestyleQualityNode != null)
-                {
-                    if (objLifestyleQualityNode["translate"] != null)
-                        _strAltName = objLifestyleQualityNode["translate"].InnerText;
-                    if (objLifestyleQualityNode["altpage"] != null)
-                        _strAltPage = objLifestyleQualityNode["altpage"].InnerText;
-                }
-            }
-
-            // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlLifestyleQuality.InnerXml.Contains("<bonus>"))
-            {
-                ImprovementManager objImprovementManager = new ImprovementManager(objCharacter);
-                if (!objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort))
-                {
-                    _guiID = Guid.Empty;
-                    return;
-                }
-                if (objImprovementManager.SelectedValue != "")
-                {
-                    _strExtra = objImprovementManager.SelectedValue;
-                    objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
-                }
-            }
-            objNode.Text = DisplayName;
-            objNode.Tag = InternalId;
-        }
-
-        /// <summary>
-        /// Save the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
-        {
-            objWriter.WriteStartElement("lifestylequality");
-            objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("lp", _intLP.ToString());
-            objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
-            objWriter.WriteElementString("print", _blnPrint.ToString());
-            objWriter.WriteElementString("lifestylequalitytype", _objLifestyleQualityType.ToString());
-            objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
-            objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strPage);
-            if (_nodBonus != null)
-                objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
-            else
-                objWriter.WriteElementString("bonus", "");
-            objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteEndElement();
-        }
-
-        /// <summary>
-        /// Load the Attribute from the XmlNode.
-        /// </summary>
-        /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
-        {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-            _strExtra = objNode["extra"].InnerText;
-            _intLP = Convert.ToInt32(objNode["lp"].InnerText);
-			if (objNode["cost"].InnerText != "")
-			{
-				_intCost = Convert.ToInt32(objNode["cost"].InnerText);
-			}
-            _blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
-            _blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
-            _objLifestyleQualityType = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
-            _objLifestyleQualitySource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
-            _strSource = objNode["source"].InnerText;
-            _strPage = objNode["page"].InnerText;
-            _nodBonus = objNode["bonus"];
-            try
-            {
-                _strNotes = objNode["notes"].InnerText;
-            }
-            catch
-            {
-            }
-
-            if (GlobalOptions.Instance.Language != "en-us")
-            {
-                XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestylequalities/lifestylequality[name = \"" + _strName + "\"]");
-                if (objLifestyleQualityNode != null)
-                {
-                    if (objLifestyleQualityNode["translate"] != null)
-                        _strAltName = objLifestyleQualityNode["translate"].InnerText;
-                    if (objLifestyleQualityNode["altpage"] != null)
-                        _strAltPage = objLifestyleQualityNode["altpage"].InnerText;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
-        {
-            if (_blnPrint)
-            {
-                objWriter.WriteStartElement("lifestylequality");
-                objWriter.WriteElementString("name", DisplayNameShort);
-                objWriter.WriteElementString("extra", LanguageManager.Instance.TranslateExtra(_strExtra));
-                objWriter.WriteElementString("lp", _intLP.ToString());
-                objWriter.WriteElementString("cost", _intCost.ToString());
-                string strLifestyleQualityType = _objLifestyleQualityType.ToString();
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
-                    if (objNode != null)
-                    {
-                        if (objNode.Attributes["translate"] != null)
-                            strLifestyleQualityType = objNode.Attributes["translate"].InnerText;
-                    }
-                }
-                objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
-                objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
-                objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
-                objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-                objWriter.WriteElementString("page", Page);
-                if (_objCharacter.Options.PrintNotes)
-                    objWriter.WriteElementString("notes", _strNotes);
-                objWriter.WriteEndElement();
-            }
-        }
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
-        /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
-
-        /// <summary>
-        /// LifestyleQuality's name.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
-        }
-
-        /// <summary>
-        /// Extra information that should be applied to the name, like a linked Attribute.
-        /// </summary>
-        public string Extra
-        {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
-        }
-
-        /// <summary>
-        /// Sourcebook.
-        /// </summary>
-        public string Source
-        {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
-        }
-
-        /// <summary>
-        /// Page Number.
-        /// </summary>
-        public string Page
-        {
-            get
-            {
-                string strReturn = _strPage;
-                if (_strAltPage != string.Empty)
-                    strReturn = _strAltPage;
-
-                return strReturn;
-            }
-            set
-            {
-                _strPage = value;
-            }
-        }
-
-        /// <summary>
-        /// Bonus node from the XML file.
-        /// </summary>
-        public XmlNode Bonus
-        {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
-        }
-
-        /// <summary>
-        /// LifestyleQuality Type.
-        /// </summary>
-        public QualityType Type
-        {
-            get
-            {
-                return _objLifestyleQualityType;
-            }
-            set
-            {
-                _objLifestyleQualityType = value;
-            }
-        }
-
-        /// <summary>
-        /// Source of the LifestyleQuality.
-        /// </summary>
-        public QualitySource OriginSource
-        {
-            get
-            {
-                return _objLifestyleQualitySource;
-            }
-            set
-            {
-                _objLifestyleQualitySource = value;
-            }
-        }
-
-        /// <summary>
-        /// Number of Build Points the LifestyleQuality costs.
-        /// </summary>
-        public int LP
-        {
-            get
-            {
-                return _intLP;
-            }
-            set
-            {
-                _intLP = value;
-            }
-        }
-
-        /// <summary>
-        /// The name of the object as it should be displayed on printouts (translated name only).
-        /// </summary>
-        public string DisplayNameShort
-        {
-            get
-            {
-                string strReturn = _strName;
-                if (_strAltName != string.Empty)
-                    strReturn = _strAltName;
-
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// The name of the object as it should be displayed in lists. Name (Extra).
-        /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                string strReturn = DisplayNameShort;
-
-                if (_strExtra != "")
-                {
-                    LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-                    // Attempt to retrieve the Attribute name.
-                    try
-                    {
-                        if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
-                            strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
-                        else
-                            strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-                    }
-                    catch
-                    {
-                        strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-                    }
-                }
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the LifestyleQuality appears on the printouts.
-        /// </summary>
-        public bool AllowPrint
-        {
-            get
-            {
-                return _blnPrint;
-            }
-            set
-            {
-                _blnPrint = value;
-            }
-        }
-
-        /// <summary>
-        /// Notes.
-        /// </summary>
-        public string Notes
-        {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
-        }
-        #endregion
     }
 }
