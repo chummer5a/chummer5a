@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-370</version>
+	<version>-360</version>
 	<name>English (US)</name>
 	<strings>
 		<!-- Common Strings -->
@@ -4359,7 +4359,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
     <string>
       <key>Checkbox_Options_Missions</key>
-      <text>Don't show missions ilegal items</text>
+      <text>Hide Qualities prohibited by Missions</text>
     </string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>

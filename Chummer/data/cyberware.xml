@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-370</version>
+  <version>-360</version>
   <grades>
     <grade>
       <id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
@@ -11,7 +11,6 @@
       <source>SR5</source>
       <page>451</page>
     </grade>
- 
 		<grade>
       <id>62dd61be-f1c4-4310-8545-73a4a4645393</id>
       <name>Standard (Burnout's Way)</name>
@@ -92,6 +91,7 @@
     <category>Nanocybernetics</category>
   </categories>
   <cyberwares>
+		<!-- Region Shadowrun 5 -->
 		<cyberware>
 			<name>Essence Hole</name>
 			<id>b57eadaa-7c3b-4b80-8d79-cbbd922c1196</id>
@@ -1387,18 +1387,9 @@
       <source>SR5</source>
       <page>458</page>
     </cyberware>
-		<cyberware>
-			<id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
-			<name>Fiberoptic Hair</name>
-			<category>Cosmetic Enhancement</category>
-			<rating>10</rating>
-			<ess>0.1</ess>
-			<capacity>[1]</capacity>
-			<avail>0</avail>
-			<cost>Rating * 100</cost>
-			<source>CF</source>
-			<page>73</page>
-		</cyberware>
+		<!-- End Region -->
+		<!-- Region Chrome Flesh -->
+		<!-- Region Headware-->
 		<cyberware>
 			<id>15471288-0cf2-497c-86bf-75fb24a1ce05</id>
 			<name>Attention Coprocessor</name>
@@ -1409,6 +1400,18 @@
 			<cost>3000</cost>
 			<source>CF</source>
 			<page>78</page>
+		</cyberware>
+		<cyberware>
+			<id>80ba030a-7be4-4edb-96d6-c5cfd85806d5</id>
+			<name>Chipjack</name>
+			<category>Headware</category>
+			<rating>6</rating>
+			<ess>Rating * 0.05</ess>
+			<capacity>0</capacity>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 1000</cost>
+			<source>CF</source>
+			<page>79</page>
 		</cyberware>
 		<cyberware>
 			<id>326e3b7b-db1e-4c40-81ce-3fb7be46ce99</id>
@@ -1422,93 +1425,6 @@
 			<page>79</page>
 		</cyberware>
 		<cyberware>
-			<id>2b7745f6-96ca-4f15-ad32-db216e7d5aac</id>
-			<name>Dynamic Handprints</name>
-			<category>Nanocybernetics</category>
-			<ess>0.2</ess>
-			<capacity>0</capacity>
-			<avail>12F</avail>
-			<cost>21000</cost>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>7b2accbc-7f6b-4362-ba7f-52a76fccf043</id>
-			<name>Flashback System</name>
-			<category>Nanocybernetics</category>
-			<ess>0.3</ess>
-			<capacity>0</capacity>
-			<avail>8R</avail>
-			<cost>6000</cost>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>5089640b-99fd-45c5-922c-2f26aa925847</id>
-			<name>Retinal Adjusters</name>
-			<category>Nanocybernetics</category>
-			<ess>0.2</ess>
-			<capacity>0</capacity>
-			<avail>16F</avail>
-			<cost>19000</cost>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>c6067916-5df2-4663-aeec-85c8fecb5ad2</id>
-			<name>Smartskin</name>
-			<category>Nanocybernetics</category>
-			<ess>Rating * 0.5</ess>
-			<rating>6</rating>
-			<capacity>0</capacity>
-			<avail>[Rating * 5]F</avail>
-			<cost>Rating * 5000</cost>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>a1337cab-c70e-4e49-b722-83b26f5fbde3</id>
-			<name>Voice Mimic</name>
-			<category>Nanocybernetics</category>
-			<ess>0.2</ess>
-			<rating>6</rating>
-			<capacity>0</capacity>
-			<avail>16F</avail>
-			<cost>Rating * 20000</cost>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>c94f0f0f-f201-49b1-9b4b-d921f4228140</id>
-			<name>Nanohive, Hard</name>
-			<rating>6</rating>
-			<category>Nanocybernetics</category>
-			<ess>Rating * 0.25</ess>
-			<capacity>[2]</capacity>
-			<avail>[Rating * 5]R</avail>
-			<cost>Rating * 12000</cost>
-			<bonus>
-				<selecttext />
-			</bonus>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
-			<id>52d76c1a-2918-4531-b6ad-5ea732a1e6ea</id>
-			<name>Nanohive, Soft</name>
-			<rating>6</rating>
-			<category>Nanocybernetics</category>
-			<ess>Rating * 0.2</ess>
-			<capacity>0</capacity>
-			<avail>[Rating * 5]R</avail>
-			<cost>Rating * 10000</cost>
-			<bonus>
-				<selecttext />
-			</bonus>
-			<source>CF</source>
-			<page>151</page>
-		</cyberware>
-		<cyberware>
 			<id>0bf88be2-4339-4861-90c8-97fc417eb1ce</id>
 			<name>False Face</name>
 			<category>Headware</category>
@@ -1518,6 +1434,18 @@
 			<cost>20000</cost>
 			<source>CF</source>
 			<page>79</page>
+		</cyberware>
+		<cyberware>
+			<id>56a5fcc1-5da7-4728-aae9-073c92f67c2b</id>
+			<name>Knowledge Hardwires</name>
+			<category>Headware</category>
+			<rating>6</rating>
+			<ess>Rating * 0.05</ess>
+			<capacity>0</capacity>
+			<avail>Rating</avail>
+			<cost>Rating * 2000</cost>
+			<source>CF</source>
+			<page>80</page>
 		</cyberware>
 		<cyberware>
 			<id>75c6b715-a593-41cc-aed9-8e3002ee60f2</id>
@@ -1540,6 +1468,18 @@
 			<cost>500</cost>
 			<source>CF</source>
 			<page>80</page>
+		</cyberware>
+		<cyberware>
+			<id>1b0084ee-6334-4a66-bee3-8b45c5cc63d2</id>
+			<name>Radar Sensor</name>
+			<category>Headware</category>
+			<rating>4</rating>
+			<ess>Rating * 0.25</ess>
+			<capacity>[Rating]</capacity>
+			<avail>Rating * 3</avail>
+			<cost>Rating * 4000</cost>
+			<source>CF</source>
+			<page>81</page>
 		</cyberware>
 		<cyberware>
 			<id>c8e3f859-a445-4df7-9e0c-37bdb815a319</id>
@@ -1574,42 +1514,8 @@
 			<source>CF</source>
 			<page>81</page>
 		</cyberware>
-		<cyberware>
-			<id>80ba030a-7be4-4edb-96d6-c5cfd85806d5</id>
-			<name>Chipjack</name>
-			<category>Headware</category>
-			<rating>6</rating>
-			<ess>Rating * 0.05</ess>
-			<capacity>0</capacity>
-			<avail>Rating * 2</avail>
-			<cost>Rating * 1000</cost>
-			<source>CF</source>
-			<page>79</page>
-		</cyberware>
-		<cyberware>
-			<id>56a5fcc1-5da7-4728-aae9-073c92f67c2b</id>
-			<name>Knowledge Hardwires</name>
-			<category>Headware</category>
-			<rating>6</rating>
-			<ess>Rating * 0.05</ess>
-			<capacity>0</capacity>
-			<avail>Rating</avail>
-			<cost>Rating * 2000</cost>
-			<source>CF</source>
-			<page>80</page>
-		</cyberware>
-		<cyberware>
-			<id>1b0084ee-6334-4a66-bee3-8b45c5cc63d2</id>
-			<name>Radar Sensor</name>
-			<category>Headware</category>
-			<rating>4</rating>
-			<ess>Rating * 0.25</ess>
-			<capacity>[Rating]</capacity>
-			<avail>Rating * 3</avail>
-			<cost>Rating * 4000</cost>
-			<source>CF</source>
-			<page>81</page>
-		</cyberware>
+		<!-- End Region -->
+		<!-- Region Eyeware -->
 		<cyberware>
 			<id>27aad555-301b-4dfa-826c-40c9c489d6a0</id>
 			<name>Additional Eye Mount</name>
@@ -1666,7 +1572,7 @@
 			<page>76</page>
 		</cyberware>
 		<cyberware>
-
+			<id>4A82E5B3-D7AA-4894-AF18-D90B8245A9C9</id>
 			<name>Spider Eyes</name>
 			<category>Eyeware</category>
 			<ess>0.2</ess>
@@ -1698,6 +1604,8 @@
 			<source>CF</source>
 			<page>77</page>
 		</cyberware>
+		<!-- End Region -->
+		<!-- Region Earware -->
 		<cyberware>
 			<id>40830ce9-b279-4951-adf2-05a69dd41d77</id>
 			<name>Antennae</name>
@@ -1772,6 +1680,8 @@
 			<source>CF</source>
 			<page>75</page>
 		</cyberware>
+		<!-- End Region Earware -->
+		<!-- Region Bodyware -->
 		<cyberware>
 			<id>894766dd-d7c5-4fd9-be8e-0578ab09c8d8</id>
 			<name>Auto Injector</name>
@@ -1784,7 +1694,7 @@
 			<page>82</page>
 		</cyberware>
 		<cyberware>
-
+			<id>AA9BD255-2FA0-4FFF-826E-1DAE3377AE6E</id>
 			<name>Auto Injector Expansion</name>
 			<category>Bodyware</category>
 			<ess>0.05</ess>
@@ -1847,7 +1757,7 @@
 			<page>82</page>
 		</cyberware>
 		<cyberware>
-
+			<id>4A82E5B3-D7AA-4894-AF18-D90B8245A9C9</id>
 			<name>Cyberfins</name>
 			<category>Bodyware</category>
 			<ess>0.1</ess>
@@ -1913,7 +1823,7 @@
 			<page>84</page>
 		</cyberware>
 		<cyberware>
-
+			<id>4A82E5B3-D7AA-4894-AF18-D90B8245A9C9</id>
 			<name>Magnetic System</name>
 			<category>Bodyware</category>
 			<ess>0.25</ess>
@@ -2013,6 +1923,32 @@
 			<cost>Rating * 500</cost>
 			<source>CF</source>
 			<page>84</page>
+		</cyberware>
+		<!-- End Region -->
+		<!-- Region Cosmetic Enhancement -->
+		<cyberware>
+			<id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
+			<name>Casemod</name>
+			<capacity>0</capacity>
+			<category>Cosmetic Enhancement</category>
+			<ess>0</ess>
+			<avail>Rating</avail>
+			<rating>4</rating>
+			<cost>Variable(0-10000)</cost>
+			<source>CF</source>
+			<page>72</page>
+		</cyberware>
+		<cyberware>
+			<id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
+			<name>Fiberoptic Hair</name>
+			<category>Cosmetic Enhancement</category>
+			<rating>10</rating>
+			<ess>0.1</ess>
+			<capacity>[1]</capacity>
+			<avail>0</avail>
+			<cost>Rating * 100</cost>
+			<source>CF</source>
+			<page>73</page>
 		</cyberware>
 		<cyberware>
 			<id>cb86075d-7d60-4618-9698-9e9268a28989</id>
@@ -2169,8 +2105,9 @@
 			<source>CF</source>
 			<page>72</page>
 		</cyberware>
+		<!-- End Region -->
+		<!-- Region Cyberlimb -->
 		<cyberware>
-
 			<name>Primitive Prosthetic Full Arm</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
@@ -2241,6 +2178,8 @@
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
+		<!-- End Region-->
+		<!-- Region Cyberlimb Enhancement -->
 		<cyberware>
 			<id>196c7cc2-a39a-4750-a3bc-3c1be77900a1</id>
 			<name>Built-in Medkit</name>
@@ -2524,18 +2463,8 @@
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
-		<cyberware>
-			<id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
-			<name>Casemod</name>
-			<capacity>0</capacity>
-			<category>Cosmetic Enhancement</category>
-			<ess>0</ess>
-			<avail>Rating</avail>
-			<rating>4</rating>
-			<cost>Variable(0-10000)</cost>
-			<source>CF</source>
-			<page>72</page>
-		</cyberware>
+		<!-- End Region -->
+		<!-- Region Cyber Implant Weaponry -->
 		<cyberware>
 			<id>5329c8e6-0b37-4c71-85dc-94911e8f8f92</id>
 			<name>Custom Grenade Launcher</name>
@@ -2598,7 +2527,10 @@
 			<ess>0.5</ess>
 			<capacity>[5]</capacity>
 			<avail>8F</avail>
-			<addweapon>Extreme Cyberimplant Weapon</addweapon>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<addweapon>Extreme Cyberimplant</addweapon>
 			<cost>2000</cost>
 			<source>CF</source>
 			<page>90</page>
@@ -2662,7 +2594,6 @@
 				<conditionmonitor>
 					<physical>1</physical>
 				</conditionmonitor>
-				<selectside />
 			</bonus>
 			<source>CF</source>
 			<page>91</page>
@@ -2713,5 +2644,96 @@
 			<source>CF</source>
 			<page>90</page>
 		</cyberware>
+		<!-- End Region -->
+		<!-- Region Nanocybernetics -->
+		<cyberware>
+			<id>a1337cab-c70e-4e49-b722-83b26f5fbde3</id>
+			<name>Voice Mimic</name>
+			<category>Nanocybernetics</category>
+			<ess>0.2</ess>
+			<rating>6</rating>
+			<capacity>0</capacity>
+			<avail>16F</avail>
+			<cost>Rating * 20000</cost>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>2b7745f6-96ca-4f15-ad32-db216e7d5aac</id>
+			<name>Dynamic Handprints</name>
+			<category>Nanocybernetics</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>12F</avail>
+			<cost>21000</cost>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>7b2accbc-7f6b-4362-ba7f-52a76fccf043</id>
+			<name>Flashback System</name>
+			<category>Nanocybernetics</category>
+			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>8R</avail>
+			<cost>6000</cost>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>c94f0f0f-f201-49b1-9b4b-d921f4228140</id>
+			<name>Nanohive, Hard</name>
+			<rating>6</rating>
+			<category>Nanocybernetics</category>
+			<ess>Rating * 0.25</ess>
+			<capacity>[2]</capacity>
+			<avail>[Rating * 5]R</avail>
+			<cost>Rating * 12000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>52d76c1a-2918-4531-b6ad-5ea732a1e6ea</id>
+			<name>Nanohive, Soft</name>
+			<rating>6</rating>
+			<category>Nanocybernetics</category>
+			<ess>Rating * 0.2</ess>
+			<capacity>0</capacity>
+			<avail>[Rating * 5]R</avail>
+			<cost>Rating * 10000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>5089640b-99fd-45c5-922c-2f26aa925847</id>
+			<name>Retinal Adjusters</name>
+			<category>Nanocybernetics</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>16F</avail>
+			<cost>19000</cost>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<cyberware>
+			<id>c6067916-5df2-4663-aeec-85c8fecb5ad2</id>
+			<name>Smartskin</name>
+			<category>Nanocybernetics</category>
+			<ess>Rating * 0.5</ess>
+			<rating>6</rating>
+			<capacity>0</capacity>
+			<avail>[Rating * 5]F</avail>
+			<cost>Rating * 5000</cost>
+			<source>CF</source>
+			<page>151</page>
+		</cyberware>
+		<!-- End Region -->
+		<!-- End Region -->
   </cyberwares>
 </chummer>

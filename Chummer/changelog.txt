@@ -1,41 +1,42 @@
 Application Change:
-- Dumpshock link changed to issue tracker
-- Chummer now handles essence holes correctly (old ones have to be readded to work)
-- Missions filter. (Global setting, sorry)
-- Fixed a bug with life modules where Tír Tairngire would now show demographics
+- Dumpshock link changed to issue tracker.
+- A First-pass effort at adding a filter for Missions-restricted items has been added to the Options menu. Will be getting a later review to enable better filtering of the qualities, but for now it's just a global option.
+- Fixed a bug with life modules where Tír Tairngire wouldn't show demographics.
 - Chummer now handles essence holes automatically. Old items may need to be re-added.
 - College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. 
-- Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities, because it's ugly.
-- N of M concact points in priority build works again.
-- Fixed an issue where chummer failed to open when clicking on a .chum5 file
-- Implemented functionality for the quality "Friends in high places"
-- Chummer now checks for contacts with a rating higher than 7 at chargen
+- Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities because it's ugly, and put in the data files content.
+- N of M contact points in priority build works again.
+- Fixed an issue where chummer failed to open when clicking on a .chum5 file.
+- Implemented functionality for the quality "Friends in High Places".
+- Save/Load methods for Advanced Lifestyles should actually work properly now, but it's still a bit fragile. Bugs are to be expected, particularly if you change your mind a lot.
+- Most issues with adepts and powers should be resolved.
+- Rounding issue for Recoil Compensation from Strength resolved.
 
 Data Change:
 - Not longer showing debug item in lifestyles
 - Lifemodules no longer contains a "Magical Education (Archtype)"
 - Tír is now spelled correctly a few more places
 - Equipment, Weapon and Ammo PACKs from run faster added.
-  - Backpack (20¥) not added, as chummer don't contain said item
-  - Earbuds (1) with sound link don't have sound link, as Chummer5a cannot add cyberware to gear
-  - Big Boom Pistoleer pack have 190 rounds of heavy regular amunition, as Chummer5a don't contain distictions between cased and regular ammo.
-  - First you tell me holdouts can't take accesories, now you tell me to add concealable holsters, i'm confused Catalyst.
-  - Cheap Soldier Pack don't contain disposable inhaler as chummer don't contain said item.
-  - Sportsman pack don't contain Orange Vest(5¥) as chummer don't contain said item.
-  - Tranq Darter Pack and Tranq Pistol Darter Pack don't contain Reusable Syringe (25¥) as chummer don't contain said item.
-  - Medium Machine gunner pack don't contain ammo belts.
+  - There are a couple of important caveats with this. First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. Second, items that don't currently exist haven't been added in, like backpacks. Again, mostly a tedium thing but there's also the lack of data for how much they're supposed to cost and such to think about. 
+	  Items not added include:
+	  - Backpack.
+	  - Sound-link on the earbuds.
+	  - Disposable inhaler from Cheap Soldier Pack.
+	  - Orange vest from Sportsman Pack.
+	  - Reusable Syringe from Tranq Darter Pack and Tranq Pistol Darter Pack.
+	  - Bug-out bag's dufflebag.
+	  - Mechanic Shop's duct-tape.
+	  - Surveillance pack's Periscope.
+	  - Infiltration Kit contains a Micro-Transceiver on the assumption that that's correct.
+	  - Medium Machine gunner pack doesn't contain ammo belts, but does come with the ammo.
   - Ammo packs not added as stacks split among multiple types of weapons is not possible in Chummer5a.
-  - Several Cyberware packs not added as they contain one item and developers have limited time.
-  - As none of the devs have heard about Reflex enhancer, Rigger Pack gets Reaction Enchancers instead.
-  - Bug-out bag don't contain Dufflebag (20¥) as chummer don't contain said item.
-  - Most lifestyles ignored, as developers have free time better spendt that adding single items twice.
-  - Gunbunny pack not added as it contains "raw" assecories
-  - Mechanic shop pack don't contain Duct tape
-  - SURVEILLANCE PACK, Periscope
-  - Infiltration Kit contains a Micro-Transceiver as devs were unable to locate a transceiver
-  - Demolitions kit wrong detonator?
-- Some custom packs added from reddits shadowrun comunities
-  - Thanks to reddits /u/NotB0b and ShadowNET SysOp for permision
+  - Rigger Pack gets Reaction Enhancers instead of the mythical reflex enhancers. Come on guys, it's a list of items. Seriously, if you need an editor I'm sure there's tons of people who'd be happy to sign an NDA.
+  - Big Boom Pistoleer pack has 190 rounds of heavy regular amunition, because Chummer doesn't care about your brass.
+  - Most lifestyles ignored, per the 'we can't be bothered adding single items' policy mentioned above.
+  - Gunbunny pack not added as it contains unattached accessories, which Chummer doesn't currently like handling. To be added in a future patch.
+  - Some custom packs added from reddit's shadowrun comunitieswith permission from /u/NotB0b and ShadowNET SysOp.
+  - Fixed an issue with the Extreme Cyberimplant and Junkyard Jaw from Chrome Flesh.
+  - Pulse Weave costs Rating * 3000.
 
 New strings:
 - Message_HighContact

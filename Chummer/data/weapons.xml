@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-370</version>
+	<version>-360</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -30,6 +30,7 @@
 		<category type="mlauncher">Missile Launchers</category>
 	</categories>
 	<weapons>
+		<!-- Region Shadowrun 5 -->
 		<weapon>
 			<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
 			<name>Ares Thuderstruck Gauss Rifle</name>
@@ -6297,6 +6298,8 @@
 			<source>SR5</source>
 			<page>428</page>
 		</weapon>
+		<!-- End Region -->
+		<!-- Region Run and Gun -->
 		<weapon>
 			<id>74e0b1e5-2449-4075-9b0d-eb0d8383033b</id>
 			<name>HK XM30 Grenade Launcher</name>
@@ -6368,6 +6371,8 @@
 			<source>RG</source>
 			<page>38</page>
 		</weapon>
+		<!-- End Region -->
+		<!-- Region Sail Away, Sweet Sister -->
 		<weapon>
 			<id>3a91672e-0588-45a6-b225-149624e813ac</id>
 			<name>Ares Predator III</name>
@@ -6432,6 +6437,9 @@
 			<source>SASS</source>
 			<page>31</page>
 		</weapon>
+		<!-- End Region -->
+		<!-- Region Run Faster -->
+		<!-- Region Metagenetic Weapons -->
 		<weapon>
 			<name>Digging Claws</name>
 			<category>Quality</category>
@@ -6688,7 +6696,11 @@
 			<useskill>Unarmed Combat</useskill>
 			<source>RF</source>
 			<page>105</page>
-		</weapon>	
+		</weapon>
+		<!--End Region -->
+		<!--End Region -->
+		<!-- Region Chrome Flesh-->
+		<!-- Region Chrome Flesh Cyber-Weapons -->
 		<weapon>
 			<id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
 			<name>Oral Slasher</name>
@@ -6750,7 +6762,48 @@
 			<source>CF</source>
 			<page>91</page>
 		</weapon>
-    <!--Chrome Flesh Bio-Weapons -->
+		<weapon>
+			<id>D82CFA4C-DBEB-4CEA-977C-8849E97C0438</id>
+			<name>Extreme Cyberimplant</name>
+			<category>Cyberweapon</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-6</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<source>CF</source>
+			<page>91</page>
+		</weapon>
+		<weapon>
+			<id>D82CFA4C-DBEB-4CEA-977C-8849E97C0438</id>
+			<name>Junkyard Jaw</name>
+			<category>Cyberweapon</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-6</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<source>CF</source>
+			<page>91</page>
+		</weapon>
+		<!-- End Region -->
+    <!--Region Chrome Flesh Bio-Weapons -->
 		<weapon>
 			<name>Claws (Bio-Weapon)</name>
 			<id>458A2ECB-725D-414B-B033-23C18C62E61B</id>
@@ -7013,8 +7066,11 @@
 			<source>CF</source>
 			<page>90</page>
 		</weapon>
+		<!-- End Region -->
+		<!-- End Region-->
 	</weapons>
 	<accessories>
+		<!-- Region Shadowrun 5 -->
 		<accessory>
 			<id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
 			<name>Silencer, Ares Light Fire 70</name>
@@ -7032,34 +7088,6 @@
 			<cost>750</cost>
 			<source>SR5</source>
 			<page>425</page>
-		</accessory>
-		<accessory>
-			<id>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</id>
-			<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
-			<mount>Barrel</mount>
-			<avail>6F</avail>
-			<cost>700</cost>
-			<source>RG</source>
-			<page>32</page>
-		</accessory>
-		<accessory>
-			<id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>
-			<name>Collapsed Frame</name>
-			<mount>Internal</mount>
-			<conceal>-6</conceal>
-			<avail>6F</avail>
-			<cost>700</cost>
-			<source>RG</source>
-			<page>32</page>
-		</accessory>
-		<accessory>
-			<id>b895c431-3fb0-49b7-a3fc-ddb4e54b69ee</id>
-			<name>Extra Case, Ares Executioner</name>
-			<mount/>
-			<avail>0</avail>
-			<cost>400</cost>
-			<source>RG</source>
-			<page>35</page>
 		</accessory>
 		<accessory>
 			<id>294a6b30-6e1c-4b7d-8e93-10964647c2dd</id>
@@ -7260,15 +7288,6 @@
 			<page>433</page>
 		</accessory>
 		<accessory>
-			<id>2fa27223-dd56-4520-b26b-a112e8733320</id>
-			<name>Vindicator 200-Round Belt</name>
-			<mount/>
-			<avail>4</avail>
-			<cost>100</cost>
-			<source>RG</source>
-			<page>42</page>
-		</accessory>
-		<accessory>
 			<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 			<name>Speed Loader</name>
 			<mount/>
@@ -7288,6 +7307,8 @@
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
+		<!-- End Region-->
+		<!-- Region Run and Gun-->
 		<accessory>
 			<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 			<name>Advanced Safety System, Basic</name>
@@ -7296,6 +7317,43 @@
 			<cost>600</cost>
 			<source>RG</source>
 			<page>50</page>
+		</accessory>
+		<accessory>
+			<id>7898e7dc-3ee6-46a9-83d7-d3ec54a456fb</id>
+			<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
+			<mount>Barrel</mount>
+			<avail>6F</avail>
+			<cost>700</cost>
+			<source>RG</source>
+			<page>32</page>
+		</accessory>
+		<accessory>
+			<id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>
+			<name>Collapsed Frame</name>
+			<mount>Internal</mount>
+			<conceal>-6</conceal>
+			<avail>6F</avail>
+			<cost>700</cost>
+			<source>RG</source>
+			<page>32</page>
+		</accessory>
+		<accessory>
+			<id>b895c431-3fb0-49b7-a3fc-ddb4e54b69ee</id>
+			<name>Extra Case, Ares Executioner</name>
+			<mount/>
+			<avail>0</avail>
+			<cost>400</cost>
+			<source>RG</source>
+			<page>35</page>
+		</accessory>
+		<accessory>
+			<id>2fa27223-dd56-4520-b26b-a112e8733320</id>
+			<name>Vindicator 200-Round Belt</name>
+			<mount/>
+			<avail>4</avail>
+			<cost>100</cost>
+			<source>RG</source>
+			<page>42</page>
 		</accessory>
 		<accessory>
 			<id>fad8757c-622f-41ce-8412-8bbb6fbf6445</id>
@@ -7636,6 +7694,8 @@
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
+		<!-- End Region-->
+		<!-- Region Gun H(e)aven 3 -->
 		<accessory>
 			<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 			<name>Vintage</name>
@@ -7645,6 +7705,8 @@
 			<source>GH3</source>
 			<page>53</page>
 		</accessory>
+		<!-- End Region -->
+		<!-- Region Sail Away, Sweet Sister -->
 		<accessory>
 			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 			<name>Personalized Grip</name>
@@ -7655,6 +7717,8 @@
 			<source>SASS</source>
 			<page>31</page>
 		</accessory>
+		<!-- End Region -->
+		<!-- Region Chrome Flesh -->
 		<accessory>
 			<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
 			<name>Cyberimplanted</name>
@@ -7664,5 +7728,6 @@
 			<source>CF</source>
 			<page>90</page>
 		</accessory>		
+		<!-- End Region -->
 	</accessories>
 </chummer>

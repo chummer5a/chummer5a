@@ -825,7 +825,7 @@
 			// chkMoreLethalGameplay
 			// 
 			this.chkMoreLethalGameplay.AutoSize = true;
-			this.chkMoreLethalGameplay.Location = new System.Drawing.Point(8, 98);
+			this.chkMoreLethalGameplay.Location = new System.Drawing.Point(366, 29);
 			this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
 			this.chkMoreLethalGameplay.Size = new System.Drawing.Size(132, 17);
 			this.chkMoreLethalGameplay.TabIndex = 0;
@@ -962,7 +962,6 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGlobal.Controls.Add(this.chkMissions);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
 			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
 			this.tabGlobal.Controls.Add(this.txtURLAppPath);
@@ -2230,6 +2229,7 @@
 			// tabOptionalRules
 			// 
 			this.tabOptionalRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabOptionalRules.Controls.Add(this.chkMissions);
 			this.tabOptionalRules.Controls.Add(this.chkContactPoints);
 			this.tabOptionalRules.Controls.Add(this.chkMayBuyQualities);
 			this.tabOptionalRules.Controls.Add(this.chkExtendAnyDetectionSpell);
@@ -2259,7 +2259,7 @@
 			// chkContactPoints
 			// 
 			this.chkContactPoints.AutoSize = true;
-			this.chkContactPoints.Location = new System.Drawing.Point(8, 328);
+			this.chkContactPoints.Location = new System.Drawing.Point(366, 259);
 			this.chkContactPoints.Name = "chkContactPoints";
 			this.chkContactPoints.Size = new System.Drawing.Size(252, 17);
 			this.chkContactPoints.TabIndex = 32;
@@ -2271,7 +2271,7 @@
 			// chkMayBuyQualities
 			// 
 			this.chkMayBuyQualities.AutoSize = true;
-			this.chkMayBuyQualities.Location = new System.Drawing.Point(8, 351);
+			this.chkMayBuyQualities.Location = new System.Drawing.Point(366, 282);
 			this.chkMayBuyQualities.Name = "chkMayBuyQualities";
 			this.chkMayBuyQualities.Size = new System.Drawing.Size(148, 17);
 			this.chkMayBuyQualities.TabIndex = 31;
@@ -2283,7 +2283,7 @@
 			// chkExtendAnyDetectionSpell
 			// 
 			this.chkExtendAnyDetectionSpell.AutoSize = true;
-			this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(8, 144);
+			this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(366, 75);
 			this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
 			this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(378, 17);
 			this.chkExtendAnyDetectionSpell.TabIndex = 30;
@@ -2306,7 +2306,7 @@
 			// chkAlternateMatrixAttribute
 			// 
 			this.chkAlternateMatrixAttribute.AutoSize = true;
-			this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(8, 259);
+			this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(366, 190);
 			this.chkAlternateMatrixAttribute.Name = "chkAlternateMatrixAttribute";
 			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
 			this.chkAlternateMatrixAttribute.TabIndex = 12;
@@ -2318,7 +2318,7 @@
 			// chkAllowCustomTransgenics
 			// 
 			this.chkAllowCustomTransgenics.AutoSize = true;
-			this.chkAllowCustomTransgenics.Location = new System.Drawing.Point(8, 305);
+			this.chkAllowCustomTransgenics.Location = new System.Drawing.Point(366, 236);
 			this.chkAllowCustomTransgenics.Name = "chkAllowCustomTransgenics";
 			this.chkAllowCustomTransgenics.Size = new System.Drawing.Size(297, 17);
 			this.chkAllowCustomTransgenics.TabIndex = 14;
@@ -2330,7 +2330,7 @@
 			// chkAlternateComplexFormCost
 			// 
 			this.chkAlternateComplexFormCost.AutoSize = true;
-			this.chkAlternateComplexFormCost.Location = new System.Drawing.Point(8, 282);
+			this.chkAlternateComplexFormCost.Location = new System.Drawing.Point(366, 213);
 			this.chkAlternateComplexFormCost.Name = "chkAlternateComplexFormCost";
 			this.chkAlternateComplexFormCost.Size = new System.Drawing.Size(231, 17);
 			this.chkAlternateComplexFormCost.TabIndex = 13;
@@ -2342,7 +2342,7 @@
 			// chkUseCalculatedVehicleSensorRatings
 			// 
 			this.chkUseCalculatedVehicleSensorRatings.AutoSize = true;
-			this.chkUseCalculatedVehicleSensorRatings.Location = new System.Drawing.Point(8, 236);
+			this.chkUseCalculatedVehicleSensorRatings.Location = new System.Drawing.Point(366, 167);
 			this.chkUseCalculatedVehicleSensorRatings.Name = "chkUseCalculatedVehicleSensorRatings";
 			this.chkUseCalculatedVehicleSensorRatings.Size = new System.Drawing.Size(255, 17);
 			this.chkUseCalculatedVehicleSensorRatings.TabIndex = 11;
@@ -2354,7 +2354,7 @@
 			// chkArmorDegradation
 			// 
 			this.chkArmorDegradation.AutoSize = true;
-			this.chkArmorDegradation.Location = new System.Drawing.Point(8, 213);
+			this.chkArmorDegradation.Location = new System.Drawing.Point(366, 144);
 			this.chkArmorDegradation.Name = "chkArmorDegradation";
 			this.chkArmorDegradation.Size = new System.Drawing.Size(181, 17);
 			this.chkArmorDegradation.TabIndex = 10;
@@ -2366,7 +2366,7 @@
 			// chkArmorSuitCapacity
 			// 
 			this.chkArmorSuitCapacity.AutoSize = true;
-			this.chkArmorSuitCapacity.Location = new System.Drawing.Point(8, 190);
+			this.chkArmorSuitCapacity.Location = new System.Drawing.Point(366, 121);
 			this.chkArmorSuitCapacity.Name = "chkArmorSuitCapacity";
 			this.chkArmorSuitCapacity.Size = new System.Drawing.Size(179, 17);
 			this.chkArmorSuitCapacity.TabIndex = 9;
@@ -2378,7 +2378,7 @@
 			// chkMaximumArmorModifications
 			// 
 			this.chkMaximumArmorModifications.AutoSize = true;
-			this.chkMaximumArmorModifications.Location = new System.Drawing.Point(8, 167);
+			this.chkMaximumArmorModifications.Location = new System.Drawing.Point(366, 98);
 			this.chkMaximumArmorModifications.Name = "chkMaximumArmorModifications";
 			this.chkMaximumArmorModifications.Size = new System.Drawing.Size(226, 17);
 			this.chkMaximumArmorModifications.TabIndex = 8;
@@ -2390,7 +2390,7 @@
 			// chkStrengthAffectsRecoil
 			// 
 			this.chkStrengthAffectsRecoil.AutoSize = true;
-			this.chkStrengthAffectsRecoil.Location = new System.Drawing.Point(8, 374);
+			this.chkStrengthAffectsRecoil.Location = new System.Drawing.Point(366, 305);
 			this.chkStrengthAffectsRecoil.Name = "chkStrengthAffectsRecoil";
 			this.chkStrengthAffectsRecoil.Size = new System.Drawing.Size(203, 17);
 			this.chkStrengthAffectsRecoil.TabIndex = 7;
@@ -2455,7 +2455,7 @@
 			// chkCapSkillRating
 			// 
 			this.chkCapSkillRating.AutoSize = true;
-			this.chkCapSkillRating.Location = new System.Drawing.Point(8, 75);
+			this.chkCapSkillRating.Location = new System.Drawing.Point(366, 6);
 			this.chkCapSkillRating.Name = "chkCapSkillRating";
 			this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
 			this.chkCapSkillRating.TabIndex = 2;
@@ -2468,7 +2468,7 @@
 			// chkNoSingleArmorEncumbrance
 			// 
 			this.chkNoSingleArmorEncumbrance.AutoSize = true;
-			this.chkNoSingleArmorEncumbrance.Location = new System.Drawing.Point(8, 121);
+			this.chkNoSingleArmorEncumbrance.Location = new System.Drawing.Point(366, 52);
 			this.chkNoSingleArmorEncumbrance.Name = "chkNoSingleArmorEncumbrance";
 			this.chkNoSingleArmorEncumbrance.Size = new System.Drawing.Size(322, 17);
 			this.chkNoSingleArmorEncumbrance.TabIndex = 1;
@@ -2771,12 +2771,12 @@
 			// chkMissions
 			// 
 			this.chkMissions.AutoSize = true;
-			this.chkMissions.Location = new System.Drawing.Point(9, 222);
+			this.chkMissions.Location = new System.Drawing.Point(8, 75);
 			this.chkMissions.Name = "chkMissions";
-			this.chkMissions.Size = new System.Drawing.Size(175, 17);
-			this.chkMissions.TabIndex = 23;
+			this.chkMissions.Size = new System.Drawing.Size(197, 17);
+			this.chkMissions.TabIndex = 33;
 			this.chkMissions.Tag = "Checkbox_Options_Missions";
-			this.chkMissions.Text = "Don\'t show missions ilegal items";
+			this.chkMissions.Text = "Hide Qualities prohibited by Missions";
 			this.chkMissions.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions

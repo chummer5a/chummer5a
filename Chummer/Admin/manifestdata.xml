@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest>
+	<!-- Region Applications -->
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
@@ -16,6 +17,8 @@
 		<notes>- Translator Application</notes>
 		<url>https://www.dropbox.com/s/r6rgpkrr21mfccs/Translator.exe?dl=1</url>
 	</file>
+	<!-- End Region -->
+	<!-- Region Sheets -->
 	<file>
 		<name>sheets/Commlinks.xsl</name>
 		<type>Character Sheets</type>
@@ -184,6 +187,8 @@
 		<notes>- Vehicle Stat Block</notes>
 		<url>https://www.dropbox.com/s/4q47bu603h8data/Vehicle%20Block.xsl?dl=1</url>
 	</file>
+	<!-- Rnd Region -->
+	<!-- Export -->
 	<file>
 		<name>export/Squad Manager.xsl</name>
 		<type>Export Template</type>
@@ -192,6 +197,8 @@
 		<notes>- Squad Manager (http://stauder-online.de/sr/english.htm)</notes>
 		<url>https://www.dropbox.com/s/hxv8x2ww3qs2p8f/Squad%20Manager.xsl?dl=1</url>
 	</file>
+	<!-- End Region -->
+	<!-- Region Data Files -->
 	<file>
 		<name>data/armor.xml</name>
 		<type>Data Files</type>
@@ -251,7 +258,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-370</version>
+		<version>-360</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -387,7 +394,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-380</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -467,9 +474,10 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-370</version>
+		<version>-360</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>
 	</file>
+	<!-- End Region -->
 </manifest>
