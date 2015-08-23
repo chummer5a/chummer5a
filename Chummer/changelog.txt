@@ -9,15 +9,20 @@ Application Change:
 - Fixed an issue where chummer failed to open when clicking on a .chum5 file.
 - Implemented functionality for the quality "Friends in High Places".
 - Save/Load methods for Advanced Lifestyles should actually work properly now, but it's still a bit fragile. Bugs are to be expected, particularly if you change your mind a lot.
-- Most issues with adepts and powers should be resolved.
+- Most issues with adepts getting levels of powers from multiple sources should be resolved. (Mentor Spirits, Foci, etc.)
 - Rounding issue for Recoil Compensation from Strength resolved.
+- Variable costs for Qualities enabled to support the Rank quality. May eventually lead into redoing the way Qualities with multiple ratings work, because High Pain Tolerance (Rating 6) offends me every time I scroll past it.
 
 Data Change:
-- Not longer showing debug item in lifestyles
-- Lifemodules no longer contains a "Magical Education (Archtype)"
-- Tír is now spelled correctly a few more places
+- Organising data file contents into regions to keep things easy to work with. 
+- Rank Quality added.
+- The Debug Lifestyle has been hidden.
+- Lifemodules no longer contains a "Magical Education (Archetype)".
+- Tír is now spelled correctly a few more places.
 - Equipment, Weapon and Ammo PACKs from run faster added.
-  - There are a couple of important caveats with this. First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. Second, items that don't currently exist haven't been added in, like backpacks. Again, mostly a tedium thing but there's also the lack of data for how much they're supposed to cost and such to think about. 
+	There are a couple of important caveats with this:
+	First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. 
+	Second, items that don't currently exist haven't been added in, like backpacks. Again, mostly a tedium thing but the PACKs code doesn't play nice with Custom Item and I don't like littering up the data files with fluff items. 
 	  Items not added include:
 	  - Backpack.
 	  - Sound-link on the earbuds.
@@ -27,7 +32,7 @@ Data Change:
 	  - Bug-out bag's dufflebag.
 	  - Mechanic Shop's duct-tape.
 	  - Surveillance pack's Periscope.
-	  - Infiltration Kit contains a Micro-Transceiver on the assumption that that's correct.
+	  - Infiltration Kit contains a Micro-Transceiver on the assumption that that's the correct item.
 	  - Medium Machine gunner pack doesn't contain ammo belts, but does come with the ammo.
   - Ammo packs not added as stacks split among multiple types of weapons is not possible in Chummer5a.
   - Rigger Pack gets Reaction Enhancers instead of the mythical reflex enhancers. Come on guys, it's a list of items. Seriously, if you need an editor I'm sure there's tons of people who'd be happy to sign an NDA.
@@ -40,7 +45,7 @@ Data Change:
 
 New strings:
 - Message_HighContact
-
+- Checkbox_Options_Missions
 
 Build 172:
 Application Change:

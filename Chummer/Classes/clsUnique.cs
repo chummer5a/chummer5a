@@ -1064,8 +1064,36 @@ namespace Chummer
             {
                 _strMetagenetic = objXmlQuality["metagenetic"].InnerText;
             }
-            if (objXmlQuality["karma"] != null)
-            {
+			// Check for a Variable Cost.
+			if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+			{
+					int intMin = 0;
+					int intMax = 0;
+					string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+					if (strCost.Contains("-"))
+					{
+						string[] strValues = strCost.Split('-');
+						intMin = Convert.ToInt32(strValues[0]);
+						intMax = Convert.ToInt32(strValues[1]);
+					}
+					else
+						intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+					if (intMin != 0 || intMax != 0)
+					{
+						frmSelectNumber frmPickNumber = new frmSelectNumber();
+						if (intMax == 0)
+							intMax = 1000000;
+						frmPickNumber.Minimum = intMin;
+						frmPickNumber.Maximum = intMax;
+						frmPickNumber.Description = LanguageManager.Instance.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+						frmPickNumber.AllowCancel = false;
+						frmPickNumber.ShowDialog();
+						_intBP = frmPickNumber.SelectedValue;
+					}
+			}
+			else
+			{ 
                 _intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
             }
             if (objXmlQuality["lp"] != null)
@@ -1210,6 +1238,7 @@ namespace Chummer
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
 			_objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
+			_strMetagenetic = objNode["metagenetic"].InnerText;
 			try
 			{
 				_strMutant = objNode["mutant"].InnerText;

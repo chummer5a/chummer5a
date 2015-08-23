@@ -97,7 +97,35 @@ namespace Chummer
 				return;
 
 			XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
-			int intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+			int intBP = 0;
+			if (objXmlQuality["karma"].InnerText.StartsWith("Variable"))
+			{
+				int intMin = 0;
+				int intMax = 0;
+				string strCost = objXmlQuality["karma"].InnerText.Replace("Variable(", string.Empty).Replace(")", string.Empty);
+				if (strCost.Contains("-"))
+				{
+					string[] strValues = strCost.Split('-');
+					intMin = Convert.ToInt32(strValues[0]);
+					intMax = Convert.ToInt32(strValues[1]);
+				}
+				else
+					intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+				if (intMax == 0)
+				{
+					intMax = 1000000;
+					lblBP.Text = String.Format("{0:###,###,##0¥+}", intMin);
+				}
+				else
+					lblBP.Text = String.Format("{0:###,###,##0}", intMin) + "-" + String.Format("{0:###,###,##0¥}", intMax);
+
+				intBP = intMin;
+			}
+			else
+			{
+				intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
+			}
             if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualities)
             {
                 intBP *= 2;

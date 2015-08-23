@@ -1710,13 +1710,11 @@
           <group>Professional</group>
           <val>1</val>
         </knowledgeskilllevel>
-        <!--<freepositivequalities>5</freepositivequalities>-->
+        <freepositivequalities>5</freepositivequalities>
       </bonus>
       <addqualities>
-        <!--<addquality>Military Rank</addquality>  
-          TODO: Rank not in chummer
-        -->
-        <addquality>Code or Honor</addquality>
+        <addquality>Rank</addquality>
+        <addquality>Code of Honor</addquality>
       </addqualities>
       <story>Allan, please add story</story>
       <source>RF</source>

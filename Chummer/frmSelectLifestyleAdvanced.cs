@@ -107,29 +107,31 @@ namespace Chummer
             if (cboBaseLifestyle.SelectedIndex == -1)
             { cboBaseLifestyle.SelectedIndex = 0; }
 
-            if (_objSourceLifestyle != null)
-            {
-                txtLifestyleName.Text = _objSourceLifestyle.Name;
-                nudRoommates.Value = _objSourceLifestyle.Roommates;
-                nudPercentage.Value = _objSourceLifestyle.Percentage;
+			if (_objSourceLifestyle != null)
+			{
+				txtLifestyleName.Text = _objSourceLifestyle.Name;
+				nudRoommates.Value = _objSourceLifestyle.Roommates;
+				nudPercentage.Value = _objSourceLifestyle.Percentage;
 				nudArea.Value = _objSourceLifestyle.Area;
-                nudAreaEntertainment.Value = _objSourceLifestyle.AreaEntertainment;
+				nudAreaEntertainment.Value = _objSourceLifestyle.AreaEntertainment;
 				nudComforts.Value = _objSourceLifestyle.Comforts;
 				nudComfortsEntertainment.Value = _objSourceLifestyle.ComfortsEntertainment;
 				nudSecurity.Value = _objSourceLifestyle.Security;
 				nudSecurityEntertainment.Value = _objSourceLifestyle.SecurityEntertainment;
 				cboBaseLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
 				lblSource.Text = _objSourceLifestyle.Source;
-				
-				CalculateValues();
-            }
 
-            // Safehouses have a cost per week instead of cost per month.
-            if (_objType == LifestyleType.Safehouse)
-                lblCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
+				CalculateValues();
+			}
+			else
+			{
+				XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
+				Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", nudComforts.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
+				Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", nudArea.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
+				Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", nudSecurity.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
+			}
 
             _blnSkipRefresh = false;
-            //CalculateValues();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -370,9 +372,8 @@ namespace Chummer
             }
             nudComfortsEntertainment.Maximum = Convert.ToInt32(Convert.ToInt32(objXmlAspect["limit"].InnerText) - nudComforts.Value);
             Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", nudComforts.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
-
-            // Area.
-            objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
+			// Area.
+			objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
             nudArea.Minimum = Convert.ToInt32(objXmlAspect["minimum"].InnerText);
             nudArea.Maximum = Convert.ToInt32(objXmlAspect["limit"].InnerText);
             if (nudArea.Value > nudArea.Maximum)
@@ -381,9 +382,8 @@ namespace Chummer
             }
             nudAreaEntertainment.Maximum = Convert.ToInt32(Convert.ToInt32(objXmlAspect["limit"].InnerText) - nudArea.Value);
             Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", nudArea.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
-
-            // Security.
-            objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
+			// Security.
+			objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
             nudSecurity.Minimum = Convert.ToInt32(objXmlAspect["minimum"].InnerText);
             nudSecurity.Maximum = Convert.ToInt32(objXmlAspect["limit"].InnerText);
             if (nudSecurity.Value > nudSecurity.Maximum)

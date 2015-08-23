@@ -17,7 +17,7 @@ namespace Chummer
 
         private double _dblCostMultiplier = 1.0;
         private double _dblESSMultiplier = 1.0;
-		private int _intAvailModifier = 0;
+		private int _intAvailModifier = 0; 
 		private double _dblCharacterESSModifier = 1.0;
 		private double _dblGenetechCostModifier = 1.0;
 		private double _dblBasicBiowareESSModifier = 1.0;

@@ -17530,7 +17530,7 @@ namespace Chummer
 			if (objLifestyle.BaseLifestyle != "")
 			{
 				// Edit Advanced Lifestyle.
-				frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, _objCharacter);
+				frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
 				frmPickLifestyle.SetLifestyle(objLifestyle);
 				frmPickLifestyle.ShowDialog(this);
 
