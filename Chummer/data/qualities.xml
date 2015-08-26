@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <chummer>
 	<version>-380</version>
 	<categories>
@@ -6911,6 +6911,26 @@
 		<!-- End Region -->
 <!-- Region Data Trails-->
 <!--Region Data Trails Positive Qualities -->
+	<quality>
+		<id></id>
+		<name>Chatty</name>
+		<karma>5</karma>
+		<category>Positive</category>
+		<bonus>
+			<limitmodifier>
+				<limit>Social</limit>
+				<value>1</value>
+				<condition>When communicating through AR or VR</condition>
+			</limitmodifier>
+		</bonus>
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>146</page>
+	</quality>
     <quality>
       <id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
       <name>Data Anomaly</name>
@@ -6920,6 +6940,34 @@
       <source>DT</source>
       <page>44</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Designer</name>
+		<karma>6</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>146</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Exceptional Entity</name>
+		<karma>25</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>147</page>
+	</quality>
     <quality>
       <id>72190f27-8bcf-48c4-bdbd-72bb91aa0dcf</id>
       <name>Fade to Black</name>
@@ -6947,6 +6995,66 @@
       <source>DT</source>
       <page>44</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Hello World (Rating 1)</name>
+		<karma>8</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Hello World (Rating 2)</quality>
+				<quality>Hello World (Rating 3)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>147</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Hello World (Rating 2)</name>
+		<karma>16</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Hello World (Rating 1)</quality>
+				<quality>Hello World (Rating 3)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>147</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Hello World (Rating 3)</name>
+		<karma>24</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Hello World (Rating 1)</quality>
+				<quality>Hello World (Rating 2)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>147</page>
+	</quality>
     <quality>
       <id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
       <name>I C U</name>
@@ -6956,6 +7064,76 @@
       <source>DT</source>
       <page>44</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Inherent Program</name>
+		<karma>7</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>147</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Improved Restoration</name>
+		<karma>3</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>149</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Low Profile</name>
+		<karma>15</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>149</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Munge</name>
+		<karma>15</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>149</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Multiprocessing</name>
+		<karma>8</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>150</page>
+	</quality>
     <quality>
       <id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
       <name>Ninja Vanish</name>
@@ -6995,6 +7173,66 @@
       <source>DT</source>
       <page>45</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Pilot Origins (Rating 1)</name>
+		<karma>8</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Pilot Origins (Rating 2)</quality>
+				<quality>Pilot Origins (Rating 3)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>150</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Pilot Origins (Rating 2)</name>
+		<karma>16</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Pilot Origins (Rating 1)</quality>
+				<quality>Pilot Origins (Rating 3)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>150</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Pilot Origins (Rating 3)</name>
+		<karma>24</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<forbidden>
+			<oneof>
+				<quality>Pilot Origins (Rating 1)</quality>
+				<quality>Pilot Origins (Rating 2)</quality>
+			</oneof>
+		</forbidden>
+		<source>DT</source>
+		<page>150</page>
+	</quality>
     <quality>
       <id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
       <name>Prime Datahaven Membership</name>
@@ -7029,6 +7267,76 @@
       <source>DT</source>
       <page>46</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Redundancy</name>
+		<karma>12</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Sapper</name>
+		<karma>7</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Sensor Upgrade</name>
+		<karma>5</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Snooper</name>
+		<karma>7</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
+	<quality>
+		<id></id>
+		<name>Virtual Stability</name>
+		<karma>5</karma>
+		<category>Positive</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
 		<!-- End Region -->
 <!--Region Data Trails Negative Qualities -->
     <quality>
@@ -7051,6 +7359,23 @@
       <source>DT</source>
       <page>46</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Corrupter</name>
+		<karma>-10</karma>
+		<category>Negative</category>
+		<bonus />
+		<addqualities>
+			<addquality>Gremlins (Rating 2)</addquality>
+		</addqualities>
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
     <quality>
       <id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
       <name>Curiosity Killed the Cat</name>
@@ -7093,6 +7418,20 @@
       <source>DT</source>
       <page>47</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Easily Exploitable</name>
+		<karma>-8</karma>
+		<category>Negative</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
     <quality>
       <id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
       <name>Electronic Witness</name>
@@ -7111,6 +7450,23 @@
       <source>DT</source>
       <page>48</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Fragmentation</name>
+		<karma>-18</karma>
+		<category>Negative</category>
+		<limit>no</limit>
+		<bonus>
+			<selecttext />
+		</bonus>
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>151</page>
+	</quality>
     <quality>
       <id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
       <name>Latest and Greatest</name>
@@ -7139,6 +7495,22 @@
       <source>DT</source>
       <page>48</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Persnickety Renter</name>
+		<karma>-6</karma>
+		<category>Negative</category>
+		<bonus>
+			<selecttext />
+		</bonus>
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>152</page>
+	</quality>
     <quality>
       <id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
       <name>Prank Warrior</name>
@@ -7149,6 +7521,20 @@
       <source>DT</source>
       <page>49</page>
     </quality>
+	<quality>
+		<id></id>
+		<name>Real World Naiveté</name>
+		<karma>-8</karma>
+		<category>Negative</category>
+		<bonus />
+		<required>
+			<oneof>
+				<metatype>AI</metatype>
+			</oneof>
+		</required>
+		<source>DT</source>
+		<page>152</page>
+	</quality>
     <quality>
       <id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
       <name>Wanted by God</name>
