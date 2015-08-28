@@ -15054,7 +15054,7 @@ namespace Chummer
 
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
-                intEssenceLoss = _objCharacter.EssencePenalty;
+                intEssenceLoss = Math.Max(0, _objCharacter.EssencePenalty); //bad stuff happens if negative
 
             nudBOD.Maximum = _objCharacter.BOD.TotalMaximum;
             nudAGI.Maximum = _objCharacter.AGI.TotalMaximum;
@@ -15092,7 +15092,7 @@ namespace Chummer
             nudKCHA.Value = _objCharacter.CHA.Karma;
             nudKINT.Value = _objCharacter.INT.Karma;
             nudKLOG.Value = _objCharacter.LOG.Karma;
-            nudKWIL.Value = _objCharacter.WIL.Karma;
+	        nudKWIL.Value = _objCharacter.WIL.Karma;
             nudKEDG.Value = _objCharacter.EDG.Karma;
             nudKMAG.Value = _objCharacter.MAG.Karma;
             nudKRES.Value = _objCharacter.RES.Karma;
