@@ -367,24 +367,23 @@ namespace Chummer
 			if (!_objCharacter.IgnoreRules)
 			{
 				intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
-				if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit))
+				if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
 				{
 					
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				}
-				else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit))
+				else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
 				{
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				}
-				else
+				else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
 				{
-					if (intSpellCount >= intSpellLimit)
-					{
-						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-						return;
-					}
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
+						LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+
 				}
 			}
 
