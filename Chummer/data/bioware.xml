@@ -552,6 +552,12 @@
 			<name>Myostatin Inhibitor</name>
 			<category>Genemods</category>
 			<ess>0.3</ess>
+      <bonus>
+        <specificattribute>
+          <name>STR</name>
+          <val>1</val>
+        </specificattribute>
+      </bonus>
 			<capacity>0</capacity>
 			<avail>10</avail>
 			<cost>30500</cost>
