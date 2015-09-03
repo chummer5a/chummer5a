@@ -3736,7 +3736,7 @@ namespace Chummer
 				if (_intEssenceDiscount != 0)
 				{
 					decimal decDiscount = Convert.ToDecimal(_intEssenceDiscount, GlobalOptions.Instance.CultureInfo) * 0.01m;
-					decESSMultiplier -= decDiscount;
+					decESSMultiplier *= (1.0m - decDiscount);
 				}
 
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
