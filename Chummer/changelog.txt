@@ -1,3 +1,11 @@
+Build 174:
+Application Change:
+- Custom essence cost now stacks multiplicatively instead of addictively 
+
+Data Change:
+- Magical Education Life Module now have a proper karma cost (so no crashes when adding it)
+- Myostatin Inhibitor genemod now adds 1 strenght (no karma)
+
 Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker.
