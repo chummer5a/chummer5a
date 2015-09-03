@@ -1427,6 +1427,7 @@
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>Magical Education (Magican)</name>
+      <karma>50</karma>
       <bonus>
         <attributelevel>
           <name>WIL</name>
@@ -1484,6 +1485,7 @@
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>Magical Education (Aspected)</name>
+      <karma>50</karma>
       <bonus>
         <attributelevel>
           <name>WIL</name>
@@ -1541,6 +1543,7 @@
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>Magical Education (Mystic Adept)</name>
+      <karma>50</karma>
       <bonus>
         <attributelevel>
           <name>WIL</name>
@@ -1598,6 +1601,7 @@
       <stage>Teen Years</stage>
       <category>LifeModule</category>
       <name>Magical Education (Adept)</name>
+      <karma>50</karma>
       <bonus>
         <attributelevel>
           <name>WIL</name>
