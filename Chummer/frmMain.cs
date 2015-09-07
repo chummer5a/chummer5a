@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-
+using System.Reflection;
 namespace Chummer
 {
 	public partial class frmMain : Form
@@ -15,7 +15,10 @@ namespace Chummer
         #region Control Events
         public frmMain()
 		{
+			
 			InitializeComponent();
+			Version version = Assembly.GetExecutingAssembly().GetName().Version;
+			this.Text = string.Format("Chummer 5a - Version {0}.{1}.{2}",version.Major, version.Minor, version.Build);
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
             /** Dashboard **/

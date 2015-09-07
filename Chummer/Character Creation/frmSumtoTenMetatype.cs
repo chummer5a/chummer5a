@@ -1494,7 +1494,7 @@ namespace Chummer
                 XmlNodeList objXmlTalentList = objXmlDocumentSumtoTen.SelectNodes("/chummer/sum10priorities/SumtoTen[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
                 if (objXmlTalentList[0]["magic"] != null)
                 {
-                    _objCharacter.MAG.Value = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
+                    //_objCharacter.MAG.Value = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
                     _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
                     if (_objCharacter.MAG.Value > 0)
                         _objCharacter.MAGEnabled = true;
@@ -1515,7 +1515,7 @@ namespace Chummer
                 objXmlTalentList = objXmlDocumentSumtoTen.SelectNodes("/chummer/sum10priorities/SumtoTen[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
                 if (objXmlTalentList[0]["resonance"] != null)
                 {
-                    _objCharacter.RES.Value = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
+                    //_objCharacter.RES.Value = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
                     _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
                     _objCharacter.RESEnabled = true;
                     _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);

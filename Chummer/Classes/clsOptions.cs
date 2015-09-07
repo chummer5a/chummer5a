@@ -878,7 +878,7 @@ namespace Chummer
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
         private int _intFreeContactsMultiplier = 3;
-        private int _intFreeKnowledgeMultiplier = 3;
+        private int _intFreeKnowledgeMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
         private int _intNuyenPerBP = 2000;

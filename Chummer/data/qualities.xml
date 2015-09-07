@@ -6883,6 +6883,7 @@
 					<attribute>REA</attribute>
 					<attribute>STR</attribute>
 					<val>1</val>
+					<affectbase />
 				</selectattribute>
 			</bonus>
 			<limit>no</limit>
@@ -6900,6 +6901,7 @@
 					<attribute>INT</attribute>
 					<attribute>CHA</attribute>
 					<val>1</val>
+					<affectbase />
 				</selectattribute>
 			</bonus>
 			<limit>no</limit>
