@@ -1238,7 +1238,13 @@ namespace Chummer
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
 			_objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
-			_strMetagenetic = objNode["metagenetic"].InnerText;
+			 try
+            		{
+                		_strMetagenetic = objNode["metagenetic"].InnerText;
+            		}
+            		catch 
+        		{
+            		}
 			try
 			{
 				_strMutant = objNode["mutant"].InnerText;
