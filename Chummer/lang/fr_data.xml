@@ -22204,75 +22204,88 @@
   </chummer>
   <chummer file="complexforms.xml">
     <complexforms>
-      <complexform>
+      <complexform translated="True">
         <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
         <name>Cleaner</name>
-        <translate>Cleaner</translate>
+        <translate>Nettoyeuse</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
         <name>Diffusion of [Matrix Attribute]</name>
-        <translate>Diffusion of [Matrix Attribute]</translate>
+        <translate>Dispersion de [Attribut Matriciel]</translate>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
         <name>Editor</name>
-        <translate>Editor</translate>
+        <translate>Edition</translate>
+		<page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
         <name>Infusion of [Matrix Attribute]</name>
-        <translate>Infusion of [Matrix Attribute]</translate>
+        <translate>Injection de [Attribut Matriciel]</translate>
+		<page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
         <name>Static Veil</name>
-        <translate>Static Veil</translate>
+        <translate>Voile d'interférances</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
         <name>Pulse Storm</name>
-        <translate>Pulse Storm</translate>
+        <translate>Tempête d'impulsion</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
         <name>Puppeteer</name>
-        <translate>Puppeteer</translate>
+        <translate>Marionnettiste</translate>
+		<page>255</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
         <name>Resonance Channel</name>
-        <translate>Resonance Channel</translate>
+        <translate>Canal de résonance</translate>
+		<page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
         <name>Resonance Spike</name>
-        <translate>Resonance Spike</translate>
+        <translate>Pic de résonance</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
         <name>Resonance Veil</name>
-        <translate>Resonance Veil</translate>
+        <translate>Voile de résonance</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
         <name>Static Bomb</name>
-        <translate>Static Bomb</translate>
+        <translate>Bombe d'interférances</translate>
+		<page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
         <name>Stitches</name>
-        <translate>Stitches</translate>
+        <translate>Suture</translate>
+		<page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
         <name>Transcendent Grid</name>
-        <translate>Transcendent Grid</translate>
+        <translate>Grille transcendante</translate>
+		<page>255</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
         <name>Tattletale</name>
-        <translate>Tattletale</translate>
+        <translate>Indic</translate>
+		<page>255</page>
       </complexform>
     </complexforms>
   </chummer>
