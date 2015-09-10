@@ -6704,7 +6704,7 @@
 		<weapon>
 			<id>0b43e7a8-892d-403a-a0e2-0d015556b1af</id>
 			<name>Oral Slasher</name>
-			<category>Exotic Melee Weapons</category>
+			<category>Cyberweapon</category>
 			<type>Melee</type>
 			<conceal>-4</conceal>
 			<accuracy>Physical</accuracy>
@@ -6713,6 +6713,7 @@
 			<ap>-3</ap>
 			<mode>0</mode>
 			<rc>0</rc>
+			<useskill>Exotic Melee Weapon</useskill>
 			<ammo>0</ammo>
 			<avail>12R</avail>
 			<cost>0</cost>
@@ -6737,6 +6738,7 @@
 			<avail>12F</avail>
 			<cost>0</cost>
 			<cyberware>yes</cyberware>
+			<useskill>Exotic Ranged Weapon</useskill>
 			<allowaccessory>true</allowaccessory>
 			<range>Light Pistols</range>
 			<source>CF</source>
@@ -6758,6 +6760,7 @@
 			<avail>0</avail>
 			<cost>0</cost>
 			<cyberware>yes</cyberware>
+			<useskill>Unarmed Combat</useskill>
 			<allowaccessory>true</allowaccessory>
 			<source>CF</source>
 			<page>91</page>
@@ -6779,6 +6782,7 @@
 			<cost>0</cost>
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
 			<source>CF</source>
 			<page>91</page>
 		</weapon>
@@ -6790,6 +6794,7 @@
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
+			<useskill>Unarmed Combat</useskill>
 			<damage>(STR+3)P</damage>
 			<ap>-6</ap>
 			<mode>0</mode>
