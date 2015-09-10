@@ -1527,7 +1527,7 @@
 			<category>Cultured</category>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
-			<avail>Rating * 4</avail>
+			<avail>[Rating * 4]R</avail>
 			<cost>Rating * 4000</cost>
 			<source>CF</source>
 			<page>119</page>
