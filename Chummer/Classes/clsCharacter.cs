@@ -2161,7 +2161,12 @@ namespace Chummer
                 && this.Qualities.Where(x => x.Name.Equals("Resistance to Pathogens and Toxins")).FirstOrDefault() != null)
             {
                 this.Qualities.Remove(this.Qualities.Where(x => x.Name.Equals("Resistance to Pathogens and Toxins")).First());
-                XmlNode objXmlDwarfQuality = XmlManager.Instance.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Dwarf Resistance\"]");
+                XmlNode objXmlDwarfQuality = XmlManager.Instance.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Resistance to Pathogens/Toxins\"]");
+
+                if (objXmlDwarfQuality==null)
+                    objXmlDwarfQuality = XmlManager.Instance.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Dwarf Resistance\"]");
+                
+
 
                 TreeNode objNode = new TreeNode();
                 List<Weapon> objWeapons = new List<Weapon>();

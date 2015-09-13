@@ -57,7 +57,7 @@
       <page>451</page>
     </grade>
     <grade>
-      <id>2b599ecd-4e80-4669-a78e-4db232c80a83</id>
+      <id>0c86e85c-7e3e-4b6f-aa4b-26d8b379a7c9</id>
       <name>Gammaware</name>
       <ess>0.4</ess>
       <cost>5</cost>
@@ -1445,7 +1445,7 @@
 		</bioware>
 		<!--Chrome Flesh Cultured Bioware -->
 		<bioware>
-			<id>81b40aa8-98d1-4a5d-89d6-9b6d438006da</id>
+			<id>afbf823f-3116-4967-93d2-0e334bb35d3a</id>
 			<name>Cerebellum Booster</name>
 			<category>Cultured</category>
 			<rating>2</rating>
@@ -1527,7 +1527,7 @@
 			<category>Cultured</category>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
-			<avail>[Rating * 4]R</avail>
+			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 4000</cost>
 			<source>CF</source>
 			<page>119</page>
@@ -1571,7 +1571,7 @@
 			<page>108</page>
 		</bioware>
 		<bioware>
-			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
 			<name>Moderate Biosculpting Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
@@ -1585,7 +1585,7 @@
 			<page>108</page>
 		</bioware>
 		<bioware>
-			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
 			<name>Severe Biosculpting Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
@@ -1599,7 +1599,7 @@
 			<page>108</page>
 		</bioware>
 		<bioware>
-			<id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
+			<id>aa347008-38f1-4cb4-a919-bc705a8efe71</id>
 			<name>Troll Reduction</name>
 			<category>Biosculpting</category>
 			<rating>2</rating>
@@ -1955,7 +1955,7 @@
       <page>121</page>
     </bioware>
     <bioware>
-      <id></id>
+      <id>77bcbea4-fc69-42e6-b4e3-0debe6c08596</id>
       <name>Stinger, Medium</name>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
