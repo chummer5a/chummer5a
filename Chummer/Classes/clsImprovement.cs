@@ -903,14 +903,18 @@ namespace Chummer
                     if (NodeExists(nodBonus, "selecttext"))
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selecttext");
-                        if (_strForcedValue != "")
+
+					if (_objCharacter != null)
+					{
+						if (_strForcedValue != "")
 						{
-                            _strLimitSelection = _strForcedValue;
+							_strLimitSelection = _strForcedValue;
 						}
-						else if (_objCharacter.Pushtext.Count > 0)
+						else if (_objCharacter.Pushtext.Count != 0)
 						{
 							_strLimitSelection = _objCharacter.Pushtext.Pop();
 						}
+					}
 
 						objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 							"_strForcedValue = " + _strSelectedValue);

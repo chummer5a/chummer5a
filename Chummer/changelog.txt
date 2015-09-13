@@ -4,11 +4,19 @@ Application Change:
 - Fixed the default values for free karma knowledge. 
 - Issues with Sum to Ten character generation artifically granting a MAG value higher than the metatype maximum should be fixed. 
 - Chummer's main window now shows the current version.
+- Fixed a crash issue with Dwarves and the Resistance to Pathogens/Toxins metaquality, courtesy of Argo2445.
+- Fixed a crash caused by missing information in SURGE qualities. 
+- Fixed a crash when trying to add items that include the selecttext bonus to vehicles.
+- Public Awareness is no longer an automatically calculated value.
 
 Data Change:
 - Magical Education Life Module now has a proper karma cost; prevents crashes.
 - Myostatin Inhibitor genemod now adds 1 Strength. The karma cost needs additional code support.
 - Fixed skill usage for cyber implant weapons.
+- Fixed missing categories for the Attention-Seeking and Sadistic variants of Poor Self Control.
+- Fixed an issue with the Net weapon that caused a crash.
+- Fixed a crash issue with the Trauma Damper, courtesy of SolitarySky.
+
 
 Build 173:
 Application Change:

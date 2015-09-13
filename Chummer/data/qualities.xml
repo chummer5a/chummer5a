@@ -7179,20 +7179,6 @@
 <!-- Region Chrome Flesh -->
 <!--Region Chrome Flesh Positive Qualities -->
     <quality>
-      <id>4765ff9e-90f4-4783-b0cc-826419fafade</id>
-      <name>Poor Self Control (Attention-Seeking)</name>
-      <karma>5</karma>
-      <source>CF</source>
-      <page>58</page>
-    </quality>
-    <quality>
-      <id>f5fada49-7344-4e0d-b2d8-61aead583d7b</id>
-      <name>Poor Self Control (Sadisic)</name>
-      <karma>8</karma>
-      <source>CF</source>
-      <page>58</page>
-    </quality>
-    <quality>
 			<id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
 			<name>Biocompatability (Cyberware)</name>
 			<karma>5</karma>
@@ -7421,6 +7407,22 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>4765ff9e-90f4-4783-b0cc-826419fafade</id>
+			<name>Poor Self Control (Attention-Seeking)</name>
+			<category>Negative</category>
+			<karma>5</karma>
+			<source>CF</source>
+			<page>58</page>
+		</quality>
+		<quality>
+			<id>f5fada49-7344-4e0d-b2d8-61aead583d7b</id>
+			<name>Poor Self Control (Sadisic)</name>
+			<category>Negative</category>
+			<karma>8</karma>
 			<source>CF</source>
 			<page>58</page>
 		</quality>

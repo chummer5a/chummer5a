@@ -5470,10 +5470,7 @@ namespace Chummer
                 double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
                 dblAwareness = Math.Floor(dblAwareness / 3);
 
-                int intReturn = Convert.ToInt32(dblAwareness);
-
-                if (intReturn < 0)
-                    intReturn = 0;
+                int intReturn = 0;
 
                 return intReturn;
             }
@@ -5486,7 +5483,7 @@ namespace Chummer
         {
             get
             {
-                return Math.Max(CalculatedPublicAwareness + PublicAwareness, 0);
+                return PublicAwareness;
             }
         }
 
@@ -5499,7 +5496,7 @@ namespace Chummer
             {
                 string strReturn = "";
 
-                strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+                //strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
 
                 return strReturn;
             }

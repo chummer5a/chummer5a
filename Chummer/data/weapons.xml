@@ -2489,7 +2489,7 @@
 			<cost>350</cost>
 			<allowaccessory>true</allowaccessory>
 			<useskill>Exotic Ranged Weapon</useskill>
-			<range>Net</range>
+			<range>Thrown Knife</range>
 			<source>RG</source>
 			<page>24</page>
 		</weapon>
