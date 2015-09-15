@@ -15016,13 +15016,13 @@
       <quality translated="True">
         <id>0cf25fda-725b-49fd-a8cf-de589e938065</id>
         <name>Insomnia (Basic)</name>
-        <translate>Insomnie (Basique)</translate>
+        <translate>Insomnie (Mineure)</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
         <id>149e6bf7-a6b4-4893-b755-4d983372079c</id>
         <name>Insomnia (Full)</name>
-        <translate>Insomnie (Total)</translate>
+        <translate>Insomnie (Majeurel)</translate>
         <page>84</page>
       </quality>
       <quality translated="True">
@@ -15242,19 +15242,19 @@
           <spec translate="Poussée vectorielle">Vector Thrust</spec>
           <spec translate="LTA (blimp)">LTA (blimp)</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>e09e5aa7-e496-41a2-97ce-17f577361888</id>
         <name>Animal Handling</name>
         <translate>Animaux</translate>
         <specs>
-          <spec translate="Herding">Herding</spec>
-          <spec translate="Riding">Riding</spec>
-          <spec translate="Training">Training</spec>
-          <spec translate="[Animal Type]">[Animal Type]</spec>
+          <spec translate="Elevage">Herding</spec>
+          <spec translate="Monte">Riding</spec>
+          <spec translate="Dressage">Training</spec>
+          <spec translate="[Type d'animaux]">[Animal Type]</spec>
         </specs>
-        <page>36</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>74a68a9e-8c5b-4998-8dbb-08c1e768afc3</id>
@@ -15263,21 +15263,21 @@
         <specs>
           <spec translate="Conception de sort (par catégorie)">Spell Design</spec>
           <spec translate="Conception de focus (par type)">Focus Design</spec>
-          <spec translate="Spirit Formula">Spirit Formula</spec>
+          <spec translate="Formule d'esprit">Spirit Formula</spec>
         </specs>
-        <page>122</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>1537ca5c-fa93-4c05-b073-a2a0eed91b8e</id>
         <name>Archery</name>
         <translate>Armes de trait</translate>
         <specs>
-          <spec translate="Bow">Bow</spec>
-          <spec translate="Crossbow">Crossbow</spec>
-          <spec translate="Non-Standard Ammunition">Non-Standard Ammunition</spec>
-          <spec translate="Slingshot">Slingshot</spec>
+          <spec translate="Arc">Bow</spec>
+          <spec translate="Arbalète">Crossbow</spec>
+          <spec translate="Munitions insolites">Non-Standard Ammunition</spec>
+          <spec translate="Frondes">Slingshot</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>ada6d9b2-e451-4289-be45-7085fa34a51a</id>
@@ -15292,7 +15292,7 @@
           <spec translate="Accessoires d’armes">Weapon Accessories</spec>
           <spec translate="Melee Weapons">Melee Weapons</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>2f4c706f-5ac5-4774-8a45-3b4667989a20</id>
@@ -15300,36 +15300,36 @@
         <translate>Artisanat</translate>
         <specs>
           <spec translate="Menuiserie">Carpentry</spec>
-          <spec translate="Cooking">Cooking</spec>
-          <spec translate="Drawing">Drawing</spec>
-          <spec translate="Sculpting">Sculpting</spec>
+          <spec translate="Cuisine">Cooking</spec>
+          <spec translate="Dessin">Drawing</spec>
+          <spec translate="Sculpture">Sculpting</spec>
           <spec translate="[Discipline]">[Discipline]</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>59318078-e071-411b-9194-7222560e9f4a</id>
         <name>Assensing</name>
-        <translate>Analyse astrale</translate>
+        <translate>Observation astrale</translate>
         <specs>
           <spec translate="Lecture d’aura">Aura Reading</spec>
           <spec translate="Signatures astrales">Astral Signatures</spec>
-          <spec translate="[Aura Type]">[Aura Type]</spec>
+          <spec translate="[Type d'aura]">[Aura Type]</spec>
         </specs>
-        <page>122</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>b7599a42-ceed-4558-b357-865aa3e317f5</id>
         <name>Astral Combat</name>
         <translate>Combat astral</translate>
         <specs>
-          <spec translate="Magicians">Magicians</spec>
-          <spec translate="Mana Barriers">Mana Barriers</spec>
-          <spec translate="Spirits">Spirits</spec>
-          <spec translate="[Weapon Focus Type]">[Weapon Focus Type]</spec>
-          <spec translate="[Other Opponent Type]">[Other Opponent Type]</spec>
+          <spec translate="Magiciens">Magicians</spec>
+          <spec translate="Barrières mana">Mana Barriers</spec>
+          <spec translate="Esprits">Spirits</spec>
+          <spec translate="[Type de focus d'arme]">[Weapon Focus Type]</spec>
+          <spec translate="[Type d'ennemi]">[Other Opponent Type]</spec>
         </specs>
-        <page>123</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>788b387b-ee41-4e6a-bf22-481a8cc4cf9f</id>
@@ -15341,7 +15341,7 @@
           <spec translate="Mitraillettes">Submachine Guns</spec>
           <spec translate="Cyber-Implant">Cyber-Implant</spec>
         </specs>
-        <page>121</page>
+        <page>133</page>
       </skill>
       <skill>
         <id>5e5f2f7f-f63b-4f65-a65d-91b3d4523c6f</id>
@@ -15351,45 +15351,47 @@
           <spec translate="Glisseurs">Hover</spec>
           <spec translate="Véhicules à chenilles">Tracked</spec>
           <spec translate="Véhicules à roues">Wheeled</spec>
-          <spec translate="Walker">Walker</spec>
+          <spec translate="Marcheurs">Walker</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>9a2d9175-d445-45ca-842d-90223ad13f05</id>
         <name>Banishing</name>
         <translate>Bannissement</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>122</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>dfba7c09-3d95-43fd-be75-39b3e8b22cd3</id>
         <name>Binding</name>
-        <translate>Contrôle d'esprits</translate>
+        <translate>Lien d'esprits</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>48763fa5-4b89-48c7-80ff-d0a2761de4c0</id>
@@ -15401,7 +15403,7 @@
           <spec translate="Epées">Swords</spec>
           <spec translate="Parade">Parrying</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>bd4d977a-cbd4-4289-99bb-896caed6786a</id>
@@ -15414,7 +15416,7 @@
           <spec translate="Organic">Organic</spec>
           <spec translate="Physical">Physical</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>cd9f6bf7-fa48-464b-9a8f-c7ce26713a72</id>
@@ -15427,28 +15429,28 @@
           <spec translate="Bâtons à deux mains">Staves</spec>
           <spec translate="Parade">Parrying</spec>
         </specs>
-        <page>121</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>f338d383-ffd8-4ff8-b99b-cf4c2ed1b159</id>
         <name>Compiling</name>
         <translate>Compilation</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de sprite]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>1c14bf0d-cc69-4126-9a95-1f2429c11aa5</id>
         <name>Computer</name>
         <translate>Informatique</translate>
         <specs>
-          <spec translate="Edit File">Edit File</spec>
-          <spec translate="Matrix Perception">Matrix Perception</spec>
-          <spec translate="Matrix Search">Matrix Search</spec>
+          <spec translate="Edition de fichier">Edit File</spec>
+          <spec translate="Perception matriciel">Matrix Perception</spec>
+          <spec translate="Recherche matriciel">Matrix Search</spec>
           <spec translate="[Action]">[Action]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>6d7f48d3-84a1-4fce-90d3-58d566f70fa6</id>
@@ -15458,7 +15460,7 @@
           <spec translate="Baratin">Fast Talk</spec>
           <spec translate="Séduction">Seduction</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>3db81bcc-264b-47e1-847c-06bdacd88973</id>
@@ -15467,25 +15469,25 @@
         <specs>
           <spec translate="Combat">Combat</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>7143f979-aa48-4cc8-a29c-e010400e6e11</id>
         <name>Cybercombat</name>
         <translate>Cybercombat</translate>
         <specs>
-          <spec translate="Devices">Devices</spec>
-          <spec translate="Grids">Grids</spec>
-          <spec translate="IC">IC</spec>
+          <spec translate="Appareils">Devices</spec>
+          <spec translate="Grilles">Grids</spec>
+          <spec translate="CI">IC</spec>
           <spec translate="Personas">Personas</spec>
           <spec translate="Sprites">Sprites</spec>
-          <spec translate="[Target Type]">[Target Type]</spec>
+          <spec translate="[Type de cible]">[Target Type]</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>9b386fe5-83b3-436f-9035-efd1c0f7a680</id>
@@ -15495,18 +15497,18 @@
           <spec translate="Somatoware">Bodyware</spec>
           <spec translate="Membres cybernétiques">Cyberlimbs</spec>
           <spec translate="Céphaloware">Headware</spec>
-          <spec translate="Repair">Repair</spec>
+          <spec translate="Réparation">Repair</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>64eed2e9-e61c-4cba-81d4-18a612cf2df6</id>
         <name>Decompiling</name>
         <translate>Décompilation</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de Sprite]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>276877e1-5cdf-4e95-befd-13c1abb5ae02</id>
@@ -15518,7 +15520,7 @@
           <spec translate="Improvisés">Improvised Explosives</spec>
           <spec translate="Plastic">Plastic Explosives</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>9b2416b2-3e2b-4dd6-ab9d-530f493c1c22</id>
@@ -15530,7 +15532,7 @@
           <spec translate="Théâtral">Theatrical</spec>
           <spec translate="Trideo &amp; Video">Trideo &amp; Video</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>23c3320c-5010-4b2e-ac46-76f0a86af0b9</id>
@@ -15540,16 +15542,16 @@
           <spec translate="Mélange gazeux">Mixed Gas</spec>
           <spec translate="Extraction d'oxygène">Oxygen Extraction</spec>
           <spec translate="Bouteilles standard">SCUBA</spec>
-          <spec translate="Arctic">Arctic</spec>
-          <spec translate="Cave">Cave</spec>
-          <spec translate="Commercial">Commercial</spec>
-          <spec translate="Controlled Hyperventilation">Controlled Hyperventilation</spec>
-          <spec translate="Liquid Breathing Apparatus">Liquid Breathing Apparatus</spec>
-          <spec translate="Military">Military</spec>
-          <spec translate="[Other Breathing Apparatus]">[Other Breathing Apparatus]</spec>
-          <spec translate="[Other Condition]">[Other Condition]</spec>
+          <spec translate="Arctique">Arctic</spec>
+          <spec translate="Grotte">Cave</spec>
+          <spec translate="Commerciale">Commercial</spec>
+          <spec translate="Hyperventilation controlée">Controlled Hyperventilation</spec>
+          <spec translate="Apareil respiratoire liquide">Liquid Breathing Apparatus</spec>
+          <spec translate="Militarie">Military</spec>
+          <spec translate="[Autre apareil respiratoire]">[Other Breathing Apparatus]</spec>
+          <spec translate="[Autre Condition]">[Other Condition]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>2c8e5f20-e52d-4844-89e9-51b92dba47df</id>
@@ -15561,47 +15563,47 @@
           <spec translate="Brouillage">Jamming</spec>
           <spec translate="Opérations de senseurs">Sensor Operations</spec>
         </specs>
-        <page>126</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>3f93335c-49d6-4904-a97e-4c942ab05b59</id>
         <name>Escape Artist</name>
         <translate>Evasion</translate>
         <specs>
-          <spec translate="Contortionism">Contortionism</spec>
-          <spec translate="Cuffs">Cuffs</spec>
-          <spec translate="Ropes">Ropes</spec>
-          <spec translate="Zip Ties">Zip Ties</spec>
-          <spec translate="[Other Restraint]">[Other Restraint]</spec>
+          <spec translate="Contorsion">Contortionism</spec>
+          <spec translate="Menottes">Cuffs</spec>
+          <spec translate="Cordes">Ropes</spec>
+          <spec translate="Bracelets">Zip Ties</spec>
+          <spec translate="[Autre liens]">[Other Restraint]</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>b20acd11-f102-40f3-a641-e3c420fbdb91</id>
         <name>Etiquette</name>
         <translate>Etiquette</translate>
         <specs>
-          <spec translate="Corporate">Corporate</spec>
-          <spec translate="High Society">High Society</spec>
-          <spec translate="Media">Media</spec>
-          <spec translate="Mercenary">Mercenary</spec>
-          <spec translate="Street">Street</spec>
+          <spec translate="Corporatiste ">Corporate</spec>
+          <spec translate="Haute société">High Society</spec>
+          <spec translate="Média">Media</spec>
+          <spec translate="Mercenaires">Mercenary</spec>
+          <spec translate="La rue">Street</spec>
           <spec translate="Yakuza">Yakuza</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>47cb1e8b-c285-4c54-9aaa-75305ad6dd4f</id>
         <name>First Aid</name>
         <translate>Premiers soins</translate>
         <specs>
-          <spec translate="Broken Bones">Broken Bones</spec>
-          <spec translate="Burns">Burns</spec>
-          <spec translate="Gunshot Wounds">Gunshot Wounds</spec>
-          <spec translate="Resuscitation">Resuscitation</spec>
-          <spec translate="[Type of Treatment]">[Type of Treatment]</spec>
+          <spec translate="Fractures">Broken Bones</spec>
+          <spec translate="Brûre">Burns</spec>
+          <spec translate="Blessure par balle">Gunshot Wounds</spec>
+          <spec translate="Réanimation">Resuscitation</spec>
+          <spec translate="[Type de Traitement]">[Type of Treatment]</spec>
         </specs>
-        <page>127</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>c9f52f97-a284-44a7-8af6-802dd3ed554f</id>
@@ -15614,7 +15616,7 @@
           <spec translate="Retouche d'images">Image Doctoring</spec>
           <spec translate="Falsification de papiers">Paper Forgery</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>58452cff-44ea-41c6-a554-28a869149b27</id>
@@ -15637,11 +15639,11 @@
           <spec translate="Equilibre">Balance</spec>
           <spec translate="Danse">Dance</spec>
           <spec translate="Parkour">Parkour</spec>
-          <spec translate="Climbing">Climbing</spec>
-          <spec translate="Leaping">Leaping</spec>
-          <spec translate="Rolling">Rolling</spec>
+          <spec translate="Escalade">Climbing</spec>
+          <spec translate="Saut">Leaping</spec>
+          <spec translate="Roulade">Rolling</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>c2bb65f5-4a6b-49bf-9925-ef6434cb6929</id>
@@ -15663,9 +15665,9 @@
           <spec translate="Commlinks">Commlinks</spec>
           <spec translate="Cyberdecks">Cyberdecks</spec>
           <spec translate="Smartguns">Smartguns</spec>
-          <spec translate="[Hardware Type]">[Hardware Type]</spec>
+          <spec translate="[Type de matériel]">[Hardware Type]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>64841e6e-9487-4b63-80a1-dcad6eb78179</id>
@@ -15676,9 +15678,9 @@
           <spec translate="Missiles guidés">Guided Missiles</spec>
           <spec translate="Mitrailleuses">Machine Guns</spec>
           <spec translate="Lance-roquettes">Rocket Launchers</spec>
-          <spec translate="Assault Cannons">Assault Cannons</spec>
+          <spec translate="Canons d'assaut">Assault Cannons</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>935621c5-d384-42f2-a740-1fa349fa85a1</id>
@@ -15688,58 +15690,58 @@
           <spec translate="Hydraulique">Hydraulics</spec>
           <spec translate="Structurelle">Structural</spec>
           <spec translate="Soudure">Welding</spec>
-          <spec translate="Electrical Power Systems">Electrical Power Systems</spec>
-          <spec translate="HVAC">HVAC</spec>
-          <spec translate="Industrial Robotics">Industrial Robotics</spec>
+          <spec translate="Systèmes d’alimentation électrique">Electrical Power Systems</spec>
+          <spec translate="CVAC">HVAC</spec>
+          <spec translate="Robotique industrielle">Industrial Robotics</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>3b34b209-00be-42b8-b4ac-cc7dea08af8a</id>
         <name>Instruction</name>
         <translate>Enseignement</translate>
         <specs>
-          <spec translate="[Active or Knowledge Skill Category]">[Active or Knowledge Skill Category]</spec>
+          <spec translate="[Catégorie de compétence active ou de connaissances]">[Active or Knowledge Skill Category]</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>9de43fad-b365-4e73-bc06-91dd571b858a</id>
         <name>Intimidation</name>
         <translate>Intimidation</translate>
         <specs>
-          <spec translate="Interrogation">Interrogation</spec>
+          <spec translate="Interrogatoire">Interrogation</spec>
           <spec translate="Mentale">Mental</spec>
           <spec translate="Physique">Physical</spec>
           <spec translate="Torture">Torture</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>963a548d-c629-4a13-a3e3-31b085a42e20</id>
         <name>Leadership</name>
         <translate>Leadership</translate>
         <specs>
-          <spec translate="Command">Command</spec>
-          <spec translate="Direct">Direct</spec>
-          <spec translate="Inspire">Inspire</spec>
-          <spec translate="Rally">Rally</spec>
+          <spec translate="Commandement">Command</spec>
+          <spec translate="Direction">Direct</spec>
+          <spec translate="Inspiration">Inspire</spec>
+          <spec translate="Ralliement">Rally</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>09fbc992-9fad-4f2d-ab56-725bac943dc6</id>
         <name>Locksmith</name>
         <translate>Serrurerie</translate>
         <specs>
-          <spec translate="Combination">Combination</spec>
-          <spec translate="Keypad">Keypad</spec>
+          <spec translate="Combinaison">Combination</spec>
+          <spec translate="Clavier">Keypad</spec>
           <spec translate="Maglock">Maglock</spec>
-          <spec translate="Tumbler">Tumbler</spec>
-          <spec translate="Voice Recognition">Voice Recognition</spec>
-          <spec translate="[Lock Type]">[Lock Type]</spec>
+          <spec translate="Goupilles">Tumbler</spec>
+          <spec translate="Reconnaissance vocale">Voice Recognition</spec>
+          <spec translate="[Type de sérrûre]">[Lock Type]</spec>
         </specs>
-        <page>127</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>64088b25-de37-4d71-8800-4a430fde08af</id>
@@ -15748,8 +15750,8 @@
         <specs>
           <spec translate="Shotguns">Shotguns</spec>
           <spec translate="Fusils de précision">Sniper Rifles</spec>
-          <spec translate="Extended-Range Shots">Extended-Range Shots</spec>
-          <spec translate="Long-Range Shots">Long-Range Shots</spec>
+          <spec translate="Tirs à portée extrême">Extended-Range Shots</spec>
+          <spec translate="Tirs à portée longue">Long-Range Shots</spec>
         </specs>
         <page>122</page>
       </skill>
@@ -15765,7 +15767,7 @@
           <spec translate="Culture d'organes">Organ Culture</spec>
           <spec translate="Chirurgie traumatologique">Trauma Surgery</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>48cc79be-f75e-4fe6-8721-7864c9f231f6</id>
@@ -15777,20 +15779,20 @@
           <spec translate="Navires">Ship</spec>
           <spec translate="Sous-marins">Submarine</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>f8037e7f-d48b-452b-8f66-2e0c36677fea</id>
         <name>Navigation</name>
-        <translate>Navigation</translate>
+        <translate>Orientation</translate>
         <specs>
-          <spec translate="Augmented Reality Markers">Augmented Reality Markers</spec>
-          <spec translate="Celestial">Celestial</spec>
-          <spec translate="Compass">Compass</spec>
-          <spec translate="Maps">Maps</spec>
+          <spec translate="Marqueurs RA">Augmented Reality Markers</spec>
+          <spec translate="Etoiles">Celestial</spec>
+          <spec translate="Boussole">Compass</spec>
+          <spec translate="Cartes">Maps</spec>
           <spec translate="GPS">GPS</spec>
         </specs>
-        <page>124</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>729c9cee-ef8f-492d-aa7f-17ec1bc3816e</id>
@@ -15801,7 +15803,7 @@
           <spec translate="Diplomatie">Diplomacy</spec>
           <spec translate="Contracts">Contracts</spec>
         </specs>
-        <page>126</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>17fbaafa-8dbb-4f29-9244-5ae1cd4ac42f</id>
@@ -15810,9 +15812,9 @@
         <specs>
           <spec translate="Prestidigitation">Legerdemain</spec>
           <spec translate="Pickpocket">Pickpocket</spec>
-          <spec translate="Pilfering">Pilfering</spec>
+          <spec translate="Vol à l’étalage">Pilfering</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>04e1eb3e-e82d-485b-a7fd-1e677df2a070</id>
@@ -15824,9 +15826,9 @@
           <spec translate="Gustative">Taste</spec>
           <spec translate="Tactile">Touch</spec>
           <spec translate="Visuelle">Visual</spec>
-          <spec translate="Searching">Searching</spec>
+          <spec translate="Recherche">Searching</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>3ba9397e-f790-44ca-ae40-15a2356e348d</id>
@@ -15839,7 +15841,7 @@
           <spec translate="Semi-balistiques">Semiballistic</spec>
           <spec translate="Suborbitaux">Suborbital</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>10d5c887-a1e5-4cca-8613-3a28f1aab810</id>
@@ -15847,13 +15849,13 @@
         <translate>Appareils Volants</translate>
         <specs>
           <spec translate="Voilure fixe">Fixed-Wing</spec>
-          <spec translate="Plus légér que l'air (bimps et ballons)">Lighter-Than-Air</spec>
+          <spec translate="Plus légér que l'air (PLA : dirigeable)">Lighter-Than-Air</spec>
           <spec translate="Opération à distance">Remote Operation</spec>
           <spec translate="Rotors">Rotary Wing</spec>
           <spec translate="Voilure orientable">Tilt Wing</spec>
           <spec translate="Poussée vectorielle">Vectored Thrust</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>ae91a8a6-80e7-4f52-b9eb-21725a5528a4</id>
@@ -15866,7 +15868,7 @@
           <spec translate="Véhicules à chenille">Tracked</spec>
           <spec translate="Véhicules à roues">Wheeled</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>1579818e-af85-47cd-8c9f-2e86e9dc19da</id>
@@ -15878,9 +15880,9 @@
           <spec translate="Voilers">Sail</spec>
           <spec translate="Navires">Ship</spec>
           <spec translate="Sous-marins">Submarine</spec>
-          <spec translate="Hydrofoil">Hydrofoil</spec>
+          <spec translate="Hydroptères">Hydrofoil</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>adf31a50-b228-4e09-a09c-46ab9f5e59a1</id>
@@ -15892,25 +15894,25 @@
           <spec translate="Semi-automatiques">Semi-Automatics</spec>
           <spec translate="Tasers">Tasers</spec>
         </specs>
-        <page>122</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>3a38bbcf-38b0-435b-98f2-4ce8c50e8490</id>
         <name>Registering</name>
         <translate>Inscription</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de sprites]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>a6287e62-6a3b-43ce-b6e0-20f3655910e2</id>
         <name>Ritual Spellcasting</name>
-        <translate>Lancement de sorts rituel</translate>
+        <translate>Magie rituel</translate>
         <specs>
-          <spec translate="[Keyword]">[Keyword]</spec>
+          <spec translate="[Mot-clé]">[Keyword]</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>1531b2d8-6116-4be4-87b0-232dba1fc447</id>
@@ -15924,17 +15926,17 @@
           <spec translate="Distance">Distance</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>b693f3bf-48dc-4570-9743-d94d14ee698b</id>
         <name>Software</name>
-        <translate>Software</translate>
+        <translate>Logiciel</translate>
         <specs>
-          <spec translate="Data Bombs">Data Bombs</spec>
-          <spec translate="[Complex Form]">[Complex Form]</spec>
+          <spec translate="Bombes matricielles">Data Bombs</spec>
+          <spec translate="[forme complexe]">[Complex Form]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>c4367a39-4065-4b1d-aa62-e9dce377e452</id>
@@ -15943,29 +15945,30 @@
         <specs>
           <spec translate="Combat">Combat</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>51e34c6c-b07f-45f4-8a5e-8f2b617ed32f</id>
         <name>Summoning</name>
         <translate>Invocation</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>89ee1730-053a-400f-a13a-4fbadae015f0</id>
@@ -15980,7 +15983,7 @@
           <spec translate="Milieu urbain">Urban</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>0dbcb9cd-f824-4b5d-a387-90d33318b04c</id>
@@ -15988,20 +15991,20 @@
         <translate>Natation</translate>
         <specs>
           <spec translate="Endurance">Long Distance</spec>
-          <spec translate="Dash">Dash</spec>
+          <spec translate="Sprint">Dash</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>867a6fa0-7d98-4cde-83a4-b33dd39de08e</id>
         <name>Throwing Weapons</name>
         <translate>Armes de jet</translate>
         <specs>
-          <spec translate="Aerodynamic">Aerodynamic</spec>
-          <spec translate="Blades">Blades</spec>
-          <spec translate="Non-Aerodynamic">Non-Aerodynamic</spec>
+          <spec translate="Aerodynamiques">Aerodynamic</spec>
+          <spec translate="Lames">Blades</spec>
+          <spec translate="Non-aérodynamiques">Non-Aerodynamic</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>7ed2f3e0-a791-4cb7-ba3e-ac785fdc3d7e</id>
@@ -16016,32 +16019,32 @@
           <spec translate="Milieu urbain">Urban</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>4fcd40cb-4b02-4b7e-afcb-f44d46cd5706</id>
         <name>Unarmed Combat</name>
         <translate>Combat à mains nues</translate>
         <specs>
-          <spec translate="Blocking">Blocking</spec>
+          <spec translate="Blocage">Blocking</spec>
           <spec translate="Cyber Implants">Cyber Implants</spec>
-          <spec translate="Subduing Combat">Subduing Combat</spec>
-          <spec translate="[Martial Art]">[Martial Art]</spec>
+          <spec translate="Immobilisation">Subduing Combat</spec>
+          <spec translate="[Art Martial]">[Martial Art]</spec>
         </specs>
-        <page>122</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>a1366ec2-772d-4f08-8c65-5f79464d975b</id>
         <name>Exotic Melee Weapon</name>
         <translate>Arme de mêlée exotique</translate>
-        <page>122</page>
+        <page>133</page>
         <specs />
       </skill>
       <skill>
         <id>88ee65ba-c797-4f9c-91fe-39bc43b0f9c8</id>
         <name>Exotic Ranged Weapon</name>
         <translate>Arme à distance exotique</translate>
-        <page>122</page>
+        <page>132</page>
         <specs>
           <spec translate="Blowguns">Blowguns</spec>
           <spec translate="Gyrojet Pistols">Gyrojet Pistols</spec>
@@ -16049,112 +16052,121 @@
           <spec translate="Lasers">Lasers</spec>
         </specs>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
         <name>Alchemy</name>
-        <translate>Alchemy</translate>
+        <translate>Alchimie</translate>
         <specs>
           <spec translate="Combat">Combat</spec>
-          <spec translate="Command">Command</spec>
+          <spec translate="Commande">Command</spec>
           <spec translate="Contact">Contact</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
-          <spec translate="Time">Time</spec>
-          <spec translate="[Trigger]">[Trigger]</spec>
+          <spec translate="Durée">Time</spec>
+          <spec translate="[Déclencheur]">[Trigger]</spec>
         </specs>
+		<page>144</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>955d9376-3066-469d-8670-5170c1d59020</id>
         <name>Artificing</name>
-        <translate>Artificing</translate>
+        <translate>Création d'artefact</translate>
         <specs>
-          <spec translate="Focus Analysis">Focus Analysis</spec>
-          <spec translate="[Focus Type]">[Focus Type]</spec>
+          <spec translate="Analyse de focus">Focus Analysis</spec>
+          <spec translate="[Type de focus]">[Focus Type]</spec>
+		  <page>145</page>
         </specs>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>ba624682-a5c0-4cf5-b47b-1021e6a1800d</id>
         <name>Biotechnology</name>
-        <translate>Biotechnology</translate>
+        <translate>Biotechnologie</translate>
         <specs>
-          <spec translate="Bioinformatics">Bioinformatics</spec>
+          <spec translate="Bio-informatique">Bioinformatics</spec>
           <spec translate="Bioware">Bioware</spec>
-          <spec translate="Cloning">Cloning</spec>
-          <spec translate="Gene Therapy">Gene Therapy</spec>
-          <spec translate="Vat Maintenance">Vat Maintenance</spec>
+          <spec translate="Clonage">Cloning</spec>
+          <spec translate="Thérapie génique">Gene Therapy</spec>
+          <spec translate="Maintenance en cuve">Vat Maintenance</spec>
         </specs>
+		<page>146</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>a9d9b686-bc4a-4347-b011-ff8f41455965</id>
         <name>Disenchanting</name>
-        <translate>Disenchanting</translate>
+        <translate>Désenchantement</translate>
         <specs>
           <spec translate="[Type]">[Type]</spec>
         </specs>
+		<page>145</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>f510ccc3-cf95-4461-b2f7-e966daaa5a91</id>
         <name>Free-Fall</name>
-        <translate>Free-Fall</translate>
+        <translate>Chute libre</translate>
         <specs>
-          <spec translate="BASE Jumping">BASE Jumping</spec>
-          <spec translate="Break-Fall">Break-Fall</spec>
-          <spec translate="Bungee">Bungee</spec>
+          <spec translate="Base Jump">BASE Jumping</spec>
+          <spec translate="Réception de chute">Break-Fall</spec>
+          <spec translate="Saut à l'élastique">Bungee</spec>
           <spec translate="HALO">HALO</spec>
-          <spec translate="Low Altitude">Low Altitude</spec>
+          <spec translate="Basse altitude">Low Altitude</spec>
           <spec translate="Parachute">Parachute</spec>
-          <spec translate="Static Line">Static Line</spec>
+          <spec translate="Parachutes à ouverture automatique">Static Line</spec>
           <spec translate="Wingsuit">Wingsuit</spec>
-          <spec translate="Zipline">Zipline</spec>
+          <spec translate="Tyroliennes">Zipline</spec>
         </specs>
+		<page>135</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
         <name>Impersonation</name>
-        <translate>Impersonation</translate>
+        <translate>Imposture</translate>
         <specs>
-          <spec translate="Dwarf">Dwarf</spec>
-          <spec translate="Elf">Elf</spec>
-          <spec translate="Human">Human</spec>
+          <spec translate="Nain">Dwarf</spec>
+          <spec translate="Elfe">Elf</spec>
+          <spec translate="Humain">Human</spec>
           <spec translate="Ork">Ork</spec>
           <spec translate="Troll">Troll</spec>
         </specs>
+		<page>141</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
         <name>Performance</name>
-        <translate>Performance</translate>
+        <translate>Représentation</translate>
         <specs>
-          <spec translate="Acting">Acting</spec>
-          <spec translate="Comedy">Comedy</spec>
-          <spec translate="Presentation">Presentation</spec>
-          <spec translate="[Musical Instrument]">[Musical Instrument]</spec>
+          <spec translate="Jeu d’acteur">Acting</spec>
+          <spec translate="Comédie">Comedy</spec>
+          <spec translate="Présentation">Presentation</spec>
+          <spec translate="[Instrument de musique]">[Musical Instrument]</spec>
         </specs>
+		<page>141</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>b8a24d87-465a-4365-9948-038fe1ac62c4</id>
         <name>Pilot Walker</name>
-        <translate>Pilot Walker</translate>
+        <translate>Marcheurs</translate>
         <specs>
           <spec translate="Biped">Biped</spec>
           <spec translate="Multiped">Multiped</spec>
           <spec translate="Quadruped">Quadruped</spec>
-          <spec translate="Remote Operation">Remote Operation</spec>
+          <spec translate="Contrôle à distance">Remote Operation</spec>
         </specs>
+		<page>149</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
         <name>Sneaking</name>
-        <translate>Sneaking</translate>
+        <translate>Discrétion</translate>
         <specs>
           <spec translate="Desert">Desert</spec>
           <spec translate="Jungle">Jungle</spec>
           <spec translate="Urban">Urban</spec>
-          <spec translate="Wilderness">Wilderness</spec>
+          <spec translate="Milieu sauvage">Wilderness</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
+		<page>135</page>
       </skill>
     </skills>
     <knowledgeskills>
@@ -22208,7 +22220,7 @@
         <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
         <name>Cleaner</name>
         <translate>Nettoyeuse</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
@@ -22219,73 +22231,73 @@
         <id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
         <name>Editor</name>
         <translate>Edition</translate>
-		<page>254</page>
+        <page>254</page>
       </complexform>
       <complexform translated="True">
         <id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
         <name>Infusion of [Matrix Attribute]</name>
         <translate>Injection de [Attribut Matriciel]</translate>
-		<page>254</page>
+        <page>254</page>
       </complexform>
       <complexform translated="True">
         <id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
         <name>Static Veil</name>
         <translate>Voile d'interférances</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
         <name>Pulse Storm</name>
         <translate>Tempête d'impulsion</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
         <name>Puppeteer</name>
         <translate>Marionnettiste</translate>
-		<page>255</page>
+        <page>255</page>
       </complexform>
       <complexform translated="True">
         <id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
         <name>Resonance Channel</name>
         <translate>Canal de résonance</translate>
-		<page>254</page>
+        <page>254</page>
       </complexform>
       <complexform translated="True">
         <id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
         <name>Resonance Spike</name>
         <translate>Pic de résonance</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
         <name>Resonance Veil</name>
         <translate>Voile de résonance</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
         <name>Static Bomb</name>
         <translate>Bombe d'interférances</translate>
-		<page>254</page>
+        <page>254</page>
       </complexform>
       <complexform translated="True">
         <id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
         <name>Stitches</name>
         <translate>Suture</translate>
-		<page>256</page>
+        <page>256</page>
       </complexform>
       <complexform translated="True">
         <id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
         <name>Transcendent Grid</name>
         <translate>Grille transcendante</translate>
-		<page>255</page>
+        <page>255</page>
       </complexform>
       <complexform translated="True">
         <id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
         <name>Tattletale</name>
         <translate>Indic</translate>
-		<page>255</page>
+        <page>255</page>
       </complexform>
     </complexforms>
   </chummer>
