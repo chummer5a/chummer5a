@@ -82,6 +82,14 @@ namespace Chummer
 				cboCategory.SelectedIndex = 0;
 
 				lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+			if (_objCharacter.metageneticLimit > 0)
+			{
+				chkMetagenetic.Visible = false;
+			}
+			else
+			{
+				chkMetagenetic.Visible = true;
+			}
 
             BuildQualityList();
         }
@@ -302,9 +310,13 @@ namespace Chummer
 			{
 				// Treat everything as being uppercase so the search is case-insensitive.
 				string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-				if (chkMetagenetic.Checked)
+				if (chkMetagenetic.Checked || _objCharacter.metageneticLimit > 0)
 				{
 					strSearch += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
+				}
+				else
+				{
+					strSearch += " and not (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
 				strSearch += "]";
 
@@ -343,9 +355,13 @@ namespace Chummer
 					objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
 
 				string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
-				if (chkMetagenetic.Checked)
+				if (chkMetagenetic.Checked || _objCharacter.metageneticLimit > 0)
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
+				}
+				else
+				{
+					strXPath += " and not (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
 
 				foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))

@@ -8264,7 +8264,16 @@ namespace Chummer
                     _objCharacter.RESEnabled = false;
                     _objCharacter.TechnomancerEnabled = false;
                     break;
-                default:
+				case "Changeling (Class I SURGE)":
+					_objCharacter.metageneticLimit = 0;
+					break;
+				case "Changeling (Class II SURGE)":
+					_objCharacter.metageneticLimit = 0;
+					break;
+				case "Changeling (Class III SURGE)":
+					_objCharacter.metageneticLimit = 0;
+					break;
+				default:
                     break;
             }
 

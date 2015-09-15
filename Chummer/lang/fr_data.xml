@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-496</version>
+  <version>-490</version>
   <chummer file="armor.xml">
     <categories>
       <category translate="Armures">Armor</category>

@@ -210,7 +210,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>-375</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -258,7 +258,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-360</version>
+		<version>-355</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -306,7 +306,7 @@
 	<file>
 		<name>data/lifemodules.xml</name>
 		<type>Data Files</type>
-		<version>-900</version>
+		<version>-890</version>
 		<description>Life Modules</description>
 		<notes>- Life Modules data file</notes>
 		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
@@ -378,7 +378,7 @@
 	<file>
 		<name>data/priorities.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-385</version>
 		<description>Priorities</description>
 		<notes>- Priorities data file</notes>
 		<url>https://www.dropbox.com/s/sdlxvlmratzy0th/priorities.xml?dl=1</url>
@@ -394,7 +394,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>-370</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -474,7 +474,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-360</version>
+		<version>-350</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>

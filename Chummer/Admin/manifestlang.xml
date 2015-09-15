@@ -16,7 +16,15 @@
     <notes>- French language file</notes>
     <url>https://www.dropbox.com/s/xpvamhnxopec3pd/fr.xml?dl=1</url>
   </file>
-  <file>
+	<file>
+		<name>lang/fr_data.xml</name>
+		<type>Language File</type>
+		<version>-490</version>
+		<description>French language data file</description>
+		<notes>German language data file</notes>
+		<url>https://www.dropbox.com/s/8r2mbt39hwgxcox/fr_data.xml?dl=1</url>
+	</file>
+	<file>
     <name>lang/de.xml</name>
     <type>Language File</type>
     <version>-495</version>

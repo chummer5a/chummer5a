@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-900</version>
+  <version>-890</version>
   <stages>
     <stage order="1">Nationality</stage>
     <stage order="2">Formative Years</stage>

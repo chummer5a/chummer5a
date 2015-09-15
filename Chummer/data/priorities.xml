@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-390</version>
+	<version>-385</version>
 	<categories>
 		<category>Heritage</category>
 		<category>Talent</category>
@@ -251,7 +251,7 @@
 				</metatype>
 				<metatype>
 					<name>Elf</name>
-					<value>7</value>
+					<value>6</value>
 					<metavariants>
 						<metavariant>
 							<name>Nocturna</name>
