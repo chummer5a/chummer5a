@@ -4148,8 +4148,18 @@ namespace Chummer
 			    (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
             {
 				intKarmaCost *= 2;
-                }
+            }
 
+            // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+            if (_objCharacter.JackOfAllTrades)
+            {
+                if (objSkillControl.SkillRating + 1 <= 5) {
+                    //Jack of All Trades cannot go below 1 Karma cost.
+                    if (intKarmaCost > 1) intKarmaCost -= 1;
+                } else {
+                    intKarmaCost += 2;
+                }
+            }
 
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -4256,6 +4266,18 @@ namespace Chummer
 			// If the character is Uneducated and the Skill is an Academic or Professional Skill, double its cost.
 			if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
 				intKarmaCost *= 2;
+
+            // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+            if (_objCharacter.JackOfAllTrades)
+            {
+                if (objSkillControl.SkillRating + 1 <= 5)
+                {
+                    //Jack of All Trades cannot go below 1 Karma cost.
+                    if (intKarmaCost > 1) intKarmaCost -= 1;
+                } else {
+                    intKarmaCost += 2;
+                }
+            }
 
 			// The Karma Cost for improving a Language Knowledge Skill to Rating 1 is free for characters with the Linguistics Adept Power.
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillRating == 0)
