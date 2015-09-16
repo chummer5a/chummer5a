@@ -15818,12 +15818,12 @@ namespace Chummer
 	                    {
 		                    intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
 	                    }
-						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that.
-	                    if (_objCharacter.JackOfAllTrades)
+						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
+                        if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
 	                    {
 		                    if (i <= 5)
 		                    {
-			                    intPointsUsed -= 1;
+			                    if (intPointsUsed > 1) intPointsUsed -= 1;
 		                    }
 		                    else
 		                    {
@@ -15859,7 +15859,7 @@ namespace Chummer
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intPointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
-	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
+	                    if (_objCharacter.Created && _objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
 	                    {
 							intPointsRemain += 1;
 							intPointsUsed -= 1;
@@ -15878,7 +15878,7 @@ namespace Chummer
                                 intPointsUsed += i * _objOptions.KarmaImproveActiveSkill;
                             }
 
-							if (_objCharacter.JackOfAllTrades)
+							if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
 							{
 								if (objSkillControl.SkillRating <= 5)
 								{
@@ -15993,7 +15993,7 @@ namespace Chummer
 							{
 								intPointsUsed += i * _objOptions.KarmaImproveKnowledgeSkill;
 							}
-							if (_objCharacter.JackOfAllTrades)
+							if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
 							{
 								if (objSkillControl.SkillRating <= 5)
 								{

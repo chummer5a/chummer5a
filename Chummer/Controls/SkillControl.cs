@@ -158,23 +158,6 @@ namespace Chummer
                         else
                             intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
 					}
-					//Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher.
-					if (_objSkill.CharacterObject.JackOfAllTrades)
-					{
-						if (_objSkill.Rating <= 5)
-						{
-							intKarmaCost -= 1;
-							//Jack of All Trades cannot go below 1 Karma cost. 
-							if (intKarmaCost < 1)
-							{
-								intKarmaCost = 1;
-							}
-						}
-						else
-						{
-							intKarmaCost += 2;
-						}
-					}
 
 					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
 					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
@@ -184,6 +167,21 @@ namespace Chummer
                     {
                         intKarmaCost *= 2;
                     }
+
+                    //Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher, minimum cost of 1
+                    if (_objSkill.CharacterObject.JackOfAllTrades)
+                    {
+                        if (_objSkill.Rating <= 5)
+                        {
+                            //Jack of All Trades cannot go below 1 Karma cost. 
+                            if (intKarmaCost > 1) intKarmaCost -= 1;
+                        }
+                        else
+                        {
+                            intKarmaCost += 2;
+                        }
+                    }
+
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
 					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 				}
@@ -739,6 +737,21 @@ namespace Chummer
                     {
                         intKarmaCost *= 2;
                     }
+
+                    // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+                    if (_objSkill.CharacterObject.Created && _objSkill.CharacterObject.JackOfAllTrades)
+                    {
+                        if (_objSkill.Rating + 1 <= 5)
+                        {
+                            //Jack of All Trades cannot go below 1 Karma cost.
+                            if (intKarmaCost > 1) intKarmaCost -= 1;
+                        }
+                        else
+                        {
+                            intKarmaCost += 2;
+                        }
+                    }
+
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
 					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 					cmdImproveSkill.Enabled = true;
