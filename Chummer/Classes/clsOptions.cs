@@ -3064,7 +3064,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters can have more than 35 BP in Positive Qualities.
+		/// Whether or not characters can have more than 25 BP in Positive Qualities.
 		/// </summary>
 		public bool ExceedPositiveQualities
 		{
@@ -3079,7 +3079,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters can have more than 35 BP in Negative Qualities.
+		/// Whether or not characters can have more than 25 BP in Negative Qualities.
 		/// </summary>
 		public bool ExceedNegativeQualities
 		{
@@ -3094,8 +3094,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not character can still only receive up to 35 BP from Negative Qualities. This means they can take as many Negative Qualities as they'd like but will never receive more than
-		/// 35 additional BP from selecting them.
+		/// If true, the character will not receive additional BP from Negative Qualities past the initial 25
 		/// </summary>
 		public bool ExceedNegativeQualitiesLimit
 		{
