@@ -1165,7 +1165,6 @@
 			<name>Allergy (Common, Mild)</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<metagenetic>yes</metagenetic>
 			<limit>no</limit>
 			<bonus>
 				<selecttext />
@@ -1178,7 +1177,6 @@
 			<name>Allergy (Common, Moderate)</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-			<metagenetic>yes</metagenetic>
 			<limit>no</limit>
 			<bonus>
 				<selecttext />
@@ -1191,7 +1189,6 @@
 			<name>Allergy (Common, Severe)</name>
 			<karma>-20</karma>
 			<category>Negative</category>
-			<metagenetic>yes</metagenetic>
 			<limit>no</limit>
 			<bonus>
 				<selecttext />
