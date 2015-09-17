@@ -708,6 +708,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objContact_DeleteContact;
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 					
 					objContactControl.ContactObject = objContact;
 					objContactControl.ContactName = objContact.Name;
@@ -735,6 +736,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
 
                     objContactControl.IsEnemy = true;
 					objContactControl.ContactObject = objContact;
@@ -1529,6 +1531,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objContact_DeleteContact;
 					objContactControl.FileNameChanged -= objContact_FileNameChanged;
+                    objContactControl.FreeRatingChanged -= objContact_OtherCostChanged;
 				}
 
 				foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
@@ -1537,6 +1540,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objEnemy_DeleteContact;
 					objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
 				}
 
 				foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
@@ -4604,6 +4608,16 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+        private void objContact_OtherCostChanged(Object sender)
+        {
+            //Handle any other kind of change that changes contact cost
+            //mostly a free contact but a few details in run faster changes it too
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
 		private void objContact_DeleteContact(Object sender)
 		{
 			objContact_DeleteContact(sender, false);
@@ -4674,6 +4688,14 @@ namespace Chummer
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
+
+        private void objEnemy_FreeStatusChanged(Object sender)
+        {
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
 
 		private void objEnemy_DeleteContact(Object sender)
 		{
@@ -5077,6 +5099,7 @@ namespace Chummer
 			objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objContact_DeleteContact;
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
+            objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 
 			panContacts.Controls.Add(objContactControl);
 			UpdateCharacterInfo();
@@ -5101,6 +5124,7 @@ namespace Chummer
 			objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;
+            objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
             objContactControl.IsEnemy = true;
 
 			panEnemies.Controls.Add(objContactControl);
