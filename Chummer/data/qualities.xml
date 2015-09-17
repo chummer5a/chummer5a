@@ -2994,7 +2994,7 @@
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3011,7 +3011,7 @@
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3028,7 +3028,7 @@
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3045,7 +3045,7 @@
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<quality>SINner (Corporate)</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
