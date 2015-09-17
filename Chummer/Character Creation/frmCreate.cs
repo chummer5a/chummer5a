@@ -15505,13 +15505,12 @@ namespace Chummer
         private int CalculateBP()
         {
             int intPointsRemain =_objCharacter.BuildKarma;
-            int intPointsUsed = 0;
-            int intEnemyPoints = 0;
-            int intNegativePoints = 0;
+            int intPointsUsed = 0; // used as a running total for each section
             int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
             string strPoints = LanguageManager.Instance.GetString("String_Karma");
 
+            // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
             if ((_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule) && _objOptions.MetatypeCostsKarma)
             {
@@ -15524,6 +15523,7 @@ namespace Chummer
                 intPointsRemain -= (_objCharacter.MetatypeBP);
             }
 
+            // ------------------------------------------------------------------------------
             // Calculate the points used by Contacts.
             int intPointsInContacts = 0;
             intPointsUsed = 0;
@@ -15616,28 +15616,26 @@ namespace Chummer
 			lblContactPoints.Text = sb.ToString();
 			lblPBuildContacts.Text = sb.ToString();
 
-		// Calculate the BP used by Enemies. These are added to the BP since they are tehnically
-		// a Negative Quality.
-		intPointsUsed = 0;
+            // ------------------------------------------------------------------------------
+            // Calculate the BP used by Enemies. These are added to the BP since they are technically
+		    // a Negative Quality.
+            int intEnemyPoints = 0;
+		    intPointsUsed = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
                 if (!objContactControl.Free)
                 {
                     // The Enemy's Karma cost = their (Connection + Loyalty Rating) x Karma multiplier.
-                    intPointsRemain += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
-                    intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
                     intEnemyPoints += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaContact;
-                    intNegativePoints += intPointsUsed;
                 }
             }
-            lblEnemiesBP.Text = String.Format("{0} " + strPoints, intPointsUsed.ToString());
-            intFreestyleBP += intPointsUsed;
+            lblEnemiesBP.Text = String.Format("{0} " + strPoints, intEnemyPoints.ToString());
 
-
-            // Calculate the BP used by Positive Qualities.
+            // ------------------------------------------------------------------------------
+            // Calculate the BP used by Qualities.
             intPointsUsed = 0;
-			int intPositiveQualities = intGroupContacts; //group contacts are a quality too
-			int intNegativeQualities = 0;
+			int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
+            int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
 			int intLifeModuleQualities = 0;
 			int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
             foreach (Quality objQuality in _objCharacter.Qualities)
@@ -15669,38 +15667,33 @@ namespace Chummer
                 }
             }
 
-			intPointsUsed = intLifeModuleQualities + intNegativeQualities + intPositiveQualities;
-			
-			// Deduct the amount for free Qualities.
-			int intPositiveFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality;
-	        intPointsUsed += intPositiveFree;
+            // Deduct the amounts for free Qualities.
+            int intPositiveFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities) * _objOptions.KarmaQuality;
+            int intNegativeFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities) * _objOptions.KarmaQuality;
 
-			lblPositiveQualitiesBP.Text = String.Format("{0} " + strPoints, intPositiveQualities - intPositiveFree);
-			lblPBuildPositiveQualities.Text = String.Format("{0} " + strPoints, intPositiveQualities - intPositiveFree);
-
-            // Deduct the amount for free Qualities.
-			int intNegativeFree = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities) * _objOptions.KarmaQuality;
-	        intPointsUsed += intNegativeFree;
-
-			lblNegativeQualitiesBP.Text = String.Format("{0} " + strPoints, intNegativeQualities - intNegativeFree);
-			lblPBuildNegativeQualities.Text = String.Format("{0} " + strPoints, intNegativeQualities - intNegativeFree);
+            intNegativeQualities -= intNegativeFree;
+            intPositiveQualities -= intPositiveFree;
 
             // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-				if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativePoints < -1 * _objCharacter.MaxKarma)
+                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativeQualities < -1 * _objCharacter.MaxKarma)
                 {
-					intNegativeQualities = _objCharacter.MaxKarma;
-                }
-				else if (intNegativePoints < -70)
-                {
-					intNegativeQualities = _objCharacter.MaxKarma;
+                    intNegativeQualities = -1 * _objCharacter.MaxKarma;
                 }
             }
 
+            intPointsUsed    = intLifeModuleQualities + intNegativeQualities + intPositiveQualities;
 			intPointsRemain -= intPointsUsed;
-			intFreestyleBP += intPointsUsed;
+			intFreestyleBP  += intPointsUsed;
 
+            lblPositiveQualitiesBP.Text = String.Format("{0} " + strPoints, intPositiveQualities);
+            lblPBuildPositiveQualities.Text = String.Format("{0} " + strPoints, intPositiveQualities);
+
+            lblNegativeQualitiesBP.Text = String.Format("{0} " + strPoints, intNegativeQualities);
+            lblPBuildNegativeQualities.Text = String.Format("{0} " + strPoints, intNegativeQualities);
+
+            // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
             if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma)
             {
@@ -20194,8 +20187,8 @@ namespace Chummer
 		        //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
 
 
-		        // Check if the character has  positive qualities outnumbering negative qualities
-		        // Calculate the BP used by Enemies. These are added to the BP since they are tehnically
+		        // Check if the character has positive qualities outnumbering negative qualities
+		        // Calculate the BP used by Enemies. These are added to the BP since they are technically
 		        // a Negative Quality.
 		        int intPointsUsed = 0;
 		        int intNegativePoints = 0;
@@ -20204,9 +20197,10 @@ namespace Chummer
 			        if (!objContactControl.Free)
 			        {
 				        // The Enemy's BP cost = their Connection + Loyalty Rating.
-				        intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
-				                         _objOptions.BPContact;
-				        intNegativePoints += intPointsUsed;
+				        //intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
+                        //                 _objOptions.KarmaContact;
+                        intNegativePoints += (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) *
+                                              _objOptions.KarmaContact;
 			        }
 		        }
 
@@ -20219,7 +20213,7 @@ namespace Chummer
 				        intPointsUsed += objQuality.BP;
 			        }
 		        }
-		        //group contacts are counted as a posetive quality
+		        // Group contacts are counted as positive qualities
 		        intPointsUsed += intGroupContacts;
 		        // Deduct the amount for free Qualities.
 		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
@@ -20245,12 +20239,12 @@ namespace Chummer
 		        {
 			        if (intNegativePoints < (_objCharacter.MaxKarma*-1))
 			        {
-				        intNegativePoints += _objCharacter.MaxKarma;
+				        intNegativePoints = -1 * _objCharacter.MaxKarma;
 			        }
 		        }
 
 		        // if positive points > 25
-		        if (intPositivePointsUsed > _objCharacter.MaxKarma)
+                if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
 		        {
 			        strMessage += "\n\t" +
 			                      LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
@@ -20259,7 +20253,7 @@ namespace Chummer
 		        }
 
 		        // if negative points > 25
-		        if (intNegativePoints < (_objCharacter.MaxKarma*-1))
+                if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
 		        {
 			        strMessage += "\n\t" +
 			                      LanguageManager.Instance.GetString("Message_NegativeQualityLimit")

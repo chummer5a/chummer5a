@@ -131,7 +131,6 @@ namespace Chummer
 				}
 				catch (Exception ex)
 				{
-					
 				}
 
 				report.AppendFormat("CommandLine={0}", Environment.CommandLine);
