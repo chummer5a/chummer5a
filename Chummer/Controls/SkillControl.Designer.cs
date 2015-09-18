@@ -129,8 +129,8 @@
 			this.cboKnowledgeSkillCategory.Size = new System.Drawing.Size(162, 21);
 			this.cboKnowledgeSkillCategory.TabIndex = 8;
 			this.cboKnowledgeSkillCategory.Visible = false;
-			this.cboKnowledgeSkillCategory.SelectedIndexChanged += new System.EventHandler(this.cboKnonwledgeSkillCategory_SelectedIndexChanged);
-			// 
+			this.cboKnowledgeSkillCategory.SelectedIndexChanged += new System.EventHandler(this.cboKnowledgeSkillCategory_SelectedIndexChanged);
+            // 
 			// cboSkillName
 			// 
 			this.cboSkillName.DropDownWidth = 250;
@@ -290,7 +290,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
         }
         #endregion
 

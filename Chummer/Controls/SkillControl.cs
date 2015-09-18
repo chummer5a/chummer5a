@@ -325,12 +325,14 @@ namespace Chummer
 			DeleteSkill(this);
         }
 
-		private void cboKnonwledgeSkillCategory_SelectedIndexChanged(object sender, EventArgs e)
+		private void cboKnowledgeSkillCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Raise the RatingChanged Event when the user has changed the Knowledge Skill's Category.
 			// The entire SkillControl is passed as an argument so the handling event can evaluate its contents.
 			SkillCategory = cboKnowledgeSkillCategory.SelectedValue.ToString();
 			RatingChanged(this);
+            // recalculate skill costs
+            SkillRating = SkillRating;
 		}
 
 		private void lblSkillName_Click(object sender, EventArgs e)
