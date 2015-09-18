@@ -911,6 +911,7 @@ namespace Chummer
         private int _intKarmaComplexFormOption = 2;
         private int _intKarmaComplexFormSkillfot = 1;
         private int _intKarmaContact = 1;
+        private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
         private int _intKarmaImproveActiveSkill = 2;
         private int _intKarmaImproveComplexForm = 1;
@@ -1225,7 +1226,9 @@ namespace Chummer
 			objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
 			// <karmacontact />
 			objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString());
-			// <karmacarryover />
+            // <karmaenemy />
+            objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString());
+            // <karmacarryover />
 			objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString());
 			// <karmaspirit />
 			objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString());
@@ -1904,6 +1907,7 @@ namespace Chummer
 			_intKarmaImproveComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimprovecomplexform").InnerText);
 			_intKarmaNuyenPer = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanuyenper").InnerText);
 			_intKarmaContact = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacontact").InnerText);
+            _intKarmaEnemy = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenemy").InnerText);
 			_intKarmaCarryover = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacarryover").InnerText);
 			_intKarmaSpirit = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspirit").InnerText);
 			_intKarmaManeuver = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmamaneuver").InnerText);
@@ -2193,6 +2197,7 @@ namespace Chummer
 				_intKarmaImproveComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimprovecomplexform").ToString());
 				_intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
 				_intKarmaContact = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacontact").ToString());
+                _intKarmaEnemy = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenemy").ToString());
 				_intKarmaCarryover = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacarryover").ToString());
 				_intKarmaSpirit = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspirit").ToString());
 				_intKarmaManeuver = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmamaneuver").ToString());
@@ -4041,6 +4046,21 @@ namespace Chummer
 				_intKarmaContact = value;
 			}
 		}
+
+        /// <summary>
+        /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
+        /// </summary>
+        public int KarmaEnemy
+        {
+            get
+            {
+                return _intKarmaEnemy;
+            }
+            set
+            {
+                _intKarmaEnemy = value;
+            }
+        }
 
 		/// <summary>
 		/// Maximum amount of remaining Karma that is carried over to the character once they are created.

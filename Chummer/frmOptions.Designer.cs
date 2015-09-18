@@ -52,6 +52,9 @@
 			this.lblKarmaContactExtra = new System.Windows.Forms.Label();
 			this.nudKarmaContact = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaContact = new System.Windows.Forms.Label();
+            this.lblKarmaEnemyExtra = new System.Windows.Forms.Label();
+            this.nudKarmaEnemy = new System.Windows.Forms.NumericUpDown();
+            this.lblKarmaEnemy = new System.Windows.Forms.Label();
 			this.lblKarmaNuyenPerExtra = new System.Windows.Forms.Label();
 			this.nudKarmaNuyenPer = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaNuyenPer = new System.Windows.Forms.Label();
@@ -369,7 +372,7 @@
 			this.nudKarmaMetamagic.Location = new System.Drawing.Point(560, 4);
 			this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
 			this.nudKarmaMetamagic.Size = new System.Drawing.Size(47, 20);
-			this.nudKarmaMetamagic.TabIndex = 55;
+			this.nudKarmaMetamagic.TabIndex = 58;
 			// 
 			// lblKarmaMetamagic
 			// 
@@ -377,43 +380,43 @@
 			this.lblKarmaMetamagic.Location = new System.Drawing.Point(402, 6);
 			this.lblKarmaMetamagic.Name = "lblKarmaMetamagic";
 			this.lblKarmaMetamagic.Size = new System.Drawing.Size(154, 13);
-			this.lblKarmaMetamagic.TabIndex = 54;
+			this.lblKarmaMetamagic.TabIndex = 57;
 			this.lblKarmaMetamagic.Tag = "Label_Options_Metamagics";
 			this.lblKarmaMetamagic.Text = "Additional Metamagics/Echoes";
 			// 
 			// lblKarmaInitiationBracket
 			// 
 			this.lblKarmaInitiationBracket.AutoSize = true;
-			this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(158, 500);
+			this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(158, 526);
 			this.lblKarmaInitiationBracket.Name = "lblKarmaInitiationBracket";
 			this.lblKarmaInitiationBracket.Size = new System.Drawing.Size(10, 13);
-			this.lblKarmaInitiationBracket.TabIndex = 51;
+			this.lblKarmaInitiationBracket.TabIndex = 54;
 			this.lblKarmaInitiationBracket.Text = "(";
 			// 
 			// lblKarmaInitiationExtra
 			// 
 			this.lblKarmaInitiationExtra.AutoSize = true;
-			this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(219, 500);
+			this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(219, 526);
 			this.lblKarmaInitiationExtra.Name = "lblKarmaInitiationExtra";
 			this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(98, 13);
-			this.lblKarmaInitiationExtra.TabIndex = 53;
+			this.lblKarmaInitiationExtra.TabIndex = 56;
 			this.lblKarmaInitiationExtra.Tag = "Label_Options_NewRatingTen";
 			this.lblKarmaInitiationExtra.Text = "x New Rating) + 10";
 			// 
 			// nudKarmaInitiation
 			// 
-			this.nudKarmaInitiation.Location = new System.Drawing.Point(166, 498);
+			this.nudKarmaInitiation.Location = new System.Drawing.Point(166, 524);
 			this.nudKarmaInitiation.Name = "nudKarmaInitiation";
 			this.nudKarmaInitiation.Size = new System.Drawing.Size(47, 20);
-			this.nudKarmaInitiation.TabIndex = 52;
+			this.nudKarmaInitiation.TabIndex = 55;
 			// 
 			// lblKarmaInitiation
 			// 
 			this.lblKarmaInitiation.AutoSize = true;
-			this.lblKarmaInitiation.Location = new System.Drawing.Point(8, 500);
+			this.lblKarmaInitiation.Location = new System.Drawing.Point(8, 526);
 			this.lblKarmaInitiation.Name = "lblKarmaInitiation";
 			this.lblKarmaInitiation.Size = new System.Drawing.Size(112, 13);
-			this.lblKarmaInitiation.TabIndex = 50;
+			this.lblKarmaInitiation.TabIndex = 53;
 			this.lblKarmaInitiation.Tag = "Label_Options_Initiation";
 			this.lblKarmaInitiation.Text = "Initiation / Submersion";
 			// 
@@ -464,29 +467,56 @@
 			// lblKarmaCarryoverExtra
 			// 
 			this.lblKarmaCarryoverExtra.AutoSize = true;
-			this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(219, 474);
+			this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(219, 500);
 			this.lblKarmaCarryoverExtra.Name = "lblKarmaCarryoverExtra";
 			this.lblKarmaCarryoverExtra.Size = new System.Drawing.Size(51, 13);
-			this.lblKarmaCarryoverExtra.TabIndex = 49;
+			this.lblKarmaCarryoverExtra.TabIndex = 52;
 			this.lblKarmaCarryoverExtra.Tag = "Label_Options_Maximum";
 			this.lblKarmaCarryoverExtra.Text = "Maximum";
 			// 
 			// nudKarmaCarryover
 			// 
-			this.nudKarmaCarryover.Location = new System.Drawing.Point(166, 472);
+			this.nudKarmaCarryover.Location = new System.Drawing.Point(166, 498);
 			this.nudKarmaCarryover.Name = "nudKarmaCarryover";
 			this.nudKarmaCarryover.Size = new System.Drawing.Size(47, 20);
-			this.nudKarmaCarryover.TabIndex = 48;
+			this.nudKarmaCarryover.TabIndex = 51;
 			// 
 			// lblKarmaCarryover
 			// 
 			this.lblKarmaCarryover.AutoSize = true;
-			this.lblKarmaCarryover.Location = new System.Drawing.Point(8, 474);
+			this.lblKarmaCarryover.Location = new System.Drawing.Point(8, 500);
 			this.lblKarmaCarryover.Name = "lblKarmaCarryover";
 			this.lblKarmaCarryover.Size = new System.Drawing.Size(141, 13);
-			this.lblKarmaCarryover.TabIndex = 47;
+			this.lblKarmaCarryover.TabIndex = 50;
 			this.lblKarmaCarryover.Tag = "Label_Options_Carryover";
 			this.lblKarmaCarryover.Text = "Carryover for New Character";
+            // 
+            // lblKarmaEnemyExtra
+            // 
+            this.lblKarmaEnemyExtra.AutoSize = true;
+            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(219, 474);
+            this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
+            this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
+            this.lblKarmaEnemyExtra.TabIndex = 49;
+            this.lblKarmaEnemyExtra.Tag = "Label_Options_ConnectionLoyalty";
+            this.lblKarmaEnemyExtra.Text = "x (Connection + Loyalty)";
+            // 
+            // nudKarmaEnemy
+            // 
+            this.nudKarmaEnemy.Location = new System.Drawing.Point(166, 472);
+            this.nudKarmaEnemy.Name = "nudKarmaEnemy";
+            this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaEnemy.TabIndex = 48;
+            // 
+            // lblKarmaEnemy
+            // 
+            this.lblKarmaEnemy.AutoSize = true;
+            this.lblKarmaEnemy.Location = new System.Drawing.Point(8, 474);
+            this.lblKarmaEnemy.Name = "lblKarmaEnemy";
+            this.lblKarmaEnemy.Size = new System.Drawing.Size(49, 13);
+            this.lblKarmaEnemy.TabIndex = 47;
+            this.lblKarmaEnemy.Tag = "Label_Options_Enemies";
+            this.lblKarmaEnemy.Text = "Enemies";
 			// 
 			// lblKarmaContactExtra
 			// 
@@ -1644,11 +1674,14 @@
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroup);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaCarryover);
 			this.tabKarmaCosts.Controls.Add(this.nudKarmaImproveSkillGroup);
-			this.tabKarmaCosts.Controls.Add(this.lblKarmaContactExtra);
-			this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroupExtra);
-			this.tabKarmaCosts.Controls.Add(this.nudKarmaContact);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaContact);
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaContact); 
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaContactExtra);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemy); 
+            this.tabKarmaCosts.Controls.Add(this.nudKarmaEnemy);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemyExtra);
+            this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroupExtra);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaAttribute);
-			this.tabKarmaCosts.Controls.Add(this.lblKarmaContact);
 			this.tabKarmaCosts.Controls.Add(this.nudKarmaAttribute);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtra);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaAttributeExtra);
@@ -2876,8 +2909,11 @@
 		private System.Windows.Forms.NumericUpDown nudKarmaCarryover;
 		private System.Windows.Forms.Label lblKarmaCarryover;
 		private System.Windows.Forms.Label lblKarmaContactExtra;
+        private System.Windows.Forms.Label lblKarmaEnemyExtra;
 		private System.Windows.Forms.NumericUpDown nudKarmaContact;
+        private System.Windows.Forms.NumericUpDown nudKarmaEnemy;
 		private System.Windows.Forms.Label lblKarmaContact;
+        private System.Windows.Forms.Label lblKarmaEnemy;
 		private System.Windows.Forms.Label lblKarmaNuyenPerExtra;
 		private System.Windows.Forms.NumericUpDown nudKarmaNuyenPer;
 		private System.Windows.Forms.Label lblKarmaNuyenPer;
