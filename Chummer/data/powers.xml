@@ -638,6 +638,9 @@
       <adeptway>0</adeptway>
       <levels>no</levels>
       <limit>1</limit>
+      <bonus>
+        <adeptlinguistics />
+      </bonus>
       <source>SG</source>
       <page>172</page>
     </power>

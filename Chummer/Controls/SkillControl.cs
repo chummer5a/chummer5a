@@ -169,7 +169,7 @@ namespace Chummer
                     }
 
                     //Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher, minimum cost of 1
-                    if (_objSkill.CharacterObject.JackOfAllTrades)
+                    if (_objSkill.CharacterObject.Created && _objSkill.CharacterObject.JackOfAllTrades)
                     {
                         if (_objSkill.Rating <= 5)
                         {
@@ -182,14 +182,17 @@ namespace Chummer
                         }
                     }
 
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
-					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
-				}
+                    // check for free intial point from adept linguistics
+                    ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
+                    if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
+                        intKarmaCost = 0;
 
-				ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
-				if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", "1").Replace("{1}", "0");
-				tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
+                    tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+				    cmdImproveSkill.Enabled = true;
+				} 
+                else
+					cmdImproveSkill.Enabled = false;
 
 				nudSkill.Visible = false;
                 nudKarma.Visible = false;
@@ -752,8 +755,13 @@ namespace Chummer
                         }
                     }
 
+                    // check for adept linguistics initial free point
+                    ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
+                    if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
+                        intKarmaCost = 0;
+
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
-					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+                    tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 					cmdImproveSkill.Enabled = true;
 				}
 				else
