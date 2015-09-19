@@ -15654,7 +15654,7 @@ namespace Chummer
 				if (objImprovementManager.SelectedValue != "")
 				{
 					_strExtra = objImprovementManager.SelectedValue;
-					objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+					//objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
 				}
 			}
 

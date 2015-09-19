@@ -3926,7 +3926,7 @@ namespace Chummer
                 {
                     for (int i = _intFreeLevels + 1; i <= _intRating; i++)
                     {
-                        if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active") || (_objCharacter.Infirm && _strSkillCategory == "Physical Active"))
+                        if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
                         {
                             intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill * 2);
                             // Karma cost is doubled when increasing a Skill's Rating above 6.
@@ -3946,13 +3946,13 @@ namespace Chummer
                 {
 				    // The first point in a Skill costs KarmaNewActiveSkill.
 				    // Each additional beyond 1 costs i x KarmaImproveActiveSkill.
-				    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active") || (_objCharacter.Infirm && _strSkillCategory == "Physical Active"))
+				    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
 					    intBP += _objCharacter.Options.KarmaNewActiveSkill * 2;
 				    else
 					    intBP += _objCharacter.Options.KarmaNewActiveSkill;
 				    for (int i = 2; i <= _intRating; i++)
 				    {
-					    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active") || (_objCharacter.Infirm && _strSkillCategory == "Physical Active"))
+					    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
 					    {
 						    intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill * 2);
 						    // Karma cost is doubled when increasing a Skill's Rating above 6.

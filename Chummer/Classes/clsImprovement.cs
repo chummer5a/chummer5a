@@ -2550,16 +2550,6 @@ namespace Chummer
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
 				_objCharacter.SchoolOfHardKnocks = true;
 			}
-			// Check for Infirm modifiers.
-			if (bonusNode.LocalName == ("infirm"))
-			{
-				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "infirm");
-				objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
-					"infirm = " + bonusNode.OuterXml.ToString());
-				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Infirm, strUnique);
-				_objCharacter.Infirm = true;
-			}
 			// Check for ExCon modifiers.
 			if (bonusNode.LocalName == ("excon"))
 			{
@@ -4971,28 +4961,6 @@ namespace Chummer
                      if (!blnFound)
                          _objCharacter.ExCon = false;
  			    }
-
-				// Turn off the Infirm flag if it is being removed.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Infirm)
-				{
-					bool blnFound = false;
-					// See if the character has anything else that is granting them access to Infirm.
-					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
-					{
-						// Skip items from the current Improvement source.
-						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
-						{
-							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.Infirm)
-							{
-								blnFound = true;
-								break;
-							}
-						}
-					}
-
-					if (!blnFound)
-						_objCharacter.Infirm = false;
-				}
 
                 // Turn off the FriendsInHighPlaces flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.FriendsInHighPlaces)

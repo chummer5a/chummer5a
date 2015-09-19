@@ -1,3 +1,9 @@
+Build 175:
+Application Change:
+
+Data Change:
+- Nanohive 
+
 Build 174:
 Application Change:
 - Calculation of Essence discounts is now multiplicative instead of additive. I am assured this is a good thing.

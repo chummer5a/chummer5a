@@ -2687,7 +2687,7 @@
 			<category>Nanocybernetics</category>
 			<ess>Rating * 0.25</ess>
 			<capacity>[2]</capacity>
-			<avail>[Rating * 5]R</avail>
+			<avail>(Rating * 5)R</avail>
 			<cost>Rating * 12000</cost>
 			<bonus>
 				<selecttext />
@@ -2702,7 +2702,7 @@
 			<category>Nanocybernetics</category>
 			<ess>Rating * 0.2</ess>
 			<capacity>0</capacity>
-			<avail>[Rating * 5]R</avail>
+			<avail>(Rating * 5)R</avail>
 			<cost>Rating * 10000</cost>
 			<bonus>
 				<selecttext />
@@ -2728,7 +2728,7 @@
 			<ess>Rating * 0.5</ess>
 			<rating>6</rating>
 			<capacity>0</capacity>
-			<avail>[Rating * 5]F</avail>
+			<avail>(Rating * 5)F</avail>
 			<cost>Rating * 5000</cost>
 			<source>CF</source>
 			<page>151</page>

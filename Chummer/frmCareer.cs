@@ -62,7 +62,6 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
-			_objCharacter.InfirmChanged += objCharacter_InfirmChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -652,11 +651,6 @@ namespace Chummer
 				if (_objCharacter.Uncouth)
 				{
 					objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
-				}
-
-				if (_objCharacter.Infirm)
-				{
-					objGroupControl.IsEnabled = !objGroup.HasPhysicalSkills;
 				}
 
 				panSkillGroups.Controls.Add(objGroupControl);
@@ -1472,7 +1466,6 @@ namespace Chummer
 				_objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
 				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
-				_objCharacter.InfirmChanged -= objCharacter_InfirmChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
 				treGear.ItemDrag -= treGear_ItemDrag;
@@ -1995,39 +1988,6 @@ namespace Chummer
 				}
 			}
 		}
-
-		private void objCharacter_InfirmChanged(object sender)
-		{
-			if (_blnReapplyImprovements)
-				return;
-
-			// Change to the status of Infirm being enabled.
-			if (_objCharacter.Infirm)
-			{
-				// If Infirm is being added, run through all of the Physical Active Skills and disable them.
-				// Do not break SkillGroups as these will be used if this is ever removed.
-				foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-				{
-					if (objSkillGroupControl.HasPhysicalSkills)
-					{
-						objSkillGroupControl.GroupRating = 0;
-						objSkillGroupControl.IsEnabled = false;
-					}
-				}
-			}
-			else
-			{
-				// If Infirm is being removed, run through all of the Physical Active Skills and re-enable them.
-				// If they were a part of a SkillGroup, set their Rating back.
-				foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-				{
-					if (objSkillGroupControl.HasPhysicalSkills)
-					{
-						objSkillGroupControl.IsEnabled = true;
-					}
-				}
-			}
-		}
 		#endregion
 
 		#region Menu Events
@@ -2294,7 +2254,6 @@ namespace Chummer
 			bool blnRESEnabled = _objCharacter.RESEnabled;
 			bool blnUneducated = _objCharacter.Uneducated;
 			bool blnUncouth = _objCharacter.Uncouth;
-			bool blnInfirm = _objCharacter.Infirm;
 
 			_blnReapplyImprovements = true;
 
@@ -2748,8 +2707,6 @@ namespace Chummer
 				objCharacter_UneducatedChanged(this);
 			if (blnUncouth != _objCharacter.Uncouth)
 				objCharacter_UncouthChanged(this);
-			if (blnInfirm != _objCharacter.Infirm)
-				objCharacter_InfirmChanged(this);
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -4146,10 +4103,9 @@ namespace Chummer
 				intKarmaCost = (objSkillControl.SkillRating + 1) * _objOptions.KarmaImproveActiveSkill;
 			}
 
-			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill or Infirm and a Physical Active Skill, double its cost.
+			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill, double its cost.
 			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") ||
-			    (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
             {
 				intKarmaCost *= 2;
             }

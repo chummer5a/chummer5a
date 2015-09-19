@@ -7337,8 +7337,8 @@
 			<name>Collapsed Frame</name>
 			<mount>Internal</mount>
 			<conceal>-6</conceal>
-			<avail>6F</avail>
-			<cost>700</cost>
+			<avail>0</avail>
+			<cost>0</cost>
 			<source>RG</source>
 			<page>32</page>
 		</accessory>

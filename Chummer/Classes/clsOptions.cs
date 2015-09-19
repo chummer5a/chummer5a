@@ -1459,7 +1459,7 @@ namespace Chummer
 		        // Free Contacts Multiplier
 		        _intFreeKnowledgeMultiplier =
 		            Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
-		        // No Single Armor Encumbrance
+				// No Single Armor Encumbrance
 		        _blnNoSingleArmorEncumbrance =
 		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/nosinglearmorencumbrance").InnerText);
 		        // Ignore Armor Encumbrance
@@ -1907,7 +1907,13 @@ namespace Chummer
 			_intKarmaImproveComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimprovecomplexform").InnerText);
 			_intKarmaNuyenPer = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanuyenper").InnerText);
 			_intKarmaContact = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacontact").InnerText);
-            _intKarmaEnemy = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenemy").InnerText);
+			try
+			{
+				_intKarmaEnemy = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenemy").InnerText);
+			}
+			catch
+			{
+			}
 			_intKarmaCarryover = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacarryover").InnerText);
 			_intKarmaSpirit = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspirit").InnerText);
 			_intKarmaManeuver = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmamaneuver").InnerText);

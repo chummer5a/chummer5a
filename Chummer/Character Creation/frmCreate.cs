@@ -57,7 +57,6 @@ namespace Chummer
             _objCharacter.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
             _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
-            _objCharacter.InfirmChanged += objCharacter_InfirmChanged;
             _objCharacter.ExConChanged += objCharacter_ExConChanged;
             _objCharacter.TrustFundChanged += objCharacter_TrustFundChanged;
             _objCharacter.TechSchoolChanged += objCharacter_TechSchoolChanged;
@@ -744,11 +743,6 @@ namespace Chummer
                 if (_objCharacter.Uncouth)
                 {
                     objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
-                }
-
-                if (_objCharacter.Infirm)
-                {
-                    objGroupControl.IsEnabled = !objGroup.HasPhysicalSkills;
                 }
 
                 panSkillGroups.Controls.Add(objGroupControl);
@@ -1508,7 +1502,6 @@ namespace Chummer
                 _objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
                 _objCharacter.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
-                _objCharacter.InfirmChanged -= objCharacter_InfirmChanged;
                 GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -2290,38 +2283,6 @@ namespace Chummer
 
             }
         }
-        private void objCharacter_InfirmChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-            // Change to the status of Infirm being enabled.
-            if (_objCharacter.Infirm)
-            {
-                // If Infirm is being added, run through all of the Physical Active Skills and disable them.
-                // Do not break SkillGroups as these will be used if this is ever removed.
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    if (objSkillGroupControl.HasPhysicalSkills)
-                    {
-                        objSkillGroupControl.GroupRating = 0;
-                        objSkillGroupControl.IsEnabled = false;
-                    }
-                }
-            }
-            else
-            {
-                // If Infirm is being removed, run through all of the Physical Active Skills and re-enable them.
-                // If they were a part of a SkillGroup, set their Rating back.
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    if (objSkillGroupControl.HasPhysicalSkills)
-                    {
-                        objSkillGroupControl.IsEnabled = true;
-                    }
-                }
-            }
-        }
         #endregion
 
         #region Menu Events
@@ -2600,7 +2561,6 @@ namespace Chummer
             bool blnUncouth = _objCharacter.Uncouth;
             bool blnFriendsInHighPlaces = _objCharacter.FriendsInHighPlaces;
             bool blnSchoolOfHardKnocks = _objCharacter.SchoolOfHardKnocks;
-            bool blnInfirm = _objCharacter.Infirm;
 
             _blnReapplyImprovements = true;
 
@@ -3083,8 +3043,6 @@ namespace Chummer
                 objCharacter_FriendsInHighPlacesChanged(this);
             if (blnSchoolOfHardKnocks != _objCharacter.SchoolOfHardKnocks)
                 objCharacter_SchoolOfHardKnocksChanged(this);
-            if (blnInfirm != _objCharacter.Infirm)
-                objCharacter_InfirmChanged(this);
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -15725,8 +15683,7 @@ namespace Chummer
                     {
                         intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill);
 	                    if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") ||
-	                        (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
 	                    {
 		                    intPointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
 	                    }
@@ -15761,7 +15718,7 @@ namespace Chummer
 
                         //Uneducated, Uncouth character handler.
                         //First level of skill
-                        if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") || (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+                        if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
                         {
                             intPointsRemain -= _objOptions.KarmaNewActiveSkill * 2;
                             intPointsUsed += _objOptions.KarmaNewActiveSkill * 2;
