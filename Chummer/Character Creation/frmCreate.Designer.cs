@@ -2450,6 +2450,7 @@
 			this.mnuFileClose.Size = new System.Drawing.Size(140, 22);
 			this.mnuFileClose.Tag = "Menu_FileClose";
 			this.mnuFileClose.Text = "&Close";
+			this.mnuFileClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.mnuFileClose.Click += new System.EventHandler(this.mnuFileClose_Click);
 			// 
 			// toolStripSeparator2
