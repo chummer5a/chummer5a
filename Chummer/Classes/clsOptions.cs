@@ -806,7 +806,6 @@ namespace Chummer
 		private string _strName = "Default Settings";
 
 		// Settings.
-		private bool blnOpenOptions = false;
         private bool _blnAllow2ndMaxAttribute = false;
         private bool _blnAllowAttributePointsOnExceptional = false;
         private bool _blnAllowBiowareSuites = false;
@@ -971,23 +970,12 @@ namespace Chummer
 			strFilePath = Path.Combine(strFilePath, "default.xml");
 			if (!File.Exists(strFilePath))
 			{
-				blnOpenOptions = true;
 				_strFileName = "default.xml";
 				LoadFromRegistry();
 				Save();
 			}
 			else
 				Load("default.xml");
-
-			if (blnOpenOptions)
-			{
-				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-				{
-				frmOptions frmOptions = new frmOptions();
-				frmOptions.ShowDialog();
-				}
-				blnOpenOptions = false;
-			}
 			// Load the language file.
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 

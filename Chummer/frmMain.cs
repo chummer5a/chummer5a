@@ -15,7 +15,6 @@ namespace Chummer
         #region Control Events
         public frmMain()
 		{
-			
 			InitializeComponent();
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
 			this.Text = string.Format("Chummer 5a - Version {0}.{1}.{2}",version.Major, version.Minor, version.Build);
@@ -492,6 +491,16 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
 		{
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
+			strFilePath = Path.Combine(strFilePath, "default.xml");
+			if (!File.Exists(strFilePath))
+			{
+				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+				{
+					frmOptions frmOptions = new frmOptions();
+					frmOptions.ShowDialog();
+				}
+			}
 			Character objCharacter = new Character();
 
 			if (Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml").Count() > 1)
