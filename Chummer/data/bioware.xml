@@ -1423,7 +1423,7 @@
 			<id>c75c8286-2673-48a0-8e9b-cbfeec5c6bc1</id>
 			<name>Expanded Volume</name>
 			<category>Basic</category>
-			<rating>3</rating>
+			<rating>4</rating>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>Rating * 4</avail>
@@ -1435,7 +1435,7 @@
 			<id>82636229-f784-489d-8981-6a1479f0056c</id>
 			<name>Amplified Immune System</name>
 			<category>Basic</category>
-			<rating>3</rating>
+			<rating>4</rating>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>Rating * 7</avail>
