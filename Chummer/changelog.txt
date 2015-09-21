@@ -1,8 +1,11 @@
 Build 175:
 Application Change:
+- Removed extraneous code for the Infirm quality.
+- Minor quality of life update; if you have no Settings file present when creating a new character, Chummer will prompt you to launch the Options menu. 
 
 Data Change:
-- Nanohive 
+- Nanohive crash issue fixed.
+- Ratings for the Expanded Volume and Amplified Immune System bioware fixed to 4. 
 
 Build 174:
 Application Change:
