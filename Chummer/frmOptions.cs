@@ -1754,6 +1754,10 @@ namespace Chummer
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
+			if (cboXSLT.SelectedValue.ToString() == "" || cboXSLT.SelectedValue.ToString() == null)
+			{
+				cboXSLT.SelectedValue = "Shadowrun 5";
+			}
             GlobalOptions.Instance.DefaultCharacterSheet = cboXSLT.SelectedValue.ToString();
             GlobalOptions.Instance.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.Instance.PrintToFileFirst = chkPrintToFileFirst.Checked;
