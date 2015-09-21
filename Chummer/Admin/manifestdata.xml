@@ -426,7 +426,7 @@
 	<file>
 		<name>data/spells.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-395</version>
 		<description>Spells</description>
 		<notes>- Spells data file</notes>
 		<url>https://www.dropbox.com/s/yheum6i7llvas2u/spells.xml?dl=1</url>
