@@ -1109,7 +1109,7 @@
       <name>Detonator, Optical</name>
       <category>Explosives</category>
       <rating>6</rating>
-      <avail>(Rating * 7 F)</avail>
+      <avail>(Rating * 7)F</avail>
       <cost>Rating * 200</cost>
       <source>RG</source>
       <page>195</page>
