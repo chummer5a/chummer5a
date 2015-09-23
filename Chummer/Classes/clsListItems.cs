@@ -9,6 +9,22 @@ namespace Chummer
 	/// </summary>
 	public class ListItem
 	{
+		public static ListItem Auto(string value, string languageString)
+		{
+			return new ListItem(value, LanguageManager.Instance.GetString(languageString)); 
+		}
+
+		public ListItem(string value, string name)
+		{
+			_strValue = value;
+			_strName = name;
+		}
+
+		public ListItem()
+		{
+			
+		}
+
 		private string _strValue = "";
 		private string _strName = "";
 
