@@ -805,7 +805,7 @@ namespace Chummer
 		private string _strFileName = "default.xml";
 		private string _strName = "Default Settings";
 
-        // Settings.
+		// Settings.
         private bool _blnAllow2ndMaxAttribute = false;
         private bool _blnAllowAttributePointsOnExceptional = false;
         private bool _blnAllowBiowareSuites = false;
@@ -911,6 +911,7 @@ namespace Chummer
         private int _intKarmaComplexFormOption = 2;
         private int _intKarmaComplexFormSkillfot = 1;
         private int _intKarmaContact = 1;
+        private int _intKarmaEnemy = 1;
         private int _intKarmaEnhancement = 2;
         private int _intKarmaImproveActiveSkill = 2;
         private int _intKarmaImproveComplexForm = 1;
@@ -975,7 +976,6 @@ namespace Chummer
 			}
 			else
 				Load("default.xml");
-
 			// Load the language file.
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
@@ -1225,7 +1225,9 @@ namespace Chummer
 			objWriter.WriteElementString("karmanuyenper", _intKarmaNuyenPer.ToString());
 			// <karmacontact />
 			objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString());
-			// <karmacarryover />
+            // <karmaenemy />
+            objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString());
+            // <karmacarryover />
 			objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString());
 			// <karmaspirit />
 			objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString());
@@ -1456,7 +1458,7 @@ namespace Chummer
 		        // Free Contacts Multiplier
 		        _intFreeKnowledgeMultiplier =
 		            Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
-		        // No Single Armor Encumbrance
+				// No Single Armor Encumbrance
 		        _blnNoSingleArmorEncumbrance =
 		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/nosinglearmorencumbrance").InnerText);
 		        // Ignore Armor Encumbrance
@@ -1904,6 +1906,13 @@ namespace Chummer
 			_intKarmaImproveComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimprovecomplexform").InnerText);
 			_intKarmaNuyenPer = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanuyenper").InnerText);
 			_intKarmaContact = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacontact").InnerText);
+			try
+			{
+				_intKarmaEnemy = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenemy").InnerText);
+			}
+			catch
+			{
+			}
 			_intKarmaCarryover = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacarryover").InnerText);
 			_intKarmaSpirit = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspirit").InnerText);
 			_intKarmaManeuver = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmamaneuver").InnerText);
@@ -2193,6 +2202,7 @@ namespace Chummer
 				_intKarmaImproveComplexForm = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaimprovecomplexform").ToString());
 				_intKarmaNuyenPer = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmanuyenper").ToString());
 				_intKarmaContact = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacontact").ToString());
+                _intKarmaEnemy = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaenemy").ToString());
 				_intKarmaCarryover = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmacarryover").ToString());
 				_intKarmaSpirit = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmaspirit").ToString());
 				_intKarmaManeuver = Convert.ToInt32(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("karmamaneuver").ToString());
@@ -3064,7 +3074,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters can have more than 35 BP in Positive Qualities.
+		/// Whether or not characters can have more than 25 BP in Positive Qualities.
 		/// </summary>
 		public bool ExceedPositiveQualities
 		{
@@ -3079,7 +3089,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not characters can have more than 35 BP in Negative Qualities.
+		/// Whether or not characters can have more than 25 BP in Negative Qualities.
 		/// </summary>
 		public bool ExceedNegativeQualities
 		{
@@ -3094,8 +3104,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not character can still only receive up to 35 BP from Negative Qualities. This means they can take as many Negative Qualities as they'd like but will never receive more than
-		/// 35 additional BP from selecting them.
+		/// If true, the character will not receive additional BP from Negative Qualities past the initial 25
 		/// </summary>
 		public bool ExceedNegativeQualitiesLimit
 		{
@@ -4042,6 +4051,21 @@ namespace Chummer
 				_intKarmaContact = value;
 			}
 		}
+
+        /// <summary>
+        /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
+        /// </summary>
+        public int KarmaEnemy
+        {
+            get
+            {
+                return _intKarmaEnemy;
+            }
+            set
+            {
+                _intKarmaEnemy = value;
+            }
+        }
 
 		/// <summary>
 		/// Maximum amount of remaining Karma that is carried over to the character once they are created.

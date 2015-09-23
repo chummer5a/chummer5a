@@ -5931,6 +5931,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Options_Contacts</key>
 			<text>Contacts</text>
 		</string>
+    <string>
+      <key>Label_Options_Enemies</key>
+      <text>Enemies</text>
+    </string>
 		<string>
 			<key>Label_Options_Carryover</key>
 			<text>Carryover for New Character</text>
@@ -7542,6 +7546,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Enter a name for this custom item.</text>
 		</string>
 		<!-- CharacterOptions Messages -->
+		<string>
+			<key>Message_CharacterOptions_OpenOptions</key>
+			<text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+		</string>
+		<string>
+			<key>MessageTitle_CharacterOptions_OpenOptions</key>
+			<text>No Settings File Found</text>
+		</string>
 		<string>
 			<key>Message_CharacterOptions_CannotLoadSetting</key>
 			<text>The character's settings file ({0}) could not be found. Use default settings instead?</text>

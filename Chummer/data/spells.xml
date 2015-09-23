@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-400</version>
+  <version>-395</version>
   <categories>
     <category>Combat</category>
     <category>Detection</category>
@@ -1197,7 +1197,7 @@
       <id>6f1689d0-1902-4155-b6e8-4451c88348b2</id>
       <name>Circle of Protection</name>
       <descriptor>Anchored</descriptor>
-      <category>Ritual</category>
+      <category>Rituals</category>
       <type>M</type>
       <range>Special</range>
       <damage>0</damage>
@@ -3116,7 +3116,7 @@
       <dv>Special</dv>
       <required>
         <anyof>
-          <art>Advanced Ritual</art>
+          <art>Advanced Rituals</art>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </anyof>
@@ -3473,7 +3473,7 @@
       <name>Hemorrhage</name>
       <descriptor>
       </descriptor>
-      <category>Ritual</category>
+      <category>Rituals</category>
       <type>P</type>
       <range>Special</range>
       <damage>0</damage>
@@ -4172,7 +4172,7 @@
 	<spell>
       <name>Decrystalize</name>
       <descriptor>Material Link, Spotter</descriptor>
-      <category>Ritual</category>
+      <category>Rituals</category>
       <type>M</type>
       <range>Special</range>
       <damage>0</damage>
@@ -4184,7 +4184,7 @@
 	<spell>
       <name>Mana Flow</name>
       <descriptor>Anchor</descriptor>
-      <category>Ritual</category>
+      <category>Rituals</category>
       <type>M</type>
       <range>Special</range>
       <damage>0</damage>
@@ -4196,7 +4196,7 @@
 	<spell>
       <name>Mana Ebb</name>
       <descriptor>Anchored</descriptor>
-      <category>Ritual</category>
+      <category>Rituals</category>
       <type>M</type>
       <range>Special</range>
       <damage>0</damage>

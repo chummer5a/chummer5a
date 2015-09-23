@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-360</version>
+	<version>-350</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -2489,7 +2489,7 @@
 			<cost>350</cost>
 			<allowaccessory>true</allowaccessory>
 			<useskill>Exotic Ranged Weapon</useskill>
-			<range>Net</range>
+			<range>Thrown Knife</range>
 			<source>RG</source>
 			<page>24</page>
 		</weapon>
@@ -7337,8 +7337,8 @@
 			<name>Collapsed Frame</name>
 			<mount>Internal</mount>
 			<conceal>-6</conceal>
-			<avail>6F</avail>
-			<cost>700</cost>
+			<avail>0</avail>
+			<cost>0</cost>
 			<source>RG</source>
 			<page>32</page>
 		</accessory>

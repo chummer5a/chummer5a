@@ -449,6 +449,7 @@ namespace Chummer
             _objOptions.KarmaMetamagic = Convert.ToInt32(nudKarmaMetamagic.Value);
             _objOptions.KarmaNuyenPer = Convert.ToInt32(nudKarmaNuyenPer.Value);
             _objOptions.KarmaContact = Convert.ToInt32(nudKarmaContact.Value);
+            _objOptions.KarmaEnemy = Convert.ToInt32(nudKarmaEnemy.Value);
             _objOptions.KarmaCarryover = Convert.ToInt32(nudKarmaCarryover.Value);
             _objOptions.KarmaSpirit = Convert.ToInt32(nudKarmaSpirit.Value);
             _objOptions.KarmaManeuver = Convert.ToInt32(nudKarmaManeuver.Value);
@@ -624,6 +625,7 @@ namespace Chummer
             nudKarmaManeuver.Value = 4;
             nudKarmaNuyenPer.Value = 2000;
             nudKarmaContact.Value = 1;
+            nudKarmaEnemy.Value = 1;
             nudKarmaCarryover.Value = 7;
             nudKarmaInitiation.Value = 3;
             nudKarmaMetamagic.Value = 15;
@@ -830,6 +832,8 @@ namespace Chummer
             lblKarmaNuyenPerExtra.Left = nudKarmaNuyenPer.Left + nudKarmaNuyenPer.Width + 6;
             nudKarmaContact.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
             lblKarmaContactExtra.Left = nudKarmaContact.Left + nudKarmaContact.Width + 6;
+            nudKarmaEnemy.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
+            lblKarmaEnemyExtra.Left = nudKarmaEnemy.Left + nudKarmaEnemy.Width + 6;
             nudKarmaCarryover.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
             lblKarmaCarryoverExtra.Left = nudKarmaCarryover.Left + nudKarmaCarryover.Width + 6;
             nudKarmaInitiation.Left = lblKarmaImproveKnowledgeSkill.Left + lblKarmaImproveKnowledgeSkill.Width + 6;
@@ -1698,6 +1702,7 @@ namespace Chummer
             nudKarmaComplexFormSkillsoft.Value = _objOptions.KarmaComplexFormSkillsoft;
             nudKarmaNuyenPer.Value = _objOptions.KarmaNuyenPer;
             nudKarmaContact.Value = _objOptions.KarmaContact;
+            nudKarmaEnemy.Value = _objOptions.KarmaEnemy;
             nudKarmaCarryover.Value = _objOptions.KarmaCarryover;
             nudKarmaSpirit.Value = _objOptions.KarmaSpirit;
             nudKarmaManeuver.Value = _objOptions.KarmaManeuver;
@@ -1749,6 +1754,10 @@ namespace Chummer
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
+			if (cboXSLT.SelectedValue.ToString() == "" || cboXSLT.SelectedValue.ToString() == null)
+			{
+				cboXSLT.SelectedValue = "Shadowrun 5";
+			}
             GlobalOptions.Instance.DefaultCharacterSheet = cboXSLT.SelectedValue.ToString();
             GlobalOptions.Instance.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.Instance.PrintToFileFirst = chkPrintToFileFirst.Checked;

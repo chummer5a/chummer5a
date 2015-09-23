@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-496</version>
+  <version>-490</version>
   <chummer file="armor.xml">
     <categories>
       <category translate="Armures">Armor</category>
@@ -14315,59 +14315,60 @@
       <category translate="Défauts">Negative</category>
     </categories>
     <qualities>
-      <quality>
+      <quality translated="True">
         <id>55247bdc-c313-4614-ae15-5012308096ff</id>
         <name>Adept</name>
         <translate>Adepte</translate>
-        <page>90</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
         <name>Ambidextrous</name>
         <translate>Ambidextre</translate>
-        <page>90</page>
+        <page>74</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>5b19dbcd-fb69-4a02-a25a-7ac5342ca576</id>
         <name>Analytical Mind</name>
         <translate>Esprit analytique</translate>
-        <page>98</page>
+        <page>74</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>58e3d62a-2073-4af5-b8e0-00c446b3a5ab</id>
         <name>Aptitude</name>
         <translate>Aptitude</translate>
-        <page>90</page>
+        <page>74</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>7d81f676-e523-4ec6-ae98-8d801f90b031</id>
         <name>Astral Chameleon</name>
         <translate>Caméléon astral</translate>
-        <page>90</page>
+        <page>75</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c734e46a-d391-45a6-b022-6f18db5019f1</id>
         <name>Bilingual</name>
         <translate>Bilingue</translate>
-        <page>96</page>
+        <page>75</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9cffd452-8489-48d5-888c-ac35459d9174</id>
         <name>Blandness</name>
         <translate>M. Tout le Monde</translate>
-        <page>92</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>84305e09-f8d5-4a82-8257-0119b8c3f926</id>
         <name>Catlike</name>
         <translate>Félin</translate>
-        <page>98</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>41cc3e26-ae55-4e28-bd6a-b08866c21424</id>
         <name>Codeslinger</name>
         <translate>Bon codeur</translate>
-        <page>90</page>
+        <page>75</page>
       </quality>
       <quality>
         <id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
@@ -14375,71 +14376,71 @@
         <translate>Éducation universitaire</translate>
         <page>97</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
         <name>Double Jointed</name>
         <translate>Contorsionniste</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>2ac8a95a-a4d0-4bef-a2f2-dcde020258cf</id>
         <name>Exceptional Attribute</name>
         <translate>Attribut exceptionnel</translate>
-        <page>90</page>
+        <page>74</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9f25cc0a-c47c-49dd-953c-8fe60628bae8</id>
         <name>First Impression</name>
         <translate>Première impression</translate>
-        <page>92</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>4d5c22b9-4908-493d-a6f7-4ccc3066888c</id>
         <name>Focused Concentration (Rating 1)</name>
         <translate>Concentration accrue (Indice 1)</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>082d7513-1539-4e79-ac3e-91c6f2ea32ed</id>
         <name>Focused Concentration (Rating 2)</name>
         <translate>Concentration accrue (Indice 2)</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0d0cb0fc-c79d-418e-9216-8a197369e52d</id>
         <name>Guts</name>
         <translate>Tripes</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b7866fb4-3747-4caf-9240-69cbdd79ce78</id>
         <name>High Pain Tolerance (Rating 1)</name>
         <translate>Endurance à la douleur (1 case)</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>4c2804b5-2934-46f1-992c-87a943ce044b</id>
         <name>High Pain Tolerance (Rating 2)</name>
         <translate>Endurance à la douleur (2 cases)</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c1f41d1f-6345-4d4b-9041-ef93aad61948</id>
         <name>High Pain Tolerance (Rating 3)</name>
         <translate>Endurance à la douleur (3 cases)</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>823eb204-c155-45a9-bb9a-98dcbe17a707</id>
         <name>Home Ground</name>
         <translate>Territoire</translate>
-        <page>93</page>
+        <page>75</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>2844e64e-f271-4ca7-bd58-0860b2db56c9</id>
         <name>Human-Looking</name>
         <translate>Apparence humaine</translate>
-        <page>90</page>
+        <page>74</page>
       </quality>
       <quality>
         <id>fd9b9b6d-c969-40f1-8dc7-61f8e5d9cd4d</id>
@@ -14447,447 +14448,461 @@
         <translate>Inspiré</translate>
         <page>100</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>27c7ea84-bfe4-47e1-8382-38d9a5c8e680</id>
         <name>Juryrigger</name>
         <translate>Bricoleur</translate>
-        <page>96</page>
+        <page>75</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8ec5c9bb-aeb9-42f2-a436-a60f764adfe4</id>
         <name>Low-Light Vision</name>
         <translate>Vision nocturne</translate>
-        <page>115</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>78f7456d-78b8-461e-a2b2-bd0d63c48712</id>
         <name>Lucky</name>
         <translate>Chanceux</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0e741331-d776-4be8-abc5-4101228abdef</id>
         <name>Magician</name>
         <translate>Magicien</translate>
-        <page>91</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>f80ef6fc-e844-441c-81e3-b1264b34a4e7</id>
         <name>Magic Resistance (Rating 1)</name>
         <translate>Résistance à la magie (Indice 1)</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>4779f545-b27d-42d9-8664-269253e2f901</id>
         <name>Magic Resistance (Rating 2)</name>
         <translate>Résistance à la magie (Indice 2)</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c55ac86e-212e-4e18-a9c2-68304b6bea89</id>
         <name>Magic Resistance (Rating 3)</name>
         <translate>Résistance à la magie (Indice 3)</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>2f239f68-c93f-4ab9-b9a0-44386b4ea190</id>
         <name>Magic Resistance (Rating 4)</name>
         <translate>Résistance à la magie (Indice 4)</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>ced3fecf-2277-4b20-b1e0-894162ca9ae2</id>
         <name>Mentor Spirit</name>
         <translate>Esprit mentor</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
         <name>Mystic Adept</name>
         <translate>Adepte mystique</translate>
-        <page>90</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>225f0d31-8c03-4283-9a22-558ab01a6c47</id>
         <name>Natural Athlete</name>
         <translate>Athlète né</translate>
-        <page>96</page>
+        <page>74</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>52648a83-1d2a-4b04-b7fc-ee5a62bce4f7</id>
         <name>Natural Hardening</name>
         <translate>Renfort naturel</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8d558134-210d-4c96-b487-021a44409075</id>
         <name>Natural Immunity (Natural)</name>
         <translate>Immunité Naturelle (une maladie/toxine naturelle)</translate>
-        <page>91</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>ce7634aa-0729-423d-bc38-d6f56416b904</id>
         <name>Natural Immunity (Synthetic)</name>
         <translate>Immunité Naturelle (une maladie/toxine synthétique)</translate>
-        <page>91</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9d3be1d9-1309-45e7-8bd9-1f5a3ede3522</id>
         <name>Photographic Memory</name>
         <translate>Mémoire photographique</translate>
-        <page>92</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>291efdb6-a8b8-49ce-b2be-72f9d3f8a243</id>
         <name>Quick Healer</name>
         <translate>Guérison Rapide</translate>
-        <page>91</page>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>e160111a-5fe3-4154-9d5a-82330c9b32fc</id>
         <name>Resistance to Pathogens</name>
         <translate>Résistance aux agents pathogènes</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c74c9ed8-a917-4809-9e8a-5717dd16619b</id>
         <name>Resistance to Toxins</name>
         <translate>Résistance aux toxines</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>5a21137b-dc82-4141-9151-84718e7485f9</id>
         <name>Resistance to Pathogens and Toxins</name>
         <translate>Résistance aux agents pathogènes et toxines</translate>
-        <page>92</page>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c067baa6-0dfa-4783-a0c8-0873564f0308</id>
         <name>Spirit Affinity</name>
         <translate>Affinité avec les esprits</translate>
-        <page>90</page>
+        <page>73</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
         <name>Technomancer</name>
         <translate>Technomancien</translate>
-        <page>92</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>02e76a38-304e-4a0e-93a3-ad2938306afc</id>
         <name>Thermographic Vision</name>
         <translate>Vision thermographique</translate>
-        <page>116</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>00cc6499-db13-447e-8116-278d317a9e31</id>
         <name>Toughness</name>
         <translate>Dur à cuire</translate>
-        <page>91</page>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>18d2a522-6460-4654-916b-a96631f11323</id>
         <name>Will to Live (Rating 1)</name>
-        <translate>Survivant (1 case)</translate>
-        <page>92</page>
+        <translate>Rage de vivre (1 case)</translate>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>5b785abd-91b7-4a94-8856-e98e71a32118</id>
         <name>Will to Live (Rating 2)</name>
-        <translate>Survivant (2 cases)</translate>
-        <page>92</page>
+        <translate>Rage de vivre (2 cases)</translate>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>2916b7de-7265-4e31-b872-074863c5aff3</id>
         <name>Will to Live (Rating 3)</name>
-        <translate>Survivant (3 cases)</translate>
-        <page>92</page>
+        <translate>Rage de vivre (3 cases)</translate>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
         <name>Addiction (Mild)</name>
-        <translate>Dépendance (légère)</translate>
-        <page>94</page>
+        <translate>Addiction (légère)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9a52a300-4d90-4b1f-a113-d0e40a410063</id>
         <name>Addiction (Moderate)</name>
-        <translate>Dépendance (modérée)</translate>
-        <page>94</page>
+        <translate>Addiction (modérée)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b5fa94e6-03fb-4d00-b368-86c318f79c09</id>
         <name>Addiction (Severe)</name>
-        <translate>Dépendance (grave)</translate>
-        <page>94</page>
+        <translate>Addiction (grave)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0886bbb3-f5a9-4583-bcea-d6723889c80d</id>
         <name>Addiction (Burnout)</name>
-        <translate>Dépendance (cramé)</translate>
-        <page>94</page>
+        <translate>Addiction (cramé)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b7841930-0c7b-4be4-b1cf-86debc41aa95</id>
         <name>Allergy (Uncommon, Mild)</name>
         <translate>Allergie (rare, légère)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>f3ad08be-a7a4-4965-bb38-f8db9016c94e</id>
         <name>Allergy (Uncommon, Moderate)</name>
         <translate>Allergie (rare, modérée)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>84a43000-9ae4-4391-b156-d5fbc9a092de</id>
         <name>Allergy (Uncommon, Severe)</name>
         <translate>Allergie (rare, grave)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>e89db285-8db9-4a9c-80cb-94d87b86a80b</id>
         <name>Allergy (Common, Mild)</name>
         <translate>Allergie (commune, légère)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>90188ca7-0ccb-4198-b199-dcf33e029d74</id>
         <name>Allergy (Common, Moderate)</name>
         <translate>Allergie (commune, modérée)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>df14fb6e-456d-4d24-83e8-b1c97576dce2</id>
         <name>Allergy (Common, Severe)</name>
         <translate>Allergie (commune, grave)</translate>
-        <page>93</page>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>94a09a8d-d582-44f0-9f2c-71f7ba94e767</id>
         <name>Astral Beacon</name>
         <translate>Balise Astrale</translate>
-        <page>93</page>
+        <page>80</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>bc5f41ca-1549-4367-9c12-afa403182f8c</id>
         <name>Bad Luck</name>
         <translate>Malchanceux</translate>
-        <page>95</page>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>25356bae-efcc-46c6-9c4f-66909b9b7233</id>
         <name>Bad Rep</name>
         <translate>Mauvaise réputation</translate>
-        <page>106</page>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>86b259fd-17c8-4ae5-b246-49782e7c5047</id>
         <name>Codeblock</name>
         <translate>Mauvais codeur</translate>
-        <page>95</page>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>62c7ed8f-b534-41e3-84ac-29534826d476</id>
         <name>Combat Paralysis</name>
         <translate>Paralysie en combat</translate>
-        <page>95</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>2b9a495d-b735-416b-a000-f648c3b4191a</id>
         <name>Dependent (Nuisance)</name>
         <translate>Personne(s) à charge (nuisance)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>cc857826-3bb2-466d-987b-7d56a337bc08</id>
         <name>Dependent (Inconvenience)</name>
         <translate>Personne(s) à charge (inconvénient)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>066a2de9-1717-44ca-a8c6-90366890574a</id>
         <name>Dependent (Demanding)</name>
         <translate>Personne(s) à charge (exigeante)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>a030d7e2-755b-4f71-b848-ad9772fba242</id>
         <name>Distinctive Style</name>
         <translate>Style distinctif</translate>
-        <page>108</page>
+        <page>87</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>7036225b-d0f0-4c86-85b7-cc4d46943113</id>
         <name>Elf Poser</name>
         <translate>Poseur Elfe</translate>
-        <page>95</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>de12b672-f60a-486d-85f6-b94a80a058da</id>
         <name>Gremlins (Rating 1)</name>
         <translate>Gremlins (Indice 1)</translate>
-        <page>94</page>
+        <page>82</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b71cecd5-7197-4372-bcf8-d55bf1c5d328</id>
         <name>Gremlins (Rating 2)</name>
         <translate>Gremlins (Indice 2)</translate>
-        <page>94</page>
+        <page>82</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>1e819d6e-0ddb-441e-9025-f286fecf93e3</id>
         <name>Gremlins (Rating 3)</name>
         <translate>Gremlins (Indice 3)</translate>
-        <page>94</page>
+        <page>82</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>564284b5-da31-4915-bc69-a893ab25b519</id>
         <name>Gremlins (Rating 4)</name>
         <translate>Gremlins (Indice 4)</translate>
-        <page>94</page>
+        <page>82</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>216290b9-053d-4f6d-81c9-d1fe8ae346be</id>
         <name>Incompetent</name>
         <translate>Incompétent</translate>
-        <page>94</page>
+        <page>83</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9ba327d2-38c5-4a25-ae44-25e98f0bbf03</id>
         <name>Low Pain Tolerance</name>
         <translate>Sensible à la douleur</translate>
-        <page>96</page>
+        <page>86</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>075447a2-5730-4750-a19f-1a5c6086903d</id>
         <name>Ork Poser</name>
         <translate>Poseur Ork</translate>
-        <page>95</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>d6843e67-0837-4353-a5db-f4c320560ddb</id>
         <name>Prejudiced (Common, Biased)</name>
         <translate>Préjugés (commun, dissimulés)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9a76f104-a472-4b6a-b5b7-a8f5248f65a9</id>
         <name>Prejudiced (Common, Outspoken)</name>
         <translate>Préjugés (commun, francs)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>1dc88694-8519-4fb0-b8c9-c5a823084730</id>
         <name>Prejudiced (Common, Radical)</name>
         <translate>Préjugés (commun, radicaux)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b0640207-7965-4f1a-a28c-0dd5e24d2d8c</id>
         <name>Prejudiced (Specific, Biased)</name>
         <translate>Préjugés (spécifique, dissimulé)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>53ddd66b-ad89-43eb-9174-cbff6ed2a9c3</id>
         <name>Prejudiced (Specific, Outspoken)</name>
         <translate>Préjugés (spécifique, francs)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>100cf04a-51e5-477a-a57c-2dae699f7f04</id>
         <name>Prejudiced (Specific, Radical)</name>
         <translate>Préjugés (spécifique, radicaux)</translate>
-        <page>107</page>
+        <page>85</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>69984296-4057-4a0f-964e-a0efb4bfc7ce</id>
         <name>Scorched</name>
         <translate>Écorché</translate>
-        <page>94</page>
+        <page>81</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>13fd45c3-e031-4452-8bf8-31829d2401f9</id>
         <name>Sensitive System</name>
         <translate>Système sensible</translate>
-        <page>96</page>
+        <page>89</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b2210e9a-ab8a-45f9-b5db-13f6923c2d22</id>
         <name>Simsense Vertigo</name>
         <translate>Mal du Simsens</translate>
-        <page>95</page>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>d9479e5c-d44a-45b9-8fb4-d1e08a9487b2</id>
         <name>SINner (Criminal)</name>
         <translate>SINner (Criminel)</translate>
-        <page>96</page>
+        <page>86</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>40c06974-a85b-4f2b-9558-51c140c16d87</id>
         <name>Spirit Bane</name>
         <translate>Hostilité des esprits</translate>
-        <page>94</page>
+        <page>82</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>f0873c37-4f09-41cd-be81-88e8df5b42ae</id>
         <name>Uncouth</name>
         <translate>Asocial</translate>
-        <page>93</page>
+        <page>80</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>d8362a78-54e9-4dbe-8388-6ba0a7b9df31</id>
         <name>Uneducated</name>
         <translate>Primitif</translate>
-        <page>96</page>
+        <page>
+        </page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0a7bcb95-dd9c-4e3e-ab0a-291a352ac1d4</id>
         <name>Weak Immune System</name>
         <translate>Immunodéficience</translate>
-        <page>94</page>
+        <page>83</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
         <name>Focused Concentration (Rating 3)</name>
-        <translate>Focused Concentration (Rating 3)</translate>
+        <translate>Concentration accrue (Indice 3)</translate>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>79979e99-6776-4c93-b202-b630fabf3b30</id>
         <name>Focused Concentration (Rating 4)</name>
-        <translate>Focused Concentration (Rating 4)</translate>
+        <translate>Concentration accrue (Indice 4)</translate>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
         <name>Focused Concentration (Rating 5)</name>
-        <translate>Focused Concentration (Rating 5)</translate>
+        <translate>Concentration accrue (Indice 5)</translate>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>90ce7689-1dd8-437b-98ad-f10207380684</id>
         <name>Focused Concentration (Rating 6)</name>
-        <translate>Focused Concentration (Rating 6)</translate>
+        <translate>Concentration accrue (Indice 6)</translate>
+        <page>76</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
         <name>Gearhead</name>
-        <translate>Gearhead</translate>
+        <translate>Fou du volant</translate>
+        <page>77</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0f3a0971-1cc5-47d6-a32d-d098ecdfb4d9</id>
         <name>Indomitable (Mental)</name>
-        <translate>Indomitable (Mental)</translate>
+        <translate>Sans limite (Mentale)</translate>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>58e6a651-cdd7-4144-a2cc-4cee24526e92</id>
         <name>Indomitable (Physical)</name>
-        <translate>Indomitable (Physical)</translate>
+        <translate>Sans limite (Physique)</translate>
+        <page>78</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b9f1dbeb-1728-4250-a066-4773f758fe6a</id>
         <name>Indomitable (Social)</name>
-        <translate>Indomitable (Social)</translate>
+        <translate>Sans limite (Sociale)</translate>
+        <page>78</page>
       </quality>
       <quality>
         <id>fb9eab85-ae9a-4d03-8c3f-70b6a32d5e17</id>
@@ -14909,150 +14924,177 @@
         <name>Strive For Perfection</name>
         <translate>Strive For Perfection</translate>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>5150f4f0-5193-4f02-8914-d70e831e3567</id>
         <name>Acrobatic Defender</name>
-        <translate>Acrobatic Defender</translate>
+        <translate>Défenseu Acrobatique</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>1d0c4278-501d-456f-ab63-69afee6fbf95</id>
         <name>Agile Defender</name>
-        <translate>Agile Defender</translate>
+        <translate>Défenseur agile</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>31108c89-a67c-47d4-a757-db4e22e2f607</id>
         <name>Brand Loyalty (Manufacturer)</name>
-        <translate>Brand Loyalty (Manufacturer)</translate>
+        <translate>Loyauté à une marque (Fabricant)</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>348d7043-7a1c-498f-85eb-3339be9941d1</id>
         <name>Brand Loyalty (Product)</name>
-        <translate>Brand Loyalty (Product)</translate>
+        <translate>Loyauté à une marque (Produit)</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>98644894-e3a4-41f2-9b7e-91feb74d0334</id>
         <name>One Trick Pony</name>
-        <translate>One Trick Pony</translate>
+        <translate>Technique isolée</translate>
+        <page>140</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>b5f6d958-2563-431b-a7a4-a9028a9f0277</id>
         <name>Perceptive Defender</name>
-        <translate>Perceptive Defender</translate>
+        <translate>Défenseur perspicace</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>1675810d-0f77-42f9-848a-eaa929cb3a20</id>
         <name>Sharpshooter</name>
-        <translate>Sharpshooter</translate>
+        <translate>Tireur d'élite</translate>
+        <page>140</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0c23861e-36d1-4454-b327-0d8118d02d60</id>
         <name>Too Pretty To Hit</name>
-        <translate>Too Pretty To Hit</translate>
+        <translate>Epoustouflant</translate>
+        <page>139</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>da4f7e4a-0e7e-45e6-a872-643bdecb183e</id>
         <name>Radiation Sponge</name>
-        <translate>Radiation Sponge</translate>
+        <translate>Eponge radioactive</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>01bba489-52a2-4a80-845e-61905a970626</id>
         <name>Rad-Tolerant</name>
-        <translate>Rad-Tolerant</translate>
+        <translate>Tolérant aux radiations</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8826405e-a995-4687-b7c8-4e1e51fef3f0</id>
         <name>Spacer</name>
-        <translate>Spacer</translate>
+        <translate>Spaceux</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
         <name>Aspected Magician</name>
-        <translate>Aspected Magician</translate>
+        <translate>Magicien spécialisé</translate>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>cfdc255a-bb46-4d9c-8960-e4181455f4e3</id>
         <name>Allergy (Uncommon, Extreme)</name>
-        <translate>Allergy (Uncommon, Extreme)</translate>
+        <translate>Allergie (rare, extreme)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8a40007a-9876-4998-a7c9-047248cfbc52</id>
         <name>Allergy (Common, Extreme)</name>
-        <translate>Allergy (Common, Extreme)</translate>
+        <translate>Allergie (commune, extreme)</translate>
+        <page>79</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
         <name>Code of Honor</name>
-        <translate>Code of Honor</translate>
+        <translate>Code d'honneur</translate>
+        <page>80</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>0cf25fda-725b-49fd-a8cf-de589e938065</id>
         <name>Insomnia (Basic)</name>
-        <translate>Insomnia (Basic)</translate>
+        <translate>Insomnie (Mineure)</translate>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>149e6bf7-a6b4-4893-b755-4d983372079c</id>
         <name>Insomnia (Full)</name>
-        <translate>Insomnia (Full)</translate>
+        <translate>Insomnie (Majeurel)</translate>
+        <page>84</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>c9cd05ad-cd3c-451e-8285-e0fb1d95ebc1</id>
         <name>Loss of Confidence</name>
-        <translate>Loss of Confidence</translate>
+        <translate>Crise de confiance</translate>
+        <page>81</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>e00623e1-54b0-4a91-b234-3c7e141deef4</id>
         <name>SINner (Corporate)</name>
-        <translate>SINner (Corporate)</translate>
+        <translate>SINner (Corporatiste)</translate>
+        <page>86</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>9ac85feb-ae1e-4996-8514-3570d411e1d5</id>
         <name>SINner (National)</name>
         <translate>SINner (National)</translate>
+        <page>86</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>318d2edd-833b-48c5-a3e1-343bf03848a5</id>
         <name>SINner (Corporate Limited)</name>
-        <translate>SINner (Corporate Limited)</translate>
+        <translate>SINner (Corporatiste Limité)</translate>
+        <page>86</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8ba2830a-3f10-4877-9752-93be051b205b</id>
         <name>Social Stress</name>
-        <translate>Social Stress</translate>
+        <translate>Traumatisme</translate>
+        <page>89</page>
       </quality>
       <quality>
         <id>c6a2aa0f-76fd-432b-85bb-3ef2c2857525</id>
         <name>Consummate Professional</name>
         <translate>Consummate Professional</translate>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>8d2b32ec-2ddf-40dd-a29b-bf2e85a3d8ca</id>
         <name>Combat Junkie</name>
-        <translate>Combat Junkie</translate>
+        <translate>Accroc au combat</translate>
+        <page>140</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>f810fb60-8e1f-4111-a4f3-b652e91693ca</id>
         <name>Blighted (6 Months)</name>
-        <translate>Blighted (6 Months)</translate>
+        <translate>Contaminé (6 mois)</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>94cbe9bc-fabc-4126-81f8-3e31c7ed85f8</id>
         <name>Blighted (12 Months)</name>
-        <translate>Blighted (12 Months)</translate>
+        <translate>Contaminé (12 mois)</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>6be0022f-f8c8-4c51-808c-d339d3e8fecb</id>
         <name>Blighted (24 Months)</name>
-        <translate>Blighted (24 Months)</translate>
+        <translate>Contaminé (24 mois)</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>e7c16580-6705-4a93-a9be-dbea90efd2eb</id>
         <name>Earther</name>
-        <translate>Earther</translate>
+        <translate>Terreux</translate>
+        <page>181</page>
       </quality>
-      <quality>
+      <quality translated="True">
         <id>e96c7280-b9b0-4112-8b65-a3568c7ca13e</id>
         <name>Unsteady Hands</name>
-        <translate>Unsteady Hands</translate>
+        <translate>Tremblement des mains</translate>
+        <page>89</page>
       </quality>
       <quality>
         <id>15b8fbbd-9d6f-43e4-acf3-97badf073ac4</id>
@@ -15200,19 +15242,19 @@
           <spec translate="Poussée vectorielle">Vector Thrust</spec>
           <spec translate="LTA (blimp)">LTA (blimp)</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>e09e5aa7-e496-41a2-97ce-17f577361888</id>
         <name>Animal Handling</name>
         <translate>Animaux</translate>
         <specs>
-          <spec translate="Herding">Herding</spec>
-          <spec translate="Riding">Riding</spec>
-          <spec translate="Training">Training</spec>
-          <spec translate="[Animal Type]">[Animal Type]</spec>
+          <spec translate="Elevage">Herding</spec>
+          <spec translate="Monte">Riding</spec>
+          <spec translate="Dressage">Training</spec>
+          <spec translate="[Type d'animaux]">[Animal Type]</spec>
         </specs>
-        <page>36</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>74a68a9e-8c5b-4998-8dbb-08c1e768afc3</id>
@@ -15221,21 +15263,21 @@
         <specs>
           <spec translate="Conception de sort (par catégorie)">Spell Design</spec>
           <spec translate="Conception de focus (par type)">Focus Design</spec>
-          <spec translate="Spirit Formula">Spirit Formula</spec>
+          <spec translate="Formule d'esprit">Spirit Formula</spec>
         </specs>
-        <page>122</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>1537ca5c-fa93-4c05-b073-a2a0eed91b8e</id>
         <name>Archery</name>
         <translate>Armes de trait</translate>
         <specs>
-          <spec translate="Bow">Bow</spec>
-          <spec translate="Crossbow">Crossbow</spec>
-          <spec translate="Non-Standard Ammunition">Non-Standard Ammunition</spec>
-          <spec translate="Slingshot">Slingshot</spec>
+          <spec translate="Arc">Bow</spec>
+          <spec translate="Arbalète">Crossbow</spec>
+          <spec translate="Munitions insolites">Non-Standard Ammunition</spec>
+          <spec translate="Frondes">Slingshot</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>ada6d9b2-e451-4289-be45-7085fa34a51a</id>
@@ -15250,7 +15292,7 @@
           <spec translate="Accessoires d’armes">Weapon Accessories</spec>
           <spec translate="Melee Weapons">Melee Weapons</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>2f4c706f-5ac5-4774-8a45-3b4667989a20</id>
@@ -15258,36 +15300,36 @@
         <translate>Artisanat</translate>
         <specs>
           <spec translate="Menuiserie">Carpentry</spec>
-          <spec translate="Cooking">Cooking</spec>
-          <spec translate="Drawing">Drawing</spec>
-          <spec translate="Sculpting">Sculpting</spec>
+          <spec translate="Cuisine">Cooking</spec>
+          <spec translate="Dessin">Drawing</spec>
+          <spec translate="Sculpture">Sculpting</spec>
           <spec translate="[Discipline]">[Discipline]</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>59318078-e071-411b-9194-7222560e9f4a</id>
         <name>Assensing</name>
-        <translate>Analyse astrale</translate>
+        <translate>Observation astrale</translate>
         <specs>
           <spec translate="Lecture d’aura">Aura Reading</spec>
           <spec translate="Signatures astrales">Astral Signatures</spec>
-          <spec translate="[Aura Type]">[Aura Type]</spec>
+          <spec translate="[Type d'aura]">[Aura Type]</spec>
         </specs>
-        <page>122</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>b7599a42-ceed-4558-b357-865aa3e317f5</id>
         <name>Astral Combat</name>
         <translate>Combat astral</translate>
         <specs>
-          <spec translate="Magicians">Magicians</spec>
-          <spec translate="Mana Barriers">Mana Barriers</spec>
-          <spec translate="Spirits">Spirits</spec>
-          <spec translate="[Weapon Focus Type]">[Weapon Focus Type]</spec>
-          <spec translate="[Other Opponent Type]">[Other Opponent Type]</spec>
+          <spec translate="Magiciens">Magicians</spec>
+          <spec translate="Barrières mana">Mana Barriers</spec>
+          <spec translate="Esprits">Spirits</spec>
+          <spec translate="[Type de focus d'arme]">[Weapon Focus Type]</spec>
+          <spec translate="[Type d'ennemi]">[Other Opponent Type]</spec>
         </specs>
-        <page>123</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>788b387b-ee41-4e6a-bf22-481a8cc4cf9f</id>
@@ -15299,7 +15341,7 @@
           <spec translate="Mitraillettes">Submachine Guns</spec>
           <spec translate="Cyber-Implant">Cyber-Implant</spec>
         </specs>
-        <page>121</page>
+        <page>133</page>
       </skill>
       <skill>
         <id>5e5f2f7f-f63b-4f65-a65d-91b3d4523c6f</id>
@@ -15309,45 +15351,47 @@
           <spec translate="Glisseurs">Hover</spec>
           <spec translate="Véhicules à chenilles">Tracked</spec>
           <spec translate="Véhicules à roues">Wheeled</spec>
-          <spec translate="Walker">Walker</spec>
+          <spec translate="Marcheurs">Walker</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>9a2d9175-d445-45ca-842d-90223ad13f05</id>
         <name>Banishing</name>
         <translate>Bannissement</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>122</page>
+        <page>144</page>
       </skill>
       <skill>
         <id>dfba7c09-3d95-43fd-be75-39b3e8b22cd3</id>
         <name>Binding</name>
-        <translate>Contrôle d'esprits</translate>
+        <translate>Lien d'esprits</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>48763fa5-4b89-48c7-80ff-d0a2761de4c0</id>
@@ -15359,7 +15403,7 @@
           <spec translate="Epées">Swords</spec>
           <spec translate="Parade">Parrying</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>bd4d977a-cbd4-4289-99bb-896caed6786a</id>
@@ -15372,7 +15416,7 @@
           <spec translate="Organic">Organic</spec>
           <spec translate="Physical">Physical</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>cd9f6bf7-fa48-464b-9a8f-c7ce26713a72</id>
@@ -15385,28 +15429,28 @@
           <spec translate="Bâtons à deux mains">Staves</spec>
           <spec translate="Parade">Parrying</spec>
         </specs>
-        <page>121</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>f338d383-ffd8-4ff8-b99b-cf4c2ed1b159</id>
         <name>Compiling</name>
         <translate>Compilation</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de sprite]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>1c14bf0d-cc69-4126-9a95-1f2429c11aa5</id>
         <name>Computer</name>
         <translate>Informatique</translate>
         <specs>
-          <spec translate="Edit File">Edit File</spec>
-          <spec translate="Matrix Perception">Matrix Perception</spec>
-          <spec translate="Matrix Search">Matrix Search</spec>
+          <spec translate="Edition de fichier">Edit File</spec>
+          <spec translate="Perception matriciel">Matrix Perception</spec>
+          <spec translate="Recherche matriciel">Matrix Search</spec>
           <spec translate="[Action]">[Action]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>6d7f48d3-84a1-4fce-90d3-58d566f70fa6</id>
@@ -15416,7 +15460,7 @@
           <spec translate="Baratin">Fast Talk</spec>
           <spec translate="Séduction">Seduction</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>3db81bcc-264b-47e1-847c-06bdacd88973</id>
@@ -15425,25 +15469,25 @@
         <specs>
           <spec translate="Combat">Combat</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>7143f979-aa48-4cc8-a29c-e010400e6e11</id>
         <name>Cybercombat</name>
         <translate>Cybercombat</translate>
         <specs>
-          <spec translate="Devices">Devices</spec>
-          <spec translate="Grids">Grids</spec>
-          <spec translate="IC">IC</spec>
+          <spec translate="Appareils">Devices</spec>
+          <spec translate="Grilles">Grids</spec>
+          <spec translate="CI">IC</spec>
           <spec translate="Personas">Personas</spec>
           <spec translate="Sprites">Sprites</spec>
-          <spec translate="[Target Type]">[Target Type]</spec>
+          <spec translate="[Type de cible]">[Target Type]</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>9b386fe5-83b3-436f-9035-efd1c0f7a680</id>
@@ -15453,18 +15497,18 @@
           <spec translate="Somatoware">Bodyware</spec>
           <spec translate="Membres cybernétiques">Cyberlimbs</spec>
           <spec translate="Céphaloware">Headware</spec>
-          <spec translate="Repair">Repair</spec>
+          <spec translate="Réparation">Repair</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>64eed2e9-e61c-4cba-81d4-18a612cf2df6</id>
         <name>Decompiling</name>
         <translate>Décompilation</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de Sprite]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>276877e1-5cdf-4e95-befd-13c1abb5ae02</id>
@@ -15476,7 +15520,7 @@
           <spec translate="Improvisés">Improvised Explosives</spec>
           <spec translate="Plastic">Plastic Explosives</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>9b2416b2-3e2b-4dd6-ab9d-530f493c1c22</id>
@@ -15488,7 +15532,7 @@
           <spec translate="Théâtral">Theatrical</spec>
           <spec translate="Trideo &amp; Video">Trideo &amp; Video</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>23c3320c-5010-4b2e-ac46-76f0a86af0b9</id>
@@ -15498,16 +15542,16 @@
           <spec translate="Mélange gazeux">Mixed Gas</spec>
           <spec translate="Extraction d'oxygène">Oxygen Extraction</spec>
           <spec translate="Bouteilles standard">SCUBA</spec>
-          <spec translate="Arctic">Arctic</spec>
-          <spec translate="Cave">Cave</spec>
-          <spec translate="Commercial">Commercial</spec>
-          <spec translate="Controlled Hyperventilation">Controlled Hyperventilation</spec>
-          <spec translate="Liquid Breathing Apparatus">Liquid Breathing Apparatus</spec>
-          <spec translate="Military">Military</spec>
-          <spec translate="[Other Breathing Apparatus]">[Other Breathing Apparatus]</spec>
-          <spec translate="[Other Condition]">[Other Condition]</spec>
+          <spec translate="Arctique">Arctic</spec>
+          <spec translate="Grotte">Cave</spec>
+          <spec translate="Commerciale">Commercial</spec>
+          <spec translate="Hyperventilation controlée">Controlled Hyperventilation</spec>
+          <spec translate="Apareil respiratoire liquide">Liquid Breathing Apparatus</spec>
+          <spec translate="Militarie">Military</spec>
+          <spec translate="[Autre apareil respiratoire]">[Other Breathing Apparatus]</spec>
+          <spec translate="[Autre Condition]">[Other Condition]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>2c8e5f20-e52d-4844-89e9-51b92dba47df</id>
@@ -15519,47 +15563,47 @@
           <spec translate="Brouillage">Jamming</spec>
           <spec translate="Opérations de senseurs">Sensor Operations</spec>
         </specs>
-        <page>126</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>3f93335c-49d6-4904-a97e-4c942ab05b59</id>
         <name>Escape Artist</name>
         <translate>Evasion</translate>
         <specs>
-          <spec translate="Contortionism">Contortionism</spec>
-          <spec translate="Cuffs">Cuffs</spec>
-          <spec translate="Ropes">Ropes</spec>
-          <spec translate="Zip Ties">Zip Ties</spec>
-          <spec translate="[Other Restraint]">[Other Restraint]</spec>
+          <spec translate="Contorsion">Contortionism</spec>
+          <spec translate="Menottes">Cuffs</spec>
+          <spec translate="Cordes">Ropes</spec>
+          <spec translate="Bracelets">Zip Ties</spec>
+          <spec translate="[Autre liens]">[Other Restraint]</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>b20acd11-f102-40f3-a641-e3c420fbdb91</id>
         <name>Etiquette</name>
         <translate>Etiquette</translate>
         <specs>
-          <spec translate="Corporate">Corporate</spec>
-          <spec translate="High Society">High Society</spec>
-          <spec translate="Media">Media</spec>
-          <spec translate="Mercenary">Mercenary</spec>
-          <spec translate="Street">Street</spec>
+          <spec translate="Corporatiste ">Corporate</spec>
+          <spec translate="Haute société">High Society</spec>
+          <spec translate="Média">Media</spec>
+          <spec translate="Mercenaires">Mercenary</spec>
+          <spec translate="La rue">Street</spec>
           <spec translate="Yakuza">Yakuza</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>47cb1e8b-c285-4c54-9aaa-75305ad6dd4f</id>
         <name>First Aid</name>
         <translate>Premiers soins</translate>
         <specs>
-          <spec translate="Broken Bones">Broken Bones</spec>
-          <spec translate="Burns">Burns</spec>
-          <spec translate="Gunshot Wounds">Gunshot Wounds</spec>
-          <spec translate="Resuscitation">Resuscitation</spec>
-          <spec translate="[Type of Treatment]">[Type of Treatment]</spec>
+          <spec translate="Fractures">Broken Bones</spec>
+          <spec translate="Brûre">Burns</spec>
+          <spec translate="Blessure par balle">Gunshot Wounds</spec>
+          <spec translate="Réanimation">Resuscitation</spec>
+          <spec translate="[Type de Traitement]">[Type of Treatment]</spec>
         </specs>
-        <page>127</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>c9f52f97-a284-44a7-8af6-802dd3ed554f</id>
@@ -15572,7 +15616,7 @@
           <spec translate="Retouche d'images">Image Doctoring</spec>
           <spec translate="Falsification de papiers">Paper Forgery</spec>
         </specs>
-        <page>126</page>
+        <page>146</page>
       </skill>
       <skill>
         <id>58452cff-44ea-41c6-a554-28a869149b27</id>
@@ -15595,11 +15639,11 @@
           <spec translate="Equilibre">Balance</spec>
           <spec translate="Danse">Dance</spec>
           <spec translate="Parkour">Parkour</spec>
-          <spec translate="Climbing">Climbing</spec>
-          <spec translate="Leaping">Leaping</spec>
-          <spec translate="Rolling">Rolling</spec>
+          <spec translate="Escalade">Climbing</spec>
+          <spec translate="Saut">Leaping</spec>
+          <spec translate="Roulade">Rolling</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>c2bb65f5-4a6b-49bf-9925-ef6434cb6929</id>
@@ -15621,9 +15665,9 @@
           <spec translate="Commlinks">Commlinks</spec>
           <spec translate="Cyberdecks">Cyberdecks</spec>
           <spec translate="Smartguns">Smartguns</spec>
-          <spec translate="[Hardware Type]">[Hardware Type]</spec>
+          <spec translate="[Type de matériel]">[Hardware Type]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>64841e6e-9487-4b63-80a1-dcad6eb78179</id>
@@ -15634,9 +15678,9 @@
           <spec translate="Missiles guidés">Guided Missiles</spec>
           <spec translate="Mitrailleuses">Machine Guns</spec>
           <spec translate="Lance-roquettes">Rocket Launchers</spec>
-          <spec translate="Assault Cannons">Assault Cannons</spec>
+          <spec translate="Canons d'assaut">Assault Cannons</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>935621c5-d384-42f2-a740-1fa349fa85a1</id>
@@ -15646,58 +15690,58 @@
           <spec translate="Hydraulique">Hydraulics</spec>
           <spec translate="Structurelle">Structural</spec>
           <spec translate="Soudure">Welding</spec>
-          <spec translate="Electrical Power Systems">Electrical Power Systems</spec>
-          <spec translate="HVAC">HVAC</spec>
-          <spec translate="Industrial Robotics">Industrial Robotics</spec>
+          <spec translate="Systèmes d’alimentation électrique">Electrical Power Systems</spec>
+          <spec translate="CVAC">HVAC</spec>
+          <spec translate="Robotique industrielle">Industrial Robotics</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>3b34b209-00be-42b8-b4ac-cc7dea08af8a</id>
         <name>Instruction</name>
         <translate>Enseignement</translate>
         <specs>
-          <spec translate="[Active or Knowledge Skill Category]">[Active or Knowledge Skill Category]</spec>
+          <spec translate="[Catégorie de compétence active ou de connaissances]">[Active or Knowledge Skill Category]</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>9de43fad-b365-4e73-bc06-91dd571b858a</id>
         <name>Intimidation</name>
         <translate>Intimidation</translate>
         <specs>
-          <spec translate="Interrogation">Interrogation</spec>
+          <spec translate="Interrogatoire">Interrogation</spec>
           <spec translate="Mentale">Mental</spec>
           <spec translate="Physique">Physical</spec>
           <spec translate="Torture">Torture</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>963a548d-c629-4a13-a3e3-31b085a42e20</id>
         <name>Leadership</name>
         <translate>Leadership</translate>
         <specs>
-          <spec translate="Command">Command</spec>
-          <spec translate="Direct">Direct</spec>
-          <spec translate="Inspire">Inspire</spec>
-          <spec translate="Rally">Rally</spec>
+          <spec translate="Commandement">Command</spec>
+          <spec translate="Direction">Direct</spec>
+          <spec translate="Inspiration">Inspire</spec>
+          <spec translate="Ralliement">Rally</spec>
         </specs>
-        <page>125</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>09fbc992-9fad-4f2d-ab56-725bac943dc6</id>
         <name>Locksmith</name>
         <translate>Serrurerie</translate>
         <specs>
-          <spec translate="Combination">Combination</spec>
-          <spec translate="Keypad">Keypad</spec>
+          <spec translate="Combinaison">Combination</spec>
+          <spec translate="Clavier">Keypad</spec>
           <spec translate="Maglock">Maglock</spec>
-          <spec translate="Tumbler">Tumbler</spec>
-          <spec translate="Voice Recognition">Voice Recognition</spec>
-          <spec translate="[Lock Type]">[Lock Type]</spec>
+          <spec translate="Goupilles">Tumbler</spec>
+          <spec translate="Reconnaissance vocale">Voice Recognition</spec>
+          <spec translate="[Type de sérrûre]">[Lock Type]</spec>
         </specs>
-        <page>127</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>64088b25-de37-4d71-8800-4a430fde08af</id>
@@ -15706,8 +15750,8 @@
         <specs>
           <spec translate="Shotguns">Shotguns</spec>
           <spec translate="Fusils de précision">Sniper Rifles</spec>
-          <spec translate="Extended-Range Shots">Extended-Range Shots</spec>
-          <spec translate="Long-Range Shots">Long-Range Shots</spec>
+          <spec translate="Tirs à portée extrême">Extended-Range Shots</spec>
+          <spec translate="Tirs à portée longue">Long-Range Shots</spec>
         </specs>
         <page>122</page>
       </skill>
@@ -15723,7 +15767,7 @@
           <spec translate="Culture d'organes">Organ Culture</spec>
           <spec translate="Chirurgie traumatologique">Trauma Surgery</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>48cc79be-f75e-4fe6-8721-7864c9f231f6</id>
@@ -15735,20 +15779,20 @@
           <spec translate="Navires">Ship</spec>
           <spec translate="Sous-marins">Submarine</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>f8037e7f-d48b-452b-8f66-2e0c36677fea</id>
         <name>Navigation</name>
-        <translate>Navigation</translate>
+        <translate>Orientation</translate>
         <specs>
-          <spec translate="Augmented Reality Markers">Augmented Reality Markers</spec>
-          <spec translate="Celestial">Celestial</spec>
-          <spec translate="Compass">Compass</spec>
-          <spec translate="Maps">Maps</spec>
+          <spec translate="Marqueurs RA">Augmented Reality Markers</spec>
+          <spec translate="Etoiles">Celestial</spec>
+          <spec translate="Boussole">Compass</spec>
+          <spec translate="Cartes">Maps</spec>
           <spec translate="GPS">GPS</spec>
         </specs>
-        <page>124</page>
+        <page>148</page>
       </skill>
       <skill>
         <id>729c9cee-ef8f-492d-aa7f-17ec1bc3816e</id>
@@ -15759,7 +15803,7 @@
           <spec translate="Diplomatie">Diplomacy</spec>
           <spec translate="Contracts">Contracts</spec>
         </specs>
-        <page>126</page>
+        <page>141</page>
       </skill>
       <skill>
         <id>17fbaafa-8dbb-4f29-9244-5ae1cd4ac42f</id>
@@ -15768,9 +15812,9 @@
         <specs>
           <spec translate="Prestidigitation">Legerdemain</spec>
           <spec translate="Pickpocket">Pickpocket</spec>
-          <spec translate="Pilfering">Pilfering</spec>
+          <spec translate="Vol à l’étalage">Pilfering</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>04e1eb3e-e82d-485b-a7fd-1e677df2a070</id>
@@ -15782,9 +15826,9 @@
           <spec translate="Gustative">Taste</spec>
           <spec translate="Tactile">Touch</spec>
           <spec translate="Visuelle">Visual</spec>
-          <spec translate="Searching">Searching</spec>
+          <spec translate="Recherche">Searching</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>3ba9397e-f790-44ca-ae40-15a2356e348d</id>
@@ -15797,7 +15841,7 @@
           <spec translate="Semi-balistiques">Semiballistic</spec>
           <spec translate="Suborbitaux">Suborbital</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>10d5c887-a1e5-4cca-8613-3a28f1aab810</id>
@@ -15805,13 +15849,13 @@
         <translate>Appareils Volants</translate>
         <specs>
           <spec translate="Voilure fixe">Fixed-Wing</spec>
-          <spec translate="Plus légér que l'air (bimps et ballons)">Lighter-Than-Air</spec>
+          <spec translate="Plus légér que l'air (PLA : dirigeable)">Lighter-Than-Air</spec>
           <spec translate="Opération à distance">Remote Operation</spec>
           <spec translate="Rotors">Rotary Wing</spec>
           <spec translate="Voilure orientable">Tilt Wing</spec>
           <spec translate="Poussée vectorielle">Vectored Thrust</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>ae91a8a6-80e7-4f52-b9eb-21725a5528a4</id>
@@ -15824,7 +15868,7 @@
           <spec translate="Véhicules à chenille">Tracked</spec>
           <spec translate="Véhicules à roues">Wheeled</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>1579818e-af85-47cd-8c9f-2e86e9dc19da</id>
@@ -15836,9 +15880,9 @@
           <spec translate="Voilers">Sail</spec>
           <spec translate="Navires">Ship</spec>
           <spec translate="Sous-marins">Submarine</spec>
-          <spec translate="Hydrofoil">Hydrofoil</spec>
+          <spec translate="Hydroptères">Hydrofoil</spec>
         </specs>
-        <page>128</page>
+        <page>149</page>
       </skill>
       <skill>
         <id>adf31a50-b228-4e09-a09c-46ab9f5e59a1</id>
@@ -15850,25 +15894,25 @@
           <spec translate="Semi-automatiques">Semi-Automatics</spec>
           <spec translate="Tasers">Tasers</spec>
         </specs>
-        <page>122</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>3a38bbcf-38b0-435b-98f2-4ce8c50e8490</id>
         <name>Registering</name>
         <translate>Inscription</translate>
         <specs>
-          <spec translate="[Sprite Type]">[Sprite Type]</spec>
+          <spec translate="[Type de sprites]">[Sprite Type]</spec>
         </specs>
-        <page>125</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>a6287e62-6a3b-43ce-b6e0-20f3655910e2</id>
         <name>Ritual Spellcasting</name>
-        <translate>Lancement de sorts rituel</translate>
+        <translate>Magie rituel</translate>
         <specs>
-          <spec translate="[Keyword]">[Keyword]</spec>
+          <spec translate="[Mot-clé]">[Keyword]</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>1531b2d8-6116-4be4-87b0-232dba1fc447</id>
@@ -15882,17 +15926,17 @@
           <spec translate="Distance">Distance</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>b693f3bf-48dc-4570-9743-d94d14ee698b</id>
         <name>Software</name>
-        <translate>Software</translate>
+        <translate>Logiciel</translate>
         <specs>
-          <spec translate="Data Bombs">Data Bombs</spec>
-          <spec translate="[Complex Form]">[Complex Form]</spec>
+          <spec translate="Bombes matricielles">Data Bombs</spec>
+          <spec translate="[forme complexe]">[Complex Form]</spec>
         </specs>
-        <page>127</page>
+        <page>147</page>
       </skill>
       <skill>
         <id>c4367a39-4065-4b1d-aa62-e9dce377e452</id>
@@ -15901,29 +15945,30 @@
         <specs>
           <spec translate="Combat">Combat</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>51e34c6c-b07f-45f4-8a5e-8f2b617ed32f</id>
         <name>Summoning</name>
         <translate>Invocation</translate>
         <specs>
-          <spec translate="Spirits of Air">Spirits of Air</spec>
-          <spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-          <spec translate="Spirits of Earth">Spirits of Earth</spec>
-          <spec translate="Spirits of Fire">Spirits of Fire</spec>
-          <spec translate="Spirits of Man">Spirits of Man</spec>
-          <spec translate="Spirits of Water">Spirits of Water</spec>
-          <spec translate="Guardian Spirit">Guardian Spirit</spec>
-          <spec translate="Guidance Spirit">Guidance Spirit</spec>
-          <spec translate="Plant Spirit">Plant Spirit</spec>
-          <spec translate="Task Spirit">Task Spirit</spec>
+          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de la bête">Spirits of Beasts</spec>
+          <spec translate="Esprits de la terre">Spirits of Earth</spec>
+          <spec translate="Esprits du feu">Spirits of Fire</spec>
+          <spec translate="Esprits de l'homme">Spirits of Man</spec>
+          <spec translate="Esprits de l'eau">Spirits of Water</spec>
+          <spec translate="Esprit gardien">Guardian Spirit</spec>
+          <spec translate="Esprit guide">Guidance Spirit</spec>
+          <spec translate="Esprit des plantes">Plant Spirit</spec>
+          <spec translate="Esprit ouvrier">Task Spirit</spec>
+		  <spec translate="Esprit veilleurs">Watcher Spirit</spec>
         </specs>
-        <page>123</page>
+        <page>145</page>
       </skill>
       <skill>
         <id>89ee1730-053a-400f-a13a-4fbadae015f0</id>
@@ -15938,7 +15983,7 @@
           <spec translate="Milieu urbain">Urban</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>0dbcb9cd-f824-4b5d-a387-90d33318b04c</id>
@@ -15946,20 +15991,20 @@
         <translate>Natation</translate>
         <specs>
           <spec translate="Endurance">Long Distance</spec>
-          <spec translate="Dash">Dash</spec>
+          <spec translate="Sprint">Dash</spec>
         </specs>
-        <page>124</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>867a6fa0-7d98-4cde-83a4-b33dd39de08e</id>
         <name>Throwing Weapons</name>
         <translate>Armes de jet</translate>
         <specs>
-          <spec translate="Aerodynamic">Aerodynamic</spec>
-          <spec translate="Blades">Blades</spec>
-          <spec translate="Non-Aerodynamic">Non-Aerodynamic</spec>
+          <spec translate="Aerodynamiques">Aerodynamic</spec>
+          <spec translate="Lames">Blades</spec>
+          <spec translate="Non-aérodynamiques">Non-Aerodynamic</spec>
         </specs>
-        <page>122</page>
+        <page>134</page>
       </skill>
       <skill>
         <id>7ed2f3e0-a791-4cb7-ba3e-ac785fdc3d7e</id>
@@ -15974,32 +16019,32 @@
           <spec translate="Milieu urbain">Urban</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
-        <page>124</page>
+        <page>136</page>
       </skill>
       <skill>
         <id>4fcd40cb-4b02-4b7e-afcb-f44d46cd5706</id>
         <name>Unarmed Combat</name>
         <translate>Combat à mains nues</translate>
         <specs>
-          <spec translate="Blocking">Blocking</spec>
+          <spec translate="Blocage">Blocking</spec>
           <spec translate="Cyber Implants">Cyber Implants</spec>
-          <spec translate="Subduing Combat">Subduing Combat</spec>
-          <spec translate="[Martial Art]">[Martial Art]</spec>
+          <spec translate="Immobilisation">Subduing Combat</spec>
+          <spec translate="[Art Martial]">[Martial Art]</spec>
         </specs>
-        <page>122</page>
+        <page>135</page>
       </skill>
       <skill>
         <id>a1366ec2-772d-4f08-8c65-5f79464d975b</id>
         <name>Exotic Melee Weapon</name>
         <translate>Arme de mêlée exotique</translate>
-        <page>122</page>
+        <page>133</page>
         <specs />
       </skill>
       <skill>
         <id>88ee65ba-c797-4f9c-91fe-39bc43b0f9c8</id>
         <name>Exotic Ranged Weapon</name>
         <translate>Arme à distance exotique</translate>
-        <page>122</page>
+        <page>132</page>
         <specs>
           <spec translate="Blowguns">Blowguns</spec>
           <spec translate="Gyrojet Pistols">Gyrojet Pistols</spec>
@@ -16007,112 +16052,121 @@
           <spec translate="Lasers">Lasers</spec>
         </specs>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
         <name>Alchemy</name>
-        <translate>Alchemy</translate>
+        <translate>Alchimie</translate>
         <specs>
           <spec translate="Combat">Combat</spec>
-          <spec translate="Command">Command</spec>
+          <spec translate="Commande">Command</spec>
           <spec translate="Contact">Contact</spec>
           <spec translate="Detection">Detection</spec>
-          <spec translate="Health">Health</spec>
+          <spec translate="Santé">Health</spec>
           <spec translate="Illusion">Illusion</spec>
           <spec translate="Manipulation">Manipulation</spec>
-          <spec translate="Time">Time</spec>
-          <spec translate="[Trigger]">[Trigger]</spec>
+          <spec translate="Durée">Time</spec>
+          <spec translate="[Déclencheur]">[Trigger]</spec>
         </specs>
+		<page>144</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>955d9376-3066-469d-8670-5170c1d59020</id>
         <name>Artificing</name>
-        <translate>Artificing</translate>
+        <translate>Création d'artefact</translate>
         <specs>
-          <spec translate="Focus Analysis">Focus Analysis</spec>
-          <spec translate="[Focus Type]">[Focus Type]</spec>
+          <spec translate="Analyse de focus">Focus Analysis</spec>
+          <spec translate="[Type de focus]">[Focus Type]</spec>
+		  <page>145</page>
         </specs>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>ba624682-a5c0-4cf5-b47b-1021e6a1800d</id>
         <name>Biotechnology</name>
-        <translate>Biotechnology</translate>
+        <translate>Biotechnologie</translate>
         <specs>
-          <spec translate="Bioinformatics">Bioinformatics</spec>
+          <spec translate="Bio-informatique">Bioinformatics</spec>
           <spec translate="Bioware">Bioware</spec>
-          <spec translate="Cloning">Cloning</spec>
-          <spec translate="Gene Therapy">Gene Therapy</spec>
-          <spec translate="Vat Maintenance">Vat Maintenance</spec>
+          <spec translate="Clonage">Cloning</spec>
+          <spec translate="Thérapie génique">Gene Therapy</spec>
+          <spec translate="Maintenance en cuve">Vat Maintenance</spec>
         </specs>
+		<page>146</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>a9d9b686-bc4a-4347-b011-ff8f41455965</id>
         <name>Disenchanting</name>
-        <translate>Disenchanting</translate>
+        <translate>Désenchantement</translate>
         <specs>
           <spec translate="[Type]">[Type]</spec>
         </specs>
+		<page>145</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>f510ccc3-cf95-4461-b2f7-e966daaa5a91</id>
         <name>Free-Fall</name>
-        <translate>Free-Fall</translate>
+        <translate>Chute libre</translate>
         <specs>
-          <spec translate="BASE Jumping">BASE Jumping</spec>
-          <spec translate="Break-Fall">Break-Fall</spec>
-          <spec translate="Bungee">Bungee</spec>
+          <spec translate="Base Jump">BASE Jumping</spec>
+          <spec translate="Réception de chute">Break-Fall</spec>
+          <spec translate="Saut à l'élastique">Bungee</spec>
           <spec translate="HALO">HALO</spec>
-          <spec translate="Low Altitude">Low Altitude</spec>
+          <spec translate="Basse altitude">Low Altitude</spec>
           <spec translate="Parachute">Parachute</spec>
-          <spec translate="Static Line">Static Line</spec>
+          <spec translate="Parachutes à ouverture automatique">Static Line</spec>
           <spec translate="Wingsuit">Wingsuit</spec>
-          <spec translate="Zipline">Zipline</spec>
+          <spec translate="Tyroliennes">Zipline</spec>
         </specs>
+		<page>135</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
         <name>Impersonation</name>
-        <translate>Impersonation</translate>
+        <translate>Imposture</translate>
         <specs>
-          <spec translate="Dwarf">Dwarf</spec>
-          <spec translate="Elf">Elf</spec>
-          <spec translate="Human">Human</spec>
+          <spec translate="Nain">Dwarf</spec>
+          <spec translate="Elfe">Elf</spec>
+          <spec translate="Humain">Human</spec>
           <spec translate="Ork">Ork</spec>
           <spec translate="Troll">Troll</spec>
         </specs>
+		<page>141</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
         <name>Performance</name>
-        <translate>Performance</translate>
+        <translate>Représentation</translate>
         <specs>
-          <spec translate="Acting">Acting</spec>
-          <spec translate="Comedy">Comedy</spec>
-          <spec translate="Presentation">Presentation</spec>
-          <spec translate="[Musical Instrument]">[Musical Instrument]</spec>
+          <spec translate="Jeu d’acteur">Acting</spec>
+          <spec translate="Comédie">Comedy</spec>
+          <spec translate="Présentation">Presentation</spec>
+          <spec translate="[Instrument de musique]">[Musical Instrument]</spec>
         </specs>
+		<page>141</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>b8a24d87-465a-4365-9948-038fe1ac62c4</id>
         <name>Pilot Walker</name>
-        <translate>Pilot Walker</translate>
+        <translate>Marcheurs</translate>
         <specs>
           <spec translate="Biped">Biped</spec>
           <spec translate="Multiped">Multiped</spec>
           <spec translate="Quadruped">Quadruped</spec>
-          <spec translate="Remote Operation">Remote Operation</spec>
+          <spec translate="Contrôle à distance">Remote Operation</spec>
         </specs>
+		<page>149</page>
       </skill>
-      <skill>
+      <skill translated="True">
         <id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
         <name>Sneaking</name>
-        <translate>Sneaking</translate>
+        <translate>Discrétion</translate>
         <specs>
           <spec translate="Desert">Desert</spec>
           <spec translate="Jungle">Jungle</spec>
           <spec translate="Urban">Urban</spec>
-          <spec translate="Wilderness">Wilderness</spec>
+          <spec translate="Milieu sauvage">Wilderness</spec>
           <spec translate="[Terrain]">[Terrain]</spec>
         </specs>
+		<page>135</page>
       </skill>
     </skills>
     <knowledgeskills>
@@ -22162,75 +22216,88 @@
   </chummer>
   <chummer file="complexforms.xml">
     <complexforms>
-      <complexform>
+      <complexform translated="True">
         <id>373638b9-4334-4645-99f5-c3673e4f809b</id>
         <name>Cleaner</name>
-        <translate>Cleaner</translate>
+        <translate>Nettoyeuse</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
         <name>Diffusion of [Matrix Attribute]</name>
-        <translate>Diffusion of [Matrix Attribute]</translate>
+        <translate>Dispersion de [Attribut Matriciel]</translate>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
         <name>Editor</name>
-        <translate>Editor</translate>
+        <translate>Edition</translate>
+        <page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
         <name>Infusion of [Matrix Attribute]</name>
-        <translate>Infusion of [Matrix Attribute]</translate>
+        <translate>Injection de [Attribut Matriciel]</translate>
+        <page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
         <name>Static Veil</name>
-        <translate>Static Veil</translate>
+        <translate>Voile d'interférances</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
         <name>Pulse Storm</name>
-        <translate>Pulse Storm</translate>
+        <translate>Tempête d'impulsion</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
         <name>Puppeteer</name>
-        <translate>Puppeteer</translate>
+        <translate>Marionnettiste</translate>
+        <page>255</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
         <name>Resonance Channel</name>
-        <translate>Resonance Channel</translate>
+        <translate>Canal de résonance</translate>
+        <page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
         <name>Resonance Spike</name>
-        <translate>Resonance Spike</translate>
+        <translate>Pic de résonance</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
         <name>Resonance Veil</name>
-        <translate>Resonance Veil</translate>
+        <translate>Voile de résonance</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
         <name>Static Bomb</name>
-        <translate>Static Bomb</translate>
+        <translate>Bombe d'interférances</translate>
+        <page>254</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
         <name>Stitches</name>
-        <translate>Stitches</translate>
+        <translate>Suture</translate>
+        <page>256</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
         <name>Transcendent Grid</name>
-        <translate>Transcendent Grid</translate>
+        <translate>Grille transcendante</translate>
+        <page>255</page>
       </complexform>
-      <complexform>
+      <complexform translated="True">
         <id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
         <name>Tattletale</name>
-        <translate>Tattletale</translate>
+        <translate>Indic</translate>
+        <page>255</page>
       </complexform>
     </complexforms>
   </chummer>

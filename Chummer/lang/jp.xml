@@ -5154,6 +5154,10 @@
       <text>コンタクト</text>
     </string>
     <string>
+      <key>Label_Options_Enemies</key>
+      <text>Enemies</text>
+    </string>
+    <string>
       <key>Label_Options_Carryover</key>
       <text>作成時の持ち越し</text>
     </string>

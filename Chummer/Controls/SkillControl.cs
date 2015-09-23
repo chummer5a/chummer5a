@@ -119,79 +119,84 @@ namespace Chummer
 
 				if (_objSkill.Rating < _objSkill.RatingMaximum)
 				{
+                    // active skill
 					if (KnowledgeSkill == false)
 					{
 						if (_objSkill.Rating == 0)
 							intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewActiveSkill;
 						else
-						{
 							intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveActiveSkill;
-						}
+
+                        // Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
+                        if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active"))
+                            intKarmaCost *= 2;
+                        //Double the Karma cost if the character is Uncouth and is a Social Active Skill.
+                        if (_objSkill.CharacterObject.Uncouth && (SkillCategory == "Social Active"))
+                            intKarmaCost *= 2;
 					}
+
+                    // knowledge skill
 					else
 					{
                         if (_objSkill.Rating == 0)
                             intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewKnowledgeSkill;
-                        else if (_objSkill.Rating >= 3)
+                        else 
+                            intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
+
+                        // Double the Karma cost if the character is Uneducated and is an Academic, or Professional Skill.
+                        if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Academic" || SkillCategory == "Professional"))
+                            intKarmaCost *= 2;
+
+                        if (_objSkill.Rating >= 3)
                         {
                             //Street Knowledge Skills > Rank 2 gain a 1 karma discount with the School of Hard Knocks quality.
                             if (_objSkill.CharacterObject.SchoolOfHardKnocks && _objSkill.SkillCategory == "Street")
                             {
-                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                                intKarmaCost -= 1;
                             }
                             //Academic Knowledge Skills > Rank 2 gain a 1 karma discount with the College Education quality.
                             else if (_objSkill.CharacterObject.CollegeEducation && _objSkill.SkillCategory == "Academic")
                             {
-                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                                intKarmaCost -= 1;
                             }
                             //Professional Knowledge Skills > Rank 2 gain a 1 karma discount with the Tech School quality.
                             else if (_objSkill.CharacterObject.TechSchool && _objSkill.SkillCategory == "Professional")
                             {
-                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                                intKarmaCost -= 1;
                             }
                             //Linguist Skills > Rank 2 gain a 1 karma discount with the Linguist quality.
                             else if (_objSkill.CharacterObject.Linguist && _objSkill.SkillCategory == "Language")
                             {
-                                intKarmaCost = ((_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill) - 1;
+                                intKarmaCost -= 1;
                             }
                         }
-                        else
-                            intKarmaCost = (_objSkill.Rating + 1) * _objSkill.CharacterObject.Options.KarmaImproveKnowledgeSkill;
-					}
-					//Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher.
-					if (_objSkill.CharacterObject.JackOfAllTrades)
-					{
-						if (_objSkill.Rating <= 5)
-						{
-							intKarmaCost -= 1;
-							//Jack of All Trades cannot go below 1 Karma cost. 
-							if (intKarmaCost < 1)
-							{
-								intKarmaCost = 1;
-							}
-						}
-						else
-						{
-							intKarmaCost += 2;
-						}
 					}
 
-					// Double the Karma cost if the character is Uneducated and is a Technical Active, Academic, or Professional Skill.
-					if (_objSkill.CharacterObject.Uneducated && (SkillCategory == "Technical Active" || SkillCategory == "Academic" || SkillCategory == "Professional"))
-						intKarmaCost *= 2;
-                    //Double the Karma cost if the character is Uncouth and is a Social Active Skill.
-                    if (_objSkill.CharacterObject.Uncouth && (SkillCategory == "Social Active"))
+                    //Jack of All Trades reduces the cost by 1 for skills below 5, and increases them by 2 for skills at rank 6 or higher, minimum cost of 1
+                    if (_objSkill.CharacterObject.Created && _objSkill.CharacterObject.JackOfAllTrades)
                     {
-                        intKarmaCost *= 2;
+                        if (_objSkill.Rating < 5)
+                        {
+                            //Jack of All Trades cannot go below 1 Karma cost. 
+                            if (intKarmaCost > 1) intKarmaCost -= 1;
+                        }
+                        else
+                        {
+                            intKarmaCost += 2;
+                        }
                     }
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
-					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
-				}
 
-				ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
-				if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", "1").Replace("{1}", "0");
-				tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+                    // check for free intial point from adept linguistics
+                    ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
+                    if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
+                        intKarmaCost = 0;
+
+					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
+                    tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+				    cmdImproveSkill.Enabled = true;
+				} 
+                else
+					cmdImproveSkill.Enabled = false;
 
 				nudSkill.Visible = false;
                 nudKarma.Visible = false;
@@ -250,10 +255,6 @@ namespace Chummer
 
             chkKarma.Checked = _objSkill.BuyWithKarma;
 			lblAttribute.Text = _objSkill.DisplayAttribute;
-
-	        
-
-
 
 			RefreshControl();
 			_blnSkipRefresh = false;
@@ -324,12 +325,14 @@ namespace Chummer
 			DeleteSkill(this);
         }
 
-		private void cboKnonwledgeSkillCategory_SelectedIndexChanged(object sender, EventArgs e)
+		private void cboKnowledgeSkillCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Raise the RatingChanged Event when the user has changed the Knowledge Skill's Category.
 			// The entire SkillControl is passed as an argument so the handling event can evaluate its contents.
 			SkillCategory = cboKnowledgeSkillCategory.SelectedValue.ToString();
 			RatingChanged(this);
+            // recalculate skill costs
+            SkillRating = SkillRating;
 		}
 
 		private void lblSkillName_Click(object sender, EventArgs e)
@@ -711,15 +714,16 @@ namespace Chummer
                     int intNewRating = value + 1;
 					int intKarmaCost = 0;
 
+                    // active skill
 					if (KnowledgeSkill == false)
 					{
 						if (value == 0)
 							intKarmaCost = _objSkill.CharacterObject.Options.KarmaNewActiveSkill;
 						else
-						{
 							intKarmaCost = (value + 1) * _objSkill.CharacterObject.Options.KarmaImproveActiveSkill;
-						}
 					}
+
+                    // knowledge skill
 					else
 					{
 						if (value == 0)
@@ -739,8 +743,52 @@ namespace Chummer
                     {
                         intKarmaCost *= 2;
                     }
+
+                    // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+                    if (_objSkill.CharacterObject.Created && _objSkill.CharacterObject.JackOfAllTrades)
+                    {
+                        if (_objSkill.Rating + 1 <= 5)
+                        {
+                            //Jack of All Trades cannot go below 1 Karma cost.
+                            if (intKarmaCost > 1) intKarmaCost -= 1;
+                        }
+                        else
+                        {
+                            intKarmaCost += 2;
+                        }
+                    }
+
+                    if (_objSkill.Rating >= 3)
+                    {
+                        //Street Knowledge Skills > Rank 2 gain a 1 karma discount with the School of Hard Knocks quality.
+                        if (_objSkill.CharacterObject.SchoolOfHardKnocks && _objSkill.SkillCategory == "Street")
+                        {
+                            intKarmaCost -= 1;
+                        }
+                        //Academic Knowledge Skills > Rank 2 gain a 1 karma discount with the College Education quality.
+                        else if (_objSkill.CharacterObject.CollegeEducation && _objSkill.SkillCategory == "Academic")
+                        {
+                            intKarmaCost -= 1;
+                        }
+                        //Professional Knowledge Skills > Rank 2 gain a 1 karma discount with the Tech School quality.
+                        else if (_objSkill.CharacterObject.TechSchool && _objSkill.SkillCategory == "Professional")
+                        {
+                            intKarmaCost -= 1;
+                        }
+                        //Linguist Skills > Rank 2 gain a 1 karma discount with the Linguist quality.
+                        else if (_objSkill.CharacterObject.Linguist && _objSkill.SkillCategory == "Language")
+                        {
+                            intKarmaCost -= 1;
+                        }
+                    }
+
+                    // check for adept linguistics initial free point
+                    ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
+                    if (objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && SkillCategory == "Language" && SkillRating == 0)
+                        intKarmaCost = 0;
+
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", intNewRating.ToString()).Replace("{1}", intKarmaCost.ToString());
-					tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
+                    tipTooltip.SetToolTip(cmdImproveSkill, strTooltip);
 					cmdImproveSkill.Enabled = true;
 				}
 				else

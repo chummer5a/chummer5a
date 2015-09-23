@@ -405,88 +405,86 @@ namespace Chummer
             // Determine the base Nuyen cost.
             XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
 
-            // Calculate the cost of Positive Qualities.
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes[0].Nodes)
-            {
-                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text.ToString() + "\" and category = \"Positive\"]");
-                if (objXmlAspect != null)
-                {
-                    intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
-                    if (objXmlAspect["multiplier"] != null)
-                    {
-                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
-                    }
-                }
-            }
+			// Calculate the cost of Positive Qualities.
+			foreach (LifestyleQuality objNode in _objLifestyle.LifestyleQualities)
+			{
+				if (objNode.Type == QualityType.Positive)
+				{
+					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name.ToString() + "\" and category = \"Positive\"]");
+					if (objXmlAspect != null)
+					{
+						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+						if (objXmlAspect["multiplier"] != null)
+						{
+							intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+						}
+					}
+				}
+				// Calculate the cost of Negative Qualities.
+				else if (objNode.Type == QualityType.Negative)
+				{
+					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name.ToString() + "\" and category = \"Negative\"]");
+					if (objXmlAspect != null)
+					{
+						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+						if (objXmlAspect["neighborhood"] != null)
+						{
+							nudArea.Maximum += Convert.ToInt32(objXmlAspect["neighborhood"].InnerText);
+						}
 
-            // Calculate the cost of Negative Qualities.
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
-            {
-                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text.ToString() + "\" and category = \"Negative\"]");
-                if (objXmlAspect != null)
-                {
-                    intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
-                    if (objXmlAspect["neighborhood"] != null)
-                    {
-                        nudArea.Maximum += Convert.ToInt32(objXmlAspect["neighborhood"].InnerText);
-                    }
+						if (objXmlAspect["comforts"] != null)
+						{
+							nudComforts.Maximum += Convert.ToInt32(objXmlAspect["comforts"].InnerText); ;
+						}
+						if (objXmlAspect["multiplier"] != null)
+						{
+							intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+						}
+						if (objXmlAspect["cost"] != null)
+						{
+							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						}
+					}
+				}
 
-                    if (objXmlAspect["comforts"] != null)
-                    {
-                        nudComforts.Maximum += Convert.ToInt32(objXmlAspect["comforts"].InnerText); ;
-                    }
-                     if (objXmlAspect["multiplier"] != null)
-                    {
-                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
-                    }
-                     if (objXmlAspect["cost"] != null)
-                     {
-                         intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
-                     }
-                    
-                }
+				// Calculate the cost of Entertainments.
+				if (objNode.Type == QualityType.Entertainment)
+				{
+					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name + "\"]");
+					string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');
+					int intLifestyleEntertainmentFree = 0;
+					if (objXmlAspect != null)
+					{
+						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
+						if (objXmlAspect["multiplier"] != null)
+						{
+							intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+						}
+						if (objXmlAspect["cost"] != null)
+						{
+							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						}
+					}
 
-            }
+					foreach (string strLifestyle in strLifestyleEntertainments)
+					{
+						if (strLifestyle == cboBaseLifestyle.SelectedValue.ToString())
+						{
+							intLifestyleEntertainmentFree += 1;
+						}
+					}
 
-            // Calculate the cost of Entertainments.
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes[2].Nodes)
-            {
-                objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text.ToString() + "\"]");
-                string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');
-                int intLifestyleEntertainmentFree = 0;
-                if (objXmlAspect != null)
-                {
-                    intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
-                    if (objXmlAspect["multiplier"] != null)
-                    {
-                        intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
-                    }
-                    if (objXmlAspect["cost"] != null)
-                    {
-                        intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
-                    }
-                }
-                
-                foreach (string strLifestyle in strLifestyleEntertainments)
-                {
-                    if (strLifestyle == cboBaseLifestyle.SelectedValue.ToString())
-                    {
-                        intLifestyleEntertainmentFree += 1;
-                    }
-                }
+					if (intLifestyleEntertainmentFree == 0)
+					{
+						if (objXmlAspect["cost"] != null)
+						{
+							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						}
+					}
+				}
+			}
 
-                if (intLifestyleEntertainmentFree == 0)
-                {
-                    if (objXmlAspect["cost"] != null)
-                    {
-                        intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
-                    }
-                }
-
-
-            }
-
-            intMultiplier += Convert.ToInt32(nudRoommates.Value * 10);
+			intMultiplier += Convert.ToInt32(nudRoommates.Value * 10);
             intNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
             intMultiplier = (intNuyen * intMultiplier) / 100;
             intNuyen += intMultiplier;

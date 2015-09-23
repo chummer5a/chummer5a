@@ -1,14 +1,39 @@
+Build 175:
+Application Change:
+- Removed extraneous code for the Infirm quality.
+- Minor quality of life update; if you have no Settings file present when creating a new character, Chummer will prompt you to launch the Options menu. 
+- You can now press Ctrl-W to close a character file.
+- Fixed an issue with purchasing additional months of a lifestyle in career mode.
+- The Quality selector will show negative metagenetic qualities by default. 
+
+Data Change:
+- Nanohive crash issue fixed.
+- Ratings for the Expanded Volume and Amplified Immune System bioware fixed to 4. 
+- Fixed incorrect category for certain rituals.
+
 Build 174:
 Application Change:
-- Custom essence cost now stacks multiplicatively instead of addictively 
-- Fixed the default values for free karma knowledge. 
-- Issues with Sum to Ten character generation artifically granting a MAG value higher than the metatype maximum should be fixed. 
-- Chummer's main window now shows the current version.
+- Calculation of Essence discounts is now multiplicative instead of additive. I am assured this is a good thing.
+- Fixed the default values for free karma knowledge. If you have an existing settings file, please reset to defaults by clicking Tools > Options > Karma Costs > Reset to Default.
+- Issues with Sum to Ten character generation artifically granting a MAG value higher than the metatype maximum should be fixed. I expect it'll break again in a week or so somehow, so please let me know if you experience any issues.
+- Chummer's main window now shows the current version in the title to aid troubleshooting.
+- Fixed a crash issue with Dwarves and the Resistance to Pathogens/Toxins metaquality, courtesy of Argo2445.
+- Fixed a crash caused by missing information in SURGE qualities. 
+- Fixed a crash when trying to add items that include the selecttext bonus to vehicles.
+- Public Awareness is no longer an automatically calculated value.
+- Positive Metagenetic Qualities are hidden by default UNLESS you have one of the Changeling qualities, or disable the 'hide qualities I can't take' checkbox. Not particularly happy with the implementation for this; feedback appreciated.
 
 Data Change:
 - Magical Education Life Module now has a proper karma cost; prevents crashes.
-- Myostatin Inhibitor genemod now adds 1 Strength. The karma cost needs additional code support.
+- Myostatin Inhibitor genemod now adds 1 Strength. The karma cost needs additional code support and hasn't been implemented properly yet.
 - Fixed skill usage for cyber implant weapons.
+- Fixed missing categories for the Attention-Seeking and Sadistic variants of Poor Self Control.
+- Fixed an issue with the Net weapon that caused a crash.
+- Fixed a crash issue with the Trauma Damper, courtesy of SolitarySky.
+- Changed the Priority B Elf's Special points to 6. 
+
+Translation Changes:
+- Added French translations courtesy of sethsatan.
 
 Build 173:
 Application Change:

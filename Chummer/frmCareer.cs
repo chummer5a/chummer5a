@@ -62,7 +62,6 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
-			_objCharacter.InfirmChanged += objCharacter_InfirmChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -654,11 +653,6 @@ namespace Chummer
 					objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
 				}
 
-				if (_objCharacter.Infirm)
-				{
-					objGroupControl.IsEnabled = !objGroup.HasPhysicalSkills;
-				}
-
 				panSkillGroups.Controls.Add(objGroupControl);
 			}
 
@@ -708,6 +702,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objContact_DeleteContact;
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 					
 					objContactControl.ContactObject = objContact;
 					objContactControl.ContactName = objContact.Name;
@@ -735,6 +730,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact += objEnemy_DeleteContact;
 					objContactControl.FileNameChanged += objEnemy_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
 
                     objContactControl.IsEnemy = true;
 					objContactControl.ContactObject = objContact;
@@ -1470,7 +1466,6 @@ namespace Chummer
 				_objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
 				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
-				_objCharacter.InfirmChanged -= objCharacter_InfirmChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
 				treGear.ItemDrag -= treGear_ItemDrag;
@@ -1529,6 +1524,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged -= objContact_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objContact_DeleteContact;
 					objContactControl.FileNameChanged -= objContact_FileNameChanged;
+                    objContactControl.FreeRatingChanged -= objContact_OtherCostChanged;
 				}
 
 				foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
@@ -1537,6 +1533,7 @@ namespace Chummer
 					objContactControl.LoyaltyRatingChanged -= objEnemy_LoyaltyRatingChanged;
 					objContactControl.DeleteContact -= objEnemy_DeleteContact;
 					objContactControl.FileNameChanged -= objEnemy_FileNameChanged;
+                    objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
 				}
 
 				foreach (PetControl objContactControl in panPets.Controls.OfType<PetControl>())
@@ -1991,39 +1988,6 @@ namespace Chummer
 				}
 			}
 		}
-
-		private void objCharacter_InfirmChanged(object sender)
-		{
-			if (_blnReapplyImprovements)
-				return;
-
-			// Change to the status of Infirm being enabled.
-			if (_objCharacter.Infirm)
-			{
-				// If Infirm is being added, run through all of the Physical Active Skills and disable them.
-				// Do not break SkillGroups as these will be used if this is ever removed.
-				foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-				{
-					if (objSkillGroupControl.HasPhysicalSkills)
-					{
-						objSkillGroupControl.GroupRating = 0;
-						objSkillGroupControl.IsEnabled = false;
-					}
-				}
-			}
-			else
-			{
-				// If Infirm is being removed, run through all of the Physical Active Skills and re-enable them.
-				// If they were a part of a SkillGroup, set their Rating back.
-				foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-				{
-					if (objSkillGroupControl.HasPhysicalSkills)
-					{
-						objSkillGroupControl.IsEnabled = true;
-					}
-				}
-			}
-		}
 		#endregion
 
 		#region Menu Events
@@ -2290,7 +2254,6 @@ namespace Chummer
 			bool blnRESEnabled = _objCharacter.RESEnabled;
 			bool blnUneducated = _objCharacter.Uneducated;
 			bool blnUncouth = _objCharacter.Uncouth;
-			bool blnInfirm = _objCharacter.Infirm;
 
 			_blnReapplyImprovements = true;
 
@@ -2744,8 +2707,6 @@ namespace Chummer
 				objCharacter_UneducatedChanged(this);
 			if (blnUncouth != _objCharacter.Uncouth)
 				objCharacter_UncouthChanged(this);
-			if (blnInfirm != _objCharacter.Infirm)
-				objCharacter_InfirmChanged(this);
 
 			_blnIsDirty = true;
 			UpdateWindowTitle();
@@ -4142,14 +4103,23 @@ namespace Chummer
 				intKarmaCost = (objSkillControl.SkillRating + 1) * _objOptions.KarmaImproveActiveSkill;
 			}
 
-			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill or Infirm and a Physical Active Skill, double its cost.
+			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill, double its cost.
 			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active") ||
-			    (_objCharacter.Infirm && objSkillControl.SkillCategory == "Physical Active"))
+			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
             {
 				intKarmaCost *= 2;
-                }
+            }
 
+            // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+            if (_objCharacter.JackOfAllTrades)
+            {
+                if (objSkillControl.SkillRating + 1 <= 5) {
+                    //Jack of All Trades cannot go below 1 Karma cost.
+                    if (intKarmaCost > 1) intKarmaCost -= 1;
+                } else {
+                    intKarmaCost += 2;
+                }
+            }
 
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -4256,6 +4226,18 @@ namespace Chummer
 			// If the character is Uneducated and the Skill is an Academic or Professional Skill, double its cost.
 			if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
 				intKarmaCost *= 2;
+
+            // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+            if (_objCharacter.JackOfAllTrades)
+            {
+                if (objSkillControl.SkillRating + 1 <= 5)
+                {
+                    //Jack of All Trades cannot go below 1 Karma cost.
+                    if (intKarmaCost > 1) intKarmaCost -= 1;
+                } else {
+                    intKarmaCost += 2;
+                }
+            }
 
 			// The Karma Cost for improving a Language Knowledge Skill to Rating 1 is free for characters with the Linguistics Adept Power.
 			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.AdeptLinguistics) > 0 && objSkillControl.SkillCategory == "Language" && objSkillControl.SkillRating == 0)
@@ -4582,6 +4564,16 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+        private void objContact_OtherCostChanged(Object sender)
+        {
+            //Handle any other kind of change that changes contact cost
+            //mostly a free contact but a few details in run faster changes it too
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
+
 		private void objContact_DeleteContact(Object sender)
 		{
 			objContact_DeleteContact(sender, false);
@@ -4652,6 +4644,14 @@ namespace Chummer
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
+
+        private void objEnemy_FreeStatusChanged(Object sender)
+        {
+            UpdateCharacterInfo();
+
+            _blnIsDirty = true;
+            UpdateWindowTitle();
+        }
 
 		private void objEnemy_DeleteContact(Object sender)
 		{
@@ -5055,6 +5055,7 @@ namespace Chummer
 			objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objContact_DeleteContact;
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
+            objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 
 			panContacts.Controls.Add(objContactControl);
 			UpdateCharacterInfo();
@@ -5079,6 +5080,7 @@ namespace Chummer
 			objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
 			objContactControl.DeleteContact += objEnemy_DeleteContact;
 			objContactControl.FileNameChanged += objEnemy_FileNameChanged;
+            objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
             objContactControl.IsEnemy = true;
 
 			panEnemies.Controls.Add(objContactControl);
@@ -24427,7 +24429,7 @@ namespace Chummer
                 string strPage = objLifestyle.Page;
                 lblLifestyleSource.Text = strBook + " " + strPage;
                 tipTooltip.SetToolTip(lblLifestyleSource, _objOptions.LanguageBookLong(objLifestyle.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objLifestyle.Page);
-                // lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
+                //lblLifestyleTotalCost.Text = String.Format("= {0:###,###,##0¥}", objLifestyle.TotalCost);
 
                 // Change the Cost/Month label.
                 if (objLifestyle.StyleType == LifestyleType.Safehouse)
@@ -24448,12 +24450,12 @@ namespace Chummer
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-                    foreach (LifestyleQuality strQuality in objLifestyle.LifestyleQualities)
+                    foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
                     {
                         if (strQualities.Length > 0)
                             strQualities += ", ";
-                        string strQualityName = strQuality.ToString();
-                        objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+						string strQualityName = objQuality.DisplayName;
+						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
                         XmlNode nodCost = objNode["lifestylecost"];
                         if (nodCost != null)
                         {

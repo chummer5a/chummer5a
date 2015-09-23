@@ -10,6 +10,8 @@ using System.Xml;
 public delegate void ConnectionRatingChangedHandler(Object sender);
 // GroupRatingChanged Event Handler.
 public delegate void ConnectionGroupRatingChangedHandler(Object sender);
+// FreeRatingChanged Event Handler.
+public delegate void FreeRatingChangedHandler(Object sender);
 // LoyaltyRatingChanged Event Handler.
 public delegate void LoyaltyRatingChangedHandler(Object sender);
 // DeleteContact Event Handler.
@@ -34,8 +36,9 @@ namespace Chummer
 
         // Events.
         public event ConnectionRatingChangedHandler ConnectionRatingChanged;
-        public event ConnectionRatingChangedHandler GroupStatusChanged;
+        public event ConnectionGroupRatingChangedHandler GroupStatusChanged;
 		public event LoyaltyRatingChangedHandler LoyaltyRatingChanged;
+        public event FreeRatingChangedHandler FreeRatingChanged;
         public event DeleteContactHandler DeleteContact;
         public event FileNameChangedHandler FileNameChanged;
 
@@ -525,22 +528,24 @@ namespace Chummer
             _objContact.IsGroup = chkGroup.Checked;
             chkGroup.Enabled = !_objContact.MadeMan;
 
-	        if (GroupStatusChanged != null)
-		        GroupStatusChanged(this);
+	        if (GroupStatusChanged != null)  GroupStatusChanged(this);
 
             //Loyalty can be changed by event above
             nudLoyalty.Enabled = !_objContact.IsGroup;
             nudLoyalty.Value = _objContact.Loyalty;
             UpdateQuickText();
         }
+
         public void UpdateQuickText()
         {
             lblQuickStats.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? (_objContact.MadeMan ? "M" : "G") : _objContact.Loyalty.ToString());
 
         }
+
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
             _objContact.Free = chkFree.Checked;
+            if (FreeRatingChanged != null) FreeRatingChanged(this);
         }
     }
 }
