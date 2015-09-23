@@ -735,10 +735,10 @@ namespace Chummer
                     }
                 }
 
-                if (_objCharacter.Uneducated)
+                /*if (_objCharacter.Uneducated)
                 {
                     objGroupControl.IsEnabled = !objGroup.HasTechnicalSkills;
-                }
+                }*/
 
                 if (_objCharacter.Uncouth)
                 {
@@ -2019,7 +2019,7 @@ namespace Chummer
                 return;
 
             // Change to the status of Uneducated being enabled.
-            if (_objCharacter.Uneducated)
+            /*if (_objCharacter.Uneducated)
             {
                 // If Uneducated is being added, run through all of the Technical Active Skills and disable them.
                 // Do not break SkillGroups as these will be used if this is ever removed.
@@ -2043,7 +2043,7 @@ namespace Chummer
                         objSkillGroupControl.IsEnabled = true;
                     }
                 }
-            }
+            }*/
         }
 
         private void objCharacter_UncouthChanged(object sender)
@@ -15598,7 +15598,7 @@ namespace Chummer
                 intPointsUsed = Convert.ToInt32(nudMysticAdeptMAGMagician.Value) * 5;
             }
 
-            // Include the BP used by Martial Arts.
+            // Include the Karma used by Martial Arts.
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
                 if (!objMartialArt.IsQuality)
@@ -15612,7 +15612,7 @@ namespace Chummer
                 }
             }
 
-            // Calculate the BP used by Skill Groups.
+            // Calculate the Karma used by Skill Groups.
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 // Get the total point value
@@ -15626,6 +15626,10 @@ namespace Chummer
                     for (int i = 1; i <= objGroupControl.KarmaRating; i++)
                     {
                         intPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
+						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
+						{
+							intPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
+						}
                     }
                 }
             }
@@ -15640,9 +15644,19 @@ namespace Chummer
                         // Each additional beyond 1 costs i x KarmaImproveSkillGroup.
                         intPointsRemain -= _objOptions.KarmaNewSkillGroup;
                         intPointsUsed += _objOptions.KarmaNewSkillGroup;
-                        for (int i = objGroupControl.GroupRatingMinimum + 2; i <= objGroupControl.GroupRating; i++)
+						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
+						{
+							intPointsRemain -= _objOptions.KarmaNewSkillGroup;
+							intPointsUsed += _objOptions.KarmaNewSkillGroup;
+						}
+						for (int i = objGroupControl.GroupRatingMinimum + 2; i <= objGroupControl.GroupRating; i++)
                         {
-                            intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
+							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
+							{
+								intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
+								intPointsUsed += i * _objOptions.KarmaImproveSkillGroup;
+							}
+							intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
                             intPointsUsed += i * _objOptions.KarmaImproveSkillGroup;
                         }
                     }
@@ -15659,12 +15673,21 @@ namespace Chummer
                                     intMin = objSkill.Rating;
                             }
                         }
-
-                        intPointsRemain -= _objOptions.KarmaNewSkillGroup;
+						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
+						{
+							intPointsRemain -= _objOptions.KarmaNewSkillGroup;
+							intPointsUsed += _objOptions.KarmaNewSkillGroup;
+						}
+						intPointsRemain -= _objOptions.KarmaNewSkillGroup;
                         intPointsUsed += _objOptions.KarmaNewSkillGroup;
                         for (int i = 2; i <= intMin; i++)
-                        {
-                            intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
+						{
+							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
+							{
+								intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
+								intPointsUsed += i * _objOptions.KarmaImproveSkillGroup;
+							}
+							intPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
                             intPointsUsed += i * _objOptions.KarmaImproveSkillGroup;
                         }
                     }

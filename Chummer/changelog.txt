@@ -9,6 +9,7 @@ Application Change:
 Data Change:
 - Nanohive crash issue fixed.
 - Ratings for the Expanded Volume and Amplified Immune System bioware fixed to 4. 
+- Fixed incorrect category for certain rituals.
 
 Build 174:
 Application Change:
