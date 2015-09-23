@@ -2,6 +2,9 @@ Build 175:
 Application Change:
 - Removed extraneous code for the Infirm quality.
 - Minor quality of life update; if you have no Settings file present when creating a new character, Chummer will prompt you to launch the Options menu. 
+- You can now press Ctrl-W to close a character file.
+- Fixed an issue with purchasing additional months of a lifestyle in career mode.
+- The Quality selector will show negative metagenetic qualities by default. 
 
 Data Change:
 - Nanohive crash issue fixed.

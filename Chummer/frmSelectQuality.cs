@@ -310,13 +310,9 @@ namespace Chummer
 			{
 				// Treat everything as being uppercase so the search is case-insensitive.
 				string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-				if (chkMetagenetic.Checked || _objCharacter.metageneticLimit > 0)
+				if (chkMetagenetic.Checked)
 				{
 					strSearch += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
-				}
-				else
-				{
-					strSearch += " and not (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
 				strSearch += "]";
 
@@ -358,6 +354,10 @@ namespace Chummer
 				if (chkMetagenetic.Checked || _objCharacter.metageneticLimit > 0)
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
+				}
+				else if (cboCategory.SelectedValue.ToString() == "Negative")
+				{
+					//Load everything, including metagenetic qualities.
 				}
 				else
 				{
