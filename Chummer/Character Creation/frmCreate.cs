@@ -5567,8 +5567,8 @@ namespace Chummer
         {
             int i = panSprites.Controls.Count;
 
-            // The number of registered Sprites cannot exceed the character's CHA.
-            if (i >= _objCharacter.CHA.Value && !_objCharacter.IgnoreRules)
+            // The number of registered Sprites cannot exceed the character's LOG.
+            if (i >= _objCharacter.LOG.Value && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_RegisteredSpriteLimit"), LanguageManager.Instance.GetString("MessageTitle_RegisteredSpriteLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

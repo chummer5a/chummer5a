@@ -6,6 +6,7 @@ Application Change:
 - Fixed an issue with purchasing additional months of a lifestyle in career mode.
 - The Quality selector will show negative metagenetic qualities by default. 
 - Support for the Trust Fund quality added. 
+- The Technomancer registered sprite limit is now based on LOG instead of CHA.
 
 Data Change:
 - Nanohive crash issue fixed.
