@@ -2988,7 +2988,7 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>1</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3005,7 +3005,7 @@
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>2</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3022,7 +3022,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>3</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3039,7 +3039,7 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>4</trustfund>
 			</bonus>
       <nomission/>
 			<required>

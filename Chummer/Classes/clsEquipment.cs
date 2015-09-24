@@ -8983,6 +8983,7 @@ namespace Chummer
         private string _strBaseLifestyle = "";
 		private string _strSource = "";
 		private string _strPage = "";
+		private bool _blnTrustFund = false;
 		private LifestyleType _objType = LifestyleType.Standard;
 		private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
 		private string _strNotes = "";
@@ -9067,7 +9068,8 @@ namespace Chummer
 			objWriter.WriteElementString("baselifestyle", _strBaseLifestyle);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("type", _objType.ToString());
+			objWriter.WriteElementString("trustfund", _blnTrustFund.ToString()); 
+            objWriter.WriteElementString("type", _objType.ToString());
 			objWriter.WriteElementString("sourceid", SourceID.ToString());
 			objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
@@ -9128,7 +9130,7 @@ namespace Chummer
 			{
 				throw new ArgumentNullException("source");
 			}
-
+			objNode.TryGetField("trustfund", out _blnTrustFund);
 			objNode.TryGetField("page", out _strPage);
 
 			// Qualities
@@ -9202,7 +9204,7 @@ namespace Chummer
 			}
 
 			objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
-
+			objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteStartElement("qualities");
@@ -9654,6 +9656,21 @@ namespace Chummer
 				_intPercentage = value;
 			}
 		}
+
+		/// <summary>
+		/// Whether the lifestyle is currently covered by the Trust Fund Quality.
+		/// </summary>
+		public bool TrustFund
+		{
+			get
+			{
+				return _blnTrustFund;
+			}
+			set
+			{
+				_blnTrustFund = value;
+			}
+		}
 		#endregion
 
 		#region Complex Properties
@@ -9709,7 +9726,12 @@ namespace Chummer
                 {
                     intReturn = Cost;
                 }
-                return intReturn;
+
+				if (_blnTrustFund)
+				{
+					intReturn += Convert.ToInt32(Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo));
+				}
+				return intReturn;
 			}
 		}
 		#endregion

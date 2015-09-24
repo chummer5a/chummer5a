@@ -104,7 +104,7 @@ namespace Chummer
 
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
 
-            if (cboBaseLifestyle.SelectedIndex == -1)
+			if (cboBaseLifestyle.SelectedIndex == -1)
             { cboBaseLifestyle.SelectedIndex = 0; }
 
 			if (_objSourceLifestyle != null)
@@ -120,18 +120,22 @@ namespace Chummer
 				nudSecurityEntertainment.Value = _objSourceLifestyle.SecurityEntertainment;
 				cboBaseLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
 				lblSource.Text = _objSourceLifestyle.Source;
-
-				CalculateValues();
+				try
+				{
+					chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+				}
+				catch
+				{
+				}
 			}
-			else
-			{
 				XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
 				Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", nudComforts.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
 				Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", nudArea.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
 				Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.Instance.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", nudSecurity.Value.ToString()).Replace("{1}", objXmlAspect["limit"].InnerText);
-			}
 
-            _blnSkipRefresh = false;
+				CalculateValues();
+
+			_blnSkipRefresh = false;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -149,7 +153,11 @@ namespace Chummer
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+		private void chkTrustFund_Changed(object sender, EventArgs e)
+		{
+			CalculateValues();
+		}
+		private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
             cmdOK_Click(sender, e);
@@ -204,6 +212,29 @@ namespace Chummer
 				}
 				else
 				{
+					//Characters with the Trust Fund Quality can have the lifestyle discounted.
+					if (_objCharacter.TrustFund == 1 && cboBaseLifestyle.SelectedValue.ToString() == "Medium")
+					{
+						chkTrustFund.Visible = true;
+					}
+					else if (_objCharacter.TrustFund == 2 && cboBaseLifestyle.SelectedValue.ToString() == "Low")
+					{
+						chkTrustFund.Visible = true;
+					}
+					else if (_objCharacter.TrustFund == 3 && cboBaseLifestyle.SelectedValue.ToString() == "High")
+					{
+						chkTrustFund.Visible = true;
+					}
+					else if (_objCharacter.TrustFund == 4 && cboBaseLifestyle.SelectedValue.ToString() == "Medium")
+					{
+						chkTrustFund.Visible = true;
+					}
+					else
+					{
+						chkTrustFund.Checked = false;
+						chkTrustFund.Visible = false;
+					}
+
 					foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities.ToList())
 					{
 						if (objQuality.Name == "Not a Home")
@@ -295,6 +326,7 @@ namespace Chummer
 			_objLifestyle.Security = Convert.ToInt32(nudSecurity.Value);
 			_objLifestyle.SecurityEntertainment = Convert.ToInt32(nudSecurityEntertainment.Value);
 			_objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
+			_objLifestyle.TrustFund = chkTrustFund.Checked;
 
 			// Get the starting Nuyen information.
 			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
@@ -489,6 +521,10 @@ namespace Chummer
             intMultiplier = (intNuyen * intMultiplier) / 100;
             intNuyen += intMultiplier;
             intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
+			if (chkTrustFund.Checked)
+			{
+				intNuyen -= Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+			}
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 

@@ -2126,24 +2126,20 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-
-            
-            if (_objCharacter.TrustFund)
+			
+            if (_objCharacter.TrustFund> 0)
             {
-
+				
             }
             else
             {
-
-            }
+			}
         }
 
         private void objCharacter_TechSchoolChanged(object sender)
         {
             if (_blnReapplyImprovements)
                 return;
-
-            
             if (_objCharacter.TechSchool)
             {
 
@@ -12789,24 +12785,27 @@ namespace Chummer
 
         private void nudLifestyleMonths_ValueChanged(object sender, EventArgs e)
         {
-            if (treLifestyles.SelectedNode.Level > 0)
-            {
-                _blnSkipRefresh = true;
+			if (treLifestyles.SelectedNode != null)
+			{
+				if (treLifestyles.SelectedNode.Level > 0)
+				{
+					_blnSkipRefresh = true;
 
-                // Locate the selected Lifestyle.
-                Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
-                if (objLifestyle == null)
-                    return;
+					// Locate the selected Lifestyle.
+					Lifestyle objLifestyle = _objFunctions.FindLifestyle(treLifestyles.SelectedNode.Tag.ToString(), _objCharacter.Lifestyles);
+					if (objLifestyle == null)
+						return;
 
-                objLifestyle.Months = Convert.ToInt32(nudLifestyleMonths.Value);
+					objLifestyle.Months = Convert.ToInt32(nudLifestyleMonths.Value);
 
-                _blnSkipRefresh = false;
-                UpdateCharacterInfo();
-                RefreshSelectedLifestyle();
+					_blnSkipRefresh = false;
+					UpdateCharacterInfo();
+					RefreshSelectedLifestyle();
 
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
+					_blnIsDirty = true;
+					UpdateWindowTitle();
+				}
+			}
         }
 
         private void treGear_AfterSelect(object sender, TreeViewEventArgs e)
