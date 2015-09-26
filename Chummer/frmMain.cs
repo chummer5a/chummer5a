@@ -169,8 +169,10 @@ namespace Chummer
 		private void mnuNewCritter_Click(object sender, EventArgs e)
 		{
 			Character objCharacter = new Character();
+			string settingsPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-			if (Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml").Count() > 1)
+			if (settingsFiles.Length > 1)
 			{
 				frmSelectSetting frmPickSetting = new frmSelectSetting();
 				frmPickSetting.ShowDialog(this);
@@ -182,10 +184,8 @@ namespace Chummer
 			}
 			else
 			{
-				string strSettingsFile = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml")[0];
-				strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
-				strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
-				objCharacter.SettingsFile = strSettingsFile;
+				string strSettingsFile = settingsFiles[0];
+				objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
 			}
 
 			// Override the defaults for the setting.
@@ -491,8 +491,7 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
 		{
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
-			strFilePath = Path.Combine(strFilePath, "default.xml");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", "default.xml");
 			if (!File.Exists(strFilePath))
 			{
 				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -502,8 +501,10 @@ namespace Chummer
 				}
 			}
 			Character objCharacter = new Character();
+			string settingsPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
-			if (Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml").Count() > 1)
+			if (settingsFiles.Length > 1)
 			{
 				frmSelectSetting frmPickSetting = new frmSelectSetting();
 				frmPickSetting.ShowDialog(this);
@@ -515,12 +516,10 @@ namespace Chummer
 			}
 			else
 			{
-				string strSettingsFile = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml")[0];
-				strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
-				strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
-				objCharacter.SettingsFile = strSettingsFile;
+				string strSettingsFile = settingsFiles[0];
+				objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
 			}
-			
+
 			// Show the BP selection window.
 			frmSelectBP frmBP = new frmSelectBP(objCharacter);
 			frmBP.ShowDialog();
