@@ -115,8 +115,9 @@ namespace Chummer
 		#region Constructor and Instance
 		static GlobalOptions()
 		{
-			if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "settings")))
-				Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "settings"));
+			string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+            if (!Directory.Exists(settingsDirectoryPath))
+				Directory.CreateDirectory(settingsDirectoryPath);
 
 			// Automatic Update.
 			try
@@ -962,12 +963,12 @@ namespace Chummer
 		public CharacterOptions()
 		{
 			// Create the settings directory if it does not exist.
-			if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "settings")))
-				Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "settings"));
+			string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			if (!Directory.Exists(settingsDirectoryPath))
+				Directory.CreateDirectory(settingsDirectoryPath);
 
 			// If the default.xml settings file does not exist, attempt to read the settings from the Registry (old storage format), then save them to the default.xml file.
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
-			strFilePath = Path.Combine(strFilePath, "default.xml");
+			string strFilePath = Path.Combine(settingsDirectoryPath, "default.xml");
 			if (!File.Exists(strFilePath))
 			{
 				_strFileName = "default.xml";
@@ -988,8 +989,7 @@ namespace Chummer
 		/// </summary>
 		public void Save()
 		{
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
-			strFilePath = Path.Combine(strFilePath, _strFileName);
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", _strFileName);
 			FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
 			objWriter.Formatting = Formatting.Indented;
@@ -1313,8 +1313,7 @@ namespace Chummer
 		public bool Load(string strFileName)
 		{
 			_strFileName = strFileName;
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
-			strFilePath = Path.Combine(strFilePath, _strFileName);
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", _strFileName);
 			XmlDocument objXmlDocument = new XmlDocument();
 			try
 			{

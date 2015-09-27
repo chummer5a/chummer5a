@@ -68,8 +68,7 @@ namespace Chummer
 				}
 			}
 
-			string strPath = Path.Combine(Environment.CurrentDirectory, "data");
-			strPath = Path.Combine(strPath, txtFileName.Text);
+			string strPath = Path.Combine(strCustomPath, txtFileName.Text);
 			bool blnNewFile = !File.Exists(strPath);
 
 			// If this is not a new file, read in the existing contents.

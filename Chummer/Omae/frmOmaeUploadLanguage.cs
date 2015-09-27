@@ -86,8 +86,7 @@ namespace Chummer
 			}
 
 			byte[] bytFile = File.ReadAllBytes(txtFilePath.Text);
-			string[] strFileParts = txtFilePath.Text.Split(Path.DirectorySeparatorChar);
-			string strFileName = strFileParts[strFileParts.Length - 1];
+			string strFileName = Path.GetFileName(txtFilePath.Text);
 
 			translationSoapClient objService = _objOmaeHelper.GetTranslationService();
 			try

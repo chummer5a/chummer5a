@@ -23,9 +23,8 @@ namespace Chummer
 			{
 				foreach (string strFileName in dlgOpenFile.FileNames)
 				{
-					string[] strLongName = strFileName.Split(Path.DirectorySeparatorChar);
 					TreeNode objNode = new TreeNode();
-					objNode.Text = strLongName[strLongName.Length - 1];
+					objNode.Text = Path.GetFileName(strFileName);
 					objNode.Tag = strFileName;
 					treCharacters.Nodes.Add(objNode);
 				}

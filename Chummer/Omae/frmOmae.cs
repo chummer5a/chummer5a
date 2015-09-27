@@ -256,12 +256,12 @@ namespace Chummer
 					string strSavePath = Path.Combine(Environment.CurrentDirectory, "saves");
 					if (!Directory.Exists(strSavePath))
 						Directory.CreateDirectory(strSavePath);
-					if (!Directory.Exists(Path.Combine(strSavePath, "omae")))
-						Directory.CreateDirectory(Path.Combine(strSavePath, "omae"));
+					string omaeDirectoryPath = Path.Combine(strSavePath, "omae");
+                    if (!Directory.Exists(omaeDirectoryPath))
+						Directory.CreateDirectory(omaeDirectoryPath);
 
 					// See if there is already a file with the character's name in the Downloads directory.
-					string strFullPath = Path.Combine(strSavePath, "omae");
-					strFullPath = Path.Combine(strFullPath, strFileName);
+					string strFullPath = Path.Combine(omaeDirectoryPath, strFileName);
 					if (File.Exists(strFullPath))
 					{
 						if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_FileExists").Replace("{0}", strFileName), LanguageManager.Instance.GetString("MessageTitle_Omae_FileExists"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
@@ -282,11 +282,9 @@ namespace Chummer
 
 						// Decompress the byte array and write it to a file.
 						bytFile = _objOmaeHelper.Decompress(bytFile);
-						string strWritePath = Path.Combine(strSavePath, "omae");
-						strWritePath = Path.Combine(strWritePath, strFileName);
-						File.WriteAllBytes(strWritePath, bytFile);
+						File.WriteAllBytes(strFullPath, bytFile);
 						if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.Instance.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-							_frmMain.LoadCharacter(strWritePath);
+							_frmMain.LoadCharacter(strFullPath);
 					}
 					catch (EndpointNotFoundException)
 					{
@@ -353,9 +351,9 @@ namespace Chummer
 			else if (_objMode == OmaeMode.Sheets)
 			{
 				// If the Omae sheets directory does not yet exist, create it.
-				string strSheetsPath = Path.Combine(Environment.CurrentDirectory, "sheets");
-				if (!Directory.Exists(Path.Combine(strSheetsPath, "omae")))
-					Directory.CreateDirectory(Path.Combine(strSheetsPath, "omae"));
+				string strSheetsPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
+				if (!Directory.Exists(strSheetsPath))
+					Directory.CreateDirectory(strSheetsPath);
 
 				try
 				{

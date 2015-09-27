@@ -97,13 +97,12 @@ namespace Chummer
         private void frmOptions_Load(object sender, EventArgs e)
         {
             // Populate the list of Settings.
+            string strPath = Path.Combine(Environment.CurrentDirectory, "settings");
             List<ListItem> lstSettings = new List<ListItem>();
-            foreach (string strFileName in Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "settings"), "*.xml"))
+            foreach (string strFileName in Directory.GetFiles(strPath, "*.xml"))
             {
                 // Remove the path from the file name.
-                string strSettingsFile = strFileName;
-                strSettingsFile = strSettingsFile.Replace(Path.Combine(Environment.CurrentDirectory, "settings"), string.Empty);
-                strSettingsFile = strSettingsFile.Replace(Path.DirectorySeparatorChar, ' ').Trim();
+                string strSettingsFile = Path.GetFileName(strFileName);
 
                 // Load the file so we can get the Setting name.
                 XmlDocument objXmlSetting = new XmlDocument();
@@ -221,7 +220,7 @@ namespace Chummer
             txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
 
             // Populate the Language List.
-            string strPath = Path.Combine(Environment.CurrentDirectory, "lang");
+            strPath = Path.Combine(Environment.CurrentDirectory, "lang");
             List<ListItem> lstLanguages = new List<ListItem>();
             foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
             {
@@ -230,7 +229,7 @@ namespace Chummer
                 {
                     objXmlDocument.Load(strFile);
                     ListItem objItem = new ListItem();
-                    string strFileName = strFile.Replace(strPath, string.Empty).Replace(".xml", string.Empty).Replace(Path.DirectorySeparatorChar, ' ').Trim();
+                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
                     objItem.Value = strFileName;
                     objItem.Name = objXmlDocument.SelectSingleNode("/chummer/name").InnerText;
                     lstLanguages.Add(objItem);
@@ -255,14 +254,15 @@ namespace Chummer
             if (cboLanguage.SelectedIndex == -1)
                 cboLanguage.SelectedValue = "en-us";
 
-            List<ListItem> lstFiles = new List<ListItem>();
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets"))
+            strPath = Path.Combine(Environment.CurrentDirectory, "sheets");
+            List<ListItem> lstFiles = new List<ListItem>();
+            foreach (string strFile in Directory.GetFiles(strPath))
             {
                 // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
                 if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
                 {
-                    string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
                     ListItem objItem = new ListItem();
                     objItem.Value = strFileName;
                     objItem.Name = strFileName;
@@ -279,15 +279,16 @@ namespace Chummer
                 {
                     XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
                     string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
+                    strPath = Path.Combine(Environment.CurrentDirectory, "sheets", GlobalOptions.Instance.Language);
 
-                    foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + GlobalOptions.Instance.Language))
+                    foreach (string strFile in Directory.GetFiles(strPath))
                     {
                         // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
                         if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
                         {
-                            string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + GlobalOptions.Instance.Language + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+                            string strFileName = Path.GetFileNameWithoutExtension(strFile);
                             ListItem objItem = new ListItem();
-                            objItem.Value = GlobalOptions.Instance.Language + Path.DirectorySeparatorChar + strFileName;
+                            objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
                             objItem.Name = strLanguage + ": " + strFileName;
                             lstFiles.Add(objItem);
                         }
@@ -301,14 +302,15 @@ namespace Chummer
             try
             {
                 // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-                foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + "omae"))
+                strPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
+                foreach (string strFile in Directory.GetFiles(strPath))
                 {
                     // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
                     if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
                     {
-                        string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + "omae" + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+                        string strFileName = Path.GetFileNameWithoutExtension(strFile);
                         ListItem objItem = new ListItem();
-                        objItem.Value = "omae" + Path.DirectorySeparatorChar + strFileName;
+                        objItem.Value = Path.Combine("omae", strFileName);
                         objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
                         lstFiles.Add(objItem);
                     }
@@ -562,8 +564,7 @@ namespace Chummer
 
             XmlManager.Instance.Verify(cboLanguage.SelectedValue.ToString(), lstBooks);
 
-            string strFilePath = Path.Combine(Environment.CurrentDirectory, "lang");
-            strFilePath = Path.Combine(strFilePath, "results_" + cboLanguage.SelectedValue + ".xml");
+            string strFilePath = Path.Combine(Environment.CurrentDirectory, "lang", "results_" + cboLanguage.SelectedValue + ".xml");
             MessageBox.Show("Results were written to " + strFilePath, "Validation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

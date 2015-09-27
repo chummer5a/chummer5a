@@ -18,7 +18,7 @@ namespace Chummer
 			// Display the contents of the changelog.txt file in the TextBox.
 			try
 			{
-				txtRevisionHistory.Text = File.ReadAllText(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "changelog.txt");
+				txtRevisionHistory.Text = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
 				txtRevisionHistory.SelectionStart = 0;
 				txtRevisionHistory.SelectionLength = 0;
 			}
