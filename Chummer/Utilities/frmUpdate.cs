@@ -336,7 +336,7 @@ namespace Chummer
                     else
                     {
                         objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is another EXE");
-                        FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText);
+                        FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(Environment.CurrentDirectory, objXmlNode["name"].InnerText));
                         string strVersion = myFileVersionInfo.FileVersion.ToString().Replace(".", "");
                         int intVersion = Convert.ToInt32(strVersion);
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "Existing Version = " + intVersion.ToString());
@@ -355,7 +355,7 @@ namespace Chummer
                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is XML");
                     try
 					{
-						objXmlFileDocument.Load(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
+						objXmlFileDocument.Load(Path.Combine(Environment.CurrentDirectory, objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar)));
 						objXmlFileNode = objXmlFileDocument.SelectSingleNode("/chummer/version");
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "Existing Version = " + Convert.ToInt32(objXmlFileNode.InnerText).ToString());
                         objFunctions.LogWrite(CommonFunctions.LogType.Content, "frmUpdate", "New Version = " + Convert.ToInt32(objXmlNode["version"].InnerText).ToString());
@@ -391,7 +391,7 @@ namespace Chummer
                     objFunctions.LogWrite(CommonFunctions.LogType.Message, "frmUpdate", "File is XSL");
                     try
 					{
-						StreamReader objFile = new StreamReader(Environment.CurrentDirectory + Path.DirectorySeparatorChar + objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar));
+						StreamReader objFile = new StreamReader(Path.Combine(Environment.CurrentDirectory, objXmlNode["name"].InnerText.Replace('/', Path.DirectorySeparatorChar)));
 						string strLine = "";
 						while ((strLine = objFile.ReadLine()) != null)
 						{

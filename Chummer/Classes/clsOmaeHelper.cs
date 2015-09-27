@@ -214,7 +214,7 @@ namespace Chummer
 
 			foreach (string strFile in lstFiles)
 			{
-				Uri objUri = new Uri("/" + System.IO.Path.GetFileName(strFile).Replace(' ', '_'), UriKind.Relative);
+				Uri objUri = new Uri("/" + Path.GetFileName(strFile).Replace(' ', '_'), UriKind.Relative);
 				PackagePart objPart = objPackage.CreatePart(objUri, System.Net.Mime.MediaTypeNames.Application.Zip, CompressionOption.Maximum);
 				byte[] bytBuffer = File.ReadAllBytes(strFile);
 				objPart.GetStream().Write(bytBuffer, 0, bytBuffer.Length);
@@ -235,8 +235,8 @@ namespace Chummer
 
 			foreach (string strFile in lstFiles)
 			{
-				string[] strPath = System.IO.Path.GetDirectoryName(strFile).Replace(' ', '_').Split('\\');
-				string strPackFile = "/" + strPath[strPath.Length - 2] + "/" + strPath[strPath.Length - 1] + "/" + System.IO.Path.GetFileName(strFile).Replace(' ', '_');
+				string[] strPath = Path.GetDirectoryName(strFile).Replace(' ', '_').Split('\\');
+				string strPackFile = "/" + strPath[strPath.Length - 2] + "/" + strPath[strPath.Length - 1] + "/" + Path.GetFileName(strFile).Replace(' ', '_');
 				if (strPackFile.StartsWith("/saves"))
 					strPackFile = strPackFile.Replace("/saves", string.Empty);
 				Uri objUri = new Uri(strPackFile, UriKind.Relative);
@@ -286,8 +286,7 @@ namespace Chummer
 		/// /// <param name="bytBuffer">Byte array that contains the zip file.</param>
 		public void DecompressCharacterSheet(byte[] bytBuffer)
 		{
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "sheets");
-			strFilePath = Path.Combine(strFilePath, "omae");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
 			MemoryStream objStream = new MemoryStream();
 			objStream.Write(bytBuffer, 0, bytBuffer.Length);
 			Package objPackage = ZipPackage.Open(objStream, FileMode.Open, FileAccess.Read);

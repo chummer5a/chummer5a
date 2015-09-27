@@ -43,7 +43,7 @@ namespace Chummer
 			{
 				TreeNode objNode = new TreeNode();
 				objNode.Tag = strFile;
-				objNode.Text = strFile.Replace(strFilePath + Path.DirectorySeparatorChar, string.Empty);
+				objNode.Text = Path.GetFileName(strFile);
 				treFiles.Nodes.Add(objNode);
 			}
 
@@ -51,7 +51,7 @@ namespace Chummer
 			{
 				TreeNode objNode = new TreeNode();
 				objNode.Tag = strFile;
-				objNode.Text = strFile.Replace(strFilePath + Path.DirectorySeparatorChar, string.Empty);
+				objNode.Text = Path.GetFileName(strFile);
 				treFiles.Nodes.Add(objNode);
 			}
 		}
@@ -88,9 +88,9 @@ namespace Chummer
 			
 			bool blnSuccess = false;
 
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "data");
+			string strFilePath = Path.Combine(Environment.CurrentDirectory, "data", "books.xml");
 			XmlDocument objXmlBooks = new XmlDocument();
-			objXmlBooks.Load(Path.Combine(strFilePath, "books.xml"));
+			objXmlBooks.Load(strFilePath);
 
 			List<string> lstSource = new List<string>();
 
