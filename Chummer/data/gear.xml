@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-395</version>
+	<!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
+  <version>-390</version>
   <categories>
     <category>Ammunition</category>
     <category>Armor Enhancements</category>
@@ -49,6 +50,7 @@
     <category>Vision Enhancements</category>
   </categories>
   <gears>
+		<!-- Region Ammo -->
     <gear>
       <id>ef9c8aae-26df-4fe6-88b3-79fbb5eb77c5</id>
       <name>Ammo: APDS</name>
@@ -908,6 +910,17 @@
       <source>SR5</source>
       <page>435</page>
     </gear>
+		<gear>
+			<id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
+			<name>Paint Grenade</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<addweapon>Grenade: Paint</addweapon>
+			<avail>8R</avail>
+			<cost>100</cost>
+			<source>RG</source>
+			<page>102</page>
+		</gear>
     <gear>
       <id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
       <name>Rocket: Anti-Vehicle</name>
@@ -974,6 +987,8 @@
       <source>SR5</source>
       <page>436</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Explosives -->
     <gear>
       <id>48eca1ec-bce2-4878-bfdc-5b37639e9d6f</id>
       <name>Commercial Explosive</name>
@@ -1224,6 +1239,8 @@
       <source>RG</source>
       <page>187</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Extraction Devices -->
     <gear>
       <id>7c034499-0089-48e5-b63d-a7da067c8353</id>
       <name>Houdini Machine I</name>
@@ -1294,6 +1311,8 @@
       <source>SS</source>
       <page>178</page>
     </gear>
+		<!-- End Region-->
+		<!-- Region Disguises-->
     <gear>
       <id>1ecebb15-6ced-464e-9e36-2cd217e4bc63</id>
       <name>Uniforms</name>
@@ -1304,6 +1323,8 @@
       <source>SS</source>
       <page>178</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Commlinks and Cyberdecks -->
     <gear>
       <id>89a0f3c9-5ef6-41cd-981f-4ac690ee2ab3</id>
       <name>Meta Link</name>
@@ -1609,6 +1630,8 @@
       <source>SR5</source>
       <page>439</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region RCCs -->
     <gear>
       <id>18eb72a1-2b4d-4800-9669-d9e62ecc50b3</id>
       <name>Scratch-Built Junk</name>
@@ -1785,6 +1808,8 @@
       <source>SR5</source>
       <page>266</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Programs -->
     <gear>
       <id>b3c0a6bd-e086-4971-be77-dc9a9cb2e174</id>
       <name>Browse</name>
@@ -2045,6 +2070,8 @@
       <source>SR5</source>
       <page>245</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Software-->
     <gear>
       <id>2d8396ff-a4a9-4382-ab69-70d198856e7f</id>
       <name>Agent</name>
@@ -2174,6 +2201,8 @@
       <source>SR5</source>
       <page>442</page>
     </gear>
+		<!-- End Region-->
+		<!-- Region PI-Tac-->
     <gear>
       <id>b77b4cf8-8bdc-40bf-acca-f2afcca4965c</id>
       <name>PI-Tac Level I (Renraku Taka)</name>
@@ -2204,6 +2233,8 @@
       <source>RG</source>
       <page>105</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Electronics Accessories -->
     <gear>
       <id>2e409fba-8b1a-42c4-8fa5-4d256ccd540d</id>
       <name>AR Gloves</name>
@@ -2307,6 +2338,8 @@
       <source>SR5</source>
       <page>439</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region RFID Tags -->
     <gear>
       <id>84bb92e7-ce13-4eb6-bf9e-15bf3887469c</id>
       <name>Standard Tags</name>
@@ -2368,6 +2401,8 @@
       <source>SR5</source>
       <page>440</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region ECCM-->
     <gear>
       <id>0918742f-6fc8-46ac-91e0-2b7260841923</id>
       <name>Bug Scanner</name>
@@ -2465,6 +2500,8 @@
       <source>SR5</source>
       <page>442</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region ID/Credsticks -->
     <gear>
       <id>4f5b4fbc-78c4-4aa4-a5c2-7739f12e9b39</id>
       <name>Certified Credstick, Silver</name>
@@ -2535,6 +2572,8 @@
       <source>SR5</source>
       <page>442</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Tools -->
     <gear>
       <id>64fa5212-1d58-4e94-9cc1-9e3eb10773ed</id>
       <name>Tool Kit</name>
@@ -2575,6 +2614,8 @@
       <source>SR5</source>
       <page>443</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Vision Devices -->
     <gear>
       <id>1c6db3ed-a360-40b4-8118-9aca9d96001c</id>
       <name>Binoculars</name>
@@ -2711,6 +2752,8 @@
       <source>SR4</source>
       <page>444</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Vision Enhancements -->
     <gear>
       <id>7fc23c2f-b41a-46b0-9ed7-9dc93986fab3</id>
       <name>Flare Compensation</name>
@@ -2798,6 +2841,8 @@
       <source>SR5</source>
       <page>444</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Audio Devices -->
     <gear>
       <id>5d69d002-c33d-4d0f-9c4d-d78db4d78e5d</id>
       <name>Earbuds</name>
@@ -2856,6 +2901,8 @@
       <source>SR5</source>
       <page>445</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Audio Enhancements -->
     <gear>
       <id>eced7e9a-0959-4c4a-a67f-66abc0dd5228</id>
       <name>Audio Enhancement</name>
@@ -2892,6 +2939,8 @@
       <source>SR5</source>
       <page>445</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Sensors -->
     <gear>
       <id>49bbc9d3-860d-47db-b4bc-8417f5b6ab65</id>
       <name>Handheld Housing</name>
@@ -2914,6 +2963,190 @@
       <source>SR5</source>
       <page>445</page>
     </gear>
+		<gear>
+			<id>2ca81a10-d0f7-4b39-ac93-a84f2f69f9d9</id>
+			<name>Sensor Array</name>
+			<category>Sensors</category>
+			<rating>8</rating>
+			<minrating>2</minrating>
+			<capacity>8/[6]</capacity>
+			<armorcapacity>[6]</armorcapacity>
+			<avail>7</avail>
+			<cost>Rating * 1000</cost>
+			<source>SR5</source>
+			<page>445</page>
+		</gear>
+		<gear>
+			<id>2d4edef2-2891-4383-83f6-81f05cfbd046</id>
+			<name>Single Sensor</name>
+			<category>Sensors</category>
+			<rating>8</rating>
+			<minrating>2</minrating>
+			<capacity>1/[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>5</avail>
+			<cost>Rating * 100</cost>
+			<source>SR5</source>
+			<page>445</page>
+		</gear>
+		<gear>
+			<id>5c3b9966-ad7e-42e3-b0e0-f656021784cf</id>
+			<name>Atmosphere Sensor</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
+			<name>Camera</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>Rating/[1]</capacity>
+			<armorcapacity>Rating/[1]</armorcapacity>
+			<avail>0</avail>
+			<cost></cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
+			<name>Cyberware Scanner</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>1345a189-50d2-44e0-aeea-73ce0f28390b</id>
+			<name>Directional Microphone</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>1/[1]</capacity>
+			<armorcapacity>1/[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>d98f419f-7625-4228-9723-0217950d8155</id>
+			<name>Geiger Counter</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>f25e4819-209c-4cbf-b24f-668359a7a2ad</id>
+			<name>Laser Microphone</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>Rating/[1]</capacity>
+			<armorcapacity>1/[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>3a79e046-8106-4089-a1ab-895eee956b86</id>
+			<name>Laser Range Finder</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>ff0f7ab6-ee55-47aa-bdec-0646acca4bff</id>
+			<name>MAD Scanner</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>e853967a-a2b8-4d89-9a97-773034489a16</id>
+			<name>Motion Sensor</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
+			<name>Olfactory Sensor</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>0f13599a-2a4e-4b75-80e2-fab4405a7a87</id>
+			<name>Omni-directional Microphone</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>Rating/[1]</capacity>
+			<armorcapacity>1/[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>
+			<name>Radio Signal Scanner</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<gear>
+			<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
+			<name>Ultrasound</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>SR5</source>
+			<page>446</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Tools of the Trade-->
     <gear>
       <id>b02d941d-8e94-4517-9eb4-3b3e9d6e28d2</id>
       <name>Grenade-Cam</name>
@@ -2936,189 +3169,105 @@
       <source>RG</source>
       <page>103</page>
     </gear>
-    <gear>
-      <id>2ca81a10-d0f7-4b39-ac93-a84f2f69f9d9</id>
-      <name>Sensor Array</name>
-      <category>Sensors</category>
-      <rating>8</rating>
-      <minrating>2</minrating>
-      <capacity>8/[6]</capacity>
-      <armorcapacity>[6]</armorcapacity>
-      <avail>7</avail>
-      <cost>Rating * 1000</cost>
-      <source>SR5</source>
-      <page>445</page>
-    </gear>
-    <gear>
-      <id>2d4edef2-2891-4383-83f6-81f05cfbd046</id>
-      <name>Single Sensor</name>
-      <category>Sensors</category>
-      <rating>8</rating>
-      <minrating>2</minrating>
-      <capacity>1/[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>5</avail>
-      <cost>Rating * 100</cost>
-      <source>SR5</source>
-      <page>445</page>
-    </gear>
-    <gear>
-      <id>5c3b9966-ad7e-42e3-b0e0-f656021784cf</id>
-      <name>Atmosphere Sensor</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
-      <name>Camera</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>Rating/[1]</capacity>
-      <armorcapacity>Rating/[1]</armorcapacity>
-      <avail>0</avail>
-      <cost></cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>c6f60201-524f-4e3f-adc7-727eace4c7bd</id>
-      <name>Cyberware Scanner</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>1345a189-50d2-44e0-aeea-73ce0f28390b</id>
-      <name>Directional Microphone</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>1/[1]</capacity>
-      <armorcapacity>1/[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>d98f419f-7625-4228-9723-0217950d8155</id>
-      <name>Geiger Counter</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>f25e4819-209c-4cbf-b24f-668359a7a2ad</id>
-      <name>Laser Microphone</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>Rating/[1]</capacity>
-      <armorcapacity>1/[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>3a79e046-8106-4089-a1ab-895eee956b86</id>
-      <name>Laser Range Finder</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>ff0f7ab6-ee55-47aa-bdec-0646acca4bff</id>
-      <name>MAD Scanner</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>e853967a-a2b8-4d89-9a97-773034489a16</id>
-      <name>Motion Sensor</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
-      <name>Olfactory Sensor</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>0f13599a-2a4e-4b75-80e2-fab4405a7a87</id>
-      <name>Omni-directional Microphone</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>Rating/[1]</capacity>
-      <armorcapacity>1/[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>
-      <name>Radio Signal Scanner</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
-      <id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
-      <name>Ultrasound</name>
-      <category>Sensor Functions</category>
-      <rating>8</rating>
-      <capacity>[1]</capacity>
-      <armorcapacity>[1]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SR5</source>
-      <page>446</page>
-    </gear>
-    <gear>
+		<gear>
+			<id>9fffceb6-adb1-423a-a7f7-6f97567fac7f</id>
+			<name>Telescoping Mirror on a Stick</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>10</avail>
+			<cost>35</cost>
+			<source>RG</source>
+			<page>102</page>
+		</gear>
+		<gear>
+			<id>14b0d81a-736f-4b15-ab72-4e62f66ffb01</id>
+			<name>Battering Ram, Standard</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Battering Ram, Standard</addweapon>
+			<avail>10R</avail>
+			<cost>2000</cost>
+			<source>RG</source>
+			<page>103</page>
+		</gear>
+		<gear>
+			<id>c4741cc4-e298-474e-aa33-ee6f8d5d220a</id>
+			<name>Battering Ram, Fluid-Motion</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Battering Ram, Fluid-Motion</addweapon>
+			<avail>10R</avail>
+			<cost>3500</cost>
+			<source>RG</source>
+			<page>103</page>
+		</gear>
+		<gear>
+			<id>4c509149-44d2-47c2-a020-88189527e5d2</id>
+			<name>Battering Ram, Pneumatic</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Battering Ram, Pneumatic</addweapon>
+			<avail>18R</avail>
+			<cost>10000</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<gear>
+			<id>ff918f6d-fbed-4796-9764-09e1c37e9b23</id>
+			<name>Battering Ram, Shock</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Battering Ram, Shock</addweapon>
+			<avail>10R</avail>
+			<cost>15000</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<gear>
+			<id>8258a26b-4e8f-4e82-ba5d-4fd41f2d9cbb</id>
+			<name>Blast Shield</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Blast Shield</addweapon>
+			<avail>8R</avail>
+			<cost>20000</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<gear>
+			<id>beffa952-ab3f-4388-bfcd-21f926feb189</id>
+			<name>Ares PED Mark III</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>2500</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<gear>
+			<id>3bcaae84-71b8-42e6-8b4b-942a99b95efb</id>
+			<name>Ultra-Glide Industrial Lubricant (liter)</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>12</avail>
+			<cost>30</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<gear>
+			<id>baa1fa7b-e039-4f54-bd93-90b71c7e8f16</id>
+			<name>Hold-Fast Adhesive Spray</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<addweapon>Hold-Fast Sprayer</addweapon>
+			<avail>12</avail>
+			<cost>50</cost>
+			<source>RG</source>
+			<page>104</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Security Devices -->
+		<gear>
       <id>2bcc17b8-33bb-4567-887d-8be9593f7899</id>
       <name>Key Lock</name>
       <category>Security Devices</category>
@@ -3229,6 +3378,8 @@
       <source>SR5</source>
       <page>447</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Breaking and Entering Gear -->
     <gear>
       <id>af829cba-8d5e-40fd-b37b-e5266c29c55a</id>
       <name>Autopicker</name>
@@ -3345,6 +3496,8 @@
       <source>SR5</source>
       <page>448</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Chemicals -->
     <gear>
       <id>9d775d72-29ca-4784-b617-a667469fe192</id>
       <name>Glue Solvent</name>
@@ -3375,6 +3528,8 @@
       <source>SR5</source>
       <page>448</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Survival Gear -->
     <gear>
       <id>4a925049-5390-4394-8842-6cb46423cf00</id>
       <name>Chemsuit</name>
@@ -3543,6 +3698,8 @@
       <source>SR5</source>
       <page>449</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Grapple Gun -->
     <gear>
       <id>59561c08-3269-470d-9d8b-3cde8a8ccbf8</id>
       <name>Grapple Gun</name>
@@ -3604,6 +3761,8 @@
       <source>SR5</source>
       <page>449</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Biotech -->
     <gear>
       <id>e97c478c-f10a-494e-98ba-0d9c3076cd73</id>
       <name>Biomonitor</name>
@@ -3707,46 +3866,6 @@
       <page>17</page>
     </gear>
     <gear>
-      <id>6b28b36a-416a-4041-9561-558083158d7c</id>
-      <name>DocWagon Contract, Basic</name>
-      <category>DocWagon Contract</category>
-      <rating>0</rating>
-      <avail>0</avail>
-      <cost>5000</cost>
-      <source>SR5</source>
-      <page>450</page>
-    </gear>
-    <gear>
-      <id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
-      <name>DocWagon Contract, Gold</name>
-      <category>DocWagon Contract</category>
-      <rating>0</rating>
-      <avail>0</avail>
-      <cost>25000</cost>
-      <source>SR5</source>
-      <page>450</page>
-    </gear>
-    <gear>
-      <id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
-      <name>DocWagon Contract, Platinum</name>
-      <category>DocWagon Contract</category>
-      <rating>0</rating>
-      <avail>0</avail>
-      <cost>50000</cost>
-      <source>SR5</source>
-      <page>450</page>
-    </gear>
-    <gear>
-      <id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
-      <name>DocWagon Contract, Super-Platinum</name>
-      <category>DocWagon Contract</category>
-      <rating>0</rating>
-      <avail>0</avail>
-      <cost>100000</cost>
-      <source>SR5</source>
-      <page>450</page>
-    </gear>
-    <gear>
       <id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>
       <name>Slap Patch, Antidote Patch</name>
       <category>Biotech</category>
@@ -3796,6 +3915,50 @@
       <source>SR5</source>
       <page>451</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Docwagon Contracts -->
+		<gear>
+			<id>6b28b36a-416a-4041-9561-558083158d7c</id>
+			<name>DocWagon Contract, Basic</name>
+			<category>DocWagon Contract</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</gear>
+		<gear>
+			<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
+			<name>DocWagon Contract, Gold</name>
+			<category>DocWagon Contract</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>25000</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</gear>
+		<gear>
+			<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
+			<name>DocWagon Contract, Platinum</name>
+			<category>DocWagon Contract</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50000</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</gear>
+		<gear>
+			<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
+			<name>DocWagon Contract, Super-Platinum</name>
+			<category>DocWagon Contract</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100000</cost>
+			<source>SR5</source>
+			<page>450</page>
+		</gear>
+		<!-- End Region -->
+		<!-- Region Foci -->
     <gear>
       <id>93d81bd8-52bf-4461-b2da-394aca4ce262</id>
       <name>Alchemical Focus</name>
@@ -4153,6 +4316,8 @@
       <source>SR5</source>
       <page>320</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Formulae-->
     <gear>
       <id>4d620cf5-8443-448a-9e3e-0e887d889789</id>
       <name>Alchemical Focus Formula</name>
@@ -4569,6 +4734,8 @@
       <source>SR5</source>
       <page>326</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Magical Supplies -->
     <gear>
       <id>f8151303-b838-4af1-ba9d-d43ff0892b40</id>
       <name>Magical Lodge Materials</name>
@@ -4762,6 +4929,8 @@
       <source>SG</source>
       <page>230</page>
     </gear>
+		<!-- End Region -->
+		<!-- Region Magical Compounds -->
     <gear>
       <id>08b3bf17-e52a-41d4-b023-af6ee5354fe6</id>
       <name>AgHexHex</name>
@@ -4822,113 +4991,8 @@
       <source>SG</source>
       <page>220</page>
     </gear>
-    <gear>
-      <id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
-      <name>Paint Grenade</name>
-      <category>Ammunition</category>
-      <rating>0</rating>
-      <addweapon>Grenade: Paint</addweapon>
-      <avail>8R</avail>
-      <cost>100</cost>
-      <source>RG</source>
-      <page>102</page>
-    </gear>
-    <gear>
-      <id>9fffceb6-adb1-423a-a7f7-6f97567fac7f</id>
-      <name>Telescoping Mirror on a Stick</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <avail>10</avail>
-      <cost>35</cost>
-      <source>RG</source>
-      <page>102</page>
-    </gear>
-    <gear>
-      <id>14b0d81a-736f-4b15-ab72-4e62f66ffb01</id>
-      <name>Battering Ram, Standard</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Battering Ram, Standard</addweapon>
-      <avail>10R</avail>
-      <cost>2000</cost>
-      <source>RG</source>
-      <page>103</page>
-    </gear>
-    <gear>
-      <id>c4741cc4-e298-474e-aa33-ee6f8d5d220a</id>
-      <name>Battering Ram, Fluid-Motion</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Battering Ram, Fluid-Motion</addweapon>
-      <avail>10R</avail>
-      <cost>3500</cost>
-      <source>RG</source>
-      <page>103</page>
-    </gear>
-    <gear>
-      <id>4c509149-44d2-47c2-a020-88189527e5d2</id>
-      <name>Battering Ram, Pneumatic</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Battering Ram, Pneumatic</addweapon>
-      <avail>18R</avail>
-      <cost>10000</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
-    <gear>
-      <id>ff918f6d-fbed-4796-9764-09e1c37e9b23</id>
-      <name>Battering Ram, Shock</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Battering Ram, Shock</addweapon>
-      <avail>10R</avail>
-      <cost>15000</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
-    <gear>
-      <id>8258a26b-4e8f-4e82-ba5d-4fd41f2d9cbb</id>
-      <name>Blast Shield</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Blast Shield</addweapon>
-      <avail>8R</avail>
-      <cost>20000</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
-    <gear>
-      <id>beffa952-ab3f-4388-bfcd-21f926feb189</id>
-      <name>Ares PED Mark III</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <avail>10R</avail>
-      <cost>2500</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
-    <gear>
-      <id>3bcaae84-71b8-42e6-8b4b-942a99b95efb</id>
-      <name>Ultra-Glide Industrial Lubricant (liter)</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <avail>12</avail>
-      <cost>30</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
-    <gear>
-      <id>baa1fa7b-e039-4f54-bd93-90b71c7e8f16</id>
-      <name>Hold-Fast Adhesive Spray</name>
-      <category>Tools of the Trade</category>
-      <rating>0</rating>
-      <addweapon>Hold-Fast Sprayer</addweapon>
-      <avail>12</avail>
-      <cost>50</cost>
-      <source>RG</source>
-      <page>104</page>
-    </gear>
+		<!-- End Region -->
+		<!-- Region Toxins -->
     <gear>
       <id>1445f60b-49e1-45c9-98e4-054a79ca80f8</id>
       <name>CS/Tear Gas</name>
@@ -5059,16 +5123,18 @@
       <source>BB</source>
       <page>21</page>
     </gear>
-    <gear>
-      <id>c01b24b0-ed09-4044-95ec-bc7628b10f5e</id>
-      <name>Bliss</name>
-      <category>Drugs</category>
-      <rating>0</rating>
-      <avail>3F</avail>
-      <cost>15</cost>
-      <source>SR5</source>
-      <page>411</page>
-    </gear>
+		<!-- End Region -->
+		<!-- Region Drugs -->
+		<gear>
+			<id></id>
+			<name>Bliss</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>3F</avail>
+			<cost>15</cost>
+			<source>SR5</source>
+			<page>411</page>
+		</gear>
     <gear>
       <id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>
       <name>Cram</name>
@@ -5329,6 +5395,447 @@
       <source>SS</source>
       <page>189</page>
     </gear>
+		<gear>
+			<id>cf54b977-b2d9-4572-8e92-c3cc949f2c42</id>
+			<name>AEXD</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>80</cost>
+			<source>CF</source>
+			<page>179</page>
+		</gear>
+		<gear>
+			<id>53f656f4-bfa9-469e-a08d-ddf4fc71f824</id>
+			<name>Aisa</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>25</cost>
+			<source>CF</source>
+			<page>179</page>
+		</gear>
+		<gear>
+			<id>d32f1811-5ffb-4cd4-9873-ddcf207e95cb</id>
+			<name>Animal Tongue</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>1500</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>009bd079-f7ee-4055-a86f-af03d6837cc8</id>
+			<name>Ayao's Will</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>14F</avail>
+			<cost>750</cost>
+			<source>CF</source>
+			<page>184</page>
+		</gear>
+		<gear>
+			<id>f4eb63ce-c182-406c-b625-5699047e33a9</id>
+			<name>Betameth</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>5F</avail>
+			<cost>30</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>67436993-439d-4e6b-b64a-3f506f44721a</id>
+			<name>Betel</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>5</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>440ae069-da45-4721-b45f-6441c931180f</id>
+			<name>Cereprax</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>14F</avail>
+			<cost>800</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>68c65dca-e0e1-4291-8d1b-b23649027271</id>
+			<name>Crimson Orchid</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<cost>300</cost>
+			<source>CF</source>
+			<page>184</page>
+		</gear>
+		<gear>
+			<id>c4f2a23f-8806-4333-92b3-81d6d09ff8b5</id>
+			<name>Dopadrine</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>45</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>27b4ed38-dc23-4225-ad8d-146bdfe2e598</id>
+			<name>eX</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>3R</avail>
+			<cost>20</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>f7ed8b97-e26a-4296-b59d-e7c893696011</id>
+			<name>Forget-Me-Not</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<cost>400</cost>
+			<source>CF</source>
+			<page>180</page>
+		</gear>
+		<gear>
+			<id>75e9b82f-eb1a-4db1-8cde-29d2cf0eaba6</id>
+			<name>Galak</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<cost>45</cost>
+			<source>CF</source>
+			<page>411</page>
+		</gear>
+		<gear>
+			<id>9195ee9e-c5b1-4e8f-9b1a-786393a302dc</id>
+			<name>G3</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>15</cost>
+			<source>CF</source>
+			<page>181</page>
+		</gear>
+		<gear>
+			<id>0ed6e114-6a9f-4bd6-ba27-2b4f28b10305</id>
+			<name>Guts</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<cost>60</cost>
+			<source>CF</source>
+			<page>181</page>
+		</gear>
+		<gear>
+			<id>df660e33-ce77-46e4-8c13-a92e3b5f37e8</id>
+			<name>Hecate's Blessing</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>a713f573-128b-4143-adc0-32f52e698587</id>
+			<name>Hurlg</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<cost>10</cost>
+			<source>CF</source>
+			<page>181</page>
+		</gear>
+		<gear>
+			<id>d70434e3-183c-4243-8213-b9f9166387ea</id>
+			<name>Immortal Flower</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>14R</avail>
+			<cost>2500</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>3659055c-db84-4f75-bfa9-afe5d0f39803</id>
+			<name>K-10</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>16F</avail>
+			<cost>900</cost>
+			<source>CF</source>
+			<page>181</page>
+		</gear>
+		<gear>
+			<id>f818d571-c817-49b2-86b6-ad9fb94ead54</id>
+			<name>Laés</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>750</cost>
+			<source>CF</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
+			<name>Leäl</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<cost>400</cost>
+			<source>CF</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>58319c25-b724-4db4-b492-1068ca44cb73</id>
+			<name>Little Smoke</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>1800</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>65122a92-ae48-4e94-8c68-69c1bdc7d46a</id>
+			<name>Memory Fog</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>100</cost>
+			<source>CF</source>
+			<page>181</page>
+		</gear>
+		<gear>
+			<id>a2b0310b-5a8f-4b01-b478-967d345ce22c</id>
+			<name>Nightwatch</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>3R</avail>
+			<cost>25</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>6e219091-8e3c-4a65-bb1d-78a351d8bf54</id>
+			<name>NoPaint</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>3</avail>
+			<cost>15</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>11c547f4-37d1-4d6a-8760-1d11ef48c7f7</id>
+			<name>Oneiro</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<cost>1250</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>aa22ff52-1615-48cb-9e55-e63539ede39a</id>
+			<name>Overdrive</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<cost>800</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
+			<name>Oxygenated Flurocarbons</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12R</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>c3965bac-b2b0-47b1-96d8-0a1a7cb4e1b6</id>
+			<name>Pixie Dust</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>800</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>9c3ae30d-dd3e-49da-a30b-acbe06b444ac</id>
+			<name>Push</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<cost>25</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
+			<name>PsychChips (Illegal)</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page></page>
+		</gear>
+		<gear>
+			<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
+			<name>PsychChips (Legal)</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<cost>350</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>5fe2bf62-471e-4000-8ab8-641623983302</id>
+			<name>Red Mescaline</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>4R</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>60cfe7ff-c634-405f-9894-7baee61e4445</id>
+			<name>Ripper</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<cost>60</cost>
+			<source>CF</source>
+			<page>182</page>
+		</gear>
+		<gear>
+			<id>68ac6703-8540-4efe-b9d9-51f9db14d6b7</id>
+			<name>Rock Lizard Blood</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>1700</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>127e4e88-6966-44ad-a95b-eeaaa9a7472e</id>
+			<name>Shade</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
+			<name>Slab</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>183</page>
+		</gear>
+		<gear>
+			<id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
+			<name>Snuff</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail></avail>
+			<cost></cost>
+			<source>CF</source>
+			<page>183</page>
+		</gear>
+		<gear>
+			<id>6c030daa-7dc0-4d7e-86a8-d36f4b15e13f</id>
+			<name>Sober Time</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<cost>125</cost>
+			<source>CF</source>
+			<page>183</page>
+		</gear>
+		<gear>
+			<id>8a40ed45-a19c-47a6-8449-f3235492e809</id>
+			<name>Soothsayer</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>150</cost>
+			<source>CF</source>
+			<page>184</page>
+		</gear>
+		<gear>
+			<id>7e8a18bd-f80f-432e-b985-823fc6be0d5a</id>
+			<name>Trance</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<cost>1100</cost>
+			<source>CF</source>
+			<page>186</page>
+		</gear>
+		<gear>
+			<id>8a01190e-f484-4fc6-981e-3e954ce17107</id>
+			<name>Woad</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>3R</avail>
+			<cost>15</cost>
+			<source>CF</source>
+			<page>184</page>
+		</gear>
+		<gear>
+			<id>ca121b86-d4d1-411d-a524-389e6bd2091b</id>
+			<name>Wudu'aku</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>2350</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>2d35de28-3b3d-4009-8ced-de5fd3869069</id>
+			<name>Zero</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8R</avail>
+			<cost>150</cost>
+			<source>CF</source>
+			<page>184</page>
+		</gear>
+		<gear>
+			<id>dace6412-6d90-4b98-b00c-86483b278e01</id>
+			<name>Zombie Dust</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>1500</cost>
+			<source>CF</source>
+			<page>187</page>
+		</gear>
+		<!-- End Region -->
     <gear>
       <id>483ca04a-8522-4d12-96ab-4e21dd9a4300</id>
       <name>Dreamchip</name>
