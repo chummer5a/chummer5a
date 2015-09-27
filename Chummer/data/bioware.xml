@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-375</version>
+  <version>-370</version>
   <grades>
     <grade>
       <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
@@ -1493,6 +1493,9 @@
 			<category>Cultured</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
+			<addqualities>
+				<addquality>Photographic Memory</addquality>
+			</addqualities>
 			<avail>4</avail>
 			<cost>10000</cost>
 			<source>CF</source>

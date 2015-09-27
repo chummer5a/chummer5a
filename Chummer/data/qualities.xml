@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-370</version>
+	<version>-365</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -3421,7 +3421,7 @@
       <nomission/>
 			<bonus>
 				<excon />
-				<freepositivequalities>-10</freepositivequalities>
+				<freenegativequalities>-10</freenegativequalities>
 			</bonus>
 			<addqualities>
 				<addquality>SINner (Criminal)</addquality>
