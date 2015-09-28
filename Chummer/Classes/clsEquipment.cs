@@ -15630,7 +15630,14 @@ namespace Chummer
 		public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
 		{
 			_strName = objXmlLifestyleQuality["name"].InnerText;
-			_intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
+			if (objXmlLifestyleQuality["lp"] != null)
+			{
+				_intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
+			}
+			else
+			{
+				_intLP = 0;
+			}
 			try
 			{
 				_intCost = Convert.ToInt32(objXmlLifestyleQuality["cost"].InnerText);
