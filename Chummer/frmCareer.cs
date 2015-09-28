@@ -187,7 +187,7 @@ namespace Chummer
 
             foreach (Skill objSkill in _objCharacter.Skills)
             {
-                if (objSkill.RatingMaximum == 6)
+                if (objSkill.RatingMaximum == 6 || objSkill.RatingMaximum == 9)
                     objSkill.RatingMaximum = 12;
                 else if (objSkill.RatingMaximum == 7)
                     objSkill.RatingMaximum = 13;
