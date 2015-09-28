@@ -109,6 +109,8 @@ namespace Chummer
 
         private void frmCreate_Load(object sender, EventArgs e)
         {
+	        Timekeeper.Finish("load_free");
+			Timekeeper.Start("load_frm_create");
             _blnLoading = true;
             if (!_objCharacter.IsCritter && (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objCharacter.BuildKarma == 0) || (_objCharacter.BuildMethod == CharacterBuildMethod.Priority && _objCharacter.BuildKarma == 0))
             {
@@ -1460,6 +1462,9 @@ namespace Chummer
 
             // Stupid hack to get the MDI icon to show up properly.
             this.Icon = this.Icon.Clone() as System.Drawing.Icon;
+	        Timekeeper.Finish("load_frm_create");
+	        Timekeeper.Finish("loading");
+	        
         }
 
         private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)

@@ -90,6 +90,7 @@ namespace Chummer
 			// Attempt to cache the XML files that are used the most.
 			try
 			{
+				Timekeeper.Start("cache_load");
 				XmlManager.Instance.Load("armor.xml");
 				XmlManager.Instance.Load("bioware.xml");
 				XmlManager.Instance.Load("books.xml");
@@ -102,6 +103,7 @@ namespace Chummer
 				XmlManager.Instance.Load("skills.xml");
 				XmlManager.Instance.Load("vehicles.xml");
 				XmlManager.Instance.Load("weapons.xml");
+				Timekeeper.Finish("cache_load");
 			}
 			catch
 			{
@@ -587,10 +589,16 @@ namespace Chummer
 
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 			{
+				Timekeeper.Start("load_sum");
 				foreach (string strFileName in openFileDialog.FileNames)
 				{
 					LoadCharacter(strFileName);
+					Timekeeper.Start("load_event_time");
+					Application.DoEvents();
+					Timekeeper.Finish("load_event_time");
 				}
+				Timekeeper.Finish("load_sum");
+				Timekeeper.Log();
 			}
 		}
 
@@ -605,11 +613,14 @@ namespace Chummer
 		{
 			if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
 			{
+				Timekeeper.Start("loading");
 				bool blnLoaded = false;
 				Character objCharacter = new Character();
 				objCharacter.FileName = strFileName;
+				Timekeeper.Start("load_file");
 				blnLoaded = objCharacter.Load();
-
+				Timekeeper.Finish("load_file");
+				Timekeeper.Start("load_free");
 				if (!blnLoaded)
 					return;
 
