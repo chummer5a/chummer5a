@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-370</version>
+	<version>-365</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -2988,7 +2988,7 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>1</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3005,7 +3005,7 @@
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>2</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3022,7 +3022,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>3</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3039,7 +3039,7 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
-				<trustfund />
+				<trustfund>4</trustfund>
 			</bonus>
       <nomission/>
 			<required>
@@ -3421,7 +3421,7 @@
       <nomission/>
 			<bonus>
 				<excon />
-				<freepositivequalities>-10</freepositivequalities>
+				<freenegativequalities>-10</freenegativequalities>
 			</bonus>
 			<addqualities>
 				<addquality>SINner (Criminal)</addquality>

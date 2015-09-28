@@ -82,7 +82,7 @@ namespace Chummer
 
                 if (_objSkill.KnowledgeSkill)
                 {
-                    if ((!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) && _objSkill.CharacterObject.BuildMethod != CharacterBuildMethod.LifeModule) 
+                    if (!_objCharacter.Created && ((!_objSkill.CharacterObject.Options.FreeKarmaKnowledge) && _objSkill.CharacterObject.BuildMethod != CharacterBuildMethod.LifeModule))
                     {
                         nudKarma.Minimum = 1;
                     }
@@ -690,9 +690,9 @@ namespace Chummer
         public int SkillRating
         {
             get
-            {
+			{
 				return _objSkill.Rating;
-            }
+			}
             set
             {
                 if (value > _objSkill.RatingMaximum)
@@ -703,8 +703,9 @@ namespace Chummer
                 {
                     value = _objSkill.FreeLevels;
                 }
-                //nudSkill.Value = value;
+				//nudSkill.Value = value;
 
+				
                 lblSkillRating.Text = value.ToString();
                 _objSkill.Rating = value;
 
@@ -793,7 +794,7 @@ namespace Chummer
 				}
 				else
 					cmdImproveSkill.Enabled = false;
-            }
+			}
         }
 
         /// <summary>
@@ -1311,10 +1312,10 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
-        /// </summary>
-        public bool ConfirmKarmaExpense(string strMessage)
+		/// <summary>
+		/// Verify that the user wants to spend their Karma and did not accidentally click the button.
+		/// </summary>
+		public bool ConfirmKarmaExpense(string strMessage)
         {
             if (!_objSkill.CharacterObject.Options.ConfirmKarmaExpense)
                 return true;

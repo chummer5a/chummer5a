@@ -155,7 +155,6 @@ namespace Chummer
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
         private bool _blnExCon = false;
-        private bool _blnTrustFund = false;
         private bool _blnTechSchool = false;
         private bool _blnRestrictedGear = false;
         private bool _blnOverclocker = false;
@@ -166,9 +165,10 @@ namespace Chummer
         private bool _blnBornRich = false;
         private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
+		private int _intTrustFund = 0;
 
-        // Attributes.
-        private Attribute _attBOD = new Attribute("BOD");
+		// Attributes.
+		private Attribute _attBOD = new Attribute("BOD");
         private Attribute _attAGI = new Attribute("AGI");
         private Attribute _attREA = new Attribute("REA");
         private Attribute _attSTR = new Attribute("STR");
@@ -527,7 +527,7 @@ namespace Chummer
 
             objWriter.WriteElementString("excon", _blnExCon.ToString());
 
-            objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
+            objWriter.WriteElementString("trustfund", _intTrustFund.ToString());
 
             objWriter.WriteElementString("techschool", _blnTechSchool.ToString());
 
@@ -1509,7 +1509,7 @@ namespace Chummer
             }
             try
             {
-                _blnTrustFund = Convert.ToBoolean(objXmlCharacter["trustfund"].InnerText);
+                _intTrustFund = Convert.ToInt32(objXmlCharacter["trustfund"].InnerText);
             }
             catch
             {
@@ -2423,14 +2423,16 @@ namespace Chummer
             string strMugshotPath = "";
             if (_strMugshot != "")
             {
-                if (!Directory.Exists(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots"))
-                    Directory.CreateDirectory(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots");
+				string mugshotsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "mugshots");
+                if (!Directory.Exists(mugshotsDirectoryPath))
+                    Directory.CreateDirectory(mugshotsDirectoryPath);
                 byte[] bytImage = Convert.FromBase64String(_strMugshot);
                 MemoryStream objImageStream = new MemoryStream(bytImage, 0, bytImage.Length);
                 objImageStream.Write(bytImage, 0, bytImage.Length);
                 Image imgMugshot = Image.FromStream(objImageStream, true);
-                imgMugshot.Save(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img");
-                strMugshotPath = "file://" + (Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots" + Path.DirectorySeparatorChar + guiImage.ToString() + ".img").Replace(Path.DirectorySeparatorChar, '/');
+	            string imgMugshotPath = Path.Combine(mugshotsDirectoryPath, guiImage + ".img");
+                imgMugshot.Save(imgMugshotPath);
+                strMugshotPath = "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/');
             }
             // <mugshot />
             objWriter.WriteElementString("mugshot", strMugshotPath);
@@ -7208,21 +7210,21 @@ namespace Chummer
             }
         }
         /// <summary>
-        /// Whether or not TrustFund is enabled.
+        /// Value of the Trust Fund quality.
         /// </summary>
-        public bool TrustFund
+        public int TrustFund
         {
             get
             {
-                return _blnTrustFund;
+                return _intTrustFund;
             }
             set
             {
-                bool blnOldValue = _blnTrustFund;
-                _blnTrustFund = value;
+				int intOldValue = _intTrustFund;
+				_intTrustFund = value;
                 try
                 {
-                    if (blnOldValue != value)
+                    if (intOldValue != value)
                         TrustFundChanged(this);
                 }
                 catch

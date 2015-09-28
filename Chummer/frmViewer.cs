@@ -32,12 +32,13 @@ namespace Chummer
 			_blnLoading = true;
 			List<ListItem> lstFiles = new List<ListItem>();
 			// Populate the XSLT list with all of the XSL files found in the sheets directory.
-			foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets"))
+			string sheetsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets");
+			foreach (string strFile in Directory.GetFiles(sheetsDirectoryPath))
 			{
 				// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
 				if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
 				{
-					string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+					string strFileName = Path.GetFileNameWithoutExtension(strFile);
 					ListItem objItem = new ListItem();
 					objItem.Value = strFileName;
 					objItem.Name = strFileName;
@@ -54,15 +55,16 @@ namespace Chummer
 				{
 					XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
 					string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
+					string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", GlobalOptions.Instance.Language);
 
-					foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + GlobalOptions.Instance.Language))
+					foreach (string strFile in Directory.GetFiles(languageDirectoryPath))
 					{
 						// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
 						if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
 						{
-							string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + GlobalOptions.Instance.Language + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+							string strFileName = Path.GetFileNameWithoutExtension(strFile);
 							ListItem objItem = new ListItem();
-							objItem.Value = GlobalOptions.Instance.Language + Path.DirectorySeparatorChar + strFileName;
+							objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
 							objItem.Name = strLanguage + ": " + strFileName;
 							lstFiles.Add(objItem);
 						}
@@ -76,14 +78,15 @@ namespace Chummer
 			try
 			{
 				// Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-				foreach (string strFile in Directory.GetFiles(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + "omae"))
+				string omaeDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
+				foreach (string strFile in Directory.GetFiles(omaeDirectoryPath))
 				{
 					// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
 					if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
 					{
-						string strFileName = strFile.Replace(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + "omae" + Path.DirectorySeparatorChar, string.Empty).Replace(".xsl", string.Empty);
+						string strFileName = Path.GetFileNameWithoutExtension(strFile);
 						ListItem objItem = new ListItem();
-						objItem.Value = "omae" + Path.DirectorySeparatorChar + strFileName;
+						objItem.Value = Path.Combine("omae", strFileName);
 						objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
 						lstFiles.Add(objItem);
 					}
@@ -158,7 +161,8 @@ namespace Chummer
 			// Remove the mugshots directory when the form closes.
 			try
 			{
-				Directory.Delete(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "mugshots", true);
+				string mugshotsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "mugshots");
+                Directory.Delete(mugshotsDirectoryPath, true);
 			}
 			catch
 			{
@@ -180,7 +184,7 @@ namespace Chummer
 		private void GenerateOutput()
 		{
 			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
-			objXSLTransform.Load(Environment.CurrentDirectory + Path.DirectorySeparatorChar + "sheets" + Path.DirectorySeparatorChar + _strSelectedSheet + ".xsl");
+			objXSLTransform.Load(Path.Combine(Environment.CurrentDirectory, "sheets", _strSelectedSheet + ".xsl"));
 
 			MemoryStream objStream = new MemoryStream();
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);

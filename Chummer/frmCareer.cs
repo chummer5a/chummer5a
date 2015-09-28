@@ -2834,9 +2834,7 @@ namespace Chummer
 				SaveFileDialog saveFileDialog = new SaveFileDialog();
 				saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
 
-				string strShowFileName = "";
-				string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-				strShowFileName = strFile[strFile.Length - 1];
+				string strShowFileName = Path.GetFileName(_objCharacter.FileName);
 
 				if (strShowFileName == "")
 					strShowFileName = _objCharacter.Alias;
@@ -23499,9 +23497,7 @@ namespace Chummer
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
 
-			string strShowFileName = "";
-			string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
-			strShowFileName = strFile[strFile.Length - 1];
+			string strShowFileName = Path.GetFileName(_objCharacter.FileName);
 
 			if (strShowFileName == "")
 				strShowFileName = _objCharacter.Alias;

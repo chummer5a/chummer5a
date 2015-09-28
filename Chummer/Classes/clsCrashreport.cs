@@ -29,7 +29,7 @@ namespace Chummer
 
 				try
 				{
-					string strFile = Environment.CurrentDirectory + Path.DirectorySeparatorChar + "chummerlog.txt";
+					string strFile = Path.Combine(Environment.CurrentDirectory, "chummerlog.txt");
 					report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
 				}
 				catch(Exception ex)
@@ -46,9 +46,7 @@ namespace Chummer
 				//try to include default settings file
 				try
 				{
-					string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings");
-					strFilePath = Path.Combine(strFilePath, "default.xml");
-
+					string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", "default.xml");
 					report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
 				}
 				catch (Exception ex)

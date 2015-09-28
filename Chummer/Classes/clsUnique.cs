@@ -7466,7 +7466,7 @@ namespace Chummer
 	}
 
 	/// <summary>
-	/// A Technoamncer Program or Complex Form.
+	/// A Technomancer Program or Complex Form.
 	/// </summary>
 	public class ComplexForm
 	{
@@ -7479,6 +7479,8 @@ namespace Chummer
 		private string _strPage = "";
         private string _strNotes = "";
         private string _strExtra = "";
+		private string _strAltName = "";
+		private string _strAltPage = "";
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -7496,6 +7498,18 @@ namespace Chummer
 		/// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
 		public void Create(XmlNode objXmlProgramNode, Character objCharacter, TreeNode objNode, string strExtra = "")
 		{
+			if (GlobalOptions.Instance.Language != "en-us")
+			{
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+				XmlNode objSpellNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
+				if (objSpellNode != null)
+				{
+					if (objSpellNode["translate"] != null)
+						_strAltName = objSpellNode["translate"].InnerText;
+					if (objSpellNode["altpage"] != null)
+						_strAltPage = objSpellNode["altpage"].InnerText;
+				}
+			}
 			_strName = objXmlProgramNode["name"].InnerText;
             _strTarget = objXmlProgramNode["target"].InnerText;
 			_strSource = objXmlProgramNode["source"].InnerText;
@@ -7503,6 +7517,7 @@ namespace Chummer
             _strDuration = objXmlProgramNode["duration"].InnerText;
             _strExtra = strExtra;
             _strFV = objXmlProgramNode["fv"].InnerText;
+
             try
             {
                 _strNotes = objXmlProgramNode["notes"].InnerText;
@@ -7669,16 +7684,16 @@ namespace Chummer
                 if (_strExtra != "")
                     strReturn += " (" + _strExtra + ")";
 				// Get the translated name if applicable.
-                //if (GlobalOptions.Instance.Language != "en-us")
-                //{
-                //    XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
-                //    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
-                //    if (objNode != null)
-                //    {
-                //        if (objNode["translate"] != null)
-                //            strReturn = objNode["translate"].InnerText;
-                //    }
-                //}
+                if (GlobalOptions.Instance.Language != "en-us")
+                {
+                    XmlDocument objXmlDocument = XmlManager.Instance.Load("complexforms.xml");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + _strName + "\"]");
+                    if (objNode != null)
+                    {
+                        if (objNode["translate"] != null)
+                            strReturn = objNode["translate"].InnerText;
+                    }
+                }
 
 				return strReturn;
 			}

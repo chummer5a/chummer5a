@@ -705,7 +705,7 @@ namespace Chummer
 					dblCharacterESSModifier *= (1.0 - dblDiscountModifier);
 				}
 
-				dblCharacterESSModifier *= (1 - _dblESSMultiplier);
+				dblCharacterESSModifier -= (1 - _dblESSMultiplier);
 
 				// Place the Genetech cost multiplier in a varaible that can be safely modified.
 				double dblGenetechCostModifier = 1;

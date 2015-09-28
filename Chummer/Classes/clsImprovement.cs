@@ -2568,8 +2568,10 @@ namespace Chummer
 				objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
 					"TrustFund = " + bonusNode.OuterXml.ToString());
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TrustFund, strUnique);
-				_objCharacter.TrustFund = true;
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TrustFund,
+					strUnique,
+					ValueToInt(bonusNode.InnerText, intRating));
+				_objCharacter.TrustFund = ValueToInt(bonusNode.InnerText, intRating);
 			}
 
 			// Check for BlackMarket modifiers.
@@ -5233,7 +5235,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.TrustFund = false;
+                        _objCharacter.TrustFund = 0;
                 }
                 // Turn off the ExCon flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.ExCon)
