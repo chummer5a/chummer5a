@@ -111,6 +111,8 @@ namespace Chummer
 
 		private void frmCareer_Load(object sender, EventArgs e)
 		{
+			Timekeeper.Finish("load_free");
+			Timekeeper.Start("load_frm_career");
 			_blnLoading = true;
 
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
@@ -185,7 +187,7 @@ namespace Chummer
 
             foreach (Skill objSkill in _objCharacter.Skills)
             {
-                if (objSkill.RatingMaximum == 6)
+                if (objSkill.RatingMaximum == 6 || objSkill.RatingMaximum == 9)
                     objSkill.RatingMaximum = 12;
                 else if (objSkill.RatingMaximum == 7)
                     objSkill.RatingMaximum = 13;
@@ -1427,6 +1429,8 @@ namespace Chummer
 
 			// Stupid hack to get the MDI icon to show up properly.
 			this.Icon = this.Icon.Clone() as System.Drawing.Icon;
+			Timekeeper.Finish("load_frm_career");
+			Timekeeper.Finish("loading");
 		}
 
 		private void frmCareer_FormClosing(object sender, FormClosingEventArgs e)
