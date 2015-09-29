@@ -12,6 +12,7 @@ Application Change:
 - Complex Forms show their translated name properly.
 - Redid how basic lifestyles work. Should make them behave better, should prevent crashes for older characters.
 - Fixed an issue that caused initiation schooling to show as a nuyen gain in the karma/nuyen log.
+- Fixed a crash caused by lifestyles with qualities.
 
 Data Change:
 - Nanohive crash issue fixed.
