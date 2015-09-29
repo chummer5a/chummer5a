@@ -11,12 +11,14 @@ Application Change:
 - Fixed an issue with the cyberware selection screen not showing Essence costs.
 - Complex Forms show their translated name properly.
 - Redid how basic lifestyles work. Should make them behave better, should prevent crashes for older characters.
+- Fixed an issue that caused initiation schooling to show as a nuyen gain in the karma/nuyen log.
 
 Data Change:
 - Nanohive crash issue fixed.
 - Ratings for the Expanded Volume and Amplified Immune System bioware fixed to 4. 
 - Fixed incorrect category for certain rituals.
 - Missing drugs from Chrome Flesh added.
+- Fixed incorrect data for the Nitama Sporter.
 
 Build 174:
 Application Change:

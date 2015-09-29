@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-350</version>
+	<version>-345</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -3865,9 +3865,9 @@
 			<ap>-</ap>
 			<mode>SA</mode>
 			<rc>1</rc>
-			<ammo>18(c)</ammo>
-			<avail>10R</avail>
-			<cost>300</cost>
+			<ammo>5(m)</ammo>
+			<avail>4R</avail>
+			<cost>270</cost>
 			<range>Heavy Pistols</range>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>

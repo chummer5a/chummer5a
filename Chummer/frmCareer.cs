@@ -7052,7 +7052,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry();
-                    objNuyenExpense.Create(10000, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objNuyenExpense);
                     _objCharacter.Nuyen -= 10000;
 
