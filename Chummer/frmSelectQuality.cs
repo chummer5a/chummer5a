@@ -82,14 +82,6 @@ namespace Chummer
 				cboCategory.SelectedIndex = 0;
 
 				lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
-			if (_objCharacter.metageneticLimit > 0)
-			{
-				chkMetagenetic.Visible = false;
-			}
-			else
-			{
-				chkMetagenetic.Visible = true;
-			}
 
             BuildQualityList();
         }
@@ -351,11 +343,11 @@ namespace Chummer
 					objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
 
 				string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
-				if (chkMetagenetic.Checked || _objCharacter.metageneticLimit > 0)
+				if (chkMetagenetic.Checked)
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
-				else if (cboCategory.SelectedValue.ToString() == "Negative")
+				else if (cboCategory.SelectedValue.ToString() == "Negative" || _objCharacter.metageneticLimit > 0)
 				{
 					//Load everything, including metagenetic qualities.
 				}
