@@ -2,6 +2,7 @@ Build 176:
 Application Change:
 - Gauss Ammo is now considered ammo for heavy weapons instead of normal guns
 - Free contacts don't violate the (C+L)>7 limit when creating a character. This allows prime dataheaven membership to pass inspection...
+- Changed the default value for maritial art techniques to cost 5 instead or 4 karma, to conform with official rules. For older instalations, delete the settings file or change this in options
 
 Data Change:
 - Poor Self Control (Attention Seeking, Sadistic) now give karma instead of costing

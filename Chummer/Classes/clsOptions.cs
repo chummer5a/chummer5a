@@ -921,7 +921,7 @@ namespace Chummer
         private int _intKarmaInitiation = 3;
         private int _intKarmaJoinGroup = 5;
         private int _intKarmaLeaveGroup = 1;
-        private int _intKarmaManeuver = 4;
+        private int _intKarmaManeuver = 5;
         private int _intKarmaMetamagic = 15;
         private int _intKarmaNewActiveSkill = 2;
         private int _intKarmaNewComplexForm = 4;
