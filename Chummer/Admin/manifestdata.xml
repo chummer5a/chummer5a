@@ -4,7 +4,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.173</version>
+		<version>0.0.5.175</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -210,7 +210,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-375</version>
+		<version>-365</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -282,7 +282,7 @@
 	<file>
 		<name>data/gear.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-385</version>
 		<description>Gear</description>
 		<notes>- Gear data file</notes>
 		<url>https://www.dropbox.com/s/qp3vbk0jy902ynt/gear.xml?dl=1</url>
@@ -306,7 +306,7 @@
 	<file>
 		<name>data/lifemodules.xml</name>
 		<type>Data Files</type>
-		<version>-890</version>
+		<version>-880</version>
 		<description>Life Modules</description>
 		<notes>- Life Modules data file</notes>
 		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
@@ -314,7 +314,7 @@
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-910</version>
+		<version>-900</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -394,7 +394,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-370</version>
+		<version>-360</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -426,7 +426,7 @@
 	<file>
 		<name>data/spells.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-390</version>
 		<description>Spells</description>
 		<notes>- Spells data file</notes>
 		<url>https://www.dropbox.com/s/yheum6i7llvas2u/spells.xml?dl=1</url>
@@ -474,7 +474,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-350</version>
+		<version>-345</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>

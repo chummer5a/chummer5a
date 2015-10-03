@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-910</version>
+	<version>-900</version>
 	<categories>
 		<category>Entertainment - Asset</category>
 		<category>Entertainment - Service</category>
@@ -90,6 +90,22 @@
 			<multiplier>0</multiplier>
 			<source>RF</source>
 			<page>218</page>
+		</lifestyle>
+		<lifestyle>
+			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
+			<name>Hospitalized, Basic</name>
+			<cost>500</cost>
+			<increment>day</increment>
+			<source>SR5</source>
+			<page>373</page>
+		</lifestyle>
+		<lifestyle>
+			<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
+			<name>Hospitalized, Intensive</name>
+			<cost>1000</cost>
+			<increment>day</increment>
+			<source>SR5</source>
+			<page>373</page>
 		</lifestyle>
 	</lifestyles>
 	<comforts>
@@ -691,9 +707,9 @@
 			<category>Entertainment - Asset</category>
 			<lp>2</lp>
 			<allowed>Medium,High,Luxury</allowed>
-			<source>SR5</source>
+			<source>RF</source>
 			<cost>100</cost>
-			<page>222</page>
+			<page>224</page>
 		</quality>
 		<quality>
 			<id>910b0a59-59cb-422b-b9a4-7b8d12912c91</id>
@@ -746,6 +762,7 @@
 			<multiplier>-10</multiplier>
 			<source>SR5</source>
 			<page>370</page>
+			<cost></cost>
 		</quality>
 		<quality>
 			<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
@@ -755,6 +772,14 @@
 			<multiplier>20</multiplier>
 			<source>SR5</source>
 			<page>370</page>
+		</quality>
+		<quality>
+			<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
+			<name>Dangerous Area</name>
+			<category>Negative</category>
+			<multiplier>-20</multiplier>
+			<source>SR5</source>
+			<page>374</page>
 		</quality>
 		<quality>
 			<id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
@@ -798,8 +823,8 @@
 					<quality>Discreet Candyman</quality>
 				</oneof>
 			</forbidden>
-			<source>RF</source>
-			<page>226</page>
+			<source>SR5</source>
+			<page>374</page>
 		</quality>
 		<quality>
 			<id>a808bcae-68c5-4e96-8bfc-f432ea63cc11</id>

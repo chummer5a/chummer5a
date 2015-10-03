@@ -9215,12 +9215,12 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				XmlNode objNode;
 
-                foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
+				foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
 				{
 					string strThisQuality = "";
 					//string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
-                    string strQualityName = strQuality.ToString();
-                    objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+					string strQualityName = strQuality.Name;
+					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
 
 
 					if (objNode["translate"] != null)
@@ -9229,21 +9229,38 @@ namespace Chummer
 						strThisQuality += objNode["name"].InnerText;
 
 
-                    XmlNode nodCost = objNode["cost"];
-                    if (nodCost != null)
-                    {
-                        string strCost = nodCost.InnerText;
-                        int intCost = Convert.ToInt32(strCost);
-                        if (intCost > 0)
-                        {
-                            strThisQuality += " [+" + intCost.ToString() + "%]";
-                        }
-                        else
-                        {
-                            strThisQuality += " [" + intCost.ToString() + "%]";
-                        }
-                    }
-
+					XmlNode nodMultiplier = objNode["multiplier"];
+					if (nodMultiplier != null)
+					{
+						if (nodMultiplier.InnerText != "")
+						{
+							int intCost = Convert.ToInt32(nodMultiplier.InnerText);
+							if (intCost > 0)
+							{
+								strThisQuality += " [+" + intCost.ToString() + "%]";
+							}
+							else
+							{
+								strThisQuality += " [" + intCost.ToString() + "%]";
+							}
+						}
+					}
+					XmlNode nodCost = objNode["cost"];
+					if (nodCost != null)
+					{ 
+						if (nodCost.InnerText != "")
+						{
+							int intCost = Convert.ToInt32(nodCost.InnerText);
+							if (intCost > 0)
+							{
+								strThisQuality += " [+" + intCost.ToString() + "¥]";
+							}
+							else
+							{
+								strThisQuality += " [" + intCost.ToString() + "¥]";
+							}
+						}
+					}
 					objWriter.WriteElementString("lifestylequality", strThisQuality);
 				}
 			}
@@ -15630,7 +15647,14 @@ namespace Chummer
 		public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
 		{
 			_strName = objXmlLifestyleQuality["name"].InnerText;
-			_intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
+			if (objXmlLifestyleQuality["lp"] != null)
+			{
+				_intLP = Convert.ToInt32(objXmlLifestyleQuality["lp"].InnerText);
+			}
+			else
+			{
+				_intLP = 0;
+			}
 			try
 			{
 				_intCost = Convert.ToInt32(objXmlLifestyleQuality["cost"].InnerText);

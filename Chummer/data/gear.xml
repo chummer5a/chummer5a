@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
 	<!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
-  <version>-390</version>
+  <version>-385</version>
   <categories>
     <category>Ammunition</category>
     <category>Armor Enhancements</category>

@@ -5,16 +5,25 @@ Application Change:
 - You can now press Ctrl-W to close a character file.
 - Fixed an issue with purchasing additional months of a lifestyle in career mode.
 - Fixed an issue with lifestyle qualities that had the selecttext bonus.
-- The Quality selector will show negative metagenetic qualities by default. 
+- The Quality selector will show negative metagenetic qualities by default, but hide positive ones unless you're a Changeling. 
 - Support for the Trust Fund quality added. 
 - The Technomancer registered sprite limit is now based on LOG instead of CHA.
 - Fixed an issue with the cyberware selection screen not showing Essence costs.
+- Complex Forms show their translated name properly.
+- Redid how basic lifestyles work. Should make them behave better, should prevent crashes for older characters.
+- Fixed an issue that caused initiation schooling to show as a nuyen gain in the karma/nuyen log.
+- Fixed a crash caused by lifestyles with qualities.
 
 Data Change:
 - Nanohive crash issue fixed.
 - Ratings for the Expanded Volume and Amplified Immune System bioware fixed to 4. 
 - Fixed incorrect category for certain rituals.
-- Missing drugs from Chrome Flesh added.
+- Missing drugs from Chrome Flesh added. Custom drugs aren't implemented yet. As an interim, you can use Custom Item to emulate the drugs.
+- Fixed incorrect data for the Nitama Sporter.
+
+String Changes:
+- Message_CharacterOptions_OpenOptions
+- MessageTitle_CharacterOptions_OpenOptions
 
 Build 174:
 Application Change:

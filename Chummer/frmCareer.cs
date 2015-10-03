@@ -152,8 +152,8 @@ namespace Chummer
 					tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
                     tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
                     cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
-                    chkInitiationGroup.Visible = false;
-                    chkInitiationOrdeal.Visible = false;
+					chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
+					chkInitiationGroup.Visible = false;
                     chkInitiationSchooling.Visible = false;
                     tsMetamagicAddArt.Visible = false;
                     tsMetamagicAddEnchantment.Visible = false;
@@ -7052,7 +7052,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry();
-                    objNuyenExpense.Create(10000, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.Instance.GetString("String_ExpenseInitiateGrade") + " " + _objCharacter.InitiateGrade.ToString() + " -> " + (_objCharacter.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objNuyenExpense);
                     _objCharacter.Nuyen -= 10000;
 
@@ -7100,9 +7100,11 @@ namespace Chummer
                     return;
                 }
 
-                // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
+				// Make sure the character has enough Karma.
+				double dblMultiplier = 1.0;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
 
                 int intKarmaExpense = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
@@ -24515,7 +24517,7 @@ namespace Chummer
                 }
                 else
                 {
-                    lblLifestyleComforts.Text = "";
+                    lblLifestyleComforts.Text = "Error in lifestyle;\nplease edit to fix.";
                     lblLifestyleQualities.Text = "";
                 }
 
