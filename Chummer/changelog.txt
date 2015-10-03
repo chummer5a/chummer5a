@@ -1,3 +1,11 @@
+Build 176:
+Application Change:
+- Gauss Ammo is now considered ammo for heavy weapons instead of normal guns
+
+Data Change:
+- Poor Self Control (Attention Seeking, Sadistic) now give karma instead of costing
+
+
 Build 175:
 Application Change:
 - Removed extraneous code for the Infirm quality.
