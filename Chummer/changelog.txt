@@ -1,6 +1,7 @@
 Build 176:
 Application Change:
 - Gauss Ammo is now considered ammo for heavy weapons instead of normal guns
+- Free contacts don't violate the (C+L)>7 limit when creating a character. This allows prime dataheaven membership to pass inspection...
 
 Data Change:
 - Poor Self Control (Attention Seeking, Sadistic) now give karma instead of costing
