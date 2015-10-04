@@ -15,10 +15,10 @@ public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, in
 
 namespace Chummer
 {
-	public partial class frmCareer : Form
+	public partial class frmCareer : CharacterShared
 	{
 		// Set the default culture to en-US so we work with decimals correctly.
-		private Character _objCharacter;
+		
 		private MainController _objController;
 
 		private CharacterOptions _objOptions;

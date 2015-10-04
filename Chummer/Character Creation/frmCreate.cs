@@ -11,10 +11,10 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmCreate : Form
-    {
+    public partial class frmCreate : CharacterShared
+	{
         // Set the default culture to en-US so we work with decimals correctly.
-        private Character _objCharacter;
+        
         private MainController _objController;
         private CharacterOptions _objOptions;
         private CommonFunctions _objFunctions;
