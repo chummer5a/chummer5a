@@ -1,334 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-//using Microsoft.Win32;
-using System.Text.RegularExpressions;
 
 namespace Chummer
 {
 	public partial class frmOptions : Form
 	{
-		private readonly CharacterOptions _objOptions = new CharacterOptions();
-		private CommonFunctions _objFunctions = new CommonFunctions();
-		private bool _blnSkipRefresh = false;
+		private readonly CharacterOptions _characterOptions = new CharacterOptions();
+		private bool _skipRefresh;
 
         #region Form Events
         public frmOptions()
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-
-            // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>();
-
-            ListItem objKarma = new ListItem();
-            objKarma.Value = "Karma";
-            objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
-
-            ListItem objPriority = new ListItem();
-            objPriority.Value = "Priority";
-            objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
-
-            ListItem objSumtoTen = new ListItem();
-            objSumtoTen.Value = "SumtoTen";
-            objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
-
-            lstBuildMethod.Add(objSumtoTen);
-            lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objPriority);
-            cboBuildMethod.DataSource = lstBuildMethod;
-            cboBuildMethod.ValueMember = "Value";
-            cboBuildMethod.DisplayMember = "Name";
-
-            // Populate the Essence Decimals list.
-            List<ListItem> lstDecimals = new List<ListItem>();
-            ListItem objTwo = new ListItem();
-            objTwo.Value = "2";
-            objTwo.Name = "2";
-
-            ListItem objFour = new ListItem();
-            objFour.Value = "4";
-            objFour.Name = "4";
-
-            lstDecimals.Add(objTwo);
-            lstDecimals.Add(objFour);
-            cboEssenceDecimals.DataSource = lstDecimals;
-            cboEssenceDecimals.ValueMember = "Value";
-            cboEssenceDecimals.DisplayMember = "Name";
-
-
-
-            // Populate the Limb Count list.
-            List<ListItem> lstLimbCount = new List<ListItem>();
-            ListItem objLimbCount6 = new ListItem();
-            objLimbCount6.Value = "all";
-            objLimbCount6.Name = LanguageManager.Instance.GetString("String_LimbCount6");
-
-            ListItem objLimbCount5Torso = new ListItem();
-            objLimbCount5Torso.Value = "torso";
-            objLimbCount5Torso.Name = LanguageManager.Instance.GetString("String_LimbCount5Torso");
-
-            ListItem objLimbCount5Skull = new ListItem();
-            objLimbCount5Skull.Value = "skull";
-            objLimbCount5Skull.Name = LanguageManager.Instance.GetString("String_LimbCount5Skull");
-
-            lstLimbCount.Add(objLimbCount6);
-            lstLimbCount.Add(objLimbCount5Torso);
-            lstLimbCount.Add(objLimbCount5Skull);
-            cboLimbCount.DataSource = lstLimbCount;
-            cboLimbCount.ValueMember = "Value";
-            cboLimbCount.DisplayMember = "Name";
-
-            lblMetatypeCostsKarma.Left = chkMetatypeCostsKarma.Left + chkMetatypeCostsKarma.Width + 6;
-            nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width + 6;
-
-            tipTooltip.SetToolTip(chkKnucks, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), 50));
-            tipTooltip.SetToolTip(chkIgnoreArt, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), 50));
-            tipTooltip.SetToolTip(chkCyberlegMovement, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), 50));
-            tipTooltip.SetToolTip(chkDontDoubleQualities, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), 50));
-            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), 50));
-            tipTooltip.SetToolTip(chkAllowInitiation, _objFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), 50));
-
-            MoveControls();
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            // Populate the list of Settings.
-            string strPath = Path.Combine(Environment.CurrentDirectory, "settings");
-            List<ListItem> lstSettings = new List<ListItem>();
-            foreach (string strFileName in Directory.GetFiles(strPath, "*.xml"))
-            {
-                // Remove the path from the file name.
-                string strSettingsFile = Path.GetFileName(strFileName);
-
-                // Load the file so we can get the Setting name.
-                XmlDocument objXmlSetting = new XmlDocument();
-                objXmlSetting.Load(strFileName);
-                string strSettingsName = objXmlSetting.SelectSingleNode("/settings/name").InnerText;
-
-                ListItem objItem = new ListItem();
-                objItem.Value = strSettingsFile;
-                objItem.Name = strSettingsName;
-
-                lstSettings.Add(objItem);
-            }
-            cboSetting.DataSource = lstSettings;
-            cboSetting.ValueMember = "Value";
-            cboSetting.DisplayMember = "Name";
-            cboSetting.SelectedIndex = 0;
-
-            //tabControl1.TabPages.RemoveAt(1);
-            // tabControl1.TabPages.RemoveAt(1);
-
-            // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
-            cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
-            if (cboSetting.SelectedIndex == -1)
-                cboSetting.SelectedIndex = 0;
-
-            bool blnAutomaticUpdates = false;
-            try
-            {
-                blnAutomaticUpdates = GlobalOptions.Instance.AutomaticUpdate;
-            }
-            catch
-            {
-            }
-            chkAutomaticUpdate.Checked = blnAutomaticUpdates;
-
-            bool blnUseLogging = false;
-            try
-            {
-                blnUseLogging = GlobalOptions.Instance.UseLogging;
-            }
-            catch
-            {
-            }
-            chkUseLogging.Checked = blnUseLogging;
-            chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
-            bool blnLocalisedUpdatesOnly = false;
-            try
-            {
-                blnLocalisedUpdatesOnly = GlobalOptions.Instance.LocalisedUpdatesOnly;
-            }
-            catch
-            {
-            }
-            chkLocalisedUpdatesOnly.Checked = blnLocalisedUpdatesOnly;
-
-            bool blnStartupFullscreen = false;
-            try
-            {
-                blnStartupFullscreen = GlobalOptions.Instance.StartupFullscreen;
-            }
-            catch
-            {
-            }
-            chkStartupFullscreen.Checked = blnStartupFullscreen;
-
-            bool blnSingleDiceRoller = true;
-            try
-            {
-                blnSingleDiceRoller = GlobalOptions.Instance.SingleDiceRoller;
-            }
-            catch
-            {
-            }
-            chkSingleDiceRoller.Checked = blnSingleDiceRoller;
-
-            bool blnDatesIncludeTime = true;
-            try
-            {
-                blnDatesIncludeTime = GlobalOptions.Instance.DatesIncludeTime;
-            }
-            catch
-            {
-            }
-            chkDatesIncludeTime.Checked = blnDatesIncludeTime;
-
-	        try
-	        {
-		        chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
-	        }
-			catch { }
-
-            bool blnPrintToFileFirst = false;
-            try
-            {
-                blnPrintToFileFirst = GlobalOptions.Instance.PrintToFileFirst;
-            }
-            catch
-            {
-            }
-            chkPrintToFileFirst.Checked = blnPrintToFileFirst;
-
-            bool blnOpenPDFsAsURLs = false;
-            try
-            {
-                blnOpenPDFsAsURLs = GlobalOptions.Instance.OpenPDFsAsURLs;
-            }
-            catch
-            {
-            }
-            chkOpenPDFsAsURLs.Checked = blnOpenPDFsAsURLs;
-
-            chkLicenseEachRestrictedItem.Checked = _objOptions.LicenseRestricted;
-
-            txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
-            txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
-
-            // Populate the Language List.
-            strPath = Path.Combine(Environment.CurrentDirectory, "lang");
-            List<ListItem> lstLanguages = new List<ListItem>();
-            foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
-            {
-                XmlDocument objXmlDocument = new XmlDocument();
-                try
-                {
-                    objXmlDocument.Load(strFile);
-                    ListItem objItem = new ListItem();
-                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                    objItem.Value = strFileName;
-                    objItem.Name = objXmlDocument.SelectSingleNode("/chummer/name").InnerText;
-                    lstLanguages.Add(objItem);
-                }
-                catch
-                {
-                }
-            }
-
-            SortListItem objSort = new SortListItem();
-            lstLanguages.Sort(objSort.Compare);
-            cboLanguage.DataSource = lstLanguages;
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
-            try
-            {
-                cboLanguage.SelectedValue = GlobalOptions.Instance.Language;
-            }
-            catch
-            {
-            }
-            if (cboLanguage.SelectedIndex == -1)
-                cboLanguage.SelectedValue = "en-us";
-
-            // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            strPath = Path.Combine(Environment.CurrentDirectory, "sheets");
-            List<ListItem> lstFiles = new List<ListItem>();
-            foreach (string strFile in Directory.GetFiles(strPath))
-            {
-                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-                {
-                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strFileName;
-                    objItem.Name = strFileName;
-                    lstFiles.Add(objItem);
-
-                    //cboXSLT.Items.Add(strFileName);
-                }
-            }
-
-            try
-            {
-                // Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
-                if (GlobalOptions.Instance.Language != "en-us")
-                {
-                    XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
-                    string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-                    strPath = Path.Combine(Environment.CurrentDirectory, "sheets", GlobalOptions.Instance.Language);
-
-                    foreach (string strFile in Directory.GetFiles(strPath))
-                    {
-                        // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                        if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-                        {
-                            string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                            ListItem objItem = new ListItem();
-                            objItem.Value = Path.Combine(GlobalOptions.Instance.Language, strFileName);
-                            objItem.Name = strLanguage + ": " + strFileName;
-                            lstFiles.Add(objItem);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-                strPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
-                foreach (string strFile in Directory.GetFiles(strPath))
-                {
-                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                    if (!strFile.EndsWith(".xslt") && strFile.EndsWith(".xsl"))
-                    {
-                        string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                        ListItem objItem = new ListItem();
-                        objItem.Value = Path.Combine("omae", strFileName);
-                        objItem.Name = LanguageManager.Instance.GetString("Menu_Main_Omae") + ": " + strFileName;
-                        lstFiles.Add(objItem);
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            cboXSLT.ValueMember = "Value";
-            cboXSLT.DisplayMember = "Name";
-            cboXSLT.DataSource = lstFiles;
-
-            if (GlobalOptions.Instance.DefaultCharacterSheet == "" || GlobalOptions.Instance.DefaultCharacterSheet == null)
-            {
-                GlobalOptions.Instance.DefaultCharacterSheet = "Shadowrun 5";
-            }
-            cboXSLT.SelectedValue = GlobalOptions.Instance.DefaultCharacterSheet;
+            PopulateBuildMethodList();
+            PopulateEssenceDecimalsList();
+            PopulateLimbCountList();
+            SetToolTips();
+            MoveControls();
+            PopulateSettingsList();
+	        SetDefaultValueForSettingsList();
+            PopulateGlobalOptions();
+            PopulateLanguageList();
+            SetDefaultValueForLanguageList();
+            PopulateXsltList();
+            SetDefaultValueForXsltList();
         }
         #endregion
 
@@ -344,163 +48,119 @@ namespace Chummer
             }
 
             SaveRegistrySettings();
+            BuildBooksList();
 
-            // Set Settings file value.
-            // Build the list of Books (SR5 is always included as it's required for everything).
-            _objOptions.Books.Clear();
-
-            bool blnSR5Included = false;
-            foreach (TreeNode objNode in treSourcebook.Nodes)
-            {
-                if (objNode.Checked)
-                {
-                    _objOptions.Books.Add(objNode.Tag.ToString());
-                    if (objNode.Tag.ToString() == "SR5")
-                        blnSR5Included = true;
-                }
-            }
-
-            // If the SR5 book was somehow missed, add it back.
-            if (!blnSR5Included)
-                _objOptions.Books.Add("SR5");
-
-            _objOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
-			_objOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
-            _objOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
-            _objOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
-            _objOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _objOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
-            _objOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
-            _objOptions.ArmorDegradation = chkArmorDegradation.Checked;
-            _objOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
-            _objOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
-            _objOptions.BreakSkillGroupsInCreateMode = chkBreakSkillGroupsInCreateMode.Checked;
-            _objOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
-            _objOptions.CapSkillRating = chkCapSkillRating.Checked;
-            _objOptions.ConfirmDelete = chkConfirmDelete.Checked;
-            _objOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
-            _objOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
-            _objOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _objOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
-            _objOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            _objOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
-            _objOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
-            _objOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
-            _objOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
+            _characterOptions.AllowCustomTransgenics = chkAllowCustomTransgenics.Checked;
+			_characterOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
+            _characterOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
+            _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
+            _characterOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
+            _characterOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
+            _characterOptions.ArmorDegradation = chkArmorDegradation.Checked;
+            _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
+            _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
+            _characterOptions.BreakSkillGroupsInCreateMode = chkBreakSkillGroupsInCreateMode.Checked;
+            _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
+            _characterOptions.CapSkillRating = chkCapSkillRating.Checked;
+            _characterOptions.ConfirmDelete = chkConfirmDelete.Checked;
+            _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
+            _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
+            _characterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
+            _characterOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
+            _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
+            _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
+            _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
+            _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
+            _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
                 if (chkExceedNegativeQualities.Checked)
                     chkExceedNegativeQualitiesLimit.Enabled = true;
-            _objOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
-            _objOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
-            _objOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
-            _objOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
-            _objOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
+            _characterOptions.ExceedNegativeQualitiesLimit = chkExceedNegativeQualitiesLimit.Checked;
+            _characterOptions.ExceedPositiveQualities = chkExceedPositiveQualities.Checked;
+            _characterOptions.ExtendAnyDetectionSpell = chkExtendAnyDetectionSpell.Checked;
+            _characterOptions.FreeContactsMultiplier = Convert.ToInt32(nudContactMultiplier.Value);
+            _characterOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
                 if (chkContactMultiplier.Checked)
                     nudContactMultiplier.Enabled = true;
-            _objOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
-            _objOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
-            _objOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
+            _characterOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
+            _characterOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
+            _characterOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
                 if (chkKnowledgeMultiplier.Checked)
                     chkKnowledgeMultiplier.Enabled = true;
-            _objOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
-            _objOptions.IgnoreArt = chkIgnoreArt.Checked;
-            _objOptions.KnucksUseUnarmed = chkKnucks.Checked;
-            _objOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
-            _objOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
-            _objOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
-            _objOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
-            _objOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
-            _objOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
-            _objOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
-            _objOptions.PrintExpenses = chkPrintExpenses.Checked;
-            _objOptions.PrintNotes = chkPrintNotes.Checked;
-            _objOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
-            _objOptions.RestrictRecoil = chkRestrictRecoil.Checked;
-            _objOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
-            _objOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
-            _objOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
+            _characterOptions.FreeKnowledgeMultiplier = Convert.ToInt32(nudKnowledgeMultiplier.Value);
+            _characterOptions.IgnoreArt = chkIgnoreArt.Checked;
+            _characterOptions.KnucksUseUnarmed = chkKnucks.Checked;
+            _characterOptions.LicenseRestricted = chkLicenseEachRestrictedItem.Checked;
+            _characterOptions.MaximumArmorModifications = chkMaximumArmorModifications.Checked;
+            _characterOptions.MetatypeCostsKarma = chkMetatypeCostsKarma.Checked;
+            _characterOptions.MetatypeCostsKarmaMultiplier = Convert.ToInt32(nudMetatypeCostsKarmaMultiplier.Value);
+            _characterOptions.MoreLethalGameplay = chkMoreLethalGameplay.Checked;
+            _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
+            _characterOptions.NuyenPerBP = Convert.ToInt32(nudKarmaNuyenPer.Value);
+            _characterOptions.PrintExpenses = chkPrintExpenses.Checked;
+            _characterOptions.PrintNotes = chkPrintNotes.Checked;
+            _characterOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
+            _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
+            _characterOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
+            _characterOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
+            _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             switch (cboLimbCount.SelectedValue.ToString())
             {
                 case "torso":
-                    _objOptions.LimbCount = 5;
-                    _objOptions.ExcludeLimbSlot = "skull";
+                    _characterOptions.LimbCount = 5;
+                    _characterOptions.ExcludeLimbSlot = "skull";
                     break;
                 case "skull":
-                    _objOptions.LimbCount = 5;
-                    _objOptions.ExcludeLimbSlot = "torso";
+                    _characterOptions.LimbCount = 5;
+                    _characterOptions.ExcludeLimbSlot = "torso";
                     break;
                 default:
-                    _objOptions.LimbCount = 6;
-                    _objOptions.ExcludeLimbSlot = "";
+                    _characterOptions.LimbCount = 6;
+                    _characterOptions.ExcludeLimbSlot = "";
                     break;
             }
 
             // Karma options.
-            _objOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
-            _objOptions.KarmaQuality = Convert.ToInt32(nudKarmaQuality.Value);
-            _objOptions.KarmaSpecialization = Convert.ToInt32(nudKarmaSpecialization.Value);
-            _objOptions.KarmaNewKnowledgeSkill = Convert.ToInt32(nudKarmaNewKnowledgeSkill.Value);
-            _objOptions.KarmaNewActiveSkill = Convert.ToInt32(nudKarmaNewActiveSkill.Value);
-            _objOptions.KarmaNewSkillGroup = Convert.ToInt32(nudKarmaNewSkillGroup.Value);
-            _objOptions.KarmaImproveKnowledgeSkill = Convert.ToInt32(nudKarmaImproveKnowledgeSkill.Value);
-            _objOptions.KarmaImproveActiveSkill = Convert.ToInt32(nudKarmaImproveActiveSkill.Value);
-            _objOptions.KarmaImproveSkillGroup = Convert.ToInt32(nudKarmaImproveSkillGroup.Value);
-            _objOptions.KarmaSpell = Convert.ToInt32(nudKarmaSpell.Value);
-            _objOptions.KarmaNewComplexForm = Convert.ToInt32(nudKarmaNewComplexForm.Value);
-            _objOptions.KarmaImproveComplexForm = Convert.ToInt32(nudKarmaImproveComplexForm.Value);
-            _objOptions.KarmaMetamagic = Convert.ToInt32(nudKarmaMetamagic.Value);
-            _objOptions.KarmaNuyenPer = Convert.ToInt32(nudKarmaNuyenPer.Value);
-            _objOptions.KarmaContact = Convert.ToInt32(nudKarmaContact.Value);
-            _objOptions.KarmaEnemy = Convert.ToInt32(nudKarmaEnemy.Value);
-            _objOptions.KarmaCarryover = Convert.ToInt32(nudKarmaCarryover.Value);
-            _objOptions.KarmaSpirit = Convert.ToInt32(nudKarmaSpirit.Value);
-            _objOptions.KarmaManeuver = Convert.ToInt32(nudKarmaManeuver.Value);
-            _objOptions.KarmaInitiation = Convert.ToInt32(nudKarmaInitiation.Value);
-            _objOptions.KarmaComplexFormOption = Convert.ToInt32(nudKarmaComplexFormOption.Value);
-            _objOptions.KarmaComplexFormSkillsoft = Convert.ToInt32(nudKarmaComplexFormSkillsoft.Value);
-            _objOptions.KarmaJoinGroup = Convert.ToInt32(nudKarmaJoinGroup.Value);
-            _objOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
+            _characterOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
+            _characterOptions.KarmaQuality = Convert.ToInt32(nudKarmaQuality.Value);
+            _characterOptions.KarmaSpecialization = Convert.ToInt32(nudKarmaSpecialization.Value);
+            _characterOptions.KarmaNewKnowledgeSkill = Convert.ToInt32(nudKarmaNewKnowledgeSkill.Value);
+            _characterOptions.KarmaNewActiveSkill = Convert.ToInt32(nudKarmaNewActiveSkill.Value);
+            _characterOptions.KarmaNewSkillGroup = Convert.ToInt32(nudKarmaNewSkillGroup.Value);
+            _characterOptions.KarmaImproveKnowledgeSkill = Convert.ToInt32(nudKarmaImproveKnowledgeSkill.Value);
+            _characterOptions.KarmaImproveActiveSkill = Convert.ToInt32(nudKarmaImproveActiveSkill.Value);
+            _characterOptions.KarmaImproveSkillGroup = Convert.ToInt32(nudKarmaImproveSkillGroup.Value);
+            _characterOptions.KarmaSpell = Convert.ToInt32(nudKarmaSpell.Value);
+            _characterOptions.KarmaNewComplexForm = Convert.ToInt32(nudKarmaNewComplexForm.Value);
+            _characterOptions.KarmaImproveComplexForm = Convert.ToInt32(nudKarmaImproveComplexForm.Value);
+            _characterOptions.KarmaMetamagic = Convert.ToInt32(nudKarmaMetamagic.Value);
+            _characterOptions.KarmaNuyenPer = Convert.ToInt32(nudKarmaNuyenPer.Value);
+            _characterOptions.KarmaContact = Convert.ToInt32(nudKarmaContact.Value);
+            _characterOptions.KarmaEnemy = Convert.ToInt32(nudKarmaEnemy.Value);
+            _characterOptions.KarmaCarryover = Convert.ToInt32(nudKarmaCarryover.Value);
+            _characterOptions.KarmaSpirit = Convert.ToInt32(nudKarmaSpirit.Value);
+            _characterOptions.KarmaManeuver = Convert.ToInt32(nudKarmaManeuver.Value);
+            _characterOptions.KarmaInitiation = Convert.ToInt32(nudKarmaInitiation.Value);
+            _characterOptions.KarmaComplexFormOption = Convert.ToInt32(nudKarmaComplexFormOption.Value);
+            _characterOptions.KarmaComplexFormSkillsoft = Convert.ToInt32(nudKarmaComplexFormSkillsoft.Value);
+            _characterOptions.KarmaJoinGroup = Convert.ToInt32(nudKarmaJoinGroup.Value);
+            _characterOptions.KarmaLeaveGroup = Convert.ToInt32(nudKarmaLeaveGroup.Value);
 
             // Build Priority options.
-            _objOptions.MayBuyQualities = chkMayBuyQualities.Checked;
-            _objOptions.UseContactPoints = chkContactPoints.Checked;
-
-            // Foci options.
-            //_objOptions.KarmaAlchemicalFocus = Convert.ToInt32(nudKarmaAnchoringFocus.Value);
-            //_objOptions.KarmaBanishingFocus = Convert.ToInt32(nudKarmaBanishingFocus.Value);
-            //_objOptions.KarmaBindingFocus = Convert.ToInt32(nudKarmaBindingFocus.Value);
-            //_objOptions.KarmaCenteringFocus = Convert.ToInt32(nudKarmaCenteringFocus.Value);
-            //_objOptions.KarmaCounterspellingFocus = Convert.ToInt32(nudKarmaCounterspellingFocus.Value);
-            //_objOptions.KarmaDiviningFocus = Convert.ToInt32(nudKarmaDiviningFocus.Value);
-            //_objOptions.KarmaDowsingFocus = Convert.ToInt32(nudKarmaDowsingFocus.Value);
-            //_objOptions.KarmaInfusionFocus = Convert.ToInt32(nudKarmaInfusionFocus.Value);
-            //_objOptions.KarmaMaskingFocus = Convert.ToInt32(nudKarmaMaskingFocus.Value);
-            //_objOptions.KarmaPowerFocus = Convert.ToInt32(nudKarmaPowerFocus.Value);
-            //_objOptions.KarmaShieldingFocus = Convert.ToInt32(nudKarmaShieldingFocus.Value);
-            //_objOptions.KarmaSpellcastingFocus = Convert.ToInt32(nudKarmaSpellcastingFocus.Value);
-            //_objOptions.KarmaSummoningFocus = Convert.ToInt32(nudKarmaSummoningFocus.Value);
-            //_objOptions.KarmaSustainingFocus = Convert.ToInt32(nudKarmaSustainingFocus.Value);
-            //_objOptions.KarmaSymbolicLinkFocus = Convert.ToInt32(nudKarmaSymbolicLinkFocus.Value);
-            //_objOptions.KarmaWeaponFocus = Convert.ToInt32(nudKarmaWeaponFocus.Value);
+            _characterOptions.MayBuyQualities = chkMayBuyQualities.Checked;
+            _characterOptions.UseContactPoints = chkContactPoints.Checked;
 
             // Build method options.
-            _objOptions.BuildMethod = cboBuildMethod.SelectedValue.ToString();
-            _objOptions.BuildPoints = Convert.ToInt32(nudBP.Value);
-            _objOptions.Availability = Convert.ToInt32(nudMaxAvail.Value);
+            _characterOptions.BuildMethod = cboBuildMethod.SelectedValue.ToString();
+            _characterOptions.BuildPoints = Convert.ToInt32(nudBP.Value);
+            _characterOptions.Availability = Convert.ToInt32(nudMaxAvail.Value);
 
-            _objOptions.Name = txtSettingName.Text;
+            _characterOptions.Name = txtSettingName.Text;
+            _characterOptions.Save();
 
-            _objOptions.Save();
-
-            Form fc = Application.OpenForms["frmCreate"];
-            if (fc != null)
-            {
-                if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Options_CloseForms"), LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    fc = Application.OpenForms["frmCreate"]; if (fc != null) fc.Close();
-                }
-            }
-            this.DialogResult = DialogResult.OK;
+            CloseCreateForm();
+            DialogResult = DialogResult.OK;
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -517,22 +177,15 @@ namespace Chummer
             if (!objItem.Value.Contains(".xml"))
                 return;
 
-            _objOptions.Load(objItem.Value);
+            _characterOptions.Load(objItem.Value);
             PopulateOptions();
         }
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboLanguage.SelectedValue.ToString() == "en-us")
-            {
-                cmdVerify.Enabled = false;
-                cmdVerifyData.Enabled = false;
-            }
-            else
-            {
-                cmdVerify.Enabled = true;
-                cmdVerifyData.Enabled = true;
-            }
+            bool isEnabled = cboLanguage.SelectedValue.ToString() != "en-us";
+            cmdVerify.Enabled = isEnabled;
+            cmdVerifyData.Enabled = isEnabled;
         }
 
         private void cmdVerify_Click(object sender, EventArgs e)
@@ -545,22 +198,22 @@ namespace Chummer
             // Build a list of Sourcebooks that will be passed to the Verify method.
             // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
             List<string> lstBooks = new List<string>();
-            //lstBooks.Add("SR5");
-
             bool blnSR5Included = false;
+
             foreach (TreeNode objNode in treSourcebook.Nodes)
             {
-                if (objNode.Checked)
-                {
-                    lstBooks.Add(objNode.Tag.ToString());
-                    if (objNode.Tag.ToString() == "SR5")
-                        blnSR5Included = true;
-                }
+                if (!objNode.Checked)
+                    continue;
+
+                lstBooks.Add(objNode.Tag.ToString());
+
+                if (objNode.Tag.ToString() == "SR5")
+                    blnSR5Included = true;
             }
 
             // If the SR5 book was somehow missed, add it back.
             if (!blnSR5Included)
-                _objOptions.Books.Add("SR5");
+                _characterOptions.Books.Add("SR5");
 
             XmlManager.Instance.Verify(cboLanguage.SelectedValue.ToString(), lstBooks);
 
@@ -594,116 +247,55 @@ namespace Chummer
                 nudKnowledgeMultiplier.Enabled = false;
             }
         }
-        private void cmdRestoreDefaultsBP_Click(object sender, EventArgs e)
-        {
-            // Verify that the user wants to reset these values.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Options_RestoreDefaults"), LanguageManager.Instance.GetString("MessageTitle_Options_RestoreDefaults"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-        }
 
         private void cmdRestoreDefaultsKarma_Click(object sender, EventArgs e)
         {
+            string text = LanguageManager.Instance.GetString("Message_Options_RestoreDefaults");
+            string caption = LanguageManager.Instance.GetString("MessageTitle_Options_RestoreDefaults");
+
             // Verify that the user wants to reset these values.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_Options_RestoreDefaults"), LanguageManager.Instance.GetString("MessageTitle_Options_RestoreDefaults"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            // Restore the default Karma values.
-            nudKarmaSpecialization.Value = 7;
-            nudKarmaNewKnowledgeSkill.Value = 1;
-            nudKarmaNewActiveSkill.Value = 2;
-            nudKarmaNewSkillGroup.Value = 5;
-            nudKarmaImproveKnowledgeSkill.Value = 1;
-            nudKarmaImproveActiveSkill.Value = 2;
-            nudKarmaImproveSkillGroup.Value = 5;
-            nudKarmaAttribute.Value = 5;
-            nudKarmaQuality.Value = 1;
-            nudKarmaSpell.Value = 5;
-            nudKarmaNewComplexForm.Value = 4;
-            nudKarmaImproveComplexForm.Value = 1;
-            nudKarmaComplexFormOption.Value = 2;
-            nudKarmaComplexFormSkillsoft.Value = 1;
-            nudKarmaSpirit.Value = 2;
-            nudKarmaManeuver.Value = 4;
-            nudKarmaNuyenPer.Value = 2000;
-            nudKarmaContact.Value = 1;
-            nudKarmaEnemy.Value = 1;
-            nudKarmaCarryover.Value = 7;
-            nudKarmaInitiation.Value = 3;
-            nudKarmaMetamagic.Value = 15;
-            nudKarmaJoinGroup.Value = 5;
-            nudKarmaLeaveGroup.Value = 1;
-
-            // Restore the default Karma Foci values.
-            nudKarmaAnchoringFocus.Value = 6;
-            nudKarmaBanishingFocus.Value = 3;
-            nudKarmaBindingFocus.Value = 3;
-            nudKarmaCenteringFocus.Value = 6;
-            nudKarmaCounterspellingFocus.Value = 3;
-            nudKarmaDiviningFocus.Value = 6;
-            nudKarmaDowsingFocus.Value = 6;
-            nudKarmaInfusionFocus.Value = 3;
-            nudKarmaMaskingFocus.Value = 6;
-            nudKarmaPowerFocus.Value = 6;
-            nudKarmaShieldingFocus.Value = 6;
-            nudKarmaSpellcastingFocus.Value = 4;
-            nudKarmaSummoningFocus.Value = 4;
-            nudKarmaSustainingFocus.Value = 2;
-            nudKarmaSymbolicLinkFocus.Value = 1;
-            nudKarmaWeaponFocus.Value = 3;
+            RestoreDefaultKarmaValues();
+            RestoreDefaultKarmaFociValues();
         }
 
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
 
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                txtPDFAppPath.Text = openFileDialog.FileName;
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    txtPDFAppPath.Text = openFileDialog.FileName;
+            }
         }
 
         private void cmdURLAppPath_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                txtURLAppPath.Text = openFileDialog.FileName;
-        }
-        private void cmdPDFLocation_Click(object sender, EventArgs e)
-        {
-            // Prompt the user to select a save file to associate with this Contact.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
-
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+            using (var openFileDialog = new OpenFileDialog())
             {
-                SourcebookInfo objFoundSource = new SourcebookInfo();
-                bool blnFound = false;
+                openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
 
-                // Find the selected item in the Sourcebook List.
-                foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
-                {
-                    if (objSource.Code == treSourcebook.SelectedNode.Tag.ToString())
-                    {
-                        objFoundSource = objSource;
-                        blnFound = true;
-                        break;
-                    }
-                }
-
-                txtPDFLocation.Text = openFileDialog.FileName;
-                objFoundSource.Path = openFileDialog.FileName;
-
-                // If the Sourcebook was not found in the options, add it.
-                if (!blnFound)
-                {
-                    objFoundSource.Code = treSourcebook.SelectedNode.Tag.ToString();
-                    GlobalOptions.Instance.SourcebookInfo.Add(objFoundSource);
-                }
+                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    txtURLAppPath.Text = openFileDialog.FileName;
             }
         }
+
+	    private void cmdPDFLocation_Click(object sender, EventArgs e)
+	    {
+            // Prompt the user to select a save file to associate with this Contact.
+            using (var openFileDialog = new OpenFileDialog())
+	        {
+	            openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
+
+	            if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+	                UpdateSourcebookInfoPath(openFileDialog.FileName);
+	        }
+	    }
 
         private void treSourcebook_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -711,10 +303,10 @@ namespace Chummer
             nudPDFOffset.Enabled = true;
             cmdPDFTest.Enabled = true;
 
-            _blnSkipRefresh = true;
+            _skipRefresh = true;
             txtPDFLocation.Text = "";
             nudPDFOffset.Value = 0;
-            _blnSkipRefresh = false;
+            _skipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
             foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
@@ -729,30 +321,24 @@ namespace Chummer
 
         private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_skipRefresh)
                 return;
 
-            SourcebookInfo objFoundSource = new SourcebookInfo();
-            bool blnFound = false;
+            int offset = Convert.ToInt32(nudPDFOffset.Value);
+            string tag = treSourcebook.SelectedNode.Tag.ToString();
+            SourcebookInfo foundSource = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(x => x.Code == tag);
 
-            // Find the selected item in the Sourcebook List.
-            foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
+            if (foundSource != null)
             {
-                if (objSource.Code == treSourcebook.SelectedNode.Tag.ToString())
-                {
-                    objFoundSource = objSource;
-                    blnFound = true;
-                    break;
-                }
+                foundSource.Offset = offset;
             }
-
-            objFoundSource.Offset = Convert.ToInt32(nudPDFOffset.Value);
-
-            // If the Sourcebook was not found in the options, add it.
-            if (!blnFound)
+            else
             {
-                objFoundSource.Code = treSourcebook.SelectedNode.Tag.ToString();
-                GlobalOptions.Instance.SourcebookInfo.Add(objFoundSource);
+                // If the Sourcebook was not found in the options, add it.
+                var newSource = new SourcebookInfo();
+                newSource.Code = tag;
+                newSource.Offset = offset;
+                GlobalOptions.Instance.SourcebookInfo.Add(newSource);
             }
         }
 
@@ -770,7 +356,7 @@ namespace Chummer
             SaveRegistrySettings();
 
             CommonFunctions objCommon = new CommonFunctions(null);
-            objCommon.OpenPDF(treSourcebook.SelectedNode.Tag.ToString() + " 5");
+            objCommon.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
         #endregion
 
@@ -779,6 +365,8 @@ namespace Chummer
         {
             int intWidth = 0;
 
+            lblMetatypeCostsKarma.Left = chkMetatypeCostsKarma.Left + chkMetatypeCostsKarma.Width + 6;
+            nudMetatypeCostsKarmaMultiplier.Left = lblMetatypeCostsKarma.Left + lblMetatypeCostsKarma.Width + 6;
             cboSetting.Left = lblSetting.Left + lblSetting.Width + 6;
             lblSettingName.Left = cboSetting.Left + cboSetting.Width + 6;
             txtSettingName.Left = lblSettingName.Left + lblSettingName.Width + 6;
@@ -908,857 +496,163 @@ namespace Chummer
                 intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
 
             // Change the window size.
-            this.Width = intWidth + 29;
-            this.Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
+            Width = intWidth + 29;
+            Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
             // Centre the OK button.
-            cmdOK.Left = (this.Width / 2) - (cmdOK.Width / 2);
+            cmdOK.Left = (Width / 2) - (cmdOK.Width / 2);
+        }
+
+	    private void PopulateSourcebookTreeView()
+	    {
+            // Load the Sourcebook information.
+	        XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
+
+            // Put the Sourcebooks into a List so they can first be sorted.
+            XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book");
+            treSourcebook.Nodes.Clear();
+
+            foreach (XmlNode objXmlBook in objXmlBookList)
+            {
+                bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
+                TreeNode objNode = new TreeNode();
+
+                if (objXmlBook["translate"] != null)
+                    objNode.Text = objXmlBook["translate"].InnerText;
+                else
+                    objNode.Text = objXmlBook["name"].InnerText;
+
+                objNode.Tag = objXmlBook["code"].InnerText;
+                objNode.Checked = blnChecked;
+                treSourcebook.Nodes.Add(objNode);
+            }
+
+            treSourcebook.Sort();
+        }
+
+	    private void SetDefaultValueForLimbCount()
+	    {
+            if (_characterOptions.LimbCount == 6)
+                cboLimbCount.SelectedValue = "all";
+            else
+                cboLimbCount.SelectedValue = _characterOptions.ExcludeLimbSlot == "skull" ? "torso" : "skull";
         }
 
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
         private void PopulateOptions()
-        {
-            // Load the Sourcebook information.
-            bool blnChecked = false;
+	    {
+            PopulateSourcebookTreeView();
 
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
-
-            // Put the Sourcebooks into a List so they can first be sorted.
-            XmlNodeList objXmlBookList = objXmlDocument.SelectNodes("/chummer/books/book");
-            treSourcebook.Nodes.Clear();
-            foreach (XmlNode objXmlBook in objXmlBookList)
-            {
-                blnChecked = false;
-                if (_objOptions.Books.Contains(objXmlBook["code"].InnerText))
-                    blnChecked = true;
-
-                TreeNode objNode = new TreeNode();
-                if (objXmlBook["translate"] != null)
-                    objNode.Text = objXmlBook["translate"].InnerText;
-                else
-                    objNode.Text = objXmlBook["name"].InnerText;
-                objNode.Tag = objXmlBook["code"].InnerText;
-                objNode.Checked = blnChecked;
-                treSourcebook.Nodes.Add(objNode);
-            }
-            treSourcebook.Sort();
-
-            // General Options.
-            bool blnConfirmDelete = true;
-            try
-            {
-                blnConfirmDelete = _objOptions.ConfirmDelete;
-            }
-            catch
-            {
-            }
-            chkConfirmDelete.Checked = blnConfirmDelete;
-
-            bool blnConfirmKarmaExpense = true;
-            try
-            {
-                blnConfirmKarmaExpense = _objOptions.ConfirmKarmaExpense;
-            }
-            catch
-            {
-            }
-            chkConfirmKarmaExpense.Checked = blnConfirmKarmaExpense;
-
-            bool blnPrintSkillsWithZeroRating = true;
-            try
-            {
-                blnPrintSkillsWithZeroRating = _objOptions.PrintSkillsWithZeroRating;
-            }
-            catch
-            {
-            }
-            chkPrintSkillsWithZeroRating.Checked = blnPrintSkillsWithZeroRating;
-
-            bool blnMoreLethalGameplay = false;
-            try
-            {
-                blnMoreLethalGameplay = _objOptions.MoreLethalGameplay;
-            }
-            catch
-            {
-            }
-            chkMoreLethalGameplay.Checked = blnMoreLethalGameplay;
-
-            bool blnSpiritForceBasedOnTotalMAG = false;
-            try
-            {
-                blnSpiritForceBasedOnTotalMAG = _objOptions.SpiritForceBasedOnTotalMAG;
-            }
-            catch
-            {
-            }
-
-            bool blnSkillDefaultingIncludesModifiers = false;
-            try
-            {
-                blnSkillDefaultingIncludesModifiers = _objOptions.SkillDefaultingIncludesModifiers;
-            }
-            catch
-            {
-            }
-
-            bool blnEnforceSkillMaximumModifiedRating = false;
-            try
-            {
-                blnEnforceSkillMaximumModifiedRating = _objOptions.EnforceMaximumSkillRatingModifier;
-            }
-            catch
-            {
-            }
-            chkEnforceSkillMaximumModifiedRating.Checked = blnEnforceSkillMaximumModifiedRating;
-
-            bool blnSpecialKarmaCost = false;
-            try
-            {
-                blnSpecialKarmaCost = _objOptions.SpecialKarmaCostBasedOnShownValue;
-            }
-            catch
-            {
-            }
-            chkSpecialKarmaCost.Checked = blnSpecialKarmaCost;
-
-            bool blnCapSkillRating = false;
-            try
-            {
-                blnCapSkillRating = _objOptions.CapSkillRating;
-            }
-            catch
-            {
-            }
-            chkCapSkillRating.Checked = blnCapSkillRating;
-
-            bool blnPrintExpenses = false;
-            try
-            {
-                blnPrintExpenses = _objOptions.PrintExpenses;
-            }
-            catch
-            {
-            }
-            chkPrintExpenses.Checked = blnPrintExpenses;
-
-            bool blnKnucksUseUnarmed = false;
-            try
-            {
-                blnKnucksUseUnarmed = _objOptions.KnucksUseUnarmed;
-            }
-            catch
-            {
-            }
-            chkKnucks.Checked = blnKnucksUseUnarmed;
-
-
-            bool blnAllowInitiation = false;
-            try
-            {
-                blnAllowInitiation = _objOptions.AllowInitiationInCreateMode;
-            }
-            catch
-            {
-            }
-            chkAllowInitiation.Checked = blnAllowInitiation;
-
-            //Free Contacts in Point Buy
-            bool blnFreeKarmaContacts = false;
-            try
-            {
-                blnFreeKarmaContacts = _objOptions.FreeKarmaContacts;
-            }
-            catch
-            {
-            }
-            chkFreeKarmaContacts.Checked = blnFreeKarmaContacts;
-
-            //Free Knowledge Skills in Point Buy
-            bool blnFreeKarmaKnowledge = false;
-            try
-            {
-                blnFreeKarmaKnowledge = _objOptions.FreeKarmaKnowledge;
-            }
-            catch
-            {
-            }
-            chkFreeKarmaKnowledge.Checked = blnFreeKarmaKnowledge;
-
-            //Contact Multiplier Enabled
-            bool blnFreeContactMultiplierEnabled = false;
-            try
-            {
-                blnFreeContactMultiplierEnabled = _objOptions.FreeContactsMultiplierEnabled;
-            }
-            catch
-            {
-            }
-            chkContactMultiplier.Checked = blnFreeContactMultiplierEnabled;
-            nudContactMultiplier.Enabled = chkContactMultiplier.Checked;
+            chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
+            nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
             nudContactMultiplier.Value = 3;
-
-            //Knowledge Multiplier Enabled
-            bool blnFreeKnowledgeMultiplierEnabled = false;
-            try
-            {
-                blnFreeKnowledgeMultiplierEnabled = _objOptions.FreeKnowledgeMultiplierEnabled;
-            }
-            catch
-            {
-            }
-            chkKnowledgeMultiplier.Checked = blnFreeKnowledgeMultiplierEnabled;
-            nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
+            chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
+            nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
             nudKnowledgeMultiplier.Value = 2;
-
-            bool blnUsePointsOnBrokenGroups = false;
-            try
-            {
-                blnUsePointsOnBrokenGroups = _objOptions.UsePointsOnBrokenGroups;
-            }
-            catch
-            {
-            }
-            chkUsePointsOnBrokenGroups.Checked = blnUsePointsOnBrokenGroups;
-
-            bool blnDontDoubleQualities = false;
-            try
-            {
-                blnDontDoubleQualities = _objOptions.DontDoubleQualities;
-            }
-            catch
-            {
-            }
-            chkDontDoubleQualities.Checked = blnDontDoubleQualities;
-
-            bool blnIgnoreArt = false;
-            try
-            {
-                blnIgnoreArt = _objOptions.IgnoreArt;
-            }
-            catch
-            {
-            }
-            chkIgnoreArt.Checked = blnIgnoreArt;
-
-            bool blnCyberlegsMovement = false;
-            try
-            {
-                blnCyberlegsMovement = _objOptions.CyberlegMovement;
-            }
-            catch
-            {
-            }
-            chkCyberlegMovement.Checked = blnCyberlegsMovement;
-
-            int intFreeKarmaContactsMultiplier = 1;
-            try
-            {
-                intFreeKarmaContactsMultiplier = _objOptions.FreeContactsMultiplier;
-            }
-            catch
-            {
-            }
-            nudContactMultiplier.Value = _objOptions.FreeContactsMultiplier;
-
-            int intFreeKarmaKnowledgeMultiplier = 3;
-            try
-            {
-                intFreeKarmaKnowledgeMultiplier = _objOptions.FreeKnowledgeMultiplier;
-            }
-            catch
-            {
-            }
-            nudKnowledgeMultiplier.Value = intFreeKarmaKnowledgeMultiplier;
-
-            int intFreeContactsMultiplier = 3;
-            try
-            {
-                intFreeContactsMultiplier = _objOptions.FreeContactsMultiplier;
-            }
-            catch
-            {
-            }
-            nudContactMultiplier.Value = intFreeContactsMultiplier;
-
-            int intNuyenPerBP = 2000;
-            try
-            {
-                intNuyenPerBP = _objOptions.NuyenPerBP;
-            }
-            catch
-            {
-            }
-            nudNuyenPerBP.Value = intNuyenPerBP;
-
-            int intEssenceDecimals = 2;
-            try
-            {
-                intEssenceDecimals = _objOptions.EssenceDecimals;
-            }
-            catch
-            {
-            }
-            if (intEssenceDecimals == 0)
-                intEssenceDecimals = 2;
-            cboEssenceDecimals.SelectedValue = intEssenceDecimals.ToString();
-
-            bool blnNoSingleArmorEncumbrance = false;
-            try
-            {
-                blnNoSingleArmorEncumbrance = _objOptions.NoSingleArmorEncumbrance;
-            }
-            catch
-            {
-            }
-            chkNoSingleArmorEncumbrance.Checked = blnNoSingleArmorEncumbrance;
-
-            bool blnIgnoreArmorEncumbrance = false;
-            try
-            {
-                blnIgnoreArmorEncumbrance = _objOptions.IgnoreArmorEncumbrance;
-            }
-            catch
-            {
-            }
-
-            bool blnAlternateArmorEncumbrance = false;
-            try
-            {
-                blnAlternateArmorEncumbrance = _objOptions.AlternateArmorEncumbrance;
-            }
-            catch
-            {
-            }
-
-            bool blnAllowCyberwareESSDiscounts = false;
-            try
-            {
-                blnAllowCyberwareESSDiscounts = _objOptions.AllowCyberwareESSDiscounts;
-            }
-            catch
-            {
-            }
-			chkAllowCyberwareESSDiscounts.Checked = blnAllowCyberwareESSDiscounts;
-
-            bool blnESSLossReducesMaximumOnly = false;
-            try
-            {
-                blnESSLossReducesMaximumOnly = _objOptions.ESSLossReducesMaximumOnly;
-            }
-            catch
-            {
-            }
-
-            bool blnAllowSkillRegrouping = false;
-            try
-            {
-                blnAllowSkillRegrouping = _objOptions.AllowSkillRegrouping;
-            }
-            catch
-            {
-            }
-            chkAllowSkillRegrouping.Checked = blnAllowSkillRegrouping;
-
-            bool blnMetatypeCostsKarma = true;
-            try
-            {
-                blnMetatypeCostsKarma = _objOptions.MetatypeCostsKarma;
-            }
-            catch
-            {
-            }
-            chkMetatypeCostsKarma.Checked = blnMetatypeCostsKarma;
-
-            int intMetatypeCostsKarmaMultiplier = 1;
-            try
-            {
-                intMetatypeCostsKarmaMultiplier = _objOptions.MetatypeCostsKarmaMultiplier;
-            }
-            catch
-            {
-            }
-            nudMetatypeCostsKarmaMultiplier.Value = intMetatypeCostsKarmaMultiplier;
-
-            bool blnStrengthAffectsRecoil = false;
-            try
-            {
-                blnStrengthAffectsRecoil = _objOptions.StrengthAffectsRecoil;
-            }
-            catch
-            {
-            }
-            chkStrengthAffectsRecoil.Checked = blnStrengthAffectsRecoil;
-
-            bool blnMaximumArmorModifications = false;
-            try
-            {
-                blnMaximumArmorModifications = _objOptions.MaximumArmorModifications;
-            }
-            catch
-            {
-            }
-            chkMaximumArmorModifications.Checked = blnMaximumArmorModifications;
-
-            bool blnArmorSuitCapacity = false;
-            try
-            {
-                blnArmorSuitCapacity = _objOptions.ArmorSuitCapacity;
-            }
-            catch
-            {
-            }
-            chkArmorSuitCapacity.Checked = blnArmorSuitCapacity;
-
-            bool blnArmorDegradation = false;
-            try
-            {
-                blnArmorDegradation = _objOptions.ArmorDegradation;
-            }
-            catch
-            {
-            }
-            chkArmorDegradation.Checked = blnArmorDegradation;
-
-            bool blnAutomaticCopyProtection = true;
-            try
-            {
-                blnAutomaticCopyProtection = _objOptions.AutomaticCopyProtection;
-            }
-            catch
-            {
-            }
-            chkAutomaticCopyProtection.Checked = blnAutomaticCopyProtection;
-
-            bool blnAutomaticRegistration = true;
-            try
-            {
-                blnAutomaticRegistration = _objOptions.AutomaticRegistration;
-            }
-            catch
-            {
-            }
-            chkAutomaticRegistration.Checked = blnAutomaticRegistration;
-
-            bool blnExceedNegativeQualities = false;
-            try
-            {
-                blnExceedNegativeQualities = _objOptions.ExceedNegativeQualities;
-            }
-            catch
-            {
-            }
-            chkExceedNegativeQualities.Checked = blnExceedNegativeQualities;
-            chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
-
-            bool blnExceedNegativeQualitiesLimit = false;
-            try
-            {
-                blnExceedNegativeQualitiesLimit = _objOptions.ExceedNegativeQualitiesLimit;
-            }
-            catch
-            {
-            }
-            chkExceedNegativeQualitiesLimit.Checked = blnExceedNegativeQualitiesLimit;
-
-            bool blnExceedPositiveQualities = false;
-            try
-            {
-                blnExceedPositiveQualities = _objOptions.ExceedPositiveQualities;
-            }
-            catch
-            {
-            }
-            chkExceedPositiveQualities.Checked = _objOptions.ExceedPositiveQualities;
-
-            bool blnUseCalculatedVehicleSensorRatings = false;
-            try
-            {
-                blnUseCalculatedVehicleSensorRatings = _objOptions.UseCalculatedVehicleSensorRatings;
-            }
-            catch
-            {
-            }
-            chkUseCalculatedVehicleSensorRatings.Checked = blnUseCalculatedVehicleSensorRatings;
-
-            bool blnAlternateMatrixAttribute = false;
-            try
-            {
-                blnAlternateMatrixAttribute = _objOptions.AlternateMatrixAttribute;
-            }
-            catch
-            {
-            }
-            chkAlternateMatrixAttribute.Checked = blnAlternateMatrixAttribute;
-
-            bool blnAlternateComplexFormCost = false;
-            try
-            {
-                blnAlternateComplexFormCost = _objOptions.AlternateComplexFormCost;
-            }
-            catch
-            {
-            }
-            chkAlternateComplexFormCost.Checked = blnAlternateComplexFormCost;
-
-            bool blnAllowCustomTransgenics = false;
-            try
-            {
-                blnAllowCustomTransgenics = _objOptions.AllowCustomTransgenics;
-            }
-            catch
-            {
-            }
-            chkAllowCustomTransgenics.Checked = blnAllowCustomTransgenics;
-
-            bool blnBreakSkillGroupsInCreateMode = false;
-            try
-            {
-                blnBreakSkillGroupsInCreateMode = _objOptions.BreakSkillGroupsInCreateMode;
-            }
-            catch
-            {
-            }
-            chkBreakSkillGroupsInCreateMode.Checked = blnBreakSkillGroupsInCreateMode;
-
-            bool blnExtendAnyDetectionSpell = false;
-            try
-            {
-                blnExtendAnyDetectionSpell = _objOptions.ExtendAnyDetectionSpell;
-            }
-            catch
-            {
-            }
-            chkExtendAnyDetectionSpell.Checked = blnExtendAnyDetectionSpell;
-
-            bool blnRestrictRecoil = true;
-            try
-            {
-                blnRestrictRecoil = _objOptions.RestrictRecoil;
-            }
-            catch
-            {
-            }
-            chkRestrictRecoil.Checked = blnRestrictRecoil;
-
-            bool blnMultiplyRestrictedCost = false;
-            try
-            {
-                blnMultiplyRestrictedCost = _objOptions.MultiplyRestrictedCost;
-            }
-            catch
-            {
-            }
-
-            bool blnMultiplyForbiddenCost = false;
-            try
-            {
-                blnMultiplyForbiddenCost = _objOptions.MultiplyForbiddenCost;
-            }
-            catch
-            {
-            }
-
-            int intRestrictedCostMultiplier = 1;
-            try
-            {
-                intRestrictedCostMultiplier = _objOptions.RestrictedCostMultiplier;
-            }
-            catch
-            {
-            }
-
-            int intForbiddenCostMultiplier = 1;
-            try
-            {
-                intForbiddenCostMultiplier = _objOptions.ForbiddenCostMultiplier;
-            }
-            catch
-            {
-            }
-
-            bool blnEnforceCapacity = true;
-            try
-            {
-                blnEnforceCapacity = _objOptions.EnforceCapacity;
-            }
-            catch
-            {
-            }
-            chkEnforceCapacity.Checked = blnEnforceCapacity;
-
-            bool blnAllowExceedAttributeBP = false;
-            try
-            {
-                blnAllowExceedAttributeBP = _objOptions.AllowExceedAttributeBP;
-            }
-            catch
-            {
-            }
-
-            bool blnUnrestrictedNueyn = false;
-            try
-            {
-                blnUnrestrictedNueyn = _objOptions.UnrestrictedNuyen;
-            }
-            catch
-            {
-            }
-
-            bool blnCalculateCommlinkResponse = true;
-            try
-            {
-                blnCalculateCommlinkResponse = _objOptions.CalculateCommlinkResponse;
-            }
-            catch
-            {
-            }
-            chkCalculateCommlinkResponse.Checked = blnCalculateCommlinkResponse;
-
-            bool blnErgonomicProgramLimit = true;
-            try
-            {
-                blnErgonomicProgramLimit = _objOptions.ErgonomicProgramLimit;
-            }
-            catch
-            {
-            }
-            chkErgonomicProgramLimit.Checked = blnErgonomicProgramLimit;
-
-            bool blnAllowSkillDiceRolling = false;
-            try
-            {
-                blnAllowSkillDiceRolling = _objOptions.AllowSkillDiceRolling;
-            }
-            catch
-            {
-            }
-            chkAllowSkillDiceRolling.Checked = blnAllowSkillDiceRolling;
-
-            bool blnCreateBackupOnCareer = false;
-            try
-            {
-                blnCreateBackupOnCareer = _objOptions.CreateBackupOnCareer;
-            }
-            catch
-            {
-            }
-            chkCreateBackupOnCareer.Checked = blnCreateBackupOnCareer;
-
-            bool blnMayBuyQualities = false;
-            try
-            {
-                blnMayBuyQualities = _objOptions.MayBuyQualities;
-            }
-            catch
-            {
-            }
-            chkMayBuyQualities.Checked = blnMayBuyQualities;
-
-            bool blnUseContactPoints = false;
-            try
-            {
-                blnUseContactPoints = _objOptions.UseContactPoints;
-            }
-            catch
-            {
-            }
-            chkContactPoints.Checked = blnUseContactPoints;
-
-            bool blnPrintLeadershipAlternates = false;
-            try
-            {
-                blnPrintLeadershipAlternates = _objOptions.PrintLeadershipAlternates;
-            }
-            catch
-            {
-            }
-
-            bool blnPrintArcanaAlternates = false;
-            try
-            {
-                blnPrintArcanaAlternates = _objOptions.PrintArcanaAlternates;
-            }
-            catch
-            {
-            }
-
-            bool blnPrintNotes = false;
-            try
-            {
-                blnPrintNotes = _objOptions.PrintNotes;
-            }
-            catch
-            {
-            }
-            chkPrintNotes.Checked = blnPrintNotes;
-
-            bool blnAllowHigherStackedFoci = false;
-            try
-            {
-                blnAllowHigherStackedFoci = _objOptions.AllowHigherStackedFoci;
-            }
-            catch
-            {
-            }
-
-            bool blnAllowEditPartOfBaseWeapon = false;
-            try
-            {
-                blnAllowEditPartOfBaseWeapon = _objOptions.AllowEditPartOfBaseWeapon;
-            }
-            catch
-            {
-            }
-
-            bool blnAlternateMetatypeAttributeKarma = false;
-            try
-            {
-                blnAlternateMetatypeAttributeKarma = _objOptions.AlternateMetatypeAttributeKarma;
-            }
-            catch
-            {
-            }
-
-            bool blnAllowObsolescentUpgrade = false;
-            try
-            {
-                blnAllowObsolescentUpgrade = _objOptions.AllowObsolescentUpgrade;
-            }
-            catch
-            {
-            }
-
-            bool blnAllowBiowareSuites = false;
-            try
-            {
-                blnAllowBiowareSuites = _objOptions.AllowBiowareSuites;
-            }
-            catch
-            {
-            }
-
-            bool blnFreeSpiritPowerPointsMAG = false;
-            try
-            {
-                blnFreeSpiritPowerPointsMAG = _objOptions.FreeSpiritPowerPointsMAG;
-            }
-            catch
-            {
-            }
-
-            bool blnSpecialAttributeKarmaLimit = false;
-            try
-            {
-                blnSpecialAttributeKarmaLimit = _objOptions.SpecialAttributeKarmaLimit;
-            }
-            catch
-            {
-            }
-
-            bool blnTechnomancerAllowAutosoft = false;
-            try
-            {
-                blnTechnomancerAllowAutosoft = _objOptions.TechnomancerAllowAutosoft;
-            }
-            catch
-            {
-            }
-
-            bool blnOpenPDFsAsURLs = false;
-            try
-            {
-                blnOpenPDFsAsURLs = GlobalOptions._blnOpenPDFsAsURLs;
-            }
-            catch
-            {
-            }
-            chkOpenPDFsAsURLs.Checked = blnOpenPDFsAsURLs;
-
-            if (_objOptions.LimbCount == 6)
-                cboLimbCount.SelectedValue = "all";
-            else
-            {
-                if (_objOptions.ExcludeLimbSlot == "skull")
-                    cboLimbCount.SelectedValue = "torso";
-                else
-                    cboLimbCount.SelectedValue = "skull";
-            }
-
-            // Populate the Karma fields.
-            nudKarmaAttribute.Value = _objOptions.KarmaAttribute;
-            nudKarmaQuality.Value = _objOptions.KarmaQuality;
-            nudKarmaSpecialization.Value = _objOptions.KarmaSpecialization;
-            nudKarmaNewKnowledgeSkill.Value = _objOptions.KarmaNewKnowledgeSkill;
-            nudKarmaNewActiveSkill.Value = _objOptions.KarmaNewActiveSkill;
-            nudKarmaNewSkillGroup.Value = _objOptions.KarmaNewSkillGroup;
-            nudKarmaImproveKnowledgeSkill.Value = _objOptions.KarmaImproveKnowledgeSkill;
-            nudKarmaImproveActiveSkill.Value = _objOptions.KarmaImproveActiveSkill;
-            nudKarmaImproveSkillGroup.Value = _objOptions.KarmaImproveSkillGroup;
-            nudKarmaSpell.Value = _objOptions.KarmaSpell;
-            nudKarmaNewComplexForm.Value = _objOptions.KarmaNewComplexForm;
-            nudKarmaImproveComplexForm.Value = _objOptions.KarmaImproveComplexForm;
-            nudKarmaComplexFormOption.Value = _objOptions.KarmaComplexFormOption;
-            nudKarmaComplexFormSkillsoft.Value = _objOptions.KarmaComplexFormSkillsoft;
-            nudKarmaNuyenPer.Value = _objOptions.KarmaNuyenPer;
-            nudKarmaContact.Value = _objOptions.KarmaContact;
-            nudKarmaEnemy.Value = _objOptions.KarmaEnemy;
-            nudKarmaCarryover.Value = _objOptions.KarmaCarryover;
-            nudKarmaSpirit.Value = _objOptions.KarmaSpirit;
-            nudKarmaManeuver.Value = _objOptions.KarmaManeuver;
-            nudKarmaInitiation.Value = _objOptions.KarmaInitiation;
-            nudKarmaMetamagic.Value = _objOptions.KarmaMetamagic;
-            nudKarmaJoinGroup.Value = _objOptions.KarmaJoinGroup;
-            nudKarmaLeaveGroup.Value = _objOptions.KarmaLeaveGroup;
-
-            //nudKarmaAnchoringFocus.Value = _objOptions.KarmaAnchoringFocus;
-            //nudKarmaBanishingFocus.Value = _objOptions.KarmaBanishingFocus;
-            //nudKarmaBindingFocus.Value = _objOptions.KarmaBindingFocus;
-            //nudKarmaCenteringFocus.Value = _objOptions.KarmaCenteringFocus;
-            //nudKarmaCounterspellingFocus.Value = _objOptions.KarmaCounterspellingFocus;
-            //nudKarmaDiviningFocus.Value = _objOptions.KarmaDiviningFocus;
-            //nudKarmaDowsingFocus.Value = _objOptions.KarmaDowsingFocus;
-            //nudKarmaInfusionFocus.Value = _objOptions.KarmaInfusionFocus;
-            //nudKarmaMaskingFocus.Value = _objOptions.KarmaMaskingFocus;
-            //nudKarmaPowerFocus.Value = _objOptions.KarmaPowerFocus;
-            //nudKarmaShieldingFocus.Value = _objOptions.KarmaShieldingFocus;
-            //nudKarmaSpellcastingFocus.Value = _objOptions.KarmaSpellcastingFocus;
-            //nudKarmaSummoningFocus.Value = _objOptions.KarmaSummoningFocus;
-            //nudKarmaSustainingFocus.Value = _objOptions.KarmaSustainingFocus;
-            //nudKarmaSymbolicLinkFocus.Value = _objOptions.KarmaSymbolicLinkFocus;
-            //nudKarmaWeaponFocus.Value = _objOptions.KarmaWeaponFocus;
-
-            // Load default build method info.
-            cboBuildMethod.SelectedValue = _objOptions.BuildMethod;
-            nudBP.Value = _objOptions.BuildPoints;
-            nudMaxAvail.Value = _objOptions.Availability;
-
-            txtSettingName.Text = _objOptions.Name;
-            if (cboSetting.SelectedValue.ToString() == "default.xml")
-                txtSettingName.Enabled = false;
-            else
-                txtSettingName.Enabled = true;
-        }
-
-        /// <summary>
-        /// Save the global settings to the registry.
-        /// </summary>
-        private void SaveRegistrySettings()
-        {
-            // If we're just now enabling logging, flush the log
-            
-            // Set Registry values.
+            chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
+	        chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
+	        chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
+	        chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
+	        chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
+	        chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
+	        chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
+	        chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
+	        chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
+	        chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;
+	        chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
+	        chkFreeKarmaContacts.Checked = _characterOptions.FreeKarmaContacts;
+	        chkFreeKarmaKnowledge.Checked = _characterOptions.FreeKarmaKnowledge;
+	        chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
+	        chkDontDoubleQualities.Checked = _characterOptions.DontDoubleQualities;
+	        chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
+	        chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
+	        nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
+	        nudKnowledgeMultiplier.Value = _characterOptions.FreeKnowledgeMultiplier;
+	        nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
+	        nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
+	        cboEssenceDecimals.SelectedValue = _characterOptions.EssenceDecimals == 0 ? "2" : _characterOptions.EssenceDecimals.ToString();
+	        chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
+	        chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
+	        chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
+	        chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
+	        nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
+	        chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
+	        chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
+	        chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
+	        chkArmorDegradation.Checked = _characterOptions.ArmorDegradation;
+	        chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
+	        chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
+	        chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
+	        chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
+	        chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;
+	        chkExceedPositiveQualities.Checked = _characterOptions.ExceedPositiveQualities;
+	        chkUseCalculatedVehicleSensorRatings.Checked = _characterOptions.UseCalculatedVehicleSensorRatings;
+	        chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
+	        chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
+	        chkAllowCustomTransgenics.Checked = _characterOptions.AllowCustomTransgenics;
+	        chkBreakSkillGroupsInCreateMode.Checked = _characterOptions.BreakSkillGroupsInCreateMode;
+	        chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
+	        chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
+	        chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
+	        chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
+	        chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
+	        chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
+	        chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
+	        chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
+	        chkContactPoints.Checked = _characterOptions.UseContactPoints;
+	        chkPrintNotes.Checked = _characterOptions.PrintNotes;
+	        chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
+            cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
+            nudBP.Value = _characterOptions.BuildPoints;
+            nudMaxAvail.Value = _characterOptions.Availability;
+            txtSettingName.Text = _characterOptions.Name;
+            txtSettingName.Enabled = cboSetting.SelectedValue.ToString() != "default.xml";
+
+            SetDefaultValueForLimbCount();
+            PopulateKarmaFields();
+	    }
+
+	    private void PopulateKarmaFields()
+	    {
+	        nudKarmaAttribute.Value = _characterOptions.KarmaAttribute;
+	        nudKarmaQuality.Value = _characterOptions.KarmaQuality;
+	        nudKarmaSpecialization.Value = _characterOptions.KarmaSpecialization;
+	        nudKarmaNewKnowledgeSkill.Value = _characterOptions.KarmaNewKnowledgeSkill;
+	        nudKarmaNewActiveSkill.Value = _characterOptions.KarmaNewActiveSkill;
+	        nudKarmaNewSkillGroup.Value = _characterOptions.KarmaNewSkillGroup;
+	        nudKarmaImproveKnowledgeSkill.Value = _characterOptions.KarmaImproveKnowledgeSkill;
+	        nudKarmaImproveActiveSkill.Value = _characterOptions.KarmaImproveActiveSkill;
+	        nudKarmaImproveSkillGroup.Value = _characterOptions.KarmaImproveSkillGroup;
+	        nudKarmaSpell.Value = _characterOptions.KarmaSpell;
+	        nudKarmaNewComplexForm.Value = _characterOptions.KarmaNewComplexForm;
+	        nudKarmaImproveComplexForm.Value = _characterOptions.KarmaImproveComplexForm;
+	        nudKarmaComplexFormOption.Value = _characterOptions.KarmaComplexFormOption;
+	        nudKarmaComplexFormSkillsoft.Value = _characterOptions.KarmaComplexFormSkillsoft;
+	        nudKarmaNuyenPer.Value = _characterOptions.KarmaNuyenPer;
+	        nudKarmaContact.Value = _characterOptions.KarmaContact;
+	        nudKarmaEnemy.Value = _characterOptions.KarmaEnemy;
+	        nudKarmaCarryover.Value = _characterOptions.KarmaCarryover;
+	        nudKarmaSpirit.Value = _characterOptions.KarmaSpirit;
+	        nudKarmaManeuver.Value = _characterOptions.KarmaManeuver;
+	        nudKarmaInitiation.Value = _characterOptions.KarmaInitiation;
+	        nudKarmaMetamagic.Value = _characterOptions.KarmaMetamagic;
+	        nudKarmaJoinGroup.Value = _characterOptions.KarmaJoinGroup;
+	        nudKarmaLeaveGroup.Value = _characterOptions.KarmaLeaveGroup;
+	    }
+
+	    private void SaveGlobalOptions()
+	    {
             GlobalOptions.Instance.AutomaticUpdate = chkAutomaticUpdate.Checked;
             GlobalOptions.Instance.LocalisedUpdatesOnly = chkLocalisedUpdatesOnly.Checked;
             GlobalOptions.Instance.UseLogging = chkUseLogging.Checked;
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
-			if (cboXSLT.SelectedValue.ToString() == "" || cboXSLT.SelectedValue.ToString() == null)
-			{
-				cboXSLT.SelectedValue = "Shadowrun 5";
-			}
+            if (cboXSLT.SelectedValue.ToString() == "")
+            {
+                cboXSLT.SelectedValue = "Shadowrun 5";
+            }
             GlobalOptions.Instance.DefaultCharacterSheet = cboXSLT.SelectedValue.ToString();
             GlobalOptions.Instance.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.Instance.PrintToFileFirst = chkPrintToFileFirst.Checked;
@@ -1766,7 +660,16 @@ namespace Chummer
             GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
-	        GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
+            GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
+        }
+
+	    /// <summary>
+        /// Save the global settings to the registry.
+        /// </summary>
+        private void SaveRegistrySettings()
+        {
+            SaveGlobalOptions();
+
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
             objRegistry.SetValue("localisedupdatesonly", chkLocalisedUpdatesOnly.Checked.ToString());
@@ -1786,7 +689,419 @@ namespace Chummer
             // Save the SourcebookInfo.
             Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
             foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
-                objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset.ToString());
+                objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
+        }
+
+        private void BuildBooksList()
+        {
+            _characterOptions.Books.Clear();
+
+            bool blnSR5Included = false;
+            foreach (TreeNode objNode in treSourcebook.Nodes)
+            {
+                if (!objNode.Checked)
+                    continue;
+
+                _characterOptions.Books.Add(objNode.Tag.ToString());
+
+                if (objNode.Tag.ToString() == "SR5")
+                    blnSR5Included = true;
+            }
+
+            // If the SR5 book was somehow missed, add it back.
+            if (!blnSR5Included)
+                _characterOptions.Books.Add("SR5");
+        }
+
+        private void CloseCreateForm()
+        {
+            Form fc = Application.OpenForms["frmCreate"];
+
+            if (fc == null)
+                return;
+
+            string text = LanguageManager.Instance.GetString("Message_Options_CloseForms");
+            string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+            if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            fc = Application.OpenForms["frmCreate"];
+
+            if (fc != null)
+                fc.Close();
+        }
+
+        private void RestoreDefaultKarmaValues()
+        {
+            nudKarmaSpecialization.Value = 7;
+            nudKarmaNewKnowledgeSkill.Value = 1;
+            nudKarmaNewActiveSkill.Value = 2;
+            nudKarmaNewSkillGroup.Value = 5;
+            nudKarmaImproveKnowledgeSkill.Value = 1;
+            nudKarmaImproveActiveSkill.Value = 2;
+            nudKarmaImproveSkillGroup.Value = 5;
+            nudKarmaAttribute.Value = 5;
+            nudKarmaQuality.Value = 1;
+            nudKarmaSpell.Value = 5;
+            nudKarmaNewComplexForm.Value = 4;
+            nudKarmaImproveComplexForm.Value = 1;
+            nudKarmaComplexFormOption.Value = 2;
+            nudKarmaComplexFormSkillsoft.Value = 1;
+            nudKarmaSpirit.Value = 2;
+            nudKarmaManeuver.Value = 4;
+            nudKarmaNuyenPer.Value = 2000;
+            nudKarmaContact.Value = 1;
+            nudKarmaEnemy.Value = 1;
+            nudKarmaCarryover.Value = 7;
+            nudKarmaInitiation.Value = 3;
+            nudKarmaMetamagic.Value = 15;
+            nudKarmaJoinGroup.Value = 5;
+            nudKarmaLeaveGroup.Value = 1;
+        }
+
+        private void RestoreDefaultKarmaFociValues()
+        {
+            nudKarmaAnchoringFocus.Value = 6;
+            nudKarmaBanishingFocus.Value = 3;
+            nudKarmaBindingFocus.Value = 3;
+            nudKarmaCenteringFocus.Value = 6;
+            nudKarmaCounterspellingFocus.Value = 3;
+            nudKarmaDiviningFocus.Value = 6;
+            nudKarmaDowsingFocus.Value = 6;
+            nudKarmaInfusionFocus.Value = 3;
+            nudKarmaMaskingFocus.Value = 6;
+            nudKarmaPowerFocus.Value = 6;
+            nudKarmaShieldingFocus.Value = 6;
+            nudKarmaSpellcastingFocus.Value = 4;
+            nudKarmaSummoningFocus.Value = 4;
+            nudKarmaSustainingFocus.Value = 2;
+            nudKarmaSymbolicLinkFocus.Value = 1;
+            nudKarmaWeaponFocus.Value = 3;
+        }
+
+        private void PopulateBuildMethodList()
+        {
+            List<ListItem> lstBuildMethod = new List<ListItem>();
+
+            ListItem objKarma = new ListItem();
+            objKarma.Value = "Karma";
+            objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
+
+            ListItem objPriority = new ListItem();
+            objPriority.Value = "Priority";
+            objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
+
+            ListItem objSumtoTen = new ListItem();
+            objSumtoTen.Value = "SumtoTen";
+            objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
+
+            lstBuildMethod.Add(objSumtoTen);
+            lstBuildMethod.Add(objKarma);
+            lstBuildMethod.Add(objPriority);
+
+            cboBuildMethod.ValueMember = "Value";
+            cboBuildMethod.DisplayMember = "Name";
+            cboBuildMethod.DataSource = lstBuildMethod;
+        }
+
+        private void PopulateEssenceDecimalsList()
+        {
+            List<ListItem> lstDecimals = new List<ListItem>();
+
+            ListItem objTwo = new ListItem();
+            objTwo.Value = "2";
+            objTwo.Name = "2";
+
+            ListItem objFour = new ListItem();
+            objFour.Value = "4";
+            objFour.Name = "4";
+
+            lstDecimals.Add(objTwo);
+            lstDecimals.Add(objFour);
+
+            cboEssenceDecimals.ValueMember = "Value";
+            cboEssenceDecimals.DisplayMember = "Name";
+            cboEssenceDecimals.DataSource = lstDecimals;
+        }
+
+        private void PopulateLimbCountList()
+        {
+            List<ListItem> lstLimbCount = new List<ListItem>();
+
+            ListItem objLimbCount6 = new ListItem();
+            objLimbCount6.Value = "all";
+            objLimbCount6.Name = LanguageManager.Instance.GetString("String_LimbCount6");
+
+            ListItem objLimbCount5Torso = new ListItem();
+            objLimbCount5Torso.Value = "torso";
+            objLimbCount5Torso.Name = LanguageManager.Instance.GetString("String_LimbCount5Torso");
+
+            ListItem objLimbCount5Skull = new ListItem();
+            objLimbCount5Skull.Value = "skull";
+            objLimbCount5Skull.Name = LanguageManager.Instance.GetString("String_LimbCount5Skull");
+
+            lstLimbCount.Add(objLimbCount6);
+            lstLimbCount.Add(objLimbCount5Torso);
+            lstLimbCount.Add(objLimbCount5Skull);
+
+            cboLimbCount.ValueMember = "Value";
+            cboLimbCount.DisplayMember = "Name";
+            cboLimbCount.DataSource = lstLimbCount;
+        }
+
+        private void SetToolTips()
+        {
+            const int width = 50;
+            var functions = new CommonFunctions();
+
+            tipTooltip.SetToolTip(chkKnucks, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
+            tipTooltip.SetToolTip(chkIgnoreArt, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
+            tipTooltip.SetToolTip(chkCyberlegMovement, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
+            tipTooltip.SetToolTip(chkDontDoubleQualities, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
+            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
+            tipTooltip.SetToolTip(chkAllowInitiation, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
+        }
+
+        private void PopulateSettingsList()
+        {
+            List<ListItem> lstSettings = new List<ListItem>();
+            string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+            string[] settingsFilePaths = Directory.GetFiles(settingsDirectoryPath, "*.xml");
+
+            foreach (string filePath in settingsFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    xmlDocument.Load(filePath);
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/settings/name");
+
+                if (node == null)
+                    continue;
+
+                string settingName = node.InnerText;
+
+                ListItem objItem = new ListItem();
+                objItem.Value = Path.GetFileName(filePath);
+                objItem.Name = settingName;
+
+                lstSettings.Add(objItem);
+            }
+
+            cboSetting.ValueMember = "Value";
+            cboSetting.DisplayMember = "Name";
+            cboSetting.DataSource = lstSettings;
+        }
+
+        private void PopulateLanguageList()
+        {
+            List<ListItem> lstLanguages = new List<ListItem>();
+            string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+            foreach (string filePath in languageFilePaths)
+            {
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    xmlDocument.Load(filePath);
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+
+                if (node == null)
+                    continue;
+
+                string languageName = node.InnerText;
+
+                ListItem objItem = new ListItem();
+                objItem.Value = Path.GetFileNameWithoutExtension(filePath);
+                objItem.Name = languageName;
+
+                lstLanguages.Add(objItem);
+            }
+
+            SortListItem objSort = new SortListItem();
+            lstLanguages.Sort(objSort.Compare);
+
+            cboLanguage.ValueMember = "Value";
+            cboLanguage.DisplayMember = "Name";
+            cboLanguage.DataSource = lstLanguages;
+        }
+
+        private void PopulateGlobalOptions()
+        {
+            chkAutomaticUpdate.Checked = GlobalOptions.Instance.AutomaticUpdate;
+            chkUseLogging.Checked = GlobalOptions.Instance.UseLogging;
+            chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
+            chkLocalisedUpdatesOnly.Checked = GlobalOptions.Instance.LocalisedUpdatesOnly;
+            chkStartupFullscreen.Checked = GlobalOptions.Instance.StartupFullscreen;
+            chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
+            chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
+            chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
+            chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
+            chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
+            txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
+            txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
+        }
+
+        private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        {
+            var names = new List<string>();
+
+            if (Directory.Exists(path))
+            {
+                names = Directory.GetFiles(path)
+                    .Where(s => s.EndsWith(".xsl"))
+                    .Select(Path.GetFileNameWithoutExtension).ToList();
+            }
+
+            return names;
+        }
+
+        private List<ListItem> GetXslFilesFromSheetsDirectory()
+        {
+            var items = new List<ListItem>();
+
+            // Populate the XSLT list with all of the XSL files found in the sheets directory.
+            string sheetsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets");
+
+            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+            // (hidden because they are partial templates that cannot be used on their own).
+            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(sheetsDirectoryPath);
+
+            foreach (string fileName in fileNames)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = fileName;
+                objItem.Name = fileName;
+
+                items.Add(objItem);
+            }
+
+            return items;
+        }
+
+        private List<ListItem> GetXslFilesFromLanguageDirectory()
+        {
+            var items = new List<ListItem>();
+
+            // Populate the XSL list with all of the XSL files found in the sheets\[language] directory.
+            if (GlobalOptions.Instance.Language != "en-us")
+            {
+                XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
+                string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
+                string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", GlobalOptions.Instance.Language);
+
+                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+                // (hidden because they are partial templates that cannot be used on their own).
+                List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(languageDirectoryPath);
+
+                foreach (string fileName in fileNames)
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = Path.Combine(GlobalOptions.Instance.Language, fileName);
+                    objItem.Name = strLanguage + ": " + fileName;
+
+                    items.Add(objItem);
+                }
+            }
+
+            return items;
+        }
+
+        private List<ListItem> GetXslFilesFromOmaeDirectory()
+        {
+            var items = new List<ListItem>();
+
+            // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
+            string omaeDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
+            string menuMainOmae = LanguageManager.Instance.GetString("Menu_Main_Omae");
+
+            // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
+            // (hidden because they are partial templates that cannot be used on their own).
+            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath);
+
+            foreach (string fileName in fileNames)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = Path.Combine("omae", fileName);
+                objItem.Name = menuMainOmae + ": " + fileName;
+
+                items.Add(objItem);
+            }
+
+            return items;
+        }
+
+        private void PopulateXsltList()
+        {
+            List<ListItem> lstFiles = new List<ListItem>();
+
+            lstFiles.AddRange(GetXslFilesFromSheetsDirectory());
+            lstFiles.AddRange(GetXslFilesFromLanguageDirectory());
+            lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
+
+            cboXSLT.ValueMember = "Value";
+            cboXSLT.DisplayMember = "Name";
+            cboXSLT.DataSource = lstFiles;
+        }
+
+        private void SetDefaultValueForSettingsList()
+        {
+            // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
+            cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
+
+            if (cboSetting.SelectedIndex == -1)
+                cboSetting.SelectedIndex = 0;
+        }
+
+        private void SetDefaultValueForLanguageList()
+        {
+            cboLanguage.SelectedValue = GlobalOptions.Instance.Language;
+
+            if (cboLanguage.SelectedIndex == -1)
+                cboLanguage.SelectedValue = "en-us";
+        }
+
+        private void SetDefaultValueForXsltList()
+        {
+            if (string.IsNullOrEmpty(GlobalOptions.Instance.DefaultCharacterSheet))
+                GlobalOptions.Instance.DefaultCharacterSheet = "Shadowrun 5";
+
+            cboXSLT.SelectedValue = GlobalOptions.Instance.DefaultCharacterSheet;
+        }
+
+        private void UpdateSourcebookInfoPath(string path)
+        {
+            string tag = treSourcebook.SelectedNode.Tag.ToString();
+            SourcebookInfo foundSource = GlobalOptions.Instance.SourcebookInfo.FirstOrDefault(x => x.Code == tag);
+
+            if (foundSource != null)
+            {
+                foundSource.Path = path;
+            }
+            else
+            {
+                // If the Sourcebook was not found in the options, add it.
+                var newSource = new SourcebookInfo();
+                newSource.Code = tag;
+                newSource.Path = path;
+                GlobalOptions.Instance.SourcebookInfo.Add(newSource);
+            }
         }
         #endregion
     }

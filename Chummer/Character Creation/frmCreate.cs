@@ -20164,7 +20164,7 @@ namespace Chummer
 
 	        }
 
-	        if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7))
+	        if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7 && !x.Free))
 	        {
 		        blnValid = false;
 		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_HighContact");

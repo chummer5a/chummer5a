@@ -10025,7 +10025,7 @@ namespace Chummer
 				//should really go in a data file
 				if (_strName.StartsWith("Ammo:"))
 				{
-					if (_strName.StartsWith("Ammo: Assault Cannon"))
+					if (_strName.StartsWith("Ammo: Assault Cannon") || _strName.StartsWith("Ammo: Gauss"))
 					{
 						frmPickWeaponCategory.WeaponType = "cannon";
 					}
