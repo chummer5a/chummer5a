@@ -20115,6 +20115,7 @@ namespace Chummer
 		        }
 		        // Group contacts are counted as positive qualities
 		        intPointsUsed += intGroupContacts;
+
 		        // Deduct the amount for free Qualities.
 		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
 		        int intPositivePointsUsed = intPointsUsed;

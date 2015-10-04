@@ -149,19 +149,49 @@
       <source>SR5</source>
       <page>309</page>
     </power>
+		<power>
+			<id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
+			<name>Improved Potential (Social)</name>
+			<points>.5</points>
+			<adeptway>.25</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<bonus>
+				<selectlimit>
+					<limit>Social</limit>
+					<val>1</val>
+				</selectlimit>
+			</bonus>
+			<source>SR5</source>
+			<page>309</page>
+		</power>
+		<power>
+			<id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id>
+			<name>Improved Potential (Mental)</name>
+			<points>.5</points>
+			<adeptway>.25</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<bonus>
+				<selectlimit>
+					<limit>Mental</limit>
+					<val>1</val>
+				</selectlimit>
+			</bonus>
+			<source>SR5</source>
+			<page>309</page>
+		</power>
     <power>
-      <id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id>
-      <name>Improved Potential (limit)</name>
+      <id>d9b811f4-aa64-46fb-b67d-2995134eda4e</id>
+      <name>Improved Potential (Physical)</name>
       <points>.5</points>
       <adeptway>.25</adeptway>
-      <levels>yes</levels>
+      <levels>no</levels>
       <limit>1</limit>
       <bonus>
         <selectlimit>
           <limit>Physical</limit>
-          <limit>Mental</limit>
-          <limit>Social</limit>
-          <val>Rating</val>
+          <val>1</val>
         </selectlimit>
       </bonus>
       <source>SR5</source>
