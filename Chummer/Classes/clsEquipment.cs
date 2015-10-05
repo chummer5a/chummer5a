@@ -5385,12 +5385,7 @@ namespace Chummer
 
 				if (CalculatedAmmo().Contains("x"))
 				{
-					if (CalculatedAmmo().StartsWith("2x"))
-						intReturn = 2;
-					if (CalculatedAmmo().StartsWith("3x"))
-						intReturn = 3;
-					if (CalculatedAmmo().StartsWith("4x"))
-						intReturn = 4;
+						intReturn = Convert.ToInt32(CalculatedAmmo()[0].ToString());
 				}
 
 				return intReturn;
