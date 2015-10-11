@@ -8143,13 +8143,13 @@ namespace Chummer
                     _objCharacter.TechnomancerEnabled = false;
                     break;
 				case "Changeling (Class I SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				case "Changeling (Class II SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				case "Changeling (Class III SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				default:
                     break;
@@ -20179,13 +20179,13 @@ namespace Chummer
             }
 
             // if character has more than permitted Metagenetic qualities
-            if (_objCharacter.metageneticLimit > 0)
+            if (_objCharacter.MetageneticLimit > 0)
             {
                 int metageneticPositiveQualities = 0;
                 int metageneticNegativeQualities = 0;
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (objQuality._strMetagenetic == "yes")
+                    if (objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString())
                     {
                         if (objQuality.Type == QualityType.Positive)
                         {
@@ -20197,14 +20197,14 @@ namespace Chummer
                         }
                     }
                 }
-                if (metageneticNegativeQualities > _objCharacter.metageneticLimit)
+                if (metageneticNegativeQualities > _objCharacter.MetageneticLimit)
                 {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
                     blnValid = false;
                 }
-                if (metageneticPositiveQualities > _objCharacter.metageneticLimit)
+                if (metageneticPositiveQualities > _objCharacter.MetageneticLimit)
                 {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
                     blnValid = false;
                 }
 

@@ -89,7 +89,7 @@ namespace Chummer
         private int _intCFPLimit = 0;
         private int _intContactPoints = 0;
         private int _intContactPointsUsed = 0;
-        public int metageneticLimit = 0;
+        private int _intMetageneticLimit = 0;
 
         // General character info.
         private string _strName = "";
@@ -352,8 +352,10 @@ namespace Chummer
             objWriter.WriteElementString("metavariant", _strMetavariant);
             // <metatypecategory />
             objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
-            // <movement />
-            objWriter.WriteElementString("movement", _strMovement);
+			// <metageneticlimit />
+			objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
+			// <movement />
+			objWriter.WriteElementString("movement", _strMovement);
             // <walk />
             objWriter.WriteElementString("walk", _strWalk);
             // <run />
@@ -426,9 +428,10 @@ namespace Chummer
                 objWriter.WriteElementString("possessed", _blnPossessed.ToString());
             if (_blnOverrideSpecialAttributeESSLoss)
                 objWriter.WriteElementString("overridespecialattributeessloss", _blnOverrideSpecialAttributeESSLoss.ToString());
-
-            // <karma />
-            objWriter.WriteElementString("karma", _intKarma.ToString());
+			if (_intMetageneticLimit > 0)
+				objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
+			// <karma />
+			objWriter.WriteElementString("karma", _intKarma.ToString());
             // <totalkarma />
             objWriter.WriteElementString("totalkarma", _intTotalKarma.ToString());
             // <special />
@@ -1221,7 +1224,15 @@ namespace Chummer
             {
             }
 
-            try
+
+			try
+			{
+				_intMetageneticLimit = Convert.ToInt32(objXmlCharacter["metageneticlimit"].InnerText);
+			}
+			catch
+			{
+			}
+			try
             {
                 _blnPossessed = Convert.ToBoolean(objXmlCharacter["possessed"].InnerText);
             }
@@ -4371,12 +4382,27 @@ namespace Chummer
             {
                 _blnIsCritter = value;
             }
-        }
+		}
 
-        /// <summary>
-        /// Whether or not the character is possessed by a Spirit.
-        /// </summary>
-        public bool Possessed
+		/// <summary>
+		/// The highest number of free metagenetic qualities the character can have.
+		/// </summary>
+		public int MetageneticLimit
+		{
+			get
+			{
+				return _intMetageneticLimit;
+			}
+			set
+			{
+				_intMetageneticLimit = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the character is possessed by a Spirit.
+		/// </summary>
+		public bool Possessed
         {
             get
             {
