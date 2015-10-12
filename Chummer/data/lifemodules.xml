@@ -1232,11 +1232,7 @@
       <addqualities>
         <addquality>Animal Empathy</addquality>
       </addqualities>
-      <story>$CHARACTER spent their teenage years on a farm, <random>
-        <cube>stacking CubeHens TM</cube>
-        <butter>churning I Can’t Believe It’s Not Butter TM</butter>
-        <meat>maintaining the chlorine tanks on the meat sterilizer</meat>
-      </random>.</story>
+      <story>$CHARACTER spent their teenage years on a farm,  $FARMTASK .</story>
       <source>RF</source>
       <page>70</page>
     </module>
@@ -3695,21 +3691,7 @@
           </bonus>
         </version>
       </versions>
-      <story>$CHARACTER got a job at 
-	  <random>
-	  <a>Ares</a>
-	  <a2>Aztechnology</a2>
-	  <e>Evo</e>
-	  <h>Horizon</h>
-	  <m>Mitsuhama</m>
-	  <n>Neonet</n>
-	  <r>Renraku</r>
-	  <s>Saeder-Krupp</s>
-	  <s2>Shiawase</s2>
-	  <w>Wuxing</w>
-	  <a>a AA corp, such as Monobe International or Docwagon</aa>
-	  <a>a single A corp, such as The People’s Republic of Vietnam</a>
-	  </random>, becoming another gear in the corporate machine.</story>
+      <story>$CHARACTER got a job at  $RMEGA , becoming another gear in the corporate machine.</story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -3786,13 +3768,7 @@
         <addquality>Hawk Eye</addquality>
         <addquality>Poor Link</addquality>
       </addqualities>
-      <story>$CHARACTER was an genuine secret agent, spying on 
-	  <random><ucas>the UCAS</ucas><cas>the CAS</cas><a>Ares</a><a2>Aztechnology</a2><e>Evo</e><h>Horizon</h><m>Mitsuhama</m><n>Neonet</n><r>Renraku</r><s>Saeder-Krupp</s><s2>Shiawase</s2><w>Wuxing</w><ru>Russia</ru><jp>Japan</jp><az>Amazonia</az><tir>one of the Tirs</tir><nan>one of the NANs</nan>
-	  </random>
-	  for 
-	  <random><ucas>the UCAS</ucas><cas>the CAS</cas><a>Ares</a><a2>Aztechnology</a2><e>Evo</e><h>Horizon</h><m>Mitsuhama</m><n>Neonet</n><r>Renraku</r><s>Saeder-Krupp</s><s2>Shiawase</s2><w>Wuxing</w><ru>Russia</ru><jp>Japan</jp><az>Amazonia</az><tir>one of the Tirs</tir><nan>one of the NANs</nan>
-	  </random>
-	  </story>
+      <story>$CHARACTER was an genuine secret agent, spying on  $ENTITY  for  $ENTITY</story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -6997,12 +6973,56 @@
           <krill>maintaining the complex piping systems that kept gigantic batches of krill alive until they grew to maturity and could be compressed into nutrient rich cubes</krill>
         </random>
       </farmdesc>
+      <farmtask>
+        <random>
+          <cube>stacking CubeHens TM</cube>
+          <butter>churning I Can’t Believe It’s Not Butter TM</butter>
+          <meat>maintaining the chlorine tanks on the meat sterilizer</meat>
+        </random>
+      </farmtask>
       <homedesc>
         <random>
           <homeschooling>his parents, who were afraid that if they sent $CHARACTER to school the school would vaccinate $CHARACTER into atheism</homeschooling>
           <tutor>a personal tutor, who understood the subjects better than the average teacher</tutor>
         </random>
       </homedesc>
+      <entity>
+        <random>
+          <ucas>the UCAS</ucas>
+          <cas>the CAS</cas>
+          <a>Ares</a>
+          <a2>Aztechnology</a2>
+          <e>Evo</e>
+          <h>Horizon</h>
+          <m>Mitsuhama</m>
+          <n>Neonet</n>
+          <r>Renraku</r>
+          <s>Saeder-Krupp</s>
+          <s2>Shiawase</s2>
+          <w>Wuxing</w>
+          <ru>Russia</ru>
+          <jp>Japan</jp>
+          <az>Amazonia</az>
+          <tir>one of the Tirs</tir>
+          <nan>one of the NANs</nan>
+        </random>
+      </entity>
+      <employer>
+        <random>
+          <a>Ares</a>
+	        <a2>Aztechnology</a2>
+	        <e>Evo</e>
+	        <h>Horizon</h>
+	        <m>Mitsuhama</m>
+	        <n>Neonet</n>
+	        <r>Renraku</r>
+	        <s>Saeder-Krupp</s>
+	        <s2>Shiawase</s2>
+	        <w>Wuxing</w>
+	        <aa>a AA corp, such as Monobe International or Docwagon</aa>
+	        <a>a single A corp, such as The People’s Republic of Vietnam</a>
+        </random>
+      </employer>
       <streetdesc>
         <random>
           <punch>kicking ass</punch>
@@ -7036,7 +7056,7 @@
           <m>Mob</m>
           <ma>Mafia</ma>
           <yak>Yakuza</yak>
-          <3>Triads</3>
+          <t>Triads</t>
           <ko>Seoulpa Rings</ko>
           <gc>Ghost Cartels</gc>
         </random>
