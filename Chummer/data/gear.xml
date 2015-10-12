@@ -7080,6 +7080,7 @@
 			<avail>12F</avail>
 			<costfor>1</costfor>
 			<cost>45</cost>
+      <rating>0</rating>
 			<source>HT</source>
 			<page>187</page>
 		</gear>
@@ -7102,6 +7103,7 @@
 			<name>Enchanting Gloves</name>
 			<category>Magical Supplies</category>
 			<avail>8</avail>
+      <rating>0</rating>
 			<cost>2000</cost>
 			<source>HT</source>
 			<page>187</page>
@@ -7132,6 +7134,7 @@
 			<name>Quickdraw Quiver</name>
 			<category>Survival Gear</category>
 			<avail>4</avail>
+      <rating>0</rating>
 			<cost>500</cost>
 			<source>HT</source>
 			<page>187</page>
@@ -7141,6 +7144,7 @@
 			<name>Reactive Myomer Pack</name>
 			<category>Survival Gear</category>
 			<avail>6</avail>
+      <rating>0</rating>
 			<cost>450</cost>
 			<source>HT</source>
 			<page>187</page>
@@ -7150,6 +7154,7 @@
 			<name>Reloading Rail</name>
 			<category>Survival Gear</category>
 			<avail>4R</avail>
+      <rating>0</rating>
 			<cost>675</cost>
 			<source>HT</source>
 			<page>187</page>
@@ -7162,6 +7167,7 @@
 			<cost>300</cost>
 			<source>HT</source>
 			<page>187</page>
+      <rating>0</rating>
 		</gear>
 		<gear>
 			<id>a197383c-5ae2-401f-b90d-fae3bfb2727e</id>
@@ -7274,6 +7280,7 @@
 			<cost>600</cost>
 			<source>HT</source>
 			<page>194</page>
+      <rating>0</rating>
 		</gear>
 		<gear>
 			<id>27d1ca7b-c51c-4368-878d-688ed456c7cf</id>
@@ -7284,6 +7291,7 @@
 			<cost>1000</cost>
 			<source>HT</source>
 			<page>194</page>
+      <rating>0</rating>
 		</gear>
 		<!-- End Region -->
   </gears>
