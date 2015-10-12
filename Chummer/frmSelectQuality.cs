@@ -347,7 +347,7 @@ namespace Chummer
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
-				else if (cboCategory.SelectedValue.ToString() == "Negative" || _objCharacter.metageneticLimit > 0)
+				else if (cboCategory.SelectedValue.ToString() == "Negative" || _objCharacter.MetageneticLimit > 0)
 				{
 					//Load everything, including metagenetic qualities.
 				}
@@ -441,13 +441,13 @@ namespace Chummer
                     _objCharacter.AdeptEnabled = true;
                     break;
                 case "Changeling (Class I SURGE)":
-                    _objCharacter.metageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 30;
                     break;
                 case "Changeling (Class II SURGE)":
-                    _objCharacter.metageneticLimit = 15;
+                    _objCharacter.MetageneticLimit = 15;
                     break;
                 case "Changeling (Class III SURGE)":
-                    _objCharacter.metageneticLimit = 30;
+                    _objCharacter.MetageneticLimit = 30;
                     break;
                 default:
                     break;

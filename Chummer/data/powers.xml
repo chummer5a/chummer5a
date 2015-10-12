@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-400</version>
+  <version>-390</version>
   <powers>
     <power>
       <id>8caaadf4-75b4-4535-928a-5648d395c13a</id>
@@ -1131,7 +1131,70 @@
 		</bonus>
       <source>SSP</source>
       <page>24</page>
-    </power>	
+    </power>
+		<power>
+			<name>Adept Spell</name>
+			<points>1</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HT</source>
+			<page>190</page>
+			<id>87f0f97d-cbcf-4427-9259-baf376c9f55a</id>
+		</power>
+		<power>
+			<name>Adept Accident</name>
+			<points>.5</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<source>HT</source>
+			<page>190</page>
+			<id>9646a0b8-ab39-4499-85cf-1ffd9983d0a5</id>
+		</power>
+		<power>
+			<name>Focused Archery</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>3</limit>
+			<source>HT</source>
+			<page>190</page>
+			<id>c2ea9046-647d-4104-871a-24b3ee1fecfa</id>
+		</power>
+		<power>
+			<name>Kiai</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>6</limit>
+			<source>HT</source>
+			<page>190</page>
+			<id>857fcf19-78ce-427a-a1e8-077e52aab759</id>
+		</power>
+		<power>
+			<name>Master Archer</name>
+			<points>1</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<source>HT</source>
+			<page>191</page>
+			<id>3c0862c4-1070-44dd-8866-0ba89276246b</id>
+		</power>
+		<power>
+			<name>Precision Throwing</name>
+			<points>.25</points>
+			<adeptway>0</adeptway>
+			<levels>yes</levels>
+			<limit>3</limit>
+			<source>HT</source>
+			<page>190</page>
+			<id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
+		</power>		
   </powers>
   <enhancements>
     <enhancement>

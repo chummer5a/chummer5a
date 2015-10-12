@@ -4,7 +4,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.175</version>
+		<version>0.0.5.176</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -202,7 +202,7 @@
 	<file>
 		<name>data/armor.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-390</version>
 		<description>Armor</description>
 		<notes>- Armor data file</notes>
 		<url>https://www.dropbox.com/s/1wp0btv02dcvo7r/armor.xml?dl=1</url>
@@ -210,7 +210,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-365</version>
+		<version>-360</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -218,7 +218,7 @@
 	<file>
 		<name>data/books.xml</name>
 		<type>Data Files</type>
-		<version>-389</version>
+		<version>-385</version>
 		<description>Books</description>
 		<notes>- Books data file</notes>
 		<url>https://www.dropbox.com/s/qetzzti2r40btx7/books.xml?dl=1</url>
@@ -258,7 +258,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-355</version>
+		<version>-350</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -282,7 +282,7 @@
 	<file>
 		<name>data/gear.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>-380</version>
 		<description>Gear</description>
 		<notes>- Gear data file</notes>
 		<url>https://www.dropbox.com/s/qp3vbk0jy902ynt/gear.xml?dl=1</url>
@@ -314,7 +314,7 @@
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-900</version>
+		<version>-850</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -330,7 +330,7 @@
 	<file>
 		<name>data/mentors.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-390</version>
 		<description>Mentor Spirits</description>
 		<notes>- Mentor Spirits data file</notes>
 		<url>https://www.dropbox.com/s/zb8sowykt8j4ff1/mentors.xml?dl=1</url>
@@ -370,7 +370,7 @@
 	<file>
 		<name>data/powers.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-390</version>
 		<description>Powers</description>
 		<notes>- Powers data file</notes>
 		<url>https://www.dropbox.com/s/s6j2l3gnq1hnie4/powers.xml?dl=1</url>
@@ -394,7 +394,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-360</version>
+		<version>-350</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -426,7 +426,7 @@
 	<file>
 		<name>data/spells.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-380</version>
 		<description>Spells</description>
 		<notes>- Spells data file</notes>
 		<url>https://www.dropbox.com/s/yheum6i7llvas2u/spells.xml?dl=1</url>
@@ -450,7 +450,7 @@
 	<file>
 		<name>data/traditions.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-380</version>
 		<description>Traditions</description>
 		<notes>- Magic Traditions data file</notes>
 		<url>https://www.dropbox.com/s/fu7j24hxc9cf5h6/traditions.xml?dl=1</url>
@@ -458,7 +458,7 @@
 	<file>
 		<name>data/vehicles.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>-390</version>
 		<description>Vehicles</description>
 		<notes>- Vehicles data file</notes>
 		<url>https://www.dropbox.com/s/fgl570x5jzedmr7/vehicles.xml?dl=1</url>
@@ -474,7 +474,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-345</version>
+		<version>-340</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>

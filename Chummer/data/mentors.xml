@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-399</version>
+  <version>-390</version>
   <mentors>
     <mentor>
       <id>136a3dc5-d9c4-45ad-bc24-705f54692590</id>
@@ -1004,5 +1004,148 @@
       <source>SG</source>
       <page>86</page>
     </mentor>
+		<mentor>
+			<id>b58c7771-bc30-48c7-aa3d-694c8bbba00a</id>
+			<name>The Adversary</name>
+			<advantage>All: +2 dice to demolitions tests.</advantage>
+			<disadvantage>Because of their deep-seated hatred for authority, a teammate’s use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn’t go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Demolitions</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for Counterspelling and disenchanting</name>
+					<bonus>
+						<specificskill>
+							<name>Counterspelling</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 1 free level of Iron Will</name>
+					<bonus>
+						<specificpower>
+							<name>Iron Will</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HT</source>
+			<page>136</page>
+		</mentor>
+		<mentor>
+			<id>f841b9f1-bc80-4fd5-a94d-6f76d2c59518</id>
+			<name>Alligator</name>
+			<advantage>All: +2 dice to intimidation tests.</advantage>
+			<disadvantage>A follower of Alligator is stubborn about changing a plan or action to which he is committed. When the rest of the team goes to Plan B, the magician must succeed in a Charisma + Willpower (3) Test for the magician to stop trying Plan A.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Intimidation</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</name>
+					<bonus>
+						<specificskill>
+							<name>Conjuring</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Free Inertia Strike</name>
+					<bonus>
+						<specificpower>
+							<name>Inertia Strike</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HT</source>
+			<page>137</page>
+		</mentor>
+		<mentor>
+			<id>640c4d50-f64d-42d3-9529-55d756f0ec4f</id>
+			<name>Bat</name>
+			<advantage>All: +2 dice to navigation tests.</advantage>
+			<disadvantage>A follower of Bat is easily distracted and becomes irritable during enforced inaction. She prefers spontaneity to routine. Every week that the magician stays in the same place, she takes a –1 penalty to all actions until she finds a new place to stay. Also, unless she succeeds in a Charisma + Willpower (3) Test, she cannot enter a hangout (bar, club, restaurant) more than once in a week without suffering a –1 to all Magic tests for the next twenty-four hours.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Navigation</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +1 dice for conjuring spirits.</name>
+					<bonus>
+						<specificskill>
+							<name>Conjuring</name>
+							<bonus>1</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Free motion sense</name>
+					<bonus>
+						<specificpower>
+							<name>Motion Sense</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HT</source>
+			<page>137</page>
+		</mentor>
+		<mentor>
+			<id>c0f82a89-584c-48b2-b0f1-3acd8b6d6e89</id>
+			<name>Monkey</name>
+			<advantage>All: +2 dice to gymnastics tests involving climbing.</advantage>
+			<disadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent’s face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for spells, preparations, and rituals if the manipulation type.</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of hang time.</name>
+					<bonus>
+						<specificpower>
+							<name>Hang Time</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HT</source>
+			<page>137</page>
+		</mentor>		
   </mentors>
 </chummer>

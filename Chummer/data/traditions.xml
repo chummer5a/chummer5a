@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-390</version>
+  <version>-380</version>
   <traditions>
     <tradition>
       <id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
@@ -347,6 +347,34 @@
       <source>SSP</source>
       <page>5</page>
     </tradition>
+		<tradition>
+			<id>acbf5a08-cd21-410d-8d04-4e12cca8a927</id>
+			<name>Obeah</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Task Spirit</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+			</spirits>
+			<source>HT</source>
+			<page>130</page>
+		</tradition>
+		<tradition>
+			<id>81789f32-779d-488e-ac76-d1005b5a2d2a</id>
+			<name>Santeria</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Guardian Spirit</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Water</spirit>
+			</spirits>
+			<source>HT</source>
+			<page>130</page>
+		</tradition>
   </traditions>
   <spirits>
     <!--Corebook spirits-->

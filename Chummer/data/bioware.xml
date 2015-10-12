@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-365</version>
+  <version>-360</version>
   <grades>
     <grade>
       <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
@@ -2040,6 +2040,90 @@
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
+		<!-- Region Hard Targets -->
+		<bioware>
+			<id>6289a426-e381-4ed6-a69d-3b94430efb2c</id>
+			<name>Bilateral Coordination Co-processor</name>
+			<category>Basic</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>4500</cost>
+			<source>HT</source>
+			<page>185</page>
+		</bioware>
+		<bioware>
+			<id>5b2c4c5d-a037-4970-8fcb-b6d47b9e819a</id>
+			<name>Bone Spike (No Bone Density)</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>14F</avail>
+			<addweapon>Bone Spike I</addweapon>
+			<forbidden>
+				<oneof>
+					<cyberwares>
+						<count>1</count>
+						<bioware>Bone Density Augmentation</bioware>
+					</cyberwares>
+				</oneof>
+			</forbidden>
+			<cost>20000</cost>
+			<source>HT</source>
+			<page>185</page>
+		</bioware>
+		<bioware>
+			<id>53d0d6b1-f5cd-4816-b772-7f50af81356a</id>
+			<name>Bone Spike (Bone Density 2-3)</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>14F</avail>
+			<required>
+				<oneof>
+					<cyberwares>
+						<count>1</count>
+						<bioware>Bone Density Augmentation</bioware>
+					</cyberwares>			
+			</oneof>
+			</required>
+			<addweapon>Bone Spike II</addweapon>
+			<cost>20000</cost>
+			<source>HT</source>
+			<page>185</page>
+		</bioware>
+		<bioware>
+			<id>f994b8ac-0314-43ad-969a-f07d2d3fc0d8</id>
+			<name>Bone Spike (Bone Density 4)</name>
+			<category>Bio-Weapons</category>
+			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>14F</avail>
+			<required>
+				<oneof>
+					<cyberwares>
+						<count>1</count>
+						<bioware>Bone Density Augmentation</bioware>
+					</cyberwares>
+			</oneof>
+			</required>
+			<addweapon>Bone Spike III</addweapon>
+			<cost>20000</cost>
+			<source>HT</source>
+			<page>185</page>
+		</bioware>
+		<bioware>
+			<id>0f5b811f-a761-410a-b675-fca5c5821b31</id>
+			<name>Spur Pocket</name>
+			<category>Cultured</category>
+			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>8000</cost>
+			<source>HT</source>
+			<page>185</page>
+		</bioware>
+		<!-- End Region -->
   </biowares>
 </chummer>
 

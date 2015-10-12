@@ -1183,8 +1183,14 @@
     <None Include="data\vessels.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\weapons.xsc">
+      <DependentUpon>weapons.xsd</DependentUpon>
+    </None>
     <None Include="data\weapons.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\weapons.xss">
+      <DependentUpon>weapons.xsd</DependentUpon>
     </None>
     <None Include="data\weapons.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

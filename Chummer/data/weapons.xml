@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-345</version>
+	<version>-340</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -33,7 +33,7 @@
 		<!-- Region Shadowrun 5 -->
 		<weapon>
 			<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
-			<name>Ares Thuderstruck Gauss Rifle</name>
+			<name>Ares Thunderstruck Gauss Rifle</name>
 			<category>Assault Cannons</category>
 			<type>Ranged</type>
 			<conceal>6</conceal>
@@ -7073,6 +7073,379 @@
 		</weapon>
 		<!-- End Region -->
 		<!-- End Region-->
+		<!-- Region Hard Targets -->
+		<weapon>
+			<id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
+			<name>Sapphire Knife</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Knives</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6R</avail>
+			<cost>900</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>cbc5270f-5848-41cd-a723-e86a7f48cfb4</id>
+			<name>Ceramic/Plasteel Knife</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Knives</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>75</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>d036885b-4238-4ed7-ae9d-5dba97071e19</id>
+			<name>Foot Blade</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>7b928bc3-c44e-4002-b8ac-17a2bdd01d5a</id>
+			<name>Bone Spike I</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>2ef46f42-8890-48fd-bb94-67c34c12f0fb</id>
+			<name>Bone Spike II</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>3babb9d3-a3bb-4c8f-96ce-73f27b6ec7a6</id>
+			<name>Bone Spike III</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+4)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>9434fb76-1d7f-463e-b377-b7c07e2a18e2</id>
+			<name>Cougar Collapsible Spear</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>3</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>14R</avail>
+			<cost>1250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>180</page>
+		</weapon>
+		<weapon>
+			<id>6967eea2-01f8-4931-a59f-d2cd64419561</id>
+			<name>Collapsible Scythe</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>2</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>16R</avail>
+			<cost>2350</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>183</page>
+		</weapon>
+		<weapon>
+			<id>023bb6db-4c14-470b-a063-9df1adf31a00</id>
+			<name>Victorinox Collapsible Hatchet</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>8080fafb-9784-43ca-bd71-6c823853b80b</id>
+			<name>Victorinox Collapsible Hatchet</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>4225b0c1-2da0-4dd9-9c98-2136a57946cf</id>
+			<name>Throwing Syringe</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR-2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6F</avail>
+			<cost>40</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Exotic Ranged Weapons</useskill>
+			<range>Aerodynamic Grenade</range>
+			<source>HT</source>
+			<page>183</page>
+		</weapon>
+		<weapon>
+			<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
+			<name>Cavalier Arms Adder Silvergun</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P(f)</damage>
+			<ap>+5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>20(c)</ammo>
+			<avail>7F</avail>
+			<cost>320</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<weapon>
+			<id>a1b5cec9-e14d-4b4d-8377-436af40b09cd</id>
+			<name>Flame Bracer</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<conceal>-5</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P(fire)</damage>
+			<ap>-6</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>2(c)</ammo>
+			<avail>8F</avail>
+			<cost>775</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<useskill>Exotic Ranged Weapon</useskill>
+			<range>Tasers</range>
+			<source>HT</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>176ab92a-0c00-48fe-a994-668903407fbf</id>
+			<name>Ares Armatus</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<conceal>+4</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>10(c)</ammo>
+			<avail>20F</avail>
+			<cost>19000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<useskill>Exotic Ranged Weapon</useskill>
+			<range>Shotgun</range>
+			<source>HT</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>7aa56de0-e709-4a0e-aadb-fbcdd2fcfeb0</id>
+			<name>Plasteel Toe Boots</name>
+			<category>Unarmed</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>2</avail>
+			<cost>200</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
+			<name>Colt Manhunter</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>5R</avail>
+			<cost>700</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessories>
+				<accessory>Holographic Sight</accessory>
+			</accessories>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<weapon>
+			<id>d36e75cc-73bc-4de3-9d9c-a236284e9d76</id>
+			<name>Lemat 2072</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>9(cy)</ammo>
+			<avail>8R</avail>
+			<cost>1080</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessories>
+				<accessory>Ammo Skip</accessory>
+			</accessories>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<!-- End Region -->
 	</weapons>
 	<accessories>
 		<!-- Region Shadowrun 5 -->
@@ -7733,6 +8106,263 @@
 			<source>CF</source>
 			<page>90</page>
 		</accessory>		
+		<!-- End Region -->
+		<!-- Region Hard Targets -->
+		<accessory>
+			<id>0c315fd8-3a1a-4748-8359-cb6a04436fbd</id>
+			<name>Ammo Skip</name>
+			<mount></mount>
+			<avail>8R</avail>
+			<cost>250</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5157f235-47c7-4121-aebb-d76709c4b6f8</id>
+			<name>Explosive Magazine</name>
+			<mount></mount>
+			<avail>2F</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>d40d2fc6-3aad-4793-843d-20e3597b2365</id>
+			<name>Extended Clip I</name>
+			<mount></mount>
+			<avail>6R</avail>
+			<cost>35</cost>
+			<conceal>+1</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>a2b1d0ad-7b7e-4b31-8105-4cdb5e60d839</id>
+			<name>Extended Clip II</name>
+			<mount></mount>
+			<avail>6R</avail>
+			<cost>35</cost>
+			<conceal>+2</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>e8e81e1a-d085-4e48-acb9-57948afdb09a</id>
+			<name>Ceramic/Plasteel Components 1</name>
+			<mount></mount>
+			<avail>13</avail>
+			<cost>Weapon Cost</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>33724b33-7449-4b3a-8016-7fffc4de407d</id>
+			<name>Ceramic/Plasteel Components 2</name>
+			<mount></mount>
+			<avail>14</avail>
+			<cost>2*(Weapon Cost)</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>e8db1b0f-cc4d-44d6-bf8d-00ad27aeac33</id>
+			<name>Ceramic/Plasteel Components 3</name>
+			<mount></mount>
+			<avail>15</avail>
+			<cost>3*(Weapon Cost)</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>f72d0f9e-e791-418d-88df-f85ad1392de6</id>
+			<name>Ceramic/Plasteel Components 4</name>
+			<mount></mount>
+			<avail>16</avail>
+			<cost>4*(Weapon Cost)</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>8da0b68e-43a3-41f3-8956-f3670a6b2adf</id>
+			<name>Ceramic/Plasteel Components 5</name>
+			<mount></mount>
+			<avail>17</avail>
+			<cost>5*(Weapon Cost)</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
+			<name>Ceramic/Plasteel Components 6</name>
+			<mount></mount>
+			<avail>18</avail>
+			<cost>6*(Weapon Cost)</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
+			<name>Chameleon Coating (Pistol)</name>
+			<mount></mount>
+			<avail>10R</avail>
+			<cost>1000</cost>
+			<conceal>-2</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>98c9ed33-2636-40bb-a455-334e8fb8e65f</id>
+			<name>Chameleon Coating (Rifle)</name>
+			<mount></mount>
+			<avail>10R</avail>
+			<cost>1000</cost>
+			<conceal>-1</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>4e54b271-2617-44b5-a70f-ab389890dda8</id>
+			<name>Holographic Sight</name>
+			<mount>Top</mount>
+			<avail>2</avail>
+			<accuracy>1</accuracy>
+			<cost>125</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>d5abeadd-fba4-47f9-ac35-bfbb31ce34be</id>
+			<name>Long Barrel</name>
+			<mount>Barrel</mount>
+			<avail>8R</avail>
+			<conceal>+1</conceal>
+			<accuracy>1</accuracy>
+			<cost>Weapon Cost</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>806bfacc-095e-448d-a5b2-c271c569ae51</id>
+			<name>Melee Hardening</name>
+			<mount></mount>
+			<avail>6</avail>
+			<cost>500</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>83902f51-5f87-444f-a3ff-a74ce865e1af</id>
+			<name>Easy Breakdown (Unpowered)</name>
+			<mount />
+			<avail>8R</avail>
+			<cost>750</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>f27402fa-2845-4314-a97d-2747b3263e0d</id>
+			<name>Easy Breakdown (Powered)</name>
+			<mount />
+			<avail>10R</avail>
+			<cost>1250</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
+			<name>Electronic Firing</name>
+			<mount></mount>
+			<avail>10R</avail>
+			<rc>1</rc>
+			<rcgroup>1</rcgroup>
+			<cost>1000</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>a2e4fcc6-cc21-4fc8-bbdf-efb489e9c377</id>
+			<name>Mounted Crossbow</name>
+			<mount>Under</mount>
+			<avail>8R</avail>
+			<cost>1000</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
+			<name>Underbarrel Laser</name>
+			<mount>Under</mount>
+			<avail>16F</avail>
+			<cost>22000</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>13d90aa2-6a67-47e5-a211-89aabea5f837</id>
+			<name>Underbarrel Shotgun</name>
+			<mount>Under</mount>
+			<avail>5R</avail>
+			<cost>600</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b8c019cc-5772-43b0-8ba8-a08581bab406</id>
+			<name>Overclocked</name>
+			<mount></mount>
+			<avail>6F</avail>
+			<cost>200</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b83bfd3a-8011-4a8e-8e76-033dbd6a79c1</id>
+			<name>Retractable Bayonet</name>
+			<mount>Under</mount>
+			<avail>6R</avail>
+			<cost>200</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>d67f3194-61f3-4440-b02c-e5f173532b01</id>
+			<name>Custom Look</name>
+			<mount></mount>
+			<avail>2</avail>
+			<cost>300</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
+			<name>Sawed Off/Shortbarrel</name>
+			<mount>Barrel</mount>
+			<conceal>-1</conceal>
+			<avail>4R</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>88d0e08b-1ac2-442e-8f2f-dfaeb9cda9ab</id>
+			<name>Stock Removal</name>
+			<mount>Stock</mount>
+			<conceal>-1</conceal>
+			<avail>2</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>f2eee4ed-d0cb-4163-84d9-91e537cd13d9</id>
+			<name>Trigger Removal</name>
+			<mount></mount>
+			<accuracy>1</accuracy>
+			<avail>2</avail>
+			<cost>50</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
 		<!-- End Region -->
 	</accessories>
 </chummer>
