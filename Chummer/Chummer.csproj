@@ -164,9 +164,7 @@
     <Compile Include="frmAddToken.Designer.cs">
       <DependentUpon>frmAddToken.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCareer.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="frmCareer.cs" />
     <Compile Include="frmCareer.Designer.cs">
       <DependentUpon>frmCareer.cs</DependentUpon>
     </Compile>
@@ -230,9 +228,7 @@
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="UI\Shared\CharacterShared.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -676,9 +672,7 @@
     <Compile Include="Controls\SkillGroupControl.Designer.cs">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmCreate.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Character Creation\frmCreate.cs" />
     <Compile Include="Character Creation\frmCreate.Designer.cs">
       <DependentUpon>frmCreate.cs</DependentUpon>
     </Compile>
