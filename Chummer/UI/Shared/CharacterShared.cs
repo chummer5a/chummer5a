@@ -9,6 +9,8 @@ namespace Chummer
 	public class CharacterShared : Form
 	{
 		protected Character _objCharacter;
-
+		protected MainController _objController;
+		protected CharacterOptions _objOptions;
+		protected CommonFunctions _objFunctions;
 	}
 }

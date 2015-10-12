@@ -15,9 +15,7 @@ namespace Chummer
 	{
         // Set the default culture to en-US so we work with decimals correctly.
         
-        private MainController _objController;
-        private CharacterOptions _objOptions;
-        private CommonFunctions _objFunctions;
+        
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
