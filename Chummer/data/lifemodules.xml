@@ -20,6 +20,7 @@
         <version>
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
           <name>General UCAS</name>
+		  <story>$CHARACTER was born somewhere in the UCAS, in a city like $UCASORIGIN, or one of the many other places that no-one cares about.</story>
           <bonus>
             <attributelevel>
               <!--Defaults to <val>1</val>-->
@@ -57,6 +58,7 @@
         <version>
           <id>5cf12de1-b41b-4a0f-9a2a-03bf08faa3d0</id>
           <name>Canada</name>
+		  <story>$CHARACTER was born in the tiny sliver of the northern UCAS that was once Canada.</story>
           <bonus>
             <attributelevel>
               <name>BOD</name>
@@ -80,7 +82,8 @@
         <version>
           <id>7fdfff94-5c90-4af5-808a-f96e5d0643bb</id>
           <name>Denver (UCAS Sector)</name>
-          <bonus>
+          <story>$CHARACTER was born in the UCAS exclave making up one sixth of Denver, Colorado.</story>
+		  <bonus>
             <attributelevel>
               <name>INT</name>
             </attributelevel>
@@ -104,6 +107,7 @@
         <version>
           <id>b332fa10-e0f5-43aa-bb38-52cdb0060da1</id>
           <name>Seattle</name>
+		  <story>$CHARACTER was born in the UCAS exclave of Seattle, the UCAS’s only pacific port.</story>
           <bonus>
             <attributelevel>
               <name>REA</name>
@@ -128,6 +132,7 @@
         <version>
           <id>4fe5e4fd-0275-48bd-9fec-678b86c5f024</id>
           <name>SINless</name>
+		  <story>While born in the UCAS, $CHARACTER is a citizen of nowhere, for one of several reasons.</story>
           <bonus>
             <attributelevel>
               <name>AGI</name>
@@ -263,7 +268,7 @@
           <group>Language</group>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story UCAS</story>
+      <story>$CHARACTER was born in the Confederation of American States, a nation formed after the south finally got around to rising again.</story>
       <source>RF</source>
       <page>66</page>
     </module>
@@ -356,7 +361,7 @@
       <addqualities>
         <addquality>SINner (National)</addquality>
       </addqualities>
-      <story>Allan, please add story Tír Tairngire</story>
+      <story>$CHARACTER was born in Tir Tairngire, $TIRDESC.</story>
       <source>RF</source>
       <page>67</page>
     </module>
@@ -745,7 +750,7 @@
         </knowledgeskilllevel>
       </bonus>
       <source>RF</source>
-      <story />
+      <story>Alan, please ad story NAN</story>
       <page>67</page>
     </module>
     <module>
@@ -784,7 +789,7 @@
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
-      <story>He spendt his early years in an Arcology owned by  $MEGA . His parrents where buissy workers and little  $REAL  spendt most of his time entertaining himself with a comlink or playing with the other kids</story>
+      <story>$CHARACTER was $LUCK enough to grow up in an Arcology: a corporate fortress city that $ARCOLOGY.</story>
       <source>RF</source>
       <page>67</page>
     </module>
@@ -820,7 +825,7 @@
           <name>[Corperation]</name>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was $LUCK enough to be the child of wageslaves, who via endless hours of toil managed to keep a roof over $CHARACTER’s head.</story>
       <source>RF</source>
       <page>68</page>
     </module>
@@ -853,7 +858,7 @@
         <addquality>Uneducated</addquality>
         <addquality>Toughness</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER spent their formative years on a farm, not moving around hay like the farmhands of yesteryear, but instead $FARMDESC.</story>
       <source>RF</source>
       <page>68</page>
     </module>
@@ -894,7 +899,7 @@
         <addquality>Bad Rep</addquality>
         <addquality>SINner (Criminal)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER spent their formative years with their parents as they ran away from $FLEE.</story>
       <source>RF</source>
       <page>68</page>
     </module>
@@ -934,7 +939,7 @@
         <addquality>Uneducated</addquality>
         <addquality>Toughness</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER grew up in an isolated portion of the wilderness like the rednecks of old.</story>
       <source>RF</source>
       <page>68</page>
     </module>
@@ -976,7 +981,7 @@
       <addqualities>
         <addquality>Uncouth</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER grew up almost everywhere, shifted from place to place by their $PARRENT 's military duties.</story>
       <source>RF</source>
       <page>69</page>
     </module>
@@ -1015,7 +1020,7 @@
         </knowledgeskilllevel>
       </bonus>
       <karma>40</karma>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was an orphan, growing up either in a $ORPHAN or on the streets.</story>
       <source>RF</source>
       <page>69</page>
     </module>
@@ -1058,7 +1063,7 @@
         <addquality>Trust Fund II</addquality>
       </addqualities>
       <karma>40</karma>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was literally born with a gold spoon in their mouth, and looked down on those with silver spoons, as those could tarnish.</story>
       <source>RF</source>
       <page>69</page>
     </module>
@@ -1102,7 +1107,7 @@
         <addquality>Toughness</addquality>
       </addqualities>
       <karma>40</karma>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was a child of the streets, best described with words like plucky or $INSULTA.</story>
       <source>RF</source>
       <page>69</page>
     </module>
@@ -1138,7 +1143,7 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER had fairly well off parents who paid for a better than average education.</story>
       <source>RF</source>
       <page>69</page>
     </module>
@@ -1183,7 +1188,7 @@
           <val>2</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was educated by a megacorp so that he might make a better wageslave when he graduated.</story>
       <source>RF</source>
       <page>70</page>
     </module>
@@ -1227,7 +1232,11 @@
       <addqualities>
         <addquality>Animal Empathy</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER spent their teenage years on a farm, <random>
+        <cube>stacking CubeHens TM</cube>
+        <butter>churning I Can’t Believe It’s Not Butter TM</butter>
+        <meat>maintaining the chlorine tanks on the meat sterilizer</meat>
+      </random>.</story>
       <source>RF</source>
       <page>70</page>
     </module>
@@ -1283,7 +1292,7 @@
           <addquality>SINner (Criminal)</addquality>
         </addqualities>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER spent their teenage years shooting at other teenagers just to gain control over a few city blocks. Just to be clear, $CHARACTER was in a gang, not the Battle of Stalingrad.</story>
       <source>RF</source>
       <page>70</page>
     </module>
@@ -1315,7 +1324,7 @@
           <val>2</val>
         </skilllevel>
       </bonus>
-      <story>In the $SEASON of 2065 the dreaded happened. $REAL began his life at high school</story>
+      <story>$CHARACTER went to high school like a normal person.</story>
       <source>RF</source>
       <page>71</page>
     </module>
@@ -1365,7 +1374,7 @@
       <addqualities>
         <addquality>Social Stress</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was taught at home, by $HOMEDESC. While they managed to avoid the main pitfall of homeschooling and somehow ended up with a better education than their peers, $CHARACTER was left emotionally stunted due to the lack of contact with others.</story>
       <source>RF</source>
       <page>70</page>
     </module>
@@ -1418,7 +1427,7 @@
         <addquality>Incompetent</addquality>
       </addqualities>
       <!--TODO electronics autoselect-->
-      <story>Allan, please add story</story>
+      <story>$CHARACTER spent their teenage years in the middle of nowhere, leaving them with very little knowledge of the outside world, but a lot of knowledge about  $OUTDOOR .</story>
       <source>RF</source>
       <page>71</page>
     </module>
@@ -1474,7 +1483,7 @@
           <quality>Magician</quality>
         </oneof>
       </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <story>$CHARACTER was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
@@ -1532,7 +1541,7 @@
           <quality>Aspected Magician</quality>
         </oneof>
       </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <story>$CHARACTER was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
@@ -1590,7 +1599,7 @@
           <quality>Mystic Adept</quality>
         </oneof>
       </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <story>$CHARACTER was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
@@ -1648,7 +1657,7 @@
           <quality>Adept</quality>
         </oneof>
       </required>
-      <story>As $REAL came of age he started showing magic tendicies and $MEGA took care of him, giving him the best possible education they could. On the implied contract that he would work for them </story>
+      <story>$CHARACTER was identified as awakened at an early age and was sent off to a wizarding school that, sadly, was much less awesome than Hogwarts.</story>
       <addqualities>
         <addquality>SINner (Corporate Limited)</addquality>
       </addqualities>
@@ -1721,7 +1730,7 @@
         <addquality>Rank</addquality>
         <addquality>Code of Honor</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was educated at a military school designed to instill discipline and patriotism in those $LUCK to be sent there.</story>
       <source>RF</source>
       <page>71</page>
     </module>
@@ -1769,7 +1778,7 @@
       <addqualities>
         <addquality>First Impression</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was $LUCK enough to go to a respected private school.</story>
       <source>RF</source>
       <page>71</page>
     </module>
@@ -1829,7 +1838,7 @@
         <!--can't find this quality anywhere, another copy-paste from cgl?-->
         <!--<addquality>Enemy</addquality>-->
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER graduated summa cum laude from the school of hard knocks, with a major in $STREETDESC and a minor in women’s studies.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -2139,7 +2148,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER wanted to get something that resembled higher education, but couldn’t afford to go to a real college. The solution: community college.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -2427,7 +2436,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER either had a scholarship or money to burn, because they managed to get into one of the most exclusive institutions in the country, gaining them a first class education, as well as something nice to put on their resume.</story>
       <source>RF</source>
       <page>73</page>
     </module>
@@ -2771,7 +2780,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER got into a military academy, where they trained to become a commissioned officer in the army of their country.</story>
       <source>RF</source>
       <page>73</page>
     </module>
@@ -3103,7 +3112,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was either not intelligent enough for the ivy league, or unable to afford it. Either way, they got into one of the many other colleges out there.</story>
       <source>RF</source>
       <page>75</page>
     </module>
@@ -3304,11 +3313,10 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>Not even capable of making it into a community college, $CHARACTER had to settle for a trade school, which taught practical things they could use in their future life.</story>
       <source>RF</source>
       <page>75</page>
     </module>
-
     <module>
       <id>47bf63cf-9a2a-4008-b455-c8ab68add581</id>
       <stage>Real Life</stage>
@@ -3365,8 +3373,8 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
-      <source>RF</source>
+      <story>$CHARACTER became a bounty hunter, stalking people who skip out on their bail. On the plus side, they  might have gotten to star in a shitty reality trideo.</story>
+        <source>RF</source>
       <page>76</page>
     </module>
     <module>
@@ -3418,7 +3426,7 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER became famous because they $FAMOUSDESC .</story>
       <source>RF</source>
       <page>76</page>
     </module>
@@ -3472,7 +3480,7 @@
       <addqualities>
         <addquality>Guts</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER decided that muckraking with the Corp’s filth was too likely to get them silenced, so they decided to go for an easier job: covering foreign wars.</story>
       <source>RF</source>
       <page>76</page>
     </module>
@@ -3687,7 +3695,21 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER got a job at 
+	  <random>
+	  <a>Ares</a>
+	  <a2>Aztechnology</a2>
+	  <e>Evo</e>
+	  <h>Horizon</h>
+	  <m>Mitsuhama</m>
+	  <n>Neonet</n>
+	  <r>Renraku</r>
+	  <s>Saeder-Krupp</s>
+	  <s2>Shiawase</s2>
+	  <w>Wuxing</w>
+	  <a>a AA corp, such as Monobe International or Docwagon</aa>
+	  <a>a single A corp, such as The People’s Republic of Vietnam</a>
+	  </random>, becoming another gear in the corporate machine.</story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -3764,7 +3786,13 @@
         <addquality>Hawk Eye</addquality>
         <addquality>Poor Link</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was an genuine secret agent, spying on 
+	  <random><ucas>the UCAS</ucas><cas>the CAS</cas><a>Ares</a><a2>Aztechnology</a2><e>Evo</e><h>Horizon</h><m>Mitsuhama</m><n>Neonet</n><r>Renraku</r><s>Saeder-Krupp</s><s2>Shiawase</s2><w>Wuxing</w><ru>Russia</ru><jp>Japan</jp><az>Amazonia</az><tir>one of the Tirs</tir><nan>one of the NANs</nan>
+	  </random>
+	  for 
+	  <random><ucas>the UCAS</ucas><cas>the CAS</cas><a>Ares</a><a2>Aztechnology</a2><e>Evo</e><h>Horizon</h><m>Mitsuhama</m><n>Neonet</n><r>Renraku</r><s>Saeder-Krupp</s><s2>Shiawase</s2><w>Wuxing</w><ru>Russia</ru><jp>Japan</jp><az>Amazonia</az><tir>one of the Tirs</tir><nan>one of the NANs</nan>
+	  </random>
+	  </story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -3850,7 +3878,7 @@
         <addquality>High Pain Tolerance (Rating 1)</addquality>
         <addquality>Sense of Direction</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER decided getting a job just wasn’t for them, instead choosing to couchsurf, or possibly live in their mother’s basement.</story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -3912,7 +3940,7 @@
       <addqualities>
         <addquality>SINner (Criminal)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER became a criminal, their main income coming from selling other people’s cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -3972,7 +4000,7 @@
       <addqualities>
         <addquality>SINner (National)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER somehow managed to get a job with one of the few government organizations that hasn’t yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -4147,7 +4175,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER $COPDESC</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -4224,7 +4252,7 @@
         <addquality>Made Man</addquality>
         <addquality>SINner (Criminal)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER decided the best way to wealth and power was also the most brutal: organized crime. Specializing in  $GANGDESC , $CHARACTER became well known in the  $GANGTYPE</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -4300,7 +4328,7 @@
       <addqualities>
         <addquality>SINner (Criminal)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was one of the most dangerous things in the world: an idealist. Working for a small policlub or interest group, they got arrested multiple times in their quest to make the world a better place.</story>
       <source>RF</source>
       <page>79</page>
     </module>
@@ -4337,7 +4365,7 @@
           <val>2</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER surfaced from the waters of academia, looked at the real world, said nope, and went straight back into academia.</story>
       <source>RF</source>
       <page>79</page>
     </module>
@@ -4400,7 +4428,7 @@
       <addqualities>
         <addqiality>SINner (National)</addqiality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER overdosed on  $CRIMEDESC  decided to become a private investigator.</story>
       <source>RF</source>
       <page>79</page>
     </module>
@@ -4446,7 +4474,7 @@
         </knowledgeskilllevel>
         <!--todo: +6 points to be spent among vocational skills relating to your job (no more than 3 ranks per skill)-->
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER got a job, exchanging labor for currency like a normal person.</story>
       <source>RF</source>
       <page>79</page>
     </module>
@@ -4701,7 +4729,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER is more than a criminal for hire: they’re a very expensive criminal for hire, with multiple break-ins, kidnappings, and assassinations on their resume.</story>
       <source>RF</source>
       <page>80</page>
     </module>
@@ -4986,7 +5014,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER decided to put his awakened talents to some other use than for the corps.</story>
       <source>RF</source>
       <page>80</page>
     </module>
@@ -5047,7 +5075,7 @@
       <addqualities>
         <addquality>SINner (Criminal)</addquality>
       </addqualities>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER decided activism is for fools. The only way to get your voice heard is force. Blowing up pubs, executing civilians, assassinations, $CHARACTER has done it all.</story>
       <source>RF</source>
       <page>81</page>
     </module>
@@ -5085,7 +5113,7 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER is an intellectual whore, paid by megacorps to explain why  $MEGAWHORE .</story>
       <source>RF</source>
       <page>81</page>
     </module>
@@ -5315,7 +5343,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER worked as a mercenary, fighting for fun and profit instead of for freedom or prophets.</story>
       <source>RF</source>
       <page>82</page>
     </module>
@@ -5538,7 +5566,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER signed on with the armed forces of one of the NANs, fighting to defend their freedom from  $WARNAN .</story>
       <source>RF</source>
       <page>82</page>
     </module>
@@ -5850,7 +5878,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was a greenshirt in service of the Tir, fighting to preserve quite possibly the most dysfunctional nation on the continent.</story>
       <source>RF</source>
       <page>83</page>
     </module>
@@ -6083,7 +6111,7 @@
           </bonus>
         </version>
       </versions>
-      <story>Allan, please add story</story>
+      <story>$CHARACTER was a soldier in service of the UCAS, CAS or CFS, training and drilling for the day the Azzies push north through the NANs so that they might be ready to… liberate them.</story>
       <source>RF</source>
       <page>82</page>
     </module>
@@ -6948,6 +6976,144 @@
   </modules>
   <storybuilder>
     <macros>
+      <ucasorigin>
+        <random>
+          <cleveland>Cleveland</cleveland>
+          <dm>Des Moines</dm>
+          <p>Peoria</p>
+         </random>
+      </ucasorigin>
+      <tirdesc>
+        <random>
+          <nazi>one of two elf supremacist nations</nazi>
+          <prop>a magical utopia founded by elves, for elves</prop>
+          <conspiracy>a fascist dictatorship run by undying tyrants who predate written histor</conspiracy>
+        </random>
+      </tirdesc>
+      <farmdesc>
+        <random>
+          <drone>repairing the drones that moved around hay for him</drone>
+          <paranoia>skimming nutrients of the surface of algae vats</paranoia>
+          <krill>maintaining the complex piping systems that kept gigantic batches of krill alive until they grew to maturity and could be compressed into nutrient rich cubes</krill>
+        </random>
+      </farmdesc>
+      <homedesc>
+        <random>
+          <homeschooling>his parents, who were afraid that if they sent $CHARACTER to school the school would vaccinate $CHARACTER into atheism</homeschooling>
+          <tutor>a personal tutor, who understood the subjects better than the average teacher</tutor>
+        </random>
+      </homedesc>
+      <streetdesc>
+        <random>
+          <punch>kicking ass</punch>
+          <run>running away from the cops</run>
+          <stealth>breaking and entering</stealth>
+         </random>
+      </streetdesc>
+      <famousdesc>
+        <movie> stared in a famous movie</movie>
+        <tv> appeared in a reality tridio</tv>
+        <sports> moved a ball slightly better than all the other players</sports>
+        <chu> won on jeopardy</chu>
+        <kim>… to be honest, we aren’t really sure why</kim>
+      </famousdesc>
+      <copdesc>
+        <random>
+          <justice>’s great belief in justice drove them to join with the physical embodiment of that: the police.</justice>
+          <real> realized that cops get to murder innocents with impunity and thought “Get me some of that!”</real>
+        </random>
+      </copdesc>
+      <gangdesc>
+        <random>
+          <cash>moneylending</cash>
+          <grunt>breaking kneecaps with lead pipes</grunt>
+          <race>fixing races</race>
+          <drug>producing drugs</drug>
+        </random>
+      </gangdesc>
+      <gangtype>
+        <random>
+          <m>Mob</m>
+          <ma>Mafia</ma>
+          <yak>Yakuza</yak>
+          <3>Triads</3>
+          <ko>Seoulpa Rings</ko>
+          <gc>Ghost Cartels</gc>
+        </random>
+      </gangtype>
+      <crimetext>
+        <random>
+          <noir>old noir movies</noir>
+          <pulp>old pulp novels</pulp>
+        </random>
+      </crimetext>
+      <megawhore>
+        <random>
+          <ex>extraterritoriality is a good thing</ex>
+          <jap>extreme racism is good for national unity</jap>
+          <unem>unemployment is a good thing</unem>
+          <gw>global warming is really a communist hoax</gw>
+          <polut>pollution isn’t really that big of a deal</polut>
+          <link>megacorps keeping material links of all their employees keeps people safe</link>
+          <azzie>human sacrifice is good for national unity</azzie>
+        </random>
+      </megawhore>
+      <warnan>
+        <random>
+          <ucas> the UCAS</ucas>
+          <azz> the Azzies</azz>
+          <nan> other NANs, ironically enough</nan>
+        </random>
+      </warnan>
+      <arcology>
+        <random>
+          <deus>was not taken over by a murderous AI bent on world domination</deus>
+          <corp>provided for every need of its residents</corp>
+          <runner>pampered its residents in an attempt to resign them to corp life</runner>
+        </random>
+      </arcology>
+      <orphan>
+        <random>
+          <futurama>orphanarium</futurama>
+          <real1>orphanage</real1>
+          <real2>orphanage</real2>
+          <real3>orphanage</real3>
+          <real4>orphanage</real4>
+        </random>
+      </orphan>
+      <outdoor>
+        <random>
+          <hunt>hunting</hunt>
+          <trap>trapping</trap>
+          <swim>swimming</swim>
+          <mlp>beastiality</mlp>
+          <incest>incest</incest>
+        </random>
+      </outdoor>
+      <flee>
+        <random>
+          <feds>the feds</feds>
+          <corp>$RMEGA corporate security forces</corp>
+          <riaa>RIAA Anti-Piracy Forces</riaa></random>
+      </flee>
+      <persistent>
+        <random>
+          <dad>father</dad>
+          <mom>mother</mom>
+        </random>
+      </persistent>
+      <luck>
+        <random>
+        <l>lucky</l>
+        <u>unlucky</u>
+       </random>
+      </luck>
+      <insulta>
+        <random>
+          <gutter>guttersnipe</gutter>
+          <rag>ragamuffin</rag>
+        </random>
+      </insulta>
       <mega>
         <persistent>
           <ares>Ares</ares>
