@@ -1139,6 +1139,9 @@ namespace Chummer
 					frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
 				else if (bonusNode.OuterXml.Contains("limittoskill"))
 					frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
+				else if (bonusNode.OuterXml.Contains("limittoattribute"))
+					frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
+
 				if (_strForcedValue != "")
 				{
 					frmPickSkill.OnlySkill = _strForcedValue;

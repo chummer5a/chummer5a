@@ -310,7 +310,7 @@
       <avail>10</avail>
       <cost>14000</cost>
       <bonus>
-        <selectskill excludecategory="Magical Active,Resonance Active,Social Active,Technical Active,Vechicle Active">
+        <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
           <applytorating>yes</applytorating>
         </selectskill>
