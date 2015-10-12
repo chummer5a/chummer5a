@@ -1277,7 +1277,7 @@ namespace Chummer
 									}
 									if (!blnFound)
 									{
-										strThisRequirement += "\n\t" + objXmlBioware.InnerText;
+										strThisRequirement += "\n\t" + objXmlCyberware.InnerText;
 									}
 								}
 							}
