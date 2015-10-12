@@ -3,11 +3,12 @@ Application Change:
 - Gauss Ammo is now considered ammo for heavy weapons instead of normal guns
 - Free contacts don't violate the (C+L)>7 limit when creating a character. This allows prime dataheaven membership to pass inspection...
 - Changed the default value for maritial art techniques to cost 5 instead or 4 karma, to conform with official rules. For older instalations, delete the settings file or change this in options.
-- Fixed an issue that stopped weapons from having more than 4 magazine slots. Fixes a crash issue for the Monsoon assault rifle.
 
 Data Change:
 - Poor Self Control (Attention Seeking, Sadistic) now properly grant karma.
-
+- First-pass addition of Hard Targets content has been added. Some provisional issues:
+	- Adept Spell does not work properly. 
+	- There are a few items that use Ratings in ways that haven't previously been required (Ie, the cloaks), so they're not as clean as I'd otherwise like. 
 
 Build 175:
 Application Change:

@@ -1259,18 +1259,25 @@ namespace Chummer
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
+									bool blnFound = false;
 									if (objCyberware.Name == objXmlCyberware.InnerText)
 									{
 										if (objXmlCyberware.Attributes["select"] == null)
 										{
 											intTotal++;
+											blnFound = true;
 											break;
 										}
 										else if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
 										{
 											intTotal++;
+											blnFound = true;
 											break;
 										}
+									}
+									if (!blnFound)
+									{
+										strThisRequirement += "\n\t" + objXmlBioware.InnerText;
 									}
 								}
 							}
@@ -1278,13 +1285,19 @@ namespace Chummer
 							// Check Bioware.
 							foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
 							{
+								bool blnFound = false;
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
 									if (objCyberware.Name == objXmlBioware.InnerText)
 									{
 										intTotal++;
+										blnFound = true;
 										break;
 									}
+								}
+								if (!blnFound)
+								{
+									strThisRequirement += "\n\t" + objXmlBioware.InnerText;
 								}
 							}
 

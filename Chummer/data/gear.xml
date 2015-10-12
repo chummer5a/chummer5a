@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
 	<!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
-  <version>-385</version>
+  <version>-380</version>
   <categories>
     <category>Ammunition</category>
     <category>Armor Enhancements</category>
@@ -6964,5 +6964,327 @@
       <source>DT</source>
       <page>66</page>
     </gear>
+		<!-- Region Hard Targets -->
+		<gear>
+			<id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
+			<name>Ammo: Depleted Uranium</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>28F</avail>
+			<costfor>10</costfor>
+			<cost>1000</cost>
+			<weaponbonus>
+				<damage>1</damage>
+				<ap>-5</ap>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
+			<name>Ammo: Silver</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>12R</avail>
+			<costfor>10</costfor>
+			<cost>250</cost>
+			<weaponbonus>
+				<ap>+2</ap>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
+			<name>Ammo: Wood Pulp</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<costfor>10</costfor>
+			<cost>10</cost>
+			<weaponbonus>
+				<damage>-4</damage>
+				<ap>+4</ap>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
+			<name>Ammo: Hi-De Rounds</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<costfor>10</costfor>
+			<cost>150</cost>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
+			<id>badca1de-593e-4bae-9a0b-e40528c0774e</id>
+			<name>Polychromic Lens</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>0</avail>
+			<cost>100</cost>
+			<source>HT</source>
+			<page>188</page>
+		</gear>
+		<gear>
+			<id>60d3be91-13ed-46a4-85ad-4e0fcde8c3ed</id>
+			<name>Smart Wig</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>1200</cost>
+			<source>HT</source>
+			<page>188</page>
+		</gear>
+		<gear>
+			<id>5700f1e7-3949-4be8-8968-476d13108b09</id>
+			<name>Theatrical Cosmetics Kit</name>
+			<category>Tools of the Trade</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>300</cost>
+			<source>HT</source>
+			<page>188</page>
+		</gear>
+		<gear>
+			<id>5677ae6d-1168-43fa-85f6-b380138bb5b1</id>
+			<name>Synthskin Face Mask</name>
+			<category>Tools of the Trade</category>
+			<rating>6</rating>
+			<avail>8</avail>
+			<cost>Rating * 100</cost>
+			<source>HT</source>
+			<page>188</page>
+		</gear>
+		<gear>
+			<id>4d96ee55-0929-480e-923d-178e69675541</id>
+			<name>Throwing Syringe</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6F</avail>
+			<addweapon>Throwing Syringe</addweapon>
+			<costfor>1</costfor>
+			<cost>40</cost>
+			<source>HT</source>
+			<page>183</page>
+		</gear>
+		<gear>
+			<id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
+			<name>Arrow: Seeker Shaft</name>
+			<category>Ammunition</category>
+			<avail>12F</avail>
+			<costfor>1</costfor>
+			<cost>45</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>39042c0a-4b22-4762-8d56-623033860178</id>
+			<name>Arrow: Monotip Head</name>
+			<category>Ammunition</category>
+			<rating>10</rating>
+			<avail>8R</avail>
+			<costfor>1</costfor>
+			<cost>(Rating * 30)</cost>
+			<bonus>
+				<ap>-2</ap>
+			</bonus>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>e402753f-e7ef-4659-b30e-f5a09b1d9dea</id>
+			<name>Enchanting Gloves</name>
+			<category>Magical Supplies</category>
+			<avail>8</avail>
+			<cost>2000</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>78571d90-7dd9-46b8-ba56-ef0a5b2a7edd</id>
+			<name>Ultrasonic Noise Generator</name>
+			<rating>4</rating>
+			<category>Communications and Countermeasures</category>
+			<armorcapacity>[2]</armorcapacity>
+			<avail>Rating * 2</avail>
+			<cost>Rating * 60</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>f27ca349-5003-42de-97a9-3ae4f69d1aa7</id>
+			<name>C-Squared</name>
+			<category>Chemicals</category>
+			<rating>6</rating>
+			<avail>2</avail>
+			<cost>Rating * 15</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>af0ca7ad-a17e-418f-b7ef-baa9c54a9b8d</id>
+			<name>Quickdraw Quiver</name>
+			<category>Survival Gear</category>
+			<avail>4</avail>
+			<cost>500</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>a6c84397-4ee6-4f04-a18f-5506b38725f2</id>
+			<name>Reactive Myomer Pack</name>
+			<category>Survival Gear</category>
+			<avail>6</avail>
+			<cost>450</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>15a5f4fe-2b4c-4114-bf58-485318045163</id>
+			<name>Reloading Rail</name>
+			<category>Survival Gear</category>
+			<avail>4R</avail>
+			<cost>675</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>9484faea-6aa4-4866-b4a2-cb240e595b0a</id>
+			<name>Reloading Slide</name>
+			<category>Survival Gear</category>
+			<avail>3R</avail>
+			<cost>300</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>a197383c-5ae2-401f-b90d-fae3bfb2727e</id>
+			<name>Tactical Grapple Gun</name>
+			<category>Grapple Gun</category>
+			<addweapon>Tactical Grapple Gun</addweapon>
+			<rating>0</rating>
+			<avail>15F</avail>
+			<cost>10000</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>4faf0e27-38d5-428b-b4ae-2185e194cfc2</id>
+			<name>Harpoon Head</name>
+			<category>Grapple Gun</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>300</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>4f58eaea-24e3-4fc2-ab2b-4d521fbcbbe6</id>
+			<name>Voice Warper</name>
+			<category>Electronic Accessories</category>
+			<rating>6</rating>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>8R</avail>
+			<cost>Rating * 250</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>822d7e5c-e9d8-4021-a797-3f19e4d8c9a5</id>
+			<name>Articulated Grapnel</name>
+			<category>Grapple Gun</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>1000</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>58fb014c-b0bd-4c39-8b5b-8cfd609bde8d</id>
+			<name>Sticky Grapnel</name>
+			<category>Grapple Gun</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>150</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>08fc49a1-ee1f-4b12-a718-bd7e140f0489</id>
+			<name>Grenade Reel</name>
+			<category>Grapple Gun</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>750</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
+			<id>e8303e2a-a358-438d-b968-fc30feb5ff7a</id>
+			<name>Aconite</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>11F</avail>
+			<cost>200</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>d3b0f271-9a7c-43b9-b538-f0d381b2bc22</id>
+			<name>Atropine</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>10F</avail>
+			<cost>150</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>151b47c9-03bd-4dfd-9e2b-97b48bef26a5</id>
+			<name>Dog Asp Venom</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>350</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>ebfb2bab-c9a5-41fb-8e7d-16dfe313bd16</id>
+			<name>Ekyelebenie Venom</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>16F</avail>
+			<cost>575</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>c4e5d594-f578-4b9f-bd36-422135d13208</id>
+			<name>Nova Scorpion Venom</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>14F</avail>
+			<cost>600</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<gear>
+			<id>27d1ca7b-c51c-4368-878d-688ed456c7cf</id>
+			<name>Tetrodotoxin</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>18F</avail>
+			<cost>1000</cost>
+			<source>HT</source>
+			<page>194</page>
+		</gear>
+		<!-- End Region -->
   </gears>
 </chummer>

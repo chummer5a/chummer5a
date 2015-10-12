@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-390</version>
+  <version>-380</version>
   <categories>
     <category>Combat</category>
     <category>Detection</category>
@@ -4205,5 +4205,85 @@
       <source>SSP</source>
       <page>22</page>
     </spell>
+		<!-- Region Hard Targets -->
+		<spell>
+			<name>Catch</name>
+			<descriptor></descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>LOS</range>
+			<damage>P</damage>
+			<duration>1</duration>
+			<dv>F-2</dv>
+			<source>HT</source>
+			<page>191</page>
+			<id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
+		</spell>
+		<spell>
+			<name>Snakeblood</name>
+			<descriptor></descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>Touch</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-2</dv>
+			<source>HT</source>
+			<page>192</page>
+			<id>bc591aab-8409-4359-9124-c93f4bc968f0</id>
+		</spell>
+		<spell>
+			<name>Conceal Scent</name>
+			<descriptor>Object</descriptor>
+			<category>Manipulation</category>
+			<type>P</type>
+			<range>Touch</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F-3</dv>
+			<source>HT</source>
+			<page>191</page>
+			<id>3ca36ddc-1e69-48b4-884b-b37ad86b6412</id>
+		</spell>
+		<spell>
+			<name>Recharge Potency</name>
+			<descriptor></descriptor>
+			<category>Manipulation</category>
+			<type>M</type>
+			<range>Touch</range>
+			<damage>0</damage>
+			<duration>S</duration>
+			<dv>F+1</dv>
+			<source>HT</source>
+			<page>192</page>
+			<id>69d35098-2786-4b84-9825-3706430cc82b</id>
+		</spell>
+		<spell>
+			<name>Manablade</name>
+			<descriptor></descriptor>
+			<category>Combat</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>P</damage>
+			<duration>S</duration>
+			<dv>F-2</dv>
+			<source>HT</source>
+			<page>192</page>
+			<id>70f31768-c19b-4bef-8b71-d992d956d06a</id>
+		</spell>
+		<spell>
+			<name>Powerblade</name>
+			<descriptor></descriptor>
+			<category>Combat</category>
+			<type>M</type>
+			<range>Special</range>
+			<damage>P</damage>
+			<duration>S</duration>
+			<dv>F-2</dv>
+			<source>HT</source>
+			<page>192</page>
+			<id>bc8e70a9-2af6-4728-836d-daf19d5c61d4</id>
+		</spell>
+		<!-- End Region -->
   </spells>
 </chummer>
