@@ -190,7 +190,7 @@
     <metamagic>
       <id>1712175b-66ee-44bd-9149-d2f450cc63d2</id>
       <name>Extended Masking</name>
-      <adept>no</adept>
+      <adept>yes</adept>
       <magician>yes</magician>
       <required>
         <allof>
