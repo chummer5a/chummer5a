@@ -8160,7 +8160,7 @@
 			<name>Ceramic/Plasteel Components 2</name>
 			<mount></mount>
 			<avail>14</avail>
-			<cost>2*(Weapon Cost)</cost>
+			<cost>Weapon Cost * 2</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8169,7 +8169,7 @@
 			<name>Ceramic/Plasteel Components 3</name>
 			<mount></mount>
 			<avail>15</avail>
-			<cost>3*(Weapon Cost)</cost>
+			<cost>Weapon Cost * 3</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8178,7 +8178,7 @@
 			<name>Ceramic/Plasteel Components 4</name>
 			<mount></mount>
 			<avail>16</avail>
-			<cost>4*(Weapon Cost)</cost>
+			<cost>Weapon Cost * 4</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8187,7 +8187,7 @@
 			<name>Ceramic/Plasteel Components 5</name>
 			<mount></mount>
 			<avail>17</avail>
-			<cost>5*(Weapon Cost)</cost>
+			<cost>Weapon Cost * 5</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8196,7 +8196,7 @@
 			<name>Ceramic/Plasteel Components 6</name>
 			<mount></mount>
 			<avail>18</avail>
-			<cost>6*(Weapon Cost)</cost>
+			<cost>Weapon Cost * 6</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
