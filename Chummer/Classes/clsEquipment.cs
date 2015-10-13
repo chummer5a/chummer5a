@@ -7965,10 +7965,21 @@ namespace Chummer
 			{
 				int intReturn = 0;
 
-				if (_strCost == "Weapon Cost")
-					intReturn = _objParent.Cost * _objParent.CostMultiplier;
+
+				if (_strCost.Contains("Weapon Cost"))
+				{
+					float f;
+					if (Utils.TryFloat(_strCost, out f, new Dictionary<string, float>() {{"Weapon Cost", _objParent.Cost}}))
+					{
+						intReturn = (int) f*_objParent.CostMultiplier;
+					}
+					else
+					{
+						throw new Exception("Chummer Crapped istelf trying to parse a bad value (Equipment.WeaponAccessory.TotalCost");
+					}
+				}
 				else
-					intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;
+					intReturn = Convert.ToInt32(_strCost)*_objParent.CostMultiplier;
 
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
@@ -7990,8 +8001,18 @@ namespace Chummer
 			{
 				int intReturn = 0;
 
-				if (_strCost == "Weapon Cost")
-					intReturn = _objParent.Cost * _objParent.CostMultiplier;
+				if (_strCost.Contains("Weapon Cost"))
+				{
+					float f;
+					if (Utils.TryFloat(_strCost, out f, new Dictionary<string, float>() { { "Weapon Cost", _objParent.Cost } }))
+					{
+						intReturn = (int)f * _objParent.CostMultiplier;
+					}
+					else
+					{
+						throw new Exception("Chummer Crapped istelf trying to parse a bad value (Equipment.WeaponAccessory.OwnCost");
+					}
+				}
 				else
 					intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;
 

@@ -130,6 +130,7 @@
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
     <Compile Include="Classes\clsUnique.cs" />
+    <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
