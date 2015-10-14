@@ -16,6 +16,8 @@ namespace Chummer
 		private string _strForceSkill = "";
 		private bool _blnKnowledgeSkill = false;
 
+	    public string LinkedAttribute { get; set; } = "";
+
 		private XmlDocument _objXmlDocument = new XmlDocument();
         private readonly Character _objCharacter;
 
@@ -59,6 +61,16 @@ namespace Chummer
 						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + _strIncludeSkillGroup + "\" and not(exotic)]");
 					else if (_strExcludeSkillGroup != "")
 						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup != \"" + _strExcludeSkillGroup + "\" and not(exotic)]");
+					else if (LinkedAttribute != "")
+					{
+						string[] strExcludes = LinkedAttribute.Split(',');
+						string strExclude = "not(exotic) and (";
+						for (int i = 0; i <= strExcludes.Length - 1; i++)
+							strExclude += "attribute = \"" + strExcludes[i].Trim() + "\" or ";
+						// Remove the trailing " and ";
+						strExclude = strExclude.Substring(0, strExclude.Length - 4) + ")";
+						objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strExclude + "]");
+					}
 					else if (_strLimitToSkill != "")
 					{
 						string strFilter = "not(exotic) and (";
