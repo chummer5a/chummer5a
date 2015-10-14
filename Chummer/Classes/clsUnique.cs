@@ -979,6 +979,7 @@ namespace Chummer
 		private string _strPage = "";
 		private string _strMutant = "";
 		private string _strNotes = "";
+		private bool _blnImplemented = true;
 		private bool _blnContributeToLimit = true;
 		private bool _blnPrint = true;
 		private int _intBP = 0;
@@ -1107,6 +1108,11 @@ namespace Chummer
 				if (objXmlQuality["print"].InnerText == "no")
 					_blnPrint = false;
 			}
+			if (objXmlQuality["implemented"] != null)
+			{
+				if (objXmlQuality["implemented"].InnerText == "False")
+					_blnImplemented = false;
+			}
 			if (objXmlQuality["contributetolimit"] != null)
 			{
 				if (objXmlQuality["contributetolimit"].InnerText == "no")
@@ -1195,7 +1201,8 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("bp", _intBP.ToString());
-            objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
+			objWriter.WriteElementString("implemented", _blnImplemented.ToString());
+			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("metagenetic", _strMetagenetic.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());
 			objWriter.WriteElementString("qualitytype", _objQualityType.ToString());
@@ -1234,6 +1241,7 @@ namespace Chummer
 			_strName = objNode["name"].InnerText;
 			_strExtra = objNode["extra"].InnerText;
 			_intBP = Convert.ToInt32(objNode["bp"].InnerText);
+			_blnImplemented = Convert.ToBoolean(objNode["implemented"].InnerText);
 			_blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
@@ -1561,6 +1569,20 @@ namespace Chummer
 			}
 		}
 
+		/// <summary>
+		/// Whether or not the Quality has been implemented completely, or needs additional code support.
+		/// </summary>
+		public bool Implemented
+		{
+			get
+			{
+				return _blnImplemented;
+			}
+			set
+			{
+				_blnImplemented = value;
+			}
+		}
 		/// <summary>
 		/// Whether or not the Quality contributes towards the character's Quality BP limits.
 		/// </summary>
