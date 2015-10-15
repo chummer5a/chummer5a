@@ -6558,7 +6558,7 @@
 		</quality>
 		<quality>
 			<name>Cyclopean Eye</name>
-			<karma>-10</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -6599,17 +6599,8 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Extravagant Eyes</name>
-			<karma>-2</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>RF</source>
-			<page>120</page>
-			<metagenetic>yes</metagenetic>
-		</quality>
-		<quality>
 			<name>Feathers</name>
-			<karma>-5</karma>
+			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -6798,7 +6789,7 @@
 		</quality>
 		<quality>
 			<name>Vestigial Tail</name>
-			<karma>-5</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
