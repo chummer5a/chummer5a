@@ -694,7 +694,7 @@
 			<page>55</page>
 		</gear>
     <gear>
-			<id></id>
+			<id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
       <name>Net Gun Reload (Standard)</name>
       <category>Ammunition</category>
       <rating>0</rating>
@@ -3009,7 +3009,7 @@
 			<capacity>Rating/[1]</capacity>
 			<armorcapacity>Rating/[1]</armorcapacity>
 			<avail>0</avail>
-			<cost></cost>
+			<cost>0</cost>
 			<source>SR5</source>
 			<page>446</page>
 		</gear>
@@ -5126,7 +5126,7 @@
 		<!-- End Region -->
 		<!-- Region Drugs -->
 		<gear>
-			<id></id>
+			<id>62bffcd7-4a43-45cd-9cf7-3067ba9688f6</id>
 			<name>Bliss</name>
 			<category>Drugs</category>
 			<rating>0</rating>
@@ -5693,7 +5693,7 @@
 			<avail>6F</avail>
 			<cost>500</cost>
 			<source>CF</source>
-			<page></page>
+			<page>187</page>
 		</gear>
 		<gear>
 			<id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>

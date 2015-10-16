@@ -8289,56 +8289,12 @@
 			<page>180</page>
 		</accessory>
 		<accessory>
-			<id>e8e81e1a-d085-4e48-acb9-57948afdb09a</id>
-			<name>Ceramic/Plasteel Components 1</name>
-			<mount></mount>
-			<avail>13</avail>
-			<cost>Weapon Cost</cost>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
-			<id>33724b33-7449-4b3a-8016-7fffc4de407d</id>
-			<name>Ceramic/Plasteel Components 2</name>
-			<mount></mount>
-			<avail>14</avail>
-			<cost>Weapon Cost * 2</cost>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
-			<id>e8db1b0f-cc4d-44d6-bf8d-00ad27aeac33</id>
-			<name>Ceramic/Plasteel Components 3</name>
-			<mount></mount>
-			<avail>15</avail>
-			<cost>Weapon Cost * 3</cost>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
-			<id>f72d0f9e-e791-418d-88df-f85ad1392de6</id>
-			<name>Ceramic/Plasteel Components 4</name>
-			<mount></mount>
-			<avail>16</avail>
-			<cost>Weapon Cost * 4</cost>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
-			<id>8da0b68e-43a3-41f3-8956-f3670a6b2adf</id>
-			<name>Ceramic/Plasteel Components 5</name>
-			<mount></mount>
-			<avail>17</avail>
-			<cost>Weapon Cost * 5</cost>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
 			<id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
-			<name>Ceramic/Plasteel Components 6</name>
+			<name>Ceramic/Plasteel Components</name>
 			<mount></mount>
-			<avail>18</avail>
-			<cost>Weapon Cost * 6</cost>
+			<rating>6</rating>
+			<avail>12 + Rating</avail>
+			<cost>Weapon Cost * Rating</cost>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8502,6 +8458,16 @@
 			<accuracy>1</accuracy>
 			<avail>2</avail>
 			<cost>50</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
+			<name>Personalized Grip</name>
+			<mount/>
+			<accuracy>1</accuracy>
+			<avail>2</avail>
+			<cost>100</cost>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
