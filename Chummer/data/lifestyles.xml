@@ -279,7 +279,7 @@
 			<name>Discreet Cleaning Entertainment - Service</name>
 			<category>Entertainment - Service</category>
 			<lp>4</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>10000</cost>
 			<page>221</page>
@@ -289,7 +289,7 @@
 			<name>Discreet Deliveryman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>100</cost>
 			<page>221</page>
@@ -299,7 +299,7 @@
 			<name>Discreet Candyman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>1000</cost>
 			<page>221</page>
@@ -1007,7 +1007,7 @@
 			<name>Household Gremlins I</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<cost>-300</cost>
 			<page>141</page>
@@ -1017,7 +1017,7 @@
 			<name>Household Gremlins II</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<cost>-600</cost>
 			<page>141</page>
@@ -1037,7 +1037,7 @@
 			<name>Lax Security</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1047,7 +1047,7 @@
 			<name>Limited Building Space</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1057,7 +1057,7 @@
 			<name>Rough Neighborhood</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1067,7 +1067,7 @@
 			<name>No Masters</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>HT</source>
 			<multiplier>-10</multiplier>
 			<page>141</page>

@@ -8783,17 +8783,26 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            else
-            {
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
-                string strMounts = "";
-                foreach (XmlNode objXmlMount in objXmlMountList)
-                    strMounts += objXmlMount.InnerText + "/";
+			else
+			{
+				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+				string strMounts = "";
+				foreach (XmlNode objXmlMount in objXmlMountList)
+				{
+					// Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+					bool blnFound = false;
+					foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
+					{
+						if (objCurrentAccessory.Mount == objXmlMount.InnerText)
+							blnFound = true;
+					}
+					if (!blnFound)
+						strMounts += objXmlMount.InnerText + "/";
+				}
+				frmPickWeaponAccessory.AllowedMounts = strMounts;
+			}
 
-                frmPickWeaponAccessory.AllowedMounts = strMounts;
-            }
-
-            frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
             frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
             frmPickWeaponAccessory.ShowDialog();
 
