@@ -16201,6 +16201,9 @@ namespace Chummer
                 string strTip = "";
                 _blnSkipUpdate = true;
 
+				//Redliner/Cyber Singularity Seeker(hackish)
+	            RedlinerCheck();  
+
                 // Calculate the character's move.
                 string strMovement = "";
                 if (_objOptions.CyberlegMovement)

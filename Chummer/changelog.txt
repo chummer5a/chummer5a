@@ -5,6 +5,7 @@ Application Change:
 - Changed the default value for maritial art techniques to cost 5 instead or 4 karma, to conform with official rules. For older instalations, delete the settings file or change this in options.
 - When selecting life modules that brings an attribute above chargen limit, chummer don't crash anymore.
 - Reflex recorder now properbly affects skills linked to a physical attribute instead of the physical skill group.
+- Redliner and Cyber Singularity Seeker now grants prober bonuses
 
 
 Data Change:

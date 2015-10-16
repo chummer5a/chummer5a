@@ -129,6 +129,7 @@ namespace Chummer
 			SkillLevel = 115,
 			SkillGroupLevel = 116,
 			AddContact,
+			Seeker,
 		}
 
         public enum ImprovementSource
@@ -1107,6 +1108,21 @@ namespace Chummer
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
 				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
 					Improvement.ImprovementType.Restricted, strUnique);
+			}
+
+			if (bonusNode.LocalName == "cyberseeker")
+			{
+				//Check if valid attrib
+				if (new string[] {"BOD", "AGI", "STR", "REA", "LOG", "CHA", "INT", "WIL", "BOX"}.Any(x => x == bonusNode.InnerText))
+				{
+					CreateImprovement(bonusNode.InnerText, objImprovementSource, strSourceName, Improvement.ImprovementType.Seeker, strUnique,0,0,0,0,0,0);
+
+				}
+				else
+				{
+					Utils.BreakIfDebug();
+				}
+
 			}
 
 			// Select a Skill.

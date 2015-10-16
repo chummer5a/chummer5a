@@ -21446,8 +21446,10 @@ namespace Chummer
 				string strTip = "";
 				_blnSkipUpdate = true;
 
-                // Calculate the character's move.
-                string strMovement = "";
+				RedlinerCheck();
+
+				// Calculate the character's move.
+				string strMovement = "";
                 if (_objOptions.CyberlegMovement)
                 {
                     int intLegs = 0;

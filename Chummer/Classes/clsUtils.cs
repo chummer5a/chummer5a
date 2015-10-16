@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -13,8 +14,6 @@ namespace Chummer
 		//have worked for a few years, and will work a few years more
 		public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords )
 		{
-
-
 			//parse to base math string
 			try
 			{
@@ -38,12 +37,14 @@ namespace Chummer
 
 			parsed = 0;
 			return false;
-
-
-
-
 		}
 
+		public static void BreakIfDebug()
+		{
+			if (Debugger.IsAttached)
+				Debugger.Break();
+			
+		}
 
 	}
 }

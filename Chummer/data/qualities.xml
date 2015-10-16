@@ -9089,7 +9089,9 @@
 			<name>Cyber-Singularity Seeker</name>
 			<karma>12</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <cyberseeker>WIL</cyberseeker>
+      </bonus>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -9116,7 +9118,11 @@
 			<name>Redliner</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <cyberseeker>AGI</cyberseeker>
+        <cyberseeker>STR</cyberseeker>
+        <cyberseeker>BOX</cyberseeker>  <!--physical boxes, hardcoded to times 3 elsewhere -->
+      </bonus>
 			<source>CF</source>
 			<page>55</page>
 		</quality>

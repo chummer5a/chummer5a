@@ -675,7 +675,9 @@
     <Compile Include="Controls\SkillGroupControl.Designer.cs">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmCreate.cs" />
+    <Compile Include="Character Creation\frmCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Character Creation\frmCreate.Designer.cs">
       <DependentUpon>frmCreate.cs</DependentUpon>
     </Compile>
@@ -1492,6 +1494,7 @@
     </Content>
     <Content Include="data\gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\improvements.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
