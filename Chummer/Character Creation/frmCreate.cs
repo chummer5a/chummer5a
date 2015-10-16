@@ -376,7 +376,9 @@ namespace Chummer
                 {
                     if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                         objNode.ForeColor = SystemColors.GrayText;
-                }
+					if (!objQuality.Implemented)
+						objNode.ForeColor = Color.Red;
+				}
                 objNode.ToolTipText = objQuality.Notes;
 
                 if (objQuality.Type == QualityType.Positive)
@@ -10438,8 +10440,10 @@ namespace Chummer
                     {
                         if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                             treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
-                        else
-                            treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
+						else if (!objQuality.Implemented)
+							treQualities.SelectedNode.ForeColor = Color.Red;
+						else
+						treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
                     }
                     treQualities.SelectedNode.ToolTipText = objQuality.Notes;
                 }
@@ -22872,6 +22876,10 @@ namespace Chummer
                 TreeNode objNode = new TreeNode();
                 objNode.Text = objQuality.DisplayName;
                 objNode.Tag = objQuality.InternalId;
+				if (!objQuality.Implemented)
+				{
+					objNode.ForeColor = Color.Red;
+				}
                 if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                     objNode.ForeColor = SystemColors.GrayText;
 

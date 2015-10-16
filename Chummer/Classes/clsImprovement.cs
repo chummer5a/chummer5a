@@ -1297,6 +1297,106 @@ namespace Chummer
 				}
 			}
 
+			if (bonusNode.LocalName == ("selectattributes"))
+			{
+				foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("selectattribute"))
+				{
+					objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectattribute");
+					// Display the Select Attribute window and record which Skill was selected.
+					frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+					if (strFriendlyName != "")
+						frmPickAttribute.Description =
+							LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
+					else
+						frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+
+					// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
+					if (_objCharacter.MAGEnabled)
+						frmPickAttribute.AddMAG();
+					if (_objCharacter.RESEnabled)
+						frmPickAttribute.AddRES();
+
+					objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+						"selectattribute = " + bonusNode.OuterXml.ToString());
+
+					if (objXmlAttribute.InnerXml.Contains("<attribute>"))
+					{
+						List<string> strValue = new List<string>();
+						foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("attribute"))
+							strValue.Add(objSubNode.InnerText);
+						frmPickAttribute.LimitToList(strValue);
+					}
+
+					if (bonusNode.InnerXml.Contains("<excludeattribute>"))
+					{
+						List<string> strValue = new List<string>();
+						foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("excludeattribute"))
+							strValue.Add(objSubNode.InnerText);
+						frmPickAttribute.RemoveFromList(strValue);
+					}
+
+					// Check to see if there is only one possible selection because of _strLimitSelection.
+					if (_strForcedValue != "")
+						_strLimitSelection = _strForcedValue;
+
+					objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+						"_strForcedValue = " + _strForcedValue);
+					objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+						"_strLimitSelection = " + _strLimitSelection);
+
+					if (_strLimitSelection != "")
+					{
+						frmPickAttribute.SingleAttribute(_strLimitSelection);
+						frmPickAttribute.Opacity = 0;
+					}
+
+					frmPickAttribute.ShowDialog();
+
+					// Make sure the dialogue window was not canceled.
+					if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+					{
+						Rollback();
+						_strForcedValue = "";
+						return false;
+					}
+
+					_strSelectedValue = frmPickAttribute.SelectedAttribute;
+					if (blnConcatSelectedValue)
+						strSourceName += " (" + _strSelectedValue + ")";
+
+					objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+						"_strSelectedValue = " + _strSelectedValue);
+					objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+						"strSourceName = " + strSourceName);
+
+					// Record the improvement.
+					int intMin = 0;
+					int intAug = 0;
+					int intMax = 0;
+					int intAugMax = 0;
+
+					// Extract the modifiers.
+					if (objXmlAttribute.InnerXml.Contains("min"))
+						intMin = ValueToInt(objXmlAttribute["min"].InnerXml, intRating);
+					if (objXmlAttribute.InnerXml.Contains("val"))
+						intAug = ValueToInt(objXmlAttribute["val"].InnerXml, intRating);
+					if (objXmlAttribute.InnerXml.Contains("max"))
+						intMax = ValueToInt(objXmlAttribute["max"].InnerXml, intRating);
+					if (objXmlAttribute.InnerXml.Contains("aug"))
+						intAugMax = ValueToInt(objXmlAttribute["aug"].InnerXml, intRating);
+
+					string strAttribute = frmPickAttribute.SelectedAttribute;
+
+					if (objXmlAttribute["affectbase"] != null)
+						strAttribute += "Base";
+
+					objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+					CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
+						strUnique,
+						0, 1, intMin, intMax, intAug, intAugMax);
+				}
+			}
+
 			// Select an Attribute.
 			if (bonusNode.LocalName == ("selectattribute"))
 			{

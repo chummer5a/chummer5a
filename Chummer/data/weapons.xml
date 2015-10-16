@@ -6698,6 +6698,148 @@
 			<page>105</page>
 		</weapon>
 		<!--End Region -->
+		<!-- Region Infected Weapons-->
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Sasquatch)</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>105</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 3</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 2</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 1</name>
+			<category>Natural</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Infected) 1</name>
+			<category>Natural</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Infected) 2</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Gnawer)</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>		
+		<!-- End Region -->
 		<!--End Region -->
 		<!-- Region Chrome Flesh-->
 		<!-- Region Chrome Flesh Cyber-Weapons -->
