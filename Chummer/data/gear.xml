@@ -5760,8 +5760,8 @@
 			<name>Snuff</name>
 			<category>Drugs</category>
 			<rating>0</rating>
-			<avail></avail>
-			<cost></cost>
+			<avail>1R</avail>
+			<cost>10</cost>
 			<source>CF</source>
 			<page>183</page>
 		</gear>
