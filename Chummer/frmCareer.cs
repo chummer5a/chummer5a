@@ -15,6 +15,7 @@ public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, in
 
 namespace Chummer
 {
+	[System.ComponentModel.DesignerCategory("Form")]
 	public partial class frmCareer : CharacterShared
 	{
 		// Set the default culture to en-US so we work with decimals correctly.

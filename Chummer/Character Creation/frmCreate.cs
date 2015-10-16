@@ -11,7 +11,8 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmCreate : CharacterShared
+	[System.ComponentModel.DesignerCategory("Form")]
+	public partial class frmCreate : CharacterShared
 	{
         // Set the default culture to en-US so we work with decimals correctly.
         
