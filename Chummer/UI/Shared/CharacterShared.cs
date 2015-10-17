@@ -9,7 +9,7 @@ namespace Chummer
 	/// Contains functionality shared between frmCreate and frmCareer
 	/// </summary>
 	[System.ComponentModel.DesignerCategory("")]
-	public abstract class CharacterShared : Form
+	public class CharacterShared : Form
 	{
 		protected Character _objCharacter;
 		protected MainController _objController;
