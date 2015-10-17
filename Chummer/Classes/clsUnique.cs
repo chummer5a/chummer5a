@@ -1241,7 +1241,9 @@ namespace Chummer
 			_strName = objNode["name"].InnerText;
 			_strExtra = objNode["extra"].InnerText;
 			_intBP = Convert.ToInt32(objNode["bp"].InnerText);
-			_blnImplemented = Convert.ToBoolean(objNode["implemented"].InnerText);
+			//_blnImplemented = Convert.ToBoolean(objNode["implemented"].InnerText);
+
+			objNode.TryPreserveField("implemented", ref _blnImplemented);
 			_blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
