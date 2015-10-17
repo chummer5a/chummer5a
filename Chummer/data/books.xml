@@ -74,5 +74,10 @@
 			<name>Hard Targets</name>
 			<code>HT</code>
 		</book>
+    <book>
+      <id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+      <name>Bloody Business</name>
+      <code>BLB</code>
+    </book>
   </books>
 </chummer>
