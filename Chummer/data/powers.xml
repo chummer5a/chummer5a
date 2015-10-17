@@ -1194,7 +1194,22 @@
 			<source>HT</source>
 			<page>190</page>
 			<id>18da4f2f-f813-4d17-8b7b-29b2751e9cfa</id>
-		</power>		
+		</power>
+		<power>
+			<name>Body Sculpt</name>
+			<points>1</points>
+			<adeptway>0</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<required>
+        			<oneof>
+          				<power>Facial Sculpt</power>
+        			</oneof>
+      			</required>
+			<source>BLB</source>
+			<page>160</page>
+			<id>1dcfcd05-b290-4373-a5dc-60da89c11bf1</id>
+		</power>
   </powers>
   <enhancements>
     <enhancement>
