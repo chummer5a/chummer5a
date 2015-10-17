@@ -130,6 +130,8 @@ namespace Chummer
 			SkillGroupLevel = 116,
 			AddContact,
 			Seeker,
+			PublicAwareness,
+
 		}
 
         public enum ImprovementSource
@@ -4701,6 +4703,11 @@ namespace Chummer
 				
                 objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, intRating, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
+			}
+
+			if (bonusNode.LocalName == "publicawareness")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PublicAwareness, strUnique, ValueToInt(bonusNode.InnerText));
 			}
 
 			//nothing went wrong, so return true

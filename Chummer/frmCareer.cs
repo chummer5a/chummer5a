@@ -58,6 +58,7 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+			_objCharacter.FameChanged += objCharacter_FameChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -1987,6 +1988,11 @@ namespace Chummer
 					}
 				}
 			}
+		}
+
+		private void objCharacter_FameChanged(object sender)
+		{
+			//_objCharacter.TotalPublicAwareness
 		}
 		#endregion
 
@@ -26854,7 +26860,7 @@ namespace Chummer
 		{
 			lblStreetCredTotal.Text = " + " + _objCharacter.CalculatedStreetCred.ToString() + " = " + _objCharacter.TotalStreetCred.ToString();
 			lblNotorietyTotal.Text = " + " + _objCharacter.CalculatedNotoriety.ToString() + " = " + _objCharacter.TotalNotoriety.ToString();
-			lblPublicAwareTotal.Text = " + " + _objCharacter.CalculatedPublicAwareness.ToString() + " = " + _objCharacter.TotalPublicAwareness.ToString();
+			lblPublicAwareTotal.Text = " + " + _objCharacter.CalculatedPublicAwareness.ToString() + " = " + (_objCharacter.TotalPublicAwareness + _objCharacter.CalculatedPublicAwareness).ToString();
 			cmdBurnStreetCred.Left = lblStreetCredTotal.Left + lblStreetCredTotal.Width + 6;
 			cmdBurnStreetCred.Enabled = _objCharacter.TotalStreetCred >= 2;
 

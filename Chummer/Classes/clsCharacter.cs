@@ -5610,9 +5610,11 @@ namespace Chummer
                 double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
                 dblAwareness = Math.Floor(dblAwareness / 3);
 
+				ImprovementManager manager = new ImprovementManager(this);
+
                 int intReturn = 0;
 
-                return intReturn;
+                return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
             }
         }
 

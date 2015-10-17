@@ -2436,6 +2436,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>2</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2463,6 +2464,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>3</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2491,6 +2493,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>5</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -2518,6 +2521,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>8</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
