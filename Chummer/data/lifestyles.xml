@@ -732,8 +732,8 @@
 			<lp>3</lp>
 			<required>
 				<oneof>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<characterquality>SINner (Corporate)</characterquality>
+					<characterquality>SINner (Corporate Limited)</characterquality>
 				</oneof>
 			</required>
 			<source>RF</source>

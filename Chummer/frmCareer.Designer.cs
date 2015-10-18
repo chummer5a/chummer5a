@@ -5516,7 +5516,7 @@
 			// 
 			// lblLifestyleQualities
 			// 
-			this.lblLifestyleQualities.Location = new System.Drawing.Point(494, 151);
+			this.lblLifestyleQualities.Location = new System.Drawing.Point(480, 141);
 			this.lblLifestyleQualities.Name = "lblLifestyleQualities";
 			this.lblLifestyleQualities.Size = new System.Drawing.Size(323, 290);
 			this.lblLifestyleQualities.TabIndex = 115;
