@@ -15724,7 +15724,7 @@ namespace Chummer
                             intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
 	                    }
 						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
-                        if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
+                        if (_objCharacter.JackOfAllTrades)
 	                    {
 		                    if (i <= 5)
 		                    {
@@ -15763,7 +15763,7 @@ namespace Chummer
                             intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intActivePointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
-	                    if (_objCharacter.Created && _objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
+	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
 	                    {
                             intKarmaPointsRemain += 1;
                             intActivePointsUsed -= 1;
@@ -15782,7 +15782,7 @@ namespace Chummer
                                 intActivePointsUsed += i * _objOptions.KarmaImproveActiveSkill;
                             }
 
-							if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
+							if (_objCharacter.JackOfAllTrades)
 							{
 								if (objSkillControl.SkillRating <= 5)
 								{

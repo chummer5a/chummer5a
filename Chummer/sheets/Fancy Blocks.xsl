@@ -435,13 +435,13 @@
 				<tr><td>Magic</td><td><xsl:value-of select="attributes/attribute[name = 'MAG']/base" />
 										<xsl:if test="attributes/attribute[name = 'MAG']/total != attributes/attribute[name = 'MAG']/base">
 											(<xsl:value-of select="attributes/attribute[name = 'MAG']/total" />)
-										</xsl:if></td></tr>
+										</xsl:if></td><td colspan="2" /></tr>
 			</xsl:if>
 			<xsl:if test="resenabled = 'True'">
 				<tr><td>Resonance</td><td><xsl:value-of select="attributes/attribute[name = 'RES']/base" />
 										<xsl:if test="attributes/attribute[name = 'RES']/total != attributes/attribute[name = 'RES']/base">
 											(<xsl:value-of select="attributes/attribute[name = 'RES']/total" />)
-										</xsl:if></td></tr>
+										</xsl:if></td><td colspan="2" /></tr>
 			</xsl:if>
 			<tr><td colspan="4"><hr /></td></tr>
 			<tr><td colspan="2">Initiative</td><td colspan="2"><xsl:value-of select="init" /></td></tr>
@@ -451,9 +451,9 @@
 			<tr><td colspan="2">Matrix Cold Sim</td><td colspan="2"><xsl:value-of select="matrixcoldinit" /></td></tr>
 			<tr><td colspan="2">Matrix Hot Sim</td><td colspan="2"><xsl:value-of select="matrixhotinit" /></td></tr>
 			<tr><td colspan="4"><hr /></td></tr>
-			<tr><td colspan="2">Physical CM</td><td><xsl:value-of select="physicalcm" /></td></tr>
-			<tr><td colspan="2">Overflow</td><td><xsl:value-of select="cmoverflow - 1"/></td></tr>
-			<tr><td colspan="2">Stun CM</td><td><xsl:value-of select="stuncm" /></td></tr>
+			<tr><td colspan="2">Physical CM</td><td colspan="2"><xsl:value-of select="physicalcm" /></td></tr>
+			<tr><td colspan="2">Overflow</td><td colspan="2"><xsl:value-of select="cmoverflow - 1"/></td></tr>
+			<tr><td colspan="2">Stun CM</td><td colspan="2"><xsl:value-of select="stuncm" /></td></tr>
 		</table>
 	</xsl:template>
 	
@@ -757,6 +757,7 @@
 					</td>
 					<td><xsl:value-of select="weaponbonusdamage" /></td>
 					<td><xsl:value-of select="weaponbonusap" /></td>
+					<td colspan="5"></td>
 				</tr>
 			</xsl:for-each>
 		</table>
@@ -1337,7 +1338,7 @@
 				<xsl:sort select="name" />
 				
 				<xsl:if test="category != preceding-sibling::spell[1]/category or position()=1">
-					<tr><td colspan="6"><strong><xsl:value-of select="category" /> Spells</strong></td></tr>
+					<tr><td colspan="7"><strong><xsl:value-of select="category" /> Spells</strong></td></tr>
 				</xsl:if>
 				
 				<tr>
