@@ -5267,9 +5267,16 @@ namespace Chummer
 			objSkillControl.MergeClicked += knoSkill_MergeClick;
             objSkillControl.KnowledgeSkill = true;
             objSkillControl.AllowDelete = true;
-            objSkillControl.SkillRatingMaximum = 6;
-            // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-            objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
+			// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+			objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
             panKnowledgeSkills.Controls.Add(objSkillControl);
 
             _objCharacter.Skills.Add(objSkill);
@@ -7494,7 +7501,14 @@ namespace Chummer
                     objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
             }
 
-            objSkillControl.SkillRatingMaximum = 6;
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
             // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
             objSkillControl.Location = new Point(0, objSkillControl.Height * i + panActiveSkills.AutoScrollPosition.Y);
             panActiveSkills.Controls.Add(objSkillControl);
@@ -21664,10 +21678,18 @@ namespace Chummer
                         objSkill.ExoticSkill = true;
                         _objCharacter.Skills.Add(objSkill);
 
-                        objSkillControl.SkillRatingMaximum = 6;
 
-                        // Make sure it's not going above the maximum number.
-                        if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
+						if (_objCharacter.IgnoreRules)
+						{
+							objSkillControl.SkillRatingMaximum = 12;
+						}
+						else
+						{
+							objSkillControl.SkillRatingMaximum = 6;
+						}
+
+						// Make sure it's not going above the maximum number.
+						if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
                             objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
                         else
                             objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
@@ -21759,9 +21781,17 @@ namespace Chummer
 
                     objSkillControl.KnowledgeSkill = true;
                     objSkillControl.AllowDelete = true;
-                    objSkillControl.SkillRatingMaximum = 6;
-                    // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                    objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+
+					if (_objCharacter.IgnoreRules)
+					{
+						objSkillControl.SkillRatingMaximum = 12;
+					}
+					else
+					{
+						objSkillControl.SkillRatingMaximum = 6;
+					}
+					// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+					objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
                     panKnowledgeSkills.Controls.Add(objSkillControl);
 
                     objSkillControl.SkillName = objXmlSkill["name"].InnerText;

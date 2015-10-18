@@ -1022,6 +1022,20 @@ namespace Chummer
                        int.TryParse(lblBP.Text, out x);
                     //_objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
                 }
+
+				// Ignore Rules
+				if (_objCharacter.IgnoreRules)
+				{
+					foreach (Skill objSkill in _objCharacter.Skills)
+					{
+						objSkill.RatingMaximum = 12;
+					}
+					foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+					{
+						objSkillGroup.RatingMaximum = 12;
+					}
+				}
+
 				this.DialogResult = DialogResult.OK;
                 this.Close();
             }
