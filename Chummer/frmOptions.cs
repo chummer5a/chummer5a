@@ -292,7 +292,7 @@ namespace Chummer
 	        {
 	            openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
 
-	            if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+	            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
 	                UpdateSourcebookInfoPath(openFileDialog.FileName);
 	        }
 	    }
