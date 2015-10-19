@@ -9113,7 +9113,9 @@
 			<name>Prototype Transhuman</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<prototypetranshuman>1</prototypetranshuman>
+			</bonus>>
 			<source>CF</source>
 			<page>54</page>
 		</quality>

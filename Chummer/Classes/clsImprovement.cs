@@ -128,9 +128,10 @@ namespace Chummer
 			Attributelevel = 114,
 			SkillLevel = 115,
 			SkillGroupLevel = 116,
-			AddContact,
-			Seeker,
-			PublicAwareness,
+			AddContact = 117,
+			Seeker = 118,
+			PublicAwareness = 119,
+			PrototypeTranshuman = 120
 
 		}
 
@@ -2639,6 +2640,15 @@ namespace Chummer
 				_objCharacter.JackOfAllTrades = true;
 			}
 
+			// Check for Prototype Transhuman modifiers.
+			if (bonusNode.LocalName == ("prototypetranshuman"))
+			{
+				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "prototypetranshuman");
+				objFunctions.LogWrite(CommonFunctions.LogType.Content, "Chummer.ImprovementManager",
+					"prototypetranshuman = " + bonusNode.OuterXml.ToString());
+				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Calling CreateImprovement");
+				_objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
+			}
 			// Check for Uncouth modifiers.
 			if (bonusNode.LocalName == ("uncouth"))
 			{
@@ -5131,9 +5141,30 @@ namespace Chummer
 
                     if (!blnFound)
                         _objCharacter.JackOfAllTrades = false;
-                }
-                // Turn off the CollegeEducation flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
+				}
+				// Turn off the prototypetranshuman flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
+				{
+					bool blnFound = false;
+					// See if the character has anything else that is granting them access to prototypetranshuman.
+					foreach (Improvement objCharacterImprovement in _objCharacter.Improvements)
+					{
+						// Skip items from the current Improvement source.
+						if (objCharacterImprovement.SourceName != objImprovement.SourceName)
+						{
+							if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
+							{
+								blnFound = true;
+								break;
+							}
+						}
+					}
+
+					if (!blnFound)
+						_objCharacter.PrototypeTranshuman = 0;
+				}
+				// Turn off the CollegeEducation flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.CollegeEducation)
                 {
                     bool blnFound = false;
                     // See if the character has anything else that is granting them access to CollegeEducation.
