@@ -4983,6 +4983,14 @@ namespace Chummer
 						}
                     }
                 }
+				if (_decPrototypeTranshuman != 0)
+				{
+						decBioware -= _decPrototypeTranshuman;
+						if (decBioware < 0)
+						{
+							decBioware = 0;
+						}
+				}
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
