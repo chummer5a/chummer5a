@@ -2111,6 +2111,9 @@
 			<name>Primitive Prosthetic Full Arm</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2123,6 +2126,9 @@
 			<name>Primitive Prosthetic Lower Arm</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2135,6 +2141,9 @@
 			<name>Primitive Prosthetic Hand</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2147,6 +2156,9 @@
 			<name>Primitive Prosthetic Full Leg</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2159,6 +2171,9 @@
 			<name>Primitive Prosthetic Lower Leg</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2171,6 +2186,9 @@
 			<name>Primitive Prosthetic Foot</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
+			<bonus>
+				<selectside />
+			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
@@ -2207,6 +2225,9 @@
 			<name>Cyberfinger</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.05</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[1]</capacity>
 			<avail>2</avail>
 			<cost>500</cost>
@@ -2218,6 +2239,9 @@
 			<name>Digigrade Legs</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.25</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[4]</capacity>
 			<avail>+4</avail>
 			<cost>5000</cost>
@@ -2229,6 +2253,9 @@
 			<name>Grapple Hand</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.45</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[10]</capacity>
 			<addweapon>Grapple Fist</addweapon>
 			<avail>12R</avail>
@@ -2241,6 +2268,9 @@
 			<name>Monkey Foot</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.3</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[2]</capacity>
 			<avail>8</avail>
 			<cost>6000</cost>
@@ -2252,6 +2282,9 @@
 			<name>Raptor Foot</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.5</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<addweapon>Raptor Foot</addweapon>
 			<capacity>[4]</capacity>
 			<avail>8R</avail>
@@ -2264,6 +2297,9 @@
 			<name>Skates</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[2]</capacity>
 			<avail>4</avail>
 			<cost>250</cost>
@@ -2275,6 +2311,13 @@
 			<name>Skimmers</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-2</value>
+				</limitmodifier>
+				<selectside />
+			</bonus>
 			<capacity>[4]</capacity>
 			<avail>8</avail>
 			<cost>2000</cost>
@@ -2286,6 +2329,9 @@
 			<name>Snake Fingers</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[2]</capacity>
 			<avail>6</avail>
 			<cost>1000</cost>
@@ -2297,6 +2343,9 @@
 			<name>Modular Component (Hand/Foot)</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[1]</capacity>
 			<avail>+2</avail>
 			<cost>1000</cost>
@@ -2331,6 +2380,9 @@
 			<category>Cyberlimb Enhancement</category>
 			<rating>2</rating>
 			<ess>0</ess>
+			<bonus>
+				<selectside />
+			</bonus>
 			<capacity>[Rating * 3]</capacity>
 			<avail>Rating * 4</avail>
 			<cost>Rating * 1000</cost>
@@ -2340,6 +2392,9 @@
 		<cyberware>
 			<id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
 			<name>Water Jet</name>
+			<bonus>
+				<selectside />
+			</bonus>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
 			<capacity>[4]</capacity>

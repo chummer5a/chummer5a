@@ -1488,6 +1488,62 @@
 			<page>118</page>
 		</bioware>
 		<bioware>
+			<id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
+			<name>Limb replacement (Finger/Toe)</name>
+			<category>Cultured</category>
+			<ess>0.02</ess>
+			<bonus>
+				<selectside />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>118</page>
+		</bioware>
+		<bioware>
+			<id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
+			<name>Limb replacement (Hand/foot)</name>
+			<category>Cultured</category>
+			<ess>0.02</ess>
+			<bonus>
+				<selectside />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>20000</cost>
+			<source>CF</source>
+			<page>118</page>
+		</bioware>
+		<bioware>
+			<id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
+			<name>Limb replacement (Half arm/leg)</name>
+			<category>Cultured</category>
+			<ess>0.02</ess>
+			<bonus>
+				<selectside />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>12</avail>
+			<cost>40000</cost>
+			<source>CF</source>
+			<page>118</page>
+		</bioware>
+		<bioware>
+			<id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
+			<name>Limb replacement (Full arm/leg)</name>
+			<category>Cultured</category>
+			<ess>0.02</ess>
+			<bonus>
+				<selectside />
+			</bonus>
+			<capacity>0</capacity>
+			<avail>12</avail>
+			<cost>80000</cost>
+			<source>CF</source>
+			<page>118</page>
+		</bioware>
+		<bioware>
 			<id>f0aa87d0-2d86-482c-808d-667f1078f357</id>
 			<name>Neuro Retention Amplification</name>
 			<category>Cultured</category>
