@@ -1,5 +1,5 @@
 $directoryPath = Split-Path ((Get-Variable MyInvocation).Value).MyCommand.Path
-$assemblyFile = "$directoryPath\VersionInfo.cs"
+$assemblyFile = "$directoryPath\Chummer\Properties\AssemblyInfo.cs"
 
 $RegularExpression = [regex] 'AssemblyVersion\(\"(.*)\"\)'
     
