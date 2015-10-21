@@ -1422,6 +1422,7 @@ namespace Chummer
 		#endregion
 
         #region Logging Functions
+		[Obsolete]
         public void LogWrite(LogType logType, string strClass, string strLine)
         {
 	        Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);
