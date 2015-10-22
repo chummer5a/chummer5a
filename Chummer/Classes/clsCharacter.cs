@@ -168,7 +168,7 @@ namespace Chummer
         private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
-		private decimal _decPrototypeTranshuman = 1.0m;
+		private decimal _decPrototypeTranshuman = 0m;
 
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -4983,13 +4983,16 @@ namespace Chummer
 						}
                     }
                 }
-				if (_decPrototypeTranshuman != 0)
+				if (_decPrototypeTranshuman > 0)
 				{
+					if ((decBioware - _decPrototypeTranshuman) < 0)
+					{
+						decBioware = 0;
+					}
+					else
+					{
 						decBioware -= _decPrototypeTranshuman;
-						if (decBioware < 0)
-						{
-							decBioware = 0;
-						}
+					}
 				}
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
