@@ -26,6 +26,8 @@ public delegate void CritterTabEnabledChangedHandler(Object sender);
 public delegate void UneducatedChangedHandler(Object sender);
 // JackOfAllTradesChanged Event Handler
 public delegate void JackOfAllTradesChangedHandler(Object sender);
+// PrototypeTranshumanChanged Event Handler
+public delegate void PrototypeTranshumanChangedHandler(Object sender);
 // CollegeEducationChanged Event Handler
 public delegate void CollegeEducationChangedHandler(Object sender);
 // SchoolOfHardKnocksChanged Event Handler
@@ -154,7 +156,7 @@ namespace Chummer
         private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
-        private bool _blnExCon = false;
+		private bool _blnExCon = false;
         private bool _blnTechSchool = false;
         private bool _blnRestrictedGear = false;
         private bool _blnOverclocker = false;
@@ -166,6 +168,7 @@ namespace Chummer
         private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
+		private decimal _decPrototypeTranshuman = 0m;
 
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -285,6 +288,7 @@ namespace Chummer
 		public event MadeManChangedHandler MadeManChanged;
 		public event MagicianTabEnabledChangedHandler MagicianTabEnabledChanged;
 		public event OverclockerChangedHandler OverclockerChanged;
+		public event PrototypeTranshumanChangedHandler PrototypeTranshumanChanged;
 		public event RESEnabledChangedHandler RESEnabledChanged;
 		public event RestrictedGearChangedHandler RestrictedGearChanged;
 		public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
@@ -523,8 +527,10 @@ namespace Chummer
             objWriter.WriteElementString("collegeeducation", _blnCollegeEducation.ToString());
             // <friendsinhighplaces />
             objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
-            // <jackofalltrades />
-            objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
+			// <prototypetranshuman />
+			objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString());
+			// <jackofalltrades />
+			objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
             // <blackmarket />
             objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
 
@@ -1497,7 +1503,14 @@ namespace Chummer
             catch
             {
             }
-            try
+			try
+			{
+				_decPrototypeTranshuman = Convert.ToDecimal(objXmlCharacter["prototypetranshuman"].InnerText, GlobalOptions.Instance.CultureInfo);
+			}
+			catch
+			{
+			}
+			try
             {
                 _blnJackOfAllTrades = Convert.ToBoolean(objXmlCharacter["jackofalltrades"].InnerText);
             }
@@ -4962,12 +4975,25 @@ namespace Chummer
                         decHole += objCyberware.CalculatedESS;
                     else
                     {
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            decCyberware += objCyberware.CalculatedESS;
-                        else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                            decBioware += objCyberware.CalculatedESS;
+						if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+							decCyberware += objCyberware.CalculatedESS;
+						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+						{
+								decBioware += objCyberware.CalculatedESS;
+						}
                     }
                 }
+				if (_decPrototypeTranshuman > 0)
+				{
+					if ((decBioware - _decPrototypeTranshuman) < 0)
+					{
+						decBioware = 0;
+					}
+					else
+					{
+						decBioware -= _decPrototypeTranshuman;
+					}
+				}
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
@@ -7121,10 +7147,25 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Whether or not College Education is enabled.
-        /// </summary>
-        public bool CollegeEducation
+		/// <summary>
+		/// Whether or not user is getting free bioware from Prototype Transhuman.
+		/// </summary>
+		public decimal PrototypeTranshuman
+		{
+			get
+			{
+				return _decPrototypeTranshuman;
+			}
+			set
+			{
+				_decPrototypeTranshuman = value;
+            }
+		}
+
+		/// <summary>
+		/// Whether or not College Education is enabled.
+		/// </summary>
+		public bool CollegeEducation
         {
             get
             {

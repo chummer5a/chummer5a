@@ -5267,9 +5267,16 @@ namespace Chummer
 			objSkillControl.MergeClicked += knoSkill_MergeClick;
             objSkillControl.KnowledgeSkill = true;
             objSkillControl.AllowDelete = true;
-            objSkillControl.SkillRatingMaximum = 6;
-            // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-            objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
+			// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+			objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
             panKnowledgeSkills.Controls.Add(objSkillControl);
 
             _objCharacter.Skills.Add(objSkill);
@@ -7494,7 +7501,14 @@ namespace Chummer
                     objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
             }
 
-            objSkillControl.SkillRatingMaximum = 6;
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
             // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
             objSkillControl.Location = new Point(0, objSkillControl.Height * i + panActiveSkills.AutoScrollPosition.Y);
             panActiveSkills.Controls.Add(objSkillControl);
@@ -15724,7 +15738,7 @@ namespace Chummer
                             intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
 	                    }
 						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
-                        if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
+                        if (_objCharacter.JackOfAllTrades)
 	                    {
 		                    if (i <= 5)
 		                    {
@@ -15763,7 +15777,7 @@ namespace Chummer
                             intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intActivePointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
-	                    if (_objCharacter.Created && _objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
+	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
 	                    {
                             intKarmaPointsRemain += 1;
                             intActivePointsUsed -= 1;
@@ -15782,7 +15796,7 @@ namespace Chummer
                                 intActivePointsUsed += i * _objOptions.KarmaImproveActiveSkill;
                             }
 
-							if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
+							if (_objCharacter.JackOfAllTrades)
 							{
 								if (objSkillControl.SkillRating <= 5)
 								{
@@ -21664,10 +21678,18 @@ namespace Chummer
                         objSkill.ExoticSkill = true;
                         _objCharacter.Skills.Add(objSkill);
 
-                        objSkillControl.SkillRatingMaximum = 6;
 
-                        // Make sure it's not going above the maximum number.
-                        if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
+						if (_objCharacter.IgnoreRules)
+						{
+							objSkillControl.SkillRatingMaximum = 12;
+						}
+						else
+						{
+							objSkillControl.SkillRatingMaximum = 6;
+						}
+
+						// Make sure it's not going above the maximum number.
+						if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
                             objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
                         else
                             objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
@@ -21759,9 +21781,17 @@ namespace Chummer
 
                     objSkillControl.KnowledgeSkill = true;
                     objSkillControl.AllowDelete = true;
-                    objSkillControl.SkillRatingMaximum = 6;
-                    // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                    objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+
+					if (_objCharacter.IgnoreRules)
+					{
+						objSkillControl.SkillRatingMaximum = 12;
+					}
+					else
+					{
+						objSkillControl.SkillRatingMaximum = 6;
+					}
+					// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+					objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
                     panKnowledgeSkills.Controls.Add(objSkillControl);
 
                     objSkillControl.SkillName = objXmlSkill["name"].InnerText;

@@ -7051,6 +7051,20 @@
 			<page>189</page>
 		</gear>
 		<gear>
+			<id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
+			<name>Ammo: Subsonic</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<costfor>10</costfor>
+			<cost>40</cost>
+			<weaponbonus>
+				<damage>-1</damage>
+			</weaponbonus>
+			<source>HT</source>
+			<page>189</page>
+		</gear>
+		<gear>
 			<id>badca1de-593e-4bae-9a0b-e40528c0774e</id>
 			<name>Polychromic Lens</name>
 			<category>Tools of the Trade</category>
