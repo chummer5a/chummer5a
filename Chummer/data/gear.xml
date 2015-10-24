@@ -4753,6 +4753,36 @@
       <rating>0</rating>
       <avail>0</avail>
       <cost>20</cost>
+      <source>SSP</source>
+      <page>24</page>
+    </gear>
+    <gear>
+      <id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
+      <name>Refined Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <avail>6</avail>
+      <cost>350</cost>
+      <source>SSP</source>
+      <page>24</page>
+    </gear>
+    <gear>
+      <id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
+      <name>Radical Reagents</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <avail>8</avail>
+      <cost>4500</cost>
+      <source>SSP</source>
+      <page>24</page>
+    </gear>
+    <gear>
+      <id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
+      <name>Orichalum</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <avail>12</avail>
+      <cost>140000</cost>
       <source>SR5</source>
       <page>316</page>
     </gear>
