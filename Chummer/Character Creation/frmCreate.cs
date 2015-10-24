@@ -710,6 +710,11 @@ namespace Chummer
                 SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
                 objGroupControl.SkillGroupObject = objGroup;
 
+				if (_objCharacter.IgnoreRules)
+				{
+					objGroup.RatingMaximum = 12;
+                }
+
                 // Attach an EventHandler for the GetRatingChanged Event.
                 objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
 
@@ -8829,7 +8834,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount,Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
             objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -9257,8 +9262,8 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
-            objAccessory.Parent = objWeapon;
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+			objAccessory.Parent = objWeapon;
             objWeapon.WeaponAccessories.Add(objAccessory);
 
             objNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
@@ -17387,7 +17392,8 @@ namespace Chummer
                 lblWeaponReach.Text = "";
                 lblWeaponMode.Text = "";
                 lblWeaponAmmo.Text = "";
-                lblWeaponSource.Text = "";
+				lblWeaponRating.Text = "";
+				lblWeaponSource.Text = "";
                 tipTooltip.SetToolTip(lblWeaponSource, null);
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
@@ -17457,7 +17463,8 @@ namespace Chummer
                 lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                 lblWeaponMode.Text = objWeapon.CalculatedMode;
                 lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-                lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+				lblWeaponRating.Text = "";
+				lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 lblWeaponDicePool.Text = objWeapon.DicePool;
                 tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
                 tipTooltip.SetToolTip(lblWeaponRC, objWeapon.RCToolTip);
@@ -17507,7 +17514,8 @@ namespace Chummer
                     lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                     lblWeaponMode.Text = objWeapon.CalculatedMode;
                     lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-                    lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					lblWeaponRating.Text = "";
+					lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     lblWeaponDicePool.Text = objWeapon.DicePool;
                     tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
 
@@ -17538,6 +17546,7 @@ namespace Chummer
                         lblWeaponReach.Text = "";
                         lblWeaponMode.Text = "";
                         lblWeaponAmmo.Text = "";
+						lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
 
                         string[] strMounts = objSelectedAccessory.Mount.Split('/');
                         string strMount = "";
@@ -17586,7 +17595,8 @@ namespace Chummer
                             lblWeaponReach.Text = "";
                             lblWeaponMode.Text = "";
                             lblWeaponAmmo.Text = "";
-                            lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
+							lblWeaponRating.Text = "";
+							lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
                             string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
                             string strPage = objSelectedMod.Page;
                             lblWeaponSource.Text = strBook + " " + strPage;
@@ -17617,7 +17627,8 @@ namespace Chummer
                             lblWeaponMode.Text = "";
                             lblWeaponAmmo.Text = "";
                             lblWeaponSlots.Text = "";
-                            string strBook = _objOptions.LanguageBookShort(objGear.Source);
+							lblWeaponRating.Text = "";
+							string strBook = _objOptions.LanguageBookShort(objGear.Source);
                             string strPage = objGear.Page;
                             lblWeaponSource.Text = strBook + " " + strPage;
                             tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
@@ -22229,9 +22240,10 @@ namespace Chummer
                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                             TreeNode objModNode = new TreeNode();
                             string strMount = "";
+							int intRating = 0;
                             if (objXmlAccessory["mount"] != null)
                                 strMount = objXmlAccessory["mount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, strMount);
+                            objMod.Create(objXmlAccessoryNode, objModNode, strMount, intRating);
                             objModNode.ContextMenuStrip = cmsWeaponAccessory;
                             objMod.Parent = objWeapon;
 
@@ -22595,9 +22607,10 @@ namespace Chummer
                                     WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                     TreeNode objModNode = new TreeNode();
                                     string strMount = "";
-                                    if (objXmlAccessory["mount"] != null)
+									int intRating = 0;
+									if (objXmlAccessory["mount"] != null)
                                         strMount = objXmlAccessory["mount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, objModNode, strMount);
+                                    objMod.Create(objXmlAccessoryNode, objModNode, strMount,intRating);
                                     objModNode.ContextMenuStrip = cmsWeaponAccessory;
                                     objMod.Parent = objWeapon;
 

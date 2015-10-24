@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-340</version>
+	<version>-335</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -7595,6 +7595,7 @@
 			<id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
 			<name>Silencer, Ares Light Fire 70</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>SR5</source>
@@ -7604,6 +7605,7 @@
 			<id>4026650e-ecd3-4514-b2c6-d03dc1d466b5</id>
 			<name>Silencer, Ares Light Fire 75</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>SR5</source>
@@ -7613,6 +7615,7 @@
 			<id>294a6b30-6e1c-4b7d-8e93-10964647c2dd</id>
 			<name>Airburst Link</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>600</cost>
 			<source>SR5</source>
@@ -7622,6 +7625,7 @@
 			<id>6e06df00-95b8-450f-9f2a-4a86c582d342</id>
 			<name>Bipod</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<rc>2</rc>
 			<rcgroup>1</rcgroup>
 			<avail>2</avail>
@@ -7633,6 +7637,7 @@
 			<id>7f66a669-917a-4423-bd83-cf0e0a1fb2a8</id>
 			<name>Concealable Holster</name>
 			<mount/>
+			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>2</avail>
 			<cost>150</cost>
@@ -7644,6 +7649,7 @@
 			<name>Gas-Vent 1 System</name>
 			<mount>Barrel</mount>
 			<rc>1</rc>
+			<rating>0</rating>
 			<avail>3R</avail>
 			<cost>200</cost>
 			<source>SR5</source>
@@ -7674,6 +7680,7 @@
 			<name>Gyro Mount</name>
 			<mount>Under</mount>
 			<rc>6</rc>
+			<rating>0</rating>
 			<rcgroup>1</rcgroup>
 			<avail>7</avail>
 			<cost>1400</cost>
@@ -7684,6 +7691,7 @@
 			<id>7ca0c689-a05e-4377-ae44-3dc15abe2ee2</id>
 			<name>Hidden Gun Arm Slide</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>350</cost>
 			<source>SR5</source>
@@ -7694,6 +7702,7 @@
 			<name>Imaging Scope</name>
 			<mount>Top</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>300</cost>
 			<allowgear>
 				<gearcategory>Vision Enhancements</gearcategory>
@@ -7706,6 +7715,7 @@
 			<name>Laser Sight</name>
 			<mount>Top/Under</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<cost>125</cost>
 			<source>SR5</source>
@@ -7717,6 +7727,7 @@
 			<mount>Top</mount>
 			<avail>3</avail>
 			<cost>70</cost>
+			<rating>0</rating>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -7725,6 +7736,7 @@
 			<name>Quick-Draw Holster</name>
 			<mount/>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>175</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7736,6 +7748,7 @@
 			<rc>1</rc>
 			<rcgroup>2</rcgroup>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>50</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7746,6 +7759,7 @@
 			<mount>Barrel</mount>
 			<avail>9F</avail>
 			<cost>500</cost>
+			<rating>0</rating>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -7754,6 +7768,7 @@
 			<name>Sound Suppressor</name>
 			<mount>Barrel</mount>
 			<avail>9F</avail>
+			<rating>0</rating>
 			<cost>500</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7763,6 +7778,7 @@
 			<name>Smart Firing Platform</name>
 			<mount>Under</mount>
 			<avail>12F</avail>
+			<rating>0</rating>
 			<cost>2000</cost>
 			<source>SR5</source>
 			<page>433</page>
@@ -7771,6 +7787,7 @@
 			<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
 			<name>Smartgun System, Internal</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>+2R</avail>
 			<cost>Weapon Cost</cost>
 			<accuracy>2</accuracy>
@@ -7785,6 +7802,7 @@
 			<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
 			<name>Smartgun System, External</name>
 			<mount>Top/Under</mount>
+			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>200</cost>
 			<accuracy>2</accuracy>
@@ -7799,6 +7817,7 @@
 			<id>4ed24342-276e-4455-acba-22b551e4d775</id>
 			<name>Spare Clip</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>5</cost>
 			<allowgear>
@@ -7810,6 +7829,7 @@
 		<accessory>
 			<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 			<name>Speed Loader</name>
+			<rating>0</rating>
 			<mount/>
 			<avail>2</avail>
 			<cost>25</cost>
@@ -7820,6 +7840,7 @@
 			<id>28936368-9e16-498f-b028-92ec31e89a00</id>
 			<name>Tripod</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<rc>6</rc>
 			<rcgroup>1</rcgroup>
 			<avail>4</avail>
@@ -7833,6 +7854,7 @@
 			<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 			<name>Advanced Safety System, Basic</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>600</cost>
 			<source>RG</source>
@@ -7843,6 +7865,7 @@
 			<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
 			<mount>Barrel</mount>
 			<avail>6F</avail>
+			<rating>0</rating>
 			<cost>700</cost>
 			<source>RG</source>
 			<page>32</page>
@@ -7851,6 +7874,7 @@
 			<id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>
 			<name>Collapsed Frame</name>
 			<mount>Internal</mount>
+			<rating>0</rating>
 			<conceal>-6</conceal>
 			<avail>0</avail>
 			<cost>0</cost>
@@ -7863,6 +7887,7 @@
 			<mount/>
 			<avail>0</avail>
 			<cost>400</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>35</page>
 		</accessory>
@@ -7870,6 +7895,7 @@
 			<id>2fa27223-dd56-4520-b26b-a112e8733320</id>
 			<name>Vindicator 200-Round Belt</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>100</cost>
 			<source>RG</source>
@@ -7880,6 +7906,7 @@
 			<name>Advanced Safety System, Immobilization</name>
 			<mount/>
 			<avail>6</avail>
+			<rating>0</rating>
 			<cost>700</cost>
 			<source>RG</source>
 			<page>50</page>
@@ -7888,6 +7915,7 @@
 			<id>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</id>
 			<name>Advanced Safety System, Self Destruct</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>800</cost>
 			<source>RG</source>
@@ -7897,6 +7925,7 @@
 			<id>25b695f8-ed5a-4b75-baf0-164dcde74f2d</id>
 			<name>Advanced Safety System, Explosive Self Destruct</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>11F</avail>
 			<cost>1000</cost>
 			<source>RG</source>
@@ -7906,6 +7935,7 @@
 			<id>b64d5256-0c24-4842-b05d-25ee735c9b6a</id>
 			<name>Advanced Safety System, Electro Shocker</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>950</cost>
 			<source>RG</source>
@@ -7914,6 +7944,7 @@
 		<accessory>
 			<id>dc859601-1271-4f5d-ac37-e389c95f052a</id>
 			<name>Bayonet</name>
+			<rating>0</rating>
 			<mount>Top/Under</mount>
 			<avail>4R</avail>
 			<cost>50</cost>
@@ -7925,6 +7956,7 @@
 			<name>Concealed Quick-Draw Holster</name>
 			<mount/>
       <conceal>-1</conceal>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>275</cost>
 			<source>RG</source>
@@ -7932,19 +7964,11 @@
 		</accessory>
 		<accessory>
 			<id>381dd922-19af-46fd-9999-0202c85574de</id>
-			<name>Extreme Environment Modification, Level 1</name>
+			<name>Extreme Environment Modification</name>
 			<mount/>
+			<rating>2</rating>
 			<avail>8</avail>
-			<cost>1500</cost>
-			<source>RG</source>
-			<page>51</page>
-		</accessory>
-		<accessory>
-			<id>bf33b0e2-ead5-4f1e-b0ae-04489294b141</id>
-			<name>Extreme Environment Modification, Level 2</name>
-			<mount/>
-			<avail>8</avail>
-			<cost>3000</cost>
+			<cost>Rating * 1500</cost>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7953,6 +7977,7 @@
 			<name>Flashlight, Standard</name>
 			<mount>Top/Under/Side</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>50</cost>
 			<source>RG</source>
 			<page>51</page>
@@ -7963,6 +7988,7 @@
 			<mount>Top/Under/Side</mount>
 			<avail>4</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7972,6 +7998,7 @@
 			<mount>Top/Under/Side</mount>
 			<avail>6</avail>
 			<cost>400</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7979,6 +8006,7 @@
 			<id>f8090e1f-424a-4298-a5d9-f2e6d650ef39</id>
 			<name>Folding Stock</name>
 			<mount>Stock</mount>
+			<rating>0</rating>
 			<avail>2</avail>
 			<cost>30</cost>
 			<rc>1</rc>
@@ -7989,6 +8017,7 @@
 		<accessory>
 			<id>27de824f-d5e4-43fd-abaa-e42da6023569</id>
 			<name>Stock</name>
+			<rating>0</rating>
 			<mount>Stock</mount>
 			<avail>2</avail>
 			<cost>30</cost>
@@ -8000,6 +8029,7 @@
 		<accessory>
 			<id>8eec5df1-88e2-4822-b156-9c2340a33efc</id>
 			<name>Foregrip</name>
+			<rating>0</rating>
 			<mount>Barrel</mount>
 			<avail>2</avail>
 			<cost>100</cost>
@@ -8012,6 +8042,7 @@
 		<accessory>
 			<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
 			<name>Gecko Grip</name>
+			<rating>0</rating>
 			<mount/>
 			<avail>6</avail>
 			<cost>100</cost>
@@ -8023,6 +8054,7 @@
 			<name>Guncam</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>350</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8031,6 +8063,7 @@
 			<id>71a37dd2-d162-4829-a233-5afdd954691d</id>
 			<name>Hip Pad Bracing System</name>
 			<mount>Stock</mount>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>250</cost>
 			<rc>1</rc>
@@ -8044,6 +8077,7 @@
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>6</avail>
 			<cost>2000</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>52</page>
 		</accessory>
@@ -8052,6 +8086,7 @@
 			<name>Peak-Discharge Battery Pack, Power Clip</name>
 			<mount/>
 			<avail>14F</avail>
+			<rating>0</rating>
 			<cost>400</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8060,6 +8095,7 @@
 			<id>dda0b64a-6fa5-4e61-8631-f662f7066756</id>
 			<name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>16F</avail>
 			<cost>900</cost>
 			<source>RG</source>
@@ -8070,6 +8106,7 @@
 			<name>Peak-Discharge Battery Pack, Power Backpack</name>
 			<mount/>
 			<avail>20F</avail>
+			<rating>0</rating>
 			<cost>2500</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8079,6 +8116,7 @@
 			<name>Safe Target System, Base</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>6</avail>
+			<rating>0</rating>
 			<cost>750</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8087,6 +8125,7 @@
 			<id>fbf1ac2e-b131-499c-809e-c2c93c5ec286</id>
 			<name>Safe Target System, Additional set of RFID or GPS data (10 data sets)</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>25</cost>
 			<source>RG</source>
@@ -8097,6 +8136,7 @@
 			<name>Safe Target System, Image Recognition Capabilities</name>
 			<mount/>
 			<avail>8</avail>
+			<rating>0</rating>
 			<cost>300</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8106,6 +8146,7 @@
 			<name>Safe Target System, Extra image profiles (10 profiles)</name>
 			<mount/>
 			<avail>8</avail>
+			<rating>0</rating>
 			<cost>25</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8115,6 +8156,7 @@
 			<name>Slide Mount</name>
 			<mount>Top/Under/Side</mount>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>500</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8126,6 +8168,7 @@
 			<avail>0</avail>
 			<cost>15</cost>
 			<source>RG</source>
+			<rating>0</rating>
 			<page>52</page>
 		</accessory>
 		<accessory>
@@ -8133,6 +8176,7 @@
 			<name>Tracker</name>
 			<mount/>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>150</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -8142,6 +8186,7 @@
 			<name>Underbarrel Bola Launcher</name>
 			<mount>Under</mount>
 			<avail>8R</avail>
+			<rating>0</rating>
 			<cost>350</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -8153,6 +8198,7 @@
 			<avail>10R</avail>
 			<cost>500</cost>
 			<source>RG</source>
+			<rating>0</rating>
 			<page>53</page>
 		</accessory>
 		<accessory>
@@ -8161,6 +8207,7 @@
 			<mount>Under</mount>
 			<avail>2</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -8169,6 +8216,7 @@
 			<name>Underbarrel Grapple Gun</name>
 			<mount>Under</mount>
 			<avail>8R</avail>
+			<rating>0</rating>
 			<cost>600</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -8177,6 +8225,7 @@
 			<id>25691076-94be-4869-a067-34e7657285b7</id>
 			<name>Underbarrel Grenade Launcher</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<avail>10F</avail>
 			<cost>3500</cost>
 			<source>RG</source>
@@ -8188,6 +8237,7 @@
 			<mount>Under</mount>
 			<avail>0</avail>
 			<cost>0</cost>
+			<rating>0</rating>
 			<rc>1</rc>
 			<rcgroup>1</rcgroup>
 			<source>RG</source>
@@ -8202,6 +8252,7 @@
 			</allowgear>
 			<avail>0</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -8211,6 +8262,7 @@
 			<mount/>
 			<avail>8</avail>
 			<cost>250</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -8220,6 +8272,7 @@
 			<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 			<name>Vintage</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>GH3</source>
@@ -8231,6 +8284,7 @@
 			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 			<name>Personalized Grip</name>
 			<mount/>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<avail>0</avail>
 			<cost>Variable(0-1000)</cost>
@@ -8243,6 +8297,7 @@
 			<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
 			<name>Cyberimplanted</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>+4</avail>
 			<cost>0</cost>
 			<source>CF</source>
@@ -8253,6 +8308,7 @@
 		<accessory>
 			<id>0c315fd8-3a1a-4748-8359-cb6a04436fbd</id>
 			<name>Ammo Skip</name>
+			<rating>0</rating>
 			<mount></mount>
 			<avail>8R</avail>
 			<cost>250</cost>
@@ -8263,6 +8319,7 @@
 			<id>5157f235-47c7-4121-aebb-d76709c4b6f8</id>
 			<name>Explosive Magazine</name>
 			<mount></mount>
+			<rating>0</rating>
 			<avail>2F</avail>
 			<cost>20</cost>
 			<source>HT</source>
@@ -8270,21 +8327,12 @@
 		</accessory>
 		<accessory>
 			<id>d40d2fc6-3aad-4793-843d-20e3597b2365</id>
-			<name>Extended Clip I</name>
+			<name>Extended Clip</name>
 			<mount></mount>
+			<rating>2</rating>
 			<avail>6R</avail>
 			<cost>35</cost>
-			<conceal>+1</conceal>
-			<source>HT</source>
-			<page>180</page>
-		</accessory>
-		<accessory>
-			<id>a2b1d0ad-7b7e-4b31-8105-4cdb5e60d839</id>
-			<name>Extended Clip II</name>
-			<mount></mount>
-			<avail>6R</avail>
-			<cost>35</cost>
-			<conceal>+2</conceal>
+			<conceal>+Rating</conceal>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8302,6 +8350,7 @@
 			<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
 			<name>Chameleon Coating (Pistol)</name>
 			<mount></mount>
+			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>1000</cost>
 			<conceal>-2</conceal>
@@ -8312,6 +8361,7 @@
 			<id>98c9ed33-2636-40bb-a455-334e8fb8e65f</id>
 			<name>Chameleon Coating (Rifle)</name>
 			<mount></mount>
+			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>1000</cost>
 			<conceal>-1</conceal>
@@ -8323,6 +8373,7 @@
 			<name>Holographic Sight</name>
 			<mount>Top</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<cost>125</cost>
 			<source>HT</source>
@@ -8333,6 +8384,7 @@
 			<name>Long Barrel</name>
 			<mount>Barrel</mount>
 			<avail>8R</avail>
+			<rating>0</rating>
 			<conceal>+1</conceal>
 			<accuracy>1</accuracy>
 			<cost>Weapon Cost</cost>
@@ -8344,6 +8396,7 @@
 			<name>Melee Hardening</name>
 			<mount></mount>
 			<avail>6</avail>
+			<rating>0</rating>
 			<cost>500</cost>
 			<source>HT</source>
 			<page>181</page>
@@ -8354,6 +8407,7 @@
 			<mount />
 			<avail>8R</avail>
 			<cost>750</cost>
+			<rating>0</rating>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8361,6 +8415,7 @@
 			<id>f27402fa-2845-4314-a97d-2747b3263e0d</id>
 			<name>Easy Breakdown (Powered)</name>
 			<mount />
+			<rating>0</rating>
 			<avail>10R</avail>
 			<cost>1250</cost>
 			<source>HT</source>
@@ -8370,6 +8425,7 @@
 			<id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
 			<name>Electronic Firing</name>
 			<mount></mount>
+			<rating>0</rating>
 			<avail>10R</avail>
 			<rc>1</rc>
 			<rcgroup>1</rcgroup>
@@ -8383,6 +8439,7 @@
 			<mount>Under</mount>
 			<avail>8R</avail>
 			<cost>1000</cost>
+			<rating>0</rating>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -8392,6 +8449,7 @@
 			<mount>Under</mount>
 			<avail>16F</avail>
 			<cost>22000</cost>
+			<rating>0</rating>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -8399,6 +8457,7 @@
 			<id>13d90aa2-6a67-47e5-a211-89aabea5f837</id>
 			<name>Underbarrel Shotgun</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<avail>5R</avail>
 			<cost>600</cost>
 			<source>HT</source>
@@ -8410,6 +8469,7 @@
 			<mount></mount>
 			<avail>6F</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>HT</source>
 			<page>182</page>
 		</accessory>
@@ -8420,6 +8480,7 @@
 			<avail>6R</avail>
 			<cost>200</cost>
 			<source>HT</source>
+			<rating>0</rating>
 			<page>182</page>
 		</accessory>
 		<accessory>
@@ -8428,6 +8489,7 @@
 			<mount></mount>
 			<avail>2</avail>
 			<cost>300</cost>
+			<rating>0</rating>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>
@@ -8435,6 +8497,7 @@
 			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
 			<name>Sawed Off/Shortbarrel</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>4R</avail>
 			<cost>20</cost>
@@ -8446,6 +8509,7 @@
 			<name>Stock Removal</name>
 			<mount>Stock</mount>
 			<conceal>-1</conceal>
+			<rating>0</rating>
 			<avail>2</avail>
 			<cost>20</cost>
 			<source>HT</source>
@@ -8455,6 +8519,7 @@
 			<id>f2eee4ed-d0cb-4163-84d9-91e537cd13d9</id>
 			<name>Trigger Removal</name>
 			<mount></mount>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<avail>2</avail>
 			<cost>50</cost>
@@ -8465,6 +8530,7 @@
 			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 			<name>Personalized Grip</name>
 			<mount/>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<avail>2</avail>
 			<cost>100</cost>

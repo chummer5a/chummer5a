@@ -9802,7 +9802,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
 			objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -10481,7 +10481,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
 			objAccessory.Parent = objWeapon;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -22646,6 +22646,7 @@ namespace Chummer
 				lblWeaponReach.Text = "";
 				lblWeaponMode.Text = "";
 				lblWeaponAmmo.Text = "";
+				lblWeaponRating.Text = "";
 				lblWeaponSource.Text = "";
 				cboWeaponAmmo.Enabled = false;
 				tipTooltip.SetToolTip(lblWeaponSource, null);
@@ -22812,6 +22813,7 @@ namespace Chummer
 				lblWeaponReach.Text = objWeapon.TotalReach.ToString();
 				lblWeaponMode.Text = objWeapon.CalculatedMode;
 				lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+				lblWeaponRating.Text = "";
 				lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				lblWeaponDicePool.Text = objWeapon.DicePool;
 				tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
@@ -22856,6 +22858,7 @@ namespace Chummer
 					lblWeaponReach.Text = objWeapon.TotalReach.ToString();
 					lblWeaponMode.Text = objWeapon.CalculatedMode;
 					lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+					lblWeaponRating.Text = "";
 					lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 					lblWeaponDicePool.Text = objWeapon.DicePool;
 					tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
@@ -22959,6 +22962,7 @@ namespace Chummer
 						lblWeaponReach.Text = "";
 						lblWeaponMode.Text = "";
 						lblWeaponAmmo.Text = "";
+						lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
 
 						string[] strMounts = objSelectedAccessory.Mount.Split('/');
 						string strMount = "";
@@ -23005,6 +23009,7 @@ namespace Chummer
 							lblWeaponReach.Text = "";
 							lblWeaponMode.Text = "";
 							lblWeaponAmmo.Text = "";
+							lblWeaponRating.Text = "";
 							lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
 							string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
 							string strPage = objSelectedMod.Page;
@@ -23033,6 +23038,7 @@ namespace Chummer
 							lblWeaponReach.Text = "";
 							lblWeaponMode.Text = "";
 							lblWeaponAmmo.Text = "";
+							lblWeaponRating.Text = "";
 							lblWeaponSlots.Text = "";
 							string strBook = _objOptions.LanguageBookShort(objGear.Source);
 							string strPage = objGear.Page;

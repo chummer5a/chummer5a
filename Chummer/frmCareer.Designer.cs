@@ -1011,6 +1011,8 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.lblWeaponRating = new System.Windows.Forms.Label();
+			this.lblWeaponRatingLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -6067,6 +6069,8 @@
 			// tabWeapons
 			// 
 			this.tabWeapons.BackColor = System.Drawing.SystemColors.Control;
+			this.tabWeapons.Controls.Add(this.lblWeaponRating);
+			this.tabWeapons.Controls.Add(this.lblWeaponRatingLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponFirewall);
 			this.tabWeapons.Controls.Add(this.lblWeaponFirewallLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponDataProcessing);
@@ -6236,7 +6240,7 @@
 			// lblWeaponAccuracyLabel
 			// 
 			this.lblWeaponAccuracyLabel.AutoSize = true;
-			this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(445, 208);
+			this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(445, 219);
 			this.lblWeaponAccuracyLabel.Name = "lblWeaponAccuracyLabel";
 			this.lblWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
 			this.lblWeaponAccuracyLabel.TabIndex = 119;
@@ -6246,7 +6250,7 @@
 			// lblWeaponAccuracy
 			// 
 			this.lblWeaponAccuracy.AutoSize = true;
-			this.lblWeaponAccuracy.Location = new System.Drawing.Point(506, 208);
+			this.lblWeaponAccuracy.Location = new System.Drawing.Point(506, 219);
 			this.lblWeaponAccuracy.Name = "lblWeaponAccuracy";
 			this.lblWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
 			this.lblWeaponAccuracy.TabIndex = 120;
@@ -6314,7 +6318,7 @@
 			// 
 			// lblWeaponRangeExtreme
 			// 
-			this.lblWeaponRangeExtreme.Location = new System.Drawing.Point(518, 248);
+			this.lblWeaponRangeExtreme.Location = new System.Drawing.Point(518, 259);
 			this.lblWeaponRangeExtreme.Name = "lblWeaponRangeExtreme";
 			this.lblWeaponRangeExtreme.Size = new System.Drawing.Size(64, 13);
 			this.lblWeaponRangeExtreme.TabIndex = 89;
@@ -6323,7 +6327,7 @@
 			// 
 			// lblWeaponRangeLong
 			// 
-			this.lblWeaponRangeLong.Location = new System.Drawing.Point(448, 248);
+			this.lblWeaponRangeLong.Location = new System.Drawing.Point(448, 259);
 			this.lblWeaponRangeLong.Name = "lblWeaponRangeLong";
 			this.lblWeaponRangeLong.Size = new System.Drawing.Size(64, 13);
 			this.lblWeaponRangeLong.TabIndex = 88;
@@ -6332,7 +6336,7 @@
 			// 
 			// lblWeaponRangeMedium
 			// 
-			this.lblWeaponRangeMedium.Location = new System.Drawing.Point(378, 248);
+			this.lblWeaponRangeMedium.Location = new System.Drawing.Point(378, 259);
 			this.lblWeaponRangeMedium.Name = "lblWeaponRangeMedium";
 			this.lblWeaponRangeMedium.Size = new System.Drawing.Size(64, 13);
 			this.lblWeaponRangeMedium.TabIndex = 87;
@@ -6341,7 +6345,7 @@
 			// 
 			// lblWeaponRangeShort
 			// 
-			this.lblWeaponRangeShort.Location = new System.Drawing.Point(308, 248);
+			this.lblWeaponRangeShort.Location = new System.Drawing.Point(308, 259);
 			this.lblWeaponRangeShort.Name = "lblWeaponRangeShort";
 			this.lblWeaponRangeShort.Size = new System.Drawing.Size(64, 13);
 			this.lblWeaponRangeShort.TabIndex = 86;
@@ -6351,7 +6355,7 @@
 			// lblWeaponRangeExtremeLabel
 			// 
 			this.lblWeaponRangeExtremeLabel.AutoSize = true;
-			this.lblWeaponRangeExtremeLabel.Location = new System.Drawing.Point(520, 231);
+			this.lblWeaponRangeExtremeLabel.Location = new System.Drawing.Point(520, 242);
 			this.lblWeaponRangeExtremeLabel.Name = "lblWeaponRangeExtremeLabel";
 			this.lblWeaponRangeExtremeLabel.Size = new System.Drawing.Size(63, 13);
 			this.lblWeaponRangeExtremeLabel.TabIndex = 85;
@@ -6362,7 +6366,7 @@
 			// lblWeaponRangeLongLabel
 			// 
 			this.lblWeaponRangeLongLabel.AutoSize = true;
-			this.lblWeaponRangeLongLabel.Location = new System.Drawing.Point(457, 231);
+			this.lblWeaponRangeLongLabel.Location = new System.Drawing.Point(457, 242);
 			this.lblWeaponRangeLongLabel.Name = "lblWeaponRangeLongLabel";
 			this.lblWeaponRangeLongLabel.Size = new System.Drawing.Size(49, 13);
 			this.lblWeaponRangeLongLabel.TabIndex = 84;
@@ -6373,7 +6377,7 @@
 			// lblWeaponRangeMediumLabel
 			// 
 			this.lblWeaponRangeMediumLabel.AutoSize = true;
-			this.lblWeaponRangeMediumLabel.Location = new System.Drawing.Point(380, 231);
+			this.lblWeaponRangeMediumLabel.Location = new System.Drawing.Point(380, 242);
 			this.lblWeaponRangeMediumLabel.Name = "lblWeaponRangeMediumLabel";
 			this.lblWeaponRangeMediumLabel.Size = new System.Drawing.Size(62, 13);
 			this.lblWeaponRangeMediumLabel.TabIndex = 83;
@@ -6384,7 +6388,7 @@
 			// lblWeaponRangeShortLabel
 			// 
 			this.lblWeaponRangeShortLabel.AutoSize = true;
-			this.lblWeaponRangeShortLabel.Location = new System.Drawing.Point(316, 231);
+			this.lblWeaponRangeShortLabel.Location = new System.Drawing.Point(316, 242);
 			this.lblWeaponRangeShortLabel.Name = "lblWeaponRangeShortLabel";
 			this.lblWeaponRangeShortLabel.Size = new System.Drawing.Size(50, 13);
 			this.lblWeaponRangeShortLabel.TabIndex = 82;
@@ -6395,7 +6399,7 @@
 			// lblWeaponRangeLabel
 			// 
 			this.lblWeaponRangeLabel.AutoSize = true;
-			this.lblWeaponRangeLabel.Location = new System.Drawing.Point(307, 208);
+			this.lblWeaponRangeLabel.Location = new System.Drawing.Point(307, 219);
 			this.lblWeaponRangeLabel.Name = "lblWeaponRangeLabel";
 			this.lblWeaponRangeLabel.Size = new System.Drawing.Size(39, 13);
 			this.lblWeaponRangeLabel.TabIndex = 81;
@@ -11859,6 +11863,25 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// lblWeaponRating
+			// 
+			this.lblWeaponRating.AutoSize = true;
+			this.lblWeaponRating.Location = new System.Drawing.Point(371, 195);
+			this.lblWeaponRating.Name = "lblWeaponRating";
+			this.lblWeaponRating.Size = new System.Drawing.Size(44, 13);
+			this.lblWeaponRating.TabIndex = 177;
+			this.lblWeaponRating.Text = "[Rating]";
+			// 
+			// lblWeaponRatingLabel
+			// 
+			this.lblWeaponRatingLabel.AutoSize = true;
+			this.lblWeaponRatingLabel.Location = new System.Drawing.Point(308, 195);
+			this.lblWeaponRatingLabel.Name = "lblWeaponRatingLabel";
+			this.lblWeaponRatingLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblWeaponRatingLabel.TabIndex = 176;
+			this.lblWeaponRatingLabel.Tag = "Label_Rating";
+			this.lblWeaponRatingLabel.Text = "Rating:";
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -12979,6 +13002,8 @@
         private System.Windows.Forms.TextBox txtTraditionName;
         private System.Windows.Forms.Label lblTraditionName;
         private System.Windows.Forms.FlowLayoutPanel panContacts;
-    }
+		private System.Windows.Forms.Label lblWeaponRating;
+		private System.Windows.Forms.Label lblWeaponRatingLabel;
+	}
 }
 

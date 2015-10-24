@@ -1,21 +1,45 @@
 Build 176:
 Application Change:
-- Gauss Ammo is now considered ammo for heavy weapons instead of normal guns
+- Gauss Ammo is now considered ammo for heavy weapons instead of normal guns.
 - Free contacts don't violate the (C+L)>7 limit when creating a character. This allows prime dataheaven membership to pass inspection...
 - Changed the default value for maritial art techniques to cost 5 instead or 4 karma, to conform with official rules. For older instalations, delete the settings file or change this in options.
 - When selecting life modules that brings an attribute above chargen limit, chummer don't crash anymore.
 - Reflex recorder now properbly affects skills linked to a physical attribute instead of the physical skill group.
-- Redliner and Cyber Singularity Seeker now grants prober bonuses
-
+- Redliner and Cyber Singularity Seeker now grant the proper bonuses.
+- Fixed a crash caused by double-clicking Spell Categories.
+- Implemented an Improvement node for Public Awareness increases. 
+- Fixed Jack of All Trades (The Career and Create versions were switched.)
+- Lifestyle Qualities can now check for character qualities. Currently used for the Corporate Limited SIN.
+- If the Ignore Rules option is checked, Skills and Skill Groups can exceed the 6 point limit enforced by standard character creation.
+- Fixed an issue that stopped rulebook selections from saving properly.
+- Fixed an issue in Life Modules if trying to add more than one Real Life Module.
+- Prototype Transhuman works. Personal new metric: if I get more than twenty requests for a quality to be implemented within a month of the book coming out, that quality is broken.
+- Made some changes to the calculation method for a character's Metagenetic Limit. Fixes an issue with the changeling limit being set incorrectly to 0 or making certain metagenetic qualities flag as standard.
+- Weapon Accessories can have Ratings. Currently for things like Ceramic Components that have multiple levels. 
+- Fixed an issue with Weapon Costs caused by Ceramic Components. 
+- Fixed an error caused by Life Modules trying to give you attribute points over your metatype limit.
+- Qualities that are not yet implemented in code will now have an <implemented>no</implemented> key that highlights them in red.
+- New improvement node type: <selectimprovements>. This allows us to perform the selectattribute improvement more than once for a particular quality. This is mostly used for the Infected pseudo-quality. 
+- Fixed the method for generating Advanced Lifestyle LP.
 
 Data Change:
 - Poor Self Control (Attention Seeking, Sadistic) now properly grant karma.
-- First-pass addition of Hard Targets content has been added. Big thanks to Reddits /u/Fweeba
+- First-pass addition of Hard Targets content has been added. Big thanks to Reddit's /u/Fweeba and HaikenEdge.
 	Some provisional issues:
 	- Adept Spell does not work properly. 
 	- There are a few items that use Ratings in ways that haven't previously been required (Ie, the cloaks), so they're not as clean as I'd otherwise like. 
-- Ares Thuderstruck Gauss Rifle renamed to Ares Thunderstruck Gauss Rifle
-
+- Ares Thuderstruck Gauss Rifle renamed to Ares Thunderstruck Gauss Rifle.
+- The Fame qualities provide the associated Public Awareness increases.
+- Added prompts for sides (Left, Right) for most cyberware that could reasonably be expected to need it. 
+- The Improved Potential power has been split up into three different powers, due to the way it works. Characters that have the existing power should work fine. 
+- Bioware Limbs from Chrome Flesh added.
+- Additional Life Modules added. Most Life Modules now have a random story attached. The bulk of these stories are jokes, because it's good to laugh. Note: Checking and unchecking the Automatic Backstory checkbox on the Character Info page will select new random values, if they're present.
+- Removed the Extravagant Eyes metagenetic quality.
+- Fixed Karma values for the Cyclopean Eye, Vestigial Tail and Feathers metagenetic qualities.
+- The Extended Masking Metamagic has been enabled as a power Adepts can take, as it's functionally identical to the Improved Masking power.
+- Added the Body Sculpt power from Bloody Business.
+- Fixed a crash caused by lifestyles with qualities.
+- Fixed a crash when selecting the drug Snuff.
 
 Build 175:
 Application Change:
@@ -31,7 +55,6 @@ Application Change:
 - Complex Forms show their translated name properly.
 - Redid how basic lifestyles work. Should make them behave better, should prevent crashes for older characters.
 - Fixed an issue that caused initiation schooling to show as a nuyen gain in the karma/nuyen log.
-- Fixed a crash caused by lifestyles with qualities.
 
 Data Change:
 - Nanohive crash issue fixed.

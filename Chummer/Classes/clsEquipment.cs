@@ -4431,7 +4431,7 @@ namespace Chummer
 					XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory.InnerText + "\"]");
 					TreeNode objAccessoryNode = new TreeNode();
 					WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText);
+					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText,Convert.ToInt32(objXmlAccessory["rating"].InnerText));
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
@@ -7355,6 +7355,7 @@ namespace Chummer
 		private string _strName = "";
 		private string _strMount = "";
 		private string _strRC = "";
+		private int _intRating = 0;
 		private int _intRCGroup = 0;
 		private int _intConceal = 0;
 		private string _strAvail = "";
@@ -7386,10 +7387,11 @@ namespace Chummer
 		/// <param name="objXmlAccessory">XmlNode to create the object from.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
-		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string strMount)
+		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string strMount, int intRating)
 		{
 			_strName = objXmlAccessory["name"].InnerText;
 			_strMount = strMount;
+			_intRating = intRating;
 			if (objXmlAccessory.InnerXml.Contains("<rc>"))
 				_strRC = objXmlAccessory["rc"].InnerText;
 			if (objXmlAccessory.InnerXml.Contains("<rcgroup>"))
@@ -7439,6 +7441,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("mount", _strMount);
 			objWriter.WriteElementString("rc", _strRC);
+			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
 			objWriter.WriteElementString("conceal", _intConceal.ToString());
 			if (_strDicePool != "")
@@ -7486,6 +7489,13 @@ namespace Chummer
 			_strName = objNode["name"].InnerText;
 			_strMount = objNode["mount"].InnerText;
 			_strRC = objNode["rc"].InnerText;
+			try
+			{
+				_intRating = Convert.ToInt32(objNode["rating"].InnerText);
+			}
+			catch
+			{
+			}
 			try
 			{
 				_intRCGroup = Convert.ToInt32(objNode["rcgroup"].InnerText);
@@ -7768,6 +7778,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Concealability.
+		/// </summary>
+		public int Rating
+		{
+			get
+			{
+				return _intRating;
+			}
+			set
+			{
+				_intRating = value;
+			}
+		}
+
+		/// <summary>
 		/// Avail.
 		/// </summary>
 		public string Avail
@@ -7887,7 +7912,53 @@ namespace Chummer
 		{
 			get
 			{
-				string strReturn = _strAvail;
+				// If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+				
+				string strCalculated = "";
+				string strReturn = "";
+
+				if (_strAvail.Contains("Rating"))
+				{
+					// If the availability is determined by the Rating, evaluate the expression.
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strAvail = "";
+					string strAvailExpr = _strAvail;
+
+					if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+					{
+						strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+						// Remove the trailing character if it is "F" or "R".
+						strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+					}
+					XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
+					strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
+				}
+				else
+				{
+					// Just a straight cost, so return the value.
+					string strAvail = "";
+					if (_strAvail.Contains("F") || _strAvail.Contains("R"))
+					{
+						strAvail = _strAvail.Substring(_strAvail.Length - 1, 1);
+						strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)) + strAvail;
+					}
+					else
+						strCalculated = Convert.ToInt32(_strAvail).ToString();
+				}
+
+				int intAvail = 0;
+				string strAvailText = "";
+				if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+				{
+					strAvailText = strCalculated.Substring(strCalculated.Length - 1);
+					intAvail = Convert.ToInt32(strCalculated.Replace(strAvailText, string.Empty));
+				}
+				else
+					intAvail = Convert.ToInt32(strCalculated);
+
+				strReturn = intAvail.ToString() + strAvailText;
 
 				// Translate the Avail string.
 				strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
@@ -7895,7 +7966,7 @@ namespace Chummer
 
 				return strReturn;
 			}
-		}
+			}
 
 		/// <summary>
 		/// AllowGear node from the XML file.
@@ -7965,21 +8036,16 @@ namespace Chummer
 			{
 				int intReturn = 0;
 
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-				if (_strCost.Contains("Weapon Cost"))
-				{
-					float f;
-					if (Utils.TryFloat(_strCost, out f, new Dictionary<string, float>() {{"Weapon Cost", _objParent.Cost}}))
-					{
-						intReturn = (int) f*_objParent.CostMultiplier;
-					}
-					else
-					{
-						throw new Exception("Chummer Crapped istelf trying to parse a bad value (Equipment.WeaponAccessory.TotalCost");
-					}
-				}
-				else
-					intReturn = Convert.ToInt32(_strCost)*_objParent.CostMultiplier;
+					string strCost = "";
+					string strCostExpression = _strCost;
+
+					strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
+					strCost = strCost.Replace("Rating", _intRating.ToString());
+					XPathExpression xprCost = nav.Compile(strCost);
+					intReturn = (Convert.ToInt32(nav.Evaluate(xprCost).ToString()) * _objParent.CostMultiplier);
 
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
@@ -14358,9 +14424,10 @@ namespace Chummer
 							WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
 							TreeNode objModNode = new TreeNode();
 							string strMount = "";
+							int intRating = 0;
 							if (objXmlAccessory["mount"] != null)
 								strMount = objXmlAccessory["mount"].InnerText;
-							objMod.Create(objXmlAccessoryNode, objModNode, strMount);
+							objMod.Create(objXmlAccessoryNode, objModNode, strMount,intRating);
 							objMod.Cost = "0";
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
 
