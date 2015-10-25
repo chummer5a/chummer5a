@@ -72,7 +72,7 @@ namespace Chummer
 				manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
 					$"__SEEKER__{attribute}",  //Sourcename, as we cannot track dependent improvements, we have to hack it this way
 					Improvement.ImprovementType.Attribute,
-					Guid.NewGuid().ToString(), (attribute == "BOX" ? count * -3 : 1), 0, 0, 0, count * (attribute == "BOX" ? 0 : 1)); //count is argumented value
+					Guid.NewGuid().ToString(), (attribute == "BOX" ? count * -3 : 1), 1, 0, 0, count * (attribute == "BOX" ? 0 : 1)); //count is argumented value
 			}
 
 			foreach (Improvement improvement in impr)
@@ -85,12 +85,22 @@ namespace Chummer
 				if(pair.Key == "BOX" ? pair.Value.Value == count * -3 : pair.Value.Augmented == count) continue;
 
 				manager.Value.RemoveImprovements(pair.Value.ImproveSource, pair.Value.SourceName);
-				manager.Value.CreateImprovement(pair.Key == "BOX" ? "" : pair.Key, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
+				manager.Value.CreateImprovement(
+					pair.Key == "BOX" ? "" : pair.Key, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
 					$"__SEEKER__{pair.Key}",  //Sourcename, as we cannot track dependent improvements, we have to hack it this way
 					pair.Key == "BOX" ? Improvement.ImprovementType.PhysicalCM : Improvement.ImprovementType.Attribute,
-					Guid.NewGuid().ToString(),  (pair.Key == "BOX" ? count * -3 : 1), 0, 0, 0, count * (pair.Key == "BOX" ? 0 : 1)); //count is argumented value
+					Guid.NewGuid().ToString(),
+					count * (pair.Key == "BOX" ? -3 : 1),
+					1, 0, 0,  //because effective improvement is somehow multiplied by rating...?
+					count * (pair.Key == "BOX" ? 0 : 1)); //count is argumented value
+
+				
 			}
 
+			if (manager.IsValueCreated)
+			{
+				manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
+			}
 
 
 		}
