@@ -120,7 +120,7 @@ namespace Chummer
 
 		private void cmdPrint_Click(object sender, EventArgs e)
 		{
-			webBrowser1.ShowPrintDialog();
+			webBrowser1.ShowPrintPreviewDialog();
 		}
 
 		private void cmdSaveHTML_Click(object sender, EventArgs e)
