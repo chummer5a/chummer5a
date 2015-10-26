@@ -24,6 +24,7 @@
     <category>Electronics Accessories</category>
     <category>Electronic Modification</category>
     <category>Electronic Parts</category>
+    <category>Entertainment</category>
     <category>Explosives</category>
     <category>Extraction Devices</category>
     <category>Foci</category>
@@ -31,6 +32,7 @@
     <category>Formulae</category>
     <category>Grapple Gun</category>
     <category>Hacking Programs</category>
+    <category>Housewares</category>
     <category>ID/Credsticks</category>
     <category>Magical Compounds</category>
     <category>Magical Supplies</category>
@@ -7205,5 +7207,493 @@
 		<source>RF</source>
 		<page>253</page>
 	</gear>
+		<gear>
+			<id>13b4e5f8-a04e-4ca1-877d-c02b9521c676</id>
+			<name>Music Album Download</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>b817e75b-3e79-49e1-be14-9760c8d7bbc6</id>
+			<name>Movie, First Run</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>0ac1108f-19af-4fe5-9dff-27eea4dbf760</id>
+			<name>Movie, Second Run</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>b91bd05d-cae9-4f08-96df-7ce17c007def</id>
+			<name>Movie, One-View Download</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>79ebc733-ea92-4f6a-a1a3-006f3e30fd86</id>
+			<name>Sim Program</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>36d6f722-d5ca-4bbe-a067-b00d405258fb</id>
+			<name>Sim Program, One-View Download</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>2e1b37a1-8add-43f8-bf2d-e970cb010f80</id>
+			<name>Portable Music Player</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>1b18e3df-3858-44c8-a3a0-feadc903d916</id>
+			<name>Prepaid Commlink (Cheap)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>554574da-4794-44ed-bf5e-123c70cbe047</id>
+			<name>Prepaid Commlink (Good)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>033022fc-5148-45b3-976b-b13b384fafb1</id>
+			<name>Video Game (New)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>f639e396-b7f4-4543-9196-4d494de103e4</id>
+			<name>Video Game (Old/Used)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>dd07dead-5322-4f52-aacd-575e2223a9e7</id>
+			<name>Magazine (Download)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>79fee23d-b478-488f-842d-b0a88fabcbd6</id>
+			<name>Magazine (Printout)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>fe09e753-8f23-4ae3-84c6-b7704ca09432</id>
+			<name>Book (Download)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>f1a07f84-485b-4958-83b9-4736d70251a2</id>
+			<name>Book (Printout)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>5097064d-3ae8-4e1b-8f37-c391a94c0dab</id>
+			<name>Textook, Undergraduate (Download)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>45da425d-750c-4c2e-ad6c-67bbae1b5823</id>
+			<name>Textbook, Undergraduate (Printout)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>6e46ffe8-c11a-4fd3-a3d3-518fe1cb186e</id>
+			<name>Textook, Graduate (Download)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>728d329c-b334-4922-bf7a-81d88d008527</id>
+			<name>Textbook, Graduate (Printout)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>a04f38a1-262a-4546-a14e-9715c80eb4ea</id>
+			<name>Trideo Set (Small)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>af40560c-1bbc-42ba-9408-fcc1efb9c72a</id>
+			<name>Trideo Set (Medium)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>55f3f684-f24b-4048-aab7-7bc3c02f005b</id>
+			<name>Trideo Set (Large)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>2000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>ff00417e-8c96-4cb8-afe1-95a44bf55fc9</id>
+			<name>Ticket for a Show (School)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>eddf3311-dd6d-41c0-aeb6-ad2b424fb12e</id>
+			<name>Ticket for a Show (Normal)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>50</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>099de885-bd5d-4994-86cc-d7be6f2df2a4</id>
+			<name>Ticket for a Show (Famous Artist)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>500</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>c975d09f-442a-44c6-9659-b7d6889e77af</id>
+			<name>Ticket for Sporting Event (Nosebleed)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>5a9a38a2-12c2-478a-b303-9fd61ee7dab4</id>
+			<name>Ticket for Sporting Event (Normal)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>250</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>6f38184c-65e6-4f5f-92a5-86751d693fee</id>
+			<name>Ticket for Sporting Event (Good)</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>1000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>bb89c9b0-ff7d-495c-bc86-bbe88076c1cb</id>
+			<name>Box Rental for Ten at a Sporting Event</name>
+			<category>Entertainment</category>
+			<rating>0</rating>
+			<avail>12</avail>
+			<cost>20000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>f07ede44-aae5-4708-863f-6708cacc347a</id>
+			<name>Kitchen Timer</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>70016828-fb59-4c90-b342-d426ebca203e</id>
+			<name>Towel</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>7e8abfc5-d62c-45d6-8400-848c15e4cece</id>
+			<name>Pillowcase</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>5</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>83707109-9e57-4775-9f28-20da1b5195f7</id>
+			<name>Sheet</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>1d39096e-f9e8-484a-90b3-645f796afeb8</id>
+			<name>Sheet Set</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>efe6a5c9-372a-4ebe-9b86-b9343ef00ecf</id>
+			<name>Table Lamp</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>bc3b56d0-a6b0-426c-b62a-40e1baa0d892</id>
+			<name>Floor Lamp</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>337b3bfb-00b0-4058-9b5f-8df164b1756c</id>
+			<name>Electric Fan (Cheap)</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>3f005184-8b23-4e63-ab8b-e6bf3208d6ce</id>
+			<name>Electric Fan (Good)</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>8b1c61a6-5355-409c-af79-e495218e3ae6</id>
+			<name>Air Conditioner (One Room)</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>670869c9-c4b1-4673-978b-a6d9f228b99f</id>
+			<name>Mat</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
+		<gear>
+			<id>60295864-8e0c-47a8-8e4d-be06fe752a44</id>
+			<name>Rug</name>
+			<category>Housewares</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>100</cost>
+			<source>RF</source>
+			<page>253</page>
+		</gear>
   </gears>
 </chummer>
