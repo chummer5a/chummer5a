@@ -27,6 +27,7 @@
     <category>Explosives</category>
     <category>Extraction Devices</category>
     <category>Foci</category>
+    <category>Food</category>
     <category>Formulae</category>
     <category>Grapple Gun</category>
     <category>Hacking Programs</category>
@@ -6964,5 +6965,245 @@
       <source>DT</source>
       <page>66</page>
     </gear>
+	<gear>
+		<id>af06a5f9-a010-4e29-95b0-cd3e280d1de3</id>
+		<name>Liter Bottle of Water</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>e610c754-791a-4e9e-a3ea-7140a2640ae5</id>
+		<name>Liter Carton of Milk</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>10</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>521da263-d929-4447-b93d-446c706bdc91</id>
+		<name>Liter Bottle of Fruit Juice</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>20</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>df183276-c79d-469e-80c2-fa51c06c8b37</id>
+		<name>Soyburger (Basic)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>1</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>1e4e86d0-9519-4f1f-b1da-3eb2b8513924</id>
+		<name>Soyburger (Fancy)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>a59bea14-3576-4bcf-99b4-7c41380d95e2</id>
+		<name>Hamburger (Real Beef)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>989796e7-445e-4fa7-87b5-3152612fa6ee</id>
+		<name>Bag of Chips (Large)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>2bcdccb2-8821-475d-a7be-c95e72716c68</id>
+		<name>Footlong Krill Sandwich</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>82857218-86d0-44a9-a36d-d8cd7e3737cb</id>
+		<name>Pot of Soyghetti</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>f065de65-aa38-472a-8c10-67c0dbb3350b</id>
+		<name>Large Soy Pizza</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>10</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>21c3b8e1-4f35-4aae-8590-b8ccfdad03da</id>
+		<name>Large Pizza</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>50</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>5ca74178-c2fc-43c0-b455-29fa6712e1ff</id>
+		<name>Street Vender Food (Hot Dog, Burrito, Bowl of Ramen, etc)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>16632b57-57e3-4af8-b56a-d79c7fc31ef8</id>
+		<name>Apple</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>f89769d2-0245-416b-98d2-3c3c99e063a9</id>
+		<name>Potato</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>813dd53f-c0d6-4b54-b47a-d511ff04effd</id>
+		<name>Peach</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>493ac6a4-fa96-4a20-a991-9c51f4e4fd56</id>
+		<name>Orange</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>cec4b12b-10b4-4d17-9658-039c7a23e7a0</id>
+		<name>Soy Chicken</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>f9648fdb-315d-48e2-be3e-3ae22c33b29b</id>
+		<name>Chicken</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>20</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>d472737d-a4f9-4e86-9f54-fc826ae66e7e</id>
+		<name>Myco-protein Steak</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>10</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>0bf6dcab-a2cd-4d6e-aead-6e3ee665070b</id>
+		<name>Steak</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>50</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>123640de-1048-4c37-8cb5-90a60b5ef628</id>
+		<name>Average Meal for One (At Home)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>5</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>38466448-1b7b-4c78-a95f-4938db344e9c</id>
+		<name>Average Meal for One (Out)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>0</avail>
+		<cost>10</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>e76d034c-ba0a-4f65-b5d8-e98f9db63aa2</id>
+		<name>Good Meal for One (Out)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>2</avail>
+		<cost>50</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
+	<gear>
+		<id>8bb9eb42-9e7c-48e7-a666-a46b88f12486</id>
+		<name>Fancy Meal for One (Out)</name>
+		<category>Food</category>
+		<rating>0</rating>
+		<avail>8</avail>
+		<cost>500</cost>
+		<source>RF</source>
+		<page>253</page>
+	</gear>
   </gears>
 </chummer>
