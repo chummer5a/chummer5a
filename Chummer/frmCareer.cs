@@ -21160,43 +21160,83 @@ namespace Chummer
 			}
 
 			int intFillCount = 0;
-
 			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
+			if (panVehicleCM.SelectedIndex == 0)
 			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objVehicleCM in panVehicleCM.Controls.OfType<CheckBox>())
+				if (objCheck.Checked)
 				{
-					if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objVehicleCM.Checked = true;
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = true;
 
-					if (objVehicleCM.Checked)
-						intFillCount += 1;
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
 				}
-				_blnSkipRefresh = false;
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = false;
+
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+
+				objVehicle.PhysicalCMFilled = intFillCount;
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
 			}
-			else
+			else 
 			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objVehicleCM in panVehicleCM.Controls.OfType<CheckBox>())
+				if (objCheck.Checked)
 				{
-					if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objVehicleCM.Checked = false;
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = true;
 
-					if (objVehicleCM.Checked)
-						intFillCount += 1;
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
 				}
-				_blnSkipRefresh = false;
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = false;
+
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+
+				objVehicle.MatrixCMFilled = intFillCount;
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
 			}
-
-			objVehicle.PhysicalCMFilled = intFillCount;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
 		}
 		#endregion
 
@@ -24599,7 +24639,7 @@ namespace Chummer
 				// Hide any unused Physical CM boxes.
 				panVehicleCM.Visible = true;
 				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panVehicleCM.Controls.OfType<CheckBox>())
+				foreach (CheckBox objPhysicalCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
 				{
 					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) <= objVehicle.PhysicalCM)
 					{
@@ -24615,6 +24655,24 @@ namespace Chummer
 						objPhysicalCM.Checked = false;
 						objPhysicalCM.Visible = false;
 						objPhysicalCM.Text = "";
+					}
+				}
+				foreach (CheckBox objMatrixCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+				{
+					if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objVehicle.MatrixCM)
+					{
+						if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objVehicle.MatrixCMFilled)
+							objMatrixCM.Checked = true;
+						else
+							objMatrixCM.Checked = false;
+
+						objMatrixCM.Visible = true;
+					}
+					else
+					{
+						objMatrixCM.Checked = false;
+						objMatrixCM.Visible = false;
+						objMatrixCM.Text = "";
 					}
 				}
 				_blnSkipRefresh = false;

@@ -14172,6 +14172,7 @@ namespace Chummer
 
 		// Condition Monitor Progress.
 		private int _intPhysicalCMFilled = 0;
+		private int _intMatrixCMFilled = 0;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Vehicle(Character objCharacter)
@@ -14476,15 +14477,16 @@ namespace Chummer
 			objWriter.WriteElementString("pilot", _intPilot.ToString());
 			objWriter.WriteElementString("body", _intBody.ToString());
             objWriter.WriteElementString("seats", _strSeats);
-            objWriter.WriteElementString("armor", _intArmor.ToString());
+			objWriter.WriteElementString("armor", _intArmor.ToString());
 			objWriter.WriteElementString("sensor", _intSensor.ToString());
-			objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
+			objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
 			objWriter.WriteElementString("vehiclename", _strVehicleName);
 			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
 			objWriter.WriteStartElement("mods");
@@ -14538,6 +14540,13 @@ namespace Chummer
 			_strCategory = objNode["category"].InnerText;
 			_strHandling = objNode["handling"].InnerText;
             _strAccel = objNode["accel"].InnerText;
+			try
+			{
+				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
+			}
+			catch
+			{
+			}
             try
             {
                 _strSeats = objNode["seats"].InnerText;
@@ -14568,6 +14577,13 @@ namespace Chummer
 			try
 			{
 				_strPage = objNode["page"].InnerText;
+			}
+			catch
+			{
+			}
+			try
+			{
+				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
 			}
 			catch
 			{
@@ -14725,9 +14741,10 @@ namespace Chummer
 			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("physicalcm", PhysicalCM.ToString());
+			objWriter.WriteElementString("matrixcm", ConditionMonitor.ToString());
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
 			objWriter.WriteElementString("vehiclename", _strVehicleName);
-			objWriter.WriteElementString("devicerating", DeviceRating.ToString());
+			objWriter.WriteElementString("devicerating", TotalDeviceRating.ToString());
 			objWriter.WriteElementString("maneuver", Maneuver.ToString());
 			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
 			objWriter.WriteStartElement("mods");
@@ -14769,6 +14786,19 @@ namespace Chummer
 			get
 			{
 				return _guiID.ToString();
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor for the Vehicle.
+		/// </summary>
+		public int ConditionMonitor
+		{
+			get
+			{
+				double dblSystem = Math.Ceiling(Convert.ToDouble(DeviceRating, GlobalOptions.Instance.CultureInfo) / 2);
+				int intSystem = Convert.ToInt32(dblSystem, GlobalOptions.Instance.CultureInfo);
+				return 8 + intSystem;
 			}
 		}
 
@@ -14970,10 +15000,48 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Base Physical Boxes. 12 for vehicles, 6 for Drones.
-        /// </summary>
-        public int BasePhysicalBoxes
+		/// <summary>
+		/// Base Physical Boxes. 12 for vehicles, 6 for Drones.
+		/// </summary>
+		public int BaseMatrixBoxes
+		{
+			get
+			{
+				int baseMatrixBoxes = 8;
+				return baseMatrixBoxes;
+			}
+		}
+
+		/// <summary>
+		/// Physical Condition Monitor boxes.
+		/// </summary>
+		public int MatrixCM
+		{
+			get
+			{
+				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intDeviceRating, GlobalOptions.Instance.CultureInfo) / 2.0));
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor boxes filled.
+		/// </summary>
+		public int MatrixCMFilled
+		{
+			get
+			{
+				return _intMatrixCMFilled;
+			}
+			set
+			{
+				_intMatrixCMFilled = value;
+			}
+		}
+
+		/// <summary>
+		/// Base Physical Boxes. 12 for vehicles, 6 for Drones.
+		/// </summary>
+		public int BasePhysicalBoxes
         {
             get
             {
@@ -15583,6 +15651,27 @@ namespace Chummer
 				}
 
 				return intReturn;
+			}
+		}
+
+		/// <summary>
+		/// Total Device Rating.
+		/// </summary>
+		public int TotalDeviceRating
+		{
+			get
+			{
+				int intDeviceRating = _intDeviceRating;
+
+				// Adjust the stat to include the A.I.'s Home Node bonus.
+				if (_blnHomeNode)
+				{
+					decimal decBonus = Math.Ceiling(_objCharacter.CHA.TotalValue / 2m);
+					int intBonus = Convert.ToInt32(decBonus, GlobalOptions.Instance.CultureInfo);
+					intDeviceRating += intBonus;
+				}
+
+				return intDeviceRating;
 			}
 		}
 		#endregion
