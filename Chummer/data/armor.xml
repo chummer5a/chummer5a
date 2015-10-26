@@ -1804,6 +1804,490 @@
       <source>SR5</source>
       <page>438</page>
     </armor>
+		<armor>
+			<id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
+			<name>One-Use Shoes</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>7fdd5a97-2608-4f5e-b377-744b8001942e</id>
+			<name>One-Use Pants</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>cd46bf71-1cc1-4a0c-af75-60f1c91d7daf</id>
+			<name>One-Use Shirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>d34a47eb-6f2d-449a-ac81-5a450c776c4a</id>
+			<name>One-Use Skirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>dc78601d-7171-470e-8d7d-2e772cbcbfb2</id>
+			<name>Cheap Shoes</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>024cca53-0d3a-4c89-bb73-a885b7d6111e</id>
+			<name>Cheap Pants</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>fe363b10-a801-4049-9d5b-1908c6a6b9fc</id>
+			<name>Cheap Shirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>9a680b0f-adcc-42a1-9ab5-417f51cf6b2f</id>
+			<name>Cheap Skirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>99912fac-51df-4afb-88d1-1ff1a2c6fd2a</id>
+			<name>Good Shoes</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>da996700-0e80-48a0-88fa-407828efc902</id>
+			<name>Good Pants</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>f07da344-b605-4756-9a2e-ec6a40520d09</id>
+			<name>Good Shirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>f354f55c-17c2-480b-88d2-f2b84ddd5b6f</id>
+			<name>Good Skirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>b7d83159-2840-4a10-985f-4ef346715c80</id>
+			<name>Nice Shoes</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>4f17f85d-1dbb-446c-b531-56b2b12997f4</id>
+			<name>Nice Pants</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>473a06bb-e675-439b-bf60-51849402662d</id>
+			<name>Nice Shirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>2665c5dd-cb7b-40f6-afc3-ea820136948b</id>
+			<name>Nice Skirt</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>d0ff6dbc-e089-4ad0-88e3-79db8ff9f5b1</id>
+			<name>Cheap Dress</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>a2deaf94-855d-4d90-a711-07d590e22618</id>
+			<name>Cheap Suit</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>fdcdc666-a830-4b5c-8215-c61aae183d95</id>
+			<name>Good Dress</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>3a2a9343-7c56-480a-90c8-e510be2ea80f</id>
+			<name>Good Suit</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>4</avail>
+			<cost>1000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>0f452a31-054c-48f2-9021-9b430c07301e</id>
+			<name>Nice Dress</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>8</avail>
+			<cost>10000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>9414386d-cc22-4dd9-9a0a-ce94c79d4f09</id>
+			<name>Nice Suit</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>8</avail>
+			<cost>10000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>7c2bb0b3-ae60-4c27-a720-561ad6953e83</id>
+			<name>Tuxedo Rental</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>75</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>2b09566c-ece5-497d-bafd-600f9cec9763</id>
+			<name>Hat</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>20</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>ec3b8987-f7d2-470d-ab08-72325b2c6a12</id>
+			<name>Ski Mask</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>5</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>040b3f4b-014c-46fa-bdf8-1a96334ecc27</id>
+			<name>Coveralls</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>1e440489-b800-4e5f-904b-98ef1591402b</id>
+			<name>Cheap Socks</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>7e13ee6d-5698-4b1e-bf93-7735bec4c0bc</id>
+			<name>Cheap Undergarments</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>079d6bd6-d778-4bff-a2fb-23e849e74ec4</id>
+			<name>Good Socks</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>68eabf76-7e06-41a7-8717-2fdce3be8082</id>
+			<name>Good Undergarments</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>5293b8a8-32fd-4df4-ae86-6b909b952432</id>
+			<name>Nice Socks</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>675b4735-227e-4395-8f62-bd9a62670474</id>
+			<name>Nice Undergarments</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>bc259ccc-e96b-48b4-a3ac-0ff67b35b24f</id>
+			<name>One-Use Gloves</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>2</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>d8016291-050d-413d-8896-0ee1bc1063a6</id>
+			<name>Cheap Gloves</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>f93ceb9d-1736-4e51-b550-0275822c4d3e</id>
+			<name>Cheap Watch</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>fd904a19-c1d3-4926-90a8-697dc77ea42b</id>
+			<name>Cheap Jewelry</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>10</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>feff1c2b-deab-4280-bc98-55e9b856bb42</id>
+			<name>Good Gloves</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>86a9692a-ad7c-4c37-bd52-aac1680c91a0</id>
+			<name>Good Watch</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>4a2e90f7-487a-4fa2-a51d-1d9695e0f66f</id>
+			<name>Good Jewelry</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>50</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>e98c2113-306a-4596-abcb-46607c432cfb</id>
+			<name>Nice Gloves</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>7e081824-e64e-4d7a-8621-eba30197362a</id>
+			<name>Nice Watch</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>9fc5642a-1670-4907-82cb-179a441d11f0</id>
+			<name>Nice Jewelry</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>f3cc02db-5049-462c-957b-75859e852408</id>
+			<name>Decent Diamond Ring</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
+		<armor>
+			<id>5bdb85d7-41b9-4885-a37c-fc27f6b2c2e0</id>
+			<name>Large Diamond Ring</name>
+			<category>Clothing</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>0</avail>
+			<cost>5000</cost>
+			<source>RF</source>
+			<page>253</page>
+		</armor>
   </armors>
   <mods>
     <mod>
