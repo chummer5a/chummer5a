@@ -1003,6 +1003,10 @@
 			<text>&amp;Print</text>
 		</string>
 		<string>
+			<key>Menu_FilePrintPreview</key>
+			<text>&amp;Print Preview</text>
+		</string>
+		<string>
 			<key>Menu_FileClose</key>
 			<text>Close</text>
 		</string>

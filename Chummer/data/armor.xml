@@ -1884,7 +1884,7 @@
 			<id>08b97650-7256-4d52-ba3f-f56185cb93ee</id>
 			<name>Cloak (5)</name>
 			<category>Cloaks</category>
-			<armorcategory>0</armorcategory>
+			<armorcapacity>0</armorcapacity>
 			<bonus>
 				<limitmodifier>
 					<limit>Social</limit>
@@ -1962,7 +1962,7 @@
 			<id>e9189459-ff56-469c-8f3e-9c9f333b95bb</id>
 			<name>Designer Cloak (5)</name>
 			<category>Cloaks</category>
-			<armorcategory>0</armorcategory>
+			<armorcapacity>0</armorcapacity>
 			<armor>5</armor>
 			<avail>0</avail>
 			<cost>800</cost>

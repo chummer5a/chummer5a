@@ -7658,6 +7658,7 @@
 		<accessory>
 			<id>b3827611-f631-461e-8660-e744593ba2d2</id>
 			<name>Gas-Vent 2 System</name>
+			<rating>0</rating>
 			<mount>Barrel</mount>
 			<rc>2</rc>
 			<avail>6R</avail>
@@ -7669,6 +7670,7 @@
 			<id>6b06cf52-04fa-4034-bb10-2bcdd58c4bfb</id>
 			<name>Gas-Vent 3 System</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<rc>3</rc>
 			<avail>9R</avail>
 			<cost>600</cost>

@@ -359,8 +359,8 @@ namespace Chummer
 			{
 				cmdLifeModule.Visible = true;
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
-				chkAutoBackstory.Visible = true;
-				chkAutoBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
+				btnCreateBackstory.Visible = true;
+				btnCreateBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
 			}
 
             // Populate the Qualities list.
@@ -7717,12 +7717,6 @@ namespace Chummer
                         }
                     }
                 }
-
-				if (chkAutoBackstory.Checked)
-				{
-					if(_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
-		            txtBackground.Text = _objStoryBuilder.GetStory();
-	            }
             }
             else
             {
@@ -15741,18 +15735,6 @@ namespace Chummer
 	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
 	                    {
                             intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
-	                    }
-						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
-                        if (_objCharacter.JackOfAllTrades)
-	                    {
-		                    if (i <= 5)
-		                    {
-                                if (intActivePointsUsed > 1) intActivePointsUsed -= 1;
-		                    }
-		                    else
-		                    {
-                                intActivePointsUsed += 2; 
-		                    }
 	                    }
                     }
                     if (objSkillControl.SkillSpec != "" && objSkillControl.BuyWithKarma && !objSkillControl.SkillObject.ExoticSkill)
@@ -25437,17 +25419,17 @@ namespace Chummer
 
 		private void txtBackground_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			chkAutoBackstory.Checked = false;
-		}
-
-		private void chkAutoBackstory_CheckedChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Options.AutomaticBackstory = chkAutoBackstory.Checked;
-			if (chkAutoBackstory.Checked)
+			btnCreateBackstory.Enabled = false;
+			if (_objStoryBuilder == null)
 			{
-				if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
-				txtBackground.Text = _objStoryBuilder.GetStory();
-			}
+				btnCreateBackstory.Enabled = true;
+            }
+        }
+
+		private void btnCreateBackstory_Click(object sender, EventArgs e)
+		{
+			if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
+			txtBackground.Text = _objStoryBuilder.GetStory();
 		}
-    }
+	}
 }
