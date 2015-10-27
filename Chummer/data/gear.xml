@@ -9234,5 +9234,17 @@
 			<source>RF</source>
 			<page>255</page>
 		</gear>
+		<gear>
+			<id>3ccd4f6c-f3a4-4432-9f5e-c95225dbbb9c</id>
+			<name>Sound Link</name>
+			<category>Audio Enhancements</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<capacity>[1]</capacity>
+			<cost>25</cost>
+			<source>RF</source>
+			<page>229</page>
+		</gear>		
+		<!-- End Region -->
   </gears>
 </chummer>
