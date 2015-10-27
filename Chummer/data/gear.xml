@@ -8177,6 +8177,9 @@
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>5</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>254</page>
 		</gear>
@@ -8187,6 +8190,9 @@
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>254</page>
 		</gear>
@@ -8197,6 +8203,9 @@
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>20</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>254</page>
 		</gear>
@@ -8207,6 +8216,9 @@
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>100</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<page>254</page>
 		</gear>
