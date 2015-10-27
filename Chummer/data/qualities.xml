@@ -7331,7 +7331,9 @@
 			<name>Dry Addict (Mild)</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -7340,7 +7342,9 @@
 			<name>Dry Addict (Moderate)</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -7349,7 +7353,9 @@
 			<name>Dry Addict (Severe)</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -7358,7 +7364,9 @@
 			<name>Dry Addict (Burnout)</name>
 			<karma>-13</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
