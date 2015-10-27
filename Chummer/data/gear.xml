@@ -8910,6 +8910,9 @@
 			<category>Entertainment</category>
 			<rating>0</rating>
 			<avail>0</avail>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<cost>1</cost>
 			<source>RF</source>
 			<page>255</page>
@@ -8920,6 +8923,9 @@
 			<category>Entertainment</category>
 			<rating>0</rating>
 			<avail>0</avail>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<cost>1</cost>
 			<source>RF</source>
 			<page>255</page>
