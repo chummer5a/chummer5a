@@ -683,12 +683,9 @@ namespace Chummer
 
 			for (int i = 1; i <= 10; i++)
 			{
-				try
+				if ((objRegistry.GetValue("stickymru" + i.ToString())) != null)
 				{
-					lstFiles.Add(objRegistry.GetValue("mru" + i.ToString()).ToString());
-				}
-				catch
-				{
+					lstFiles.Add(objRegistry.GetValue("stickymru" + i.ToString()).ToString());
 				}
 			}
 
@@ -767,17 +764,14 @@ namespace Chummer
 		/// </summary>
 		public List<string> ReadStickyMRUList()
 		{
-			RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+			RegistryKey objRegistry = Registry.CurrentUser.OpenSubKey("Software\\Chummer5");
 			List<string> lstFiles = new List<string>();
 
 			for (int i = 1; i <= 10; i++)
 			{
-				try
+				if ((objRegistry.GetValue("stickymru" + i.ToString())) != null)
 				{
 					lstFiles.Add(objRegistry.GetValue("stickymru" + i.ToString()).ToString());
-				}
-				catch
-				{
 				}
 			}
 

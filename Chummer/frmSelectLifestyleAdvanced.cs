@@ -9,10 +9,8 @@ namespace Chummer
     public partial class frmSelectLifestyleAdvanced : Form
     {
         private bool _blnAddAgain = false;
-		private bool blnLoading = false;
         private Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
-		private LifestyleQuality _objLifestyleQuality;
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
 

@@ -7722,7 +7722,7 @@ namespace Chummer
             {
                 //If not add, fallback (Dead code as we don't check for exceeding karma
                 //Until validation
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
+                //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
             }
 
 			//Stupid hardcoding but no sane way
@@ -15214,10 +15214,6 @@ namespace Chummer
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
             int intBP = 0;
-            string strTooltip = "";
-            string strEDG = "";
-            string strMAG = "";
-            string strRES = "";
 
             // Get the total of "free points" spent
             int intAtt = 0;
@@ -15251,7 +15247,8 @@ namespace Chummer
             }
             return intBP;
 
-            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+			//Dead code, should probably just be removed.
+			/* Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
             {
@@ -15335,7 +15332,7 @@ namespace Chummer
             strTooltip = strEDG + "\n" + strMAG + "\n" + strRES;
             tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
 
                 _objCharacter.Special = _objCharacter.TotalSpecial - intBP;
@@ -15402,13 +15399,13 @@ namespace Chummer
             else
             {
                 return intBP;
-            }
-        }
+            }*/
+		}
 
-        /// <summary>
-        /// Calculate the number of Build Points the character has remaining.
-        /// </summary>
-        private int CalculateBP()
+		/// <summary>
+		/// Calculate the number of Build Points the character has remaining.
+		/// </summary>
+		private int CalculateBP()
         {
             int intKarmaPointsRemain =_objCharacter.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
@@ -24857,10 +24854,6 @@ namespace Chummer
 
         private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
-
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
@@ -24872,19 +24865,6 @@ namespace Chummer
                     intGrade = objGrade.Grade;
                     break;
                 }
-            }
-
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
-
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
             }
 
             frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter);
@@ -24926,7 +24906,7 @@ namespace Chummer
 
             _objCharacter.Metamagics.Add(objNewMetamagic);
 
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
             treMetamagic.SelectedNode.Expand();
 
             UpdateCharacterInfo();
@@ -24940,229 +24920,191 @@ namespace Chummer
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Art;
+			frmPickArt.ShowDialog(this);
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Art;
-            frmPickArt.ShowDialog(this);
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			string strArt = frmPickArt.SelectedItem;
 
-            string strArt = frmPickArt.SelectedItem;
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			TreeNode objNode = new TreeNode();
+			Art objArt = new Art(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            TreeNode objNode = new TreeNode();
-            Art objArt = new Art(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
+			objSource = Improvement.ImprovementSource.Metamagic;
 
-            objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
-            objSource = Improvement.ImprovementSource.Metamagic;
+			objArt.Create(objXmlArt, _objCharacter, objNode, objSource);
+			objArt.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objArt.InternalId == Guid.Empty.ToString())
+				return;
 
-            objArt.Create(objXmlArt, _objCharacter, objNode, objSource);
-            objArt.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objArt.InternalId == Guid.Empty.ToString())
-                return;
+			_objCharacter.Arts.Add(objArt);
 
-            _objCharacter.Arts.Add(objArt);
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
+			UpdateCharacterInfo();
 
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Enchantment;
+			frmPickArt.ShowDialog(this);
 
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			string strEnchantment = frmPickArt.SelectedItem;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Enchantment;
-            frmPickArt.ShowDialog(this);
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			TreeNode objNode = new TreeNode();
+			Spell objNewSpell = new Spell(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            string strEnchantment = frmPickArt.SelectedItem;
+			objXmlDocument = XmlManager.Instance.Load("spells.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
+			objSource = Improvement.ImprovementSource.Initiation;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
+			objNewSpell.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objNewSpell.InternalId == Guid.Empty.ToString())
+				return;
 
-            TreeNode objNode = new TreeNode();
-            Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			_objCharacter.Spells.Add(objNewSpell);
 
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+			TreeNode objSpellNode = new TreeNode();
+			objSpellNode.Text = objNode.Text;
+			objSpellNode.Tag = objNode.Tag;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
-            objNewSpell.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
-                return;
+			string strCategory = "";
+			if (objNewSpell.Category == "Rituals")
+				strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+			if (objNewSpell.Category == "Enchantments")
+				strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+			objNode.Text = strCategory + objNode.Text;
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            _objCharacter.Spells.Add(objNewSpell);
+			treSpells.Nodes[6].Nodes.Add(objSpellNode);
+			treSpells.Nodes[6].Expand();
 
-            TreeNode objSpellNode = new TreeNode();
-            objSpellNode.Text = objNode.Text;
-            objSpellNode.Tag = objNode.Tag;
+			UpdateCharacterInfo();
 
-            string strCategory = "";
-            if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
-            if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
-            objNode.Text = strCategory + objNode.Text;
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
-
-            treSpells.Nodes[6].Nodes.Add(objSpellNode);
-            treSpells.Nodes[6].Expand();
-
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Ritual;
+			frmPickArt.ShowDialog(this);
 
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			string strEnchantment = frmPickArt.SelectedItem;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Ritual;
-            frmPickArt.ShowDialog(this);
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			TreeNode objNode = new TreeNode();
+			Spell objNewSpell = new Spell(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            string strEnchantment = frmPickArt.SelectedItem;
+			objXmlDocument = XmlManager.Instance.Load("spells.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
+			objSource = Improvement.ImprovementSource.Initiation;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
+			objNewSpell.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objNewSpell.InternalId == Guid.Empty.ToString())
+				return;
 
-            TreeNode objNode = new TreeNode();
-            Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			_objCharacter.Spells.Add(objNewSpell);
 
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+			TreeNode objSpellNode = new TreeNode();
+			objSpellNode.Text = objNode.Text;
+			objSpellNode.Tag = objNode.Tag;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
-            objNewSpell.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
-                return;
+			string strCategory = "";
+			if (objNewSpell.Category == "Rituals")
+				strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+			if (objNewSpell.Category == "Enchantments")
+				strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+			objNode.Text = strCategory + objNode.Text;
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            _objCharacter.Spells.Add(objNewSpell);
+			int intNode = 5;
+			if (!_objCharacter.MagicianEnabled)
+				intNode = 0;
+			treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
+			treSpells.Nodes[intNode].Expand();
 
-            TreeNode objSpellNode = new TreeNode();
-            objSpellNode.Text = objNode.Text;
-            objSpellNode.Tag = objNode.Tag;
+			UpdateCharacterInfo();
 
-            string strCategory = "";
-            if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
-            if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
-            objNode.Text = strCategory + objNode.Text;
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
-
-            int intNode = 5;
-            if (!_objCharacter.MagicianEnabled)
-                intNode = 0;
-            treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
-            treSpells.Nodes[intNode].Expand();
-
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
         {
@@ -25272,9 +25214,6 @@ namespace Chummer
 
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            bool blnPayWithKarma = false;
-            string strType = "";
-
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
@@ -25287,9 +25226,6 @@ namespace Chummer
                     break;
                 }
             }
-
-            blnPayWithKarma = true;
-
             frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
             frmPickArt.WindowMode = frmSelectArt.Mode.Enhancement;
             frmPickArt.ShowDialog(this);
