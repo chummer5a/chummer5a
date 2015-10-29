@@ -5107,7 +5107,7 @@ namespace Chummer
 						decimal decDV = Convert.ToDecimal(nav.Evaluate(xprDV).ToString());
 						decDV = Math.Floor(decDV);
 						int intDV = Convert.ToInt32(decDV);
-						// Drain cannot be lower than 1.
+						// Drain cannot be lower than 2.
 						if (intDV < 2)
 							intDV = 2;
 						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();

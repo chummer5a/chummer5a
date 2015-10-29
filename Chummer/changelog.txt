@@ -5,6 +5,8 @@ Application Change:
 - Print Preview mode is accessible from a context menu in the Character Print Viewer. 
 - Vehicles and Drones now have a Matrix Condition Monitor tracker. 
 - Refactored a chunk of the logging code to use the new Log formatting. Mostly just stops it from throwing warnings at me during builds, but is a bit more human-readable.
+- Fixed a bug that stopped lifestyle qualities from loading properly when edited. 
+- Fixed an incorrectly calculated Drain value.
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
