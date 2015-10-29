@@ -3486,7 +3486,7 @@ namespace Chummer
 				Log.Info("_strSelectedValue = " + _strSelectedValue);
 				Log.Info("_strForcedValue = " + _strForcedValue);
 
-				bool blnExistingPower = false;
+				bool blnExistingPower = false;				
 				foreach (Power objExistingPower in _objCharacter.Powers)
 				{
 					if (objExistingPower.BonusSource == strSourceName)
@@ -3543,6 +3543,9 @@ namespace Chummer
 					// Display the Select Skill window and record which Skill was selected.
 					frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
 					Log.Info("selectpower = " + bonusNode.OuterXml.ToString());
+
+					if (bonusNode.OuterXml.Contains("limittopowers"))
+						frmPickPower.LimitToPowers = bonusNode.Attributes["limittopowers"].InnerText;
 					frmPickPower.ShowDialog();
 
 					// Make sure the dialogue window was not canceled.

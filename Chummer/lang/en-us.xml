@@ -1811,6 +1811,10 @@
 			<text>Cannot Add Underbarrel Weapon</text>
 		</string>
 		<string>
+			<key>Message_CannotFindWeapon</key>
+			<text>Weapon was not found. Please remove the weapon and re-add it, as the name or other details may have been changed.</text>
+		</string>	
+		<string>
 			<key>Message_CannotModifyWeapon</key>
 			<text>Accessories cannot be added to this Weapon.</text>
 		</string>

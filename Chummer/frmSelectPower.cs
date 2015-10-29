@@ -13,6 +13,7 @@ namespace Chummer
         private decimal _decPointsPerLevel = 0;
         private decimal _decAdeptWayDiscount = 0;
 		private int _intMaxLevels = 0;
+		private string _strLimitToPowers = "";
 
 		private bool _blnAddAgain = false;
 
@@ -42,8 +43,24 @@ namespace Chummer
             // Load the Powers information.
 			_objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
-            // Populate the Powers list.
-			XmlNodeList objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
+			// Populate the Powers list.
+			XmlNodeList objXmlPowerList;
+			
+				if (_strLimitToPowers != "")
+				{
+					string strFilter = "(";
+					string[] strValue = _strLimitToPowers.Split(',');
+					foreach (string strPower in strValue)
+						strFilter += "name = \"" + strPower.Trim() + "\" or ";
+					// Remove the trailing " or ".
+					strFilter = strFilter.Substring(0, strFilter.Length - 4);
+					strFilter += ")";
+					objXmlPowerList = _objXmlDocument.SelectNodes("chummer/powers/power[" + strFilter + "]");
+				}
+				else
+				{
+					objXmlPowerList = _objXmlDocument.SelectNodes("/chummer/powers/power[" + _objCharacter.Options.BookXPath() + "]");
+				}
 			foreach (XmlNode objXmlPower in objXmlPowerList)
 			{
 				ListItem objItem = new ListItem();
@@ -246,13 +263,24 @@ namespace Chummer
 		{
 			return _intMaxLevels;
 		}
+
+		/// <summary>
+		/// Only the provided Skills should be shown in the list.
+		/// </summary>
+		public string LimitToPowers
+		{
+			set
+			{
+				_strLimitToPowers = value;
+			}
+		}
 		#endregion
 
 		#region Methods
 		/// <summary>
 		/// Accept the selected item and close the form.
 		/// </summary>
-        private void AcceptForm()
+		private void AcceptForm()
         {
             // Check to see if the user needs to select anything for the Power.
 			XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + lstPowers.SelectedValue + "\"]");
