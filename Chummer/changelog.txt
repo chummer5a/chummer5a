@@ -7,6 +7,8 @@ Application Change:
 - Refactored a chunk of the logging code to use the new Log formatting. Mostly just stops it from throwing warnings at me during builds, but is a bit more human-readable.
 - Fixed a bug that stopped lifestyle qualities from loading properly when edited. 
 - Fixed an incorrectly calculated Drain value.
+- The Create Natural Weapon form can now select STR in addition to the current STR/2 option. 
+- Fixed an issue that caused the prompt for adding an enhancement metamagic to show the wrong value.
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
