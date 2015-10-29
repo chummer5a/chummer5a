@@ -5108,8 +5108,8 @@ namespace Chummer
 						decDV = Math.Floor(decDV);
 						int intDV = Convert.ToInt32(decDV);
 						// Drain cannot be lower than 1.
-						if (intDV < 1)
-							intDV = 1;
+						if (intDV < 2)
+							intDV = 2;
 						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
 					}
 				}
