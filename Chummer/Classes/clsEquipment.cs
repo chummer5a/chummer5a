@@ -9134,6 +9134,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("cost", _intCost.ToString());
 			objWriter.WriteElementString("dice", _intDice.ToString());
+			objWriter.WriteElementString("baselifestyle", _strBaseLifestyle.ToString());
 			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
 			objWriter.WriteElementString("months", _intMonths.ToString());
 			objWriter.WriteElementString("roommates", _intRoommates.ToString());
@@ -15827,12 +15828,10 @@ namespace Chummer
 			{
 				_intLP = 0;
 			}
-			try
+			if (objXmlLifestyleQuality["cost"] != null)
 			{
 				_intCost = Convert.ToInt32(objXmlLifestyleQuality["cost"].InnerText);
 			}
-			catch
-			{ }
 			_objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
 			_objLifestyleQualitySource = objLifestyleQualitySource;
 			if (objXmlLifestyleQuality["print"] != null)
