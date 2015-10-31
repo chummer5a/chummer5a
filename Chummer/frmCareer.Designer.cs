@@ -1944,7 +1944,7 @@
 			this.lblAttributesBase.TabIndex = 54;
 			this.lblAttributesBase.Tag = "Label_Base";
 			this.lblAttributesBase.Text = "Base";
-			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base CharacterAttribute value.");
 			// 
 			// lblAttributesAug
 			// 
@@ -1955,7 +1955,7 @@
 			this.lblAttributesAug.TabIndex = 55;
 			this.lblAttributesAug.Tag = "Label_Augmented";
 			this.lblAttributesAug.Text = "(Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented CharacterAttribute value.");
 			// 
 			// lblFoci
 			// 
@@ -11024,7 +11024,7 @@
 			this.mnuSpecialReduceAttribute.Name = "mnuSpecialReduceAttribute";
 			this.mnuSpecialReduceAttribute.Size = new System.Drawing.Size(246, 22);
 			this.mnuSpecialReduceAttribute.Tag = "Menu_SpecialReduceAttribute";
-			this.mnuSpecialReduceAttribute.Text = "Reduce Attribute";
+			this.mnuSpecialReduceAttribute.Text = "Reduce CharacterAttribute";
 			this.mnuSpecialReduceAttribute.Click += new System.EventHandler(this.mnuSpecialReduceAttribute_Click);
 			// 
 			// mnuSpecialPossess

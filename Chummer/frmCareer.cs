@@ -182,20 +182,7 @@ namespace Chummer
 			string strBook = "";
 			string strPage = "";
 
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                if (objSkill.RatingMaximum == 6 || objSkill.RatingMaximum == 9)
-                    objSkill.RatingMaximum = 12;
-                else if (objSkill.RatingMaximum == 7)
-                    objSkill.RatingMaximum = 13;
-            }
-            foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-            {
-                if (objSkillGroup.RatingMaximum == 6)
-                    objSkillGroup.RatingMaximum = 12;
-            }
-			
-			objMetatypeDoc = XmlManager.Instance.Load("metatypes.xml");
+            objMetatypeDoc = XmlManager.Instance.Load("metatypes.xml");
 			{
 				objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 				if (objMetatypeNode == null)
@@ -564,7 +551,7 @@ namespace Chummer
 					{
 						ListItem objItem = new ListItem();
 						objItem.Value = objSkill.Name;
-						objItem.Name = objSkill.DisplayName;
+						objItem.Name = objSkill.GetDisplayName();
 						lstComplexFormSkills.Add(objItem);
 					}
 				}
@@ -1061,7 +1048,7 @@ namespace Chummer
 				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.MagicTradition + "\"]");
 				lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
 
-				// Update the Drain Attribute Value.
+				// Update the Drain CharacterAttribute Value.
 				try
 				{
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -1090,7 +1077,7 @@ namespace Chummer
 				XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + _objCharacter.TechnomancerStream + "\"]");
 				lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
 
-				// Update the Fading Attribute Value.
+				// Update the Fading CharacterAttribute Value.
 				try
 				{
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -1201,7 +1188,7 @@ namespace Chummer
 			ToolStripManager.RevertMerge("toolStrip");
 			ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental Attribute Labels.
+            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
             if (_objCharacter.Metatype.EndsWith("Sprite"))
 			{
 				lblBODLabel.Enabled = false;
@@ -2187,7 +2174,7 @@ namespace Chummer
 
 		private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
 		{
-			// Display the Select Attribute window and record which Skill was selected.
+			// Display the Select CharacterAttribute window and record which Skill was selected.
 			frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 			frmPickAttribute.Description = LanguageManager.Instance.GetString("String_CyberzombieReduceAttribute");
 			if (_objCharacter.MAGEnabled)
@@ -2200,10 +2187,10 @@ namespace Chummer
 			if (frmPickAttribute.DialogResult == DialogResult.Cancel)
 				return;
 
-			// Create an Improvement to reduce the Attribute's Metatype Maximum.
+			// Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
 			if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
-				_objImprovementManager.CreateImprovement(frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "Attribute Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, -1);
-			// Permanently reduce the Attribute's value.
+				_objImprovementManager.CreateImprovement(frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "CharacterAttribute Loss", Improvement.ImprovementType.Attribute, "", 0, 1, 0, -1);
+			// Permanently reduce the CharacterAttribute's value.
 			_objCharacter.GetAttribute(frmPickAttribute.SelectedAttribute).Value -= 1;
 
 			_blnIsDirty = true;
@@ -2908,13 +2895,13 @@ namespace Chummer
 			// Get the Node for the selected Vessel.
 			XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
 
-			// Get the Attribute Modifiers for the Vessel.
+			// Get the CharacterAttribute Modifiers for the Vessel.
 			int intBOD = Convert.ToInt32(objSelected["bodmin"].InnerText);
 			int intAGI = Convert.ToInt32(objSelected["agimin"].InnerText);
 			int intREA = Convert.ToInt32(objSelected["reamin"].InnerText);
 			int intSTR = Convert.ToInt32(objSelected["strmin"].InnerText);
 
-			// Add the Attribute modifiers, making sure that none of them go below 1.
+			// Add the CharacterAttribute modifiers, making sure that none of them go below 1.
 			int intSetBOD = objMerge.MAG.TotalValue + intBOD;
 			int intSetAGI = objMerge.MAG.TotalValue + intAGI;
 			int intSetREA = objMerge.MAG.TotalValue + intREA;
@@ -3626,7 +3613,7 @@ namespace Chummer
 		}
 		#endregion
 
-		#region Attribute Events
+		#region CharacterAttribute Events
 		private void cmdBurnEdge_Click(object sender, EventArgs e)
 		{
 			// Edge cannot go below 1.
@@ -3650,7 +3637,7 @@ namespace Chummer
 
 		private void cmdImproveBOD_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.BOD.Value + _objCharacter.BOD.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.BOD.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3683,7 +3670,7 @@ namespace Chummer
 
 		private void cmdImproveAGI_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.AGI.Value + _objCharacter.AGI.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.AGI.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3716,7 +3703,7 @@ namespace Chummer
 
 		private void cmdImproveREA_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.REA.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3749,7 +3736,7 @@ namespace Chummer
 
 		private void cmdImproveSTR_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.STR.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3782,7 +3769,7 @@ namespace Chummer
 
 		private void cmdImproveCHA_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.CHA.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3815,7 +3802,7 @@ namespace Chummer
 
 		private void cmdImproveINT_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.INT.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3848,7 +3835,7 @@ namespace Chummer
 
 		private void cmdImproveLOG_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.LOG.Value + _objCharacter.LOG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.LOG.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3881,7 +3868,7 @@ namespace Chummer
 
 		private void cmdImproveWIL_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.WIL.Value + _objCharacter.WIL.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.WIL.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3914,7 +3901,7 @@ namespace Chummer
 
 		private void cmdImproveEDG_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.EDG.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
@@ -3947,7 +3934,7 @@ namespace Chummer
 
 		private void cmdImproveMAG_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = 0;
 			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intKarmaCost = (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
@@ -4004,7 +3991,7 @@ namespace Chummer
 
 		private void cmdImproveRES_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = 0;
 			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intKarmaCost = (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
@@ -4131,7 +4118,7 @@ namespace Chummer
 				return;
 			}
 
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.DisplayName).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
+			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.GetDisplayName()).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
 				return;
 
 			SkillGroup objSkillGroup = new SkillGroup();
@@ -4196,7 +4183,7 @@ namespace Chummer
 
 			// Create the Karma Expense.
 			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseActiveSkill") + " " + objSkillControl.SkillObject.DisplayName + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseActiveSkill") + " " + objSkillControl.SkillObject.GetDisplayName() + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objExpense);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -4261,13 +4248,13 @@ namespace Chummer
 
 			if (intKarmaCost > 0)
 			{
-				if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.DisplayName).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
+				if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.GetDisplayName()).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
 					return;
 			}
 
 			// Create the Karma Expense.
 			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseKnowledgeSkill") + " " + objSkillControl.SkillObject.DisplayName + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseKnowledgeSkill") + " " + objSkillControl.SkillObject.GetDisplayName() + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objExpense);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -4313,7 +4300,7 @@ namespace Chummer
 			// If the Skill is Grouped, verify that the user wants to break the Group.
 			if (objSkillControl.IsGrouped)
 			{
-				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillControl.SkillObject.DisplayName), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillControl.SkillObject.GetDisplayName()), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 				{
 					objSkillControl.SkillSpec = objSkillControl.OldSpecialization;
 					_blnSkipRefresh = false;
@@ -4366,7 +4353,7 @@ namespace Chummer
 
 			// Create the Karma Expense.
 			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, objSkillControl.SkillObject.DisplayName + " " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + " -> " + objSkillControl.SkillSpec, ExpenseType.Karma, DateTime.Now);
+			objExpense.Create(intKarmaCost * -1, objSkillControl.SkillObject.GetDisplayName() + " " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + " -> " + objSkillControl.SkillSpec, ExpenseType.Karma, DateTime.Now);
 			_objCharacter.ExpenseEntries.Add(objExpense);
 
 			ExpenseUndo objUndo = new ExpenseUndo();
@@ -4941,7 +4928,7 @@ namespace Chummer
 			// Remove the Power.
 			_objCharacter.Powers.Remove(objSender.PowerObject);
 
-			// Update the Attribute label.
+			// Update the CharacterAttribute label.
 			UpdateCharacterInfo();
 
 			_blnIsDirty = true;
@@ -5007,10 +4994,10 @@ namespace Chummer
 			Skill objSkill = new Skill(_objCharacter);
 			objSkill.Attribute = "LOG";
 			objSkill.SkillCategory = "Academic";
-			if (_objCharacter.MaxSkillRating > 0)
-				objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
-            else
-                objSkill.RatingMaximum = 12;
+			//if (_objCharacter.MaxSkillRating > 0)
+			//	objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+   //         else
+   //             objSkill.RatingMaximum = 12;
 
 			SkillControl objSkillControl = new SkillControl();
 			objSkillControl.SkillObject = objSkill;
@@ -6994,7 +6981,7 @@ namespace Chummer
 		{
             if (_objCharacter.MAGEnabled)
             {
-                // Make sure that the Initiate Grade is not attempting to go above the character's MAG Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7095,7 +7082,7 @@ namespace Chummer
             else if (_objCharacter.RESEnabled)
             {
 
-                // Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7422,8 +7409,8 @@ namespace Chummer
 			int i = panActiveSkills.Controls.Count;
 			Skill objSkill = new Skill(_objCharacter);
 			objSkill.Attribute = nodSkill["attribute"].InnerText;
-			if (_objCharacter.MaxSkillRating > 0)
-				objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+			//if (_objCharacter.MaxSkillRating > 0)
+			//	objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
 			SkillControl objSkillControl = new SkillControl();
 			objSkillControl.SkillObject = objSkill;
@@ -8831,7 +8818,7 @@ namespace Chummer
 				}
 
 				// If the new Quality is linked to a Latent source, see if the Quality that is being swapped out is the same as the one the new Quality is linked to.
-				// If so, set the character's OverrideSpecialAttributeEssenceLoss to true so that they always start with a Special Attribute value of 1.
+				// If so, set the character's OverrideSpecialAttributeEssenceLoss to true so that they always start with a Special CharacterAttribute value of 1.
 				if (objXmlQuality["latentsource"] != null)
 				{
 					if (objXmlQuality["latentsource"].InnerText == objQuality.Name)
@@ -9598,7 +9585,7 @@ namespace Chummer
 			if (frmPickNumber.DialogResult == DialogResult.Cancel)
 				return;
 
-			// Make sure the character has enough Karma to improve the Attribute.
+			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = frmPickNumber.SelectedValue;
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -19026,7 +19013,7 @@ namespace Chummer
 				// Build the DV tooltip.
 				tipTooltip.SetToolTip(lblSpellDV, objSpell.DVTooltip);
 
-				// Update the Drain Attribute Value.
+				// Update the Drain CharacterAttribute Value.
 				if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
 				{
 					try
@@ -19469,7 +19456,7 @@ namespace Chummer
 		{
 			if (_objCharacter.MAGEnabled)
 			{
-				// Make sure that the Initiate Grade is not attempting to go above the character's MAG Attribute.
+				// Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
 				if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
 				{
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -19537,7 +19524,7 @@ namespace Chummer
 			}
 			else if (_objCharacter.RESEnabled)
 			{
-				// Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
+				// Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
 				if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
 				{
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -21303,7 +21290,7 @@ namespace Chummer
 		/// </summary>
 		public void MetatypeSelected()
 		{
-			// Set the Minimum and Maximum values for each Attribute based on the selected MetaType.
+			// Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
 			// Also update the Maximum and Augmented Maximum values displayed.
 			_blnSkipUpdate = true;
 
@@ -21530,7 +21517,7 @@ namespace Chummer
 					}
 				}
 
-				// Update the Attribute information.
+				// Update the CharacterAttribute information.
 				lblBOD.Text = _objCharacter.BOD.Value.ToString();
 				lblAGI.Text = _objCharacter.AGI.Value.ToString();
 				lblREA.Text = _objCharacter.REA.Value.ToString();
@@ -21549,7 +21536,7 @@ namespace Chummer
 				else
 					lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
 
-				// If the Attribute reaches 0, the character has burned out.
+				// If the CharacterAttribute reaches 0, the character has burned out.
 				if (_objCharacter.MAG.Value - intEssenceLoss < 1 && _objCharacter.MAGEnabled)
 				{
 					_objCharacter.MAG.Value = 0;
@@ -21676,7 +21663,7 @@ namespace Chummer
 					_objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
 				}
 
-				// Update the Attribute Improvement Cost ToolTips.
+				// Update the CharacterAttribute Improvement Cost ToolTips.
 				string strTooltip = "";
 				if (!_objOptions.AlternateMetatypeAttributeKarma)
 				{
@@ -21749,7 +21736,7 @@ namespace Chummer
 					}
 				}
 
-				// Disable any Attribute Karma buttons that have reached their Total Metatype Maximum.
+				// Disable any CharacterAttribute Karma buttons that have reached their Total Metatype Maximum.
 				cmdImproveBOD.Enabled = !(_objCharacter.BOD.Value == _objCharacter.BOD.TotalMaximum);
 				cmdImproveAGI.Enabled = !(_objCharacter.AGI.Value == _objCharacter.AGI.TotalMaximum);
 				cmdImproveREA.Enabled = !(_objCharacter.REA.Value == _objCharacter.REA.TotalMaximum);
@@ -21916,8 +21903,8 @@ namespace Chummer
 					_objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
 				}
 
-                // Update the Attribute information.
-				// Attribute: Body.
+                // Update the CharacterAttribute information.
+				// CharacterAttribute: Body.
 				lblBODMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.BOD.TotalMinimum, _objCharacter.BOD.TotalMaximum, _objCharacter.BOD.TotalAugmentedMaximum);
 				if (_objCharacter.BOD.HasModifiers)
 				{
@@ -21930,7 +21917,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblBODAug, "");
 				}
 
-				// Attribute: Agility.
+				// CharacterAttribute: Agility.
 				lblAGIMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.AGI.TotalMinimum, _objCharacter.AGI.TotalMaximum, _objCharacter.AGI.TotalAugmentedMaximum);
 				if (_objCharacter.AGI.HasModifiers)
 				{
@@ -21943,7 +21930,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblAGIAug, "");
 				}
 
-				// Attribute: Reaction.
+				// CharacterAttribute: Reaction.
 				lblREAMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.REA.TotalMinimum, _objCharacter.REA.TotalMaximum, _objCharacter.REA.TotalAugmentedMaximum);
 				if (_objCharacter.REA.HasModifiers)
 				{
@@ -21956,7 +21943,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblREAAug, "");
 				}
 
-				// Attribute: Strength.
+				// CharacterAttribute: Strength.
 				lblSTRMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.STR.TotalMinimum, _objCharacter.STR.TotalMaximum, _objCharacter.STR.TotalAugmentedMaximum);
 				if (_objCharacter.STR.HasModifiers)
 				{
@@ -21969,7 +21956,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblSTRAug, "");
 				}
 
-				// Attribute: Charisma.
+				// CharacterAttribute: Charisma.
 				lblCHAMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.CHA.TotalMinimum, _objCharacter.CHA.TotalMaximum, _objCharacter.CHA.TotalAugmentedMaximum);
 				if (_objCharacter.CHA.HasModifiers)
 				{
@@ -21982,7 +21969,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblCHAAug, "");
 				}
 
-				// Attribute: Intuition.
+				// CharacterAttribute: Intuition.
 				lblINTMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.INT.TotalMinimum, _objCharacter.INT.TotalMaximum, _objCharacter.INT.TotalAugmentedMaximum);
 				if (_objCharacter.INT.HasModifiers)
 				{
@@ -21995,7 +21982,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblINTAug, "");
 				}
 
-				// Attribute: Logic.
+				// CharacterAttribute: Logic.
 				lblLOGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.LOG.TotalMinimum, _objCharacter.LOG.TotalMaximum, _objCharacter.LOG.TotalAugmentedMaximum);
 				if (_objCharacter.LOG.HasModifiers)
 				{
@@ -22008,7 +21995,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblLOGAug, "");
 				}
 
-				// Attribute: Willpower.
+				// CharacterAttribute: Willpower.
 				lblWILMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.WIL.TotalMinimum, _objCharacter.WIL.TotalMaximum, _objCharacter.WIL.TotalAugmentedMaximum);
 				if (_objCharacter.WIL.HasModifiers)
 				{
@@ -22021,7 +22008,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblWILAug, "");
 				}
 
-				// Attribute: Edge.
+				// CharacterAttribute: Edge.
 				lblEDGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.EDG.TotalMinimum, _objCharacter.EDG.TotalMaximum, _objCharacter.EDG.TotalAugmentedMaximum);
 				if (_objCharacter.EDG.HasModifiers)
 				{
@@ -22034,7 +22021,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblEDGAug, "");
 				}
 
-				// Attribute: Magic.
+				// CharacterAttribute: Magic.
 				lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.MAG.TotalMinimum, _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
 				if (_objCharacter.MAG.HasModifiers)
 				{
@@ -22047,7 +22034,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(lblMAGAug, "");
 				}
 
-				// Attribute: Resonance.
+				// CharacterAttribute: Resonance.
 				lblRESMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.RES.TotalMinimum, _objCharacter.RES.TotalMaximum, _objCharacter.RES.TotalAugmentedMaximum);
 				if (_objCharacter.RES.HasModifiers)
 				{
@@ -22093,7 +22080,7 @@ namespace Chummer
 					objPowerControl.RefreshTooltip();
 				}
 
-				// Update the Drain Attribute Value.
+				// Update the Drain CharacterAttribute Value.
 				if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
 				{
 					try
@@ -22126,7 +22113,7 @@ namespace Chummer
 					objSpiritControl.RebuildSpiritList(_objCharacter.TechnomancerStream);
 				}
 
-				// Update the Fading Attribute Value.
+				// Update the Fading CharacterAttribute Value.
 				if (_objCharacter.RESEnabled && lblFadingAttributes.Text != "")
 				{
 					try
@@ -22303,7 +22290,7 @@ namespace Chummer
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
 
-				// Special Attribute-Only Test.
+				// Special CharacterAttribute-Only Test.
 				lblComposure.Text = _objCharacter.Composure.ToString();
 				strTip = "WIL (" + _objCharacter.WIL.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
 				tipTooltip.SetToolTip(lblComposure, strTip);
@@ -23473,16 +23460,7 @@ namespace Chummer
 		{
 			bool blnSaved = false;
 
-            if (_objCharacter.Created)
-            {
-                foreach (Skill objSkill in _objCharacter.Skills)
-                {
-                    if (objSkill.RatingMaximum == 6)
-                        objSkill.RatingMaximum = 12;
-                    else if (objSkill.RatingMaximum == 7)
-                        objSkill.RatingMaximum = 13;
-                }
-            }
+            
 
 			// If the Character does not have a file name, trigger the Save As menu item instead.
 			if (_objCharacter.FileName == "")
@@ -26092,7 +26070,7 @@ namespace Chummer
 			tipTooltip.SetToolTip(lblPublicAware, LanguageManager.Instance.GetString("Tip_PublicAwareness"));
 			tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
 
-			// Attribute Labels.
+			// CharacterAttribute Labels.
 			lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
 			lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
 			lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
@@ -27436,7 +27414,7 @@ namespace Chummer
 
         private void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
-            // Make sure the character has enough Karma to improve the Attribute.
+            // Make sure the character has enough Karma to improve the CharacterAttribute.
             int intKarmaCost = 5;
             if (intKarmaCost > _objCharacter.Karma)
             {

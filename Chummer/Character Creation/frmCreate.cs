@@ -729,19 +729,22 @@ namespace Chummer
                 objGroupControl.Top = i * objGroupControl.Height;
                 objGroupControl.Width = 250;
 
-                // Loop through all of the Active Skills the character has and set their maximums if needed.
-                if (objGroup.RatingMaximum > 6)
-                {
-                    foreach (SkillControl objSkill in panActiveSkills.Controls)
-                    {
-                        if (objSkill.IsGrouped && objSkill.SkillGroup == objGroup.Name)
-                        {
-                            objSkill.SkillRatingMaximum = objGroup.RatingMaximum;
-                            objSkill.SkillObject.RatingMaximum = objGroup.RatingMaximum;
-                            objSkill.SkillRating = objGroup.Rating;
-                        }
-                    }
-                }
+
+				////TODO REMOVE BEFORE FINAL DONE
+				////Cant see a place where this code would get executed
+    //            // Loop through all of the Active Skills the character has and set their maximums if needed.
+    //            if (objGroup.RatingMaximum > 6)
+    //            {
+    //                foreach (SkillControl objSkill in panActiveSkills.Controls)
+    //                {
+    //                    if (objSkill.IsGrouped && objSkill.SkillGroup == objGroup.Name)
+    //                    {
+    //                        objSkill.SkillRatingMaximum = objGroup.RatingMaximum;
+    //                        objSkill.SkillObject.RatingMaximum = objGroup.RatingMaximum;
+    //                        objSkill.SkillRating = objGroup.Rating;
+    //                    }
+    //                }
+    //            }
 
                 /*if (_objCharacter.Uneducated)
                 {
@@ -1276,7 +1279,7 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental Attribute Labels.
+            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
             if (_objCharacter.Metatype.EndsWith("Sprite"))
             {
                 lblBODLabel.Enabled = false;
@@ -1310,7 +1313,7 @@ namespace Chummer
                 nudSignal.Enabled = true;
                 nudSignal.Value = _objCharacter.Signal;
 
-                // Disable the Physical Attribute controls.
+                // Disable the Physical CharacterAttribute controls.
                 lblBODLabel.Enabled = false;
                 lblAGILabel.Enabled = false;
                 lblREALabel.Enabled = false;
@@ -2344,7 +2347,7 @@ namespace Chummer
             mnuSpecialMutantCritter.Visible = false;
             mnuSpecialToxicCritter.Visible = true;
 
-            // Update the Critter's Attribute maximums to 1.5X their current value (or 1, whichever is higher).
+            // Update the Critter's CharacterAttribute maximums to 1.5X their current value (or 1, whichever is higher).
             _objCharacter.BOD.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.BOD.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.AGI.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.AGI.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.REA.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.REA.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
@@ -4043,14 +4046,14 @@ namespace Chummer
         }
         #endregion
 
-        #region Attribute Events
+        #region CharacterAttribute Events
         private void nudBOD_ValueChanged(object sender, EventArgs e)
         {
             // Don't attempt to do anything while the data is still being populated.
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4089,7 +4092,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4156,7 +4159,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4195,7 +4198,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4234,7 +4237,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4275,7 +4278,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4314,7 +4317,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4353,7 +4356,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -5181,7 +5184,7 @@ namespace Chummer
             // Remove the Power.
             _objCharacter.Powers.Remove(objSender.PowerObject);
 
-            // Update the Attribute label.
+            // Update the CharacterAttribute label.
             UpdateCharacterInfo();
 
             // Remove the PowerControl that raised the Event.
@@ -5254,11 +5257,11 @@ namespace Chummer
         private void cmdAddKnowledgeSkill_Click(object sender, EventArgs e)
         {
             int i = panKnowledgeSkills.Controls.Count;
-            Skill objSkill = new Skill(_objCharacter);
+            Skill objSkill = new KnowledgeSkill(_objCharacter);  //TODO KNOSKILLS NEED THIS SHIT (PROBABLY)
             objSkill.Attribute = "LOG";
             objSkill.SkillCategory = "Academic";
-            if (_objCharacter.MaxSkillRating > 0)
-                objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+            //if (_objCharacter.MaxSkillRating > 0)
+            //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
             SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
@@ -5296,7 +5299,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (nudAdeptWayDiscount.Value > _objCharacter.Foci.Count)
             {
                 try
@@ -7084,7 +7087,7 @@ namespace Chummer
         {
             if (_objCharacter.MAGEnabled)
             {
-                // Make sure that the Initiate Grade is not attempting to go above the character's MAG Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7144,7 +7147,7 @@ namespace Chummer
                 tsMetamagicAddRitual.Visible = false;
                 tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
 
-                // Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7462,10 +7465,10 @@ namespace Chummer
             XmlNode nodSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
             int i = panActiveSkills.Controls.Count;
-            Skill objSkill = new Skill(_objCharacter);
-            objSkill.Attribute = nodSkill["attribute"].InnerText;
-            if (_objCharacter.MaxSkillRating > 0)
-                objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+            Skill objSkill = new ExoticSkill(_objCharacter, frmPickExoticSkill.SelectedExoticSkill);
+            objSkill.Attribute = nodSkill["CharacterAttribute"].InnerText;
+            //if (_objCharacter.MaxSkillRating > 0)
+            //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
             SkillControl objSkillControl = new SkillControl();
             objSkillControl.SkillObject = objSkill;
@@ -7474,7 +7477,7 @@ namespace Chummer
             // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
             objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
             objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-            objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
+	        objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
             objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
 
             objSkillControl.SkillCategory = nodSkill["category"].InnerText;
@@ -13700,7 +13703,7 @@ namespace Chummer
                 // Build the DV tooltip.
                 tipTooltip.SetToolTip(lblSpellDV, objSpell.DVTooltip);
 
-                // Update the Drain Attribute Value.
+                // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
                     try
@@ -14944,7 +14947,7 @@ namespace Chummer
 
         #region Custom Methods
         /// <summary>
-        /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
+        /// Show the dialogue that notifies the user that characters cannot have more than 1 CharacterAttribute at its maximum value during character creation.
         /// </summary>
         public void ShowAttributeRule()
         {
@@ -14969,7 +14972,7 @@ namespace Chummer
         /// </summary>
         public void MetatypeSelected()
         {
-            // Set the Minimum and Maximum values for each Attribute based on the selected MetaType.
+            // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
             // Also update the Maximum and Augmented Maximum values displayed.
             _blnSkipUpdate = true;
 
@@ -15050,7 +15053,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Check if any other Attribute is already at its Metatype Maximum.
+        /// Check if any other CharacterAttribute is already at its Metatype Maximum.
         /// </summary>
         /// <param name="strAttribute">NumericUpDown Control that is calling this function.</param>
         private bool CanImproveAttribute(string strAttribute)
@@ -15174,7 +15177,7 @@ namespace Chummer
 			    lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}",
 				    (_objCharacter.Attributes).ToString(), _objCharacter.TotalAttributes.ToString());
 		    }
-                // For each attribute, figure out the actual karma cost of attributes raised with karma
+                // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
                 for (int i = 1; i <= nudKBOD.Value; i++)
                 {
 			    intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
@@ -15236,7 +15239,7 @@ namespace Chummer
             _objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
             lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
 
-            // For each attribute, figure out the actual karma cost of attributes raised with karma
+            // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
             for (int i = 1; i <= nudKEDG.Value; i++)
             {
                 intBP += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
@@ -15257,7 +15260,7 @@ namespace Chummer
             }
             return intBP;
 
-            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
             {
@@ -15315,7 +15318,7 @@ namespace Chummer
                             }
                             else
                             {
-                                // Each Attribute point costs 1 SP (the first point is free).
+                                // Each CharacterAttribute point costs 1 SP (the first point is free).
                                 intBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss : ADAM: I removed the intUseEssenceLoss var from the equation to resolve what looks like an error in how MAG is calculated with cyberware. I could be wrong.
                                 intThisBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss
                             }
@@ -15353,7 +15356,7 @@ namespace Chummer
                 // If the character overspent on primary attributes, the excess must be charged to Karma.
                 if (_objCharacter.Special < 0)
                 {
-                    // Figure out the lowest costing attributes in turn to account for the extra primary attribute points. Charge these to Karma.
+                    // Figure out the lowest costing attributes in turn to account for the extra primary CharacterAttribute points. Charge these to Karma.
                     int intEDG = _objCharacter.EDG.Value;
                     int intMAG = _objCharacter.MAG.Value;
                     int intRES = _objCharacter.RES.Value;
@@ -15362,7 +15365,7 @@ namespace Chummer
                     // Do this loop once for each point overspent
                     for (int i = _objCharacter.Special; i < 0; i++)
                     {
-                        // For each attribute, check if points were spent (value > minimum) and if the current score is lower than the current lowest score which had points spent on it.
+                        // For each CharacterAttribute, check if points were spent (value > minimum) and if the current score is lower than the current lowest score which had points spent on it.
                         string strLowest = "";
                         int intLowest = 99;
                         if (intEDG < intLowest && intEDG > _objCharacter.EDG.TotalMinimum)
@@ -15381,7 +15384,7 @@ namespace Chummer
                             intLowest = intRES;
                         }
 
-                        // Calculate the Karma cost of this attribute point and add it to the running total. Decrement the attribute so it won't be counted on the next pass (if any).
+                        // Calculate the Karma cost of this CharacterAttribute point and add it to the running total. Decrement the CharacterAttribute so it won't be counted on the next pass (if any).
                         switch (strLowest)
                         {
                             case "EDG":
@@ -16439,7 +16442,7 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
                 }
 
-                // Update the Attribute information.
+                // Update the CharacterAttribute information.
                 UpdateAttribute(_objCharacter.BOD, nudBOD, lblBODAug, lblBODMetatype);
 				UpdateAttribute(_objCharacter.AGI, nudAGI, lblAGIAug, lblAGIMetatype);
 				UpdateAttribute(_objCharacter.STR, nudSTR, lblSTRAug, lblSTRMetatype);
@@ -16450,7 +16453,7 @@ namespace Chummer
 				UpdateAttribute(_objCharacter.CHA, nudCHA, lblCHAAug, lblCHAMetatype);
 				UpdateAttribute(_objCharacter.EDG, nudEDG, lblEDGAug, lblEDGMetatype);
 
-                // Attribute: Magic.
+                // CharacterAttribute: Magic.
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                 {
                     lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0), _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
@@ -16473,7 +16476,7 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblMAGAug, _objCharacter.MAG.ToolTip());
                 }
 
-                // Attribute: Resonance.
+                // CharacterAttribute: Resonance.
                 lblRESMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.RES.TotalMinimum, _objCharacter.RES.TotalMaximum, _objCharacter.RES.TotalAugmentedMaximum);
                 nudRES.Minimum = _objCharacter.RES.TotalMinimum;
                 nudRES.Maximum = _objCharacter.RES.TotalMaximum;
@@ -16539,7 +16542,7 @@ namespace Chummer
                     }
                 }
 
-                // Update the Drain Attribute Value.
+                // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
                     try
@@ -16565,7 +16568,7 @@ namespace Chummer
                     }
                 }
 
-                // Update the Fading Attribute Value.
+                // Update the Fading CharacterAttribute Value.
                 if (_objCharacter.RESEnabled)
                 {
                     try
@@ -16762,7 +16765,7 @@ namespace Chummer
                 lblSwim.Text = _objCharacter.Swim;
                 lblFly.Text = _objCharacter.Fly;
 
-                // Special Attribute-Only Test.
+                // Special CharacterAttribute-Only Test.
                 lblComposure.Text = _objCharacter.Composure.ToString();
                 strTip = "WIL (" + _objCharacter.WIL.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
                 tipTooltip.SetToolTip(lblComposure, strTip);
@@ -16884,7 +16887,7 @@ namespace Chummer
             UpdateReputation();
         }
 
-	    private void UpdateAttribute(Attribute attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
+	    private void UpdateAttribute(CharacterAttrib attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
 	    {
 			metatype.Text = string.Format("{0} / {1} ({2})", attribute.TotalMinimum, attribute.TotalMaximum,
 			    attribute.TotalAugmentedMaximum);
@@ -18234,21 +18237,21 @@ namespace Chummer
                     }
                 }
 
-                if (_objCharacter.Created)
-                {
-                    foreach (Skill objSkill in _objCharacter.Skills)
-                    {
-                        if (objSkill.RatingMaximum == 6)
-                            objSkill.RatingMaximum = 12;
-                        else if (objSkill.RatingMaximum == 7)
-                            objSkill.RatingMaximum = 13;
-                    }
-                    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                    {
-                        if (objSkillGroup.RatingMaximum == 6)
-                            objSkillGroup.RatingMaximum = 12;
-                    }
-                }
+                //if (_objCharacter.Created)
+                //{
+                //    foreach (Skill objSkill in _objCharacter.Skills)
+                //    {
+                //        if (objSkill.RatingMaximum == 6)
+                //            objSkill.RatingMaximum = 12;
+                //        else if (objSkill.RatingMaximum == 7)
+                //            objSkill.RatingMaximum = 13;
+                //    }
+                //    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+                //    {
+                //        if (objSkillGroup.RatingMaximum == 6)
+                //            objSkillGroup.RatingMaximum = 12;
+                //    }
+                //}
 
                 _objCharacter.Save();
                 _blnIsDirty = false;
@@ -21612,7 +21615,7 @@ namespace Chummer
                 nudRES.Value = nudRES.Minimum;
                 foreach (XmlNode objXmlAttribute in objXmlKit["attributes"])
                 {
-                    // The Attribute is calculated as given value - (6 - Metatype Maximum) so that each Metatype has the values from the file adjusted correctly.
+                    // The CharacterAttribute is calculated as given value - (6 - Metatype Maximum) so that each Metatype has the values from the file adjusted correctly.
                     switch (objXmlAttribute.Name)
                     {
                         case "bod":
@@ -23230,7 +23233,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblLiftCarryLabel, LanguageManager.Instance.GetString("Tip_OtherLiftAndCarry"));
             tipTooltip.SetToolTip(lblMemoryLabel, LanguageManager.Instance.GetString("Tip_OtherMemory"));
 
-            // Attribute Labels.
+            // CharacterAttribute Labels.
             lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
             lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
             lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
@@ -24473,7 +24476,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24513,7 +24516,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24553,7 +24556,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24593,7 +24596,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24633,7 +24636,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24674,7 +24677,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24714,7 +24717,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24754,7 +24757,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24794,7 +24797,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudEDG.Value + nudKEDG.Value) > nudEDG.Maximum)
             {
                 try
@@ -24822,7 +24825,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudMAG.Value + nudKMAG.Value) > nudMAG.Maximum)
             {
                 try
@@ -24851,7 +24854,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudRES.Value + nudKRES.Value) > nudRES.Maximum)
             {
                 try

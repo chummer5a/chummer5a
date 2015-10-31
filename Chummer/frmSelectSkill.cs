@@ -149,7 +149,7 @@ namespace Chummer
 					{
 						ListItem objSkill = new ListItem();
 						objSkill.Value = objKnow.Name;
-						objSkill.Name = objKnow.DisplayName;
+						objSkill.Name = objKnow.GetDisplayName();
 						lstSkills.Add(objSkill);
 					}
 				}

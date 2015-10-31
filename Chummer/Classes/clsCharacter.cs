@@ -1716,7 +1716,7 @@ namespace Chummer
             {
             }
 
-            // Attempt to load the split MAG Attribute information for Mystic Adepts.
+            // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
             if (_blnAdeptEnabled && _blnMagicianEnabled)
             {
                 try
@@ -1816,14 +1816,16 @@ namespace Chummer
 			Timekeeper.Start("load_char_skills_normal");
 
 			// Skills.
-			foreach (Skill objSkill in _lstSkills)
-            {
-                XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skills/skill[name = \"" + objSkill.Name + "\"]");
-                if (objXmlSkill != null)
-                {
-                    objSkill.Load(objXmlSkill);
+
+	        for (int i = 0; i < _lstSkills.Count; i++)
+	        {
+				XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skills/skill[name = \"" + _lstSkills[i].Name + "\"]");
+				if (objXmlSkill != null)
+				{
+					_lstSkills[i] = Skill.Load(objXmlSkill, this);
                 }
-            }
+			}
+			
 
 			Timekeeper.Finish("load_char_skills_normal");
 			Timekeeper.Start("load_char_skills_exotic");
@@ -1832,8 +1834,7 @@ namespace Chummer
 			objXmlNodeList = objXmlDocument.SelectNodes("/character/skills/skill[exotic = \"True\"]");
             foreach (XmlNode objXmlSkill in objXmlNodeList)
             {
-                Skill objSkill = new Skill(this);
-                objSkill.Load(objXmlSkill);
+                Skill objSkill = Skill.Load(objXmlSkill, this);
                 _lstSkills.Add(objSkill);
             }
 
@@ -1892,12 +1893,13 @@ namespace Chummer
             SortListItem objSort = new SortListItem();
             lstKnowledgeSkillOrder.Sort(objSort.Compare);
 
+
+
             foreach (ListItem objItem in lstKnowledgeSkillOrder)
             {
-                Skill objSkill = new Skill(this);
+                
                 XmlNode objNode = objXmlDocument.SelectSingleNode("/character/skills/skill[knowledge = \"True\" and name = " + CleanXPath(objItem.Value) + "]");
-                objSkill.Load(objNode);
-                _lstSkills.Add(objSkill);
+                _lstSkills.Add(Skill.Load(objNode, this));
             }
 
 			Timekeeper.Finish("load_char_skills_kno");
@@ -3208,31 +3210,31 @@ namespace Chummer
             _blnCritterEnabled = false;
 
             // Reset Attributes.
-            _attBOD = new Attribute("BOD");
+            _attBOD = new CharacterAttrib("BOD");
             _attBOD._objCharacter = this;
-            _attAGI = new Attribute("AGI");
+            _attAGI = new CharacterAttrib("AGI");
             _attAGI._objCharacter = this;
-            _attREA = new Attribute("REA");
+            _attREA = new CharacterAttrib("REA");
             _attREA._objCharacter = this;
-            _attSTR = new Attribute("STR");
+            _attSTR = new CharacterAttrib("STR");
             _attSTR._objCharacter = this;
-            _attCHA = new Attribute("CHA");
+            _attCHA = new CharacterAttrib("CHA");
             _attCHA._objCharacter = this;
-            _attINT = new Attribute("INT");
+            _attINT = new CharacterAttrib("INT");
             _attINT._objCharacter = this;
-            _attLOG = new Attribute("LOG");
+            _attLOG = new CharacterAttrib("LOG");
             _attLOG._objCharacter = this;
-            _attWIL = new Attribute("WIL");
+            _attWIL = new CharacterAttrib("WIL");
             _attWIL._objCharacter = this;
-            _attINI = new Attribute("INI");
+            _attINI = new CharacterAttrib("INI");
             _attINI._objCharacter = this;
-            _attEDG = new Attribute("EDG");
+            _attEDG = new CharacterAttrib("EDG");
             _attEDG._objCharacter = this;
-            _attMAG = new Attribute("MAG");
+            _attMAG = new CharacterAttrib("MAG");
             _attMAG._objCharacter = this;
-            _attRES = new Attribute("RES");
+            _attRES = new CharacterAttrib("RES");
             _attRES._objCharacter = this;
-            _attESS = new Attribute("ESS");
+            _attESS = new CharacterAttrib("ESS");
             _attESS._objCharacter = this;
             _blnMAGEnabled = false;
             _blnRESEnabled = false;
@@ -4428,7 +4430,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not we should override the option of how Special Attribute Essence Loss is handled. When enabled, ESS loss always affects the character's maximum MAG/RES instead.
+        /// Whether or not we should override the option of how Special CharacterAttribute Essence Loss is handled. When enabled, ESS loss always affects the character's maximum MAG/RES instead.
         /// This should only be enabled as a result of swapping out a Latent Quality for its fully-realised version.
         /// </summary>
         public bool OverrideSpecialAttributeEssenceLoss
@@ -4461,10 +4463,10 @@ namespace Chummer
 
         #region Attributes
         /// <summary>
-        /// Get an Attribute by its name.
+        /// Get an CharacterAttribute by its name.
         /// </summary>
-        /// <param name="strAttribute">Attribute name to retrieve.</param>
-        public Attribute GetAttribute(string strAttribute)
+        /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
+        public CharacterAttrib GetAttribute(string strAttribute)
         {
             switch (strAttribute)
             {
@@ -4511,9 +4513,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Body (BOD) Attribute.
+        /// Body (BOD) CharacterAttribute.
         /// </summary>
-        public Attribute BOD
+        public CharacterAttrib BOD
         {
             get
             {
@@ -4522,9 +4524,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Agility (AGI) Attribute.
+        /// Agility (AGI) CharacterAttribute.
         /// </summary>
-        public Attribute AGI
+        public CharacterAttrib AGI
         {
             get
             {
@@ -4533,9 +4535,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Reaction (REA) Attribute.
+        /// Reaction (REA) CharacterAttribute.
         /// </summary>
-        public Attribute REA
+        public CharacterAttrib REA
         {
             get
             {
@@ -4544,9 +4546,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Strength (STR) Attribute.
+        /// Strength (STR) CharacterAttribute.
         /// </summary>
-        public Attribute STR
+        public CharacterAttrib STR
         {
             get
             {
@@ -4555,9 +4557,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Charisma (CHA) Attribute.
+        /// Charisma (CHA) CharacterAttribute.
         /// </summary>
-        public Attribute CHA
+        public CharacterAttrib CHA
         {
             get
             {
@@ -4566,9 +4568,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Intuition (INT) Attribute.
+        /// Intuition (INT) CharacterAttribute.
         /// </summary>
-        public Attribute INT
+        public CharacterAttrib INT
         {
             get
             {
@@ -4577,9 +4579,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Logic (LOG) Attribute.
+        /// Logic (LOG) CharacterAttribute.
         /// </summary>
-        public Attribute LOG
+        public CharacterAttrib LOG
         {
             get
             {
@@ -4588,9 +4590,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Willpower (WIL) Attribute.
+        /// Willpower (WIL) CharacterAttribute.
         /// </summary>
-        public Attribute WIL
+        public CharacterAttrib WIL
         {
             get
             {
@@ -4599,9 +4601,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Initiative (INI) Attribute.
+        /// Initiative (INI) CharacterAttribute.
         /// </summary>
-        public Attribute INI
+        public CharacterAttrib INI
         {
             get
             {
@@ -4610,9 +4612,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Edge (EDG) Attribute.
+        /// Edge (EDG) CharacterAttribute.
         /// </summary>
-        public Attribute EDG
+        public CharacterAttrib EDG
         {
             get
             {
@@ -4621,9 +4623,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Magic (MAG) Attribute.
+        /// Magic (MAG) CharacterAttribute.
         /// </summary>
-        public Attribute MAG
+        public CharacterAttrib MAG
         {
             get
             {
@@ -4632,9 +4634,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Resonance (RES) Attribute.
+        /// Resonance (RES) CharacterAttribute.
         /// </summary>
-        public Attribute RES
+        public CharacterAttrib RES
         {
             get
             {
@@ -4643,9 +4645,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Essence (ESS) Attribute.
+        /// Essence (ESS) CharacterAttribute.
         /// </summary>
-        public Attribute ESS
+        public CharacterAttrib ESS
         {
             get
             {
@@ -4654,7 +4656,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Is the MAG Attribute enabled?
+        /// Is the MAG CharacterAttribute enabled?
         /// </summary>
         public bool MAGEnabled
         {
@@ -4860,7 +4862,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Is the RES Attribute enabled?
+        /// Is the RES CharacterAttribute enabled?
         /// </summary>
         public bool RESEnabled
         {
@@ -5465,7 +5467,7 @@ namespace Chummer
         }
         #endregion
 
-        #region Special Attribute Tests
+        #region Special CharacterAttribute Tests
         /// <summary>
         /// Composure (WIL + CHA).
         /// </summary>

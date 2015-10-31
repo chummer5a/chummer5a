@@ -651,7 +651,7 @@ namespace Chummer
 					}
 				}
 
-				// Attempt to translate Attribute names.
+				// Attempt to translate CharacterAttribute names.
 				switch (strExtra)
 				{
 					case "BOD":

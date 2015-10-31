@@ -254,7 +254,7 @@ namespace Chummer
             this.Height = lblSpec.Height + 10;
 
             chkKarma.Checked = _objSkill.BuyWithKarma;
-			lblAttribute.Text = _objSkill.DisplayAttribute;
+			lblAttribute.Text = _objSkill.GetDisplayAttribute();
 
 			RefreshControl();
 			_blnSkipRefresh = false;
@@ -633,10 +633,10 @@ namespace Chummer
             set
             {
 				_objSkill.Name = value;
-				lblSkillName.Text = _objSkill.DisplayName;
+				lblSkillName.Text = _objSkill.GetDisplayName();
 
 				if (!KnowledgeSkill)
-					tipTooltip.SetToolTip(lblSkillName, _objSkill.DisplayCategory + "\n" + _objSkill.CharacterObject.Options.LanguageBookLong(_objSkill.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objSkill.Page);
+					tipTooltip.SetToolTip(lblSkillName, _objSkill.GetDisplayCategory() + "\n" + _objSkill.CharacterObject.Options.LanguageBookLong(_objSkill.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objSkill.Page);
             }
         }
 
@@ -1030,7 +1030,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Attribute the Skill is linked to.
+		/// CharacterAttribute the Skill is linked to.
 		/// </summary>
 		public string Attribute
 		{
@@ -1186,7 +1186,7 @@ namespace Chummer
                     lblModifiedRating.Text += " (" + (intRating + 3).ToString() + ")";
                 }
             }
-            lblAttribute.Text = _objSkill.DisplayAttribute;
+            lblAttribute.Text = _objSkill.GetDisplayAttribute();
 
             // Build the Tooltip.
             string strTooltip = "";

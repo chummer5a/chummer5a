@@ -108,6 +108,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\ExoticSkill.cs" />
+    <Compile Include="Backend\KnowledgeSkill.cs" />
+    <Compile Include="Backend\Skill.cs" />
+    <Compile Include="Backend\SkillExtensions.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,6 +235,7 @@
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
@@ -1548,6 +1553,7 @@
     </Content>
     <Content Include="data\skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

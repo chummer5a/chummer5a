@@ -1412,14 +1412,14 @@ namespace Chummer
             }
             catch
             { }
-            // Allow a 2nd Max Attribute
+            // Allow a 2nd Max CharacterAttribute
             try
             {
                 _blnAllow2ndMaxAttribute = false; // Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allow2ndmaxattribute").InnerText);
             }
             catch
             { }
-            // Allow using Attribute Points with Exceptional Attribute
+            // Allow using CharacterAttribute Points with Exceptional CharacterAttribute
             try
             {
                 _blnAllowAttributePointsOnExceptional = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowattributepointsonexceptional").InnerText);
@@ -1781,7 +1781,7 @@ namespace Chummer
 			catch
 			{
 			}
-			// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+			// House rule: Treat the Metatype CharacterAttribute Minimum as 1 for the purpose of calculating Karma costs.
 			try
 			{
 				_blnAlternateMetatypeAttributeKarma = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alternatemetatypeattributekarma").InnerText);
@@ -2491,7 +2491,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
+		/// Whether or not total Skill ratings are capped at 20 or 2 x natural CharacterAttribute + Rating, whichever is higher.
 		/// </summary>
 		public bool CapSkillRating
 		{
@@ -2626,7 +2626,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
+        /// Whether or not to allow a 2nd max attribute with Exceptional CharacterAttribute
         /// </summary>
         public bool Allow2ndMaxAttribute
         {
@@ -2641,7 +2641,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to allow using Attribute points on the bonus point from Exceptional Attribute
+        /// Whether or not to allow using CharacterAttribute points on the bonus point from Exceptional CharacterAttribute
         /// </summary>
         public bool AllowAttributePointsOnExceptional
         {
@@ -3433,7 +3433,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+		/// House rule: Treat the Metatype CharacterAttribute Minimum as 1 for the purpose of calculating Karma costs.
 		/// </summary>
 		public bool AlternateMetatypeAttributeKarma
 		{
@@ -3585,7 +3585,7 @@ namespace Chummer
 
 		#region BP
 		/// <summary>
-		/// BP cost for each Attribute = this value.
+		/// BP cost for each CharacterAttribute = this value.
 		/// </summary>
 		public int BPAttribute
 		{
@@ -3600,7 +3600,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// BP cost to raise an Attribute to its Metatype Maximum = this value.
+		/// BP cost to raise an CharacterAttribute to its Metatype Maximum = this value.
 		/// </summary>
 		public int BPAttributeMax
 		{
@@ -3797,7 +3797,7 @@ namespace Chummer
 
 		#region Karma
 		/// <summary>
-		/// Karma cost to improve an Attribute = New Rating X this value.
+		/// Karma cost to improve an CharacterAttribute = New Rating X this value.
 		/// </summary>
 		public int KarmaAttribute
 		{

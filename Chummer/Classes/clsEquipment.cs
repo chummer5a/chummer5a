@@ -183,7 +183,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -1182,7 +1182,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -2706,7 +2706,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -3077,7 +3077,7 @@ namespace Chummer
 				if (_strLocation != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strLocation + "Short") != "")
@@ -4541,7 +4541,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -7480,7 +7480,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -8318,7 +8318,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -9164,7 +9164,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -15822,7 +15822,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -15929,7 +15929,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -16064,7 +16064,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")

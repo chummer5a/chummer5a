@@ -67,7 +67,7 @@ namespace Chummer
 
         private void frmSelectAttribute_Load(object sender, EventArgs e)
         {
-            // Select the first Attribute in the list.
+            // Select the first CharacterAttribute in the list.
             cboAttribute.SelectedIndex = 0;
         }
 
@@ -78,7 +78,7 @@ namespace Chummer
 
 		private void frmSelectAttribute_Shown(object sender, EventArgs e)
 		{
-			// If only a single Attribute is in the list when the form is shown,
+			// If only a single CharacterAttribute is in the list when the form is shown,
 			// click the OK button since the user really doesn't have a choice.
 			if (cboAttribute.Items.Count == 1)
 				cmdOK_Click(sender, e);
@@ -87,7 +87,7 @@ namespace Chummer
 
 		#region Properties
 		/// <summary>
-        /// Attribute that was selected in the dialogue.
+        /// CharacterAttribute that was selected in the dialogue.
         /// </summary>
         public string SelectedAttribute
         {
@@ -163,9 +163,9 @@ namespace Chummer
         }
 
 		/// <summary>
-		/// Limit the list to a single Attribute.
+		/// Limit the list to a single CharacterAttribute.
 		/// </summary>
-		/// <param name="strValue">Single Attribute to display.</param>
+		/// <param name="strValue">Single CharacterAttribute to display.</param>
 		public void SingleAttribute(string strValue)
 		{
 			List<ListItem> lstItems = new List<ListItem>();

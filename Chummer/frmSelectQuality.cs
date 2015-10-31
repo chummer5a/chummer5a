@@ -742,12 +742,12 @@ namespace Chummer
 						}
 						else if (objXmlRequired.Name == "attribute")
 						{
-							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							// Check to see if an CharacterAttribute meets a requirement.
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{
-								// Make sure the Attribute's total value meets the requirement.
+								// Make sure the CharacterAttribute's total value meets the requirement.
 								if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
 									blnOneOfMet = true;
 							}
@@ -1047,12 +1047,12 @@ namespace Chummer
 						}
 						else if (objXmlRequired.Name == "attribute")
 						{
-							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							// Check to see if an CharacterAttribute meets a requirement.
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{
-								// Make sure the Attribute's total value meets the requirement.
+								// Make sure the CharacterAttribute's total value meets the requirement.
 								if (objAttribute.TotalValue >= Convert.ToInt32(objXmlRequired["total"].InnerText))
 									blnFound = true;
 							}

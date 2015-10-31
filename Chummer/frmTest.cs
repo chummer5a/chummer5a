@@ -809,8 +809,8 @@ namespace Chummer
                                 SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
                                 objExotic.Specializations.Add(objSpec);
                             }
-							if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
-								objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+							//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
+							//	objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							objExotic.Name = objXmlSkill.InnerText;
 							_objCharacter.Skills.Add(objExotic);
@@ -826,8 +826,8 @@ namespace Chummer
                                         SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
                                         objSkill.Specializations.Add(objSpec);
                                     }
-									if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
-										objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+									//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
+									//	objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 									objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 									break;
 								}
@@ -861,8 +861,8 @@ namespace Chummer
                             objKnowledge.Specializations.Add(objSpec);
                         }
 						objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
-						if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
-							objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+						//if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
+						//	objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
 						objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
 						_objCharacter.Skills.Add(objKnowledge);
 					}
@@ -879,10 +879,10 @@ namespace Chummer
 						}
 
 						// Now that we know the upper limit, set all of the Skill Rating Maximums to match.
-						foreach (Skill objSkill in _objCharacter.Skills)
-							objSkill.RatingMaximum = intMaxRating;
-						foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-							objGroup.RatingMaximum = intMaxRating;
+						//foreach (Skill objSkill in _objCharacter.Skills)
+						//	objSkill.RatingMaximum = intMaxRating;
+						//foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+						//	objGroup.RatingMaximum = intMaxRating;
 
 						// Set the MaxSkillRating for the character so it can be used later when they add new Knowledge Skills or Exotic Skills.
 						_objCharacter.MaxSkillRating = intMaxRating;

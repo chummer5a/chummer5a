@@ -11,10 +11,10 @@ using System.Xml.XPath;
 namespace Chummer
 {
 	/// <summary>
-	/// Character Attribute.
+	/// Character CharacterAttribute.
 	/// </summary>
 	[DebuggerDisplay("{_strAbbrev}")]
-	public class Attribute
+	public class CharacterAttrib
 	{
 		private int _intMetatypeMin = 1;
 		private int _intMetatypeMax = 6;
@@ -28,10 +28,10 @@ namespace Chummer
 
 		#region Constructor, Save, Load, and Print Methods
 		/// <summary>
-		/// Character Attribute.
+		/// Character CharacterAttribute.
 		/// </summary>
-		/// <param name="strAbbrev">Attribute abbreviation.</param>
-		public Attribute(string strAbbrev)
+		/// <param name="strAbbrev">CharacterAttribute abbreviation.</param>
+		public CharacterAttrib(string strAbbrev)
 		{
 			_strAbbrev = strAbbrev;
 		}
@@ -57,7 +57,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -97,7 +97,7 @@ namespace Chummer
 
 		#region Properties
 		/// <summary>
-		/// Minimum value for the Attribute as set by the character's Metatype.
+		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeMinimum
 		{
@@ -115,7 +115,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Maximum value for the Attribute as set by the character's Metatype.
+		/// Maximum value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeMaximum
 		{
@@ -133,7 +133,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Maximum augmented value for the Attribute as set by the character's Metatype.
+		/// Maximum augmented value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeAugmentedMaximum
 		{
@@ -148,7 +148,7 @@ namespace Chummer
 		}
 
         /// <summary>
-        /// Current base value of the Attribute.
+        /// Current base value of the CharacterAttribute.
         /// </summary>
         public int Base
         {
@@ -163,7 +163,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Current karma value of the Attribute.
+        /// Current karma value of the CharacterAttribute.
         /// </summary>
         public int Karma
         {
@@ -178,7 +178,7 @@ namespace Chummer
         }
 
         /// <summary>
-		/// Current value of the Attribute.
+		/// Current value of the CharacterAttribute.
 		/// </summary>
 		public int Value
 		{
@@ -197,7 +197,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Augmentation modifier value for the Attribute.
+		/// Augmentation modifier value for the CharacterAttribute.
 		/// </summary>
 		/// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
 		public int AugmentModifier
@@ -213,7 +213,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's total value including augmentations.
+		/// The CharacterAttribute's total value including augmentations.
 		/// </summary>
 		/// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
 		public int Augmented
@@ -225,7 +225,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's value.
 		/// </summary>
 		public int AttributeModifiers
 		{
@@ -363,7 +363,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that raise the actual value of the Attribute and increase its Karma cost.
+		/// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
 		/// </summary>
 		public int AttributeValueModifiers
 		{
@@ -449,7 +449,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Attribute has any modifiers from Improvements.
+		/// Whether or not the CharacterAttribute has any modifiers from Improvements.
 		/// </summary>
 		public bool HasModifiers
 		{
@@ -475,7 +475,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Minimum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Minimum value.
 		/// </summary>
 		public int MinimumModifiers
 		{
@@ -494,7 +494,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Maximum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
 		/// </summary>
 		public int MaximumModifiers
 		{
@@ -513,7 +513,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Augmented Maximum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
 		/// </summary>
 		public int AugmentedMaximumModifiers
 		{
@@ -532,7 +532,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's total value (Value + Modifiers).
+		/// The CharacterAttribute's total value (Value + Modifiers).
 		/// </summary>
 		public int TotalValue
 		{
@@ -568,7 +568,7 @@ namespace Chummer
                 //        intReturn = 0;
                 //        if (intLimbCount < _objCharacter.Options.LimbCount)
                 //        {
-                //            // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+                //            // Not all of the limbs have been replaced, so we need to place the CharacterAttribute in the other "limbs" to get the average value.
                 //            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
                 //                intLimbTotal += intMeat;
                 //            intLimbCount = _objCharacter.Options.LimbCount;
@@ -578,11 +578,11 @@ namespace Chummer
                 //    }
                 //}
 
-				// Do not let the Attribute go above the Metatype's Augmented Maximum.
+				// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 				if (intReturn > TotalAugmentedMaximum)
 					intReturn = TotalAugmentedMaximum;
 
-				// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
+				// An CharacterAttribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
 				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")))
 				{
 					if (intReturn < 0)
@@ -603,7 +603,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Minimum value (Metatype Minimum + Modifiers).
+		/// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
 		/// </summary>
 		public int TotalMinimum
 		{
@@ -626,7 +626,7 @@ namespace Chummer
 					if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
 					{
 						// If the House Rule for Essence Loss Only Affects Maximum MAG/RES is turned on, the minimum should always be 1 unless the total ESS penalty is greater than or equal to
-						// the Attribute's total maximum, in which case the minimum becomes 0.
+						// the CharacterAttribute's total maximum, in which case the minimum becomes 0.
 						if (_objCharacter.EssencePenalty >= _objCharacter.MAG.TotalMaximum)
 							intReturn = 0;
 						else
@@ -645,7 +645,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Maximum value (Metatype Maximum + Modifiers).
+		/// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
 		/// </summary>
 		public int TotalMaximum
 		{
@@ -665,7 +665,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
+		/// The CharacterAttribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
 		/// </summary>
 		public int TotalAugmentedMaximum
 		{
@@ -690,7 +690,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Attribute abbreviation.
+		/// CharacterAttribute abbreviation.
 		/// </summary>
 		public string Abbrev
 		{
@@ -703,11 +703,11 @@ namespace Chummer
 
 		#region Methods
 		/// <summary>
-		/// Set the minimum, maximum, and augmented values for the Attribute based on string values from the Metatype XML file.
+		/// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
 		/// </summary>
-		/// <param name="strMin">Metatype's minimum value for the Attribute.</param>
-		/// <param name="strMax">Metatype's maximum value for the Attribute.</param>
-		/// <param name="strAug">Metatype's maximum augmented value for the Attribute.</param>
+		/// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
+		/// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
+		/// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
 		public void AssignLimits(string strMin, string strMax, string strAug)
 		{
 			MetatypeMinimum = Convert.ToInt32(strMin);
@@ -716,7 +716,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// ToolTip that shows how the Attribute is calculating its Modified Rating.
+		/// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
 		/// </summary>
 		public string ToolTip()
 		{
@@ -872,7 +872,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Amount of BP/Karma spent on this Attribute.
+		/// Amount of BP/Karma spent on this CharacterAttribute.
 		/// </summary>
 		private int CalculatedBP()
 		{
@@ -896,7 +896,7 @@ namespace Chummer
 			}
 			else
 			{
-				// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+				// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 				int intEssenceLoss = 0;
 				if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
 					intEssenceLoss = _objCharacter.EssencePenalty;
@@ -1232,7 +1232,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public virtual void Load(XmlNode objNode)
@@ -1390,7 +1390,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -1539,7 +1539,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -1978,7 +1978,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -2244,7 +2244,7 @@ namespace Chummer
 	/// Object that represents a single Skill.
 	/// </summary>
 	[DebuggerDisplay("{_strName}")]
-	public class Skill
+	public class _Skill
 	{
 		private string _strSkillGroup = "";
 		private string _strSkillCategory = "";
@@ -2269,7 +2269,7 @@ namespace Chummer
 		private readonly Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
-		public Skill(Character objCharacter)
+		public _Skill(Character objCharacter)
 		{
 			_objCharacter = objCharacter;
 		}
@@ -2324,7 +2324,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -2420,8 +2420,8 @@ namespace Chummer
 			{
 				foreach (XmlNode foldNode in objNode["folded"].ChildNodes)
 				{
-					Skill s = new Skill(_objCharacter);
-					s.Load(foldNode);
+					Skill s = Skill.Load(foldNode, _objCharacter);
+					
 
 					_fold.Add(s);
 				}
@@ -2434,7 +2434,7 @@ namespace Chummer
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Print(XmlTextWriter objWriter)
 		{
-			// Get the translated Attribute name.
+			// Get the translated CharacterAttribute name.
 			string strAttribute = Attribute;
 			strAttribute = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
 
@@ -2804,7 +2804,7 @@ namespace Chummer
 			{
 				_strSkillCategory = value;
 
-				// If this is a Knowledge Skill, determine the Attribute based on the selected Category.
+				// If this is a Knowledge Skill, determine the CharacterAttribute based on the selected Category.
 				if (_blnKnowledgeSkill)
 				{
 					if (value == "Street" || value == "Interest" || value == "Language")
@@ -2840,7 +2840,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Attribute the Skill is linked to.
+		/// CharacterAttribute the Skill is linked to.
 		/// </summary>
 		public string Attribute
 		{
@@ -2851,7 +2851,7 @@ namespace Chummer
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && objImprovement.ImprovedName == _strAttribute && objImprovement.Enabled)
 					{
-						// Swap a Physical Attribute for a Mental Attribute for the Skill.
+						// Swap a Physical CharacterAttribute for a Mental CharacterAttribute for the Skill.
 						switch (_strAttribute)
 						{
 							case "BOD":
@@ -3042,11 +3042,11 @@ namespace Chummer
 				int intTotal = 0;
 				int intAttribute = _objCharacter.GetAttribute(strAttribute).TotalValue;
 
-				// If the Attribute is MAG and the character is a Mystic Adept, then only the Magician's portion of MAG counts towards the Skill.
+				// If the CharacterAttribute is MAG and the character is a Mystic Adept, then only the Magician's portion of MAG counts towards the Skill.
                 //if (strAttribute == "MAG" && _objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
                 //    intAttribute = _objCharacter.MAGMagician;
 
-				// If defaulting is allowed and the Skill has a Rating of 0, then use the Attribute - 1 as the total.
+				// If defaulting is allowed and the Skill has a Rating of 0, then use the CharacterAttribute - 1 as the total.
 				if (Default && intRating == 0)
 				{
 					intTotal = intAttribute - 1;
@@ -3054,7 +3054,7 @@ namespace Chummer
 					if (_objCharacter.Options.SkillDefaultingIncludesModifiers)
 						intTotal += RatingModifiers + DicePoolModifiers;
 
-					// If the option to cap Skill dice pools to 20 or 2 x (Natural Attribute + Rating) is on, enforce it.
+					// If the option to cap Skill dice pools to 20 or 2 x (Natural CharacterAttribute + Rating) is on, enforce it.
 					if (_objCharacter.Options.CapSkillRating)
 					{
 						int intMax = (_objCharacter.GetAttribute(strAttribute).Value + _intRating) * 2;
@@ -3069,7 +3069,7 @@ namespace Chummer
 					intTotal = intRating;
 					intTotal += RatingModifiers;
 
-					// If the option to enforce the maximum modified Skill Rating is turned on, make sure the total value (less Attribute) does
+					// If the option to enforce the maximum modified Skill Rating is turned on, make sure the total value (less CharacterAttribute) does
 					// not exceed 1.5X the current Rating. The maximum modifier should be rounded down. According to SR4 118, the maximum possible Rating 9 , or 10 with the Aptitude Quality.
 					if (_objCharacter.Options.EnforceMaximumSkillRatingModifier)
 					{
@@ -3078,10 +3078,10 @@ namespace Chummer
 					}
 					intTotal += DicePoolModifiers;
 
-					// Add the linked Attribute's total.
+					// Add the linked CharacterAttribute's total.
 					intTotal += intAttribute;
 
-					// If the option to cap Skill dice pools to 20 or 2 x (Natural Attribute + Rating) is on, enforce it.
+					// If the option to cap Skill dice pools to 20 or 2 x (Natural CharacterAttribute + Rating) is on, enforce it.
 					if (_objCharacter.Options.CapSkillRating)
 					{
 						if (intRating > 0)
@@ -3109,7 +3109,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Skill's Modifiers that come from its linked Attribute.
+		/// Skill's Modifiers that come from its linked CharacterAttribute.
 		/// </summary>
 		public int AttributeModifiers
 		{
@@ -3155,7 +3155,7 @@ namespace Chummer
 							if (!objImprovement.Exclude.Contains(_strName))
 								intModifier += objImprovement.Value;
 						}
-						// Improvement for a Skill linked to an Attribute.
+						// Improvement for a Skill linked to an CharacterAttribute.
 						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
 						{
 							if (!objImprovement.Exclude.Contains(_strName))
@@ -3259,7 +3259,7 @@ namespace Chummer
 							}
 						}
 
-						// Improvement for a Skill linked to an Attribute.
+						// Improvement for a Skill linked to an CharacterAttribute.
 						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
 						{
 							if (!objImprovement.Exclude.Contains(_strName))
@@ -3410,7 +3410,7 @@ namespace Chummer
 							if (!objImprovement.Exclude.Contains(_strName))
 								intCustomModifier += objImprovement.Value;
 						}
-						// Improvement for a Skill linked to an Attribute.
+						// Improvement for a Skill linked to an CharacterAttribute.
 						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
 						{
 							if (!objImprovement.Exclude.Contains(_strName))
@@ -3549,7 +3549,7 @@ namespace Chummer
 							}
 						}
 
-						// Improvement for a Skill linked to an Attribute.
+						// Improvement for a Skill linked to an CharacterAttribute.
 						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
 						{
 							if (!objImprovement.Exclude.Contains(_strName))
@@ -3752,7 +3752,7 @@ namespace Chummer
 									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
 							}
 						}
-						// Improvement for a Skill linked to an Attribute.
+						// Improvement for a Skill linked to an CharacterAttribute.
 						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
 						{
 							if (!objImprovement.Exclude.Contains(_strName))
@@ -3835,7 +3835,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Translated Attribute.
+		/// Translated CharacterAttribute.
 		/// </summary>
 		public string DisplayAttribute
 		{
@@ -3877,32 +3877,7 @@ namespace Chummer
 			}
 		}
 
-		private List<String> _knowledgeSkillCatagories;
-
-		public List<String> KnowledgeSkillCatagories
-		{
-			get { return _knowledgeSkillCatagories == null ? DefaultKnowledgeSkillCatagories : _knowledgeSkillCatagories; }
-			set { _knowledgeSkillCatagories = value; }
-		}
-
-		public static List<String> DefaultKnowledgeSkillCatagories
-		{
-			get
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-				XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
-				List<String> Items = new List<String>();
-				foreach (XmlNode objXmlSkill in objXmlSkillList)
-				{
-					if (objXmlSkill["translate"] != null)
-						Items.Add(objXmlSkill["translate"].InnerText);
-					else
-						Items.Add(objXmlSkill["name"].InnerText);
-				}
-				//TODO: Cache
-				return Items;
-			}
-		}
+		
 		#endregion
 
 		#region Methods
@@ -4034,7 +4009,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -5397,7 +5372,7 @@ namespace Chummer
                     strReturn += " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")";
                 if (_strExtra != "")
 				{
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -5477,28 +5452,28 @@ namespace Chummer
 				{
                     if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
@@ -7052,7 +7027,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -7111,7 +7086,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -7243,14 +7218,14 @@ namespace Chummer
                     decimal decReturn = (_intRating - _intFreeLevels) * PointsPerLevel;
                     decReturn -= Discount;
 
-                    // Look at the Improvements created by the Power and determine if it has taken an Attribute above its Metatype Maximum.
+                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
                     //if (_blnDoubleCost)
                     //{
                     //    foreach (Improvement objImprovement in _objCharacter.Improvements)
                     //    {
-                    //        if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
+                    //        if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.CharacterAttribute && objImprovement.Enabled)
                     //        {
-                    //            Attribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+                    //            CharacterAttribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                     //            if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
                     //            {
                     //                // Use the lower of the difference between Augmented Maximum and the Power's Rating.
@@ -7431,7 +7406,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Power Point cost is doubled when an Attribute exceeds its Metatype Maximum.
+		/// Whether or not the Power Point cost is doubled when an CharacterAttribute exceeds its Metatype Maximum.
 		/// </summary>
 		public bool DoubleCost
 		{
@@ -7446,7 +7421,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum Attribute values.
+		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum CharacterAttribute values.
 		/// </summary>
 		public int DoubledPoints
 		{
@@ -7460,14 +7435,14 @@ namespace Chummer
                     decReturn -= Discount;
                     int intDoubledPoints = 0;
 
-                    // Look at the Improvements created by the Power and determine if it has taken an Attribute above its Metatype Maximum.
+                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
                     if (_blnDoubleCost)
                     {
                         foreach (Improvement objImprovement in _objCharacter.Improvements)
                         {
                             if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
                             {
-                                Attribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+                                CharacterAttrib objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                                 if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
                                 {
                                     // Use the lower of the difference between Augmented Maximum and the Power's Rating.
@@ -9409,7 +9384,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -9428,7 +9403,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{

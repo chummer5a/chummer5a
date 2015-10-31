@@ -1166,7 +1166,7 @@
 			this.lblAttributesAug.TabIndex = 55;
 			this.lblAttributesAug.Tag = "Label_ValAugmented";
 			this.lblAttributesAug.Text = "Val (Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented CharacterAttribute value.");
 			// 
 			// lblAttributesBase
 			// 
@@ -1177,7 +1177,7 @@
 			this.lblAttributesBase.TabIndex = 54;
 			this.lblAttributesBase.Tag = "Label_Base";
 			this.lblAttributesBase.Text = "Base";
-			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base CharacterAttribute value.");
 			// 
 			// lblAttributesMetatype
 			// 
@@ -1890,7 +1890,7 @@
 			this.label7.TabIndex = 92;
 			this.label7.Tag = "String_Karma";
 			this.label7.Text = "Karma";
-			this.tipTooltip.SetToolTip(this.label7, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.label7, "Base CharacterAttribute value.");
 			// 
 			// label8
 			// 

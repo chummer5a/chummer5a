@@ -107,7 +107,7 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Tag = "Title_SelectAttribute";
-			this.Text = "Choose an Attribute";
+			this.Text = "Choose an CharacterAttribute";
 			this.Load += new System.EventHandler(this.frmSelectAttribute_Load);
 			this.Shown += new System.EventHandler(this.frmSelectAttribute_Shown);
 			this.ResumeLayout(false);

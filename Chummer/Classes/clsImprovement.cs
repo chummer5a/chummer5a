@@ -252,7 +252,7 @@ namespace Chummer
         }
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -381,7 +381,7 @@ namespace Chummer
 			}
 
         /// <summary>
-        /// Name of the Skill or Attribute that the Improvement is improving.
+        /// Name of the Skill or CharacterAttribute that the Improvement is improving.
         /// </summary>
         public string ImprovedName
         {
@@ -541,7 +541,7 @@ namespace Chummer
 
 		/// <summary>
 		/// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-		/// Attribute selection for Qualities like Metagenetic Improvement.
+		/// CharacterAttribute selection for Qualities like Metagenetic Improvement.
 		/// </summary>
 		public string LimitSelection
 		{
@@ -771,7 +771,7 @@ namespace Chummer
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
 			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
 			{
-				// If the value contain an Attribute name, replace it with the character's Attribute.
+				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
 				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
 				strValue = strValue.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
 				strValue = strValue.Replace("REA", _objCharacter.REA.TotalValue.ToString());
@@ -1013,7 +1013,7 @@ namespace Chummer
 			int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique)
 		{
 			objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "Has Child Nodes");
-			// Add an Attribute.
+			// Add an CharacterAttribute.
 			if (bonusNode.LocalName == ("addattribute"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "addattribute");
@@ -1321,7 +1321,7 @@ namespace Chummer
 				foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("selectattribute"))
 				{
 					objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectattribute");
-					// Display the Select Attribute window and record which Skill was selected.
+					// Display the Select CharacterAttribute window and record which Skill was selected.
 					frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 					if (strFriendlyName != "")
 						frmPickAttribute.Description =
@@ -1416,11 +1416,11 @@ namespace Chummer
 				}
 			}
 
-			// Select an Attribute.
+			// Select an CharacterAttribute.
 			if (bonusNode.LocalName == ("selectattribute"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "selectattribute");
-				// Display the Select Attribute window and record which Skill was selected.
+				// Display the Select CharacterAttribute window and record which Skill was selected.
 				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 				if (strFriendlyName != "")
 					frmPickAttribute.Description =
@@ -1632,11 +1632,11 @@ namespace Chummer
 					intAug, intAugMax);
 			}
 
-			// Select an Attribute to use instead of the default on a skill.
+			// Select an CharacterAttribute to use instead of the default on a skill.
 			if (bonusNode.LocalName == ("swapskillattribute"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "swapskillattribute");
-				// Display the Select Attribute window and record which Skill was selected.
+				// Display the Select CharacterAttribute window and record which Skill was selected.
 				frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 				if (strFriendlyName != "")
 					frmPickAttribute.Description =
@@ -1859,7 +1859,7 @@ namespace Chummer
 							Improvement.ImprovementType.AddContact, contact.GUID);
 			}
 
-			// Affect a Specific Attribute.
+			// Affect a Specific CharacterAttribute.
 			if (bonusNode.LocalName == ("specificattribute"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "specificattribute");
@@ -1868,7 +1868,7 @@ namespace Chummer
 
 				if (bonusNode["name"].InnerText != "ESS")
 				{
-					// Display the Select Attribute window and record which Attribute was selected.
+					// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 					// Record the improvement.
 					int intMin = 0;
 					int intAug = 0;
@@ -2002,7 +2002,7 @@ namespace Chummer
 						objNSkill.SkillCategory = group;
 						int max;
 						bonusNode.TryGetField("max", out max, 9);
-						objNSkill.RatingMaximum = max;
+						//objNSkill.RatingMaximum = max;
 
 						String name;
 						if (bonusNode.TryGetField("name", out name))
@@ -2361,7 +2361,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement adjust Skills with the given Attribute.
+			// The Improvement adjust Skills with the given CharacterAttribute.
 			if (bonusNode.LocalName == ("skillattribute"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "skillattribute");
@@ -2395,7 +2395,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical Attribute).
+			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical CharacterAttribute).
 			if (bonusNode.LocalName == ("skillarticulation"))
 			{
 				objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager", "skillarticulation");
@@ -3490,7 +3490,7 @@ namespace Chummer
 						if (_strForcedValue.StartsWith("Adept"))
 							_strForcedValue = "";
 
-						// Display the Select Attribute window and record which Attribute was selected.
+						// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 						frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 						if (strFriendlyName != "")
 							frmPickAttribute.Description =
@@ -3932,7 +3932,7 @@ namespace Chummer
 							if (_strForcedValue.StartsWith("Adept"))
 								_strForcedValue = "";
 
-							// Display the Select Attribute window and record which Attribute was selected.
+							// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 							frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 							if (strFriendlyName != "")
 								frmPickAttribute.Description =
@@ -4661,7 +4661,7 @@ namespace Chummer
 			{
 				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
 				//objFunctions.LogWrite(CommonFunctions.LogType.Message, "Chummer.ImprovementManager","selectoptionalpower");
-				// Display the Select Attribute window and record which Skill was selected.
+				// Display the Select CharacterAttribute window and record which Skill was selected.
 				frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
 				frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
 				string strForcedValue = "";
@@ -5492,17 +5492,17 @@ namespace Chummer
 		/// <summary>
 		/// Create a new Improvement and add it to the Character.
 		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an Attribute being improved.</param>
+		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
 		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
 		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
 		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
 		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
 		/// <param name="intValue">Set a Value for the Improvement.</param>
 		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an Attribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an Attribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an Attribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an Attribute by the given amount.</param>
+		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
 		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
 		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
 		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,

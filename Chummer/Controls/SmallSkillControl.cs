@@ -88,7 +88,7 @@ namespace Chummer
                 dash.DiceRoller.NumberOfDice = this.chkUseSpecial.Checked ? Skill.TotalRating + 2 : Skill.TotalRating;
                 // apply appropriate limit here
                 dash.DiceRoller.EdgeUse = DiceRollerControl.EdgeUses.None;
-                dash.DiceRoller.NumberOfEdge = Convert.ToInt32(((Attribute)dash.CurrentNPC.EDG).TotalValue);
+                dash.DiceRoller.NumberOfEdge = Convert.ToInt32(((CharacterAttrib)dash.CurrentNPC.EDG).TotalValue);
             }
             else
             {

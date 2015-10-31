@@ -95,7 +95,7 @@
 			this.chkIgnoreRules.TabIndex = 5;
 			this.chkIgnoreRules.Tag = "Checkbox_SelectBP_IgnoreRules";
 			this.chkIgnoreRules.Text = "Ignore Character Creation Rules";
-			this.toolTip1.SetToolTip(this.chkIgnoreRules, "When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intend" +
+			this.toolTip1.SetToolTip(this.chkIgnoreRules, "When checked, all Karma and CharacterAttribute/Skill maximum rules will be ignored. Intend" +
         "ed for Game Master/NPC use only.");
 			this.chkIgnoreRules.UseVisualStyleBackColor = true;
 			// 
