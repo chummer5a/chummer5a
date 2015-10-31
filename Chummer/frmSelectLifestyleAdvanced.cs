@@ -94,6 +94,8 @@ namespace Chummer
 						treLifestyleQualities.Nodes[2].Nodes.Add(objNode);
 						treLifestyleQualities.Nodes[2].Expand();
 					}
+					_objLifestyle.LifestyleQualities.Add(objQuality);
+
 				}
 			}
 			cboBaseLifestyle.ValueMember = "Value";
