@@ -1140,7 +1140,7 @@ namespace Chummer
                 TreeNode objLifestyleNode = new TreeNode();
                 objLifestyleNode.Text = objLifestyle.DisplayName;
                 objLifestyleNode.Tag = objLifestyle.InternalId;
-                if (objLifestyle.BaseLifestyle != "")
+                if (objLifestyle.StyleType.ToString() != "Standard")
                     objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
                 else
                     objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
@@ -3611,8 +3611,8 @@ namespace Chummer
                         TreeNode objLifestyleNode = new TreeNode();
                         objLifestyleNode.Text = objLifestyle.DisplayName;
                         objLifestyleNode.Tag = objLifestyle.InternalId;
-                        if (objLifestyle.BaseLifestyle != "")
-                            objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
+						if (objLifestyle.StyleType.ToString() != "Standard")
+							objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
                         else
                             objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
                         if (objLifestyle.Notes != string.Empty)
@@ -12712,7 +12712,7 @@ namespace Chummer
             }
 
             Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            if (objLifestyle.BaseLifestyle != "")
+            if (objLifestyle.StyleType.ToString() != "Standard")
             {
                 // Edit Advanced Lifestyle.
                 frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
@@ -17029,7 +17029,7 @@ namespace Chummer
                     cboCyberwareGrade.Enabled = false;
 
                 // Cyberware Grade is not available for Genetech items.
-                if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions")
+                if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
 
                 _blnSkipRefresh = false;
@@ -19035,8 +19035,8 @@ namespace Chummer
                 // Change the Cost/Month label.
                 if (objLifestyle.StyleType == LifestyleType.Safehouse)
                     lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
-                else
-                    lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
+				else
+					lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
 
                 if (objLifestyle.BaseLifestyle != "")
                 {
@@ -19057,11 +19057,11 @@ namespace Chummer
 							strQualities += ", ";
 						string strQualityName = objQuality.DisplayName;
 						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-						XmlNode nodCost = objNode["lifestylecost"];
-						if (nodCost != null)
+						XmlNode nodMultiplier = objNode["multiplier"];
+						if (nodMultiplier != null)
 						{
-							string strCost = nodCost.InnerText;
-							int intCost = Convert.ToInt32(strCost);
+							string strMultiplier = nodMultiplier.InnerText;
+							int intCost = Convert.ToInt32(strMultiplier);
 							if (intCost > 0)
 							{
 								if (objNode["translate"] != null)

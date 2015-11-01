@@ -9,12 +9,18 @@ Application Change:
 - Fixed an incorrectly calculated Drain value.
 - The Create Natural Weapon form can now select STR in addition to the current STR/2 option. 
 - Fixed an issue that caused the prompt for adding an enhancement metamagic to show the wrong value.
+- Fixed an issue with Basic Lifestyles not being editable.
+- Fixed an issue with Lifestyle costs not calculating correctly for metatypes and some other edge cases.
+- The Adept Powers panel now includes an automatic scroll button that triggers when the list of powers exceeds the panel height.
+- Fixed some issues with genemods being able to benefit from cyber/bioware grades. 
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
 - Fixed missing data values for discounted adept powers.
 - Adept Way Discount values enabled for all eligible powers (IE, anything except powers that cost .25.)
 - Fixed an issue with gas-vents that caused a crash.
+- Renamed the Low-Light Vision metagenetic quality to prevent it from clashing with the metatype quality.
+- Renamed the Magic Sense metagenetic quality to prevent it from clashing with the metatype quality.
 
 New String:
 - Menu_FilePrintPreview

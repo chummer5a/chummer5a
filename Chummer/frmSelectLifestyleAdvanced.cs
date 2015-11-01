@@ -390,6 +390,7 @@ namespace Chummer
                 return 0;
 
             int intLP = 0;
+			int intBaseNuyen = 0;
             int intNuyen = 0;
             int intMultiplier = 0;
 
@@ -449,6 +450,10 @@ namespace Chummer
 						if (objXmlAspect["multiplier"] != null)
 						{
 							intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
+						}
+						if (objXmlAspect["cost"] != null)
+						{
+							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText); ;
 						}
 					}
 				}
@@ -512,15 +517,24 @@ namespace Chummer
 				}
 			}
 
+			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			{
+				if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
+				{
+					intMultiplier += objImprovement.Value;
+				}
+			}
+
 			intMultiplier += Convert.ToInt32(nudRoommates.Value * 10);
-            intNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
-            intMultiplier = (intNuyen * intMultiplier) / 100;
-            intNuyen += intMultiplier;
-            intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
+            intBaseNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
+            intMultiplier = (intBaseNuyen * intMultiplier) / 100;
+			intNuyen += intMultiplier;
+			intNuyen += intBaseNuyen;
+			intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
 			if (chkTrustFund.Checked)
 			{
-				intNuyen -= Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
-			}
+				intNuyen -= intBaseNuyen;
+            }
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 

@@ -118,7 +118,7 @@ namespace Chummer
 			if (_objSourceLifestyle != null)
 			{
 				txtLifestyleName.Text = _objSourceLifestyle.Name;
-				if (_objSourceLifestyle.BaseLifestyle != "")
+				if (_objSourceLifestyle.BaseLifestyle.ToString() != "")
 				{
 					cboLifestyle.SelectedValue = _objSourceLifestyle.BaseLifestyle;
 				}
@@ -128,7 +128,7 @@ namespace Chummer
 				{
 					foreach (TreeNode objNode in treQualities.Nodes)
 					{
-						if (objNode.Tag.ToString() == objQuality.Name)
+						if (objNode.Tag.ToString().StartsWith(objQuality.Name))
 						{
 							objNode.Checked = true;
 							break;
@@ -242,18 +242,18 @@ namespace Chummer
 		/// </summary>
 		private void AcceptForm()
 		{
+			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
 			_objLifestyle.Source = "SR5";
 			_objLifestyle.Page = "373";
 			_objLifestyle.Name = txtLifestyleName.Text;
 			_objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
-			_objLifestyle.Cost = CalculateValues(false);
+			_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
 			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
 			_objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
 			_objLifestyle.LifestyleQualities.Clear();
 			_objLifestyle.StyleType = _objType;
 
 			Guid source;
-			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
 			if (objXmlAspect.TryGetField("id", Guid.TryParse, out source))
 			{
 				_objLifestyle.SourceID = source;
@@ -302,11 +302,11 @@ namespace Chummer
 				return 0;
 
 			int intNuyen = 0;
-
+			decimal decBaseCost = 0;
 			decimal decCost = 0;
 			// Get the base cost of the lifestyle
 			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
-			decCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText);
+			decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText);
 			_objLifestyle.Dice = Convert.ToInt32(objXmlAspect["dice"].InnerText);
 			_objLifestyle.Multiplier = Convert.ToInt32(objXmlAspect["multiplier"].InnerText);
 
@@ -340,8 +340,9 @@ namespace Chummer
 				decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				decMod += Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
 			}
-
-			intNuyen = Convert.ToInt32(decCost + (decCost * decMod));
+			
+			intNuyen = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
+			intNuyen += Convert.ToInt32(decCost);
 			lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 
 			return intNuyen;

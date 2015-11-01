@@ -4103,6 +4103,7 @@
 			this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panPowers.AutoScroll = true;
 			this.panPowers.Location = new System.Drawing.Point(11, 54);
 			this.panPowers.Name = "panPowers";
 			this.panPowers.Size = new System.Drawing.Size(827, 554);

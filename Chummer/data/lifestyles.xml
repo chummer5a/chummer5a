@@ -762,7 +762,6 @@
 			<multiplier>-10</multiplier>
 			<source>SR5</source>
 			<page>370</page>
-			<cost></cost>
 		</quality>
 		<quality>
 			<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
@@ -776,6 +775,7 @@
 		<quality>
 			<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
 			<name>Dangerous Area</name>
+			<lp>-1</lp>
 			<category>Negative</category>
 			<multiplier>-20</multiplier>
 			<source>SR5</source>

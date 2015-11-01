@@ -3779,7 +3779,7 @@ namespace Chummer
 					dblBasicBiowareESSMultiplier = dblBasicMultiplier;
 				}
 
-				if (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions"))
+				if (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions") || _strCategory.StartsWith("Genemods"))
 					dblCharacterESSMultiplier = 1;
 
 				if (_strCategory == "Basic")
@@ -9775,7 +9775,7 @@ namespace Chummer
 
 		#region Complex Properties
 		/// <summary>
-		/// Total cost of the Lifestyle.
+		/// Total cost of the Lifestyle, counting all purchased months.
 		/// </summary>
 		public int TotalCost
 		{
@@ -9792,6 +9792,13 @@ namespace Chummer
 		{
 			get
 			{
+				int intReturn = 0;
+				if (_objType != LifestyleType.Standard)
+				{
+					intReturn = Cost;
+					return intReturn;
+				}
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				double dblMultiplier = 1.0;
 				double dblModifier = Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
@@ -9799,33 +9806,30 @@ namespace Chummer
 					dblModifier += Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
-                int intCost = _intCost;
-                foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
+                decimal decBaseCost = Cost;
+				decimal decCost = 0;
+				decimal decMod = 0;
+                foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
-                    if (strQuality.Name.Contains("%"))
-                    {
-                        string strPercent = strQuality.Name.Substring(strQuality.Name.IndexOf("[") + 1);
-                        strPercent = strPercent.Substring(0, strPercent.IndexOf("%"));
-                        double dblPercent = Convert.ToDouble(strPercent);
-                        dblModifier += dblPercent;
-                    }
-                    else if (strQuality.Name.Contains("¥"))
-                    {
-                        string strFlat = strQuality.Name.Substring(strQuality.Name.IndexOf("[") + 1);
-                        strFlat = strFlat.Substring(0, strFlat.IndexOf("¥"));
-                        intCost += Convert.ToInt32(strFlat);
-                    }
+					XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\"]");
+					//Add the flat cost from Qualities.
+					if (objXmlQuality["cost"] != null && objXmlQuality["cost"].InnerText != "")
+					{
+						decCost += Convert.ToInt32(objXmlQuality["cost"].InnerText);
+					}
+					//Add the percentage point modifiers from Qualities.
+					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
+					{
+						decMod += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText) / 100;
+					}
                 }
 
                 dblMultiplier = 1.0 + Convert.ToDouble(dblModifier / 100, GlobalOptions.Instance.CultureInfo);
                 
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
-                int intReturn = Convert.ToInt32((Convert.ToDouble(_intCost, GlobalOptions.Instance.CultureInfo) * dblMultiplier) * dblRoommates * dblPercentage);
-                if (_objType != LifestyleType.Standard)
-                {
-                    intReturn = Cost;
-                }
+				intReturn = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
+				intReturn += Convert.ToInt32(decCost);
 
 				if (_blnTrustFund)
 				{
@@ -15751,7 +15755,6 @@ namespace Chummer
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = "";
-		private string _strCost = "";
 		private string _strExtra = "";
 		private string _strSource = "";
 		private string _strPage = "";
@@ -15760,6 +15763,7 @@ namespace Chummer
 		private bool _blnPrint = true;
 		private int _intLP = 0;
 		private int _intCost = 0;
+		private int _intMultiplier = 0;
 		private QualityType _objLifestyleQualityType = QualityType.Positive;
 		private QualitySource _objLifestyleQualitySource = QualitySource.Selected;
 		private XmlNode _nodBonus;
@@ -15814,9 +15818,6 @@ namespace Chummer
 		/// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
 		/// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
-		/// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
-		/// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
-		/// <param name="strForceValue">Force a value to be selected for the LifestyleQuality.</param>
 		public void Create(XmlNode objXmlLifestyleQuality, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
 		{
 			_strName = objXmlLifestyleQuality["name"].InnerText;
@@ -15893,7 +15894,8 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("cost", _strCost);
+			objWriter.WriteElementString("cost", _intCost.ToString());
+			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
 			objWriter.WriteElementString("lp", _intLP.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
 			objWriter.WriteElementString("print", _blnPrint.ToString());
@@ -15922,6 +15924,10 @@ namespace Chummer
 			if (objNode["cost"].InnerText != "")
 			{
 				_intCost = Convert.ToInt32(objNode["cost"].InnerText);
+			}
+			if (objNode["multiplier"] != null)
+			{
+				_intMultiplier = Convert.ToInt32(objNode["multiplier"].InnerText);
 			}
 			_blnContributeToLimit = Convert.ToBoolean(objNode["contributetolimit"].InnerText);
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);

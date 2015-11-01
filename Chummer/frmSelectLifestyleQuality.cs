@@ -100,11 +100,7 @@ namespace Chummer
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualities)
-            {
-                intBP *= 2;
-            }
-            lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+            lblBP.Text = intBP.ToString();
             if (chkFree.Checked)
                 lblBP.Text = "0";
 

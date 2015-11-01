@@ -5657,7 +5657,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Low-Light Vision</name>
+			<name>Low-Light Vision (Changeling)</name>
 			<karma>4</karma>
 			<category>Positive</category>
 			<bonus />
@@ -5689,7 +5689,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Magic Sense</name>
+			<name>Magic Sense (Changeling)</name>
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus />

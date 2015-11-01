@@ -1031,7 +1031,7 @@ namespace Chummer
 				TreeNode objLifestyleNode = new TreeNode();
 				objLifestyleNode.Text = objLifestyle.DisplayName;
 				objLifestyleNode.Tag = objLifestyle.InternalId;
-				if (objLifestyle.BaseLifestyle != "")
+				if (objLifestyle.StyleType.ToString() != "Standard")
 					objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
 				else
 					objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
@@ -17535,7 +17535,7 @@ namespace Chummer
 			}
 
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			if (objLifestyle.BaseLifestyle != "")
+			if (objLifestyle.StyleType.ToString() != "Standard")
 			{
 				// Edit Advanced Lifestyle.
 				frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
