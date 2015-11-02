@@ -3835,6 +3835,25 @@ namespace Chummer
 					XPathExpression xprCost = nav.Compile(strCost);
 					intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
+				else if (_strCost.StartsWith("Parent Cost"))
+				{
+
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCostExpression = _strCost;
+					string strCost = "0";
+
+					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
+					if (strCost.Contains("Rating"))
+					{
+						strCost = strCost.Replace("Rating", _objParent.Rating.ToString());
+					}
+					XPathExpression xprCost = nav.Compile(strCost);
+					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intCost = Convert.ToInt32(dblCost);
+				}
 				else
 				{
 					if (_strCost.StartsWith("FixedValues"))
@@ -4011,6 +4030,21 @@ namespace Chummer
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
+				}
+				else if (_strCost.StartsWith("Parent Cost"))
+				{
+
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCostExpression = _strCost;
+					string strCost = "0";
+
+					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
+					XPathExpression xprCost = nav.Compile(strCost);
+					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intCost = Convert.ToInt32(dblCost);
 				}
 				else
 				{
@@ -11113,7 +11147,26 @@ namespace Chummer
                         strCost = strValues[Convert.ToInt32(_intRating) - 1].Replace("[", string.Empty).Replace("]", string.Empty);
                     return strCost;
                 }
-                else
+				else if (_strCost.StartsWith("Parent Cost"))
+				{
+
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCostExpression = _strCost;
+					string strCost = "0";
+
+					if (_objParent == null)
+					{
+						return strCost;
+					}
+					else
+					{
+						strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
+					}
+					return strCost;
+				}
+				else
                     return _strCost;
 			}
 			set
@@ -11843,6 +11896,21 @@ namespace Chummer
 					}
 					else
 						intReturn = 0;
+				}
+				else if (_strCost.StartsWith("Parent Cost"))
+				{
+
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCostExpression = _strCost;
+					string strCost = "0";
+
+					strCost = strCostExpression.Replace("Parent Cost", _objParent.Cost.ToString());
+					XPathExpression xprCost = nav.Compile(strCost);
+					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intReturn = Convert.ToInt32(dblCost);
 				}
 				else if (_strCost.Contains("Rating") || _strCost3.Contains("Rating") || _strCost6.Contains("Rating") || _strCost10.Contains("Rating") || _strCost.Contains("*") || _strCost3.Contains("*") || _strCost6.Contains("*") || _strCost10.Contains("*"))
 				{

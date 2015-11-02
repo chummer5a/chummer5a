@@ -79,15 +79,16 @@
 		</grade>
 	</grades>
 	<categories>
-		<category>Headware</category>
-		<category>Eyeware</category>
-		<category>Earware</category>
 		<category>Bodyware</category>
 		<category>Cosmetic Enhancement</category>
 		<category>Cyberlimb</category>
-		<category>Cyberlimb Enhancement</category>
 		<category>Cyberlimb Accessory</category>
+		<category>Cyberlimb Enhancement</category>
 		<category>Cyber Implant Weapon</category>
+		<category>Earware</category>
+		<category>Eyeware</category>
+		<category>Hard Nanoware</category>
+		<category>Headware</category>
 		<category>Nanocybernetics</category>
 	</categories>
 	<cyberwares>
@@ -2887,6 +2888,18 @@
 			<cost>750</cost>
 			<source>HT</source>
 			<page>186</page>
+		</cyberware>
+		<cyberware>
+			<id>e709cb79-e351-41ce-b305-58720993d2c1</id>
+			<name>Implant Medic</name>
+			<category>Hard Nanoware</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Parent Cost * 0.10</cost>
+			<source>CF</source>
+			<page>147</page>
 		</cyberware>
 		<!-- End Region -->
 	</cyberwares>

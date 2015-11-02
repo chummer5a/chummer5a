@@ -13,6 +13,7 @@ Application Change:
 - Fixed an issue with Lifestyle costs not calculating correctly for metatypes and some other edge cases.
 - The Adept Powers panel now includes an automatic scroll button that triggers when the list of powers exceeds the panel height.
 - Fixed some issues with genemods being able to benefit from cyber/bioware grades. 
+- Gear and Cyberware can now use the variable value Parent Cost in a similar manner to Weapon Cost for weapon accessories. Currently this is used exclusively for the Implant Medic Hard Nanoware. 
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
@@ -21,6 +22,8 @@ Data Change:
 - Fixed an issue with gas-vents that caused a crash.
 - Renamed the Low-Light Vision metagenetic quality to prevent it from clashing with the metatype quality.
 - Renamed the Magic Sense metagenetic quality to prevent it from clashing with the metatype quality.
+- Fixed incorrect data values for the Extreme Cyber-Implant weapon.
+- Hard Nanoware from Chrome Flesh has been added. Because of the way it interacts with cyberware, the Implant Medic is listed as a piece of cyberware. 
 
 New String:
 - Menu_FilePrintPreview

@@ -6915,8 +6915,8 @@
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
-			<damage>(STR+3)P</damage>
-			<ap>-6</ap>
+			<damage>(STR+5)P</damage>
+			<ap>0</ap>
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
