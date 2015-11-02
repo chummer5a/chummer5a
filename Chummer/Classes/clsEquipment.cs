@@ -4462,10 +4462,19 @@ namespace Chummer
 				XmlNodeList objXmlAccessoryList = objXmlWeapon.SelectNodes("accessories/accessory");
 				foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
 				{
-					XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory.InnerText + "\"]");
+					XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
 					TreeNode objAccessoryNode = new TreeNode();
 					WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText,Convert.ToInt32(objXmlAccessory["rating"].InnerText));
+					int intAccessoryRating = 0;
+                    if (objXmlWeaponAccessory.InnerXml.Contains("<rating>"))
+					{
+						intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
+					}
+					else
+					{
+						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
+					}
+					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
@@ -8101,17 +8110,38 @@ namespace Chummer
 			{
 				int intReturn = 0;
 
-				if (_strCost.Contains("Weapon Cost"))
+				if (_strCost.Contains("Rating"))
 				{
-					float f;
-					if (Utils.TryFloat(_strCost, out f, new Dictionary<string, float>() { { "Weapon Cost", _objParent.Cost } }))
+					// If the cost is determined by the Rating, evaluate the expression.
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCost = "";
+					string strCostExpression = _strCost;
+
+					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					XPathExpression xprCost = nav.Compile(strCost);
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intReturn = Convert.ToInt32(dblCost);
+				}
+				else if (_strCost.Contains("Weapon Cost"))
+				{
+
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strCostExpression = _strCost;
+					string strCost = "0";
+
+					strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
+					if (strCost.Contains("Rating"))
 					{
-						intReturn = (int)f * _objParent.CostMultiplier;
+						strCost = strCost.Replace("Rating", _objParent.Cost.ToString());
 					}
-					else
-					{
-						throw new Exception("Chummer Crapped istelf trying to parse a bad value (Equipment.WeaponAccessory.OwnCost");
-					}
+					XPathExpression xprCost = nav.Compile(strCost);
+					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intReturn = Convert.ToInt32(dblCost);
 				}
 				else
 					intReturn = Convert.ToInt32(_strCost) * _objParent.CostMultiplier;

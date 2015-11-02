@@ -174,7 +174,7 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = objXmlWeapon.SelectNodes("accessories/accessory");
 			foreach (XmlNode objXmlAccessory in objXmlNodeList)
 			{
-				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory.InnerText + "\"]");
+				XmlNode objXmlItem = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
 				if (objXmlItem["translate"] != null)
 					strAccessories += objXmlItem["translate"].InnerText + "\n";
 				else

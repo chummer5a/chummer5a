@@ -24,6 +24,7 @@ Data Change:
 - Renamed the Magic Sense metagenetic quality to prevent it from clashing with the metatype quality.
 - Fixed incorrect data values for the Extreme Cyber-Implant weapon.
 - Hard Nanoware from Chrome Flesh has been added. Because of the way it interacts with cyberware, the Implant Medic is listed as a piece of cyberware. 
+- Altered the way Weapon Accessories are handled to enable pre-configured Ratings. Custom-made weapons with built-in accessories will need to have their format changed to <accessories><accessory<name>Whatever</name></accessory></accessories>.
 
 New String:
 - Menu_FilePrintPreview
