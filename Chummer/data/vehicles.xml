@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-400</version>
+	<version>-390</version>
 	<categories>
 		<category>Bikes</category>
 		<category>Cars</category>
@@ -1286,7 +1286,87 @@
 			<cost>24000</cost>
 			<source>NP</source>
 			<page>23</page>
-		</vehicle>	
+		</vehicle>
+		<vehicle>
+			<id>2013dff9-f313-441b-9207-3fdb8a44c8ba</id>
+			<name>Ammo Drone (Small)</name>
+			<category>Drones: Small</category>
+			<handling>2</handling>
+			<accel>2</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>2</body>
+			<armor>4</armor>
+			<sensor>2</sensor>
+			<seats>0</seats>
+			<gears>
+				<gear rating="2">Sensor Array</gear>
+			</gears>
+			<avail>5</avail>
+			<cost>3000</cost>
+			<source>HT</source>
+			<page>189</page>
+		</vehicle>
+		<vehicle>
+			<id>ffcab1c2-4ae3-43a9-bfb0-eb8af29af3d7</id>
+			<name>Reloading Drone (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>4</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>3</body>
+			<armor>4</armor>
+			<sensor>2</sensor>
+			<seats>0</seats>
+			<gears>
+				<gear rating="2">Sensor Array</gear>
+			</gears>
+			<avail>6R</avail>
+			<cost>4500</cost>
+			<source>HT</source>
+			<page>190</page>
+		</vehicle>
+		<vehicle>
+			<id>c2fa6792-1ed9-437c-a7d2-b9ff79c44fd2</id>
+			<name>Mitsuhama Akiyama (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>5</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>6</armor>
+			<sensor>3</sensor>
+			<seats>0</seats>
+			<gears>
+				<gear rating="3">Sensor Array</gear>
+			</gears>
+			<avail>24F</avail>
+			<cost>200000</cost>
+			<source>HT</source>
+			<page>190</page>
+		</vehicle>
+		<vehicle>
+			<id>c036d20d-1bfe-48ee-b188-7756323764cd</id>
+			<name>Sparring Drone (Medium)</name>
+			<category>Drones: Medium</category>
+			<handling>3</handling>
+			<accel>2</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>4</body>
+			<armor>2</armor>
+			<sensor>3</sensor>
+			<seats>0</seats>
+			<gears>
+				<gear rating="3">Sensor Array</gear>
+			</gears>
+			<avail>6</avail>
+			<cost>5000</cost>
+			<source>HT</source>
+			<page>190</page>
+		</vehicle>
 	</vehicles>
 	<mods>
 		<mod>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-345</version>
+	<version>-335</version>
 	<categories>
     <category type="melee">Blades</category>
     <category type="melee">Clubs</category>
@@ -33,7 +33,7 @@
 		<!-- Region Shadowrun 5 -->
 		<weapon>
 			<id>e5ac06f4-3755-42a7-9da9-88de4b3b2ad8</id>
-			<name>Ares Thuderstruck Gauss Rifle</name>
+			<name>Ares Thunderstruck Gauss Rifle</name>
 			<category>Assault Cannons</category>
 			<type>Ranged</type>
 			<conceal>6</conceal>
@@ -56,8 +56,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
-				<accessory>Shock Pad</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>45</page>
@@ -114,8 +118,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
-				<accessory>Slide Mount</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+			</accessory>
+				<accessory>
+					<name>Slide Mount</name>
+			</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>35</page>
@@ -172,9 +180,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Advanced Safety System, Basic</accessory>
-				<accessory>Weapon Commlink</accessory>
-				<accessory>Imaging Scope</accessory>
+				<accessory>
+					<name>Advanced Safety System, Basic</name>
+				</accessory>
+				<accessory>
+					<name>Weapon Commlink</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>46</page>
@@ -204,7 +218,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>431</page>
@@ -290,7 +306,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -320,8 +338,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+			</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>37</page>
@@ -351,8 +373,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Bipod</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Bipod</name>
+			</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+			</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>14</page>
@@ -409,8 +435,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
-				<accessory>Gas-Vent 2 System</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
+				<accessory>
+					<name>Gas-Vent 2 System</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -441,9 +471,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>37</page>
@@ -474,9 +510,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<range>Submachine Guns</range>
 			<useskill>Automatics</useskill>
@@ -509,9 +551,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<range>Light Machine Guns</range>
 			<useskill>Heavy Weapons</useskill>
@@ -544,9 +592,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<range>Shotguns (flechette)</range>
 			<useskill>Longarms</useskill>
@@ -579,9 +633,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<range>Sniper Rifles</range>
 			<useskill>Longarms</useskill>
@@ -613,7 +673,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>15</page>
@@ -644,8 +706,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>38</page>
@@ -675,7 +741,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Vintage</accessory>
+				<accessory>
+					<name>Vintage</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>16</page>
@@ -705,7 +773,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>13</page>
@@ -735,8 +805,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Folding Stock</accessory>
+				<accessory>
+					<name>Imaging Scope</name>
+			</accessory>
+				<accessory>
+					<name>Folding Stock</name>
+			</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>32</page>
@@ -766,8 +840,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Sound Suppressor</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Sound Suppressor</name>
+				</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -1979,7 +2057,9 @@
 			<cost>10000</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Slide Mount</accessory>
+				<accessory>
+					<name>Slide Mount</name>
+				</accessory>
 			</accessories>
 			<range>Light Pistols</range>
 			<source>GH3</source>
@@ -2638,7 +2718,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>430</page>
@@ -2688,7 +2770,9 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -2719,7 +2803,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Tripod</accessory>
+				<accessory>
+					<name>Tripod</name>
+			</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>SR5</source>
@@ -2751,8 +2837,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Hip Pad Bracing System</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Hip Pad Bracing System</name>
+				</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+			</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
@@ -2784,8 +2874,12 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Tripod</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Tripod</name>
+				</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
@@ -2813,7 +2907,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>426</page>
@@ -2840,7 +2936,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Sound Suppressor</accessory>
+				<accessory>
+					<name>Sound Suppressor</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>426</page>
@@ -2867,7 +2965,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>426</page>
@@ -2964,7 +3064,9 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -2991,9 +3093,15 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Safe Target System, Base</accessory>
-				<accessory>Advanced Safety System, Basic</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
+				<accessory>
+					<name>Safe Target System, Base</name>
+			</accessory>
+				<accessory>
+					<name>Advanced Safety System, Basic</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>33</page>
@@ -3092,7 +3200,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>33</page>
@@ -3116,7 +3226,9 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -3438,7 +3550,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Bipod</accessory>
+				<accessory>
+					<name>Bipod</name>
+				</accessory>
 			</accessories>
 			<range>Sniper Rifle</range>
 			<source>RG</source>
@@ -3518,9 +3632,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Slide Mount</accessory>
-				<accessory>Slide Mount</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Slide Mount</name>
+			</accessory>
+				<accessory>
+					<name>Slide Mount</name>
+			</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>42</page>
@@ -3551,10 +3671,18 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
-				<accessory>Laser Sight</accessory>
-				<accessory>Gas-Vent 2 System</accessory>
+				<accessory>
+					<name>Stock</name>
+			</accessory>
+				<accessory>
+					<name>Shock Pad</name>
+				</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+			</accessory>
+				<accessory>
+					<name>Gas-Vent 2 System</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>430</page>
@@ -3585,7 +3713,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Bipod</accessory>
+				<accessory>
+					<name>Bipod</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>34</page>
@@ -3616,9 +3746,15 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Safe Target System, Base</accessory>
-				<accessory>Safe Target System, Additional set of RFID or GPS data (10 data sets)</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Safe Target System, Base</name>
+				</accessory>
+				<accessory>
+					<name>Safe Target System, Additional set of RFID or GPS data (10 data sets)</name>
+			</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>43</page>
@@ -3664,8 +3800,12 @@
 			<avail>6F</avail>
 			<cost>1250</cost>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Silencer, Ares Light Fire 70</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+			</accessory>
+				<accessory>
+					<name>Silencer, Ares Light Fire 70</name>
+			</accessory>
 			</accessories>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
@@ -3697,7 +3837,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
+				<accessory><name>Stock</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>425</page>
@@ -3822,8 +3962,11 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Stock</name>
+			</accessory>
+				<accessory>
+					<name>Laser Sight</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>426</page>
@@ -3847,7 +3990,9 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -3875,7 +4020,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>31</page>
@@ -3927,7 +4074,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>426</page>
@@ -3954,8 +4103,10 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Gas-Vent 2 System</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory>
+					<name>Gas-Vent 2 System</name>
+			</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -3982,8 +4133,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>8</page>
@@ -4010,7 +4161,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
+				<accessory><name>Stock</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -4034,7 +4185,9 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -4061,7 +4214,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>7</page>
@@ -4088,8 +4243,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>34</page>
@@ -4113,9 +4268,11 @@
 			<allowaccessory>false</allowaccessory>
 			<accessorymounts/>
 			<accessories>
-				<accessory>Collapsed Frame</accessory>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory>
+					<name>Collapsed Frame</name>
+				</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>34</page>
@@ -4142,7 +4299,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Sound Suppressor</accessory>
+				<accessory>
+					<name>Sound Suppressor</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>9</page>
@@ -4169,7 +4328,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -4196,7 +4355,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>35</page>
@@ -4227,8 +4386,10 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
-				<accessory>Tripod</accessory>
+				<accessory><name>Laser Sight</name></accessory>
+				<accessory>
+					<name>Tripod</name>
+			</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
@@ -4289,9 +4450,13 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Foregrip</accessory>
-				<accessory>Laser Sight</accessory>
-				<accessory>Tripod</accessory>
+				<accessory>
+					<name>Foregrip</name>
+			</accessory>
+				<accessory><name>Laser Sight</name></accessory>
+				<accessory>
+					<name>Tripod</name>
+			</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
@@ -4372,7 +4537,7 @@
 			<cost>14000</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>431</page>
@@ -4421,8 +4586,10 @@
 			<cost>1200</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Advanced Safety System, Basic</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory>
+					<name>Advanced Safety System, Basic</name>
+				</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>22</page>
@@ -4445,7 +4612,7 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -4530,7 +4697,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>429</page>
@@ -4560,8 +4727,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Shock Pad</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>41</page>
@@ -4619,7 +4786,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>41</page>
@@ -4649,8 +4816,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>429</page>
@@ -4680,8 +4847,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Slide Mount</accessory>
-				<accessory>Slide Mount</accessory>
+				<accessory><name>Slide Mount</name></accessory>
+				<accessory><name>Slide Mount</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>42</page>
@@ -4711,7 +4878,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
+				<accessory><name>Folding Stock</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>21</page>
@@ -4768,8 +4935,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>20</page>
@@ -4826,9 +4993,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -4858,9 +5025,11 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Bipod</accessory>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Sound Suppressor</accessory>
+				<accessory><name>Bipod</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory>
+					<name>Sound Suppressor</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>40</page>
@@ -4890,9 +5059,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -4922,7 +5091,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
+				<accessory><name>Shock Pad</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>39</page>
@@ -4952,7 +5121,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
+				<accessory><name>Shock Pad</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>39</page>
@@ -4982,10 +5151,10 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Silencer</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
+				<accessory><name>Silencer</name></accessory>
+				<accessory><name>Imaging Scope</name></accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>429</page>
@@ -5011,7 +5180,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>429</page>
@@ -5041,9 +5210,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Stock</accessory>
-				<accessory>Shock Pad</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Shock Pad</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>429</page>
@@ -5100,12 +5269,18 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Bipod</accessory>
-				<accessory>Weapon Commlink</accessory>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Underbarrel Weight</accessory>
-				<accessory>Safe Target System, Base</accessory>
+				<accessory><name>Bipod</name></accessory>
+				<accessory>
+					<name>Weapon Commlink</name>
+				</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Imaging Scope</name></accessory>
+				<accessory>
+					<name>Underbarrel Weight</name>
+			</accessory>
+				<accessory>
+					<name>Safe Target System, Base</name>
+			</accessory>
 			</accessories>
 			<source>RG</source>
 			<page>38</page>
@@ -5459,7 +5634,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Vintage</accessory>
+				<accessory><name>Vintage</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>27</page>
@@ -5489,7 +5664,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>29</page>
@@ -5573,8 +5748,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Extreme Environment Modification, Level 1</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
+				<accessory><name>Extreme Environment Modification</name><rating>1</rating></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>30</page>
@@ -5604,7 +5779,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Vintage</accessory>
+				<accessory><name>Vintage</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>23</page>
@@ -5634,7 +5809,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>26</page>
@@ -5664,7 +5839,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Vintage</accessory>
+				<accessory><name>Vintage</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>28</page>
@@ -5694,7 +5869,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Imaging Scope</accessory>
+				<accessory><name>Imaging Scope</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>24</page>
@@ -5724,7 +5899,7 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Vintage</accessory>
+				<accessory><name>Vintage</name></accessory>
 			</accessories>
 			<range>Submachine Guns</range>
 			<source>GH3</source>
@@ -5751,8 +5926,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Sound Suppressor</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Sound Suppressor</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>35</page>
@@ -5782,10 +5957,10 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Foregrip</accessory>
-				<accessory>Slide Mount</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Slide Mount</name></accessory>
+				<accessory><name>Slide Mount</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>11</page>
@@ -5815,8 +5990,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>12</page>
@@ -5842,8 +6017,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -5866,7 +6041,7 @@
 			<cyberware>yes</cyberware>
 			<allowaccessory>true</allowaccessory>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>458</page>
@@ -5892,8 +6067,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Stock</accessory>
-				<accessory>Flashlight, Standard</accessory>
+				<accessory><name>Stock</name></accessory>
+				<accessory><name>Flashlight, Standard</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -5919,9 +6094,9 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Sound Suppressor</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Sound Suppressor</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -5947,8 +6122,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Sound Suppressor</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Sound Suppressor</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>36</page>
@@ -5974,8 +6149,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Smartgun System, Internal</accessory>
-				<accessory>Sound Suppressor</accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory><name>Sound Suppressor</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
@@ -6029,8 +6204,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -6056,8 +6231,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Folding Stock</accessory>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Folding Stock</name></accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>428</page>
@@ -6082,7 +6257,7 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
+				<accessory><name>Laser Sight</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>29</page>
@@ -6129,8 +6304,8 @@
 				<mount>Top</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Laser Sight</accessory>
-				<accessory>Gecko Grip</accessory>
+				<accessory><name>Laser Sight</name></accessory>
+				<accessory><name>Gecko Grip</name></accessory>
 			</accessories>
 			<source>RG</source>
 			<page>29</page>
@@ -6327,9 +6502,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Imaging Scope</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Shock Pad</name></accessory>
+				<accessory><name>Imaging Scope</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<useskill>Heavy Weapons</useskill>
 			<range>Grenade Launchers</range>
@@ -6363,8 +6538,8 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory>Shock Pad</accessory>
-				<accessory>Smartgun System, Internal</accessory>
+				<accessory><name>Shock Pad</name></accessory>
+				<accessory><name>Smartgun System, Internal</name></accessory>
 			</accessories>
 			<useskill>Longarms</useskill>
 			<range>Shotguns</range>
@@ -6698,6 +6873,148 @@
 			<page>105</page>
 		</weapon>
 		<!--End Region -->
+		<!-- Region Infected Weapons-->
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Sasquatch)</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>105</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 3</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 2</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>30e8dab2-f435-4169-be3c-7e53a7840010</id>
+			<name>Claws (Infected) 1</name>
+			<category>Natural</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>136</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Infected) 1</name>
+			<category>Natural</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Infected) 2</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>
+		<weapon>
+			<id>e9dd389a-df19-4b1f-981f-342d23f2e506</id>
+			<name>Bite (Gnawer)</name>
+			<category>Quality</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>-1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<allowaccessory>false</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>RF</source>
+			<page>137</page>
+		</weapon>		
+		<!-- End Region -->
 		<!--End Region -->
 		<!-- Region Chrome Flesh-->
 		<!-- Region Chrome Flesh Cyber-Weapons -->
@@ -6773,8 +7090,8 @@
 			<conceal>0</conceal>
 			<accuracy>Physical</accuracy>
 			<reach>0</reach>
-			<damage>(STR+3)P</damage>
-			<ap>-6</ap>
+			<damage>(STR+5)P</damage>
+			<ap>0</ap>
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
@@ -7073,6 +7390,383 @@
 		</weapon>
 		<!-- End Region -->
 		<!-- End Region-->
+		<!-- Region Hard Targets -->
+		<weapon>
+			<id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
+			<name>Sapphire Knife</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Knives</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-3</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6R</avail>
+			<cost>900</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>cbc5270f-5848-41cd-a723-e86a7f48cfb4</id>
+			<name>Ceramic/Plasteel Knife</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Knives</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>75</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>d036885b-4238-4ed7-ae9d-5dba97071e19</id>
+			<name>Foot Blade</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>7b928bc3-c44e-4002-b8ac-17a2bdd01d5a</id>
+			<name>Bone Spike I</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+2)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>2ef46f42-8890-48fd-bb94-67c34c12f0fb</id>
+			<name>Bone Spike II</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+3)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>3babb9d3-a3bb-4c8f-96ce-73f27b6ec7a6</id>
+			<name>Bone Spike III</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Cyber Implants</spec>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+4)P</damage>
+			<ap>0</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<cyberware>yes</cyberware>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>185</page>
+		</weapon>
+		<weapon>
+			<id>9434fb76-1d7f-463e-b377-b7c07e2a18e2</id>
+			<name>Cougar Collapsible Spear</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>3</reach>
+			<damage>(STR+3)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>14R</avail>
+			<cost>1250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>180</page>
+		</weapon>
+		<weapon>
+			<id>6967eea2-01f8-4931-a59f-d2cd64419561</id>
+			<name>Collapsible Scythe</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>2</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-2</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>16R</avail>
+			<cost>2350</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>183</page>
+		</weapon>
+		<weapon>
+			<id>023bb6db-4c14-470b-a063-9df1adf31a00</id>
+			<name>Victorinox Collapsible Hatchet</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>8080fafb-9784-43ca-bd71-6c823853b80b</id>
+			<name>Victorinox Collapsible Hatchet</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<spec>Swords</spec>
+			<conceal>4</conceal>
+			<accuracy>5</accuracy>
+			<reach>1</reach>
+			<damage>(STR+2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>4</avail>
+			<cost>250</cost>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>4225b0c1-2da0-4dd9-9c98-2136a57946cf</id>
+			<name>Throwing Syringe</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>-2</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR-2)P</damage>
+			<ap>-1</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6F</avail>
+			<cost>40</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Exotic Ranged Weapons</useskill>
+			<range>Aerodynamic Grenade</range>
+			<source>HT</source>
+			<page>183</page>
+		</weapon>
+		<weapon>
+			<id>1c738c1d-7abc-4756-a683-f5bf92902671</id>
+			<name>Cavalier Arms Adder Silvergun</name>
+			<category>Light Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>-2</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P(f)</damage>
+			<ap>+5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>20(c)</ammo>
+			<avail>7F</avail>
+			<cost>320</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<weapon>
+			<id>a1b5cec9-e14d-4b4d-8377-436af40b09cd</id>
+			<name>Flame Bracer</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<conceal>-5</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P(fire)</damage>
+			<ap>-6</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<ammo>2(c)</ammo>
+			<avail>8F</avail>
+			<cost>775</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<useskill>Exotic Ranged Weapon</useskill>
+			<range>Tasers</range>
+			<source>HT</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>176ab92a-0c00-48fe-a994-668903407fbf</id>
+			<name>Ares Armatus</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<conceal>+4</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-5</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>10(c)</ammo>
+			<avail>20F</avail>
+			<cost>19000</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessorymounts />
+			<useskill>Exotic Ranged Weapon</useskill>
+			<range>Shotgun</range>
+			<source>HT</source>
+			<page>184</page>
+		</weapon>
+		<weapon>
+			<id>7aa56de0-e709-4a0e-aadb-fbcdd2fcfeb0</id>
+			<name>Plasteel Toe Boots</name>
+			<category>Unarmed</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(STR+1)P</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>2</avail>
+			<cost>200</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Unarmed Combat</useskill>
+			<source>HT</source>
+			<page>179</page>
+		</weapon>
+		<weapon>
+			<id>431b07eb-8eb8-4091-a47c-5ffe8736bb50</id>
+			<name>Colt Manhunter</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>16(c)</ammo>
+			<avail>5R</avail>
+			<cost>700</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessories>
+				<accessory>
+					<name>Holographic Sight</name>
+				</accessory>
+			</accessories>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<weapon>
+			<id>d36e75cc-73bc-4de3-9d9c-a236284e9d76</id>
+			<name>Lemat 2072</name>
+			<category>Heavy Pistols</category>
+			<type>Ranged</type>
+			<spec>Semi-Automatics</spec>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>8P</damage>
+			<ap>-1</ap>
+			<mode>SA</mode>
+			<rc>0</rc>
+			<ammo>9(cy)</ammo>
+			<avail>8R</avail>
+			<cost>1080</cost>
+			<allowaccessory>true</allowaccessory>
+			<accessories>
+				<accessory>
+					<name>Ammo Skip</name>
+			</accessory>
+			</accessories>
+			<accessorymounts>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+			</accessorymounts>
+			<source>HT</source>
+			<page>178</page>
+		</weapon>
+		<!-- End Region -->
 	</weapons>
 	<accessories>
 		<!-- Region Shadowrun 5 -->
@@ -7080,6 +7774,7 @@
 			<id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
 			<name>Silencer, Ares Light Fire 70</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>SR5</source>
@@ -7089,6 +7784,7 @@
 			<id>4026650e-ecd3-4514-b2c6-d03dc1d466b5</id>
 			<name>Silencer, Ares Light Fire 75</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>SR5</source>
@@ -7098,6 +7794,7 @@
 			<id>294a6b30-6e1c-4b7d-8e93-10964647c2dd</id>
 			<name>Airburst Link</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>600</cost>
 			<source>SR5</source>
@@ -7107,6 +7804,7 @@
 			<id>6e06df00-95b8-450f-9f2a-4a86c582d342</id>
 			<name>Bipod</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<rc>2</rc>
 			<rcgroup>1</rcgroup>
 			<avail>2</avail>
@@ -7118,6 +7816,7 @@
 			<id>7f66a669-917a-4423-bd83-cf0e0a1fb2a8</id>
 			<name>Concealable Holster</name>
 			<mount/>
+			<rating>0</rating>
 			<conceal>-1</conceal>
 			<avail>2</avail>
 			<cost>150</cost>
@@ -7129,6 +7828,7 @@
 			<name>Gas-Vent 1 System</name>
 			<mount>Barrel</mount>
 			<rc>1</rc>
+			<rating>0</rating>
 			<avail>3R</avail>
 			<cost>200</cost>
 			<source>SR5</source>
@@ -7137,6 +7837,7 @@
 		<accessory>
 			<id>b3827611-f631-461e-8660-e744593ba2d2</id>
 			<name>Gas-Vent 2 System</name>
+			<rating>0</rating>
 			<mount>Barrel</mount>
 			<rc>2</rc>
 			<avail>6R</avail>
@@ -7148,6 +7849,7 @@
 			<id>6b06cf52-04fa-4034-bb10-2bcdd58c4bfb</id>
 			<name>Gas-Vent 3 System</name>
 			<mount>Barrel</mount>
+			<rating>0</rating>
 			<rc>3</rc>
 			<avail>9R</avail>
 			<cost>600</cost>
@@ -7159,6 +7861,7 @@
 			<name>Gyro Mount</name>
 			<mount>Under</mount>
 			<rc>6</rc>
+			<rating>0</rating>
 			<rcgroup>1</rcgroup>
 			<avail>7</avail>
 			<cost>1400</cost>
@@ -7169,6 +7872,7 @@
 			<id>7ca0c689-a05e-4377-ae44-3dc15abe2ee2</id>
 			<name>Hidden Gun Arm Slide</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>350</cost>
 			<source>SR5</source>
@@ -7179,6 +7883,7 @@
 			<name>Imaging Scope</name>
 			<mount>Top</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>300</cost>
 			<allowgear>
 				<gearcategory>Vision Enhancements</gearcategory>
@@ -7191,6 +7896,7 @@
 			<name>Laser Sight</name>
 			<mount>Top/Under</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<cost>125</cost>
 			<source>SR5</source>
@@ -7202,6 +7908,7 @@
 			<mount>Top</mount>
 			<avail>3</avail>
 			<cost>70</cost>
+			<rating>0</rating>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -7210,6 +7917,7 @@
 			<name>Quick-Draw Holster</name>
 			<mount/>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>175</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7221,6 +7929,7 @@
 			<rc>1</rc>
 			<rcgroup>2</rcgroup>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>50</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7231,6 +7940,7 @@
 			<mount>Barrel</mount>
 			<avail>9F</avail>
 			<cost>500</cost>
+			<rating>0</rating>
 			<source>SR5</source>
 			<page>432</page>
 		</accessory>
@@ -7239,6 +7949,7 @@
 			<name>Sound Suppressor</name>
 			<mount>Barrel</mount>
 			<avail>9F</avail>
+			<rating>0</rating>
 			<cost>500</cost>
 			<source>SR5</source>
 			<page>432</page>
@@ -7248,6 +7959,7 @@
 			<name>Smart Firing Platform</name>
 			<mount>Under</mount>
 			<avail>12F</avail>
+			<rating>0</rating>
 			<cost>2000</cost>
 			<source>SR5</source>
 			<page>433</page>
@@ -7256,6 +7968,7 @@
 			<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
 			<name>Smartgun System, Internal</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>+2R</avail>
 			<cost>Weapon Cost</cost>
 			<accuracy>2</accuracy>
@@ -7270,6 +7983,7 @@
 			<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
 			<name>Smartgun System, External</name>
 			<mount>Top/Under</mount>
+			<rating>0</rating>
 			<avail>4R</avail>
 			<cost>200</cost>
 			<accuracy>2</accuracy>
@@ -7284,6 +7998,7 @@
 			<id>4ed24342-276e-4455-acba-22b551e4d775</id>
 			<name>Spare Clip</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>5</cost>
 			<allowgear>
@@ -7295,6 +8010,7 @@
 		<accessory>
 			<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 			<name>Speed Loader</name>
+			<rating>0</rating>
 			<mount/>
 			<avail>2</avail>
 			<cost>25</cost>
@@ -7305,6 +8021,7 @@
 			<id>28936368-9e16-498f-b028-92ec31e89a00</id>
 			<name>Tripod</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<rc>6</rc>
 			<rcgroup>1</rcgroup>
 			<avail>4</avail>
@@ -7318,6 +8035,7 @@
 			<id>06e128ee-00fd-4992-8bf5-4be35815fd11</id>
 			<name>Advanced Safety System, Basic</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>600</cost>
 			<source>RG</source>
@@ -7328,6 +8046,7 @@
 			<name>Silencer, PSK-3 Collapsible Heavy Pistol</name>
 			<mount>Barrel</mount>
 			<avail>6F</avail>
+			<rating>0</rating>
 			<cost>700</cost>
 			<source>RG</source>
 			<page>32</page>
@@ -7336,6 +8055,7 @@
 			<id>90804D8B-16CA-4A6F-81E6-454F71768DCE</id>
 			<name>Collapsed Frame</name>
 			<mount>Internal</mount>
+			<rating>0</rating>
 			<conceal>-6</conceal>
 			<avail>0</avail>
 			<cost>0</cost>
@@ -7348,6 +8068,7 @@
 			<mount/>
 			<avail>0</avail>
 			<cost>400</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>35</page>
 		</accessory>
@@ -7355,6 +8076,7 @@
 			<id>2fa27223-dd56-4520-b26b-a112e8733320</id>
 			<name>Vindicator 200-Round Belt</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>100</cost>
 			<source>RG</source>
@@ -7365,6 +8087,7 @@
 			<name>Advanced Safety System, Immobilization</name>
 			<mount/>
 			<avail>6</avail>
+			<rating>0</rating>
 			<cost>700</cost>
 			<source>RG</source>
 			<page>50</page>
@@ -7373,6 +8096,7 @@
 			<id>c9739e50-bbaf-47e7-a19b-c3d7fd2b95af</id>
 			<name>Advanced Safety System, Self Destruct</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>800</cost>
 			<source>RG</source>
@@ -7382,6 +8106,7 @@
 			<id>25b695f8-ed5a-4b75-baf0-164dcde74f2d</id>
 			<name>Advanced Safety System, Explosive Self Destruct</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>11F</avail>
 			<cost>1000</cost>
 			<source>RG</source>
@@ -7391,6 +8116,7 @@
 			<id>b64d5256-0c24-4842-b05d-25ee735c9b6a</id>
 			<name>Advanced Safety System, Electro Shocker</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6R</avail>
 			<cost>950</cost>
 			<source>RG</source>
@@ -7399,6 +8125,7 @@
 		<accessory>
 			<id>dc859601-1271-4f5d-ac37-e389c95f052a</id>
 			<name>Bayonet</name>
+			<rating>0</rating>
 			<mount>Top/Under</mount>
 			<avail>4R</avail>
 			<cost>50</cost>
@@ -7410,6 +8137,7 @@
 			<name>Concealed Quick-Draw Holster</name>
 			<mount/>
       <conceal>-1</conceal>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>275</cost>
 			<source>RG</source>
@@ -7417,19 +8145,11 @@
 		</accessory>
 		<accessory>
 			<id>381dd922-19af-46fd-9999-0202c85574de</id>
-			<name>Extreme Environment Modification, Level 1</name>
+			<name>Extreme Environment Modification</name>
 			<mount/>
+			<rating>2</rating>
 			<avail>8</avail>
-			<cost>1500</cost>
-			<source>RG</source>
-			<page>51</page>
-		</accessory>
-		<accessory>
-			<id>bf33b0e2-ead5-4f1e-b0ae-04489294b141</id>
-			<name>Extreme Environment Modification, Level 2</name>
-			<mount/>
-			<avail>8</avail>
-			<cost>3000</cost>
+			<cost>Rating * 1500</cost>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7438,6 +8158,7 @@
 			<name>Flashlight, Standard</name>
 			<mount>Top/Under/Side</mount>
 			<avail>2</avail>
+			<rating>0</rating>
 			<cost>50</cost>
 			<source>RG</source>
 			<page>51</page>
@@ -7448,6 +8169,7 @@
 			<mount>Top/Under/Side</mount>
 			<avail>4</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7457,6 +8179,7 @@
 			<mount>Top/Under/Side</mount>
 			<avail>6</avail>
 			<cost>400</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>51</page>
 		</accessory>
@@ -7464,6 +8187,7 @@
 			<id>f8090e1f-424a-4298-a5d9-f2e6d650ef39</id>
 			<name>Folding Stock</name>
 			<mount>Stock</mount>
+			<rating>0</rating>
 			<avail>2</avail>
 			<cost>30</cost>
 			<rc>1</rc>
@@ -7474,6 +8198,7 @@
 		<accessory>
 			<id>27de824f-d5e4-43fd-abaa-e42da6023569</id>
 			<name>Stock</name>
+			<rating>0</rating>
 			<mount>Stock</mount>
 			<avail>2</avail>
 			<cost>30</cost>
@@ -7485,6 +8210,7 @@
 		<accessory>
 			<id>8eec5df1-88e2-4822-b156-9c2340a33efc</id>
 			<name>Foregrip</name>
+			<rating>0</rating>
 			<mount>Barrel</mount>
 			<avail>2</avail>
 			<cost>100</cost>
@@ -7497,6 +8223,7 @@
 		<accessory>
 			<id>627f212a-ac15-4739-afbc-f44676dfe508</id>
 			<name>Gecko Grip</name>
+			<rating>0</rating>
 			<mount/>
 			<avail>6</avail>
 			<cost>100</cost>
@@ -7508,6 +8235,7 @@
 			<name>Guncam</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>350</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7516,6 +8244,7 @@
 			<id>71a37dd2-d162-4829-a233-5afdd954691d</id>
 			<name>Hip Pad Bracing System</name>
 			<mount>Stock</mount>
+			<rating>0</rating>
 			<avail>4</avail>
 			<cost>250</cost>
 			<rc>1</rc>
@@ -7529,6 +8258,7 @@
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>6</avail>
 			<cost>2000</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>52</page>
 		</accessory>
@@ -7537,6 +8267,7 @@
 			<name>Peak-Discharge Battery Pack, Power Clip</name>
 			<mount/>
 			<avail>14F</avail>
+			<rating>0</rating>
 			<cost>400</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7545,6 +8276,7 @@
 			<id>dda0b64a-6fa5-4e61-8631-f662f7066756</id>
 			<name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>16F</avail>
 			<cost>900</cost>
 			<source>RG</source>
@@ -7555,6 +8287,7 @@
 			<name>Peak-Discharge Battery Pack, Power Backpack</name>
 			<mount/>
 			<avail>20F</avail>
+			<rating>0</rating>
 			<cost>2500</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7564,6 +8297,7 @@
 			<name>Safe Target System, Base</name>
 			<mount>Top/Under/Barrel/Side/Internal</mount>
 			<avail>6</avail>
+			<rating>0</rating>
 			<cost>750</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7572,6 +8306,7 @@
 			<id>fbf1ac2e-b131-499c-809e-c2c93c5ec286</id>
 			<name>Safe Target System, Additional set of RFID or GPS data (10 data sets)</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>6</avail>
 			<cost>25</cost>
 			<source>RG</source>
@@ -7582,6 +8317,7 @@
 			<name>Safe Target System, Image Recognition Capabilities</name>
 			<mount/>
 			<avail>8</avail>
+			<rating>0</rating>
 			<cost>300</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7591,6 +8327,7 @@
 			<name>Safe Target System, Extra image profiles (10 profiles)</name>
 			<mount/>
 			<avail>8</avail>
+			<rating>0</rating>
 			<cost>25</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7600,6 +8337,7 @@
 			<name>Slide Mount</name>
 			<mount>Top/Under/Side</mount>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>500</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -7611,6 +8349,7 @@
 			<avail>0</avail>
 			<cost>15</cost>
 			<source>RG</source>
+			<rating>0</rating>
 			<page>52</page>
 		</accessory>
 		<accessory>
@@ -7618,6 +8357,7 @@
 			<name>Tracker</name>
 			<mount/>
 			<avail>4</avail>
+			<rating>0</rating>
 			<cost>150</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -7627,6 +8367,7 @@
 			<name>Underbarrel Bola Launcher</name>
 			<mount>Under</mount>
 			<avail>8R</avail>
+			<rating>0</rating>
 			<cost>350</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -7638,6 +8379,7 @@
 			<avail>10R</avail>
 			<cost>500</cost>
 			<source>RG</source>
+			<rating>0</rating>
 			<page>53</page>
 		</accessory>
 		<accessory>
@@ -7646,6 +8388,7 @@
 			<mount>Under</mount>
 			<avail>2</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -7654,6 +8397,7 @@
 			<name>Underbarrel Grapple Gun</name>
 			<mount>Under</mount>
 			<avail>8R</avail>
+			<rating>0</rating>
 			<cost>600</cost>
 			<source>RG</source>
 			<page>53</page>
@@ -7662,6 +8406,7 @@
 			<id>25691076-94be-4869-a067-34e7657285b7</id>
 			<name>Underbarrel Grenade Launcher</name>
 			<mount>Under</mount>
+			<rating>0</rating>
 			<avail>10F</avail>
 			<cost>3500</cost>
 			<source>RG</source>
@@ -7673,6 +8418,7 @@
 			<mount>Under</mount>
 			<avail>0</avail>
 			<cost>0</cost>
+			<rating>0</rating>
 			<rc>1</rc>
 			<rcgroup>1</rcgroup>
 			<source>RG</source>
@@ -7687,6 +8433,7 @@
 			</allowgear>
 			<avail>0</avail>
 			<cost>200</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -7696,6 +8443,7 @@
 			<mount/>
 			<avail>8</avail>
 			<cost>250</cost>
+			<rating>0</rating>
 			<source>RG</source>
 			<page>53</page>
 		</accessory>
@@ -7705,6 +8453,7 @@
 			<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 			<name>Vintage</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>0</avail>
 			<cost>0</cost>
 			<source>GH3</source>
@@ -7716,6 +8465,7 @@
 			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 			<name>Personalized Grip</name>
 			<mount/>
+			<rating>0</rating>
 			<accuracy>1</accuracy>
 			<avail>0</avail>
 			<cost>Variable(0-1000)</cost>
@@ -7728,11 +8478,246 @@
 			<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>
 			<name>Cyberimplanted</name>
 			<mount/>
+			<rating>0</rating>
 			<avail>+4</avail>
 			<cost>0</cost>
 			<source>CF</source>
 			<page>90</page>
 		</accessory>		
+		<!-- End Region -->
+		<!-- Region Hard Targets -->
+		<accessory>
+			<id>0c315fd8-3a1a-4748-8359-cb6a04436fbd</id>
+			<name>Ammo Skip</name>
+			<rating>0</rating>
+			<mount></mount>
+			<avail>8R</avail>
+			<cost>250</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5157f235-47c7-4121-aebb-d76709c4b6f8</id>
+			<name>Explosive Magazine</name>
+			<mount></mount>
+			<rating>0</rating>
+			<avail>2F</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>d40d2fc6-3aad-4793-843d-20e3597b2365</id>
+			<name>Extended Clip</name>
+			<mount></mount>
+			<rating>2</rating>
+			<avail>6R</avail>
+			<cost>35</cost>
+			<conceal>+Rating</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5d819147-d262-48c2-bb0e-80e0049c67ed</id>
+			<name>Ceramic/Plasteel Components</name>
+			<mount></mount>
+			<rating>6</rating>
+			<avail>12 + Rating</avail>
+			<cost>Weapon Cost * Rating</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>5cc39a55-3973-4368-81ee-c7a5c0432323</id>
+			<name>Chameleon Coating (Pistol)</name>
+			<mount></mount>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>1000</cost>
+			<conceal>-2</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>98c9ed33-2636-40bb-a455-334e8fb8e65f</id>
+			<name>Chameleon Coating (Rifle)</name>
+			<mount></mount>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>1000</cost>
+			<conceal>-1</conceal>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>4e54b271-2617-44b5-a70f-ab389890dda8</id>
+			<name>Holographic Sight</name>
+			<mount>Top</mount>
+			<avail>2</avail>
+			<rating>0</rating>
+			<accuracy>1</accuracy>
+			<cost>125</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>d5abeadd-fba4-47f9-ac35-bfbb31ce34be</id>
+			<name>Long Barrel</name>
+			<mount>Barrel</mount>
+			<avail>8R</avail>
+			<rating>0</rating>
+			<conceal>+1</conceal>
+			<accuracy>1</accuracy>
+			<cost>Weapon Cost</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>806bfacc-095e-448d-a5b2-c271c569ae51</id>
+			<name>Melee Hardening</name>
+			<mount></mount>
+			<avail>6</avail>
+			<rating>0</rating>
+			<cost>500</cost>
+			<source>HT</source>
+			<page>181</page>
+		</accessory>
+		<accessory>
+			<id>83902f51-5f87-444f-a3ff-a74ce865e1af</id>
+			<name>Easy Breakdown (Unpowered)</name>
+			<mount />
+			<avail>8R</avail>
+			<cost>750</cost>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>f27402fa-2845-4314-a97d-2747b3263e0d</id>
+			<name>Easy Breakdown (Powered)</name>
+			<mount />
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>1250</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>2da4f104-cf0c-4e0c-a001-4a6da4c2b46b</id>
+			<name>Electronic Firing</name>
+			<mount></mount>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<rc>1</rc>
+			<rcgroup>1</rcgroup>
+			<cost>1000</cost>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>a2e4fcc6-cc21-4fc8-bbdf-efb489e9c377</id>
+			<name>Mounted Crossbow</name>
+			<mount>Under</mount>
+			<avail>8R</avail>
+			<cost>1000</cost>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b83d5f60-7be2-4991-a518-775f6ae49207</id>
+			<name>Underbarrel Laser</name>
+			<mount>Under</mount>
+			<avail>16F</avail>
+			<cost>22000</cost>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>13d90aa2-6a67-47e5-a211-89aabea5f837</id>
+			<name>Underbarrel Shotgun</name>
+			<mount>Under</mount>
+			<rating>0</rating>
+			<avail>5R</avail>
+			<cost>600</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b8c019cc-5772-43b0-8ba8-a08581bab406</id>
+			<name>Overclocked</name>
+			<mount></mount>
+			<avail>6F</avail>
+			<cost>200</cost>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>b83bfd3a-8011-4a8e-8e76-033dbd6a79c1</id>
+			<name>Retractable Bayonet</name>
+			<mount>Under</mount>
+			<avail>6R</avail>
+			<cost>200</cost>
+			<source>HT</source>
+			<rating>0</rating>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>d67f3194-61f3-4440-b02c-e5f173532b01</id>
+			<name>Custom Look</name>
+			<mount></mount>
+			<avail>2</avail>
+			<cost>300</cost>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>180</page>
+		</accessory>
+		<accessory>
+			<id>225d5411-953e-4537-9e97-40bced059bd3</id>
+			<name>Sawed Off/Shortbarrel</name>
+			<mount>Barrel</mount>
+			<rating>0</rating>
+			<conceal>-1</conceal>
+			<avail>4R</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>88d0e08b-1ac2-442e-8f2f-dfaeb9cda9ab</id>
+			<name>Stock Removal</name>
+			<mount>Stock</mount>
+			<conceal>-1</conceal>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>20</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>f2eee4ed-d0cb-4163-84d9-91e537cd13d9</id>
+			<name>Trigger Removal</name>
+			<mount></mount>
+			<rating>0</rating>
+			<accuracy>1</accuracy>
+			<avail>2</avail>
+			<cost>50</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
+		<accessory>
+			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
+			<name>Personalized Grip</name>
+			<mount/>
+			<rating>0</rating>
+			<accuracy>1</accuracy>
+			<avail>2</avail>
+			<cost>100</cost>
+			<source>HT</source>
+			<page>182</page>
+		</accessory>
 		<!-- End Region -->
 	</accessories>
 </chummer>

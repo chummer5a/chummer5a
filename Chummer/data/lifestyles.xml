@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-900</version>
+	<version>-850</version>
 	<categories>
 		<category>Entertainment - Asset</category>
 		<category>Entertainment - Service</category>
@@ -18,15 +18,6 @@
 			<source>SR5</source>
 			<page>1</page>
 			<hidden />
-		</lifestyle>
-		<lifestyle>
-			<id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
-			<name>Bolt Hole</name>
-			<cost>1000</cost>
-			<dice>1</dice>
-			<multiplier>0</multiplier>
-			<source>RF</source>
-			<page>217</page>
 		</lifestyle>
 		<lifestyle>
 			<id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
@@ -90,6 +81,15 @@
 			<multiplier>0</multiplier>
 			<source>RF</source>
 			<page>218</page>
+		</lifestyle>
+		<lifestyle>
+			<id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
+			<name>Bolt Hole</name>
+			<cost>1000</cost>
+			<dice>1</dice>
+			<multiplier>0</multiplier>
+			<source>RF</source>
+			<page>217</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
@@ -279,7 +279,7 @@
 			<name>Discreet Cleaning Entertainment - Service</name>
 			<category>Entertainment - Service</category>
 			<lp>4</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>10000</cost>
 			<page>221</page>
@@ -289,7 +289,7 @@
 			<name>Discreet Deliveryman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>100</cost>
 			<page>221</page>
@@ -299,7 +299,7 @@
 			<name>Discreet Candyman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed></allowed>
+			<allowed />
 			<source>RF</source>
 			<cost>1000</cost>
 			<page>221</page>
@@ -732,8 +732,8 @@
 			<lp>3</lp>
 			<required>
 				<oneof>
-					<quality>SINner (Corporate)</quality>
-					<quality>SINner (Corporate Limited)</quality>
+					<characterquality>SINner (Corporate)</characterquality>
+					<characterquality>SINner (Corporate Limited)</characterquality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -762,7 +762,6 @@
 			<multiplier>-10</multiplier>
 			<source>SR5</source>
 			<page>370</page>
-			<cost></cost>
 		</quality>
 		<quality>
 			<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
@@ -776,6 +775,7 @@
 		<quality>
 			<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
 			<name>Dangerous Area</name>
+			<lp>-1</lp>
 			<category>Negative</category>
 			<multiplier>-20</multiplier>
 			<source>SR5</source>
@@ -923,5 +923,165 @@
 			<source>CF</source>
 			<page>78</page>
 		</quality>
+		<quality>
+			<name>Local Grid Subscription</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>Medium,High,Luxury</allowed>
+			<source>HT</source>
+			<cost>50</cost>
+			<page>140</page>
+			<id>5f272787-e3f6-4cd7-949b-ce1ed786ef61</id>
+		</quality>
+		<quality>
+			<name>Global Grid Subscription</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>High,Luxury</allowed>
+			<source>HT</source>
+			<cost>250</cost>
+			<page>140</page>
+			<id>9ad9decb-b52d-4993-9ef6-4768727c3d75</id>
+		</quality>
+		<quality>
+			<name>Subsistance Hunting/Gathering I</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>HT</source>
+			<cost>15</cost>
+			<page>140</page>
+			<id>cb265e4e-b13a-487b-8c0f-b2b855138a66</id>
+		</quality>
+		<quality>
+			<name>Subsistance Hunting/Gathering II</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>HT</source>
+			<cost>30</cost>
+			<page>140</page>
+			<id>c0051319-9565-49f1-b59d-ee1f835cf1df</id>
+		</quality>
+		<quality>
+			<name>Subsistance Hunting/Gathering III</name>
+			<category>Entertainment - Asset</category>
+			<lp>3</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>HT</source>
+			<cost>45</cost>
+			<page>140</page>
+			<id>3aca0284-8e7f-4329-83e7-9819bf73a13e</id>
+		</quality>
+		<quality>
+			<name>Subsistance Hunting/Gathering IV</name>
+			<category>Entertainment - Asset</category>
+			<lp>4</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>HT</source>
+			<cost>60</cost>
+			<page>140</page>
+			<id>f2c146ea-302e-444b-8082-3cc47d165669</id>
+		</quality>
+		<quality>
+			<name>Drone Maids/Manservants</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>High,Luxury</allowed>
+			<source>HT</source>
+			<cost>7000</cost>
+			<page>141</page>
+			<id>e667f652-c908-4548-adf9-7b969d587e43</id>
+		</quality>
+		<quality>
+			<name>Maids/Manservants</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Luxury</allowed>
+			<source>HT</source>
+			<cost>15000</cost>
+			<page>141</page>
+			<id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
+		</quality>
+		<quality>
+			<name>Household Gremlins I</name>
+			<category>Negative</category>
+			<lp>0</lp>
+			<allowed />
+			<source>HT</source>
+			<cost>-300</cost>
+			<page>141</page>
+			<id>826b324f-9dd3-4fc3-8c80-b4680587f9f6</id>
+		</quality>
+		<quality>
+			<name>Household Gremlins II</name>
+			<category>Negative</category>
+			<lp>0</lp>
+			<allowed />
+			<source>HT</source>
+			<cost>-600</cost>
+			<page>141</page>
+			<id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
+		</quality>
+		<quality>
+			<name>Dug A Hole</name>
+			<category>Positive</category>
+			<lp>0</lp>
+			<allowed>Bolthole</allowed>
+			<source>HT</source>
+			<cost>2000</cost>
+			<page>141</page>
+			<id>093e24c5-1f87-4cb3-8a9e-1dc701081dfb</id>
+		</quality>
+		<quality>
+			<name>Lax Security</name>
+			<category>Negative</category>
+			<lp>-1</lp>
+			<allowed />
+			<source>HT</source>
+			<cost>0</cost>
+			<page>141</page>
+			<id>1fa52cd4-4342-4511-91dc-6d452032d2c7</id>
+		</quality>
+		<quality>
+			<name>Limited Building Space</name>
+			<category>Negative</category>
+			<lp>-1</lp>
+			<allowed />
+			<source>HT</source>
+			<cost>0</cost>
+			<page>141</page>
+			<id>0a41dfd4-67f7-4d8d-80e5-15db2fc64f09</id>
+		</quality>
+		<quality>
+			<name>Rough Neighborhood</name>
+			<category>Negative</category>
+			<lp>-1</lp>
+			<allowed />
+			<source>HT</source>
+			<cost>0</cost>
+			<page>141</page>
+			<id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
+		</quality>
+		<quality>
+			<name>No Masters</name>
+			<category>Negative</category>
+			<lp>-1</lp>
+			<allowed />
+			<source>HT</source>
+			<multiplier>-10</multiplier>
+			<page>141</page>
+			<id>23dcd584-9650-44b0-9273-896873ba6f61</id>
+		</quality>
+		<quality>
+			<name>Zombie Maids/Manservants</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>High,Luxury</allowed>
+			<source>HT</source>
+			<cost>20000</cost>
+			<page>141</page>
+			<id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
+		</quality>		
 	</qualities>
 </chummer>

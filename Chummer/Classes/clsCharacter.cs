@@ -26,6 +26,8 @@ public delegate void CritterTabEnabledChangedHandler(Object sender);
 public delegate void UneducatedChangedHandler(Object sender);
 // JackOfAllTradesChanged Event Handler
 public delegate void JackOfAllTradesChangedHandler(Object sender);
+// PrototypeTranshumanChanged Event Handler
+public delegate void PrototypeTranshumanChangedHandler(Object sender);
 // CollegeEducationChanged Event Handler
 public delegate void CollegeEducationChangedHandler(Object sender);
 // SchoolOfHardKnocksChanged Event Handler
@@ -89,7 +91,7 @@ namespace Chummer
         private int _intCFPLimit = 0;
         private int _intContactPoints = 0;
         private int _intContactPointsUsed = 0;
-        public int metageneticLimit = 0;
+        private int _intMetageneticLimit = 0;
 
         // General character info.
         private string _strName = "";
@@ -154,7 +156,7 @@ namespace Chummer
         private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
-        private bool _blnExCon = false;
+		private bool _blnExCon = false;
         private bool _blnTechSchool = false;
         private bool _blnRestrictedGear = false;
         private bool _blnOverclocker = false;
@@ -163,9 +165,9 @@ namespace Chummer
         private bool _blnLightningReflexes = false;
         private bool _blnFame = false;
         private bool _blnBornRich = false;
-        private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
+		private decimal _decPrototypeTranshuman = 0m;
 
 		// Attributes.
 		private Attribute _attBOD = new Attribute("BOD");
@@ -285,6 +287,7 @@ namespace Chummer
 		public event MadeManChangedHandler MadeManChanged;
 		public event MagicianTabEnabledChangedHandler MagicianTabEnabledChanged;
 		public event OverclockerChangedHandler OverclockerChanged;
+		public event PrototypeTranshumanChangedHandler PrototypeTranshumanChanged;
 		public event RESEnabledChangedHandler RESEnabledChanged;
 		public event RestrictedGearChangedHandler RestrictedGearChanged;
 		public event SchoolOfHardKnocksChangedHandler SchoolOfHardKnocksChanged;
@@ -352,8 +355,10 @@ namespace Chummer
             objWriter.WriteElementString("metavariant", _strMetavariant);
             // <metatypecategory />
             objWriter.WriteElementString("metatypecategory", _strMetatypeCategory);
-            // <movement />
-            objWriter.WriteElementString("movement", _strMovement);
+			// <metageneticlimit />
+			objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
+			// <movement />
+			objWriter.WriteElementString("movement", _strMovement);
             // <walk />
             objWriter.WriteElementString("walk", _strWalk);
             // <run />
@@ -426,9 +431,10 @@ namespace Chummer
                 objWriter.WriteElementString("possessed", _blnPossessed.ToString());
             if (_blnOverrideSpecialAttributeESSLoss)
                 objWriter.WriteElementString("overridespecialattributeessloss", _blnOverrideSpecialAttributeESSLoss.ToString());
-
-            // <karma />
-            objWriter.WriteElementString("karma", _intKarma.ToString());
+			if (_intMetageneticLimit > 0)
+				objWriter.WriteElementString("metageneticlimit", _intMetageneticLimit.ToString());
+			// <karma />
+			objWriter.WriteElementString("karma", _intKarma.ToString());
             // <totalkarma />
             objWriter.WriteElementString("totalkarma", _intTotalKarma.ToString());
             // <special />
@@ -520,8 +526,10 @@ namespace Chummer
             objWriter.WriteElementString("collegeeducation", _blnCollegeEducation.ToString());
             // <friendsinhighplaces />
             objWriter.WriteElementString("friendsinhighplaces", _blnFriendsInHighPlaces.ToString());
-            // <jackofalltrades />
-            objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
+			// <prototypetranshuman />
+			objWriter.WriteElementString("prototypetranshuman", _decPrototypeTranshuman.ToString());
+			// <jackofalltrades />
+			objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
             // <blackmarket />
             objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
 
@@ -1221,7 +1229,15 @@ namespace Chummer
             {
             }
 
-            try
+
+			try
+			{
+				_intMetageneticLimit = Convert.ToInt32(objXmlCharacter["metageneticlimit"].InnerText);
+			}
+			catch
+			{
+			}
+			try
             {
                 _blnPossessed = Convert.ToBoolean(objXmlCharacter["possessed"].InnerText);
             }
@@ -1486,7 +1502,14 @@ namespace Chummer
             catch
             {
             }
-            try
+			try
+			{
+				_decPrototypeTranshuman = Convert.ToDecimal(objXmlCharacter["prototypetranshuman"].InnerText, GlobalOptions.Instance.CultureInfo);
+			}
+			catch
+			{
+			}
+			try
             {
                 _blnJackOfAllTrades = Convert.ToBoolean(objXmlCharacter["jackofalltrades"].InnerText);
             }
@@ -4371,12 +4394,27 @@ namespace Chummer
             {
                 _blnIsCritter = value;
             }
-        }
+		}
 
-        /// <summary>
-        /// Whether or not the character is possessed by a Spirit.
-        /// </summary>
-        public bool Possessed
+		/// <summary>
+		/// The highest number of free metagenetic qualities the character can have.
+		/// </summary>
+		public int MetageneticLimit
+		{
+			get
+			{
+				return _intMetageneticLimit;
+			}
+			set
+			{
+				_intMetageneticLimit = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the character is possessed by a Spirit.
+		/// </summary>
+		public bool Possessed
         {
             get
             {
@@ -4936,12 +4974,25 @@ namespace Chummer
                         decHole += objCyberware.CalculatedESS;
                     else
                     {
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            decCyberware += objCyberware.CalculatedESS;
-                        else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                            decBioware += objCyberware.CalculatedESS;
+						if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+							decCyberware += objCyberware.CalculatedESS;
+						else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+						{
+								decBioware += objCyberware.CalculatedESS;
+						}
                     }
                 }
+				if (_decPrototypeTranshuman > 0)
+				{
+					if ((decBioware - _decPrototypeTranshuman) < 0)
+					{
+						decBioware = 0;
+					}
+					else
+					{
+						decBioware -= _decPrototypeTranshuman;
+					}
+				}
                 decESS -= decCyberware + decBioware;
                 // Deduct the Essence Hole value.
                 decESS -= decHole;
@@ -5584,9 +5635,11 @@ namespace Chummer
                 double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
                 dblAwareness = Math.Floor(dblAwareness / 3);
 
+				ImprovementManager manager = new ImprovementManager(this);
+
                 int intReturn = 0;
 
-                return intReturn;
+                return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
             }
         }
 
@@ -7093,10 +7146,25 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Whether or not College Education is enabled.
-        /// </summary>
-        public bool CollegeEducation
+		/// <summary>
+		/// Whether or not user is getting free bioware from Prototype Transhuman.
+		/// </summary>
+		public decimal PrototypeTranshuman
+		{
+			get
+			{
+				return _decPrototypeTranshuman;
+			}
+			set
+			{
+				_decPrototypeTranshuman = value;
+            }
+		}
+
+		/// <summary>
+		/// Whether or not College Education is enabled.
+		/// </summary>
+		public bool CollegeEducation
         {
             get
             {

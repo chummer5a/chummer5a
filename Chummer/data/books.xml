@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-389</version>
+  <version>-385</version>
   <books>
     <book>
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
@@ -68,6 +68,21 @@
 			<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
 			<name>Chrome Flesh</name>
 			<code>CF</code>
+		</book>
+		<book>
+			<id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
+			<name>Hard Targets</name>
+			<code>HT</code>
+		</book>
+    <book>
+      <id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+      <name>Bloody Business</name>
+      <code>BLB</code>
+    </book>
+		<book>
+			<id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+			<name>Schattenhandbuch (German Handbook)</name>
+			<code>SHB</code>
 		</book>
   </books>
 </chummer>

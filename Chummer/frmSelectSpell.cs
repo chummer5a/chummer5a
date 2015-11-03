@@ -399,7 +399,10 @@ namespace Chummer
 
         private void treSpells_DoubleClick(object sender, EventArgs e)
         {
-			cmdOK_Click(sender, e);
+	        if (treSpells.SelectedNode.Level > 0)
+	        {
+		        cmdOK_Click(sender, e);
+	        }
 		}
 
         private void cmdCancel_Click(object sender, EventArgs e)

@@ -321,6 +321,7 @@
 			this.nudSecurityEntertainment.Name = "nudSecurityEntertainment";
 			this.nudSecurityEntertainment.Size = new System.Drawing.Size(69, 20);
 			this.nudSecurityEntertainment.TabIndex = 37;
+			this.nudSecurityEntertainment.ValueChanged += new System.EventHandler(this.nudSecurityEntertainment_ValueChanged);
 			// 
 			// nudSecurity
 			// 

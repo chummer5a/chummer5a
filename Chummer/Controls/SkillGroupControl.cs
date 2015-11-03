@@ -39,6 +39,10 @@ namespace Chummer
             {
                 nudSkill.Enabled = false;
                 nudSkill.Visible = false;
+				if (_objCharacter.IgnoreRules)
+				{
+					nudKarma.Maximum = 12;
+				}
             }
 			else if (_objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
 			{

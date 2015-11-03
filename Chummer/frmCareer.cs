@@ -15,14 +15,10 @@ public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, in
 
 namespace Chummer
 {
+	[System.ComponentModel.DesignerCategory("Form")]
 	public partial class frmCareer : CharacterShared
 	{
 		// Set the default culture to en-US so we work with decimals correctly.
-		
-		private MainController _objController;
-
-		private CharacterOptions _objOptions;
-		private CommonFunctions _objFunctions;
 		private bool _blnSkipRefresh = false;
 		private bool _blnSkipUpdate = false;
 		private bool _blnLoading = false;
@@ -62,6 +58,7 @@ namespace Chummer
 			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+			_objCharacter.FameChanged += objCharacter_FameChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -1034,7 +1031,7 @@ namespace Chummer
 				TreeNode objLifestyleNode = new TreeNode();
 				objLifestyleNode.Text = objLifestyle.DisplayName;
 				objLifestyleNode.Tag = objLifestyle.InternalId;
-				if (objLifestyle.BaseLifestyle != "")
+				if (objLifestyle.StyleType.ToString() != "Standard")
 					objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
 				else
 					objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
@@ -1991,6 +1988,11 @@ namespace Chummer
 					}
 				}
 			}
+		}
+
+		private void objCharacter_FameChanged(object sender)
+		{
+			//_objCharacter.TotalPublicAwareness
 		}
 		#endregion
 
@@ -8446,7 +8448,7 @@ namespace Chummer
                         List<TreeNode> objMentorWeaponNodes = new List<TreeNode>();
                         Quality objSpiritQuality = new Quality(_objCharacter);
                         string strExtra = "";
-                        if (objXmlAddQuality.Attributes["select"].InnerText.ToString().Length > 0)
+                        if (objXmlAddQuality.Attributes["select"] != null)
                         {
                             strExtra = objXmlAddQuality.Attributes["select"].InnerText.ToString();
                             objSpiritQuality.Create(objXmlMentorQuality, _objCharacter, QualitySource.Selected, objMentorNode, objMentorWeapons, objMentorWeaponNodes, strExtra);
@@ -9768,7 +9770,7 @@ namespace Chummer
 
 			if (objXmlWeapon == null)
 			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotFindWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
 			
@@ -9800,7 +9802,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
 			objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -10479,7 +10481,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+			objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
 			objAccessory.Parent = objWeapon;
 
 			// Check the item's Cost and make sure the character can afford it.
@@ -17533,7 +17535,7 @@ namespace Chummer
 			}
 
 			Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-			if (objLifestyle.BaseLifestyle != "")
+			if (objLifestyle.StyleType.ToString() != "Standard")
 			{
 				// Edit Advanced Lifestyle.
 				frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
@@ -21158,43 +21160,83 @@ namespace Chummer
 			}
 
 			int intFillCount = 0;
-
 			CheckBox objCheck = (CheckBox)sender;
-			if (objCheck.Checked)
+			if (panVehicleCM.SelectedIndex == 0)
 			{
-				// If this is being checked, make sure everything before it is checked off.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objVehicleCM in panVehicleCM.Controls.OfType<CheckBox>())
+				if (objCheck.Checked)
 				{
-					if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
-						objVehicleCM.Checked = true;
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = true;
 
-					if (objVehicleCM.Checked)
-						intFillCount += 1;
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
 				}
-				_blnSkipRefresh = false;
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = false;
+
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+
+				objVehicle.PhysicalCMFilled = intFillCount;
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
 			}
-			else
+			else 
 			{
-				// If this is being unchecked, make sure everything after it is unchecked.
-				_blnSkipRefresh = true;
-				foreach (CheckBox objVehicleCM in panVehicleCM.Controls.OfType<CheckBox>())
+				if (objCheck.Checked)
 				{
-					if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
-						objVehicleCM.Checked = false;
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = true;
 
-					if (objVehicleCM.Checked)
-						intFillCount += 1;
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
 				}
-				_blnSkipRefresh = false;
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objVehicleCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objVehicleCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objVehicleCM.Checked = false;
+
+						if (objVehicleCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+
+				objVehicle.MatrixCMFilled = intFillCount;
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
 			}
-
-			objVehicle.PhysicalCMFilled = intFillCount;
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
 		}
 		#endregion
 
@@ -21450,8 +21492,10 @@ namespace Chummer
 				string strTip = "";
 				_blnSkipUpdate = true;
 
-                // Calculate the character's move.
-                string strMovement = "";
+				RedlinerCheck();
+
+				// Calculate the character's move.
+				string strMovement = "";
                 if (_objOptions.CyberlegMovement)
                 {
                     int intLegs = 0;
@@ -22642,6 +22686,7 @@ namespace Chummer
 				lblWeaponReach.Text = "";
 				lblWeaponMode.Text = "";
 				lblWeaponAmmo.Text = "";
+				lblWeaponRating.Text = "";
 				lblWeaponSource.Text = "";
 				cboWeaponAmmo.Enabled = false;
 				tipTooltip.SetToolTip(lblWeaponSource, null);
@@ -22808,6 +22853,7 @@ namespace Chummer
 				lblWeaponReach.Text = objWeapon.TotalReach.ToString();
 				lblWeaponMode.Text = objWeapon.CalculatedMode;
 				lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+				lblWeaponRating.Text = "";
 				lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				lblWeaponDicePool.Text = objWeapon.DicePool;
 				tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
@@ -22852,6 +22898,7 @@ namespace Chummer
 					lblWeaponReach.Text = objWeapon.TotalReach.ToString();
 					lblWeaponMode.Text = objWeapon.CalculatedMode;
 					lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+					lblWeaponRating.Text = "";
 					lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 					lblWeaponDicePool.Text = objWeapon.DicePool;
 					tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
@@ -22955,6 +23002,7 @@ namespace Chummer
 						lblWeaponReach.Text = "";
 						lblWeaponMode.Text = "";
 						lblWeaponAmmo.Text = "";
+						lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
 
 						string[] strMounts = objSelectedAccessory.Mount.Split('/');
 						string strMount = "";
@@ -23001,6 +23049,7 @@ namespace Chummer
 							lblWeaponReach.Text = "";
 							lblWeaponMode.Text = "";
 							lblWeaponAmmo.Text = "";
+							lblWeaponRating.Text = "";
 							lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
 							string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
 							string strPage = objSelectedMod.Page;
@@ -23029,6 +23078,7 @@ namespace Chummer
 							lblWeaponReach.Text = "";
 							lblWeaponMode.Text = "";
 							lblWeaponAmmo.Text = "";
+							lblWeaponRating.Text = "";
 							lblWeaponSlots.Text = "";
 							string strBook = _objOptions.LanguageBookShort(objGear.Source);
 							string strPage = objGear.Page;
@@ -24589,7 +24639,7 @@ namespace Chummer
 				// Hide any unused Physical CM boxes.
 				panVehicleCM.Visible = true;
 				_blnSkipRefresh = true;
-				foreach (CheckBox objPhysicalCM in panVehicleCM.Controls.OfType<CheckBox>())
+				foreach (CheckBox objPhysicalCM in tabVehiclePhysicalCM.Controls.OfType<CheckBox>())
 				{
 					if (Convert.ToInt32(objPhysicalCM.Tag.ToString()) <= objVehicle.PhysicalCM)
 					{
@@ -24605,6 +24655,24 @@ namespace Chummer
 						objPhysicalCM.Checked = false;
 						objPhysicalCM.Visible = false;
 						objPhysicalCM.Text = "";
+					}
+				}
+				foreach (CheckBox objMatrixCM in tabVehicleMatrixCM.Controls.OfType<CheckBox>())
+				{
+					if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objVehicle.MatrixCM)
+					{
+						if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objVehicle.MatrixCMFilled)
+							objMatrixCM.Checked = true;
+						else
+							objMatrixCM.Checked = false;
+
+						objMatrixCM.Visible = true;
+					}
+					else
+					{
+						objMatrixCM.Checked = false;
+						objMatrixCM.Visible = false;
+						objMatrixCM.Text = "";
 					}
 				}
 				_blnSkipRefresh = false;
@@ -26856,7 +26924,7 @@ namespace Chummer
 		{
 			lblStreetCredTotal.Text = " + " + _objCharacter.CalculatedStreetCred.ToString() + " = " + _objCharacter.TotalStreetCred.ToString();
 			lblNotorietyTotal.Text = " + " + _objCharacter.CalculatedNotoriety.ToString() + " = " + _objCharacter.TotalNotoriety.ToString();
-			lblPublicAwareTotal.Text = " + " + _objCharacter.CalculatedPublicAwareness.ToString() + " = " + _objCharacter.TotalPublicAwareness.ToString();
+			lblPublicAwareTotal.Text = " + " + _objCharacter.CalculatedPublicAwareness.ToString() + " = " + (_objCharacter.TotalPublicAwareness + _objCharacter.CalculatedPublicAwareness).ToString();
 			cmdBurnStreetCred.Left = lblStreetCredTotal.Left + lblStreetCredTotal.Width + 6;
 			cmdBurnStreetCred.Enabled = _objCharacter.TotalStreetCred >= 2;
 
@@ -28010,7 +28078,7 @@ namespace Chummer
                 return;
             }
 
-            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Enhancement")).Replace("{1}", _objOptions.KarmaSpell.ToString())))
+            if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSpend").Replace("{0}", LanguageManager.Instance.GetString("String_Enhancement")).Replace("{1}", _objOptions.KarmaEnhancement.ToString())))
                 return;
 
             frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);

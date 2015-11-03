@@ -50,8 +50,11 @@
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
-            this.SuspendLayout();
+			this.nudRating = new System.Windows.Forms.NumericUpDown();
+			this.lblRatingLabel = new System.Windows.Forms.Label();
+			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
+			this.SuspendLayout();
             // 
             // lblMountLabel
             // 
@@ -112,6 +115,7 @@
             // 
             // lblRCLabel
             // 
+
             this.lblRCLabel.AutoSize = true;
             this.lblRCLabel.Location = new System.Drawing.Point(258, 12);
             this.lblRCLabel.Name = "lblRCLabel";
@@ -119,10 +123,29 @@
             this.lblRCLabel.TabIndex = 1;
             this.lblRCLabel.Tag = "Label_RC";
             this.lblRCLabel.Text = "RC:";
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			// 
+			// nudRating
+			// 
+			this.nudRating.Enabled = false;
+			this.nudRating.Location = new System.Drawing.Point(442, 164);
+			this.nudRating.Name = "nudRating";
+			this.nudRating.Size = new System.Drawing.Size(37, 20);
+			this.nudRating.TabIndex = 14;
+			this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
+			// 
+			// lblRatingLabel
+			// 
+			this.lblRatingLabel.AutoSize = true;
+			this.lblRatingLabel.Location = new System.Drawing.Point(382, 166);
+			this.lblRatingLabel.Name = "lblRatingLabel";
+			this.lblRatingLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblRatingLabel.TabIndex = 13;
+			this.lblRatingLabel.Tag = "Label_Rating";
+			this.lblRatingLabel.Text = "Rating:";
+			// 
+			// cmdCancel
+			// 
+			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(339, 357);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
@@ -295,7 +318,9 @@
             this.Controls.Add(this.lblAvailLabel);
             this.Controls.Add(this.lblRC);
             this.Controls.Add(this.lblRCLabel);
-            this.Controls.Add(this.cmdCancel);
+			this.Controls.Add(this.nudRating);
+			this.Controls.Add(this.lblRatingLabel);
+			this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.lstAccessory);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -308,7 +333,8 @@
             this.Text = "Select an Accessory";
             this.Load += new System.EventHandler(this.frmSelectWeaponAccessory_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
-            this.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
+			this.ResumeLayout(false);
             this.PerformLayout();
 
 		}
@@ -331,6 +357,8 @@
 		private System.Windows.Forms.CheckBox chkFreeItem;
 		private System.Windows.Forms.Label lblMount;
 		private System.Windows.Forms.NumericUpDown nudMarkup;
+		private System.Windows.Forms.NumericUpDown nudRating;
+		private System.Windows.Forms.Label lblRatingLabel;
 		private System.Windows.Forms.Label lblMarkupLabel;
 		private System.Windows.Forms.Label lblMarkupPercentLabel;
 		private System.Windows.Forms.Label lblTest;

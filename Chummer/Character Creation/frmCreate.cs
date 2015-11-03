@@ -11,13 +11,12 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmCreate : CharacterShared
+	[System.ComponentModel.DesignerCategory("Form")]
+	public partial class frmCreate : CharacterShared
 	{
         // Set the default culture to en-US so we work with decimals correctly.
         
-        private MainController _objController;
-        private CharacterOptions _objOptions;
-        private CommonFunctions _objFunctions;
+        
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
@@ -360,8 +359,8 @@ namespace Chummer
 			{
 				cmdLifeModule.Visible = true;
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
-				chkAutoBackstory.Visible = true;
-				chkAutoBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
+				btnCreateBackstory.Visible = true;
+				btnCreateBackstory.Visible = _objCharacter.Options.AutomaticBackstory;
 			}
 
             // Populate the Qualities list.
@@ -378,7 +377,9 @@ namespace Chummer
                 {
                     if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                         objNode.ForeColor = SystemColors.GrayText;
-                }
+					if (!objQuality.Implemented)
+						objNode.ForeColor = Color.Red;
+				}
                 objNode.ToolTipText = objQuality.Notes;
 
                 if (objQuality.Type == QualityType.Positive)
@@ -708,6 +709,11 @@ namespace Chummer
                 i++;
                 SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
                 objGroupControl.SkillGroupObject = objGroup;
+
+				if (_objCharacter.IgnoreRules)
+				{
+					objGroup.RatingMaximum = 12;
+                }
 
                 // Attach an EventHandler for the GetRatingChanged Event.
                 objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
@@ -1134,7 +1140,7 @@ namespace Chummer
                 TreeNode objLifestyleNode = new TreeNode();
                 objLifestyleNode.Text = objLifestyle.DisplayName;
                 objLifestyleNode.Tag = objLifestyle.InternalId;
-                if (objLifestyle.BaseLifestyle != "")
+                if (objLifestyle.StyleType.ToString() != "Standard")
                     objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
                 else
                     objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
@@ -3605,8 +3611,8 @@ namespace Chummer
                         TreeNode objLifestyleNode = new TreeNode();
                         objLifestyleNode.Text = objLifestyle.DisplayName;
                         objLifestyleNode.Tag = objLifestyle.InternalId;
-                        if (objLifestyle.BaseLifestyle != "")
-                            objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
+						if (objLifestyle.StyleType.ToString() != "Standard")
+							objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
                         else
                             objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
                         if (objLifestyle.Notes != string.Empty)
@@ -5266,9 +5272,16 @@ namespace Chummer
 			objSkillControl.MergeClicked += knoSkill_MergeClick;
             objSkillControl.KnowledgeSkill = true;
             objSkillControl.AllowDelete = true;
-            objSkillControl.SkillRatingMaximum = 6;
-            // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-            objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
+			// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+			objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
             panKnowledgeSkills.Controls.Add(objSkillControl);
 
             _objCharacter.Skills.Add(objSkill);
@@ -7493,7 +7506,14 @@ namespace Chummer
                     objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
             }
 
-            objSkillControl.SkillRatingMaximum = 6;
+			if (_objCharacter.IgnoreRules)
+			{
+				objSkillControl.SkillRatingMaximum = 12;
+			}
+			else
+			{
+				objSkillControl.SkillRatingMaximum = 6;
+			}
             // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
             objSkillControl.Location = new Point(0, objSkillControl.Height * i + panActiveSkills.AutoScrollPosition.Y);
             panActiveSkills.Controls.Add(objSkillControl);
@@ -7697,18 +7717,12 @@ namespace Chummer
                         }
                     }
                 }
-
-				if (chkAutoBackstory.Checked)
-				{
-					if(_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
-		            txtBackground.Text = _objStoryBuilder.GetStory();
-	            }
             }
             else
             {
                 //If not add, fallback (Dead code as we don't check for exceeding karma
                 //Until validation
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
+                //_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
             }
 
 			//Stupid hardcoding but no sane way
@@ -7940,7 +7954,7 @@ namespace Chummer
                         List<TreeNode> objMentorWeaponNodes = new List<TreeNode>();
                         Quality objSpiritQuality = new Quality(_objCharacter);
                         string strExtra = "";
-                        if (objXmlAddQuality.Attributes["select"].InnerText.ToString().Length > 0)
+                        if (objXmlAddQuality.Attributes["select"] != null)
                         {
                             strExtra = objXmlAddQuality.Attributes["select"].InnerText.ToString();
                             objSpiritQuality.Create(objXmlMentorQuality, _objCharacter, QualitySource.Selected, objMentorNode, objMentorWeapons, objMentorWeaponNodes, strExtra);
@@ -8143,13 +8157,13 @@ namespace Chummer
                     _objCharacter.TechnomancerEnabled = false;
                     break;
 				case "Changeling (Class I SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				case "Changeling (Class II SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				case "Changeling (Class III SURGE)":
-					_objCharacter.metageneticLimit = 0;
+					_objCharacter.MetageneticLimit = 0;
 					break;
 				default:
                     break;
@@ -8773,7 +8787,7 @@ namespace Chummer
 
             if (objXmlWeapon == null)
             {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotFindWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -8783,17 +8797,26 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            else
-            {
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
-                string strMounts = "";
-                foreach (XmlNode objXmlMount in objXmlMountList)
-                    strMounts += objXmlMount.InnerText + "/";
+			else
+			{
+				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+				string strMounts = "";
+				foreach (XmlNode objXmlMount in objXmlMountList)
+				{
+					// Run through the Weapon's currenct Accessories and filter out any used up Mount points.
+					bool blnFound = false;
+					foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
+					{
+						if (objCurrentAccessory.Mount == objXmlMount.InnerText)
+							blnFound = true;
+					}
+					if (!blnFound)
+						strMounts += objXmlMount.InnerText + "/";
+				}
+				frmPickWeaponAccessory.AllowedMounts = strMounts;
+			}
 
-                frmPickWeaponAccessory.AllowedMounts = strMounts;
-            }
-
-            frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
             frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
             frmPickWeaponAccessory.ShowDialog();
 
@@ -8805,7 +8828,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount,Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
             objAccessory.Parent = objWeapon;
 
             if (objAccessory.Cost.StartsWith("Variable"))
@@ -9233,8 +9256,8 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
-            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount);
-            objAccessory.Parent = objWeapon;
+            objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating));
+			objAccessory.Parent = objWeapon;
             objWeapon.WeaponAccessories.Add(objAccessory);
 
             objNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
@@ -10440,8 +10463,10 @@ namespace Chummer
                     {
                         if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                             treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
-                        else
-                            treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
+						else if (!objQuality.Implemented)
+							treQualities.SelectedNode.ForeColor = Color.Red;
+						else
+						treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
                     }
                     treQualities.SelectedNode.ToolTipText = objQuality.Notes;
                 }
@@ -12687,7 +12712,7 @@ namespace Chummer
             }
 
             Lifestyle objNewLifestyle = new Lifestyle(_objCharacter);
-            if (objLifestyle.BaseLifestyle != "")
+            if (objLifestyle.StyleType.ToString() != "Standard")
             {
                 // Edit Advanced Lifestyle.
                 frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, _objCharacter);
@@ -15189,10 +15214,6 @@ namespace Chummer
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
             int intBP = 0;
-            string strTooltip = "";
-            string strEDG = "";
-            string strMAG = "";
-            string strRES = "";
 
             // Get the total of "free points" spent
             int intAtt = 0;
@@ -15226,7 +15247,8 @@ namespace Chummer
             }
             return intBP;
 
-            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+			//Dead code, should probably just be removed.
+			/* Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
             {
@@ -15310,7 +15332,7 @@ namespace Chummer
             strTooltip = strEDG + "\n" + strMAG + "\n" + strRES;
             tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
 
                 _objCharacter.Special = _objCharacter.TotalSpecial - intBP;
@@ -15377,13 +15399,13 @@ namespace Chummer
             else
             {
                 return intBP;
-            }
-        }
+            }*/
+		}
 
-        /// <summary>
-        /// Calculate the number of Build Points the character has remaining.
-        /// </summary>
-        private int CalculateBP()
+		/// <summary>
+		/// Calculate the number of Build Points the character has remaining.
+		/// </summary>
+		private int CalculateBP()
         {
             int intKarmaPointsRemain =_objCharacter.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
@@ -15711,18 +15733,6 @@ namespace Chummer
 	                    {
                             intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
 	                    }
-						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
-                        if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
-	                    {
-		                    if (i <= 5)
-		                    {
-                                if (intActivePointsUsed > 1) intActivePointsUsed -= 1;
-		                    }
-		                    else
-		                    {
-                                intActivePointsUsed += 2; 
-		                    }
-	                    }
                     }
                     if (objSkillControl.SkillSpec != "" && objSkillControl.BuyWithKarma && !objSkillControl.SkillObject.ExoticSkill)
                         intKarmaPointsRemain -= _objCharacter.Options.KarmaSpecialization;
@@ -15751,7 +15761,7 @@ namespace Chummer
                             intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill;
                             intActivePointsUsed += _objOptions.KarmaNewActiveSkill;
                         }
-	                    if (_objCharacter.Created && _objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
+	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
 	                    {
                             intKarmaPointsRemain += 1;
                             intActivePointsUsed -= 1;
@@ -15770,7 +15780,7 @@ namespace Chummer
                                 intActivePointsUsed += i * _objOptions.KarmaImproveActiveSkill;
                             }
 
-							if (_objCharacter.Created && _objCharacter.JackOfAllTrades)
+							if (_objCharacter.JackOfAllTrades)
 							{
 								if (objSkillControl.SkillRating <= 5)
 								{
@@ -16197,6 +16207,9 @@ namespace Chummer
             {
                 string strTip = "";
                 _blnSkipUpdate = true;
+
+				//Redliner/Cyber Singularity Seeker(hackish)
+	            RedlinerCheck();  
 
                 // Calculate the character's move.
                 string strMovement = "";
@@ -17016,7 +17029,7 @@ namespace Chummer
                     cboCyberwareGrade.Enabled = false;
 
                 // Cyberware Grade is not available for Genetech items.
-                if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions")
+                if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
 
                 _blnSkipRefresh = false;
@@ -17358,7 +17371,8 @@ namespace Chummer
                 lblWeaponReach.Text = "";
                 lblWeaponMode.Text = "";
                 lblWeaponAmmo.Text = "";
-                lblWeaponSource.Text = "";
+				lblWeaponRating.Text = "";
+				lblWeaponSource.Text = "";
                 tipTooltip.SetToolTip(lblWeaponSource, null);
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
@@ -17428,7 +17442,8 @@ namespace Chummer
                 lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                 lblWeaponMode.Text = objWeapon.CalculatedMode;
                 lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-                lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+				lblWeaponRating.Text = "";
+				lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 lblWeaponDicePool.Text = objWeapon.DicePool;
                 tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
                 tipTooltip.SetToolTip(lblWeaponRC, objWeapon.RCToolTip);
@@ -17478,7 +17493,8 @@ namespace Chummer
                     lblWeaponReach.Text = objWeapon.TotalReach.ToString();
                     lblWeaponMode.Text = objWeapon.CalculatedMode;
                     lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
-                    lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					lblWeaponRating.Text = "";
+					lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     lblWeaponDicePool.Text = objWeapon.DicePool;
                     tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
 
@@ -17509,6 +17525,7 @@ namespace Chummer
                         lblWeaponReach.Text = "";
                         lblWeaponMode.Text = "";
                         lblWeaponAmmo.Text = "";
+						lblWeaponRating.Text = objSelectedAccessory.Rating.ToString();
 
                         string[] strMounts = objSelectedAccessory.Mount.Split('/');
                         string strMount = "";
@@ -17557,7 +17574,8 @@ namespace Chummer
                             lblWeaponReach.Text = "";
                             lblWeaponMode.Text = "";
                             lblWeaponAmmo.Text = "";
-                            lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
+							lblWeaponRating.Text = "";
+							lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
                             string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
                             string strPage = objSelectedMod.Page;
                             lblWeaponSource.Text = strBook + " " + strPage;
@@ -17588,7 +17606,8 @@ namespace Chummer
                             lblWeaponMode.Text = "";
                             lblWeaponAmmo.Text = "";
                             lblWeaponSlots.Text = "";
-                            string strBook = _objOptions.LanguageBookShort(objGear.Source);
+							lblWeaponRating.Text = "";
+							string strBook = _objOptions.LanguageBookShort(objGear.Source);
                             string strPage = objGear.Page;
                             lblWeaponSource.Text = strBook + " " + strPage;
                             tipTooltip.SetToolTip(lblWeaponSource, _objOptions.BookFromCode(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
@@ -19016,8 +19035,8 @@ namespace Chummer
                 // Change the Cost/Month label.
                 if (objLifestyle.StyleType == LifestyleType.Safehouse)
                     lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerWeek");
-                else
-                    lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
+				else
+					lblLifestyleCostLabel.Text = LanguageManager.Instance.GetString("Label_SelectLifestyle_CostPerMonth");
 
                 if (objLifestyle.BaseLifestyle != "")
                 {
@@ -19038,11 +19057,11 @@ namespace Chummer
 							strQualities += ", ";
 						string strQualityName = objQuality.DisplayName;
 						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-						XmlNode nodCost = objNode["lifestylecost"];
-						if (nodCost != null)
+						XmlNode nodMultiplier = objNode["multiplier"];
+						if (nodMultiplier != null)
 						{
-							string strCost = nodCost.InnerText;
-							int intCost = Convert.ToInt32(strCost);
+							string strMultiplier = nodMultiplier.InnerText;
+							int intCost = Convert.ToInt32(strMultiplier);
 							if (intCost > 0)
 							{
 								if (objNode["translate"] != null)
@@ -20179,13 +20198,13 @@ namespace Chummer
             }
 
             // if character has more than permitted Metagenetic qualities
-            if (_objCharacter.metageneticLimit > 0)
+            if (_objCharacter.MetageneticLimit > 0)
             {
                 int metageneticPositiveQualities = 0;
                 int metageneticNegativeQualities = 0;
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (objQuality._strMetagenetic == "yes")
+                    if (objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString())
                     {
                         if (objQuality.Type == QualityType.Positive)
                         {
@@ -20197,14 +20216,14 @@ namespace Chummer
                         }
                     }
                 }
-                if (metageneticNegativeQualities > _objCharacter.metageneticLimit)
+                if (metageneticNegativeQualities > _objCharacter.MetageneticLimit)
                 {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
                     blnValid = false;
                 }
-                if (metageneticPositiveQualities > _objCharacter.metageneticLimit)
+                if (metageneticPositiveQualities > _objCharacter.MetageneticLimit)
                 {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.metageneticLimit.ToString());
+                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
                     blnValid = false;
                 }
 
@@ -21649,10 +21668,18 @@ namespace Chummer
                         objSkill.ExoticSkill = true;
                         _objCharacter.Skills.Add(objSkill);
 
-                        objSkillControl.SkillRatingMaximum = 6;
 
-                        // Make sure it's not going above the maximum number.
-                        if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
+						if (_objCharacter.IgnoreRules)
+						{
+							objSkillControl.SkillRatingMaximum = 12;
+						}
+						else
+						{
+							objSkillControl.SkillRatingMaximum = 6;
+						}
+
+						// Make sure it's not going above the maximum number.
+						if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
                             objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
                         else
                             objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
@@ -21744,9 +21771,17 @@ namespace Chummer
 
                     objSkillControl.KnowledgeSkill = true;
                     objSkillControl.AllowDelete = true;
-                    objSkillControl.SkillRatingMaximum = 6;
-                    // Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-                    objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+
+					if (_objCharacter.IgnoreRules)
+					{
+						objSkillControl.SkillRatingMaximum = 12;
+					}
+					else
+					{
+						objSkillControl.SkillRatingMaximum = 6;
+					}
+					// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+					objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
                     panKnowledgeSkills.Controls.Add(objSkillControl);
 
                     objSkillControl.SkillName = objXmlSkill["name"].InnerText;
@@ -22184,9 +22219,10 @@ namespace Chummer
                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                             TreeNode objModNode = new TreeNode();
                             string strMount = "";
+							int intRating = 0;
                             if (objXmlAccessory["mount"] != null)
                                 strMount = objXmlAccessory["mount"].InnerText;
-                            objMod.Create(objXmlAccessoryNode, objModNode, strMount);
+                            objMod.Create(objXmlAccessoryNode, objModNode, strMount, intRating);
                             objModNode.ContextMenuStrip = cmsWeaponAccessory;
                             objMod.Parent = objWeapon;
 
@@ -22550,9 +22586,10 @@ namespace Chummer
                                     WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                     TreeNode objModNode = new TreeNode();
                                     string strMount = "";
-                                    if (objXmlAccessory["mount"] != null)
+									int intRating = 0;
+									if (objXmlAccessory["mount"] != null)
                                         strMount = objXmlAccessory["mount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, objModNode, strMount);
+                                    objMod.Create(objXmlAccessoryNode, objModNode, strMount,intRating);
                                     objModNode.ContextMenuStrip = cmsWeaponAccessory;
                                     objMod.Parent = objWeapon;
 
@@ -22874,6 +22911,10 @@ namespace Chummer
                 TreeNode objNode = new TreeNode();
                 objNode.Text = objQuality.DisplayName;
                 objNode.Tag = objQuality.InternalId;
+				if (!objQuality.Implemented)
+				{
+					objNode.ForeColor = Color.Red;
+				}
                 if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
                     objNode.ForeColor = SystemColors.GrayText;
 
@@ -24813,10 +24854,6 @@ namespace Chummer
 
         private void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
-
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
@@ -24828,19 +24865,6 @@ namespace Chummer
                     intGrade = objGrade.Grade;
                     break;
                 }
-            }
-
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
-
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
             }
 
             frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter);
@@ -24882,7 +24906,7 @@ namespace Chummer
 
             _objCharacter.Metamagics.Add(objNewMetamagic);
 
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
             treMetamagic.SelectedNode.Expand();
 
             UpdateCharacterInfo();
@@ -24896,229 +24920,191 @@ namespace Chummer
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Art;
+			frmPickArt.ShowDialog(this);
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Art;
-            frmPickArt.ShowDialog(this);
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			string strArt = frmPickArt.SelectedItem;
 
-            string strArt = frmPickArt.SelectedItem;
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			TreeNode objNode = new TreeNode();
+			Art objArt = new Art(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            TreeNode objNode = new TreeNode();
-            Art objArt = new Art(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
+			objSource = Improvement.ImprovementSource.Metamagic;
 
-            objXmlDocument = XmlManager.Instance.Load("metamagic.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strArt + "\"]");
-            objSource = Improvement.ImprovementSource.Metamagic;
+			objArt.Create(objXmlArt, _objCharacter, objNode, objSource);
+			objArt.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objArt.InternalId == Guid.Empty.ToString())
+				return;
 
-            objArt.Create(objXmlArt, _objCharacter, objNode, objSource);
-            objArt.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objArt.InternalId == Guid.Empty.ToString())
-                return;
+			_objCharacter.Arts.Add(objArt);
 
-            _objCharacter.Arts.Add(objArt);
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
+			UpdateCharacterInfo();
 
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Enchantment;
+			frmPickArt.ShowDialog(this);
 
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			string strEnchantment = frmPickArt.SelectedItem;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Enchantment;
-            frmPickArt.ShowDialog(this);
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			TreeNode objNode = new TreeNode();
+			Spell objNewSpell = new Spell(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            string strEnchantment = frmPickArt.SelectedItem;
+			objXmlDocument = XmlManager.Instance.Load("spells.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
+			objSource = Improvement.ImprovementSource.Initiation;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
+			objNewSpell.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objNewSpell.InternalId == Guid.Empty.ToString())
+				return;
 
-            TreeNode objNode = new TreeNode();
-            Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			_objCharacter.Spells.Add(objNewSpell);
 
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+			TreeNode objSpellNode = new TreeNode();
+			objSpellNode.Text = objNode.Text;
+			objSpellNode.Tag = objNode.Tag;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
-            objNewSpell.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
-                return;
+			string strCategory = "";
+			if (objNewSpell.Category == "Rituals")
+				strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+			if (objNewSpell.Category == "Enchantments")
+				strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+			objNode.Text = strCategory + objNode.Text;
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            _objCharacter.Spells.Add(objNewSpell);
+			treSpells.Nodes[6].Nodes.Add(objSpellNode);
+			treSpells.Nodes[6].Expand();
 
-            TreeNode objSpellNode = new TreeNode();
-            objSpellNode.Text = objNode.Text;
-            objSpellNode.Tag = objNode.Tag;
+			UpdateCharacterInfo();
 
-            string strCategory = "";
-            if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
-            if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
-            objNode.Text = strCategory + objNode.Text;
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
-
-            treSpells.Nodes[6].Nodes.Add(objSpellNode);
-            treSpells.Nodes[6].Expand();
-
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
-            bool blnPayWithKarma = false;
-            string strType = "";
+			if (treMetamagic.SelectedNode.Level != 0)
+				return;
 
-            if (treMetamagic.SelectedNode.Level != 0)
-                return;
+			int intGrade = 0;
+			foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+			{
+				if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
+				{
+					intGrade = objGrade.Grade;
+					break;
+				}
+			}
 
-            int intGrade = 0;
-            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
-            {
-                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                {
-                    intGrade = objGrade.Grade;
-                    break;
-                }
-            }
+			frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
+			frmPickArt.WindowMode = frmSelectArt.Mode.Ritual;
+			frmPickArt.ShowDialog(this);
 
-            // Evaluate each object 
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			// Make sure a value was selected.
+			if (frmPickArt.DialogResult == DialogResult.Cancel)
+				return;
 
-            foreach (Spell objSpell in _objCharacter.Spells)
-            {
-                if (objSpell.Grade == intGrade)
-                    blnPayWithKarma = true;
-            }
+			string strEnchantment = frmPickArt.SelectedItem;
 
-            frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
-            frmPickArt.WindowMode = frmSelectArt.Mode.Ritual;
-            frmPickArt.ShowDialog(this);
+			XmlDocument objXmlDocument = new XmlDocument();
+			XmlNode objXmlArt;
 
-            // Make sure a value was selected.
-            if (frmPickArt.DialogResult == DialogResult.Cancel)
-                return;
+			TreeNode objNode = new TreeNode();
+			Spell objNewSpell = new Spell(_objCharacter);
+			Improvement.ImprovementSource objSource;
 
-            string strEnchantment = frmPickArt.SelectedItem;
+			objXmlDocument = XmlManager.Instance.Load("spells.xml");
+			objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
+			objSource = Improvement.ImprovementSource.Initiation;
 
-            XmlDocument objXmlDocument = new XmlDocument();
-            XmlNode objXmlArt;
+			objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
+			objNewSpell.Grade = intGrade;
+			objNode.ContextMenuStrip = cmsInitiationNotes;
+			if (objNewSpell.InternalId == Guid.Empty.ToString())
+				return;
 
-            TreeNode objNode = new TreeNode();
-            Spell objNewSpell = new Spell(_objCharacter);
-            Improvement.ImprovementSource objSource;
+			_objCharacter.Spells.Add(objNewSpell);
 
-            objXmlDocument = XmlManager.Instance.Load("spells.xml");
-            objXmlArt = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + strEnchantment + "\"]");
-            objSource = Improvement.ImprovementSource.Initiation;
+			TreeNode objSpellNode = new TreeNode();
+			objSpellNode.Text = objNode.Text;
+			objSpellNode.Tag = objNode.Tag;
 
-            objNewSpell.Create(objXmlArt, _objCharacter, objNode, "", false, false, false, objSource);
-            objNewSpell.Grade = intGrade;
-            objNode.ContextMenuStrip = cmsInitiationNotes;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
-                return;
+			string strCategory = "";
+			if (objNewSpell.Category == "Rituals")
+				strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
+			if (objNewSpell.Category == "Enchantments")
+				strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
+			objNode.Text = strCategory + objNode.Text;
+			treMetamagic.SelectedNode.Nodes.Add(objNode);
+			treMetamagic.SelectedNode.Expand();
 
-            _objCharacter.Spells.Add(objNewSpell);
+			int intNode = 5;
+			if (!_objCharacter.MagicianEnabled)
+				intNode = 0;
+			treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
+			treSpells.Nodes[intNode].Expand();
 
-            TreeNode objSpellNode = new TreeNode();
-            objSpellNode.Text = objNode.Text;
-            objSpellNode.Tag = objNode.Tag;
+			UpdateCharacterInfo();
 
-            string strCategory = "";
-            if (objNewSpell.Category == "Rituals")
-                strCategory = LanguageManager.Instance.GetString("Label_Ritual") + " ";
-            if (objNewSpell.Category == "Enchantments")
-                strCategory = LanguageManager.Instance.GetString("Label_Enchantment") + " ";
-            objNode.Text = strCategory + objNode.Text;
-            treMetamagic.SelectedNode.Nodes.Add(objNode);
-            treMetamagic.SelectedNode.Expand();
-
-            int intNode = 5;
-            if (!_objCharacter.MagicianEnabled)
-                intNode = 0;
-            treSpells.Nodes[intNode].Nodes.Add(objSpellNode);
-            treSpells.Nodes[intNode].Expand();
-
-            UpdateCharacterInfo();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
         {
@@ -25228,9 +25214,6 @@ namespace Chummer
 
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            bool blnPayWithKarma = false;
-            string strType = "";
-
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
@@ -25243,9 +25226,6 @@ namespace Chummer
                     break;
                 }
             }
-
-            blnPayWithKarma = true;
-
             frmSelectArt frmPickArt = new frmSelectArt(_objCharacter);
             frmPickArt.WindowMode = frmSelectArt.Mode.Enhancement;
             frmPickArt.ShowDialog(this);
@@ -25375,17 +25355,17 @@ namespace Chummer
 
 		private void txtBackground_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			chkAutoBackstory.Checked = false;
-		}
-
-		private void chkAutoBackstory_CheckedChanged(object sender, EventArgs e)
-		{
-			_objCharacter.Options.AutomaticBackstory = chkAutoBackstory.Checked;
-			if (chkAutoBackstory.Checked)
+			btnCreateBackstory.Enabled = false;
+			if (_objStoryBuilder == null)
 			{
-				if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
-				txtBackground.Text = _objStoryBuilder.GetStory();
-			}
+				btnCreateBackstory.Enabled = true;
+            }
+        }
+
+		private void btnCreateBackstory_Click(object sender, EventArgs e)
+		{
+			if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
+			txtBackground.Text = _objStoryBuilder.GetStory();
 		}
-    }
+	}
 }

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-360</version>
+	<version>-350</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
 	</categories>
-<!--Region Shadowrun Core Positive Qualities -->					
+	<!--Region Shadowrun Core Positive Qualities -->
 	<qualities>
 		<quality>
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
@@ -693,7 +693,7 @@
 			</forbidden>
 			<source>SR5</source>
 			<page>77</page>
-		</quality>	
+		</quality>
 		<quality>
 			<name>Resistance to Pathogens and Toxins</name>
 			<hide>yes</hide>
@@ -860,7 +860,7 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<source>RG</source>
 			<page>127</page>
 		</quality>
@@ -872,7 +872,7 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<source>RG</source>
 			<page>127</page>
 		</quality>
@@ -1041,7 +1041,7 @@
 					<quality>Adept</quality>
 				</oneof>
 			</forbidden>
-			<contributetolimit>no</contributetolimit>			
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<quality>
 			<id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
@@ -1059,11 +1059,11 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<contributetolimit>no</contributetolimit>			
+			<contributetolimit>no</contributetolimit>
 		</quality>
 		<!-- endregion-->
-<!--Region Shadowrun Core Negative Qualities -->					
-	<quality>
+		<!--Region Shadowrun Core Negative Qualities -->
+		<quality>
 			<id>ea7cced4-a201-44a2-9a1b-e10180b1df81</id>
 			<name>Addiction (Mild)</name>
 			<karma>-4</karma>
@@ -1248,7 +1248,7 @@
 			</bonus>
 			<source>SR5</source>
 			<page>79</page>
-      <nomission/>
+			<nomission/>
 		</quality>
 		<quality>
 			<id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
@@ -1258,10 +1258,10 @@
 			<bonus>
 				<selecttext />
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<source>SR5</source>
 			<page>79</page>
-      <nomission/>
+			<nomission/>
 		</quality>
 		<quality>
 			<id>86b259fd-17c8-4ae5-b246-49782e7c5047</id>
@@ -1278,6 +1278,7 @@
 			<id>62c7ed8f-b534-41e3-84ac-29534826d476</id>
 			<name>Combat Paralysis</name>
 			<karma>-12</karma>
+			<implemented>False</implemented>
 			<category>Negative</category>
 			<bonus />
 			<source>SR5</source>
@@ -1291,7 +1292,7 @@
 			<bonus>
 				<lifestylecost>10</lifestylecost>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Inconvenience)</quality>
@@ -1309,7 +1310,7 @@
 			<bonus>
 				<lifestylecost>20</lifestylecost>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Nuisance)</quality>
@@ -1327,7 +1328,7 @@
 			<bonus>
 				<lifestylecost>30</lifestylecost>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Dependent (Nuisance)</quality>
@@ -1446,7 +1447,7 @@
 					<bonus>-2</bonus>
 				</selectskill>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<source>SR5</source>
 			<page>82</page>
 		</quality>
@@ -1658,7 +1659,7 @@
 			<bonus />
 			<source>SR5</source>
 			<page>85</page>
-      <nomission/>
+			<nomission/>
 		</quality>
 		<quality>
 			<id>40c06974-a85b-4f2b-9558-51c140c16d87</id>
@@ -1705,7 +1706,7 @@
 			<category>Negative</category>
 			<bonus />
 			<source>RG</source>
-      <nomission/>
+			<nomission/>
 			<page>127</page>
 		</quality>
 		<quality>
@@ -1743,7 +1744,7 @@
 			<bonus />
 			<source>RG</source>
 			<page>169</page>
-      <nomission/>
+			<nomission/>
 		</quality>
 		<quality>
 			<id>d8362a78-54e9-4dbe-8388-6ba0a7b9df31</id>
@@ -1762,7 +1763,7 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>SR5</source>
 			<page>87</page>
 		</quality>
@@ -1775,7 +1776,7 @@
 			<source>SR5</source>
 			<page>87</page>
 		</quality>
-		<!--Street Grimoire Positive Qualities -->					
+		<!--Street Grimoire Positive Qualities -->
 		<quality>
 			<id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
 			<name>Spirit Champion</name>
@@ -2066,7 +2067,7 @@
 			<page>178</page>
 		</quality>
 		<!--End Region -->
-<!--Region Street Grimoire Negative Qualities -->					
+		<!--Region Street Grimoire Negative Qualities -->
 		<quality>
 			<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
 			<name>Spirit Pariah</name>
@@ -2076,8 +2077,8 @@
 			<source>SG</source>
 			<page>199</page>
 		</quality>
-<!-- End Region -->
-<!--Region Bullets and Bandages Positive Qualities -->	
+		<!-- End Region -->
+		<!--Region Bullets and Bandages Positive Qualities -->
 		<quality>
 			<id>a8747e12-08b1-4665-8e48-23c30c047be6</id>
 			<name>Gifted Healer</name>
@@ -2089,8 +2090,8 @@
 			<source>BB</source>
 			<page>11</page>
 		</quality>
-<!-- End Region-->
-<!--Region Bullets and Bandages Negative Qualities -->	
+		<!-- End Region-->
+		<!--Region Bullets and Bandages Negative Qualities -->
 		<quality>
 			<id>97e9b186-8924-4885-a948-3c781244a5cb</id>
 			<name>Aged (Rating 1)</name>
@@ -2251,7 +2252,7 @@
 			<page>12</page>
 		</quality>
 		<!-- End Region-->
-<!--Region Sail Away, Sweet Sister Positive Qualities -->
+		<!--Region Sail Away, Sweet Sister Positive Qualities -->
 		<quality>
 			<id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
 			<name>College Education</name>
@@ -2277,8 +2278,8 @@
 			<page>31</page>
 		</quality>
 		<!-- End Region-->
-<!--Region Run Faster -->
-<!--Region Run Faster Positive Qualities -->		
+		<!--Region Run Faster -->
+		<!--Region Run Faster Positive Qualities -->
 		<quality>
 			<name>Changeling (Class I SURGE)</name>
 			<karma>10</karma>
@@ -2320,7 +2321,7 @@
 			<source>RF</source>
 			<page>103</page>
 			<contributetolimit>no</contributetolimit>
-		</quality>		
+		</quality>
 		<quality>
 			<name>Adrenaline Surge</name>
 			<karma>12</karma>
@@ -2343,8 +2344,8 @@
 			<category>Positive</category>
 			<bonus>
 				<blackmarket />
-        <selecttext />
-        <selectcontact />
+				<selecttext />
+				<selectcontact />
 			</bonus>
 			<source>RF</source>
 			<page>145</page>
@@ -2371,9 +2372,9 @@
 			<name>College Education.RF</name>
 			<karma>4</karma>
 			<category>Positive</category>
-      <bonus>
-        <collegeeducation />
-      </bonus>
+			<bonus>
+				<collegeeducation />
+			</bonus>
 			<source>RF</source>
 			<page>145</page>
 		</quality>
@@ -2384,7 +2385,7 @@
 			<bonus />
 			<source>RF</source>
 			<page>145</page>
-		</quality>	
+		</quality>
 		<quality>
 			<name>Daredevil</name>
 			<karma>6</karma>
@@ -2435,6 +2436,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>2</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2445,12 +2447,12 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
 					<quality>Fame: Megacorporate</quality>
-					<quality>Fame: Global</quality>			
+					<quality>Fame: Global</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -2462,6 +2464,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>3</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2477,10 +2480,10 @@
 				<oneof>
 					<quality>Fame: Local</quality>
 					<quality>Fame: Megacorporate</quality>
-					<quality>Fame: Global</quality>			
+					<quality>Fame: Global</quality>
 				</oneof>
 			</forbidden>
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>146</page>
 		</quality>
@@ -2490,6 +2493,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>5</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -2500,12 +2504,12 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
 					<quality>Fame: Local</quality>
-					<quality>Fame: Global</quality>			
+					<quality>Fame: Global</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -2517,6 +2521,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
+        <publicawareness>8</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -2526,12 +2531,12 @@
 					</skillcategory>
 				</limitmodifier>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Fame: National</quality>
 					<quality>Fame: Megacorporate</quality>
-					<quality>Fame: Local</quality>			
+					<quality>Fame: Local</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -2541,10 +2546,10 @@
 			<name>Friends in High Places</name>
 			<karma>8</karma>
 			<category>Positive</category>
-      <bonus>
-        <friendsinhighplaces />
-      </bonus>
-      <nomission/>
+			<bonus>
+				<friendsinhighplaces />
+			</bonus>
+			<nomission/>
 			<source>RF</source>
 			<page>147</page>
 		</quality>
@@ -2572,9 +2577,9 @@
 			<name>Jack of All Trades Master of None</name>
 			<karma>2</karma>
 			<category>Positive</category>
-      <bonus>
-        <jackofalltrades />
-      </bonus>
+			<bonus>
+				<jackofalltrades />
+			</bonus>
 			<source>RF</source>
 			<page>147</page>
 		</quality>
@@ -2594,9 +2599,9 @@
 			<name>Linguist</name>
 			<karma>4</karma>
 			<category>Positive</category>
-				<bonus>
-					<linguist />
-				</bonus>
+			<bonus>
+				<linguist />
+			</bonus>
 			<source>RF</source>
 			<page>148</page>
 		</quality>
@@ -2606,10 +2611,10 @@
 			<category>Positive</category>
 			<bonus>
 				<mademan />
-        <selectcontact>
-          <type>group</type>
-          <mademan />
-        </selectcontact>
+				<selectcontact>
+					<type>group</type>
+					<mademan />
+				</selectcontact>
 			</bonus>
 			<source>RF</source>
 			<page>148</page>
@@ -2714,7 +2719,7 @@
 				<selecttext />
 			</bonus>
 			<source>RF</source>
-			<page>149</page>			
+			<page>149</page>
 		</quality>
 		<quality>
 			<name>Restricted Gear</name>
@@ -2764,7 +2769,7 @@
 			<karma>4</karma>
 			<category>Positive</category>
 			<bonus>
-			<schoolofhardknocks />
+				<schoolofhardknocks />
 			</bonus>
 			<source>RF</source>
 			<page>149</page>
@@ -2869,9 +2874,9 @@
 			<name>Technical School Education</name>
 			<karma>4</karma>
 			<category>Positive</category>
-				<bonus>
-					<techschool />
-				</bonus>
+			<bonus>
+				<techschool />
+			</bonus>
 			<source>RF</source>
 			<page>150</page>
 		</quality>
@@ -2990,7 +2995,7 @@
 			<bonus>
 				<trustfund>1</trustfund>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -3007,7 +3012,7 @@
 			<bonus>
 				<trustfund>2</trustfund>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -3024,7 +3029,7 @@
 			<bonus>
 				<trustfund>3</trustfund>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -3041,7 +3046,7 @@
 			<bonus>
 				<trustfund>4</trustfund>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<required>
 				<oneof>
 					<quality>SINner (National)</quality>
@@ -3109,7 +3114,7 @@
 			<page>151</page>
 		</quality>
 		<!-- End Region-->
-<!--Region Run Faster Negative Qualities -->
+		<!--Region Run Faster Negative Qualities -->
 		<quality>
 			<name>Albinism I</name>
 			<karma>-4</karma>
@@ -3117,7 +3122,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Albinism II</quality>			
+					<quality>Albinism II</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3142,12 +3147,12 @@
 		<quality>
 			<name>Amnesia (Surface Loss)</name>
 			<karma>-4</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Amnesia (Neural Deletion)</quality>			
+					<quality>Amnesia (Neural Deletion)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3156,12 +3161,12 @@
 		<quality>
 			<name>Amnesia (Neural Deletion)</name>
 			<karma>-8</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Amnesia (Surface Loss)</quality>			
+					<quality>Amnesia (Surface Loss)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3188,7 +3193,7 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>153</page>
 		</quality>
@@ -3221,7 +3226,7 @@
 				<oneof>
 					<power>Astral Perception</power>
 					<quality>Magician</quality>
-					<quality>Aspected Magician</quality>		  
+					<quality>Aspected Magician</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3232,7 +3237,7 @@
 			<karma>-20</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>153</page>
 		</quality>
@@ -3257,7 +3262,7 @@
 			<forbidden>
 				<oneof>
 					<quality>Creature of Comfort (High)</quality>
-					<quality>Creature of Comfort (Luxury)</quality>			
+					<quality>Creature of Comfort (Luxury)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3271,7 +3276,7 @@
 			<forbidden>
 				<oneof>
 					<quality>Creature of Comfort (Middle)</quality>
-					<quality>Creature of Comfort (Luxury)</quality>			
+					<quality>Creature of Comfort (Luxury)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3285,7 +3290,7 @@
 			<forbidden>
 				<oneof>
 					<quality>Creature of Comfort (Middle)</quality>
-					<quality>Creature of Comfort (High)</quality>			
+					<quality>Creature of Comfort (High)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3296,11 +3301,11 @@
 			<karma>-5</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (20 hrs)</quality>
-					<quality>Day Job (40 hrs)</quality>			
+					<quality>Day Job (40 hrs)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3311,11 +3316,11 @@
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (10 hrs)</quality>
-					<quality>Day Job (40 hrs)</quality>			
+					<quality>Day Job (40 hrs)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3326,11 +3331,11 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>Day Job (10 hrs)</quality>
-					<quality>Day Job (20 hrs)</quality>			
+					<quality>Day Job (20 hrs)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3343,7 +3348,7 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Reduced Sense (Hearing)</quality>			
+					<quality>Reduced Sense (Hearing)</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3376,7 +3381,7 @@
 			</bonus>
 			<required>
 				<oneof>
-					<quality>Dimmer Bulb I</quality>		  
+					<quality>Dimmer Bulb I</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3391,7 +3396,7 @@
 			</bonus>
 			<required>
 				<oneof>
-					<quality>Dimmer Bulb II</quality>		  
+					<quality>Dimmer Bulb II</quality>
 				</oneof>
 			</required>
 			<source>RF</source>
@@ -3402,7 +3407,7 @@
 			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>154</page>
 		</quality>
@@ -3418,7 +3423,7 @@
 			<name>Ex-Con</name>
 			<karma>-15</karma>
 			<category>Negative</category>
-      <nomission/>
+			<nomission/>
 			<bonus>
 				<excon />
 				<freenegativequalities>-10</freenegativequalities>
@@ -3434,7 +3439,7 @@
 			<karma>-7</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -3443,7 +3448,7 @@
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -3460,7 +3465,7 @@
 			<karma>-8</karma>
 			<category>Negative</category>
 			<bonus />
-      <nomission/>
+			<nomission/>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -3474,7 +3479,7 @@
 		</quality>
 		<quality>
 			<name>In Debt I</name>
-      <nomission/>
+			<nomission/>
 			<karma>-1</karma>
 			<category>Negative</category>
 			<bonus>
@@ -3495,7 +3500,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3503,7 +3508,7 @@
 		</quality>
 		<quality>
 			<name>In Debt II</name>
-      <nomission/>
+			<nomission/>
 			<karma>-2</karma>
 			<category>Negative</category>
 			<bonus>
@@ -3524,7 +3529,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3532,7 +3537,7 @@
 		</quality>
 		<quality>
 			<name>In Debt III</name>
-      <nomission/>
+			<nomission/>
 			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus>
@@ -3553,7 +3558,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3561,7 +3566,7 @@
 		</quality>
 		<quality>
 			<name>In Debt IV</name>
-      <nomission/>
+			<nomission/>
 			<karma>-4</karma>
 			<category>Negative</category>
 			<bonus>
@@ -3582,7 +3587,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3591,7 +3596,7 @@
 		<quality>
 			<name>In Debt V</name>
 			<karma>-5</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>25000</nuyenamt>
@@ -3611,7 +3616,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3620,7 +3625,7 @@
 		<quality>
 			<name>In Debt VI</name>
 			<karma>-6</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>30000</nuyenamt>
@@ -3640,7 +3645,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3649,7 +3654,7 @@
 		<quality>
 			<name>In Debt VII</name>
 			<karma>-7</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>35000</nuyenamt>
@@ -3669,7 +3674,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3678,7 +3683,7 @@
 		<quality>
 			<name>In Debt VIII</name>
 			<karma>-8</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<nuyenamt>40000</nuyenamt>
@@ -3698,7 +3703,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3708,7 +3713,7 @@
 			<name>In Debt IX</name>
 			<karma>-9</karma>
 			<category>Negative</category>
-      <nomission/>
+			<nomission/>
 			<bonus>
 				<nuyenamt>45000</nuyenamt>
 			</bonus>
@@ -3727,7 +3732,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3740,7 +3745,7 @@
 			<bonus>
 				<nuyenamt>50000</nuyenamt>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -3756,7 +3761,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3769,7 +3774,7 @@
 			<bonus>
 				<nuyenamt>55000</nuyenamt>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -3785,7 +3790,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3798,7 +3803,7 @@
 			<bonus>
 				<nuyenamt>60000</nuyenamt>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -3814,7 +3819,7 @@
 					<quality>In Debt I</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3827,7 +3832,7 @@
 			<bonus>
 				<nuyenamt>65000</nuyenamt>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -3843,7 +3848,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt I</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3856,7 +3861,7 @@
 			<bonus>
 				<nuyenamt>70000</nuyenamt>
 			</bonus>
-      <nomission/>
+			<nomission/>
 			<forbidden>
 				<oneof>
 					<quality>In Debt II</quality>
@@ -3872,7 +3877,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt I</quality>
-					<quality>In Debt XV</quality>			
+					<quality>In Debt XV</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3880,7 +3885,7 @@
 		</quality>
 		<quality>
 			<name>In Debt XV</name>
-      <nomission/>
+			<nomission/>
 			<karma>-15</karma>
 			<category>Negative</category>
 			<bonus>
@@ -3901,7 +3906,7 @@
 					<quality>In Debt XII</quality>
 					<quality>In Debt XIII</quality>
 					<quality>In Debt XIV</quality>
-					<quality>In Debt I</quality>			
+					<quality>In Debt I</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3946,7 +3951,7 @@
 					<quality>Infirm II</quality>
 					<quality>Infirm III</quality>
 					<quality>Infirm IV</quality>
-					<quality>Infirm V</quality>			
+					<quality>Infirm V</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -3983,7 +3988,7 @@
 					<quality>Infirm I</quality>
 					<quality>Infirm III</quality>
 					<quality>Infirm IV</quality>
-					<quality>Infirm V</quality>			
+					<quality>Infirm V</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -4020,7 +4025,7 @@
 					<quality>Infirm II</quality>
 					<quality>Infirm I</quality>
 					<quality>Infirm IV</quality>
-					<quality>Infirm V</quality>			
+					<quality>Infirm V</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -4057,7 +4062,7 @@
 					<quality>Infirm II</quality>
 					<quality>Infirm III</quality>
 					<quality>Infirm I</quality>
-					<quality>Infirm V</quality>			
+					<quality>Infirm V</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -4094,7 +4099,7 @@
 					<quality>Infirm II</quality>
 					<quality>Infirm III</quality>
 					<quality>Infirm IV</quality>
-					<quality>Infirm I</quality>			
+					<quality>Infirm I</quality>
 				</oneof>
 			</forbidden>
 			<source>RF</source>
@@ -4175,7 +4180,7 @@
 		<quality>
 			<name>Paraplegic</name>
 			<karma>-10</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<basiclifestylecost>10</basiclifestylecost>
@@ -4264,7 +4269,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Personal)</name>
 			<karma>-4</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4285,7 +4290,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Personal)</name>
 			<karma>-8</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4296,7 +4301,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Personal)</name>
 			<karma>-10</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4307,7 +4312,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Public Single Aspect)</name>
 			<karma>-5</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4318,7 +4323,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive II, Public Single Aspect)</name>
 			<karma>-7</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4329,7 +4334,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Public Single Aspect)</name>
 			<karma>-9</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4340,7 +4345,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Public Single Aspect)</name>
 			<karma>-11</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4351,7 +4356,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive I, Public Broad Aspect)</name>
 			<karma>-6</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4362,7 +4367,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive II, Public Broad Aspect)</name>
 			<karma>-8</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4373,7 +4378,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive III, Public Broad Aspect)</name>
 			<karma>-10</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4384,7 +4389,7 @@
 		<quality>
 			<name>Poor Self Control (Compulsive IV, Public Broad Aspect)</name>
 			<karma>-12</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4403,7 +4408,7 @@
 		<quality>
 			<name>Poor Self Control (Vindictive)</name>
 			<karma>-5</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4420,7 +4425,7 @@
 		<quality>
 			<name>Records on File (Ares)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4429,7 +4434,7 @@
 		<quality>
 			<name>Records on File (EVO)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4438,7 +4443,7 @@
 		<quality>
 			<name>Records on File (Renraku)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4447,7 +4452,7 @@
 		<quality>
 			<name>Records on File (MCT)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4456,7 +4461,7 @@
 		<quality>
 			<name>Records on File (Wuxing)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4465,7 +4470,7 @@
 		<quality>
 			<name>Records on File (Aztechnology)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4474,7 +4479,7 @@
 		<quality>
 			<name>Records on File (Horizon)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4483,7 +4488,7 @@
 		<quality>
 			<name>Records on File (Neonet)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4492,7 +4497,7 @@
 		<quality>
 			<name>Records on File (Saeder-Krupp)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4501,7 +4506,7 @@
 		<quality>
 			<name>Records on File (Shiawase)</name>
 			<karma>-1</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus />
 			<source>RF</source>
@@ -4589,8 +4594,8 @@
 		</quality>
 		<quality>
 			<name>Vendetta</name>
-      <karma>-7</karma>
-      <nomission/>
+			<karma>-7</karma>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4601,7 +4606,7 @@
 		<quality>
 			<name>Wanted</name>
 			<karma>-10</karma>
-      <nomission/>
+			<nomission/>
 			<category>Negative</category>
 			<bonus>
 				<selecttext />
@@ -4610,7 +4615,7 @@
 			<page>159</page>
 		</quality>
 		<!-- End Region -->
-<!--Region Run Faster Natural Qualities -->
+		<!--Region Run Faster Natural Qualities -->
 		<quality>
 			<id>f9cdcb14-7181-4105-b59a-3628663f3be7</id>
 			<name>Natural Weapon: Kick (Centaur)</name>
@@ -4665,7 +4670,7 @@
 					<metatype>Pixie</metatype>
 				</allof>
 			</required>
-			<bonus/> 
+			<bonus/>
 			<source>SR5</source>
 			<page>309</page>
 		</quality>
@@ -4685,7 +4690,7 @@
 			<page>106</page>
 		</quality>
 		<!-- End Region -->
-<!-- Region Run Faster Metagenetic Qualities -->
+		<!-- Region Run Faster Metagenetic Qualities -->
 		<!-- Region Positive Qualities -->
 		<quality>
 			<name>360-degree Eyesight</name>
@@ -5652,7 +5657,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Low-Light Vision</name>
+			<name>Low-Light Vision (Changeling)</name>
 			<karma>4</karma>
 			<category>Positive</category>
 			<bonus />
@@ -5684,7 +5689,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Magic Sense</name>
+			<name>Magic Sense (Changeling)</name>
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus />
@@ -6557,7 +6562,7 @@
 		</quality>
 		<quality>
 			<name>Cyclopean Eye</name>
-			<karma>-10</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -6598,17 +6603,8 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Extravagant Eyes</name>
-			<karma>-2</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>RF</source>
-			<page>120</page>
-			<metagenetic>yes</metagenetic>
-		</quality>
-		<quality>
 			<name>Feathers</name>
-			<karma>-5</karma>
+			<karma>-3</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -6797,7 +6793,7 @@
 		</quality>
 		<quality>
 			<name>Vestigial Tail</name>
-			<karma>-5</karma>
+			<karma>-6</karma>
 			<category>Negative</category>
 			<bonus />
 			<forbidden>
@@ -6813,7 +6809,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<!-- End Region -->
-<!-- Region Run Faster Infected Qualities -->
+		<!-- Region Run Faster Infected Qualities -->
 		<quality>
 			<name>Infected: Banshee</name>
 			<contributetolimit>no</contributetolimit>
@@ -6832,6 +6828,29 @@
 					<optionalpower select="Pathogens">Immunity</optionalpower>
 					<optionalpower select="Toxins">Immunity</optionalpower>
 				</optionalpowers>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
 			</bonus>
 			<required>
 				<allof>
@@ -6849,12 +6868,6 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-			</addqualities>
 			<powers>
 				<power>Dual Natured</power>
 				<power>Essence Drain</power>
@@ -6868,314 +6881,2173 @@
 			<source>RF</source>
 			<page>80</page>
 		</quality>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Run Faster Infected Qualities -->
 		<quality>
-			<name>Infected: Improved Physical Attribute (BRS)</name>
-			<id>e9dc29c0-8ed1-4096-a923-53f3b31345ca</id>
-			<hide>yes</hide>
-			<karma>0</karma>
+			<name>Infected: Bandersnatch</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>22</karma>
 			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
-				<selectattribute>
-					<attribute>BOD</attribute>
-					<attribute>REA</attribute>
-					<attribute>STR</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<reach>1</reach>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
 			</bonus>
-			<limit>no</limit>
+			<required>
+				<allof>
+					<metatype>Sasquatch</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Adaptive Coloration</power>
+				<power select="Sunlight, Mild">Allergy</power>
+				<power select="Sasquatch Flesh">Dietary Requirement</power>
+			</powers>
 			<source>RF</source>
-			<page>116</page>
+			<page>136</page>
 		</quality>
 		<quality>
-			<name>Infected: Improved Mental Attribute (WIC)</name>
-			<id>e9dc29c0-8ed1-4096-a923-53f3b31345ca</id>
-			<karma>0</karma>
+			<name>Infected: Dzoo-Noo-Qua</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>43</karma>
 			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
-				<selectattribute>
-					<attribute>WIL</attribute>
-					<attribute>INT</attribute>
-					<attribute>CHA</attribute>
-					<val>1</val>
-					<affectbase />
-				</selectattribute>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower>Armor</optionalpower>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<armor>1</armor>
+				<reach>1</reach>
 			</bonus>
-			<limit>no</limit>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Infection</power>
+				<power>Essence Loss</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
 			<source>RF</source>
-			<page>116</page>
+			<page>137</page>
+		</quality>
+		<quality>
+			<name>Infected: Fomoraig</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>22</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<optionalpowers>
+					<optionalpower>Armor</optionalpower>
+				</optionalpowers>
+				<armor>1</armor>
+				<reach>1</reach>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Corrosive Secretions</power>
+				<power>Magical Guard</power>
+				<power>Dual Natured</power>
+				<power select="Air Pollution, Moderate">Allergy</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<name>Infected: Ghoul</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 1</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<specificattribute>
+					<name>CHA</name>
+					<max>-1</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>-1</max>
+				</specificattribute>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power select="Hearing">Enhanced Senses</power>
+				<power select="Smell">Enhanced Senses</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<name>Infected: Gnawer</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Gnawer)</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Dwarf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power select="Toxins">Immunity</power>
+				<power>Noxious Breath</power>
+				<power>Paralyzing Touch</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Bone">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<name>Infected: Goblin</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<initiative>1</initiative>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Taste">Enhanced Senses</optionalpower>
+					<optionalpower select="Fire">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Dwarf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power select="Toxins">Immunity</power>
+				<power>Noxious Breath</power>
+				<power>Paralyzing Touch</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Bone">Dietary Requirement</power>
+				<power select="Iron">Vulnerability</power>
+			</powers>
+			<source>RF</source>
+			<page>138</page>
+		</quality>
+		<quality>
+			<name>Infected: Grendel</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<category>Positive</category>
+			<!-- <addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 1</addweapon> -->
+			<implemented>no</implemented>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<initiative>1</initiative>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Taste">Enhanced Senses</optionalpower>
+					<optionalpower select="Fire">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Animal Control</power>
+				<power>Concealment</power>
+				<power>Dual Natured</power>
+				<power select="Toxins">Immunity</power>
+				<power>Noxious Breath</power>
+				<power>Paralyzing Touch</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+				<power select="Iron">Vulnerability</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Harvester</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>29</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected)</addweapon>
+			<addweapon>Claws (Infected)</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>2</armor>
+				<initiative>1</initiative>
+				<specificattribute>
+					<name>CHA</name>
+					<max>-1</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>-1</max>
+				</specificattribute>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Movement</power>
+				<power select="Thermographic Vision">Enhanced Senses</power>
+				<power>Dual Natured</power>
+				<power select="Silver, Moderate">Allergy</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Loup-Garou</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>30</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 2</addweapon>
+			<addweapon>Claws (Infected) 3</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>2</armor>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<specificattribute>
+					<name>CHA</name>
+					<max>-1</max>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<max>-1</max>
+				</specificattribute>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Movement</power>
+				<power select="Hearing">Enhanced Senses</power>
+				<power select="Low-Light Vision">Enhanced Senses</power>
+				<power select="Smell">Enhanced Senses</power>
+				<power select="Thermographic Vision">Enhanced Senses</power>
+				<power>Dual Natured</power>
+				<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Mutaqua (Non-Awakened)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>54</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<reach>1</reach>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<quality>Magician</quality>
+					<quality>Adept</quality>
+					<quality>Mystic Adept</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Fire">Vulnerability</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Mutaqua (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>44</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<reach>1</reach>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Mystic Adept</addquality>
+			</addqualities>
+			<powers>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Fire">Vulnerability</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Severe</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Mutaqua (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>44</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<armor>1</armor>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<reach>1</reach>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower>Fear</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Troll</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Fire">Vulnerability</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Severe</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Nosferatu (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>38</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Mystic Adept</addquality>
+			</addqualities>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Nosferatu (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>38</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Nosferatu (Non-Awakened)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>48</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<bonus>
+								<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<attribute>AGI</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Magician</addquality>
+			</addqualities>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Extreme">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</powers>
+			<source>RF</source>
+			<page>139</page>
+		</quality>
+		<quality>
+			<name>Infected: Vampire (Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>27</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Human</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</powers>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<name>Infected: Vampire (Non-Human)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Thermographic Vision">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Human</metatype>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
+				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
+				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
+				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
+			</addqualities>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</powers>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<name>Infected: Wendigo (Non-Awakened)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>47</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+					<quality>Adept</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<addqualities>
+				<addquality>Magician</addquality>
+			</addqualities>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Ferrous Metals, Moderate">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<name>Infected: Wendigo (Non-Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+				</allof>
+				<oneof>
+					<quality>Magician</quality>
+					<quality>Mystic Adept</quality>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Ferrous Metals, Moderate">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>140</page>
+		</quality>
+		<quality>
+			<name>Infected: Wendigo (Adept)</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>37</karma>
+			<category>Positive</category>
+			<addweapon>Bite (Infected) 1</addweapon>
+			<addweapon>Claws (Infected) 2</addweapon>
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>WIL</attribute>
+						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
+						<attribute>LOG</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Visual Accuity">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Ork</metatype>
+					<quality>Adept</quality>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<quality>Infected: Fomoraig</quality>
+					<quality>Infected: Banshee</quality>
+					<quality>Infected: Dzoo-Noo-Qua</quality>
+					<quality>Infected: Bandersnatch</quality>
+					<quality>Infected: Gnawer</quality>
+					<quality>Infected: Goblin</quality>
+					<quality>Infected: Grendel</quality>
+					<quality>Infected: Harvester</quality>
+					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Nosferatu</quality>
+					<quality>Infected: Vampire</quality>
+					<quality>Infected: Wendigo</quality>
+					<quality>Infected: Ghoul</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essense Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Ferrous Metals, Moderate">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Flesh">Dietary Requirement</power>
+			</powers>
+			<source>RF</source>
+			<page>140</page>
 		</quality>
 		<!-- End Region -->
-<!-- End Region -->
 		<!-- End Region -->
-<!-- Region Data Trails-->
-<!--Region Data Trails Positive Qualities -->
-    <quality>
-      <id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
-      <name>Data Anomaly</name>
-      <karma>3</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>72190f27-8bcf-48c4-bdbd-72bb91aa0dcf</id>
-      <name>Fade to Black</name>
-      <karma>7</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>64876d0b-bfa6-45df-b8c8-caf6385306c6</id>
-      <name>Go Big or Go Home</name>
-      <karma>6</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>4e605661-0450-4034-9d3b-11d931c4ce3c</id>
-      <name>Golden Screwdriver</name>
-      <karma>8</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
-      <name>I C U</name>
-      <karma>6</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
-      <name>Ninja Vanish</name>
-      <karma>5</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>44</page>
-    </quality>
-    <quality>
-      <id>b016006c-129b-450d-b257-9d49a814cfa7</id>
-      <name>Online Fame</name>
-      <karma>4</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>45</page>
-      <nomission/>
-    </quality>
-    <quality>
-      <id>d62880dd-3e28-4b0c-8c71-dc0e4b72397b</id>
-      <name>Otaku to Technomancer</name>
-      <karma>10</karma>
-      <category>Positive</category>
-      <bonus>
-        <fadingresist>2</fadingresist>
-      </bonus>
-      <source>DT</source>
-      <page>45</page>
-    </quality>
-    <quality>
-      <id>d7b36dd1-6703-46a7-b1d6-c9cd379451f1</id>
-      <name>Pain is Gain</name>
-      <karma>5</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>45</page>
-    </quality>
-    <quality>
-      <id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
-      <name>Prime Datahaven Membership</name>
-      <karma>7</karma>
-      <category>Positive</category>
-      <bonus>
-        <addcontact>
-          <loyality>3</loyality>
-          <connection>5</connection>
-          <free />
-          <group />
-        </addcontact>
-      </bonus>
-      <source>DT</source>
-      <page>45</page>
-    </quality>
-    <quality>
-      <id>ee6703a8-f613-43e0-b2e6-c502af7e82dc</id>
-      <name>Profiler</name>
-      <karma>3</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>46</page>
-    </quality>
-    <quality>
-      <id>7ba73ee6-ab20-4384-9980-b8d4d3e24374</id>
-      <name>Quick Config</name>
-      <karma>5</karma>
-      <category>Positive</category>
-      <bonus />
-      <source>DT</source>
-      <page>46</page>
-    </quality>
+		<!-- Region Data Trails-->
+		<!--Region Data Trails Positive Qualities -->
+		<quality>
+			<id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
+			<name>Data Anomaly</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>72190f27-8bcf-48c4-bdbd-72bb91aa0dcf</id>
+			<name>Fade to Black</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>64876d0b-bfa6-45df-b8c8-caf6385306c6</id>
+			<name>Go Big or Go Home</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>4e605661-0450-4034-9d3b-11d931c4ce3c</id>
+			<name>Golden Screwdriver</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
+			<name>I C U</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
+			<name>Ninja Vanish</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>b016006c-129b-450d-b257-9d49a814cfa7</id>
+			<name>Online Fame</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>45</page>
+			<nomission/>
+		</quality>
+		<quality>
+			<id>d62880dd-3e28-4b0c-8c71-dc0e4b72397b</id>
+			<name>Otaku to Technomancer</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<fadingresist>2</fadingresist>
+			</bonus>
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>d7b36dd1-6703-46a7-b1d6-c9cd379451f1</id>
+			<name>Pain is Gain</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
+			<name>Prime Datahaven Membership</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus>
+				<addcontact>
+					<loyality>3</loyality>
+					<connection>5</connection>
+					<free />
+					<group />
+				</addcontact>
+			</bonus>
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>ee6703a8-f613-43e0-b2e6-c502af7e82dc</id>
+			<name>Profiler</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>7ba73ee6-ab20-4384-9980-b8d4d3e24374</id>
+			<name>Quick Config</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>
 		<!-- End Region -->
-<!--Region Data Trails Negative Qualities -->
-    <quality>
-      <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
-      <name>Code of Honor: Like a Boss</name>
-      <nomission/>
-      <karma>-15</karma>
-      <category>Negative</category>
-      <bonus />
-      <nomission/>
-      <required>
-        <oneof>
-          <quality>Technomancer</quality>
-          <skill>
-            <name>Hacking</name>
-            <val>3</val>
-          </skill>
-        </oneof>
-      </required>
-      <source>DT</source>
-      <page>46</page>
-    </quality>
-    <quality>
-      <id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
-      <name>Curiosity Killed the Cat</name>
-      <nomission/>
-      <karma>-7</karma>
-      <category>Negative</category>
-      <bonus />
-      <required>
-        <oneof>
-          <skill>
-            <name>Hacking</name>
-            <val>3</val>
-          </skill>
-        </oneof>
-      </required>
-      <source>DT</source>
-      <page>46</page>
-    </quality>
-    <quality>
-      <id>f573305b-944f-490e-94e1-18f8bb7bc590</id>
-      <name>Data Liberator</name>
-      <nomission/>
-      <karma>-12</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>46</page>
-    </quality>
-    <quality>
-      <id>b4e94407-9751-4717-a5eb-2b0838d81fa9</id>
-      <name>Decaying Dissonance</name>
-      <karma>-25</karma>
-      <category>Negative</category>
-      <bonus />
-      <required>
-        <oneof>
-          <quality>Technomancer</quality>
-        </oneof>
-      </required>
-      <source>DT</source>
-      <page>47</page>
-    </quality>
-    <quality>
-      <id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
-      <name>Electronic Witness</name>
-      <karma>-5</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>48</page>
-    </quality>
-    <quality>
-      <id>38a26727-a736-47a9-803f-cfa762c9b8a0</id>
-      <name>Faraday Himself</name>
-      <karma>-7</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>48</page>
-    </quality>
-    <quality>
-      <id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
-      <name>Latest and Greatest</name>
-      <karma>-5</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>48</page>
-    </quality>
-    <quality>
-      <id>e138ecce-6fba-4fe6-be09-1d60dc8c3853</id>
-      <name>Leeeeeeeroy Jenkins</name>
-      <nomission/>
-      <karma>-20</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>48</page>
-    </quality>
-    <quality>
-      <id>b77f30b2-e518-44a9-8a0e-7ef3eddb65cd</id>
-      <name>Nerdrage</name>
-      <karma>-8</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>48</page>
-    </quality>
-    <quality>
-      <id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
-      <name>Prank Warrior</name>
-      <nomission/>
-      <karma>-15</karma>
-      <category>Negative</category>
-      <bonus />
-      <source>DT</source>
-      <page>49</page>
-    </quality>
-    <quality>
-      <id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
-      <name>Wanted by God</name>
-      <nomission/>
-      <karma>-12</karma>
-      <category>Negative</category>
-      <bonus />
-      <required>
-        <oneof>
-          <skill>
-            <name>Hacking</name>
-            <val>3</val>
-          </skill>
-        </oneof>
-      </required>
-      <forbidden>
-        <oneof>
-          <quality>Technomancer</quality>
-        </oneof>
-      </forbidden>
-      <source>DT</source>
-      <page>49</page>
-    </quality>
+		<!--Region Data Trails Negative Qualities -->
+		<quality>
+			<id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
+			<name>Code of Honor: Like a Boss</name>
+			<nomission/>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<nomission/>
+			<required>
+				<oneof>
+					<quality>Technomancer</quality>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
+			<name>Curiosity Killed the Cat</name>
+			<nomission/>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>f573305b-944f-490e-94e1-18f8bb7bc590</id>
+			<name>Data Liberator</name>
+			<nomission/>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>b4e94407-9751-4717-a5eb-2b0838d81fa9</id>
+			<name>Decaying Dissonance</name>
+			<karma>-25</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<quality>Technomancer</quality>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>47</page>
+		</quality>
+		<quality>
+			<id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
+			<name>Electronic Witness</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>38a26727-a736-47a9-803f-cfa762c9b8a0</id>
+			<name>Faraday Himself</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
+			<name>Latest and Greatest</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>e138ecce-6fba-4fe6-be09-1d60dc8c3853</id>
+			<name>Leeeeeeeroy Jenkins</name>
+			<nomission/>
+			<karma>-20</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>b77f30b2-e518-44a9-8a0e-7ef3eddb65cd</id>
+			<name>Nerdrage</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
+			<name>Prank Warrior</name>
+			<nomission/>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>49</page>
+		</quality>
+		<quality>
+			<id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
+			<name>Wanted by God</name>
+			<nomission/>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<source>DT</source>
+			<page>49</page>
+		</quality>
 		<!-- End Region -->
-<!-- End Region-->
-<!-- Region Chrome Flesh -->
-<!--Region Chrome Flesh Positive Qualities -->
-    <quality>
+		<!-- End Region-->
+		<!-- Region Chrome Flesh -->
+		<!--Region Chrome Flesh Positive Qualities -->
+		<quality>
 			<id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
 			<name>Biocompatability (Cyberware)</name>
 			<karma>5</karma>
@@ -7221,7 +9093,9 @@
 			<name>Cyber-Singularity Seeker</name>
 			<karma>12</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <cyberseeker>WIL</cyberseeker>
+      </bonus>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -7239,7 +9113,9 @@
 			<name>Prototype Transhuman</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<prototypetranshuman>1</prototypetranshuman>
+			</bonus>>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -7248,7 +9124,11 @@
 			<name>Redliner</name>
 			<karma>10</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <cyberseeker>AGI</cyberseeker>
+        <cyberseeker>STR</cyberseeker>
+        <cyberseeker>BOX</cyberseeker>  <!--physical boxes, hardcoded to times 3 elsewhere -->
+      </bonus>
 			<source>CF</source>
 			<page>55</page>
 		</quality>
@@ -7280,7 +9160,7 @@
 			<page>57</page>
 		</quality>
 		<!-- End Region -->
-<!--Region Chrome Flesh Negative Qualities -->
+		<!--Region Chrome Flesh Negative Qualities -->
 		<quality>
 			<id>b8f8799f-b89b-462e-9e8c-e47cdd965587</id>
 			<name>AIPS</name>
@@ -7489,7 +9369,69 @@
 			<source>CF</source>
 			<page>60</page>
 		</quality>
-	<!-- End Region -->
-<!-- End Region -->
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Hard Targets -->
+		<!-- Region Hard Targets Positive Qualities-->
+		<quality>
+			<name>Barrens Rat</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>HT</source>
+			<page>191</page>
+			<id>efd34715-a95c-41d5-ae81-f3b394246448</id>
+		</quality>
+		<quality>
+			<name>Elemental Focus</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HT</source>
+			<page>191</page>
+			<id>8b686f85-1ef6-4369-a8ad-31eeb64985e9</id>
+		</quality>
+		<quality>
+			<name>Poisoner</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>HT</source>
+			<page>191</page>
+			<id>9410a544-e13e-4de8-b5bf-7bfe316b70ac</id>
+		</quality>
+		<quality>
+			<name>Practice, Practice, Practice</name>
+			<karma>2</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>HT</source>
+			<page>191</page>
+			<id>81fc0829-3456-4701-8ecc-f101d145b538</id>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Hard Targets Negative Qualities-->
+		<quality>
+			<name>Code of Honor: Avenging Angel</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>HT</source>
+			<page>191</page>
+			<id>86b95cd9-6c29-481e-9f75-cbb4aaf98f03</id>
+		</quality>
+		<quality>
+			<name>Impassive</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>HT</source>
+			<page>191</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<!-- End Region -->
+		<!-- End Region -->
 	</qualities>
 </chummer>

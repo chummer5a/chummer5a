@@ -38,7 +38,15 @@ namespace Chummer
 				//Sort the list (Crude way, but have to do)
 				for (int i = 0; i < modules.Count; i++)
 				{
-					String stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
+					String stageName = "";
+                    if (i <= 4)
+					{
+						stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
+					}
+					else
+					{
+						stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + 5 + "\"]").InnerText;
+					}
 					int j;
 					for (j = i; j < modules.Count; j++)
 					{
@@ -154,11 +162,25 @@ namespace Chummer
 			//$DOLLAR is defined elsewhere to prevent recursive calling
 			if (macroName == "street")
 			{
-				return _objCharacter.Alias;
+				if (_objCharacter.Alias != "")
+				{
+					return _objCharacter.Alias;
+				}
+				else
+				{
+					return "Alias ";
+				}
 			}
 			else if(macroName == "real")
 			{
-				return _objCharacter.Name;
+				if (_objCharacter.Name != "")
+				{
+					return _objCharacter.Name;
+				}
+				else
+				{
+					return "Unnamed John Doe ";
+				}
 			}
 			else if (macroName == "year")
 			{

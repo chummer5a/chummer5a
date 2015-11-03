@@ -14,6 +14,7 @@ namespace Chummer
 
 		private string _strAllowedMounts = "";
 		private int _intWeaponCost = 0;
+		private int _intRating = 0;
 		private bool _blnAddAgain = false;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -75,61 +76,7 @@ namespace Chummer
 
 		private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// Retireve the information for the selected Accessory.
-			XmlNode objXmlAccessory = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + lstAccessory.SelectedValue + "\"]");
-
-			if (objXmlAccessory.InnerXml.Contains("<rc>"))
-				lblRC.Text = objXmlAccessory["rc"].InnerText;
-			else
-				lblRC.Text = "";
-
-			string[] strMounts = objXmlAccessory["mount"].InnerText.Split('/');
-			string strMount = "";
-			foreach (string strCurrentMount in strMounts)
-			{
-				if (strCurrentMount != "")
-					strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
-			}
-			// Remove the trailing /
-			if (strMount != "" && strMount.Contains('/'))
-				strMount = strMount.Substring(0, strMount.Length - 1);
-
-			lblMount.Tag = objXmlAccessory["mount"].InnerText;
-			lblMount.Text = strMount;
-			lblAvail.Text = objXmlAccessory["avail"].InnerText.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-
-			string strCost = objXmlAccessory["cost"].InnerText;
-			strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString());
-			if (chkFreeItem.Checked)
-				strCost = "0";
-
-            if (strCost.Contains("Variable"))
-            {
-                lblCost.Text = strCost;
-                lblTest.Text = "";
-            }
-            else
-            {
-                XPathNavigator nav = _objXmlDocument.CreateNavigator();
-                XPathExpression xprCost = nav.Compile(strCost);
-                int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
-
-                // Apply any markup.
-                double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-                dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-                intCost = Convert.ToInt32(dblCost);
-
-                lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
-                lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
-            }
-
-			string strBook = _objCharacter.Options.LanguageBookShort(objXmlAccessory["source"].InnerText);
-			string strPage = objXmlAccessory["page"].InnerText;
-			if (objXmlAccessory["altpage"] != null)
-				strPage = objXmlAccessory["altpage"].InnerText;
-			lblSource.Text = strBook + " " + strPage;
-
-			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlAccessory["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+			UpdateGearInfo();
 		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
@@ -157,12 +104,114 @@ namespace Chummer
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
 		{
-			lstAccessory_SelectedIndexChanged(sender, e);
+			UpdateGearInfo();
 		}
 
 		private void nudMarkup_ValueChanged(object sender, EventArgs e)
 		{
-			lstAccessory_SelectedIndexChanged(sender, e);
+			UpdateGearInfo();
+		}
+
+		private void nudRating_ValueChanged(object sender, EventArgs e)
+		{
+			UpdateGearInfo();
+		}
+		private void UpdateGearInfo()
+		{
+			// Retrieve the information for the selected Accessory.
+			XmlNode objXmlAccessory = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + lstAccessory.SelectedValue + "\"]");
+
+			if (objXmlAccessory.InnerXml.Contains("<rc>"))
+			{
+				lblRC.Visible = true;
+				lblRCLabel.Visible = true;
+				lblRC.Text = objXmlAccessory["rc"].InnerText;
+			}
+			else
+			{
+				lblRC.Visible = false;
+				lblRCLabel.Visible = false;
+			}
+			if (Convert.ToInt32(objXmlAccessory["rating"].InnerText) > 0)
+			{
+				nudRating.Enabled = true;
+				nudRating.Visible = true;
+				lblRatingLabel.Visible = true;
+				nudRating.Maximum = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
+            }
+			else
+			{
+				nudRating.Value = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
+				nudRating.Visible = false;
+				lblRatingLabel.Visible = false;
+			}
+
+			string[] strMounts = objXmlAccessory["mount"].InnerText.Split('/');
+			string strMount = "";
+			foreach (string strCurrentMount in strMounts)
+			{
+				if (strCurrentMount != "")
+					strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
+			}
+			// Remove the trailing /
+			if (strMount != "" && strMount.Contains('/'))
+				strMount = strMount.Substring(0, strMount.Length - 1);
+
+			lblMount.Tag = objXmlAccessory["mount"].InnerText;
+			lblMount.Text = strMount;
+			// Avail.
+			// If avail contains "F" or "R", remove it from the string so we can use the expression.
+			string strAvail = "";
+			string strAvailExpr = objXmlAccessory["avail"].InnerText;
+			XPathExpression xprAvail;
+			XPathNavigator nav = _objXmlDocument.CreateNavigator();
+			if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+			{
+				strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+				// Remove the trailing character if it is "F" or "R".
+				strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+			}
+			try
+			{
+				xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
+				lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
+			}
+			catch
+			{
+				lblAvail.Text = objXmlAccessory["avail"].InnerText;
+			}
+			lblAvail.Text = lblAvail.Text.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted")).Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
+			string strCost = objXmlAccessory["cost"].InnerText;
+			strCost = strCost.Replace("Weapon Cost", _intWeaponCost.ToString()).Replace("Rating", nudRating.Value.ToString());
+			if (chkFreeItem.Checked)
+				strCost = "0";
+
+			if (strCost.Contains("Variable"))
+			{
+				lblCost.Text = strCost;
+				lblTest.Text = "";
+			}
+			else
+			{
+				XPathExpression xprCost = nav.Compile(strCost);
+				int intCost = Convert.ToInt32(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+
+				// Apply any markup.
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+				intCost = Convert.ToInt32(dblCost);
+
+				lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
+				lblTest.Text = _objCharacter.AvailTest(intCost, lblAvail.Text);
+			}
+
+			string strBook = _objCharacter.Options.LanguageBookShort(objXmlAccessory["source"].InnerText);
+			string strPage = objXmlAccessory["page"].InnerText;
+			if (objXmlAccessory["altpage"] != null)
+				strPage = objXmlAccessory["altpage"].InnerText;
+			lblSource.Text = strBook + " " + strPage;
+
+			tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlAccessory["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
 		}
 		#endregion
 
@@ -197,6 +246,17 @@ namespace Chummer
 			get
 			{
 				return lblMount.Tag.ToString();
+			}
+		}
+
+		/// <summary>
+		/// Rating of the Accessory.
+		/// </summary>
+		public string SelectedRating
+		{
+			get
+			{
+				return nudRating.Value.ToString();
 			}
 		}
 
@@ -263,6 +323,7 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			_strSelectedAccessory = lstAccessory.SelectedValue.ToString();
+			_intRating = Convert.ToInt32(nudRating.Value.ToString());
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			this.DialogResult = DialogResult.OK;
 		}

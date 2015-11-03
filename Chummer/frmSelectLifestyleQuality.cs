@@ -100,11 +100,7 @@ namespace Chummer
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualities)
-            {
-                intBP *= 2;
-            }
-            lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+            lblBP.Text = intBP.ToString();
             if (chkFree.Checked)
                 lblBP.Text = "0";
 
@@ -276,10 +272,6 @@ namespace Chummer
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
                 string strSearch = "/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-                if (chkMetagenetic.Checked)
-                {
-                    strSearch += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
-                }
                 strSearch += "]";
 
                 XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
@@ -317,10 +309,6 @@ namespace Chummer
                     objXmlMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
 
                 string strXPath = "category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")";
-                if (chkMetagenetic.Checked)
-                {
-                    strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
-                }
 
                 foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
                 {
@@ -450,7 +438,22 @@ namespace Chummer
                                 }
                             }
                         }
-                        else if (objXmlForbidden.Name == "metatype")
+
+						else if (objXmlForbidden.Name == "characterquality")
+						{
+							// Run through all of the Qualities the character has and see if the current forbidden item exists.
+							// If so, turn on the RequirementForbidden flag so it cannot be selected.
+							foreach (Quality objQuality in _objCharacter.Qualities)
+							{
+								if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
+								{
+									blnRequirementForbidden = true;
+									strForbidden += "\n\t" + objQuality.DisplayNameShort;
+								}
+							}
+						}
+
+						else if (objXmlForbidden.Name == "metatype")
                         {
                             // Check the Metatype restriction.
                             if (objXmlForbidden.InnerText == _objCharacter.Metatype)
@@ -531,7 +534,8 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                foreach (XmlNode objXmlOneOf in objXmlRequiredList)
+				XmlDocument _objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+				foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
                     string strThisRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_OneOf");
@@ -556,8 +560,28 @@ namespace Chummer
                                 //else
                                 strThisRequirement += "\n\t" + objXmlRequired.InnerText;
                             }
-                        }
-                        else if (objXmlRequired.Name == "metatype")
+						}
+						else if (objXmlRequired.Name == "characterquality")
+						{
+							
+							// Run through all of the Qualities the character has and see if the current required item exists.
+							// If so, turn on the RequirementMet flag so it can be selected.
+							foreach (Quality objQuality in _objCharacter.Qualities)
+							{
+								if (objQuality.Name == objXmlRequired.InnerText)
+									blnOneOfMet = true;
+							}
+
+							if (!blnOneOfMet)
+							{
+								XmlNode objNode = _objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
+								if (objNode["translate"] != null)
+								strThisRequirement += "\n\t" + objNode["translate"].InnerText;
+								else
+								strThisRequirement += "\n\t" + objXmlRequired.InnerText;
+							}
+						}
+						else if (objXmlRequired.Name == "metatype")
                         {
                             // Check the Metatype requirement.
                             if (objXmlRequired.InnerText == _objCharacter.Metatype)
@@ -845,9 +869,10 @@ namespace Chummer
                         bool blnFound = false;
                         if (objXmlRequired.Name == "quality")
                         {
-                            // Run through all of the Qualities the character has and see if the current required item exists.
-                            // If so, turn on the RequirementMet flag so it can be selected.
-                            foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+							
+							// Run through all of the Qualities the character has and see if the current required item exists.
+							// If so, turn on the RequirementMet flag so it can be selected.
+							foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                             {
                                 if (objQuality.Name == objXmlRequired.InnerText)
                                     blnFound = true;

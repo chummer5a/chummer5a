@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-  <version>-395</version>
+  <version>-390</version>
   <categories>
     <category>Armor</category>
     <category>Clothing</category>
+		<category>Cloaks</category>
     <category>High-Fashion Armor Clothing</category>
     <category>Specialty Armor</category>
   </categories>
   <armors>
+		<!-- Region Shadowrun 5 -->
     <armor>
       <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
       <name>Clothing</name>
@@ -134,6 +136,45 @@
       <page>437</page>
     </armor>
     <armor>
+			<id>fd6e194b-89ea-4030-9203-87341442eadb</id>
+			<name>Helmet</name>
+			<category>Armor</category>
+			<armor>+2</armor>
+			<armorcapacity>6</armorcapacity>
+			<avail>2</avail>
+			<cost>100</cost>
+			<source>SR5</source>
+			<page>438</page>
+		</armor>
+		<armor>
+			<id>943d19f7-ee6b-4ce9-8a43-93d3fe5100f2</id>
+			<name>Ballistic Shield</name>
+			<category>Armor</category>
+			<armor>+6</armor>
+			<addweapon>Ballistic Shield</addweapon>
+			<armorcapacity>6</armorcapacity>
+			<physicallimt>-1</physicallimt>
+			<avail>12R</avail>
+			<cost>1200</cost>
+			<source>SR5</source>
+			<page>438</page>
+		</armor>
+		<armor>
+			<id>b0d6d8a6-b74a-4ea3-9c04-cc0d057e51b6</id>
+			<name>Riot Shield</name>
+			<category>Armor</category>
+			<armor>+6</armor>
+			<addweapon>Riot Shield</addweapon>
+			<armorcapacity>6</armorcapacity>
+			<physicallimt>-1</physicallimt>
+			<avail>10R</avail>
+			<cost>1500</cost>
+			<source>SR5</source>
+			<page>438</page>
+		</armor>
+		<!-- End Region -->
+		<!-- Region Run & Gun -->
+		<armor>
       <id>ef42a5ce-3423-4018-b84f-5cc84238ccaf</id>
       <name>Armanté Suit</name>
       <category>High-Fashion Armor Clothing</category>
@@ -854,17 +895,6 @@
       </mods>
       <source>RG</source>
       <page>65</page>
-    </armor>
-    <armor>
-      <id>93d7a7d9-02d7-418d-a30e-e31cbb21c103</id>
-      <name>Pneumatic Anti-Shock Garments</name>
-      <category>Specialty Armor</category>
-      <armor>3</armor>
-      <armorcapacity>4</armorcapacity>
-      <avail>6</avail>
-      <cost>500</cost>
-      <source>BB</source>
-      <page>23</page>
     </armor>
     <armor>
       <id>e11b7746-40e2-493a-b35d-87b0dec5f3ca</id>
@@ -1767,42 +1797,232 @@
       <source>RG</source>
       <page>83</page>
     </armor>
+		<!-- End Region -->
+		<!-- Region Bullets & Bandages -->
     <armor>
-      <id>fd6e194b-89ea-4030-9203-87341442eadb</id>
-      <name>Helmet</name>
-      <category>Armor</category>
-      <armor>+2</armor>
-      <armorcapacity>6</armorcapacity>
-      <avail>2</avail>
+			<id>93d7a7d9-02d7-418d-a30e-e31cbb21c103</id>
+			<name>Pneumatic Anti-Shock Garments</name>
+			<category>Specialty Armor</category>
+			<armor>3</armor>
+			<armorcapacity>4</armorcapacity>
+			<avail>6</avail>
+			<cost>500</cost>
+			<source>BB</source>
+			<page>23</page>
+		</armor>
+		<!-- End Region -->
+		<!-- Region Hard Targets -->
+		<armor>
+			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
+			<name>Cloak (1)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>1</armor>
+			<avail>0</avail>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
       <cost>100</cost>
-      <source>SR5</source>
-      <page>438</page>
+			<source>HT</source>
+			<page>184</page>
     </armor>
     <armor>
-      <id>943d19f7-ee6b-4ce9-8a43-93d3fe5100f2</id>
-      <name>Ballistic Shield</name>
-      <category>Armor</category>
-      <armor>+6</armor>
-      <addweapon>Ballistic Shield</addweapon>
-      <armorcapacity>6</armorcapacity>
-      <physicallimt>-1</physicallimt>
-      <avail>12R</avail>
-      <cost>1200</cost>
-      <source>SR5</source>
-      <page>438</page>
+			<id>559b8760-ccb0-4b36-8884-cda6709c0023</id>
+			<name>Cloak (2)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
+			<armor>2</armor>
+			<avail>0</avail>
+			<cost>200</cost>
+			<source>HT</source>
+			<page>184</page>
     </armor>
     <armor>
-      <id>b0d6d8a6-b74a-4ea3-9c04-cc0d057e51b6</id>
-      <name>Riot Shield</name>
-      <category>Armor</category>
-      <armor>+6</armor>
-      <addweapon>Riot Shield</addweapon>
-      <armorcapacity>6</armorcapacity>
-      <physicallimt>-1</physicallimt>
-      <avail>10R</avail>
-      <cost>1500</cost>
-      <source>SR5</source>
-      <page>438</page>
+			<id>3cd66ce5-c23a-486a-b1fd-dbd74e8398ad</id>
+			<name>Cloak (3)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
+			<armor>3</armor>
+			<avail>0</avail>
+			<cost>300</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>bc3bb822-6f96-46ff-9c71-c6acd67f2910</id>
+			<name>Cloak (4)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
+			<armor>4</armor>
+			<avail>0</avail>
+			<cost>400</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>08b97650-7256-4d52-ba3f-f56185cb93ee</id>
+			<name>Cloak (5)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
+			<armor>5</armor>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>8ff09885-44e0-4492-9a17-44259ec2bf57</id>
+			<name>Cloak (6)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
+			<armor>6</armor>
+			<avail>0</avail>
+			<cost>600</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>fc4074b5-b48a-43d4-8d9c-25a11da2a6a8</id>
+			<name>Designer Cloak (1)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>1</armor>
+			<avail>0</avail>
+			<cost>400</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>08324d51-c222-44bc-8ac7-b0dff9834689</id>
+			<name>Designer Cloak (2)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>2</armor>
+			<avail>0</avail>
+			<cost>500</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>19485abe-3680-4ddd-9807-8dfe530304a6</id>
+			<name>Designer Cloak (3)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>3</armor>
+			<avail>0</avail>
+			<cost>600</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>01280630-3f87-4216-93b0-3926cadac4c5</id>
+			<name>Designer Cloak (4)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>4</armor>
+			<avail>0</avail>
+			<cost>700</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>e9189459-ff56-469c-8f3e-9c9f333b95bb</id>
+			<name>Designer Cloak (5)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>5</armor>
+			<avail>0</avail>
+			<cost>800</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>676b9a17-3e90-43f7-9da5-d01bebe0c760</id>
+			<name>Designer Cloak (6)</name>
+			<category>Cloaks</category>
+			<armorcapacity>0</armorcapacity>
+			<armor>6</armor>
+			<avail>0</avail>
+			<cost>900</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>678353a1-b697-442a-aa3a-6e34b9178c4b</id>
+			<name>Ruthenium Polymer Cloak (1)</name>
+			<category>Cloaks</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>14F</avail>
+			<cost>4000</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>d465cc08-0aa3-4943-91a4-224ce17df6e1</id>
+			<name>Ruthenium Polymer Cloak (2)</name>
+			<category>Cloaks</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>14F</avail>
+			<cost>8000</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>dd69fdeb-5305-49bb-ba86-54b70422e239</id>
+			<name>Ruthenium Polymer Cloak (3)</name>
+			<category>Cloaks</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>14F</avail>
+			<cost>12000</cost>
+			<source>HT</source>
+			<page>184</page>
+		</armor>
+		<armor>
+			<id>4aea6d5a-5cdf-45d3-ae62-c5f1348c553d</id>
+			<name>Ruthenium Polymer Cloak (4)</name>
+			<category>Cloaks</category>
+			<armor>0</armor>
+			<armorcapacity>0</armorcapacity>
+			<avail>14F</avail>
+			<cost>16000</cost>
+			<source>HT</source>
+			<page>184</page>
     </armor>
 	<armor>
 			<id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
@@ -2290,6 +2510,7 @@
 		</armor>
   </armors>
   <mods>
+		<!-- Region Shadowrun 5 -->
     <mod>
       <id>9ee8e6ad-2472-485d-ae42-d1978749b456</id>
       <name>Electrochromic Clothing</name>
@@ -2325,112 +2546,6 @@
       <cost>200</cost>
       <source>SR5</source>
       <page>437</page>
-    </mod>
-    <mod>
-      <id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
-      <name>Custom Fit</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>0d74f2f6-74bf-4c7e-afdf-d44f24c3ac12</id>
-      <name>Custom Fit (Stack)</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <bonus>
-        <selectarmor />
-      </bonus>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
-      <name>Gear Access</name>
-      <category>General</category>
-      <hide>yes</hide>
-      <armor>0</armor>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>13835ff2-7b9e-47c3-9d8b-7b9a2dbe499d</id>
-      <name>Newest Model</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>a164ac4e-4225-4d82-9785-02ffd39f6566</id>
-      <name>Illuminating</name>
-      <category>General</category>
-      <armor>0</armor>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>8be2bd6a-5fe5-4931-8d6e-9cb95a0b959f</id>
-      <name>Restrictive</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>ebabbd5f-6fd9-4b9a-9350-a251e8652b4b</id>
-      <name>Padded</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
-    </mod>
-    <mod>
-      <id>6226742c-d950-46af-af1a-fc483e14be5c</id>
-      <name>Concealability</name>
-      <category>General</category>
-      <armor>0</armor>
-      <hide>yes</hide>
-      <maxrating>0</maxrating>
-      <armorcapacity>[0]</armorcapacity>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>RG</source>
-      <page>59</page>
     </mod>
     <mod>
       <id>480b7c5d-758b-4833-8bfd-9487e2455f7d</id>
@@ -2660,6 +2775,114 @@
       <source>SR5</source>
       <page>437</page>
     </mod>
+		<!-- End Region -->
+		<!-- Region Run & Gun -->
+		<mod>
+			<id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
+			<name>Custom Fit</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>0d74f2f6-74bf-4c7e-afdf-d44f24c3ac12</id>
+			<name>Custom Fit (Stack)</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<bonus>
+				<selectarmor />
+			</bonus>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
+			<name>Gear Access</name>
+			<category>General</category>
+			<hide>yes</hide>
+			<armor>0</armor>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>13835ff2-7b9e-47c3-9d8b-7b9a2dbe499d</id>
+			<name>Newest Model</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>a164ac4e-4225-4d82-9785-02ffd39f6566</id>
+			<name>Illuminating</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>8be2bd6a-5fe5-4931-8d6e-9cb95a0b959f</id>
+			<name>Restrictive</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>ebabbd5f-6fd9-4b9a-9350-a251e8652b4b</id>
+			<name>Padded</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
+		<mod>
+			<id>6226742c-d950-46af-af1a-fc483e14be5c</id>
+			<name>Concealability</name>
+			<category>General</category>
+			<armor>0</armor>
+			<hide>yes</hide>
+			<maxrating>0</maxrating>
+			<armorcapacity>[0]</armorcapacity>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>59</page>
+		</mod>
     <mod>
       <id>53a61bf1-65c3-4c28-b47f-026de40973a4</id>
       <name>Rapid Transit: Elite</name>
@@ -2876,6 +3099,8 @@
       <source>RG</source>
       <page>85</page>
     </mod>
+		<!-- End Region -->
+		<!-- Region Bullets & Bandages -->
     <mod>
       <id>9e96176f-1a4d-45dd-94d4-fba00ccffcf2</id>
       <name>Pneumatic Anti-Shock Garment</name>
@@ -2900,5 +3125,56 @@
       <source>BB</source>
       <page>23</page>
     </mod>
+		<!-- End Region -->
+		<!-- Region Hard Targets -->
+		<mod>
+			<id>4e673143-6a61-4075-95c6-1950b9eda8e0</id>
+			<name>Concealed Pocket</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>4</avail>
+			<cost>40</cost>
+			<source>HT</source>
+			<page>185</page>
+		</mod>
+		<mod>
+			<id>49addc2c-ee9b-4f97-9c4b-4d49259734bc</id>
+			<name>Attachable Gear Access</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[4]</armorcapacity>
+			<avail>4</avail>
+			<cost>150</cost>
+			<source>HT</source>
+			<page>185</page>
+		</mod>
+		<mod>
+			<id>c3ea670b-45e7-4b75-a85d-1801c91d1c8c</id>
+			<name>Faraday Pocket</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>7R</avail>
+			<cost>50</cost>
+			<source>HT</source>
+			<page>185</page>
+		</mod>
+		<mod>
+			<id>ff4c87d4-da62-4b85-b1a3-8de9a0d2838a</id>
+			<name>Biofiber Pocket</name>
+			<category>General</category>
+			<armor>0</armor>
+			<maxrating>1</maxrating>
+			<armorcapacity>[2]</armorcapacity>
+			<avail>10F</avail>
+			<cost>700</cost>
+			<source>HT</source>
+			<page>185</page>
+		</mod>
+		<!-- End Region -->
   </mods>
 </chummer>
