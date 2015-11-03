@@ -379,6 +379,48 @@
 			this.treMetamagic = new System.Windows.Forms.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
+			this.tabCyberwareCM = new System.Windows.Forms.TabControl();
+			this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
+			this.chkCyberwareMatrixCM1 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM2 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM3 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM4 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM5 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM6 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM7 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM8 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM9 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM10 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM11 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM12 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM13 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM14 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM15 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM16 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM17 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM18 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM19 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM20 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM21 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM22 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM23 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM24 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM25 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM26 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM27 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM28 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM29 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM30 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM31 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM32 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM33 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM34 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM35 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM36 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM37 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM38 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM39 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM40 = new System.Windows.Forms.CheckBox();
 			this.lblCyberFirewall = new System.Windows.Forms.Label();
 			this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
 			this.lblCyberDataProcessing = new System.Windows.Forms.Label();
@@ -1079,6 +1121,8 @@
 			this.tabCritter.SuspendLayout();
 			this.tabInitiation.SuspendLayout();
 			this.tabCyberware.SuspendLayout();
+			this.tabCyberwareCM.SuspendLayout();
+			this.tabCyberwareMatrixCM.SuspendLayout();
 			this.cmsCyberware.SuspendLayout();
 			this.cmsDeleteCyberware.SuspendLayout();
 			this.tabStreetGear.SuspendLayout();
@@ -4948,6 +4992,7 @@
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCyberware.Controls.Add(this.tabCyberwareCM);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewall);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewallLabel);
 			this.tabCyberware.Controls.Add(this.lblCyberDataProcessing);
@@ -4993,6 +5038,513 @@
 			this.tabCyberware.TabIndex = 4;
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
+			// 
+			// tabCyberwareCM
+			// 
+			this.tabCyberwareCM.Controls.Add(this.tabCyberwareMatrixCM);
+			this.tabCyberwareCM.ItemSize = new System.Drawing.Size(176, 18);
+			this.tabCyberwareCM.Location = new System.Drawing.Point(312, 327);
+			this.tabCyberwareCM.Name = "tabCyberwareCM";
+			this.tabCyberwareCM.SelectedIndex = 0;
+			this.tabCyberwareCM.Size = new System.Drawing.Size(360, 113);
+			this.tabCyberwareCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabCyberwareCM.TabIndex = 203;
+			// 
+			// tabCyberwareMatrixCM
+			// 
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM1);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM2);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM3);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM4);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM5);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM6);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM7);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM8);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM9);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM10);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM11);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM12);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM13);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM14);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM15);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM16);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM17);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM18);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM19);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM20);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM21);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM22);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM23);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM24);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM25);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM26);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM27);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM28);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM29);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM30);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM31);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM32);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM33);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM34);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM35);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM36);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM37);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM38);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM39);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM40);
+			this.tabCyberwareMatrixCM.Location = new System.Drawing.Point(4, 22);
+			this.tabCyberwareMatrixCM.Name = "tabCyberwareMatrixCM";
+			this.tabCyberwareMatrixCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(352, 87);
+			this.tabCyberwareMatrixCM.TabIndex = 1;
+			this.tabCyberwareMatrixCM.Text = "Matrix Condition Monitor";
+			this.tabCyberwareMatrixCM.UseVisualStyleBackColor = true;
+			// 
+			// chkCyberwareMatrixCM1
+			// 
+			this.chkCyberwareMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkCyberwareMatrixCM1.Name = "chkCyberwareMatrixCM1";
+			this.chkCyberwareMatrixCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM1.TabIndex = 49;
+			this.chkCyberwareMatrixCM1.Tag = "1";
+			this.chkCyberwareMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM1.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM1.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM2
+			// 
+			this.chkCyberwareMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkCyberwareMatrixCM2.Name = "chkCyberwareMatrixCM2";
+			this.chkCyberwareMatrixCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM2.TabIndex = 50;
+			this.chkCyberwareMatrixCM2.Tag = "2";
+			this.chkCyberwareMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM2.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM3
+			// 
+			this.chkCyberwareMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkCyberwareMatrixCM3.Name = "chkCyberwareMatrixCM3";
+			this.chkCyberwareMatrixCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM3.TabIndex = 51;
+			this.chkCyberwareMatrixCM3.Tag = "3";
+			this.chkCyberwareMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM3.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM3.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM4
+			// 
+			this.chkCyberwareMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkCyberwareMatrixCM4.Name = "chkCyberwareMatrixCM4";
+			this.chkCyberwareMatrixCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM4.TabIndex = 52;
+			this.chkCyberwareMatrixCM4.Tag = "4";
+			this.chkCyberwareMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM4.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM4.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM5
+			// 
+			this.chkCyberwareMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkCyberwareMatrixCM5.Name = "chkCyberwareMatrixCM5";
+			this.chkCyberwareMatrixCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM5.TabIndex = 53;
+			this.chkCyberwareMatrixCM5.Tag = "5";
+			this.chkCyberwareMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM5.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM5.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM6
+			// 
+			this.chkCyberwareMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkCyberwareMatrixCM6.Name = "chkCyberwareMatrixCM6";
+			this.chkCyberwareMatrixCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM6.TabIndex = 54;
+			this.chkCyberwareMatrixCM6.Tag = "6";
+			this.chkCyberwareMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM6.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM6.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM7
+			// 
+			this.chkCyberwareMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkCyberwareMatrixCM7.Name = "chkCyberwareMatrixCM7";
+			this.chkCyberwareMatrixCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM7.TabIndex = 55;
+			this.chkCyberwareMatrixCM7.Tag = "7";
+			this.chkCyberwareMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM7.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM7.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM8
+			// 
+			this.chkCyberwareMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkCyberwareMatrixCM8.Name = "chkCyberwareMatrixCM8";
+			this.chkCyberwareMatrixCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM8.TabIndex = 56;
+			this.chkCyberwareMatrixCM8.Tag = "8";
+			this.chkCyberwareMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM8.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM8.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM9
+			// 
+			this.chkCyberwareMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM9.Location = new System.Drawing.Point(197, 6);
+			this.chkCyberwareMatrixCM9.Name = "chkCyberwareMatrixCM9";
+			this.chkCyberwareMatrixCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM9.TabIndex = 57;
+			this.chkCyberwareMatrixCM9.Tag = "9";
+			this.chkCyberwareMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM9.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM9.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM10
+			// 
+			this.chkCyberwareMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM10.Location = new System.Drawing.Point(221, 6);
+			this.chkCyberwareMatrixCM10.Name = "chkCyberwareMatrixCM10";
+			this.chkCyberwareMatrixCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM10.TabIndex = 58;
+			this.chkCyberwareMatrixCM10.Tag = "10";
+			this.chkCyberwareMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM10.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM10.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM11
+			// 
+			this.chkCyberwareMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM11.Location = new System.Drawing.Point(245, 6);
+			this.chkCyberwareMatrixCM11.Name = "chkCyberwareMatrixCM11";
+			this.chkCyberwareMatrixCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM11.TabIndex = 59;
+			this.chkCyberwareMatrixCM11.Tag = "11";
+			this.chkCyberwareMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM11.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM11.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM12
+			// 
+			this.chkCyberwareMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM12.Location = new System.Drawing.Point(269, 6);
+			this.chkCyberwareMatrixCM12.Name = "chkCyberwareMatrixCM12";
+			this.chkCyberwareMatrixCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM12.TabIndex = 60;
+			this.chkCyberwareMatrixCM12.Tag = "12";
+			this.chkCyberwareMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM12.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM12.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM13
+			// 
+			this.chkCyberwareMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM13.Location = new System.Drawing.Point(293, 6);
+			this.chkCyberwareMatrixCM13.Name = "chkCyberwareMatrixCM13";
+			this.chkCyberwareMatrixCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM13.TabIndex = 61;
+			this.chkCyberwareMatrixCM13.Tag = "13";
+			this.chkCyberwareMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM13.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM13.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM14
+			// 
+			this.chkCyberwareMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM14.Location = new System.Drawing.Point(317, 6);
+			this.chkCyberwareMatrixCM14.Name = "chkCyberwareMatrixCM14";
+			this.chkCyberwareMatrixCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM14.TabIndex = 62;
+			this.chkCyberwareMatrixCM14.Tag = "14";
+			this.chkCyberwareMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM14.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM14.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM15
+			// 
+			this.chkCyberwareMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM15.Location = new System.Drawing.Point(5, 31);
+			this.chkCyberwareMatrixCM15.Name = "chkCyberwareMatrixCM15";
+			this.chkCyberwareMatrixCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM15.TabIndex = 63;
+			this.chkCyberwareMatrixCM15.Tag = "15";
+			this.chkCyberwareMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM15.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM15.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM16
+			// 
+			this.chkCyberwareMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM16.Location = new System.Drawing.Point(29, 31);
+			this.chkCyberwareMatrixCM16.Name = "chkCyberwareMatrixCM16";
+			this.chkCyberwareMatrixCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM16.TabIndex = 64;
+			this.chkCyberwareMatrixCM16.Tag = "16";
+			this.chkCyberwareMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM16.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM16.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM17
+			// 
+			this.chkCyberwareMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM17.Location = new System.Drawing.Point(53, 31);
+			this.chkCyberwareMatrixCM17.Name = "chkCyberwareMatrixCM17";
+			this.chkCyberwareMatrixCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM17.TabIndex = 65;
+			this.chkCyberwareMatrixCM17.Tag = "17";
+			this.chkCyberwareMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM17.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM17.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM18
+			// 
+			this.chkCyberwareMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM18.Location = new System.Drawing.Point(77, 31);
+			this.chkCyberwareMatrixCM18.Name = "chkCyberwareMatrixCM18";
+			this.chkCyberwareMatrixCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM18.TabIndex = 66;
+			this.chkCyberwareMatrixCM18.Tag = "18";
+			this.chkCyberwareMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM18.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM18.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM19
+			// 
+			this.chkCyberwareMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM19.Location = new System.Drawing.Point(101, 31);
+			this.chkCyberwareMatrixCM19.Name = "chkCyberwareMatrixCM19";
+			this.chkCyberwareMatrixCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM19.TabIndex = 67;
+			this.chkCyberwareMatrixCM19.Tag = "19";
+			this.chkCyberwareMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM19.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM19.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM20
+			// 
+			this.chkCyberwareMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM20.Location = new System.Drawing.Point(125, 31);
+			this.chkCyberwareMatrixCM20.Name = "chkCyberwareMatrixCM20";
+			this.chkCyberwareMatrixCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM20.TabIndex = 68;
+			this.chkCyberwareMatrixCM20.Tag = "20";
+			this.chkCyberwareMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM20.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM20.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM21
+			// 
+			this.chkCyberwareMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM21.Location = new System.Drawing.Point(149, 31);
+			this.chkCyberwareMatrixCM21.Name = "chkCyberwareMatrixCM21";
+			this.chkCyberwareMatrixCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM21.TabIndex = 69;
+			this.chkCyberwareMatrixCM21.Tag = "21";
+			this.chkCyberwareMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM21.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM21.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM22
+			// 
+			this.chkCyberwareMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM22.Location = new System.Drawing.Point(173, 31);
+			this.chkCyberwareMatrixCM22.Name = "chkCyberwareMatrixCM22";
+			this.chkCyberwareMatrixCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM22.TabIndex = 70;
+			this.chkCyberwareMatrixCM22.Tag = "22";
+			this.chkCyberwareMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM22.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM22.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM23
+			// 
+			this.chkCyberwareMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM23.Location = new System.Drawing.Point(197, 31);
+			this.chkCyberwareMatrixCM23.Name = "chkCyberwareMatrixCM23";
+			this.chkCyberwareMatrixCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM23.TabIndex = 71;
+			this.chkCyberwareMatrixCM23.Tag = "23";
+			this.chkCyberwareMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM23.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM23.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM24
+			// 
+			this.chkCyberwareMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM24.Location = new System.Drawing.Point(221, 31);
+			this.chkCyberwareMatrixCM24.Name = "chkCyberwareMatrixCM24";
+			this.chkCyberwareMatrixCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM24.TabIndex = 72;
+			this.chkCyberwareMatrixCM24.Tag = "24";
+			this.chkCyberwareMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM24.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM24.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM25
+			// 
+			this.chkCyberwareMatrixCM25.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM25.Location = new System.Drawing.Point(245, 31);
+			this.chkCyberwareMatrixCM25.Name = "chkCyberwareMatrixCM25";
+			this.chkCyberwareMatrixCM25.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM25.TabIndex = 73;
+			this.chkCyberwareMatrixCM25.Tag = "25";
+			this.chkCyberwareMatrixCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM25.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM25.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM26
+			// 
+			this.chkCyberwareMatrixCM26.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM26.Location = new System.Drawing.Point(269, 31);
+			this.chkCyberwareMatrixCM26.Name = "chkCyberwareMatrixCM26";
+			this.chkCyberwareMatrixCM26.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM26.TabIndex = 74;
+			this.chkCyberwareMatrixCM26.Tag = "26";
+			this.chkCyberwareMatrixCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM26.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM26.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM27
+			// 
+			this.chkCyberwareMatrixCM27.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM27.Location = new System.Drawing.Point(293, 31);
+			this.chkCyberwareMatrixCM27.Name = "chkCyberwareMatrixCM27";
+			this.chkCyberwareMatrixCM27.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM27.TabIndex = 75;
+			this.chkCyberwareMatrixCM27.Tag = "27";
+			this.chkCyberwareMatrixCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM27.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM27.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM28
+			// 
+			this.chkCyberwareMatrixCM28.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM28.Location = new System.Drawing.Point(317, 31);
+			this.chkCyberwareMatrixCM28.Name = "chkCyberwareMatrixCM28";
+			this.chkCyberwareMatrixCM28.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM28.TabIndex = 76;
+			this.chkCyberwareMatrixCM28.Tag = "28";
+			this.chkCyberwareMatrixCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM28.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM28.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM29
+			// 
+			this.chkCyberwareMatrixCM29.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM29.Location = new System.Drawing.Point(5, 55);
+			this.chkCyberwareMatrixCM29.Name = "chkCyberwareMatrixCM29";
+			this.chkCyberwareMatrixCM29.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM29.TabIndex = 77;
+			this.chkCyberwareMatrixCM29.Tag = "29";
+			this.chkCyberwareMatrixCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM29.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM29.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM30
+			// 0.
+			this.chkCyberwareMatrixCM30.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM30.Location = new System.Drawing.Point(29, 55);
+			this.chkCyberwareMatrixCM30.Name = "chkCyberwareMatrixCM30";
+			this.chkCyberwareMatrixCM30.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM30.TabIndex = 78;
+			this.chkCyberwareMatrixCM30.Tag = "30";
+			this.chkCyberwareMatrixCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM30.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM30.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM31
+			// 
+			this.chkCyberwareMatrixCM31.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM31.Location = new System.Drawing.Point(53, 55);
+			this.chkCyberwareMatrixCM31.Name = "chkCyberwareMatrixCM31";
+			this.chkCyberwareMatrixCM31.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM31.TabIndex = 79;
+			this.chkCyberwareMatrixCM31.Tag = "31";
+			this.chkCyberwareMatrixCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM31.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM31.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM32
+			// 
+			this.chkCyberwareMatrixCM32.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM32.Location = new System.Drawing.Point(77, 55);
+			this.chkCyberwareMatrixCM32.Name = "chkCyberwareMatrixCM32";
+			this.chkCyberwareMatrixCM32.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM32.TabIndex = 80;
+			this.chkCyberwareMatrixCM32.Tag = "32";
+			this.chkCyberwareMatrixCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM32.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM32.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM33
+			// 
+			this.chkCyberwareMatrixCM33.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM33.Location = new System.Drawing.Point(101, 55);
+			this.chkCyberwareMatrixCM33.Name = "chkCyberwareMatrixCM33";
+			this.chkCyberwareMatrixCM33.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM33.TabIndex = 81;
+			this.chkCyberwareMatrixCM33.Tag = "33";
+			this.chkCyberwareMatrixCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM33.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM33.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM34
+			// 
+			this.chkCyberwareMatrixCM34.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM34.Location = new System.Drawing.Point(125, 55);
+			this.chkCyberwareMatrixCM34.Name = "chkCyberwareMatrixCM34";
+			this.chkCyberwareMatrixCM34.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM34.TabIndex = 82;
+			this.chkCyberwareMatrixCM34.Tag = "34";
+			this.chkCyberwareMatrixCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM34.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM34.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM35
+			// 
+			this.chkCyberwareMatrixCM35.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM35.Location = new System.Drawing.Point(149, 55);
+			this.chkCyberwareMatrixCM35.Name = "chkCyberwareMatrixCM35";
+			this.chkCyberwareMatrixCM35.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM35.TabIndex = 83;
+			this.chkCyberwareMatrixCM35.Tag = "35";
+			this.chkCyberwareMatrixCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM35.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM35.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM36
+			// 
+			this.chkCyberwareMatrixCM36.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM36.Location = new System.Drawing.Point(173, 55);
+			this.chkCyberwareMatrixCM36.Name = "chkCyberwareMatrixCM36";
+			this.chkCyberwareMatrixCM36.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM36.TabIndex = 84;
+			this.chkCyberwareMatrixCM36.Tag = "36";
+			this.chkCyberwareMatrixCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM36.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM36.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM37
+			// 
+			this.chkCyberwareMatrixCM37.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM37.Location = new System.Drawing.Point(197, 55);
+			this.chkCyberwareMatrixCM37.Name = "chkCyberwareMatrixCM37";
+			this.chkCyberwareMatrixCM37.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM37.TabIndex = 85;
+			this.chkCyberwareMatrixCM37.Tag = "37";
+			this.chkCyberwareMatrixCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM37.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM37.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM38
+			// 
+			this.chkCyberwareMatrixCM38.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM38.Location = new System.Drawing.Point(221, 55);
+			this.chkCyberwareMatrixCM38.Name = "chkCyberwareMatrixCM38";
+			this.chkCyberwareMatrixCM38.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM38.TabIndex = 86;
+			this.chkCyberwareMatrixCM38.Tag = "38";
+			this.chkCyberwareMatrixCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM38.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM38.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM39
+			// 
+			this.chkCyberwareMatrixCM39.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM39.Location = new System.Drawing.Point(245, 55);
+			this.chkCyberwareMatrixCM39.Name = "chkCyberwareMatrixCM39";
+			this.chkCyberwareMatrixCM39.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM39.TabIndex = 87;
+			this.chkCyberwareMatrixCM39.Tag = "39";
+			this.chkCyberwareMatrixCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM39.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM39.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM40
+			// 
+			this.chkCyberwareMatrixCM40.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM40.Location = new System.Drawing.Point(269, 55);
+			this.chkCyberwareMatrixCM40.Name = "chkCyberwareMatrixCM40";
+			this.chkCyberwareMatrixCM40.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM40.TabIndex = 88;
+			this.chkCyberwareMatrixCM40.Tag = "40";
+			this.chkCyberwareMatrixCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM40.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM40.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// lblCyberFirewall
 			// 
@@ -12519,6 +13071,8 @@
 			this.tabInitiation.PerformLayout();
 			this.tabCyberware.ResumeLayout(false);
 			this.tabCyberware.PerformLayout();
+			this.tabCyberwareCM.ResumeLayout(false);
+			this.tabCyberwareMatrixCM.ResumeLayout(false);
 			this.cmsCyberware.ResumeLayout(false);
 			this.cmsDeleteCyberware.ResumeLayout(false);
 			this.tabStreetGear.ResumeLayout(false);
@@ -13624,6 +14178,48 @@
 		private System.Windows.Forms.CheckBox chkVehicleMatrixCM38;
 		private System.Windows.Forms.CheckBox chkVehicleMatrixCM39;
 		private System.Windows.Forms.CheckBox chkVehicleMatrixCM40;
+		private System.Windows.Forms.TabControl tabCyberwareCM;
+		private System.Windows.Forms.TabPage tabCyberwareMatrixCM;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM1;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM2;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM3;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM4;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM5;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM6;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM7;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM8;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM9;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM10;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM11;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM12;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM13;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM14;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM15;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM16;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM17;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM18;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM19;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM20;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM21;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM22;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM23;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM24;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM25;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM26;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM27;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM28;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM29;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM30;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM31;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM32;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM33;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM34;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM35;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM36;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM37;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM38;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM39;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM40;
 	}
 }
 

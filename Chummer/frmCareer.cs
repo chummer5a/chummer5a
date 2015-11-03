@@ -21135,6 +21135,71 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+		private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_blnSkipRefresh)
+				return;
+
+			// Locate the selected Cyberware.
+			TreeNode objCyberwareNode = new TreeNode();
+			objCyberwareNode = treCyberware.SelectedNode;
+			if (treCyberware.SelectedNode.Level > 1)
+			{
+				while (objCyberwareNode.Level > 1)
+					objCyberwareNode = objCyberwareNode.Parent;
+			}
+
+			Cyberware objCyberware = new Cyberware(_objCharacter);
+			foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
+			{
+				if (objCharacterCyberware.InternalId == objCyberwareNode.Tag.ToString())
+				{
+					objCyberware = objCharacterCyberware;
+					break;
+				}
+			}
+
+			int intFillCount = 0;
+			CheckBox objCheck = (CheckBox)sender;
+			{
+				if (objCheck.Checked)
+				{
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objCyberwareCM in tabCyberwareMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objCyberwareCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objCyberwareCM.Checked = true;
+
+						if (objCyberwareCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objCyberwareCM in tabCyberwareMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objCyberwareCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objCyberwareCM.Checked = false;
+
+						if (objCyberwareCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+
+				objCyberware.MatrixCMFilled = intFillCount;
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
+			}
+		}
+
 		private void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_blnSkipRefresh)
@@ -22422,7 +22487,8 @@ namespace Chummer
             lblCyberDataProcessingLabel.Visible = false;
             lblCyberFirewallLabel.Visible = false;
 
-            bool blnClear = false;
+			Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+			bool blnClear = false;
 			try
 			{
 				if (treCyberware.SelectedNode.Level == 0)
@@ -22445,10 +22511,8 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblCyberwareSource, null);
 				return;
 			}
-
-			// Locate the selected piece of Cyberware.
-			bool blnFound = false;
-			Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
+				// Locate the selected piece of Cyberware.
+				bool blnFound = false;
 			if (objCyberware != null)
 				blnFound = true;
 
@@ -22464,7 +22528,53 @@ namespace Chummer
 				lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
 				lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
+				if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+				{
+					// Locate the selected Cyberware.
+					TreeNode objCyberwareNode = new TreeNode();
+					objCyberwareNode = treCyberware.SelectedNode;
+					tabCyberwareCM.Visible = true;
+					if (treCyberware.SelectedNode.Level > 1)
+					{
+						while (objCyberwareNode.Level > 1)
+						{
+							objCyberwareNode = objCyberwareNode.Parent;
+							tabCyberwareCM.Visible = false;
+						}
+					}
+					else
+					{
+						tabCyberwareCM.Visible = true;
+					}
 
+					if (objCyberware == null)
+						return;
+
+					// Hide any unused CM boxes.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objMatrixCM in tabCyberwareMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCM)
+						{
+							if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objCyberware.MatrixCMFilled)
+								objMatrixCM.Checked = true;
+							else
+								objMatrixCM.Checked = false;
+
+							objMatrixCM.Visible = true;
+						}
+						else
+						{
+							objMatrixCM.Checked = false;
+							objMatrixCM.Visible = false;
+							objMatrixCM.Text = "";
+						}
+					}
+				}
+				else
+				{
+					tabCyberwareCM.Visible = false;
+				}
 				_blnSkipRefresh = false;
 
 				lblCyberwareAvail.Text = objCyberware.TotalAvail;
@@ -22487,6 +22597,8 @@ namespace Chummer
                     lblCyberSleaze.Text = objCommlink.Sleaze.ToString();
                     lblCyberDataProcessing.Text = objCommlink.DataProcessing.ToString();
                     lblCyberFirewall.Text = objCommlink.Firewall.ToString();
+
+					tabCyberwareCM.Visible = false;
 
                     lblCyberDeviceRating.Visible = true;
                     lblCyberAttack.Visible = true;

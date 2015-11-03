@@ -8513,7 +8513,7 @@
 			<rating>2</rating>
 			<avail>6R</avail>
 			<cost>35</cost>
-			<conceal>+Rating</conceal>
+			<conceal>Rating</conceal>
 			<source>HT</source>
 			<page>180</page>
 		</accessory>

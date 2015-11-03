@@ -2344,7 +2344,8 @@ namespace Chummer
 		private string _strCost = "";
 		private string _strSource = "";
 		private string _strPage = "";
-		private int _intRating = 0;
+		private int _intMatrixCMFilled = 0;
+        private int _intRating = 0;
 		private int _intMinRating = 0;
 		private int _intMaxRating = 0;
 		private string _strSubsystems = "";
@@ -2666,6 +2667,7 @@ namespace Chummer
 			objWriter.WriteElementString("suite", _blnSuite.ToString());
 			objWriter.WriteElementString("essdiscount", _intEssenceDiscount.ToString());
 			objWriter.WriteElementString("forcegrade", _strForceGrade);
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw(_nodBonus.OuterXml);
 			else
@@ -2717,6 +2719,13 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
+			try
+			{
+				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
+			}
+			catch
+			{
+			}
 			try
 			{
 				_strLimbSlot = objNode["limbslot"].InnerText;
@@ -3350,6 +3359,73 @@ namespace Chummer
 			set
 			{
 				_intEssenceDiscount = value;
+			}
+		}
+
+		/// <summary>
+		/// Base Physical Boxes. 12 for vehicles, 6 for Drones.
+		/// </summary>
+		public int BaseMatrixBoxes
+		{
+			get
+			{
+				int baseMatrixBoxes = 8;
+				return baseMatrixBoxes;
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor boxes.
+		/// </summary>
+		public int MatrixCM
+		{
+			get
+			{
+				int intGrade = 0;
+
+				switch (_objGrade.Name)
+				{
+					case "Standard":
+						intGrade = 2;
+						break;
+					case "Standard (Burnout's Way)":
+						intGrade = 2;
+						break;
+					case "Used":
+						intGrade = 2;
+						break;
+					case "Alphaware":
+						intGrade = 3;
+						break;
+					case "Betaware":
+						intGrade = 4;
+						break;
+					case "Deltaware":
+						intGrade = 5;
+						break;
+					case "Gammaware":
+						intGrade = 6;
+						break;
+					case "Omegaware":
+						intGrade = 2;
+						break;
+				}
+				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intGrade, GlobalOptions.Instance.CultureInfo) / 2.0));
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor boxes filled.
+		/// </summary>
+		public int MatrixCMFilled
+		{
+			get
+			{
+				return _intMatrixCMFilled;
+			}
+			set
+			{
+				_intMatrixCMFilled = value;
 			}
 		}
 
@@ -7400,7 +7476,7 @@ namespace Chummer
 		private string _strRC = "";
 		private int _intRating = 0;
 		private int _intRCGroup = 0;
-		private int _intConceal = 0;
+		private string _strConceal = "";
 		private string _strAvail = "";
 		private string _strCost = "";
 		private bool _blnIncludedInWeapon = false;
@@ -7440,7 +7516,7 @@ namespace Chummer
 			if (objXmlAccessory.InnerXml.Contains("<rcgroup>"))
 				_intRCGroup = Convert.ToInt32(objXmlAccessory["rcgroup"].InnerText);
 			if (objXmlAccessory.InnerXml.Contains("<conceal>"))
-				_intConceal = Convert.ToInt32(objXmlAccessory["conceal"].InnerText);
+				_strConceal = (objXmlAccessory["conceal"].InnerText);
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
 			_strSource = objXmlAccessory["source"].InnerText;
@@ -7486,7 +7562,7 @@ namespace Chummer
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
-			objWriter.WriteElementString("conceal", _intConceal.ToString());
+			objWriter.WriteElementString("conceal", _strConceal);
 			if (_strDicePool != "")
 				objWriter.WriteElementString("dicepool", _strDicePool);
 			objWriter.WriteElementString("avail", _strAvail);
@@ -7555,7 +7631,7 @@ namespace Chummer
             }
             try
 			{
-				_intConceal = Convert.ToInt32(objNode["conceal"].InnerText);
+				_strConceal = objNode["conceal"].InnerText;
 			}
 			catch
 			{
@@ -7662,7 +7738,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("mount", _strMount);
 			objWriter.WriteElementString("rc", _strRC);
-			objWriter.WriteElementString("conceal", _intConceal.ToString());
+			objWriter.WriteElementString("conceal", _strConceal);
 			objWriter.WriteElementString("avail", TotalAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());
@@ -7812,11 +7888,27 @@ namespace Chummer
 		{
 			get
 			{
-				return _intConceal;
+				int intReturn = 0;
+
+				if (_strConceal.Contains("Rating"))
+				{
+					// If the cost is determined by the Rating, evaluate the expression.
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					string strConceal = "";
+					string strCostExpression = _strConceal;
+
+					strConceal = strCostExpression.Replace("Rating", _intRating.ToString());
+					XPathExpression xprCost = nav.Compile(strConceal);
+					double dblConceal = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+					intReturn = Convert.ToInt32(dblConceal);
+				}
+				return intReturn;
 			}
 			set
 			{
-				_intConceal = value;
+				_strConceal = value.ToString();
 			}
 		}
 
@@ -14643,13 +14735,6 @@ namespace Chummer
 			_strCategory = objNode["category"].InnerText;
 			_strHandling = objNode["handling"].InnerText;
             _strAccel = objNode["accel"].InnerText;
-			try
-			{
-				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
-			}
-			catch
-			{
-			}
             try
             {
                 _strSeats = objNode["seats"].InnerText;
