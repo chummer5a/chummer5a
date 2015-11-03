@@ -1287,7 +1287,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>157</page>
+      <page>158</page>
     </enhancement>
     <enhancement>
       <id>e5cf0578-be0f-4453-9223-118234d3e749</id>
@@ -1313,7 +1313,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>157</page>
+      <page>158</page>
     </enhancement>
     <enhancement>
       <id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
@@ -1326,7 +1326,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>157</page>
+      <page>159</page>
     </enhancement>
     <enhancement>
       <id>215a5a0e-09fc-47ff-9a84-74c99f4f1a53</id>
@@ -1339,7 +1339,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>157</page>
+      <page>159</page>
     </enhancement>
     <enhancement>
       <id>47cb80a1-a11b-4a60-a557-feada7114379</id>
@@ -1352,7 +1352,7 @@
         </allof>
       </required>
       <source>SG</source>
-      <page>157</page>
+      <page>159</page>
     </enhancement>
   </enhancements>
 </chummer>
