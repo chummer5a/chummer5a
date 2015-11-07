@@ -485,7 +485,7 @@ namespace Chummer
 				}
 
 				// Calculate the cost of Entertainments.
-				if (objNode.Type == QualityType.Entertainment)
+				else if (objNode.Type == QualityType.Entertainment)
 				{
 					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name + "\"]");
 					string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');

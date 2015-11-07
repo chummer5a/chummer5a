@@ -15,6 +15,8 @@ Application Change:
 - Fixed some issues with genemods being able to benefit from cyber/bioware grades. 
 - Gear and Cyberware can now use the variable value Parent Cost in a similar manner to Weapon Cost for weapon accessories. Currently this is used exclusively for the Implant Medic Hard Nanoware. 
 - Concealability modifiers for Gear can now be based on Rating. Currently used for the Extended Clip modifier.
+- Fixed a calculation issue for lifestyle qualities.
+- Fixed some issues that cropped up for 'ware that adds qualities (Daredrenaline, Metatype Reduction, etc.)
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
@@ -27,6 +29,8 @@ Data Change:
 - Hard Nanoware from Chrome Flesh has been added. Because of the way it interacts with cyberware, the Implant Medic is listed as a piece of cyberware. 
 - Altered the way Weapon Accessories are handled to enable pre-configured Ratings. Custom-made weapons with built-in accessories will need to have their format changed to <accessories><accessory<name>Whatever</name></accessory></accessories>. Existing characters should load properly; please contact me if you run into any issues with this.
 - Fixed a crash caused by the Extended Clip.
+- Added Nanoware from Chrome Flesh.
+- Proper bonuses added for most of the genetech from Chrome Flesh. Myostatin Inhibitor still doesn't have the karma discount, because it's tedious to implement.
 
 New String:
 - Menu_FilePrintPreview

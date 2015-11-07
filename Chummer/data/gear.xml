@@ -37,6 +37,7 @@
     <category>Magical Compounds</category>
     <category>Magical Supplies</category>
     <category>Miscellany</category>
+		<category>Nanogear</category>
     <category>PI-Tac</category>
     <category>RFID Tags</category>
     <category>Rigger Command Consoles</category>
@@ -4041,6 +4042,18 @@
 			<cost>0</cost>
 			<source>SR5</source>
 			<page>446</page>
+		</gear>
+		<gear>
+			<id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
+			<name>Nanoscanner</name>
+			<category>Sensor Functions</category>
+			<rating>8</rating>
+			<capacity>[1]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>8</avail>
+			<cost>0</cost>
+			<source>CF</source>
+			<page>152</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Tools of the Trade-->
@@ -9366,6 +9379,158 @@
 			<source>RF</source>
 			<page>255</page>
 		</gear>
+		<!-- End Region -->
+		<!-- Region Nanogear-->
+		<gear>
+			<id>1b97b4c7-5279-4778-92c5-44f7f9c94a0b</id>
+			<name>Altskin</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>10</avail>
+			<cost>1250</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>747c90eb-c09a-458f-ad8f-23b494d79b48</id>
+			<name>Altskin Armor</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>+3</avail>
+			<cost>+500</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>dae881b1-882a-4298-ab03-9c9b8549ebfb</id>
+			<name>Altskin Chameleon</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>+2</avail>
+			<cost>+250</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>ce1d06f0-d174-4cca-9a64-dc122a55734a</id>
+			<name>Altskin Newprint</name>
+			<category>Nanogear</category>
+			<rating>6</rating>
+			<avail>+4F</avail>
+			<cost>Rating x 200</cost>
+			<source>CF</source>
+			<page>153</page>
+		</gear>
+		<gear>
+			<id>23ba0ca3-55c3-4ad3-baaf-9ae825d040d2</id>
+			<name>Altskin Sealer</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>+1</avail>
+			<cost>+250</cost>
+			<source>CF</source>
+			<page>153</page>
+		</gear>
+		<gear>
+			<id>74ba41f1-ca67-4b5a-bc30-4647ff4cd3fc</id>
+			<name>Altskin Shifter</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>+2</avail>
+			<cost>+250</cost>
+			<source>CF</source>
+			<page>153</page>
+		</gear>
+		<gear>
+			<id>ab07341f-b49b-4002-bd9a-be809e7fc181</id>
+			<name>Etchers</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>153</page>
+		</gear>
+		<gear>
+			<id>40b7ac95-e4ba-4651-a348-fe277fac52bc</id>
+			<name>Monowire (Per Metre)</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>14R</avail>
+			<cost>1000</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>6bc81c68-d84b-435d-b441-660e4b18f2e8</id>
+			<name>Nanopaste Disguise Container, Small</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>350</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>c4adac2f-9349-4fe4-8894-f38d4445080b</id>
+			<name>Nanopaste Disguise Container, Large</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>16F</avail>
+			<cost>700</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>c1ed1ff0-8ff7-4c38-a198-e27a7c2c91a9</id>
+			<name>NanoSpy</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>14F</avail>
+			<cost>10000</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>4752d8ab-4393-4fd6-a3c6-c85f65d01281</id>
+			<name>Savior Medkit</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>6</avail>
+			<cost>2000</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>4f4f8801-dfe6-4847-add3-4afa66ec547f</id>
+			<name>Savior Medkit Supplies</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>4</avail>
+			<cost>300</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>f634ee1f-0c3f-47bd-bea7-10236b24de39</id>
+			<name>Smart Corrosives</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>10R</avail>
+			<cost>4000</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>
+		<gear>
+			<id>b8f9ecea-219e-4765-bfd3-c7d4b9477e28</id>
+			<name>Universal Sealant</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>10</avail>
+			<cost>250</cost>
+			<source>CF</source>
+			<page>152</page>
+		</gear>		
 		<!-- End Region -->
 		<gear>
 			<id>0025f1c7-45a4-4ec5-a692-e18aab2f97a9</id>

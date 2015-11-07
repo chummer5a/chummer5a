@@ -1532,6 +1532,9 @@
 			<name>Hyperthymesia</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<memory>2</memory>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>10</avail>
 			<cost>15000</cost>
@@ -1604,6 +1607,9 @@
 			<name>Thickened Digestive Tract Lining</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<lifestylecost>10</lifestylecost>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>8000</cost>
@@ -1629,6 +1635,16 @@
 			<name>Dareadrenaline</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+			<specificattribute>
+				<name>WIL</name>
+				<bonus>1</bonus>
+				<applytorating>no</applytorating>
+			</specificattribute>
+			</bonus>
+				<addqualities>
+					<addquality>Poor Self Control (Thrill Seeker)</addquality>
+				</addqualities>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>61000</cost>
@@ -1651,6 +1667,9 @@
 			<name>Hyper Glucagon</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<lifestylecost>10</lifestylecost>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>8000</cost>
@@ -1662,6 +1681,13 @@
 			<name>Magnasense</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<specificskill>
+					<name>Navigation</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>7000</cost>
@@ -1674,6 +1700,13 @@
 			<category>Genemods</category>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<bonus>
+				<skillgroup>
+					<name>Athletics</name>
+					<bonus>1</bonus>
+				</skillgroup>
+				<physicallimit>1</physicallimit>
+			</bonus>
 			<avail>6</avail>
 			<cost>38000</cost>
 			<source>CF</source>
@@ -1684,6 +1717,12 @@
 			<name>PuSHed</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<skillattribute>
+					<name>LOG</name>
+					<bonus>1</bonus>
+				</skillattribute>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>14</avail>
 			<cost>62000</cost>
@@ -1695,6 +1734,12 @@
 			<name>Qualia</name>
 			<category>Genemods</category>
 			<ess>0.4</ess>
+			<bonus>
+				<skillattribute>
+					<name>INT</name>
+					<bonus>1</bonus>
+				</skillattribute>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>14</avail>
 			<cost>65000</cost>
@@ -1718,6 +1763,13 @@
 			<category>Genemods</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<avail>5</avail>
 			<cost>9000</cost>
 			<source>CF</source>
@@ -1728,6 +1780,9 @@
 			<name>Solus</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<lifestylecost>-10</lifestylecost>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>8000</cost>
@@ -1739,6 +1794,10 @@
 			<name>Synaptic Acceleration</name>
 			<category>Genemods</category>
 			<ess>0.4</ess>
+			<bonus>
+				<initiativepass>1</initiativepass>
+				<initiative>1</initiative>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>78000</cost>
@@ -1750,6 +1809,13 @@
 			<name>Synch</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>14000</cost>

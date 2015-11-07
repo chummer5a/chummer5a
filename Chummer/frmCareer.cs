@@ -5380,6 +5380,7 @@ namespace Chummer
 				{
 					Cyberware objCyberware = new Cyberware(_objCharacter);
 					Cyberware objParent = new Cyberware(_objCharacter);
+					XmlDocument objXmlDocument = new XmlDocument();
 					bool blnFound = false;
 					// Locate the piece of Cyberware that is selected in the tree.
 					objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
@@ -5391,6 +5392,16 @@ namespace Chummer
 
 					if (blnFound)
 					{
+
+						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+						{
+							objXmlDocument = XmlManager.Instance.Load("bioware.xml");
+						}
+						else
+						{
+							objXmlDocument = XmlManager.Instance.Load("cyberware.xml");
+						}
+
 						if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
 						{
 							MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotRemoveCyberware"), LanguageManager.Instance.GetString("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5474,6 +5485,50 @@ namespace Chummer
 
 						//Add essence hole.
 						IncreaseEssenceHole((int)(objCyberware.CalculatedESS * 100m));
+
+
+						// Open the Cyberware XML file and locate the selected piece.
+						XmlNode objXmlCyberware;
+						if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+						{
+							objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
+						}
+						else
+						{
+							objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
+						}
+
+						if (objXmlCyberware["addqualities"] != null)
+						{
+							XmlNodeList objAddQualitiesNodeList = objXmlCyberware.SelectNodes("addqualities/addquality");
+							XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
+							foreach (XmlNode objNode in objAddQualitiesNodeList)
+							{
+								XmlNode objXmlSelectedQuality = objQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.InnerText + "\"]");
+								foreach (Quality objQuality in _objCharacter.Qualities)
+								{
+									if (objQuality.Name == objNode.InnerText)
+									{
+										foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+										{
+											if (nodQuality.Text.ToString() == objQuality.Name)
+											{
+												nodQuality.Remove();
+											}
+										}
+										foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
+										{
+											if (nodQuality.Text.ToString() == objQuality.Name)
+											{
+												nodQuality.Remove();
+											}
+										}
+										_objCharacter.Qualities.Remove(objQuality);
+										break;
+									}
+								}
+							}
+						}
 					}
 					else
 					{
