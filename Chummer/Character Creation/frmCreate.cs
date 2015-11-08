@@ -8844,40 +8844,53 @@ namespace Chummer
                 return;
             }
 
-            // Make sure the Weapon allows Accessories to be added to it.
-            if (!Convert.ToBoolean(objXmlWeapon["allowaccessory"].InnerText))
-            {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+			// Make sure the Weapon allows Accessories to be added to it.
+			bool blnAllowAccessories = false;
+			if (objXmlWeapon["allowaccessory"] != null)
+			{
+				blnAllowAccessories = Convert.ToBoolean(objXmlWeapon["allowaccessory"].InnerText);
+			}
+            if (!blnAllowAccessories)
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return;
+			}
 			else
 			{
 				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
 				string strMounts = "";
 				foreach (XmlNode objXmlMount in objXmlMountList)
 				{
-					// Run through the Weapon's currenct Accessories and filter out any used up Mount points.
 					bool blnFound = false;
-					foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
+					foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
 					{
-						if (objCurrentAccessory.Mount == objXmlMount.InnerText)
+						if (objMod.Mount == objXmlMount.InnerText)
+						{
 							blnFound = true;
+						}
 					}
 					if (!blnFound)
+					{
 						strMounts += objXmlMount.InnerText + "/";
+					}
 				}
+
+				// Remove the trailing /
+				if (strMounts != "" && strMounts.Contains('/'))
+					strMounts = strMounts.Substring(0, strMounts.Length - 1);
+
 				frmPickWeaponAccessory.AllowedMounts = strMounts;
 			}
 
 			frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
-            frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
-            frmPickWeaponAccessory.ShowDialog();
+			frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
+			frmPickWeaponAccessory.ShowDialog();
 
-            if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
-                return;
+			if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
+				return;
 
-            // Locate the selected piece.
-            objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
+			// Locate the selected piece.
+			objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + frmPickWeaponAccessory.SelectedAccessory + "\"]");
 
             TreeNode objNode = new TreeNode();
             WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);

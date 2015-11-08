@@ -9828,7 +9828,7 @@ namespace Chummer
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotFindWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 				return;
 			}
-			
+
 			// Make sure the Weapon allows Accessories to be added to it.
 			if (!Convert.ToBoolean(objXmlWeapon["allowaccessory"].InnerText))
 			{
@@ -9840,8 +9840,25 @@ namespace Chummer
 				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
 				string strMounts = "";
 				foreach (XmlNode objXmlMount in objXmlMountList)
-					strMounts += objXmlMount.InnerText + "/";
-				
+				{
+					bool blnFound = false;
+					foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
+					{
+						if (objMod.Mount == objXmlMount.InnerText)
+						{
+							blnFound = true;
+                        }
+					}
+					if (!blnFound)
+					{
+						strMounts += objXmlMount.InnerText + "/";
+					}
+				}
+
+				// Remove the trailing /
+				if (strMounts != "" && strMounts.Contains('/'))
+					strMounts = strMounts.Substring(0, strMounts.Length - 1);
+
 				frmPickWeaponAccessory.AllowedMounts = strMounts;
 			}
 

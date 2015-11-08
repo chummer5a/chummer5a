@@ -376,7 +376,7 @@
 					<chamin>1</chamin>
 					<chamax>6</chamax>
 					<chaaug>10</chaaug>
-					<intmin>1</intmin>
+					<intmin>2</intmin>
 					<intmax>7</intmax>
 					<intaug>11</intaug>
 					<logmin>1</logmin>

@@ -4397,6 +4397,7 @@ namespace Chummer
 		private bool _blnRequireAmmo = true;
         private string _strAccuracy = "";
         private string _strRCTip = "";
+		private string _strWeaponSlots = "";
         private bool _blnCyberware = false;
 
 		private readonly Character _objCharacter;
@@ -4428,6 +4429,20 @@ namespace Chummer
 			_strAP = objXmlWeapon["ap"].InnerText;
 			_strMode = objXmlWeapon["mode"].InnerText;
 			_strAmmo = objXmlWeapon["ammo"].InnerText;
+			if (objXmlWeapon["accessorymounts"] != null)
+			{
+				XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+				string strMounts = "";
+				foreach (XmlNode objXmlMount in objXmlMountList)
+				{
+						strMounts += objXmlMount.InnerText + "/";
+				}
+				if (strMounts.EndsWith("/"))
+				{
+					strMounts = strMounts.Substring(0, strMounts.Length - 1);
+				}
+				_strWeaponSlots = strMounts;
+			}
 			try
 			{
 				_strAmmoCategory = objXmlWeapon["ammocategory"].InnerText;
@@ -4630,7 +4645,12 @@ namespace Chummer
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
             objWriter.WriteElementString("accuracy", _strAccuracy.ToString());
-            if (_lstAccessories.Count > 0)
+
+			if (_strWeaponSlots != null)
+			{
+				objWriter.WriteElementString("weaponslots", _strWeaponSlots.ToString());
+			}
+			if (_lstAccessories.Count > 0)
 			{
 				objWriter.WriteStartElement("accessories");
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
@@ -6854,6 +6874,17 @@ namespace Chummer
             }
         }
 
+		/// <summary>
+		/// The slots the weapon has for modifications.
+		/// </summary>
+		public string ModificationSlots
+		{
+			get
+			{
+				return _strWeaponSlots;
+			}
+
+		}
         /// <summary>
 		/// The number of Weapon Mod slots remaining.
 		/// </summary>

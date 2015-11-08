@@ -3247,8 +3247,8 @@
 			<rc>0</rc>
 			<ammo>4(c)</ammo>
 			<avail>5R</avail>
+			<allowaccessory>true</allowaccessory>
 			<cost>1000</cost>
-			<allowaccessory>false</allowaccessory>
 			<source>SR5</source>
 			<page>425</page>
 		</weapon>
@@ -3261,13 +3261,13 @@
 			<accuracy>4</accuracy>
 			<reach>0</reach>
 			<damage>6P</damage>
+			<allowaccessory>true</allowaccessory>
 			<ap>0</ap>
 			<mode>SS</mode>
 			<rc>0</rc>
 			<ammo>4(c)</ammo>
 			<avail>3R</avail>
 			<cost>350</cost>
-			<allowaccessory>false</allowaccessory>
 			<source>RG</source>
 			<page>30</page>
 		</weapon>
@@ -3279,6 +3279,7 @@
 			<conceal>-4</conceal>
 			<accuracy>4</accuracy>
 			<reach>0</reach>
+			<allowaccessory>true</allowaccessory>
 			<damage>6P</damage>
 			<ap>-</ap>
 			<mode>SA</mode>
@@ -3286,7 +3287,6 @@
 			<ammo>6(c)</ammo>
 			<avail>4R</avail>
 			<cost>120</cost>
-			<allowaccessory>false</allowaccessory>
 			<source>SR5</source>
 			<page>425</page>
 		</weapon>
@@ -3299,13 +3299,13 @@
 			<accuracy>4</accuracy>
 			<reach>0</reach>
 			<damage>7P</damage>
+			<allowaccessory>true</allowaccessory>
 			<ap>-</ap>
 			<mode>SS/BF</mode>
 			<rc>0</rc>
 			<ammo>2(b)</ammo>
 			<avail>4R</avail>
 			<cost>180</cost>
-			<allowaccessory>false</allowaccessory>
 			<source>SR5</source>
 			<page>425</page>
 		</weapon>
@@ -3323,8 +3323,8 @@
 			<rc>0</rc>
 			<ammo>0</ammo>
 			<avail>0</avail>
-			<cost>0</cost>
 			<allowaccessory>false</allowaccessory>
+			<cost>0</cost>
 			<useskill>Exotic Melee Weapon</useskill>
 			<source>RG</source>
 			<page>22</page>
@@ -3344,7 +3344,6 @@
 			<ammo>0</ammo>
 			<avail>0</avail>
 			<cost>0</cost>
-			<allowaccessory>false</allowaccessory>
 			<useskill>Exotic Melee Weapon</useskill>
 			<source>RG</source>
 			<page>22</page>
@@ -3897,6 +3896,7 @@
 			<name>Colt New Model Revolver</name>
 			<category>Holdouts</category>
 			<type>Ranged</type>
+			<allowaccessory>true</allowaccessory>
 			<spec>Revolvers</spec>
 			<conceal>-4</conceal>
 			<accuracy>6</accuracy>
@@ -4265,7 +4265,6 @@
 			<ammo>30(c)</ammo>
 			<avail>17F</avail>
 			<cost>2800</cost>
-			<allowaccessory>false</allowaccessory>
 			<accessorymounts/>
 			<accessories>
 				<accessory>

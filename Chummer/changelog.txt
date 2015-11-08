@@ -17,6 +17,7 @@ Application Change:
 - Concealability modifiers for Gear can now be based on Rating. Currently used for the Extended Clip modifier.
 - Fixed a calculation issue for lifestyle qualities.
 - Fixed some issues that cropped up for 'ware that adds qualities (Daredrenaline, Metatype Reduction, etc.)
+- Implemented support for selecting the slot that a weapon modiciation occupies. May break in interesting ways, but should allow holdouts and such to attach spare clips again.
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
@@ -31,6 +32,8 @@ Data Change:
 - Fixed a crash caused by the Extended Clip.
 - Added Nanoware from Chrome Flesh.
 - Proper bonuses added for most of the genetech from Chrome Flesh. Myostatin Inhibitor still doesn't have the karma discount, because it's tedious to implement.
+- Fixed the minimum INT for Wakyambi to 2.
+- Holdouts have had the <allowaccessory> tag set to true as a result of code changes to how accessories can be attached to a weapon. May not take effect on existing weapons; if not, remove and re-add the weapon.
 
 New String:
 - Menu_FilePrintPreview
