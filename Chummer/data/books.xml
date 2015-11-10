@@ -51,6 +51,11 @@
       <name>Run Faster</name>
       <code>RF</code>
     </book>
+	<book>
+	<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
+      <name>Run Faster German</name>
+      <code>RFG</code>
+    </book>
     <book>
       <name>Shadow Spells</name>
       <code>SSP</code>
