@@ -1,4 +1,6 @@
-﻿namespace Chummer
+﻿using System;
+
+namespace Chummer
 {
     partial class frmCreate
     {
@@ -661,13 +663,13 @@
 			this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
 			this.cmdAddWeapon = new SplitButton();
 			this.tabGear = new System.Windows.Forms.TabPage();
-			this.lblGearFirewall = new System.Windows.Forms.Label();
+			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-			this.lblGearDataProcessing = new System.Windows.Forms.Label();
 			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblGearSleaze = new System.Windows.Forms.Label();
 			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-			this.lblGearAttack = new System.Windows.Forms.Label();
 			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -777,6 +779,7 @@
 			this.treVehicles = new System.Windows.Forms.TreeView();
 			this.cmdAddVehicle = new SplitButton();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
+			this.btnCreateBackstory = new System.Windows.Forms.Button();
 			this.lblPublicAwareTotal = new System.Windows.Forms.Label();
 			this.lblNotorietyTotal = new System.Windows.Forms.Label();
 			this.lblStreetCredTotal = new System.Windows.Forms.Label();
@@ -887,7 +890,6 @@
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.btnCreateBackstory = new System.Windows.Forms.Button();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -7773,13 +7775,13 @@
 			// tabGear
 			// 
 			this.tabGear.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGear.Controls.Add(this.lblGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearDataProcessing);
+			this.tabGear.Controls.Add(this.cboGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearSleaze);
+			this.tabGear.Controls.Add(this.cboGearAttack);
 			this.tabGear.Controls.Add(this.lblGearFirewallLabel);
-			this.tabGear.Controls.Add(this.lblGearDataProcessing);
 			this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
-			this.tabGear.Controls.Add(this.lblGearSleaze);
 			this.tabGear.Controls.Add(this.lblGearSleazeLabel);
-			this.tabGear.Controls.Add(this.lblGearAttack);
 			this.tabGear.Controls.Add(this.lblGearAttackLabel);
 			this.tabGear.Controls.Add(this.nudAdeptWayDiscount);
 			this.tabGear.Controls.Add(this.label3);
@@ -7824,81 +7826,89 @@
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
 			// 
-			// lblGearFirewall
+			// cboGearDataProcessing
 			// 
-			this.lblGearFirewall.AutoSize = true;
-			this.lblGearFirewall.Location = new System.Drawing.Point(750, 166);
-			this.lblGearFirewall.Name = "lblGearFirewall";
-			this.lblGearFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblGearFirewall.TabIndex = 155;
-			this.lblGearFirewall.Text = "[0]";
+			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearDataProcessing.FormattingEnabled = true;
+			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 180);
+			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+			this.cboGearDataProcessing.TabIndex = 159;
+			this.cboGearDataProcessing.Visible = false;
+			this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboGearFirewall
+			// 
+			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearFirewall.FormattingEnabled = true;
+			this.cboGearFirewall.Location = new System.Drawing.Point(733, 180);
+			this.cboGearFirewall.Name = "cboGearFirewall";
+			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+			this.cboGearFirewall.TabIndex = 158;
+			this.cboGearFirewall.Visible = false;
+			this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
+			// 
+			// cboGearSleaze
+			// 
+			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearSleaze.FormattingEnabled = true;
+			this.cboGearSleaze.Location = new System.Drawing.Point(598, 180);
+			this.cboGearSleaze.Name = "cboGearSleaze";
+			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+			this.cboGearSleaze.TabIndex = 157;
+			this.cboGearSleaze.Visible = false;
+			this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
+			// 
+			// cboGearAttack
+			// 
+			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearAttack.FormattingEnabled = true;
+			this.cboGearAttack.Location = new System.Drawing.Point(531, 180);
+			this.cboGearAttack.Name = "cboGearAttack";
+			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+			this.cboGearAttack.TabIndex = 156;
+			this.cboGearAttack.Visible = false;
+			this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
 			// 
 			// lblGearFirewallLabel
 			// 
-			this.lblGearFirewallLabel.AutoSize = true;
-			this.lblGearFirewallLabel.Location = new System.Drawing.Point(703, 166);
+			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 166);
 			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-			this.lblGearFirewallLabel.Size = new System.Drawing.Size(45, 13);
+			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearFirewallLabel.TabIndex = 154;
 			this.lblGearFirewallLabel.Tag = "Label_Firewall";
 			this.lblGearFirewallLabel.Text = "Firewall:";
-			// 
-			// lblGearDataProcessing
-			// 
-			this.lblGearDataProcessing.AutoSize = true;
-			this.lblGearDataProcessing.Location = new System.Drawing.Point(678, 166);
-			this.lblGearDataProcessing.Name = "lblGearDataProcessing";
-			this.lblGearDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblGearDataProcessing.TabIndex = 153;
-			this.lblGearDataProcessing.Text = "[0]";
+			this.lblGearFirewallLabel.Visible = false;
 			// 
 			// lblGearDataProcessingLabel
 			// 
-			this.lblGearDataProcessingLabel.AutoSize = true;
-			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(584, 166);
+			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 166);
 			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
+			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearDataProcessingLabel.TabIndex = 152;
 			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-			this.lblGearDataProcessingLabel.Text = "Data Processing:";
-			// 
-			// lblGearSleaze
-			// 
-			this.lblGearSleaze.AutoSize = true;
-			this.lblGearSleaze.Location = new System.Drawing.Point(559, 166);
-			this.lblGearSleaze.Name = "lblGearSleaze";
-			this.lblGearSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblGearSleaze.TabIndex = 151;
-			this.lblGearSleaze.Text = "[0]";
+			this.lblGearDataProcessingLabel.Text = "Data Proc:";
+			this.lblGearDataProcessingLabel.Visible = false;
 			// 
 			// lblGearSleazeLabel
 			// 
-			this.lblGearSleazeLabel.AutoSize = true;
-			this.lblGearSleazeLabel.Location = new System.Drawing.Point(512, 166);
+			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 166);
 			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-			this.lblGearSleazeLabel.Size = new System.Drawing.Size(42, 13);
+			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearSleazeLabel.TabIndex = 150;
 			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
 			this.lblGearSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblGearAttack
-			// 
-			this.lblGearAttack.AutoSize = true;
-			this.lblGearAttack.Location = new System.Drawing.Point(487, 166);
-			this.lblGearAttack.Name = "lblGearAttack";
-			this.lblGearAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblGearAttack.TabIndex = 149;
-			this.lblGearAttack.Text = "[0]";
+			this.lblGearSleazeLabel.Visible = false;
 			// 
 			// lblGearAttackLabel
 			// 
-			this.lblGearAttackLabel.AutoSize = true;
-			this.lblGearAttackLabel.Location = new System.Drawing.Point(440, 166);
+			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 166);
 			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-			this.lblGearAttackLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearAttackLabel.TabIndex = 148;
 			this.lblGearAttackLabel.Tag = "Label_Attack";
 			this.lblGearAttackLabel.Text = "Attack:";
+			this.lblGearAttackLabel.Visible = false;
 			// 
 			// nudAdeptWayDiscount
 			// 
@@ -9166,6 +9176,16 @@
 			this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
 			this.tabCharacterInfo.Text = "Character Info";
 			// 
+			// btnCreateBackstory
+			// 
+			this.btnCreateBackstory.Location = new System.Drawing.Point(634, 125);
+			this.btnCreateBackstory.Name = "btnCreateBackstory";
+			this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
+			this.btnCreateBackstory.TabIndex = 91;
+			this.btnCreateBackstory.Text = "Create Backstory";
+			this.btnCreateBackstory.UseVisualStyleBackColor = true;
+			this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
+			// 
 			// lblPublicAwareTotal
 			// 
 			this.lblPublicAwareTotal.AutoSize = true;
@@ -10280,16 +10300,6 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// btnCreateBackstory
-			// 
-			this.btnCreateBackstory.Location = new System.Drawing.Point(634, 125);
-			this.btnCreateBackstory.Name = "btnCreateBackstory";
-			this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
-			this.btnCreateBackstory.TabIndex = 91;
-			this.btnCreateBackstory.Text = "Create Backstory";
-			this.btnCreateBackstory.UseVisualStyleBackColor = true;
-			this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
-			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10452,9 +10462,9 @@
 			this.PerformLayout();
 
         }
-        #endregion
+		#endregion
 
-        internal System.Windows.Forms.StatusStrip StatusStrip;
+		internal System.Windows.Forms.StatusStrip StatusStrip;
         internal System.Windows.Forms.ToolStripStatusLabel tssBPLabel;
         internal System.Windows.Forms.ToolStripStatusLabel tssBP;
         internal System.Windows.Forms.ToolStripStatusLabel tssBPRemainLabel;
@@ -11173,13 +11183,9 @@
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.NumericUpDown nudAdeptWayDiscount;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblGearFirewall;
         private System.Windows.Forms.Label lblGearFirewallLabel;
-        private System.Windows.Forms.Label lblGearDataProcessing;
         private System.Windows.Forms.Label lblGearDataProcessingLabel;
-        private System.Windows.Forms.Label lblGearSleaze;
         private System.Windows.Forms.Label lblGearSleazeLabel;
-        private System.Windows.Forms.Label lblGearAttack;
         private System.Windows.Forms.Label lblGearAttackLabel;
         private System.Windows.Forms.Label lblCyberFirewall;
         private System.Windows.Forms.Label lblCyberFirewallLabel;
@@ -11288,6 +11294,10 @@
 		private System.Windows.Forms.Label lblWeaponRating;
 		private System.Windows.Forms.Label lblWeaponRatingLabel;
 		private System.Windows.Forms.Button btnCreateBackstory;
+		private System.Windows.Forms.ComboBox cboGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboGearFirewall;
+		private System.Windows.Forms.ComboBox cboGearSleaze;
+		private System.Windows.Forms.ComboBox cboGearAttack;
 	}
 }
 

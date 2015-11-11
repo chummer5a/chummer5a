@@ -18,6 +18,7 @@ Application Change:
 - Fixed a calculation issue for lifestyle qualities.
 - Fixed some issues that cropped up for 'ware that adds qualities (Daredrenaline, Metatype Reduction, etc.)
 - Implemented support for selecting the slot that a weapon modiciation occupies. May break in interesting ways, but should allow holdouts and such to attach spare clips again.
+- Commlinks and cyberdecks can now switch their ASDF attributes around. This capability will be properly segregated out into Cyberdecks only shortly.
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
