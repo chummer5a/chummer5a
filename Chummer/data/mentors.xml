@@ -33,7 +33,7 @@
 		<mentor>
 			<id>f32b8b69-0f6b-417d-bd06-6a85e1076a36</id>
 			<name>Cat</name>
-			<advantage>All: +2 dice to either Gymnastics or Infiltration Tests (choose one).</advantage>
+			<advantage>All: +2 dice to either Gymnastics or Sneaking Tests (choose one).</advantage>
 			<disadvantage>Cat magicians toy with their prey. Unless you succeed in a Charisma + Willpower (3) Test at the start of combat, you cannot make an attack that incapacitates your target. If you take any Physical damage, all this playing around stops.</disadvantage>
 			<choices>
 				<choice>

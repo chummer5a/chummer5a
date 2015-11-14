@@ -23117,15 +23117,24 @@ namespace Chummer
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter);
-                frmSelectMetatype.ShowDialog(this);
-
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[0].ToString();
+				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[0].ToString();
+				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[0].ToString();
+				frmSelectMetatype.Special = _objCharacter.SpecialPriority[0].ToString();
+				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[0].ToString();
+				frmSelectMetatype.ShowDialog(this);
+				if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
             }
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmSumtoTenMetatype frmSelectMetatype = new frmSumtoTenMetatype(_objCharacter);
-                frmSelectMetatype.ShowDialog(this);
+				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[0].ToString();
+				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[0].ToString();
+				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[0].ToString();
+				frmSelectMetatype.Special = _objCharacter.SpecialPriority[0].ToString();
+				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[0].ToString();
+				frmSelectMetatype.ShowDialog(this);
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
