@@ -603,14 +603,6 @@
 			this.cmsAmmoFullBurst = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsAmmoSuppressiveFire = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabGear = new System.Windows.Forms.TabPage();
-			this.lblGearFirewall = new System.Windows.Forms.Label();
-			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-			this.lblGearDataProcessing = new System.Windows.Forms.Label();
-			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblGearSleaze = new System.Windows.Forms.Label();
-			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-			this.lblGearAttack = new System.Windows.Forms.Label();
-			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.lblGearDeviceRating = new System.Windows.Forms.Label();
 			this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
 			this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
@@ -1096,6 +1088,14 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboGearAttack = new System.Windows.Forms.ComboBox();
+			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
+			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
+			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
+			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -5181,7 +5181,8 @@
 			this.chkCyberwareMatrixCM7.TabIndex = 55;
 			this.chkCyberwareMatrixCM7.Tag = "7";
 			this.chkCyberwareMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM7.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM7.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM7.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM7.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM8
 			// 
@@ -5192,7 +5193,8 @@
 			this.chkCyberwareMatrixCM8.TabIndex = 56;
 			this.chkCyberwareMatrixCM8.Tag = "8";
 			this.chkCyberwareMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM8.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM8.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM8.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM8.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM9
 			// 
@@ -5203,7 +5205,8 @@
 			this.chkCyberwareMatrixCM9.TabIndex = 57;
 			this.chkCyberwareMatrixCM9.Tag = "9";
 			this.chkCyberwareMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM9.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM9.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM9.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM9.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM10
 			// 
@@ -5214,7 +5217,8 @@
 			this.chkCyberwareMatrixCM10.TabIndex = 58;
 			this.chkCyberwareMatrixCM10.Tag = "10";
 			this.chkCyberwareMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM10.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM10.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM10.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM10.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM11
 			// 
@@ -5225,7 +5229,8 @@
 			this.chkCyberwareMatrixCM11.TabIndex = 59;
 			this.chkCyberwareMatrixCM11.Tag = "11";
 			this.chkCyberwareMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM11.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM11.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM11.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM11.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM12
 			// 
@@ -5236,7 +5241,8 @@
 			this.chkCyberwareMatrixCM12.TabIndex = 60;
 			this.chkCyberwareMatrixCM12.Tag = "12";
 			this.chkCyberwareMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM12.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM12.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM12.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM12.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM13
 			// 
@@ -5247,7 +5253,8 @@
 			this.chkCyberwareMatrixCM13.TabIndex = 61;
 			this.chkCyberwareMatrixCM13.Tag = "13";
 			this.chkCyberwareMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM13.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM13.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM13.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM13.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM14
 			// 
@@ -5258,7 +5265,8 @@
 			this.chkCyberwareMatrixCM14.TabIndex = 62;
 			this.chkCyberwareMatrixCM14.Tag = "14";
 			this.chkCyberwareMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM14.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM14.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM14.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM14.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM15
 			// 
@@ -5269,7 +5277,8 @@
 			this.chkCyberwareMatrixCM15.TabIndex = 63;
 			this.chkCyberwareMatrixCM15.Tag = "15";
 			this.chkCyberwareMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM15.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM15.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM15.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM15.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM16
 			// 
@@ -5280,7 +5289,8 @@
 			this.chkCyberwareMatrixCM16.TabIndex = 64;
 			this.chkCyberwareMatrixCM16.Tag = "16";
 			this.chkCyberwareMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM16.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM16.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM16.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM16.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM17
 			// 
@@ -5291,7 +5301,8 @@
 			this.chkCyberwareMatrixCM17.TabIndex = 65;
 			this.chkCyberwareMatrixCM17.Tag = "17";
 			this.chkCyberwareMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM17.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM17.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM17.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM17.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM18
 			// 
@@ -5302,7 +5313,8 @@
 			this.chkCyberwareMatrixCM18.TabIndex = 66;
 			this.chkCyberwareMatrixCM18.Tag = "18";
 			this.chkCyberwareMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM18.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM18.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM18.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM18.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM19
 			// 
@@ -5313,7 +5325,8 @@
 			this.chkCyberwareMatrixCM19.TabIndex = 67;
 			this.chkCyberwareMatrixCM19.Tag = "19";
 			this.chkCyberwareMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM19.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM19.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM19.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM19.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM20
 			// 
@@ -5324,7 +5337,8 @@
 			this.chkCyberwareMatrixCM20.TabIndex = 68;
 			this.chkCyberwareMatrixCM20.Tag = "20";
 			this.chkCyberwareMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM20.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM20.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM20.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM20.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM21
 			// 
@@ -5335,7 +5349,8 @@
 			this.chkCyberwareMatrixCM21.TabIndex = 69;
 			this.chkCyberwareMatrixCM21.Tag = "21";
 			this.chkCyberwareMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM21.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM21.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM21.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM21.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM22
 			// 
@@ -5346,7 +5361,8 @@
 			this.chkCyberwareMatrixCM22.TabIndex = 70;
 			this.chkCyberwareMatrixCM22.Tag = "22";
 			this.chkCyberwareMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM22.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM22.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM22.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM22.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM23
 			// 
@@ -5357,7 +5373,8 @@
 			this.chkCyberwareMatrixCM23.TabIndex = 71;
 			this.chkCyberwareMatrixCM23.Tag = "23";
 			this.chkCyberwareMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM23.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM23.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM23.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM23.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM24
 			// 
@@ -5368,7 +5385,8 @@
 			this.chkCyberwareMatrixCM24.TabIndex = 72;
 			this.chkCyberwareMatrixCM24.Tag = "24";
 			this.chkCyberwareMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM24.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM24.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM24.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM24.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM25
 			// 
@@ -5379,7 +5397,8 @@
 			this.chkCyberwareMatrixCM25.TabIndex = 73;
 			this.chkCyberwareMatrixCM25.Tag = "25";
 			this.chkCyberwareMatrixCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM25.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM25.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM25.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM25.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM26
 			// 
@@ -5390,7 +5409,8 @@
 			this.chkCyberwareMatrixCM26.TabIndex = 74;
 			this.chkCyberwareMatrixCM26.Tag = "26";
 			this.chkCyberwareMatrixCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM26.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM26.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM26.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM26.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM27
 			// 
@@ -5401,7 +5421,8 @@
 			this.chkCyberwareMatrixCM27.TabIndex = 75;
 			this.chkCyberwareMatrixCM27.Tag = "27";
 			this.chkCyberwareMatrixCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM27.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM27.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM27.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM27.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM28
 			// 
@@ -5412,7 +5433,8 @@
 			this.chkCyberwareMatrixCM28.TabIndex = 76;
 			this.chkCyberwareMatrixCM28.Tag = "28";
 			this.chkCyberwareMatrixCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM28.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM28.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM28.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM28.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM29
 			// 
@@ -5423,10 +5445,11 @@
 			this.chkCyberwareMatrixCM29.TabIndex = 77;
 			this.chkCyberwareMatrixCM29.Tag = "29";
 			this.chkCyberwareMatrixCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM29.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM29.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM29.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM29.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM30
-			// 0.
+			// 
 			this.chkCyberwareMatrixCM30.Appearance = System.Windows.Forms.Appearance.Button;
 			this.chkCyberwareMatrixCM30.Location = new System.Drawing.Point(29, 55);
 			this.chkCyberwareMatrixCM30.Name = "chkCyberwareMatrixCM30";
@@ -5434,7 +5457,8 @@
 			this.chkCyberwareMatrixCM30.TabIndex = 78;
 			this.chkCyberwareMatrixCM30.Tag = "30";
 			this.chkCyberwareMatrixCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM30.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM30.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM30.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM30.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM31
 			// 
@@ -5445,7 +5469,8 @@
 			this.chkCyberwareMatrixCM31.TabIndex = 79;
 			this.chkCyberwareMatrixCM31.Tag = "31";
 			this.chkCyberwareMatrixCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM31.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM31.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM31.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM31.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM32
 			// 
@@ -5456,7 +5481,8 @@
 			this.chkCyberwareMatrixCM32.TabIndex = 80;
 			this.chkCyberwareMatrixCM32.Tag = "32";
 			this.chkCyberwareMatrixCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM32.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM32.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM32.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM32.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM33
 			// 
@@ -5467,7 +5493,8 @@
 			this.chkCyberwareMatrixCM33.TabIndex = 81;
 			this.chkCyberwareMatrixCM33.Tag = "33";
 			this.chkCyberwareMatrixCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM33.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM33.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM33.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM33.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM34
 			// 
@@ -5478,7 +5505,8 @@
 			this.chkCyberwareMatrixCM34.TabIndex = 82;
 			this.chkCyberwareMatrixCM34.Tag = "34";
 			this.chkCyberwareMatrixCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM34.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM34.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM34.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM34.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM35
 			// 
@@ -5489,7 +5517,8 @@
 			this.chkCyberwareMatrixCM35.TabIndex = 83;
 			this.chkCyberwareMatrixCM35.Tag = "35";
 			this.chkCyberwareMatrixCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM35.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM35.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM35.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM35.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM36
 			// 
@@ -5500,7 +5529,8 @@
 			this.chkCyberwareMatrixCM36.TabIndex = 84;
 			this.chkCyberwareMatrixCM36.Tag = "36";
 			this.chkCyberwareMatrixCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM36.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM36.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM36.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM36.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM37
 			// 
@@ -5511,7 +5541,8 @@
 			this.chkCyberwareMatrixCM37.TabIndex = 85;
 			this.chkCyberwareMatrixCM37.Tag = "37";
 			this.chkCyberwareMatrixCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM37.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM37.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM37.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM37.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM38
 			// 
@@ -5522,7 +5553,8 @@
 			this.chkCyberwareMatrixCM38.TabIndex = 86;
 			this.chkCyberwareMatrixCM38.Tag = "38";
 			this.chkCyberwareMatrixCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM38.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM38.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM38.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM38.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM39
 			// 
@@ -5533,7 +5565,8 @@
 			this.chkCyberwareMatrixCM39.TabIndex = 87;
 			this.chkCyberwareMatrixCM39.Tag = "39";
 			this.chkCyberwareMatrixCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM39.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM39.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM39.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM39.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// chkCyberwareMatrixCM40
 			// 
@@ -5544,7 +5577,8 @@
 			this.chkCyberwareMatrixCM40.TabIndex = 88;
 			this.chkCyberwareMatrixCM40.Tag = "40";
 			this.chkCyberwareMatrixCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkCyberwareMatrixCM40.UseVisualStyleBackColor = true; this.chkCyberwareMatrixCM40.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			this.chkCyberwareMatrixCM40.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM40.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// lblCyberFirewall
 			// 
@@ -7519,13 +7553,13 @@
 			// tabGear
 			// 
 			this.tabGear.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGear.Controls.Add(this.lblGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearDataProcessing);
+			this.tabGear.Controls.Add(this.cboGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearSleaze);
+			this.tabGear.Controls.Add(this.cboGearAttack);
 			this.tabGear.Controls.Add(this.lblGearFirewallLabel);
-			this.tabGear.Controls.Add(this.lblGearDataProcessing);
 			this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
-			this.tabGear.Controls.Add(this.lblGearSleaze);
 			this.tabGear.Controls.Add(this.lblGearSleazeLabel);
-			this.tabGear.Controls.Add(this.lblGearAttack);
 			this.tabGear.Controls.Add(this.lblGearAttackLabel);
 			this.tabGear.Controls.Add(this.lblGearDeviceRating);
 			this.tabGear.Controls.Add(this.lblGearDeviceRatingLabel);
@@ -7571,82 +7605,6 @@
 			this.tabGear.TabIndex = 3;
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
-			// 
-			// lblGearFirewall
-			// 
-			this.lblGearFirewall.AutoSize = true;
-			this.lblGearFirewall.Location = new System.Drawing.Point(750, 164);
-			this.lblGearFirewall.Name = "lblGearFirewall";
-			this.lblGearFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblGearFirewall.TabIndex = 165;
-			this.lblGearFirewall.Text = "[0]";
-			// 
-			// lblGearFirewallLabel
-			// 
-			this.lblGearFirewallLabel.AutoSize = true;
-			this.lblGearFirewallLabel.Location = new System.Drawing.Point(703, 164);
-			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-			this.lblGearFirewallLabel.Size = new System.Drawing.Size(45, 13);
-			this.lblGearFirewallLabel.TabIndex = 164;
-			this.lblGearFirewallLabel.Tag = "Label_Firewall";
-			this.lblGearFirewallLabel.Text = "Firewall:";
-			// 
-			// lblGearDataProcessing
-			// 
-			this.lblGearDataProcessing.AutoSize = true;
-			this.lblGearDataProcessing.Location = new System.Drawing.Point(678, 164);
-			this.lblGearDataProcessing.Name = "lblGearDataProcessing";
-			this.lblGearDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblGearDataProcessing.TabIndex = 163;
-			this.lblGearDataProcessing.Text = "[0]";
-			// 
-			// lblGearDataProcessingLabel
-			// 
-			this.lblGearDataProcessingLabel.AutoSize = true;
-			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(584, 164);
-			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
-			this.lblGearDataProcessingLabel.TabIndex = 162;
-			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-			this.lblGearDataProcessingLabel.Text = "Data Processing:";
-			// 
-			// lblGearSleaze
-			// 
-			this.lblGearSleaze.AutoSize = true;
-			this.lblGearSleaze.Location = new System.Drawing.Point(559, 164);
-			this.lblGearSleaze.Name = "lblGearSleaze";
-			this.lblGearSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblGearSleaze.TabIndex = 161;
-			this.lblGearSleaze.Text = "[0]";
-			// 
-			// lblGearSleazeLabel
-			// 
-			this.lblGearSleazeLabel.AutoSize = true;
-			this.lblGearSleazeLabel.Location = new System.Drawing.Point(512, 164);
-			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-			this.lblGearSleazeLabel.Size = new System.Drawing.Size(42, 13);
-			this.lblGearSleazeLabel.TabIndex = 160;
-			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
-			this.lblGearSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblGearAttack
-			// 
-			this.lblGearAttack.AutoSize = true;
-			this.lblGearAttack.Location = new System.Drawing.Point(487, 164);
-			this.lblGearAttack.Name = "lblGearAttack";
-			this.lblGearAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblGearAttack.TabIndex = 159;
-			this.lblGearAttack.Text = "[0]";
-			// 
-			// lblGearAttackLabel
-			// 
-			this.lblGearAttackLabel.AutoSize = true;
-			this.lblGearAttackLabel.Location = new System.Drawing.Point(440, 164);
-			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-			this.lblGearAttackLabel.Size = new System.Drawing.Size(41, 13);
-			this.lblGearAttackLabel.TabIndex = 158;
-			this.lblGearAttackLabel.Tag = "Label_Attack";
-			this.lblGearAttackLabel.Text = "Attack:";
 			// 
 			// lblGearDeviceRating
 			// 
@@ -13012,6 +12970,86 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// cboGearDataProcessing
+			// 
+			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearDataProcessing.FormattingEnabled = true;
+			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 178);
+			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+			this.cboGearDataProcessing.TabIndex = 167;
+			this.cboGearDataProcessing.Visible = false;
+			// 
+			// cboGearFirewall
+			// 
+			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearFirewall.FormattingEnabled = true;
+			this.cboGearFirewall.Location = new System.Drawing.Point(733, 178);
+			this.cboGearFirewall.Name = "cboGearFirewall";
+			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+			this.cboGearFirewall.TabIndex = 166;
+			this.cboGearFirewall.Visible = false;
+			// 
+			// cboGearSleaze
+			// 
+			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearSleaze.FormattingEnabled = true;
+			this.cboGearSleaze.Location = new System.Drawing.Point(598, 178);
+			this.cboGearSleaze.Name = "cboGearSleaze";
+			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+			this.cboGearSleaze.TabIndex = 165;
+			this.cboGearSleaze.Visible = false;
+			// 
+			// cboGearAttack
+			// 
+			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearAttack.FormattingEnabled = true;
+			this.cboGearAttack.Location = new System.Drawing.Point(531, 178);
+			this.cboGearAttack.Name = "cboGearAttack";
+			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+			this.cboGearAttack.TabIndex = 164;
+			this.cboGearAttack.Visible = false;
+			// 
+			// lblGearFirewallLabel
+			// 
+			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 164);
+			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
+			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearFirewallLabel.TabIndex = 163;
+			this.lblGearFirewallLabel.Tag = "Label_Firewall";
+			this.lblGearFirewallLabel.Text = "Firewall:";
+			this.lblGearFirewallLabel.Visible = false;
+			// 
+			// lblGearDataProcessingLabel
+			// 
+			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 164);
+			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
+			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearDataProcessingLabel.TabIndex = 162;
+			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
+			this.lblGearDataProcessingLabel.Text = "Data Proc:";
+			this.lblGearDataProcessingLabel.Visible = false;
+			// 
+			// lblGearSleazeLabel
+			// 
+			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 164);
+			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
+			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearSleazeLabel.TabIndex = 161;
+			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
+			this.lblGearSleazeLabel.Text = "Sleaze:";
+			this.lblGearSleazeLabel.Visible = false;
+			// 
+			// lblGearAttackLabel
+			// 
+			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 164);
+			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
+			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearAttackLabel.TabIndex = 160;
+			this.lblGearAttackLabel.Tag = "Label_Attack";
+			this.lblGearAttackLabel.Text = "Attack:";
+			this.lblGearAttackLabel.Visible = false;
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14015,14 +14053,6 @@
         private System.Windows.Forms.Label lblTargetLabel;
         private System.Windows.Forms.Label lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
-        private System.Windows.Forms.Label lblGearFirewall;
-        private System.Windows.Forms.Label lblGearFirewallLabel;
-        private System.Windows.Forms.Label lblGearDataProcessing;
-        private System.Windows.Forms.Label lblGearDataProcessingLabel;
-        private System.Windows.Forms.Label lblGearSleaze;
-        private System.Windows.Forms.Label lblGearSleazeLabel;
-        private System.Windows.Forms.Label lblGearAttack;
-        private System.Windows.Forms.Label lblGearAttackLabel;
         private System.Windows.Forms.Label lblGearDeviceRating;
         private System.Windows.Forms.Label lblGearDeviceRatingLabel;
         private System.Windows.Forms.Label lblCyberFirewall;
@@ -14220,6 +14250,14 @@
 		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM38;
 		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM39;
 		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM40;
+		private System.Windows.Forms.ComboBox cboGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboGearFirewall;
+		private System.Windows.Forms.ComboBox cboGearSleaze;
+		private System.Windows.Forms.ComboBox cboGearAttack;
+		private System.Windows.Forms.Label lblGearFirewallLabel;
+		private System.Windows.Forms.Label lblGearDataProcessingLabel;
+		private System.Windows.Forms.Label lblGearSleazeLabel;
+		private System.Windows.Forms.Label lblGearAttackLabel;
 	}
 }
 

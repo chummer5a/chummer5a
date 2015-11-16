@@ -332,7 +332,7 @@ namespace Chummer
             // Check for Special Attributes.
             lblMAGLabel.Enabled = _objCharacter.MAGEnabled;
             lblMAGAug.Enabled = _objCharacter.MAGEnabled;
-            if (_objCharacter.BuildMethod != CharacterBuildMethod.Karma || _objCharacter.BuildMethod != CharacterBuildMethod.LifeModule)
+            if ((_objCharacter.BuildMethod != CharacterBuildMethod.Karma) && (_objCharacter.BuildMethod != CharacterBuildMethod.LifeModule))
             {
                 nudMAG.Enabled = _objCharacter.MAGEnabled;
             }
@@ -15376,12 +15376,11 @@ namespace Chummer
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
             int intBP = 0;
-
-		    if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+			int intAtt = 0;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
 		        _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 // Get the total of "free points" spent
-                int intAtt = 0;
                 intAtt += Convert.ToInt32(nudBOD.Value - nudBOD.Minimum);
                 intAtt += Convert.ToInt32(nudAGI.Value - nudAGI.Minimum);
                 intAtt += Convert.ToInt32(nudREA.Value - nudREA.Minimum);
@@ -15392,8 +15391,6 @@ namespace Chummer
                 intAtt += Convert.ToInt32(nudWIL.Value - nudWIL.Minimum);
 
                 _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
-			    lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}",
-				    (_objCharacter.Attributes).ToString(), _objCharacter.TotalAttributes.ToString());
 		    }
                 // For each attribute, figure out the actual karma cost of attributes raised with karma
                 for (int i = 1; i <= nudKBOD.Value; i++)
@@ -15427,10 +15424,19 @@ namespace Chummer
                 for (int i = 1; i <= nudKWIL.Value; i++)
                 {
 			    intBP += ((Convert.ToInt32(nudWIL.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                return intBP;
-
-
+			}
+			if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) || (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
+			{
+				if (intBP > 0)
+				{
+					lblPBuildAttributes.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString(), intBP.ToString());
+				}
+				else
+				{
+					lblPBuildAttributes.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.TotalAttributes - intAtt).ToString(), _objCharacter.TotalAttributes.ToString());
+				}
+			}
+			return intBP;
             }
 
         /// <summary>
@@ -15438,10 +15444,12 @@ namespace Chummer
         /// </summary>
         private int CalculateSpecialAttributeBP()
         {
-            // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
-            // Special Attributes are not subject to the 1/2 of max BP rule.
-            int intBP = 0;
-
+			string strTooltip = "";
+			string strEDG = "";
+			string strMAG = "";
+			string strRES = "";
+			int intBP = 0;
+			int intSpecialBP = 0;
             // Get the total of "free points" spent
             int intAtt = 0;
             intAtt += Convert.ToInt32(nudEDG.Value - nudEDG.Minimum);
@@ -15451,8 +15459,7 @@ namespace Chummer
                 intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
 
             _objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
-            lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
-
+            
             // For each attribute, figure out the actual karma cost of attributes raised with karma
             for (int i = 1; i <= nudKEDG.Value; i++)
             {
@@ -15472,10 +15479,8 @@ namespace Chummer
                     intBP += ((Convert.ToInt32(nudRES.Value) + i) * _objOptions.KarmaAttribute);
                 }
             }
-            return intBP;
-
-			//Dead code, should probably just be removed.
-			/* Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+			
+			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
             {
@@ -15495,9 +15500,9 @@ namespace Chummer
                     string strAttribute = "";
                     NumericUpDown nudAttribute = objControl;
                     // Disabled Attributes should not be included.
-                    if (nudAttribute.Enabled)
+                    if ((objControl.Name == nudMAG.Name && _objCharacter.MAGEnabled) || (objControl.Name == nudRES.Name && _objCharacter.RESEnabled))
                     {
-                        if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                        if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                         {
                             // If the character has an ESS penalty, the minimum needs to be bumped up by 1 so that the cost calculation is correct.
                             int intMinModifier = 0;
@@ -15553,6 +15558,7 @@ namespace Chummer
                                 break;
                         }
                     }
+					intSpecialBP += intThisBP;
                 }
             }
 
@@ -15561,12 +15567,11 @@ namespace Chummer
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
-
                 _objCharacter.Special = _objCharacter.TotalSpecial - intBP;
                 //if (_objCharacter.Special < 0)
                 //    lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.TotalSpecial.ToString());
                 //else
-                lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
+                //lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
 
                 // If the character overspent on primary attributes, the excess must be charged to Karma.
                 if (_objCharacter.Special < 0)
@@ -15616,17 +15621,22 @@ namespace Chummer
                                 break;
                         }
                     }
-                    return intKarma;
-                }
+					lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
+					return intKarma;
+				}
                 else
-                {
-                    return 0;
+				{
+					lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
+					return 0;
                 }
+
+			}
+			else
+			{
+				lblSpecialAttributesBP.Text = intBP.ToString();
+				return intBP;
             }
-            else
-            {
-                return intBP;
-            }*/
+
 		}
 
 		/// <summary>

@@ -21,6 +21,9 @@ Application Change:
 - Commlinks and cyberdecks can now switch their ASDF attributes around. This capability will be properly segregated out into Cyberdecks only shortly.
 - Previous Priority selections are preserved when you use the Change Priority Selection button in Create Mode. Fixes #497.
 - Fixed an issue that stopped Sum to Ten from completing properly. 
+- Fixed some calculation and appearance issues for special attributes. 
+- Build Summary for Primary and Special Attributes during Priority/Sum to Ten now shows Karma cost in addition to point cost expenditure.
+- Fixed a crash in the Spell Selection window caused by clicking the Accept Form button with a Category node selected.
 
 Data Change:
 - Fixed an issue with Cloaks from HT that caused a crash.
@@ -41,6 +44,9 @@ Data Change:
 
 New String:
 - Menu_FilePrintPreview
+
+Renamed String:
+- String_OverContactPoints renamed to String_OverPriorityPoints
 
 Build 176:
 Application Change:

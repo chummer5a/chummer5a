@@ -297,10 +297,9 @@
 			<text>page</text>
 		</string>
 		<string>
-			<key>String_OverContactPoints</key>
+			<key>String_OverPriorityPoints</key>
 			<text>{0} of {1}: {2} Karma</text>
 		</string>
-		
 		<string>
 			<key>String_Of</key>
 			<text>of</text>
