@@ -1751,8 +1751,8 @@ namespace Chummer
                 nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
                 nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
 
-                // If the character is being build with Karma, show the Initiation Tab.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                // If the character options permit initiation in create mode, show the Initiation page.
+                if (_objOptions.AllowInitiationInCreateMode)
                 {
                     nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
@@ -1832,8 +1832,8 @@ namespace Chummer
                 nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
                 nudRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
 
-                // If the character is being build with Karma, show the Initiation Tab.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+                // If the character options permit submersion in create mode, show the Initiation page.
+                if (_objOptions.AllowInitiationInCreateMode)
                 {
                     nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
@@ -8083,7 +8083,7 @@ namespace Chummer
             {
                 // Look up the cost of the Quality.
                 XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-                int intBP = Convert.ToInt32(objXmlMetatypeQuality["bp"].InnerText) * -1;
+                int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -1;
                 int intShowBP = intBP;
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                     intShowBP *= _objOptions.KarmaQuality;
