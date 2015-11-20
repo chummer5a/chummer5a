@@ -297,10 +297,9 @@
 			<text>page</text>
 		</string>
 		<string>
-			<key>String_OverContactPoints</key>
+			<key>String_OverPriorityPoints</key>
 			<text>{0} of {1}: {2} Karma</text>
 		</string>
-		
 		<string>
 			<key>String_Of</key>
 			<text>of</text>
@@ -1001,6 +1000,10 @@
 		<string>
 			<key>Menu_FilePrint</key>
 			<text>&amp;Print</text>
+		</string>
+		<string>
+			<key>Menu_FilePrintPreview</key>
+			<text>&amp;Print Preview</text>
 		</string>
 		<string>
 			<key>Menu_FileClose</key>
@@ -1806,6 +1809,10 @@
 			<key>MessageTitle_WeaponUnderbarrel</key>
 			<text>Cannot Add Underbarrel Weapon</text>
 		</string>
+		<string>
+			<key>Message_CannotFindWeapon</key>
+			<text>Weapon was not found. Please remove the weapon and re-add it, as the name or other details may have been changed.</text>
+		</string>	
 		<string>
 			<key>Message_CannotModifyWeapon</key>
 			<text>Accessories cannot be added to this Weapon.</text>

@@ -100,11 +100,7 @@ namespace Chummer
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualities)
-            {
-                intBP *= 2;
-            }
-            lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+            lblBP.Text = intBP.ToString();
             if (chkFree.Checked)
                 lblBP.Text = "0";
 
@@ -538,7 +534,8 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                foreach (XmlNode objXmlOneOf in objXmlRequiredList)
+				XmlDocument _objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
+				foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
                     string strThisRequirement = "\n" + LanguageManager.Instance.GetString("Message_SelectQuality_OneOf");
@@ -566,6 +563,7 @@ namespace Chummer
 						}
 						else if (objXmlRequired.Name == "characterquality")
 						{
+							
 							// Run through all of the Qualities the character has and see if the current required item exists.
 							// If so, turn on the RequirementMet flag so it can be selected.
 							foreach (Quality objQuality in _objCharacter.Qualities)
@@ -576,7 +574,7 @@ namespace Chummer
 
 							if (!blnOneOfMet)
 							{
-								XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
+								XmlNode objNode = _objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlRequired.InnerText + "\"]");
 								if (objNode["translate"] != null)
 								strThisRequirement += "\n\t" + objNode["translate"].InnerText;
 								else
@@ -871,9 +869,10 @@ namespace Chummer
                         bool blnFound = false;
                         if (objXmlRequired.Name == "quality")
                         {
-                            // Run through all of the Qualities the character has and see if the current required item exists.
-                            // If so, turn on the RequirementMet flag so it can be selected.
-                            foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
+							
+							// Run through all of the Qualities the character has and see if the current required item exists.
+							// If so, turn on the RequirementMet flag so it can be selected.
+							foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
                             {
                                 if (objQuality.Name == objXmlRequired.InnerText)
                                     blnFound = true;

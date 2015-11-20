@@ -20,15 +20,6 @@
 			<hidden />
 		</lifestyle>
 		<lifestyle>
-			<id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
-			<name>Bolt Hole</name>
-			<cost>1000</cost>
-			<dice>1</dice>
-			<multiplier>0</multiplier>
-			<source>RF</source>
-			<page>217</page>
-		</lifestyle>
-		<lifestyle>
 			<id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
 			<name>Street</name>
 			<cost>0</cost>
@@ -90,6 +81,15 @@
 			<multiplier>0</multiplier>
 			<source>RF</source>
 			<page>218</page>
+		</lifestyle>
+		<lifestyle>
+			<id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
+			<name>Bolt Hole</name>
+			<cost>1000</cost>
+			<dice>1</dice>
+			<multiplier>0</multiplier>
+			<source>RF</source>
+			<page>217</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
@@ -762,7 +762,6 @@
 			<multiplier>-10</multiplier>
 			<source>SR5</source>
 			<page>370</page>
-			<cost></cost>
 		</quality>
 		<quality>
 			<id>4fb84713-6171-409d-ad7c-ccbc44b891ad</id>
@@ -776,6 +775,7 @@
 		<quality>
 			<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
 			<name>Dangerous Area</name>
+			<lp>-1</lp>
 			<category>Negative</category>
 			<multiplier>-20</multiplier>
 			<source>SR5</source>
@@ -1024,7 +1024,7 @@
 			<id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
 		</quality>
 		<quality>
-			<name>Dug a hole</name>
+			<name>Dug A Hole</name>
 			<category>Positive</category>
 			<lp>0</lp>
 			<allowed>Bolthole</allowed>

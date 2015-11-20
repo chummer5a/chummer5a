@@ -13,6 +13,11 @@ namespace Chummer
 
 		private string _strXmlFile = "metatypes.xml";
         private string _strPrioritiesXmlFile = "priorities.xml";
+		private string _strMetatype = "";
+		private string _strAttributes = "";
+		private string _strSpecial = "";
+		private string _strSkills = "";
+		private string _strResources = "";
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = false;
@@ -65,10 +70,65 @@ namespace Chummer
 				_strXmlFile = value;
 			}
 		}
+		public string Metatype
+		{
+			get
+			{
+				return _strMetatype;
+			}
+			set
+			{
+				_strMetatype = value;
+			}
+		}
+		public string Resources
+		{
+			get
+			{
+				return _strResources;
+			}
+			set
+			{
+				_strResources = value;
+			}
+		}
+		public string Skills
+		{
+			get
+			{
+				return _strSkills;
+			}
+			set
+			{
+				_strSkills = value;
+			}
+		}
+		public string Attributes
+		{
+			get
+			{
+				return _strAttributes;
+			}
+			set
+			{
+				_strAttributes = value;
+			}
+		}
+		public string Special
+		{
+			get
+			{
+				return _strSpecial;
+			}
+			set
+			{
+				_strSpecial = value;
+			}
+		}
 		#endregion
 
 		#region Form Events
-        public frmPriorityMetatype(Character objCharacter)
+		public frmPriorityMetatype(Character objCharacter)
         {
 			_objCharacter = objCharacter;
             InitializeComponent();
@@ -160,12 +220,23 @@ namespace Chummer
                 }
             }
 
-            // Set Priority defaults.
-            cboHeritage.SelectedIndex = 0;
-            cboTalent.SelectedIndex = 1;
-            cboAttributes.SelectedIndex = 2;
-            cboSkills.SelectedIndex = 3;
-            cboResources.SelectedIndex = 4;
+			// Set Priority defaults.
+			if (_strAttributes != "")
+			{
+				cboAttributes.SelectedValue = _strAttributes;
+				cboHeritage.SelectedValue = _strMetatype;
+				cboResources.SelectedValue = _strResources;
+				cboSkills.SelectedValue = _strSkills;
+				cboTalent.SelectedValue = _strSpecial;
+			}
+			else
+			{
+				cboHeritage.SelectedIndex = 0;
+				cboTalent.SelectedIndex = 1;
+				cboAttributes.SelectedIndex = 2;
+				cboSkills.SelectedIndex = 3;
+				cboResources.SelectedIndex = 4;
+			}
             _blnInitializing = false;
 
             // Load Metatypes

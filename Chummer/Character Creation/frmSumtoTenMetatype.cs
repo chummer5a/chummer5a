@@ -13,8 +13,13 @@ namespace Chummer
 
         private string _strXmlFile = "metatypes.xml";
         private string _strSumtoTenXmlFile = "SumtoTen.xml";
+		private string _strMetatype = "";
+		private string _strAttributes = "";
+		private string _strSpecial = "";
+		private string _strSkills = "";
+		private string _strResources = "";
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+		private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = false;
 
         #region Character Events
@@ -64,11 +69,66 @@ namespace Chummer
             {
                 _strXmlFile = value;
             }
-        }
-        #endregion
+		}
+		public string Metatype
+		{
+			get
+			{
+				return _strMetatype;
+			}
+			set
+			{
+				_strMetatype = value;
+			}
+		}
+		public string Resources
+		{
+			get
+			{
+				return _strResources;
+			}
+			set
+			{
+				_strResources = value;
+			}
+		}
+		public string Skills
+		{
+			get
+			{
+				return _strSkills;
+			}
+			set
+			{
+				_strSkills = value;
+			}
+		}
+		public string Attributes
+		{
+			get
+			{
+				return _strAttributes;
+			}
+			set
+			{
+				_strAttributes = value;
+			}
+		}
+		public string Special
+		{
+			get
+			{
+				return _strSpecial;
+			}
+			set
+			{
+				_strSpecial = value;
+			}
+		}
+		#endregion
 
-        #region Form Events
-        public frmSumtoTenMetatype(Character objCharacter)
+		#region Form Events
+		public frmSumtoTenMetatype(Character objCharacter)
         {
 
             _objCharacter = objCharacter;
@@ -162,17 +222,27 @@ namespace Chummer
                     }
                 }
             }
+			// Set SumtoTen defaults.
+			if (_strAttributes != "")
+			{
+				cboAttributes.SelectedValue = _strAttributes;
+				cboHeritage.SelectedValue = _strMetatype;
+				cboResources.SelectedValue = _strResources;
+				cboSkills.SelectedValue = _strSkills;
+				cboTalent.SelectedValue = _strSpecial;
+			}
+			else
+			{
+				cboHeritage.SelectedIndex = 0;
+				cboTalent.SelectedIndex = 1;
+				cboAttributes.SelectedIndex = 2;
+				cboSkills.SelectedIndex = 3;
+				cboResources.SelectedIndex = 4;
+			}
+			_blnInitializing = false;
 
-            // Set SumtoTen defaults.
-            cboHeritage.SelectedIndex = 4;
-            cboTalent.SelectedIndex = 3;
-            cboAttributes.SelectedIndex = 2;
-            cboSkills.SelectedIndex = 1;
-            cboResources.SelectedIndex = 0;
-            _blnInitializing = false;
-
-            // Load Metatypes
-            LoadMetatypes();
+			// Load Metatypes
+			LoadMetatypes();
             PopulateTalents();
             lstMetatypes.SelectedIndex = 0;
 
@@ -339,9 +409,7 @@ namespace Chummer
 
         private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-
-            string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
+			string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
 
             if (cboTalents.SelectedIndex >= 0)
             {

@@ -10,7 +10,7 @@ namespace Chummer
 	{
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
-        private Character _objCharacter;
+		private Character _objCharacter;
 
         #region Control Events
         public frmMain()

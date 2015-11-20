@@ -165,7 +165,6 @@ namespace Chummer
         private bool _blnLightningReflexes = false;
         private bool _blnFame = false;
         private bool _blnBornRich = false;
-        private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
 		private decimal _decPrototypeTranshuman = 0m;

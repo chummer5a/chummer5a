@@ -444,7 +444,7 @@ namespace Chummer
                     _objCharacter.MetageneticLimit = 30;
                     break;
                 case "Changeling (Class II SURGE)":
-                    _objCharacter.MetageneticLimit = 15;
+                    _objCharacter.MetageneticLimit = 30;
                     break;
                 case "Changeling (Class III SURGE)":
                     _objCharacter.MetageneticLimit = 30;

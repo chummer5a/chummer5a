@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Xml.Xsl;
+using System.ComponentModel;
 
 namespace Chummer
 {
@@ -119,6 +120,11 @@ namespace Chummer
 		}
 
 		private void cmdPrint_Click(object sender, EventArgs e)
+		{
+			webBrowser1.ShowPrintDialog();
+		}
+
+		private void tsPrintPreview_Click(object sender, EventArgs e)
 		{
 			webBrowser1.ShowPrintPreviewDialog();
 		}
@@ -309,5 +315,23 @@ namespace Chummer
 			}
 		}
 		#endregion
+
+		private void ContextMenu_Opening(object sender, CancelEventArgs e)
+		{
+			foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
+			{
+				if (objItem.Tag != null)
+					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+			}
+		}
+
+		private void ContextMenu_DropDownOpening(object sender, EventArgs e)
+		{
+			foreach (ToolStripItem objItem in ((ToolStripDropDownItem)sender).DropDownItems)
+			{
+				if (objItem.Tag != null)
+					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
+			}
+		}
 	}
 }

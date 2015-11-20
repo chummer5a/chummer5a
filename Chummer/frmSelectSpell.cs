@@ -346,47 +346,53 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			// Display the Spell information.
-			XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
-			// Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-			// The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-			int intSpellCount = 0;
-			int intRitualCount = 0;
-			int intAlchPrepCount = 0;
-			int intSpellLimit = 0;
-            
-			foreach (Spell objspell in _objCharacter.Spells)
+			if (treSpells.SelectedNode.Level == 0)
 			{
-				if (objspell.Alchemical)
-				{ intAlchPrepCount++; }
-				else if (objspell.Category == "Rituals")
-				{ intRitualCount++; }
-				else
-				{ intSpellCount++; }
+				return;
 			}
-			if (!_objCharacter.IgnoreRules)
+			else
 			{
-				intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
-				if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
-				{
-					
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-				else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-				else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
-						LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
+				// Display the Spell information.
+				XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
+				// Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
+				// The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
+				int intSpellCount = 0;
+				int intRitualCount = 0;
+				int intAlchPrepCount = 0;
+				int intSpellLimit = 0;
 
+				foreach (Spell objspell in _objCharacter.Spells)
+				{
+					if (objspell.Alchemical)
+					{ intAlchPrepCount++; }
+					else if (objspell.Category == "Rituals")
+					{ intRitualCount++; }
+					else
+					{ intSpellCount++; }
+				}
+				if (!_objCharacter.IgnoreRules)
+				{
+					intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
+					if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
+					{
+
+						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+						return;
+					}
+					else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
+					{
+						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+						return;
+					}
+					else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
+					{
+						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
+							LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+						return;
+
+					}
 				}
 			}
-
 			try
 			{
 				if (treSpells.SelectedNode.Level > 0)

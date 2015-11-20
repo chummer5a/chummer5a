@@ -147,18 +147,30 @@ namespace Chummer
 			}
 
 			string[] strMounts = objXmlAccessory["mount"].InnerText.Split('/');
-			string strMount = "";
+			string[] strAllowed = _strAllowedMounts.Split('/');
+			cboMount.Items.Clear();
 			foreach (string strCurrentMount in strMounts)
 			{
 				if (strCurrentMount != "")
-					strMount += LanguageManager.Instance.GetString("String_Mount" + strCurrentMount) + "/";
+				{
+					foreach (string strAllowedMount in strAllowed)
+					{
+						if (strCurrentMount == strAllowedMount)
+						{
+							cboMount.Items.Add(strCurrentMount);
+						}
+					}
+				}
 			}
-			// Remove the trailing /
-			if (strMount != "" && strMount.Contains('/'))
-				strMount = strMount.Substring(0, strMount.Length - 1);
-
-			lblMount.Tag = objXmlAccessory["mount"].InnerText;
-			lblMount.Text = strMount;
+			if (cboMount.Items.Count < 1)
+			{
+				cboMount.Enabled = false;
+			}
+			else
+			{
+				cboMount.SelectedIndex = 0;
+				cboMount.Enabled = true;
+			}
 			// Avail.
 			// If avail contains "F" or "R", remove it from the string so we can use the expression.
 			string strAvail = "";
@@ -245,7 +257,7 @@ namespace Chummer
 		{
 			get
 			{
-				return lblMount.Tag.ToString();
+				return cboMount.SelectedItem.ToString();
 			}
 		}
 
@@ -335,7 +347,7 @@ namespace Chummer
 			intWidth = Math.Max(intWidth, lblCostLabel.Width);
 
 			lblRC.Left = lblRCLabel.Left + intWidth + 6;
-			lblMount.Left = lblMountLabel.Left + intWidth + 6;
+			//lblMount.Left = lblMountLabel.Left + intWidth + 6;
 			lblAvail.Left = lblAvailLabel.Left + intWidth + 6;
 			lblTestLabel.Left = lblAvail.Left + lblAvail.Width + 16;
 			lblTest.Left = lblTestLabel.Left + lblTestLabel.Width + 6;

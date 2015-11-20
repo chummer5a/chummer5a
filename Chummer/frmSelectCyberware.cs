@@ -270,6 +270,27 @@ namespace Chummer
 				nudRating.Enabled = false;
 			}
 
+
+			if (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
+				objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
+				objXmlCyberware["category"].InnerText.StartsWith("Genemods") ||
+				_blnLockGrade)
+			{
+				cboGrade.Enabled = false;
+
+			}
+			else
+			{
+				cboGrade.Enabled = true;
+			}
+
+			if (objXmlCyberware["category"].InnerText.StartsWith("Genetech:") ||
+				objXmlCyberware["category"].InnerText.StartsWith("Symbionts") ||
+				objXmlCyberware["category"].InnerText.StartsWith("Genemods"))
+            {
+				cboGrade.SelectedValue = "Standard";
+			}
+
 			if (objXmlCyberware["forcegrade"] != null)
 			{
 				// Force the Cyberware to be a particular Grade.
@@ -696,7 +717,7 @@ namespace Chummer
 					dblCharacterESSModifier -= (1 - _dblBasicBiowareESSModifier);
 
 				// Genetech and Genetic Infusions are not subject to Bioware cost multipliers, so if we're looking at either, suppress the multiplier.
-				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions"))
+				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
 					dblCharacterESSModifier = 1;
 
 				if (nudESSDiscount.Visible)
@@ -710,7 +731,7 @@ namespace Chummer
 				// Place the Genetech cost multiplier in a varaible that can be safely modified.
 				double dblGenetechCostModifier = 1;
 				// Genetech cost modifier only applies to Genetech.
-				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions"))
+				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
 					dblGenetechCostModifier = _dblGenetechCostModifier;
 
 				// If Genetech: Transgenics is selected, apply the Transgenetics Bioware ESS Multiplier.

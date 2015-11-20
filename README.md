@@ -8,3 +8,6 @@ The repository for Keith's original code can be found at: https://code.google.co
 
 The repository for Adam Schmidt's original code can be found at: https://code.google.com/p/chummer5/, and a github repository has been created at https://github.com/chummer5a/chummer5 for archival purposes.
 
+Pre-release automated builds are performed by Appveyor, and are accessible via [the Releases page](https://github.com/chummer5a/chummer5a/releases).
+
+[![Build status](https://ci.appveyor.com/api/projects/status/wf0jbqd5xp05s4hs?svg=true)](https://ci.appveyor.com/project/chummer5a/chummer5a)

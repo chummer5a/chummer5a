@@ -28,21 +28,25 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.cmdSaveHTML = new System.Windows.Forms.Button();
 			this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-			this.cmdPrint = new System.Windows.Forms.Button();
+			this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmdPrint = new SplitButton();
 			this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 			this.cboXSLT = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cmdSaveXML = new System.Windows.Forms.Button();
+			this.cmsPrintButton.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cmdSaveHTML
 			// 
 			this.cmdSaveHTML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.cmdSaveHTML.Location = new System.Drawing.Point(144, 12);
+			this.cmdSaveHTML.Location = new System.Drawing.Point(118, 12);
 			this.cmdSaveHTML.Name = "cmdSaveHTML";
-			this.cmdSaveHTML.Size = new System.Drawing.Size(117, 23);
+			this.cmdSaveHTML.Size = new System.Drawing.Size(100, 23);
 			this.cmdSaveHTML.TabIndex = 1;
 			this.cmdSaveHTML.Tag = "Button_Viewer_SaveAsHtml";
 			this.cmdSaveHTML.Text = "Save as HTML";
@@ -62,18 +66,33 @@
 			this.webBrowser1.TabIndex = 5;
 			this.webBrowser1.WebBrowserShortcutsEnabled = false;
 			// 
+			// cmsPrintButton
+			// 
+			this.cmsPrintButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsPrintPreview});
+			this.cmsPrintButton.Name = "cmsPrintButton";
+			this.cmsPrintButton.Size = new System.Drawing.Size(144, 26);
+			this.cmsPrintButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			// 
+			// tsPrintPreview
+			// 
+			this.tsPrintPreview.Name = "tsPrintPreview";
+			this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
+			this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
+			this.tsPrintPreview.Text = "&Print Preview";
+			this.tsPrintPreview.Click += new System.EventHandler(this.tsPrintPreview_Click);
+			// 
 			// cmdPrint
 			// 
 			this.cmdPrint.AutoSize = true;
-			this.cmdPrint.Image = global::Chummer.Properties.Resources.printer;
-			this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
 			this.cmdPrint.Location = new System.Drawing.Point(12, 12);
 			this.cmdPrint.Name = "cmdPrint";
-			this.cmdPrint.Size = new System.Drawing.Size(102, 23);
-			this.cmdPrint.TabIndex = 0;
-			this.cmdPrint.Tag = "Button_Viewer_PrintCharacter";
-			this.cmdPrint.Text = "Print Character";
-			this.cmdPrint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.cmdPrint.Size = new System.Drawing.Size(100, 23);
+			this.cmdPrint.SplitMenuStrip = this.cmsPrintButton;
+			this.cmdPrint.TabIndex = 103;
+			this.cmdPrint.Tag = "Menu_FilePrint";
+			this.cmdPrint.Text = "&Print";
 			this.cmdPrint.UseVisualStyleBackColor = true;
 			this.cmdPrint.Click += new System.EventHandler(this.cmdPrint_Click);
 			// 
@@ -100,9 +119,9 @@
 			// cmdSaveXML
 			// 
 			this.cmdSaveXML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.cmdSaveXML.Location = new System.Drawing.Point(267, 12);
+			this.cmdSaveXML.Location = new System.Drawing.Point(224, 12);
 			this.cmdSaveXML.Name = "cmdSaveXML";
-			this.cmdSaveXML.Size = new System.Drawing.Size(91, 23);
+			this.cmdSaveXML.Size = new System.Drawing.Size(100, 23);
 			this.cmdSaveXML.TabIndex = 2;
 			this.cmdSaveXML.Tag = "Button_Viewer_SaveAsXml";
 			this.cmdSaveXML.Text = "Save XML";
@@ -127,6 +146,7 @@
 			this.Text = "Character Viewer";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmViewer_FormClosing);
 			this.Load += new System.EventHandler(this.frmViewer_Load);
+			this.cmsPrintButton.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -136,11 +156,14 @@
 
 		internal System.Windows.Forms.Button cmdSaveHTML;
 		private System.Windows.Forms.WebBrowser webBrowser1;
-		internal System.Windows.Forms.Button cmdPrint;
+		internal SplitButton cmdPrint;
+		private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
+		private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
 		internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
 		private System.Windows.Forms.ComboBox cboXSLT;
 		private System.Windows.Forms.Label label1;
 		internal System.Windows.Forms.Button cmdSaveXML;
-
+		
 	}
+
 }

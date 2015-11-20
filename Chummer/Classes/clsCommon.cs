@@ -66,6 +66,34 @@ namespace Chummer
 			objReturn = null;
 			return objReturn;
 		}
+		/// <summary>
+		/// Locate a Commlink.
+		/// </summary>
+		/// <param name="strGuid">InternalId of the Gear to find.</param>
+		/// <param name="lstCommlink">List of Commlinks to search.</param>
+		public Commlink FindCommlink(string strGuid, List<Gear> lstCommlink)
+		{
+			Commlink objReturn = new Commlink(_objCharacter);
+			foreach (Commlink objCommlink in lstCommlink)
+			{
+				if (objCommlink.InternalId == strGuid)
+					objReturn = objCommlink;
+				else
+				{
+					if (objCommlink.Children.Count > 0)
+						objReturn = FindCommlink(strGuid, objCommlink.Children);
+				}
+
+				if (objReturn != null)
+				{
+					if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")
+						return objReturn;
+				}
+			}
+
+			objReturn = null;
+			return objReturn;
+		}
 
 		/// <summary>
 		/// Locate a piece of Gear by matching on its Weapon ID.
