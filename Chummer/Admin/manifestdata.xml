@@ -4,7 +4,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.0.5.176</version>
+		<version>0.0.5.177</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -202,7 +202,7 @@
 	<file>
 		<name>data/armor.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-385</version>
 		<description>Armor</description>
 		<notes>- Armor data file</notes>
 		<url>https://www.dropbox.com/s/1wp0btv02dcvo7r/armor.xml?dl=1</url>
@@ -210,7 +210,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-360</version>
+		<version>-355</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -218,7 +218,7 @@
 	<file>
 		<name>data/books.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>-380</version>
 		<description>Books</description>
 		<notes>- Books data file</notes>
 		<url>https://www.dropbox.com/s/qetzzti2r40btx7/books.xml?dl=1</url>
@@ -258,7 +258,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-350</version>
+		<version>-345</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -282,7 +282,7 @@
 	<file>
 		<name>data/gear.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>-375</version>
 		<description>Gear</description>
 		<notes>- Gear data file</notes>
 		<url>https://www.dropbox.com/s/qp3vbk0jy902ynt/gear.xml?dl=1</url>
@@ -306,7 +306,7 @@
 	<file>
 		<name>data/lifemodules.xml</name>
 		<type>Data Files</type>
-		<version>-880</version>
+		<version>-875</version>
 		<description>Life Modules</description>
 		<notes>- Life Modules data file</notes>
 		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
@@ -314,7 +314,7 @@
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-850</version>
+		<version>-845</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -330,7 +330,7 @@
 	<file>
 		<name>data/mentors.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-385</version>
 		<description>Mentor Spirits</description>
 		<notes>- Mentor Spirits data file</notes>
 		<url>https://www.dropbox.com/s/zb8sowykt8j4ff1/mentors.xml?dl=1</url>
@@ -346,7 +346,7 @@
 	<file>
 		<name>data/metatypes.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>-385</version>
 		<description>Metatypes</description>
 		<notes>- Metatypes data file</notes>
 		<url>https://www.dropbox.com/s/haqoojv28c8dwve/metatypes.xml?dl=1</url>
@@ -370,7 +370,7 @@
 	<file>
 		<name>data/powers.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>-385</version>
 		<description>Powers</description>
 		<notes>- Powers data file</notes>
 		<url>https://www.dropbox.com/s/s6j2l3gnq1hnie4/powers.xml?dl=1</url>
@@ -394,7 +394,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-350</version>
+		<version>-345</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -474,7 +474,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-335</version>
+		<version>-330</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>
