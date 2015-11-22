@@ -2465,6 +2465,9 @@
 			<name>Liminal Body, Centaur</name>
 			<category>Cyberlimb</category>
 			<ess>3</ess>
+      <subsystems>
+        <subsystem>Cyberlimb</subsystem>
+      </subsystems>
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>

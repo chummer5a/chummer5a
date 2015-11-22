@@ -8571,7 +8571,7 @@ namespace Chummer
 			{
 				// Look up the cost of the Quality.
 				XmlNode objXmlMetatypeQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-				int intBP = Convert.ToInt32(objXmlMetatypeQuality["bp"].InnerText) * -2;
+				int intBP = Convert.ToInt32(objXmlMetatypeQuality["karma"].InnerText) * -2;
 				int intShowBP = intBP * _objOptions.KarmaQuality;
 				string strBP = intShowBP.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 
