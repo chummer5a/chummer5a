@@ -18,7 +18,7 @@ Application Change:
 - Fixed a calculation issue for lifestyle qualities.
 - Fixed some issues that cropped up for 'ware that adds qualities (Daredrenaline, Metatype Reduction, etc.)
 - Implemented support for selecting the slot that a weapon modiciation occupies. May break in interesting ways, but should allow holdouts and such to attach spare clips again.
-- Commlinks and cyberdecks can now switch their ASDF attributes around. This capability will be properly segregated out into Cyberdecks only shortly.
+- Commlinks and cyberdecks can now switch their ASDF attributes around. This capability will be properly segregated out into Cyberdecks in a later patch.
 - Previous Priority selections are preserved when you use the Change Priority Selection button in Create Mode. Fixes #497.
 - Fixed an issue that stopped Sum to Ten from completing properly. 
 - Fixed some calculation and appearance issues for special attributes. 
@@ -41,6 +41,7 @@ Data Change:
 - Fixed the minimum INT for Wakyambi to 2.
 - Holdouts have had the <allowaccessory> tag set to true as a result of code changes to how accessories can be attached to a weapon. May not take effect on existing weapons; if not, remove and re-add the weapon.
 - Renamed the description for the Cat Mentor to not refer to Infiltration.
+- Removed the Sail Away, Sweet Sister version of the Personalised Grip, as it's replaced by the Hard Targets version.
 
 New String:
 - Menu_FilePrintPreview

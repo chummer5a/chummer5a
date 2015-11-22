@@ -421,13 +421,9 @@
 			this.chkCyberwareMatrixCM38 = new System.Windows.Forms.CheckBox();
 			this.chkCyberwareMatrixCM39 = new System.Windows.Forms.CheckBox();
 			this.chkCyberwareMatrixCM40 = new System.Windows.Forms.CheckBox();
-			this.lblCyberFirewall = new System.Windows.Forms.Label();
 			this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
-			this.lblCyberDataProcessing = new System.Windows.Forms.Label();
 			this.lblCyberDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblCyberSleaze = new System.Windows.Forms.Label();
 			this.lblCyberSleazeLabel = new System.Windows.Forms.Label();
-			this.lblCyberAttack = new System.Windows.Forms.Label();
 			this.lblCyberAttackLabel = new System.Windows.Forms.Label();
 			this.lblCyberDeviceRating = new System.Windows.Forms.Label();
 			this.lblCyberDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -524,15 +520,15 @@
 			this.cmsDeleteArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsArmorSell = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabWeapons = new System.Windows.Forms.TabPage();
+			this.cboWeaponGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblWeaponRating = new System.Windows.Forms.Label();
 			this.lblWeaponRatingLabel = new System.Windows.Forms.Label();
-			this.lblWeaponFirewall = new System.Windows.Forms.Label();
 			this.lblWeaponFirewallLabel = new System.Windows.Forms.Label();
-			this.lblWeaponDataProcessing = new System.Windows.Forms.Label();
 			this.lblWeaponDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblWeaponSleaze = new System.Windows.Forms.Label();
 			this.lblWeaponSleazeLabel = new System.Windows.Forms.Label();
-			this.lblWeaponAttack = new System.Windows.Forms.Label();
 			this.lblWeaponAttackLabel = new System.Windows.Forms.Label();
 			this.lblWeaponDeviceRating = new System.Windows.Forms.Label();
 			this.lblWeaponDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -603,6 +599,14 @@
 			this.cmsAmmoFullBurst = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsAmmoSuppressiveFire = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabGear = new System.Windows.Forms.TabPage();
+			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboGearAttack = new System.Windows.Forms.ComboBox();
+			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
+			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
+			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
+			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.lblGearDeviceRating = new System.Windows.Forms.Label();
 			this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
 			this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
@@ -643,6 +647,10 @@
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
+			this.cboVehicleGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearAttack = new System.Windows.Forms.ComboBox();
 			this.panVehicleCM = new System.Windows.Forms.TabControl();
 			this.tabVehiclePhysicalCM = new System.Windows.Forms.TabPage();
 			this.chkVehiclePhysicalCM40 = new System.Windows.Forms.CheckBox();
@@ -726,13 +734,9 @@
 			this.chkVehicleMatrixCM38 = new System.Windows.Forms.CheckBox();
 			this.chkVehicleMatrixCM39 = new System.Windows.Forms.CheckBox();
 			this.chkVehicleMatrixCM40 = new System.Windows.Forms.CheckBox();
-			this.lblVehicleFirewall = new System.Windows.Forms.Label();
 			this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
-			this.lblVehicleDataProcessing = new System.Windows.Forms.Label();
 			this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblVehicleSleaze = new System.Windows.Forms.Label();
 			this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
-			this.lblVehicleAttack = new System.Windows.Forms.Label();
 			this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
 			this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
 			this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
@@ -1088,14 +1092,10 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
-			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
-			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
-			this.cboGearAttack = new System.Windows.Forms.ComboBox();
-			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-			this.lblGearAttackLabel = new System.Windows.Forms.Label();
+			this.cboCyberwareGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearAttack = new System.Windows.Forms.ComboBox();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -4992,14 +4992,14 @@
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearDataProcessing);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearFirewall);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearSleaze);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearAttack);
 			this.tabCyberware.Controls.Add(this.tabCyberwareCM);
-			this.tabCyberware.Controls.Add(this.lblCyberFirewall);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewallLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberDataProcessing);
 			this.tabCyberware.Controls.Add(this.lblCyberDataProcessingLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberSleaze);
 			this.tabCyberware.Controls.Add(this.lblCyberSleazeLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberAttack);
 			this.tabCyberware.Controls.Add(this.lblCyberAttackLabel);
 			this.tabCyberware.Controls.Add(this.lblCyberDeviceRating);
 			this.tabCyberware.Controls.Add(this.lblCyberDeviceRatingLabel);
@@ -5580,16 +5580,6 @@
 			this.chkCyberwareMatrixCM40.UseVisualStyleBackColor = true;
 			this.chkCyberwareMatrixCM40.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
-			// lblCyberFirewall
-			// 
-			this.lblCyberFirewall.AutoSize = true;
-			this.lblCyberFirewall.Location = new System.Drawing.Point(753, 304);
-			this.lblCyberFirewall.Name = "lblCyberFirewall";
-			this.lblCyberFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberFirewall.TabIndex = 185;
-			this.lblCyberFirewall.Text = "[0]";
-			this.lblCyberFirewall.Visible = false;
-			// 
 			// lblCyberFirewallLabel
 			// 
 			this.lblCyberFirewallLabel.AutoSize = true;
@@ -5600,16 +5590,6 @@
 			this.lblCyberFirewallLabel.Tag = "Label_Firewall";
 			this.lblCyberFirewallLabel.Text = "Firewall:";
 			this.lblCyberFirewallLabel.Visible = false;
-			// 
-			// lblCyberDataProcessing
-			// 
-			this.lblCyberDataProcessing.AutoSize = true;
-			this.lblCyberDataProcessing.Location = new System.Drawing.Point(681, 304);
-			this.lblCyberDataProcessing.Name = "lblCyberDataProcessing";
-			this.lblCyberDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberDataProcessing.TabIndex = 183;
-			this.lblCyberDataProcessing.Text = "[0]";
-			this.lblCyberDataProcessing.Visible = false;
 			// 
 			// lblCyberDataProcessingLabel
 			// 
@@ -5622,16 +5602,6 @@
 			this.lblCyberDataProcessingLabel.Text = "Data Processing:";
 			this.lblCyberDataProcessingLabel.Visible = false;
 			// 
-			// lblCyberSleaze
-			// 
-			this.lblCyberSleaze.AutoSize = true;
-			this.lblCyberSleaze.Location = new System.Drawing.Point(562, 304);
-			this.lblCyberSleaze.Name = "lblCyberSleaze";
-			this.lblCyberSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberSleaze.TabIndex = 181;
-			this.lblCyberSleaze.Text = "[0]";
-			this.lblCyberSleaze.Visible = false;
-			// 
 			// lblCyberSleazeLabel
 			// 
 			this.lblCyberSleazeLabel.AutoSize = true;
@@ -5642,16 +5612,6 @@
 			this.lblCyberSleazeLabel.Tag = "Label_Sleaze";
 			this.lblCyberSleazeLabel.Text = "Sleaze:";
 			this.lblCyberSleazeLabel.Visible = false;
-			// 
-			// lblCyberAttack
-			// 
-			this.lblCyberAttack.AutoSize = true;
-			this.lblCyberAttack.Location = new System.Drawing.Point(490, 304);
-			this.lblCyberAttack.Name = "lblCyberAttack";
-			this.lblCyberAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberAttack.TabIndex = 179;
-			this.lblCyberAttack.Text = "[0]";
-			this.lblCyberAttack.Visible = false;
 			// 
 			// lblCyberAttackLabel
 			// 
@@ -6699,15 +6659,15 @@
 			// tabWeapons
 			// 
 			this.tabWeapons.BackColor = System.Drawing.SystemColors.Control;
+			this.tabWeapons.Controls.Add(this.cboWeaponGearDataProcessing);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearFirewall);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearSleaze);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearAttack);
 			this.tabWeapons.Controls.Add(this.lblWeaponRating);
 			this.tabWeapons.Controls.Add(this.lblWeaponRatingLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponFirewall);
 			this.tabWeapons.Controls.Add(this.lblWeaponFirewallLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponDataProcessing);
 			this.tabWeapons.Controls.Add(this.lblWeaponDataProcessingLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponSleaze);
 			this.tabWeapons.Controls.Add(this.lblWeaponSleazeLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponAttack);
 			this.tabWeapons.Controls.Add(this.lblWeaponAttackLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponDeviceRating);
 			this.tabWeapons.Controls.Add(this.lblWeaponDeviceRatingLabel);
@@ -6772,6 +6732,50 @@
 			this.tabWeapons.Tag = "Tab_Weapons";
 			this.tabWeapons.Text = "Weapons";
 			// 
+			// cboWeaponGearDataProcessing
+			// 
+			this.cboWeaponGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearDataProcessing.FormattingEnabled = true;
+			this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(674, 368);
+			this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
+			this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearDataProcessing.TabIndex = 210;
+			this.cboWeaponGearDataProcessing.Visible = false;
+			this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboWeaponGearFirewall
+			// 
+			this.cboWeaponGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearFirewall.FormattingEnabled = true;
+			this.cboWeaponGearFirewall.Location = new System.Drawing.Point(755, 368);
+			this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
+			this.cboWeaponGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearFirewall.TabIndex = 209;
+			this.cboWeaponGearFirewall.Visible = false;
+			this.cboWeaponGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearFirewall_SelectedIndexChanged);
+			// 
+			// cboWeaponGearSleaze
+			// 
+			this.cboWeaponGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearSleaze.FormattingEnabled = true;
+			this.cboWeaponGearSleaze.Location = new System.Drawing.Point(556, 368);
+			this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
+			this.cboWeaponGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearSleaze.TabIndex = 208;
+			this.cboWeaponGearSleaze.Visible = false;
+			this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
+			// 
+			// cboWeaponGearAttack
+			// 
+			this.cboWeaponGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearAttack.FormattingEnabled = true;
+			this.cboWeaponGearAttack.Location = new System.Drawing.Point(482, 368);
+			this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
+			this.cboWeaponGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearAttack.TabIndex = 207;
+			this.cboWeaponGearAttack.Visible = false;
+			this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
+			// 
 			// lblWeaponRating
 			// 
 			this.lblWeaponRating.AutoSize = true;
@@ -6791,15 +6795,6 @@
 			this.lblWeaponRatingLabel.Tag = "Label_Rating";
 			this.lblWeaponRatingLabel.Text = "Rating:";
 			// 
-			// lblWeaponFirewall
-			// 
-			this.lblWeaponFirewall.AutoSize = true;
-			this.lblWeaponFirewall.Location = new System.Drawing.Point(751, 371);
-			this.lblWeaponFirewall.Name = "lblWeaponFirewall";
-			this.lblWeaponFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponFirewall.TabIndex = 175;
-			this.lblWeaponFirewall.Text = "[0]";
-			// 
 			// lblWeaponFirewallLabel
 			// 
 			this.lblWeaponFirewallLabel.AutoSize = true;
@@ -6809,15 +6804,6 @@
 			this.lblWeaponFirewallLabel.TabIndex = 174;
 			this.lblWeaponFirewallLabel.Tag = "Label_Firewall";
 			this.lblWeaponFirewallLabel.Text = "Firewall:";
-			// 
-			// lblWeaponDataProcessing
-			// 
-			this.lblWeaponDataProcessing.AutoSize = true;
-			this.lblWeaponDataProcessing.Location = new System.Drawing.Point(679, 371);
-			this.lblWeaponDataProcessing.Name = "lblWeaponDataProcessing";
-			this.lblWeaponDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponDataProcessing.TabIndex = 173;
-			this.lblWeaponDataProcessing.Text = "[0]";
 			// 
 			// lblWeaponDataProcessingLabel
 			// 
@@ -6829,15 +6815,6 @@
 			this.lblWeaponDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblWeaponDataProcessingLabel.Text = "Data Processing:";
 			// 
-			// lblWeaponSleaze
-			// 
-			this.lblWeaponSleaze.AutoSize = true;
-			this.lblWeaponSleaze.Location = new System.Drawing.Point(560, 371);
-			this.lblWeaponSleaze.Name = "lblWeaponSleaze";
-			this.lblWeaponSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponSleaze.TabIndex = 171;
-			this.lblWeaponSleaze.Text = "[0]";
-			// 
 			// lblWeaponSleazeLabel
 			// 
 			this.lblWeaponSleazeLabel.AutoSize = true;
@@ -6847,15 +6824,6 @@
 			this.lblWeaponSleazeLabel.TabIndex = 170;
 			this.lblWeaponSleazeLabel.Tag = "Label_Sleaze";
 			this.lblWeaponSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblWeaponAttack
-			// 
-			this.lblWeaponAttack.AutoSize = true;
-			this.lblWeaponAttack.Location = new System.Drawing.Point(488, 371);
-			this.lblWeaponAttack.Name = "lblWeaponAttack";
-			this.lblWeaponAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponAttack.TabIndex = 169;
-			this.lblWeaponAttack.Text = "[0]";
 			// 
 			// lblWeaponAttackLabel
 			// 
@@ -7606,6 +7574,90 @@
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
 			// 
+			// cboGearDataProcessing
+			// 
+			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearDataProcessing.FormattingEnabled = true;
+			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 178);
+			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+			this.cboGearDataProcessing.TabIndex = 167;
+			this.cboGearDataProcessing.Visible = false;
+			this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboGearFirewall
+			// 
+			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearFirewall.FormattingEnabled = true;
+			this.cboGearFirewall.Location = new System.Drawing.Point(733, 178);
+			this.cboGearFirewall.Name = "cboGearFirewall";
+			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+			this.cboGearFirewall.TabIndex = 166;
+			this.cboGearFirewall.Visible = false;
+			this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
+			// 
+			// cboGearSleaze
+			// 
+			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearSleaze.FormattingEnabled = true;
+			this.cboGearSleaze.Location = new System.Drawing.Point(598, 178);
+			this.cboGearSleaze.Name = "cboGearSleaze";
+			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+			this.cboGearSleaze.TabIndex = 165;
+			this.cboGearSleaze.Visible = false;
+			this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
+			// 
+			// cboGearAttack
+			// 
+			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearAttack.FormattingEnabled = true;
+			this.cboGearAttack.Location = new System.Drawing.Point(531, 178);
+			this.cboGearAttack.Name = "cboGearAttack";
+			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+			this.cboGearAttack.TabIndex = 164;
+			this.cboGearAttack.Visible = false;
+			this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
+			// 
+			// lblGearFirewallLabel
+			// 
+			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 164);
+			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
+			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearFirewallLabel.TabIndex = 163;
+			this.lblGearFirewallLabel.Tag = "Label_Firewall";
+			this.lblGearFirewallLabel.Text = "Firewall:";
+			this.lblGearFirewallLabel.Visible = false;
+			// 
+			// lblGearDataProcessingLabel
+			// 
+			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 164);
+			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
+			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearDataProcessingLabel.TabIndex = 162;
+			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
+			this.lblGearDataProcessingLabel.Text = "Data Proc:";
+			this.lblGearDataProcessingLabel.Visible = false;
+			// 
+			// lblGearSleazeLabel
+			// 
+			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 164);
+			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
+			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearSleazeLabel.TabIndex = 161;
+			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
+			this.lblGearSleazeLabel.Text = "Sleaze:";
+			this.lblGearSleazeLabel.Visible = false;
+			// 
+			// lblGearAttackLabel
+			// 
+			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 164);
+			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
+			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearAttackLabel.TabIndex = 160;
+			this.lblGearAttackLabel.Tag = "Label_Attack";
+			this.lblGearAttackLabel.Text = "Attack:";
+			this.lblGearAttackLabel.Visible = false;
+			// 
 			// lblGearDeviceRating
 			// 
 			this.lblGearDeviceRating.AutoSize = true;
@@ -8026,14 +8078,14 @@
 			// tabVehicles
 			// 
 			this.tabVehicles.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabVehicles.Controls.Add(this.cboVehicleGearDataProcessing);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearSleaze);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearAttack);
 			this.tabVehicles.Controls.Add(this.panVehicleCM);
-			this.tabVehicles.Controls.Add(this.lblVehicleFirewall);
 			this.tabVehicles.Controls.Add(this.lblVehicleFirewallLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessing);
 			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSleaze);
 			this.tabVehicles.Controls.Add(this.lblVehicleSleazeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleAttackLabel);
 			this.tabVehicles.Controls.Add(this.cmdAddVehicleLocation);
 			this.tabVehicles.Controls.Add(this.chkVehicleHomeNode);
@@ -8112,6 +8164,50 @@
 			this.tabVehicles.TabIndex = 7;
 			this.tabVehicles.Tag = "Tab_Vehicles";
 			this.tabVehicles.Text = "Vehicles & Drones";
+			// 
+			// cboVehicleGearDataProcessing
+			// 
+			this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearDataProcessing.FormattingEnabled = true;
+			this.cboVehicleGearDataProcessing.Location = new System.Drawing.Point(693, 125);
+			this.cboVehicleGearDataProcessing.Name = "cboVehicleGearDataProcessing";
+			this.cboVehicleGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearDataProcessing.TabIndex = 206;
+			this.cboVehicleGearDataProcessing.Visible = false;
+			this.cboVehicleGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboVehicleGearFirewall
+			// 
+			this.cboVehicleGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearFirewall.FormattingEnabled = true;
+			this.cboVehicleGearFirewall.Location = new System.Drawing.Point(777, 125);
+			this.cboVehicleGearFirewall.Name = "cboVehicleGearFirewall";
+			this.cboVehicleGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearFirewall.TabIndex = 205;
+			this.cboVehicleGearFirewall.Visible = false;
+			this.cboVehicleGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+			// 
+			// cboVehicleGearSleaze
+			// 
+			this.cboVehicleGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearSleaze.FormattingEnabled = true;
+			this.cboVehicleGearSleaze.Location = new System.Drawing.Point(576, 125);
+			this.cboVehicleGearSleaze.Name = "cboVehicleGearSleaze";
+			this.cboVehicleGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearSleaze.TabIndex = 204;
+			this.cboVehicleGearSleaze.Visible = false;
+			this.cboVehicleGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+			// 
+			// cboVehicleGearAttack
+			// 
+			this.cboVehicleGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearAttack.FormattingEnabled = true;
+			this.cboVehicleGearAttack.Location = new System.Drawing.Point(489, 125);
+			this.cboVehicleGearAttack.Name = "cboVehicleGearAttack";
+			this.cboVehicleGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearAttack.TabIndex = 203;
+			this.cboVehicleGearAttack.Visible = false;
+			this.cboVehicleGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
 			// 
 			// panVehicleCM
 			// 
@@ -9186,15 +9282,6 @@
 			this.chkVehicleMatrixCM40.UseVisualStyleBackColor = true;
 			this.chkVehicleMatrixCM40.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
 			// 
-			// lblVehicleFirewall
-			// 
-			this.lblVehicleFirewall.AutoSize = true;
-			this.lblVehicleFirewall.Location = new System.Drawing.Point(776, 128);
-			this.lblVehicleFirewall.Name = "lblVehicleFirewall";
-			this.lblVehicleFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleFirewall.TabIndex = 201;
-			this.lblVehicleFirewall.Text = "[0]";
-			// 
 			// lblVehicleFirewallLabel
 			// 
 			this.lblVehicleFirewallLabel.AutoSize = true;
@@ -9204,15 +9291,6 @@
 			this.lblVehicleFirewallLabel.TabIndex = 200;
 			this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
 			this.lblVehicleFirewallLabel.Text = "Firewall:";
-			// 
-			// lblVehicleDataProcessing
-			// 
-			this.lblVehicleDataProcessing.AutoSize = true;
-			this.lblVehicleDataProcessing.Location = new System.Drawing.Point(690, 128);
-			this.lblVehicleDataProcessing.Name = "lblVehicleDataProcessing";
-			this.lblVehicleDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleDataProcessing.TabIndex = 199;
-			this.lblVehicleDataProcessing.Text = "[0]";
 			// 
 			// lblVehicleDataProcessingLabel
 			// 
@@ -9224,15 +9302,6 @@
 			this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
 			// 
-			// lblVehicleSleaze
-			// 
-			this.lblVehicleSleaze.AutoSize = true;
-			this.lblVehicleSleaze.Location = new System.Drawing.Point(574, 128);
-			this.lblVehicleSleaze.Name = "lblVehicleSleaze";
-			this.lblVehicleSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleSleaze.TabIndex = 197;
-			this.lblVehicleSleaze.Text = "[0]";
-			// 
 			// lblVehicleSleazeLabel
 			// 
 			this.lblVehicleSleazeLabel.AutoSize = true;
@@ -9242,15 +9311,6 @@
 			this.lblVehicleSleazeLabel.TabIndex = 196;
 			this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
 			this.lblVehicleSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblVehicleAttack
-			// 
-			this.lblVehicleAttack.AutoSize = true;
-			this.lblVehicleAttack.Location = new System.Drawing.Point(488, 128);
-			this.lblVehicleAttack.Name = "lblVehicleAttack";
-			this.lblVehicleAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleAttack.TabIndex = 195;
-			this.lblVehicleAttack.Text = "[0]";
 			// 
 			// lblVehicleAttackLabel
 			// 
@@ -12970,85 +13030,49 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// cboGearDataProcessing
+			// cboCyberwareGearDataProcessing
 			// 
-			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboGearDataProcessing.FormattingEnabled = true;
-			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 178);
-			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
-			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
-			this.cboGearDataProcessing.TabIndex = 167;
-			this.cboGearDataProcessing.Visible = false;
+			this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
+			this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(673, 300);
+			this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
+			this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearDataProcessing.TabIndex = 214;
+			this.cboCyberwareGearDataProcessing.Visible = false;
+			this.cboCyberwareGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearDataProcessing_SelectedIndexChanged);
 			// 
-			// cboGearFirewall
+			// cboCyberwareGearFirewall
 			// 
-			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboGearFirewall.FormattingEnabled = true;
-			this.cboGearFirewall.Location = new System.Drawing.Point(733, 178);
-			this.cboGearFirewall.Name = "cboGearFirewall";
-			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
-			this.cboGearFirewall.TabIndex = 166;
-			this.cboGearFirewall.Visible = false;
+			this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearFirewall.FormattingEnabled = true;
+			this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(750, 300);
+			this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
+			this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearFirewall.TabIndex = 213;
+			this.cboCyberwareGearFirewall.Visible = false;
+			this.cboCyberwareGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearFirewall_SelectedIndexChanged);
 			// 
-			// cboGearSleaze
+			// cboCyberwareGearSleaze
 			// 
-			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboGearSleaze.FormattingEnabled = true;
-			this.cboGearSleaze.Location = new System.Drawing.Point(598, 178);
-			this.cboGearSleaze.Name = "cboGearSleaze";
-			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
-			this.cboGearSleaze.TabIndex = 165;
-			this.cboGearSleaze.Visible = false;
+			this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearSleaze.FormattingEnabled = true;
+			this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(555, 300);
+			this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
+			this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearSleaze.TabIndex = 212;
+			this.cboCyberwareGearSleaze.Visible = false;
+			this.cboCyberwareGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearSleaze_SelectedIndexChanged);
 			// 
-			// cboGearAttack
+			// cboCyberwareGearAttack
 			// 
-			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboGearAttack.FormattingEnabled = true;
-			this.cboGearAttack.Location = new System.Drawing.Point(531, 178);
-			this.cboGearAttack.Name = "cboGearAttack";
-			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
-			this.cboGearAttack.TabIndex = 164;
-			this.cboGearAttack.Visible = false;
-			// 
-			// lblGearFirewallLabel
-			// 
-			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 164);
-			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
-			this.lblGearFirewallLabel.TabIndex = 163;
-			this.lblGearFirewallLabel.Tag = "Label_Firewall";
-			this.lblGearFirewallLabel.Text = "Firewall:";
-			this.lblGearFirewallLabel.Visible = false;
-			// 
-			// lblGearDataProcessingLabel
-			// 
-			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 164);
-			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
-			this.lblGearDataProcessingLabel.TabIndex = 162;
-			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-			this.lblGearDataProcessingLabel.Text = "Data Proc:";
-			this.lblGearDataProcessingLabel.Visible = false;
-			// 
-			// lblGearSleazeLabel
-			// 
-			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 164);
-			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
-			this.lblGearSleazeLabel.TabIndex = 161;
-			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
-			this.lblGearSleazeLabel.Text = "Sleaze:";
-			this.lblGearSleazeLabel.Visible = false;
-			// 
-			// lblGearAttackLabel
-			// 
-			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 164);
-			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
-			this.lblGearAttackLabel.TabIndex = 160;
-			this.lblGearAttackLabel.Tag = "Label_Attack";
-			this.lblGearAttackLabel.Text = "Attack:";
-			this.lblGearAttackLabel.Visible = false;
+			this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearAttack.FormattingEnabled = true;
+			this.cboCyberwareGearAttack.Location = new System.Drawing.Point(481, 300);
+			this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
+			this.cboCyberwareGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearAttack.TabIndex = 211;
+			this.cboCyberwareGearAttack.Visible = false;
+			this.cboCyberwareGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearAttack_SelectedIndexChanged);
 			// 
 			// frmCareer
 			// 
@@ -14055,31 +14079,19 @@
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private System.Windows.Forms.Label lblGearDeviceRating;
         private System.Windows.Forms.Label lblGearDeviceRatingLabel;
-        private System.Windows.Forms.Label lblCyberFirewall;
         private System.Windows.Forms.Label lblCyberFirewallLabel;
-        private System.Windows.Forms.Label lblCyberDataProcessing;
         private System.Windows.Forms.Label lblCyberDataProcessingLabel;
-        private System.Windows.Forms.Label lblCyberSleaze;
         private System.Windows.Forms.Label lblCyberSleazeLabel;
-        private System.Windows.Forms.Label lblCyberAttack;
         private System.Windows.Forms.Label lblCyberAttackLabel;
         private System.Windows.Forms.Label lblCyberDeviceRating;
         private System.Windows.Forms.Label lblCyberDeviceRatingLabel;
-        private System.Windows.Forms.Label lblVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleFirewallLabel;
-        private System.Windows.Forms.Label lblVehicleDataProcessing;
         private System.Windows.Forms.Label lblVehicleDataProcessingLabel;
-        private System.Windows.Forms.Label lblVehicleSleaze;
         private System.Windows.Forms.Label lblVehicleSleazeLabel;
-        private System.Windows.Forms.Label lblVehicleAttack;
         private System.Windows.Forms.Label lblVehicleAttackLabel;
-        private System.Windows.Forms.Label lblWeaponFirewall;
         private System.Windows.Forms.Label lblWeaponFirewallLabel;
-        private System.Windows.Forms.Label lblWeaponDataProcessing;
         private System.Windows.Forms.Label lblWeaponDataProcessingLabel;
-        private System.Windows.Forms.Label lblWeaponSleaze;
         private System.Windows.Forms.Label lblWeaponSleazeLabel;
-        private System.Windows.Forms.Label lblWeaponAttack;
         private System.Windows.Forms.Label lblWeaponAttackLabel;
         private System.Windows.Forms.Label lblWeaponDeviceRating;
         private System.Windows.Forms.Label lblWeaponDeviceRatingLabel;
@@ -14258,6 +14270,18 @@
 		private System.Windows.Forms.Label lblGearDataProcessingLabel;
 		private System.Windows.Forms.Label lblGearSleazeLabel;
 		private System.Windows.Forms.Label lblGearAttackLabel;
+		private System.Windows.Forms.ComboBox cboVehicleGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboVehicleGearFirewall;
+		private System.Windows.Forms.ComboBox cboVehicleGearSleaze;
+		private System.Windows.Forms.ComboBox cboVehicleGearAttack;
+		private System.Windows.Forms.ComboBox cboWeaponGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboWeaponGearFirewall;
+		private System.Windows.Forms.ComboBox cboWeaponGearSleaze;
+		private System.Windows.Forms.ComboBox cboWeaponGearAttack;
+		private System.Windows.Forms.ComboBox cboCyberwareGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboCyberwareGearFirewall;
+		private System.Windows.Forms.ComboBox cboCyberwareGearSleaze;
+		private System.Windows.Forms.ComboBox cboCyberwareGearAttack;
 	}
 }
 

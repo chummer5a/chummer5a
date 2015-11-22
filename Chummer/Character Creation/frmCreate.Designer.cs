@@ -710,13 +710,13 @@ namespace Chummer
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
-			this.lblVehicleFirewall = new System.Windows.Forms.Label();
+			this.cboVehicleGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
-			this.lblVehicleDataProcessing = new System.Windows.Forms.Label();
 			this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblVehicleSleaze = new System.Windows.Forms.Label();
 			this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
-			this.lblVehicleAttack = new System.Windows.Forms.Label();
 			this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeExtreme = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeLong = new System.Windows.Forms.Label();
@@ -8356,13 +8356,13 @@ namespace Chummer
 			// tabVehicles
 			// 
 			this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
-			this.tabVehicles.Controls.Add(this.lblVehicleFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearDataProcessing);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearSleaze);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleFirewallLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessing);
 			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSleaze);
 			this.tabVehicles.Controls.Add(this.lblVehicleSleazeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleAttackLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeExtreme);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLong);
@@ -8433,14 +8433,49 @@ namespace Chummer
 			this.tabVehicles.Text = "Vehicles & Drones";
 			this.tabVehicles.Click += new System.EventHandler(this.tabVehicles_Click);
 			// 
-			// lblVehicleFirewall
+			// cboVehicleGearDataProcessing
 			// 
-			this.lblVehicleFirewall.AutoSize = true;
-			this.lblVehicleFirewall.Location = new System.Drawing.Point(776, 128);
-			this.lblVehicleFirewall.Name = "lblVehicleFirewall";
-			this.lblVehicleFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleFirewall.TabIndex = 193;
-			this.lblVehicleFirewall.Text = "[0]";
+			this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearDataProcessing.FormattingEnabled = true;
+			this.cboVehicleGearDataProcessing.Location = new System.Drawing.Point(693, 123);
+			this.cboVehicleGearDataProcessing.Name = "cboVehicleGearDataProcessing";
+			this.cboVehicleGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearDataProcessing.TabIndex = 196;
+			this.cboVehicleGearDataProcessing.Visible = false;
+			this.cboVehicleGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboVehicleGearFirewall
+			// 
+			this.cboVehicleGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearFirewall.FormattingEnabled = true;
+			this.cboVehicleGearFirewall.Location = new System.Drawing.Point(777, 123);
+			this.cboVehicleGearFirewall.Name = "cboVehicleGearFirewall";
+			this.cboVehicleGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearFirewall.TabIndex = 195;
+			this.cboVehicleGearFirewall.Visible = false;
+			this.cboVehicleGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+			// 
+			// cboVehicleGearSleaze
+			// 
+			this.cboVehicleGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearSleaze.FormattingEnabled = true;
+			this.cboVehicleGearSleaze.Location = new System.Drawing.Point(576, 123);
+			this.cboVehicleGearSleaze.Name = "cboVehicleGearSleaze";
+			this.cboVehicleGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearSleaze.TabIndex = 194;
+			this.cboVehicleGearSleaze.Visible = false;
+			this.cboVehicleGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+			// 
+			// cboVehicleGearAttack
+			// 
+			this.cboVehicleGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearAttack.FormattingEnabled = true;
+			this.cboVehicleGearAttack.Location = new System.Drawing.Point(489, 123);
+			this.cboVehicleGearAttack.Name = "cboVehicleGearAttack";
+			this.cboVehicleGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearAttack.TabIndex = 193;
+			this.cboVehicleGearAttack.Visible = false;
+			this.cboVehicleGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
 			// 
 			// lblVehicleFirewallLabel
 			// 
@@ -8452,15 +8487,6 @@ namespace Chummer
 			this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
 			this.lblVehicleFirewallLabel.Text = "Firewall:";
 			// 
-			// lblVehicleDataProcessing
-			// 
-			this.lblVehicleDataProcessing.AutoSize = true;
-			this.lblVehicleDataProcessing.Location = new System.Drawing.Point(690, 128);
-			this.lblVehicleDataProcessing.Name = "lblVehicleDataProcessing";
-			this.lblVehicleDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleDataProcessing.TabIndex = 191;
-			this.lblVehicleDataProcessing.Text = "[0]";
-			// 
 			// lblVehicleDataProcessingLabel
 			// 
 			this.lblVehicleDataProcessingLabel.AutoSize = true;
@@ -8471,15 +8497,6 @@ namespace Chummer
 			this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
 			// 
-			// lblVehicleSleaze
-			// 
-			this.lblVehicleSleaze.AutoSize = true;
-			this.lblVehicleSleaze.Location = new System.Drawing.Point(574, 128);
-			this.lblVehicleSleaze.Name = "lblVehicleSleaze";
-			this.lblVehicleSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleSleaze.TabIndex = 189;
-			this.lblVehicleSleaze.Text = "[0]";
-			// 
 			// lblVehicleSleazeLabel
 			// 
 			this.lblVehicleSleazeLabel.AutoSize = true;
@@ -8489,15 +8506,6 @@ namespace Chummer
 			this.lblVehicleSleazeLabel.TabIndex = 188;
 			this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
 			this.lblVehicleSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblVehicleAttack
-			// 
-			this.lblVehicleAttack.AutoSize = true;
-			this.lblVehicleAttack.Location = new System.Drawing.Point(488, 128);
-			this.lblVehicleAttack.Name = "lblVehicleAttack";
-			this.lblVehicleAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleAttack.TabIndex = 187;
-			this.lblVehicleAttack.Text = "[0]";
 			// 
 			// lblVehicleAttackLabel
 			// 
@@ -8754,7 +8762,7 @@ namespace Chummer
 			// lblVehicleDevice
 			// 
 			this.lblVehicleDevice.AutoSize = true;
-			this.lblVehicleDevice.Location = new System.Drawing.Point(774, 82);
+			this.lblVehicleDevice.Location = new System.Drawing.Point(675, 150);
 			this.lblVehicleDevice.Name = "lblVehicleDevice";
 			this.lblVehicleDevice.Size = new System.Drawing.Size(47, 13);
 			this.lblVehicleDevice.TabIndex = 118;
@@ -8763,7 +8771,7 @@ namespace Chummer
 			// lblVehicleDeviceLabel
 			// 
 			this.lblVehicleDeviceLabel.AutoSize = true;
-			this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(725, 82);
+			this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(626, 150);
 			this.lblVehicleDeviceLabel.Name = "lblVehicleDeviceLabel";
 			this.lblVehicleDeviceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblVehicleDeviceLabel.TabIndex = 117;
@@ -8829,7 +8837,7 @@ namespace Chummer
 			// lblVehicleSlots
 			// 
 			this.lblVehicleSlots.AutoSize = true;
-			this.lblVehicleSlots.Location = new System.Drawing.Point(708, 150);
+			this.lblVehicleSlots.Location = new System.Drawing.Point(764, 150);
 			this.lblVehicleSlots.Name = "lblVehicleSlots";
 			this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
 			this.lblVehicleSlots.TabIndex = 58;
@@ -8839,7 +8847,7 @@ namespace Chummer
 			// lblVehicleSlotsLabel
 			// 
 			this.lblVehicleSlotsLabel.AutoSize = true;
-			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(669, 150);
+			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(725, 150);
 			this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
 			this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblVehicleSlotsLabel.TabIndex = 57;
@@ -11197,13 +11205,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberAttackLabel;
         private System.Windows.Forms.Label lblCyberDeviceRating;
         private System.Windows.Forms.Label lblCyberDeviceRatingLabel;
-        private System.Windows.Forms.Label lblVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleFirewallLabel;
-        private System.Windows.Forms.Label lblVehicleDataProcessing;
         private System.Windows.Forms.Label lblVehicleDataProcessingLabel;
-        private System.Windows.Forms.Label lblVehicleSleaze;
         private System.Windows.Forms.Label lblVehicleSleazeLabel;
-        private System.Windows.Forms.Label lblVehicleAttack;
         private System.Windows.Forms.Label lblVehicleAttackLabel;
         private System.Windows.Forms.Label lblWeaponFirewall;
         private System.Windows.Forms.Label lblWeaponFirewallLabel;
@@ -11298,6 +11302,10 @@ namespace Chummer
 		private System.Windows.Forms.ComboBox cboGearFirewall;
 		private System.Windows.Forms.ComboBox cboGearSleaze;
 		private System.Windows.Forms.ComboBox cboGearAttack;
+		private System.Windows.Forms.ComboBox cboVehicleGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboVehicleGearFirewall;
+		private System.Windows.Forms.ComboBox cboVehicleGearSleaze;
+		private System.Windows.Forms.ComboBox cboVehicleGearAttack;
 	}
 }
 

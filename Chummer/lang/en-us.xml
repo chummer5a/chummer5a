@@ -726,6 +726,10 @@
 			<text>Living Persona Gear</text>
 		</string>
 		<string>
+			<key>String_MountNone</key>
+			<text>None</text>
+		</string>
+		<string>
 			<key>String_MountTop</key>
 			<text>Top</text>
 		</string>

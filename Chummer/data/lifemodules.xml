@@ -9,6 +9,7 @@
 		<stage order="5">Real Life</stage>
 	</stages>
 	<modules>
+		<!-- Region Nationality -->
 		<module>
 			<id>f35ba316-dd0f-48ab-9f06-d7329305a44e</id>
 			<stage>Nationality</stage>
@@ -753,6 +754,8 @@
 			<story>$real was born in the northern part of America, in the Native AMerican Nations</story>
 			<page>67</page>
 		</module>
+		<!-- End Region -->
+		<!-- Region Formative Years -->
 		<module>
 			<id>924ccfd0-136c-4385-94fe-a8d7be2eb7ed</id>
 			<stage>Formative Years</stage>
@@ -1147,6 +1150,8 @@
 			<source>RF</source>
 			<page>69</page>
 		</module>
+		<!-- End Region -->
+		<!-- Region Teen Years -->
 		<module>
 			<id>f0393b9e-2698-4955-bd31-112b619ac7b8</id>
 			<stage>Teen Years</stage>
@@ -1837,6 +1842,18 @@
 			<story>$real graduated summa cum laude from the school of hard knocks, with a major in $STREETDESC and a minor in women’s studies.</story>
 			<source>RF</source>
 			<page>72</page>
+		</module>
+		<!-- End Region -->
+		<!-- Region Further Education -->
+		<module>
+			<id>5A2EEE69-CEDB-403E-9649-FDC9A1377374</id>
+			<stage>Further Education</stage>
+			<category>LifeModule</category>
+			<name>Skipped Further Education</name>
+			<karma>0</karma>
+			<story>$real either never received the opportunity for a further education, or decided it wasn't for them. Either way, the wide range of life's choices spread before them!</story>
+			<source>RF</source>
+			<page>0</page>
 		</module>
 		<module>
 			<id>9e601908-df9a-4fe1-b58e-74bfd6f5d7b5</id>

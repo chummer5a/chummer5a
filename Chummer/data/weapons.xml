@@ -8459,19 +8459,6 @@
 			<page>53</page>
 		</accessory>
 		<!-- End Region -->
-		<!-- Region Sail Away, Sweet Sister -->
-		<accessory>
-			<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
-			<name>Personalized Grip</name>
-			<mount/>
-			<rating>0</rating>
-			<accuracy>1</accuracy>
-			<avail>0</avail>
-			<cost>Variable(0-1000)</cost>
-			<source>SASS</source>
-			<page>31</page>
-		</accessory>
-		<!-- End Region -->
 		<!-- Region Chrome Flesh -->
 		<accessory>
 			<id>ca3f4cb7-6c0e-4736-8a7c-339d00f03567</id>

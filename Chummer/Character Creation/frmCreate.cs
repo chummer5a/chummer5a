@@ -13591,6 +13591,194 @@ namespace Chummer
 			_blnLoading = false;
 			objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
 		}
+		private void cboVehicleGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+			if (objGear.GetType() == typeof(Commlink))
+			{
+				Commlink objCommlink = (Commlink)objGear;
+
+				List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+
+				objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
+				if (objASDF.Count == 0)
+					return;
+
+				string strMissing = objASDF[0].ToString();
+
+				_blnLoading = false;
+				// Find the combo with the same value as this one and change it to the missing value.
+				if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
+				{
+					cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+				}
+
+				if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
+				{
+					cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
+				}
+
+				if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
+				{
+					cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+				}
+				_blnLoading = false;
+				objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+			}
+			else
+			{
+				return;
+			}
+		}
+
+
+
+		private void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+			if (objGear.GetType() == typeof(Commlink))
+			{
+				Commlink objCommlink = (Commlink)objGear;
+				List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+
+				objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
+				if (objASDF.Count == 0)
+					return;
+
+				string strMissing = objASDF[0].ToString();
+
+				_blnLoading = true;
+				// Find the combo with the same value as this one and change it to the missing value.
+				if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
+				{
+					cboVehicleGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+				}
+
+				if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
+				{
+					cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
+				}
+
+				if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearSleaze.SelectedIndex)
+				{
+					cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+				}
+				_blnLoading = false;
+				objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
+			}
+			else
+			{
+				return;
+			}
+		}
+
+
+		private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+			if (objGear.GetType() == typeof(Commlink))
+			{
+				Commlink objCommlink = (Commlink)objGear;
+				List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+
+				objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
+				if (objASDF.Count == 0)
+					return;
+
+				string strMissing = objASDF[0].ToString();
+
+				_blnLoading = true;
+				// Find the combo with the same value as this one and change it to the missing value.
+				if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
+				{
+					cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
+				}
+
+				if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
+				{
+					cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+				}
+
+				if (cboVehicleGearFirewall.SelectedIndex == cboVehicleGearDataProcessing.SelectedIndex)
+				{
+					cboVehicleGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+				}
+				_blnLoading = false;
+				objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
+			}
+			else
+			{
+				return;
+			}
+		}
+
+
+		private void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
+			Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+			if (objGear.GetType() == typeof(Commlink))
+			{
+				Commlink objCommlink = (Commlink)objGear;
+				List<string> objASDF = new List<string>() { "0", "1", "2", "3" };
+
+				objASDF.Remove(cboVehicleGearAttack.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearSleaze.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearDataProcessing.SelectedIndex.ToString());
+				objASDF.Remove(cboVehicleGearFirewall.SelectedIndex.ToString());
+				if (objASDF.Count == 0)
+					return;
+
+				string strMissing = objASDF[0].ToString();
+
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnLoading = true;
+				if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
+				{
+					cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+				}
+
+				if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
+				{
+					cboVehicleGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.DataProcessing = Convert.ToInt32(cboVehicleGearDataProcessing.SelectedValue);
+				}
+
+				if (cboVehicleGearAttack.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
+				{
+					cboVehicleGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
+					objCommlink.Attack = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+				}
+				_blnLoading = false;
+				objCommlink.Firewall = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+			}
+			else
+			{
+				return;
+			}
+		}
 		#endregion
 
 		#region Additional Vehicle Tab Control Events
@@ -19379,18 +19567,85 @@ namespace Chummer
 
                 _blnSkipRefresh = false;
             }
-        }
+		}
 
-        /// <summary>
-        /// Refresh the currently-selected Vehicle.
-        /// </summary>
-        private void RefreshSelectedVehicle()
+		private void DisplayVehicleWeaponStats(bool blnDisplay)
+		/// <summary>
+		/// Switches the visibility of Weapon attributes on the Vehicles and Drones form.
+		/// </summary>
+		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		{
+			lblVehicleWeaponName.Visible = blnDisplay;
+			lblVehicleWeaponCategory.Visible = blnDisplay;
+			lblVehicleWeaponAP.Visible = blnDisplay;
+			lblVehicleWeaponDamage.Visible = blnDisplay;
+			lblVehicleWeaponMode.Visible = blnDisplay;
+			lblVehicleWeaponAmmo.Visible = blnDisplay;
+
+			lblVehicleWeaponRangeShort.Visible = blnDisplay;
+			lblVehicleWeaponRangeMedium.Visible = blnDisplay;
+			lblVehicleWeaponRangeLong.Visible = blnDisplay;
+			lblVehicleWeaponRangeExtreme.Visible = blnDisplay;
+
+			lblVehicleWeaponNameLabel.Visible = blnDisplay;
+			lblVehicleWeaponCategoryLabel.Visible = blnDisplay;
+			lblVehicleWeaponAPLabel.Visible = blnDisplay;
+			lblVehicleWeaponDamageLabel.Visible = blnDisplay;
+			lblVehicleWeaponModeLabel.Visible = blnDisplay;
+			lblVehicleWeaponAmmoLabel.Visible = blnDisplay;
+			lblVehicleWeaponRangeLabel.Visible = blnDisplay;
+
+			lblVehicleWeaponRangeShortLabel.Visible = blnDisplay;
+			lblVehicleWeaponRangeMediumLabel.Visible = blnDisplay;
+			lblVehicleWeaponRangeLongLabel.Visible = blnDisplay;
+			lblVehicleWeaponRangeExtremeLabel.Visible = blnDisplay;
+		}
+		private void DisplayVehicleCommlinkStats(bool blnDisplay)
+		/// <summary>
+		/// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
+		/// </summary>
+		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		{
+			cboVehicleGearAttack.Visible = blnDisplay;
+			cboVehicleGearSleaze.Visible = blnDisplay;
+			cboVehicleGearDataProcessing.Visible = blnDisplay;
+			cboVehicleGearFirewall.Visible = blnDisplay;
+			lblVehicleAttackLabel.Visible = blnDisplay;
+			lblVehicleSleazeLabel.Visible = blnDisplay;
+			lblVehicleDataProcessingLabel.Visible = blnDisplay;
+			lblVehicleFirewallLabel.Visible = blnDisplay;
+			lblVehicleDevice.Visible = blnDisplay;
+			lblVehicleDeviceLabel.Visible = blnDisplay;
+		}
+
+		private void DisplayVehicleStats(bool blnDisplay)
+		/// <summary>
+		/// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
+		/// </summary>
+		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		{
+			lblVehicleHandling.Visible = blnDisplay;
+			lblVehicleAccel.Visible = blnDisplay;
+			lblVehicleSpeed.Visible = blnDisplay;
+			lblVehicleDevice.Visible = blnDisplay;
+			lblVehiclePilot.Visible = blnDisplay;
+			lblVehicleBody.Visible = blnDisplay;
+			lblVehicleArmor.Visible = blnDisplay;
+			lblVehicleSensor.Visible = blnDisplay;
+			lblVehicleHandlingLabel.Visible = blnDisplay;
+			lblVehicleAccelLabel.Visible = blnDisplay;
+			lblVehicleSpeedLabel.Visible = blnDisplay;
+			lblVehicleDeviceLabel.Visible = blnDisplay;
+			lblVehiclePilotLabel.Visible = blnDisplay;
+			lblVehicleBodyLabel.Visible = blnDisplay;
+			lblVehicleArmorLabel.Visible = blnDisplay;
+			lblVehicleSensorLabel.Visible = blnDisplay;
+		}
+		/// <summary>
+		/// Refresh the currently-selected Vehicle.
+		/// </summary>
+		private void RefreshSelectedVehicle()
         {
-            lblVehicleAttack.Text = "";
-            lblVehicleSleaze.Text = "";
-            lblVehicleDataProcessing.Text = "";
-            lblVehicleFirewall.Text = "";
-
             bool blnClear = false;
 
             try
@@ -19408,19 +19663,16 @@ namespace Chummer
                 nudVehicleRating.Enabled = false;
                 nudVehicleGearQty.Enabled = false;
 
-                lblVehicleWeaponName.Text = "";
-                lblVehicleWeaponCategory.Text = "";
-                lblVehicleWeaponAP.Text = "";
-                lblVehicleWeaponDamage.Text = "";
-                lblVehicleWeaponMode.Text = "";
-                lblVehicleWeaponAmmo.Text = "";
+				DisplayVehicleWeaponStats(false);
+				DisplayVehicleCommlinkStats(false);
+				DisplayVehicleStats(false);
+				lblVehicleCategory.Text = "";
+				lblVehicleName.Text = "";
+				lblVehicleAvail.Text = "";
+				lblVehicleCost.Text = "";
+				lblVehicleSource.Text = "";
 
-                lblVehicleWeaponRangeShort.Text = "";
-                lblVehicleWeaponRangeMedium.Text = "";
-                lblVehicleWeaponRangeLong.Text = "";
-                lblVehicleWeaponRangeExtreme.Text = "";
-
-                _blnSkipRefresh = false;
+				_blnSkipRefresh = false;
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 return;
             }
@@ -19435,17 +19687,22 @@ namespace Chummer
                     return;
 
                 _blnSkipRefresh = true;
-                lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+				lblVehicleRatingLabel.Visible = false;
                 nudVehicleRating.Minimum = 0;
                 nudVehicleRating.Maximum = 0;
                 nudVehicleRating.Enabled = false;
-                chkVehicleBlackMarketDiscount.Checked = objVehicle.DiscountCost;
+				nudVehicleRating.Visible = false;
+				chkVehicleBlackMarketDiscount.Checked = objVehicle.DiscountCost;
                 _blnSkipRefresh = false;
 
                 lblVehicleName.Text = objVehicle.DisplayNameShort;
-                lblVehicleCategory.Text = objVehicle.DisplayCategory;
-                lblVehicleAvail.Text = objVehicle.CalculatedAvail;
-                lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
+				lblVehicleNameLabel.Visible = true;
+				lblVehicleCategory.Text = objVehicle.DisplayCategory;
+				lblVehicleCategoryLabel.Visible = true;
+				lblVehicleAvailLabel.Visible = true;
+				lblVehicleAvail.Text = objVehicle.CalculatedAvail;
+				lblVehicleCostLabel.Visible = true;
+				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
                 lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
                 lblVehicleAccel.Text = objVehicle.TotalAccel;
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
@@ -19453,7 +19710,11 @@ namespace Chummer
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-                if (_objOptions.UseCalculatedVehicleSensorRatings)
+
+				nudVehicleGearQty.Visible = true;
+				lblVehicleGearQtyLabel.Visible = true;
+
+				if (_objOptions.UseCalculatedVehicleSensorRatings)
                     lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
                 else
                     lblVehicleSensor.Text = objVehicle.Sensor.ToString();
@@ -19471,7 +19732,10 @@ namespace Chummer
                     chkVehicleHomeNode.Checked = objVehicle.HomeNode;
                 }
 
-                UpdateCharacterInfo();
+				DisplayVehicleWeaponStats(false);
+				DisplayVehicleCommlinkStats(false);
+				DisplayVehicleStats(true);
+				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
             {
@@ -19484,20 +19748,14 @@ namespace Chummer
                         {
                             if (strLocation == treVehicles.SelectedNode.Tag.ToString())
                             {
-                                lblVehicleName.Text = "";
-                                lblVehicleCategory.Text = "";
-                                lblVehicleSource.Text = "";
-                                lblVehicleHandling.Text = "";
-                                lblVehicleAccel.Text = "";
-                                lblVehicleSpeed.Text = "";
-                                lblVehicleDevice.Text = "";
-                                lblVehiclePilot.Text = "";
-                                lblVehicleBody.Text = "";
-                                lblVehicleArmor.Text = "";
-                                lblVehicleSensor.Text = "";
-                                lblVehicleAvail.Text = "";
-                                lblVehicleCost.Text = "";
-                                lblVehicleSlots.Text = "";
+								DisplayVehicleWeaponStats(false);
+								DisplayVehicleCommlinkStats(false);
+								DisplayVehicleStats(false);
+
+								nudVehicleGearQty.Visible = false;
+								lblVehicleGearQtyLabel.Visible = false;
+								chkVehicleIncludedInWeapon.Visible = false;
+								chkVehicleWeaponAccessoryInstalled.Visible = false;
                                 return;
                             }
                         }
@@ -19520,12 +19778,14 @@ namespace Chummer
                         {
                             _blnSkipRefresh = true;
                             lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+							lblVehicleRatingLabel.Visible = true;
                             // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                             if (objMod.Name.StartsWith("Armor,"))
                                 nudVehicleRating.Maximum = Math.Min(Convert.ToInt32(objMod.MaxRating), objSelectedVehicle.MaxArmor);
                             else
                                 nudVehicleRating.Maximum = Convert.ToInt32(objMod.MaxRating);
                             nudVehicleRating.Minimum = 1;
+							nudVehicleRating.Visible = true;
                             nudVehicleRating.Value = objMod.Rating;
                             nudVehicleRating.Increment = 1;
                             nudVehicleRating.Enabled = !objMod.IncludedInVehicle;
@@ -19536,10 +19796,12 @@ namespace Chummer
                         {
                             _blnSkipRefresh = true;
                             lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
-                            nudVehicleRating.Minimum = 0;
+							lblVehicleRatingLabel.Visible = false;
+							nudVehicleRating.Minimum = 0;
                             nudVehicleRating.Increment = 1;
                             nudVehicleRating.Maximum = 0;
                             nudVehicleRating.Enabled = false;
+							nudVehicleRating.Visible = false;
                             chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                             _blnSkipRefresh = false;
                         }
@@ -19548,7 +19810,9 @@ namespace Chummer
                     {
                         _blnSkipRefresh = true;
                         lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Qty");
-                        nudVehicleRating.Minimum = 1;
+						lblVehicleRatingLabel.Visible = false;
+						nudVehicleRating.Visible = true;
+						nudVehicleRating.Minimum = 1;
                         nudVehicleRating.Maximum = 20;
                         nudVehicleRating.Value = objMod.Rating;
                         nudVehicleRating.Increment = 1;
@@ -19556,20 +19820,23 @@ namespace Chummer
                         chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                         _blnSkipRefresh = false;
                     }
+					DisplayVehicleStats(false);
+					DisplayVehicleWeaponStats(false);
+					DisplayVehicleCommlinkStats(false);
 
-                    lblVehicleName.Text = objMod.DisplayNameShort;
-                    lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
+					lblVehicleName.Text = objMod.DisplayNameShort;
+					lblVehicleNameLabel.Visible = true;
+					lblVehicleCategoryLabel.Visible = true;
+					lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleModification");
+					lblVehicleAvailLabel.Visible = true;
                     lblVehicleAvail.Text = objMod.TotalAvail;
+					lblVehicleCostLabel.Visible = true;
                     lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objMod.TotalCost);
-                    lblVehicleHandling.Text = "";
-                    lblVehicleAccel.Text = "";
-                    lblVehicleSpeed.Text = "";
-                    lblVehicleDevice.Text = "";
-                    lblVehiclePilot.Text = "";
-                    lblVehicleBody.Text = "";
-                    lblVehicleArmor.Text = "";
-                    lblVehicleSensor.Text = "";
-                    lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
+
+					nudVehicleGearQty.Visible = true;
+					lblVehicleGearQtyLabel.Visible = true;
+
+					lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
                     string strBook = _objOptions.LanguageBookShort(objMod.Source);
                     string strPage = objMod.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
@@ -19592,11 +19859,16 @@ namespace Chummer
                         //nudVehicleGearQty.Minimum = objGear.CostFor;
                         nudVehicleGearQty.Value = objGear.Quantity;
                         nudVehicleGearQty.Increment = objGear.CostFor;
-                        chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
+						nudVehicleGearQty.Visible = true;
+						lblVehicleGearQtyLabel.Visible = true;
+
+						chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
 
                         if (objGear.MaxRating > 0)
                         {
                             lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
+							lblVehicleRatingLabel.Visible = true;
+							nudVehicleRating.Visible = true;
                             nudVehicleRating.Enabled = true;
                             nudVehicleRating.Maximum = objGear.MaxRating;
                             nudVehicleRating.Value = objGear.Rating;
@@ -19607,15 +19879,11 @@ namespace Chummer
                         lblVehicleCategory.Text = objGear.DisplayCategory;
                         lblVehicleAvail.Text = objGear.TotalAvail(true);
                         lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
-                        lblVehicleHandling.Text = "";
-                        lblVehicleAccel.Text = "";
-                        lblVehicleSpeed.Text = "";
-                        lblVehicleDevice.Text = "";
-                        lblVehiclePilot.Text = "";
-                        lblVehicleBody.Text = "";
-                        lblVehicleArmor.Text = "";
-                        lblVehicleSensor.Text = "";
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+						DisplayVehicleStats(false);
+						DisplayVehicleWeaponStats(false);
+						DisplayVehicleCommlinkStats(false);
+
+						lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                         string strBook = _objOptions.LanguageBookShort(objGear.Source);
                         string strPage = objGear.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
@@ -19623,13 +19891,33 @@ namespace Chummer
 
                         if (objGear.GetType() == typeof(Commlink))
                         {
-                            Commlink objCommlink = (Commlink)objGear;
-                            lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
-                            lblVehicleAttack.Text = objCommlink.Attack.ToString();
-                            lblVehicleSleaze.Text = objCommlink.Sleaze.ToString();
-                            lblVehicleDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                            lblVehicleFirewall.Text = objCommlink.Firewall.ToString();
-                        }
+							Commlink objCommlink = (Commlink)objGear;
+							List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+							cboVehicleGearAttack.BindingContext = new BindingContext();
+							cboVehicleGearAttack.ValueMember = "Value";
+							cboVehicleGearAttack.DisplayMember = "Name";
+							cboVehicleGearAttack.DataSource = objASDF;
+							cboVehicleGearAttack.SelectedIndex = 0;
+							cboVehicleGearAttack.Visible = true;
+							cboVehicleGearSleaze.BindingContext = new BindingContext();
+							cboVehicleGearSleaze.ValueMember = "Value";
+							cboVehicleGearSleaze.DisplayMember = "Name";
+							cboVehicleGearSleaze.DataSource = objASDF;
+							cboVehicleGearSleaze.SelectedIndex = 1;
+							cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+							cboVehicleGearDataProcessing.ValueMember = "Value";
+							cboVehicleGearDataProcessing.DisplayMember = "Name";
+							cboVehicleGearDataProcessing.DataSource = objASDF;
+							cboVehicleGearDataProcessing.SelectedIndex = 2;
+							cboVehicleGearFirewall.BindingContext = new BindingContext();
+							cboVehicleGearFirewall.ValueMember = "Value";
+							cboVehicleGearFirewall.DisplayMember = "Name";
+							cboVehicleGearFirewall.DataSource = objASDF;
+							cboVehicleGearFirewall.SelectedIndex = 3;
+
+							DisplayVehicleWeaponStats(false);
+							DisplayVehicleCommlinkStats(true);
+						}
 
                         if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
                         {
@@ -19650,8 +19938,12 @@ namespace Chummer
                         }
 
                         nudVehicleRating.Enabled = false;
+						
+						DisplayVehicleWeaponStats(true);
+						DisplayVehicleCommlinkStats(false);
+						DisplayVehicleStats(false);
 
-                        lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
+						lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage();
                         lblVehicleWeaponAP.Text = objWeapon.TotalAP;
@@ -19667,15 +19959,7 @@ namespace Chummer
                         lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeapon");
                         lblVehicleAvail.Text = objWeapon.TotalAvail;
                         lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objWeapon.TotalCost);
-                        lblVehicleHandling.Text = "";
-                        lblVehicleAccel.Text = "";
-                        lblVehicleSpeed.Text = "";
-                        lblVehicleDevice.Text = "";
-                        lblVehiclePilot.Text = "";
-                        lblVehicleBody.Text = "";
-                        lblVehicleArmor.Text = "";
-                        lblVehicleSensor.Text = "";
-                        lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+						lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
@@ -19730,15 +20014,12 @@ namespace Chummer
                     lblVehicleCategory.Text = objGear.DisplayCategory;
                     lblVehicleAvail.Text = objGear.TotalAvail(true);
                     lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
-                    lblVehicleHandling.Text = "";
-                    lblVehicleAccel.Text = "";
-                    lblVehicleSpeed.Text = "";
-                    lblVehicleDevice.Text = "";
-                    lblVehiclePilot.Text = "";
-                    lblVehicleBody.Text = "";
-                    lblVehicleArmor.Text = "";
-                    lblVehicleSensor.Text = "";
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					lblVehicleDevice.Text = objGear.DeviceRating.ToString();
+					lblVehicleDeviceLabel.Visible = true;
+					DisplayVehicleWeaponStats(false);
+					DisplayVehicleCommlinkStats(false);
+					DisplayVehicleStats(false);
+					lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
@@ -19746,13 +20027,31 @@ namespace Chummer
 
                     if (objGear.GetType() == typeof(Commlink))
                     {
-                        Commlink objCommlink = (Commlink)objGear;
-                        lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
-                        lblVehicleAttack.Text = objCommlink.Attack.ToString();
-                        lblVehicleSleaze.Text = objCommlink.Sleaze.ToString();
-                        lblVehicleDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                        lblVehicleFirewall.Text = objCommlink.Firewall.ToString();
-                    }
+						Commlink objCommlink = (Commlink)objGear;
+						List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+
+						cboVehicleGearAttack.BindingContext = new BindingContext();
+						cboVehicleGearAttack.ValueMember = "Value";
+						cboVehicleGearAttack.DisplayMember = "Name";
+						cboVehicleGearAttack.DataSource = objASDF;
+						cboVehicleGearAttack.SelectedIndex = 0;
+						cboVehicleGearAttack.Visible = true;
+						cboVehicleGearSleaze.BindingContext = new BindingContext();
+						cboVehicleGearSleaze.ValueMember = "Value";
+						cboVehicleGearSleaze.DisplayMember = "Name";
+						cboVehicleGearSleaze.DataSource = objASDF;
+						cboVehicleGearSleaze.SelectedIndex = 1;
+						cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+						cboVehicleGearDataProcessing.ValueMember = "Value";
+						cboVehicleGearDataProcessing.DisplayMember = "Name";
+						cboVehicleGearDataProcessing.DataSource = objASDF;
+						cboVehicleGearDataProcessing.SelectedIndex = 2;
+						cboVehicleGearFirewall.BindingContext = new BindingContext();
+						cboVehicleGearFirewall.ValueMember = "Value";
+						cboVehicleGearFirewall.DisplayMember = "Name";
+						cboVehicleGearFirewall.DataSource = objASDF;
+						cboVehicleGearFirewall.SelectedIndex = 3;
+					}
 
                     if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
                     {
@@ -19772,7 +20071,8 @@ namespace Chummer
 
                     if (blnWeapon)
                     {
-                        lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
+						DisplayVehicleWeaponStats(true);
+						lblVehicleWeaponName.Text = objWeapon.DisplayNameShort;
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory;
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage();
                         lblVehicleWeaponAP.Text = objWeapon.TotalAP;
@@ -19796,7 +20096,15 @@ namespace Chummer
                         lblVehicleBody.Text = "";
                         lblVehicleArmor.Text = "";
                         lblVehicleSensor.Text = "";
-                        lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+						lblVehicleHandlingLabel.Visible = false;
+						lblVehicleAccelLabel.Visible = false;
+						lblVehicleSpeedLabel.Visible = false;
+						lblVehicleDeviceLabel.Visible = false;
+						lblVehiclePilotLabel.Visible = false;
+						lblVehicleBodyLabel.Visible = false;
+						lblVehicleArmorLabel.Visible = false;
+						lblVehicleSensorLabel.Visible = false;
+						lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
@@ -19837,7 +20145,16 @@ namespace Chummer
                             lblVehicleArmor.Text = "";
                             lblVehicleSensor.Text = "";
                             lblVehicleSlots.Text = "";
-                            string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
+							lblVehicleHandlingLabel.Visible = false;
+							lblVehicleAccelLabel.Visible = false;
+							lblVehicleSpeedLabel.Visible = false;
+							lblVehicleDeviceLabel.Visible = false;
+							lblVehiclePilotLabel.Visible = false;
+							lblVehicleBodyLabel.Visible = false;
+							lblVehicleArmorLabel.Visible = false;
+							lblVehicleSensorLabel.Visible = false;
+							lblVehicleSlotsLabel.Visible = false;
+							string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
                             string strPage = objCyberware.Page;
                             lblVehicleSource.Text = strBook + " " + strPage;
                             tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
@@ -19899,13 +20216,31 @@ namespace Chummer
 
                     if (objGear.GetType() == typeof(Commlink))
                     {
-                        Commlink objCommlink = (Commlink)objGear;
-                        lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
-                        lblVehicleAttack.Text = objCommlink.Attack.ToString();
-                        lblVehicleSleaze.Text = objCommlink.Sleaze.ToString();
-                        lblVehicleDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                        lblVehicleFirewall.Text = objCommlink.Firewall.ToString();
-                    }
+						Commlink objCommlink = (Commlink)objGear;
+						List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+
+						cboVehicleGearAttack.BindingContext = new BindingContext();
+						cboVehicleGearAttack.ValueMember = "Value";
+						cboVehicleGearAttack.DisplayMember = "Name";
+						cboVehicleGearAttack.DataSource = objASDF;
+						cboVehicleGearAttack.SelectedIndex = 0;
+						cboVehicleGearAttack.Visible = true;
+						cboVehicleGearSleaze.BindingContext = new BindingContext();
+						cboVehicleGearSleaze.ValueMember = "Value";
+						cboVehicleGearSleaze.DisplayMember = "Name";
+						cboVehicleGearSleaze.DataSource = objASDF;
+						cboVehicleGearSleaze.SelectedIndex = 1;
+						cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+						cboVehicleGearDataProcessing.ValueMember = "Value";
+						cboVehicleGearDataProcessing.DisplayMember = "Name";
+						cboVehicleGearDataProcessing.DataSource = objASDF;
+						cboVehicleGearDataProcessing.SelectedIndex = 2;
+						cboVehicleGearFirewall.BindingContext = new BindingContext();
+						cboVehicleGearFirewall.ValueMember = "Value";
+						cboVehicleGearFirewall.DisplayMember = "Name";
+						cboVehicleGearFirewall.DataSource = objASDF;
+						cboVehicleGearFirewall.SelectedIndex = 3;
+					}
 
                     if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
                     {
@@ -20167,13 +20502,31 @@ namespace Chummer
 
                         if (objGear.GetType() == typeof(Commlink))
                         {
-                            Commlink objCommlink = (Commlink)objGear;
-                            lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
-                            lblVehicleAttack.Text = objCommlink.Attack.ToString();
-                            lblVehicleSleaze.Text = objCommlink.Sleaze.ToString();
-                            lblVehicleDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                            lblVehicleFirewall.Text = objCommlink.Firewall.ToString();
-                        }
+							Commlink objCommlink = (Commlink)objGear;
+							List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+
+							cboVehicleGearAttack.BindingContext = new BindingContext();
+							cboVehicleGearAttack.ValueMember = "Value";
+							cboVehicleGearAttack.DisplayMember = "Name";
+							cboVehicleGearAttack.DataSource = objASDF;
+							cboVehicleGearAttack.SelectedIndex = 0;
+							cboVehicleGearAttack.Visible = true;
+							cboVehicleGearSleaze.BindingContext = new BindingContext();
+							cboVehicleGearSleaze.ValueMember = "Value";
+							cboVehicleGearSleaze.DisplayMember = "Name";
+							cboVehicleGearSleaze.DataSource = objASDF;
+							cboVehicleGearSleaze.SelectedIndex = 1;
+							cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+							cboVehicleGearDataProcessing.ValueMember = "Value";
+							cboVehicleGearDataProcessing.DisplayMember = "Name";
+							cboVehicleGearDataProcessing.DataSource = objASDF;
+							cboVehicleGearDataProcessing.SelectedIndex = 2;
+							cboVehicleGearFirewall.BindingContext = new BindingContext();
+							cboVehicleGearFirewall.ValueMember = "Value";
+							cboVehicleGearFirewall.DisplayMember = "Name";
+							cboVehicleGearFirewall.DataSource = objASDF;
+							cboVehicleGearFirewall.SelectedIndex = 3;
+						}
 
                         if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
                         {
@@ -20231,13 +20584,30 @@ namespace Chummer
 
                 if (objGear.GetType() == typeof(Commlink))
                 {
-                    Commlink objCommlink = (Commlink)objGear;
-                    lblVehicleDevice.Text = objCommlink.DeviceRating.ToString();
-                    lblVehicleAttack.Text = objCommlink.Attack.ToString();
-                    lblVehicleSleaze.Text = objCommlink.Sleaze.ToString();
-                    lblVehicleDataProcessing.Text = objCommlink.DataProcessing.ToString();
-                    lblVehicleFirewall.Text = objCommlink.Firewall.ToString();
-                }
+					Commlink objCommlink = (Commlink)objGear;
+					List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
+					cboVehicleGearAttack.BindingContext = new BindingContext();
+					cboVehicleGearAttack.ValueMember = "Value";
+					cboVehicleGearAttack.DisplayMember = "Name";
+					cboVehicleGearAttack.DataSource = objASDF;
+					cboVehicleGearAttack.SelectedIndex = 0;
+					cboVehicleGearAttack.Visible = true;
+					cboVehicleGearSleaze.BindingContext = new BindingContext();
+					cboVehicleGearSleaze.ValueMember = "Value";
+					cboVehicleGearSleaze.DisplayMember = "Name";
+					cboVehicleGearSleaze.DataSource = objASDF;
+					cboVehicleGearSleaze.SelectedIndex = 1;
+					cboVehicleGearDataProcessing.BindingContext = new BindingContext();
+					cboVehicleGearDataProcessing.ValueMember = "Value";
+					cboVehicleGearDataProcessing.DisplayMember = "Name";
+					cboVehicleGearDataProcessing.DataSource = objASDF;
+					cboVehicleGearDataProcessing.SelectedIndex = 2;
+					cboVehicleGearFirewall.BindingContext = new BindingContext();
+					cboVehicleGearFirewall.ValueMember = "Value";
+					cboVehicleGearFirewall.DisplayMember = "Name";
+					cboVehicleGearFirewall.DataSource = objASDF;
+					cboVehicleGearFirewall.SelectedIndex = 3;
+				}
 
                 if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
                 {
@@ -23834,7 +24204,7 @@ namespace Chummer
             lblVehicleName.Left = lblVehicleNameLabel.Left + intWidth + 6;
             lblVehicleCategory.Left = lblVehicleCategoryLabel.Left + intWidth + 6;
             lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
-            lblVehicleAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
+            cboVehicleGearAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
             lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
             lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
             nudVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
@@ -23855,7 +24225,7 @@ namespace Chummer
             lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
             lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
             lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
-            lblVehicleSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
+            cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
 
             chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
             chkVehicleHomeNode.Left = lblVehicleAccel.Left;
@@ -23869,7 +24239,7 @@ namespace Chummer
             lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
             lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
             lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
-            lblVehicleDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
+            cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblVehicleDeviceLabel.Width, lblVehicleSensorLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
@@ -23879,7 +24249,7 @@ namespace Chummer
             lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 35;
             lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
             lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 35;
-            lblVehicleFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
+            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
 
             lblVehicleSlotsLabel.Left = lblVehicleCost.Left + 94;
             lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + lblVehicleSlotsLabel.Width + 6;

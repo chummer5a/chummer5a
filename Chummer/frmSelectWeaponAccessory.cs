@@ -145,9 +145,19 @@ namespace Chummer
 				nudRating.Visible = false;
 				lblRatingLabel.Visible = false;
 			}
+			List<string> strMounts = new List<string>();
+			foreach (string strItem in (objXmlAccessory["mount"].InnerText.Split('/')))
+			{
+				strMounts.Add(strItem);
+			}
+			strMounts.Add("None");
 
-			string[] strMounts = objXmlAccessory["mount"].InnerText.Split('/');
-			string[] strAllowed = _strAllowedMounts.Split('/');
+			List<string> strAllowed = new List<string>();
+			foreach (string strItem in (_strAllowedMounts.Split('/')))
+			{
+				strAllowed.Add(strItem);
+			}
+			strAllowed.Add("None");
 			cboMount.Items.Clear();
 			foreach (string strCurrentMount in strMounts)
 			{
@@ -162,15 +172,15 @@ namespace Chummer
 					}
 				}
 			}
-			if (cboMount.Items.Count < 1)
+			if (cboMount.Items.Count <= 1)
 			{
 				cboMount.Enabled = false;
 			}
 			else
 			{
-				cboMount.SelectedIndex = 0;
 				cboMount.Enabled = true;
 			}
+			cboMount.SelectedIndex = 0;
 			// Avail.
 			// If avail contains "F" or "R", remove it from the string so we can use the expression.
 			string strAvail = "";
