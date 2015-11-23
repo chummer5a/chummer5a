@@ -9202,7 +9202,9 @@
 			<name>Dead Emotion</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
