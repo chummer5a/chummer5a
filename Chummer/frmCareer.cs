@@ -28,6 +28,7 @@ namespace Chummer
 		private int _intDragLevel = 0;
 		private MouseButtons _objDragButton = new MouseButtons();
 		private bool _blnDraggingGear = false;
+		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
 
 		private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
 		private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
@@ -5112,10 +5113,13 @@ namespace Chummer
 			}
 
 			frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
+			frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
 			frmPickSpell.ShowDialog(this);
 			// Make sure the dialogue window was not canceled.
 			if (frmPickSpell.DialogResult == DialogResult.Cancel)
 				return;
+
+			lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
 
 			// Open the Spells XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
@@ -18038,7 +18042,7 @@ namespace Chummer
 						if (objChild.InternalId == objWeapon.AmmoLoaded)
 						{
 							// If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-							if (objChild.Parent.Name.StartsWith("Spare Clip"))
+							if (objChild.Parent.Name.StartsWith("Spare Clip") || objChild.Parent.Name.StartsWith("Speed Loader"))
 							{
 								TreeNode objNewNode = new TreeNode();
 								List<Weapon> lstWeapons = new List<Weapon>();
@@ -18100,7 +18104,7 @@ namespace Chummer
 				if (objSelectedAmmo.Quantity == intQty && objSelectedAmmo.Parent != null)
 				{
 					// If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
-					if (objSelectedAmmo.Parent.Name.StartsWith("Spare Clip"))
+					if (objSelectedAmmo.Parent.Name.StartsWith("Spare Clip") || objSelectedAmmo.Parent.Name.StartsWith("Speed Loader"))
 					{
 						if (objSelectedAmmo.Parent.Quantity > 0)
 							objSelectedAmmo.Parent.Quantity--;

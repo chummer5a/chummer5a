@@ -3897,7 +3897,7 @@ namespace Chummer
 					if (objXmlSkill["translate"] != null)
 						Items.Add(objXmlSkill["translate"].InnerText);
 					else
-						Items.Add(objXmlSkill["name"].InnerText);
+						Items.Add((objXmlSkill["name"].InnerText) + " (" + (objXmlSkill["category"].InnerText) + ")");
 				}
 				//TODO: Cache
 				return Items;

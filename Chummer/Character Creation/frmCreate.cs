@@ -29,9 +29,10 @@ namespace Chummer
         private bool _blnDraggingGear = false;
         public int contactConnection = 0;
 	    private StoryBuilder _objStoryBuilder;
+		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
 
-        // Create the XmlManager that will handle finding all of the XML files.
-        private ImprovementManager _objImprovementManager;
+		// Create the XmlManager that will handle finding all of the XML files.
+		private ImprovementManager _objImprovementManager;
 
         #region Form Events
         public frmCreate(Character objCharacter)
@@ -5424,9 +5425,10 @@ namespace Chummer
         }
 
         private void cmdAddSpell_Click(object sender, EventArgs e)
-        {
+        {		
             frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
-            frmPickSpell.ShowDialog(this);
+			frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
+			frmPickSpell.ShowDialog(this);
             // Make sure the dialogue window was not canceled.
             if (frmPickSpell.DialogResult == DialogResult.Cancel)
                 return;
@@ -5436,6 +5438,7 @@ namespace Chummer
 
             XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + frmPickSpell.SelectedSpell + "\"]");
 
+			lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
             Spell objSpell = new Spell(_objCharacter);
             TreeNode objNode = new TreeNode();
             objSpell.Create(objXmlSpell, _objCharacter, objNode, "", frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
@@ -5497,8 +5500,10 @@ namespace Chummer
             //else
             lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
 
-            if (frmPickSpell.AddAgain)
-                cmdAddSpell_Click(sender, e);
+			if (frmPickSpell.AddAgain)
+			{
+				cmdAddSpell_Click(sender, e);
+			}
         }
 
         private void cmdDeleteSpell_Click(object sender, EventArgs e)
@@ -15688,7 +15693,7 @@ namespace Chummer
                     string strAttribute = "";
                     NumericUpDown nudAttribute = objControl;
                     // Disabled Attributes should not be included.
-                    if ((objControl.Name == nudMAG.Name && _objCharacter.MAGEnabled) || (objControl.Name == nudRES.Name && _objCharacter.RESEnabled))
+                    if ((objControl.Name == nudMAG.Name && _objCharacter.MAGEnabled) || (objControl.Name == nudRES.Name && _objCharacter.RESEnabled) || objControl.Name == nudEDG.Name)
                     {
                         if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                         {

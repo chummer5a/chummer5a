@@ -74,7 +74,16 @@ namespace Chummer
 		public Commlink FindCommlink(string strGuid, List<Gear> lstCommlink)
 		{
 			Commlink objReturn = new Commlink(_objCharacter);
-			foreach (Commlink objCommlink in lstCommlink)
+			List<Gear> lstCheckGear = new List<Gear>();
+
+			foreach (Gear objGear in lstCommlink)
+			{
+				if (objGear.Category == "Commlinks)")
+				{
+					lstCheckGear.Add(objGear);
+				}
+			}
+			foreach (Commlink objCommlink in lstCheckGear)
 			{
 				if (objCommlink.InternalId == strGuid)
 					objReturn = objCommlink;

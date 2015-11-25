@@ -1,3 +1,10 @@
+Build 178: 
+Application Change: 
+- Fixed a calculation issue for the Edge attribute when using Sum-To-Ten or Priority.
+- Fixed a crash issue caused when adding commlinks and cyberdecks.
+- Standard Knowledge Skills are suffixed with the Category they're a part of. There's a minor issue that preserves the skill name until the character is next loaded that will be fixed later. 
+- Clicking Add Again on the Spell Selection menu will preserve the currently opened spell categories. This is more or less just a proof of concept and will be expanded to other forms in later patches.
+
 Build 177:
 Application Change:
 - Fixed a crash when selecting positive lifestyle qualities. 

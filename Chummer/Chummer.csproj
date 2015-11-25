@@ -177,6 +177,12 @@
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmCreateCustomDrug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateCustomDrug.Designer.cs">
+      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmCreateCyberwareSuite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1486,6 +1492,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="data\drugcomponents.xml" />
     <Content Include="data\echoes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

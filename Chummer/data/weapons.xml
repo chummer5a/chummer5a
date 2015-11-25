@@ -8011,6 +8011,9 @@
 			<name>Speed Loader</name>
 			<rating>0</rating>
 			<mount/>
+			<allowgear>
+				<gearcategory>Ammunition</gearcategory>
+			</allowgear>
 			<avail>2</avail>
 			<cost>25</cost>
 			<source>SR5</source>

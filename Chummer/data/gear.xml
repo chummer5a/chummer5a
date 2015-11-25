@@ -3832,6 +3832,7 @@
 			<category>Audio Enhancements</category>
 			<rating>0</rating>
 			<avail>0</avail>
+			<armorcapacity>[1]</armorcapacity>
 			<capacity>[1]</capacity>
 			<cost>25</cost>
 			<source>RF</source>

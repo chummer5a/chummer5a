@@ -13,6 +13,7 @@ namespace Chummer
 		private bool _blnAddAgain = false;
 		private string _strLimitCategory = "";
 		private string _strForceSpell = "";
+		private List<TreeNode> _lstExpandCategories;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
@@ -150,6 +151,20 @@ namespace Chummer
                         nodParent.Expand();
                 }
             }
+
+			if (_lstExpandCategories != null)
+			{
+				foreach (TreeNode objExpandedNode in _lstExpandCategories)
+				{
+					foreach (TreeNode objNode in treSpells.Nodes)
+					{
+						if (objNode.Text == objExpandedNode.Text)
+						{
+							objNode.Expand();
+						}
+					}
+				}
+			}
 
 			if (_strLimitCategory != "")
 				txtSearch.Enabled = false;
@@ -346,74 +361,84 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (treSpells.SelectedNode.Level == 0)
+			if (!_blnAddAgain)
 			{
-				return;
+				_lstExpandCategories = null;
 			}
-			else
-			{
-				// Display the Spell information.
-				XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
-				// Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-				// The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-				int intSpellCount = 0;
-				int intRitualCount = 0;
-				int intAlchPrepCount = 0;
-				int intSpellLimit = 0;
 
-				foreach (Spell objspell in _objCharacter.Spells)
+			if (treSpells.SelectedNode != null)
+			{
+				if (treSpells.SelectedNode.Level == 0)
 				{
-					if (objspell.Alchemical)
-					{ intAlchPrepCount++; }
-					else if (objspell.Category == "Rituals")
-					{ intRitualCount++; }
-					else
-					{ intSpellCount++; }
+					return;
 				}
-				if (!_objCharacter.IgnoreRules)
+				else
 				{
-					intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
-					if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
-					{
+					// Display the Spell information.
+					XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + treSpells.SelectedNode.Tag + "\"]");
+					// Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
+					// The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
+					int intSpellCount = 0;
+					int intRitualCount = 0;
+					int intAlchPrepCount = 0;
+					int intSpellLimit = 0;
 
-						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-						return;
-					}
-					else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
+					foreach (Spell objspell in _objCharacter.Spells)
 					{
-						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-						return;
+						if (objspell.Alchemical)
+						{ intAlchPrepCount++; }
+						else if (objspell.Category == "Rituals")
+						{ intRitualCount++; }
+						else
+						{ intSpellCount++; }
 					}
-					else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
+					if (!_objCharacter.IgnoreRules)
 					{
-						MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
-							LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-						return;
+						intSpellLimit = (_objCharacter.MAG.TotalValue * 2);
+						if (chkAlchemical.Checked && (intAlchPrepCount >= intSpellLimit) && !_objCharacter.Created)
+						{
 
+							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						}
+						else if (objXmlSpell["category"].InnerText == "Rituals" && (intRitualCount >= intSpellLimit) && !_objCharacter.Created)
+						{
+							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"), LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						}
+						else if (intSpellCount >= intSpellLimit && !_objCharacter.Created)
+						{
+							MessageBox.Show(LanguageManager.Instance.GetString("Message_SpellLimit"),
+								LanguageManager.Instance.GetString("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+
+						}
 					}
 				}
+				try
+				{
+					if (treSpells.SelectedNode.Level > 0)
+						AcceptForm();
+				}
+				catch
+				{
+				}
 			}
-			try
-			{
-				if (treSpells.SelectedNode.Level > 0)
-					AcceptForm();
-			}
-			catch
-			{
-			}
-        }
+		}
 
         private void treSpells_DoubleClick(object sender, EventArgs e)
         {
 	        if (treSpells.SelectedNode.Level > 0)
 	        {
+				this.ExpandedCategories = null;
 		        cmdOK_Click(sender, e);
 	        }
 		}
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+			_lstExpandCategories = null;
+			this.DialogResult = DialogResult.Cancel;
         }
 
 		private void txtSearch_TextChanged(object sender, EventArgs e)
@@ -505,6 +530,15 @@ namespace Chummer
 		private void cmdOKAdd_Click(object sender, EventArgs e)
 		{
 			_blnAddAgain = true;
+			List<TreeNode> _lstExpandCategories = new List<TreeNode>();
+			foreach (TreeNode objNode in treSpells.Nodes)
+			{
+				if (objNode.IsExpanded)
+				{
+					_lstExpandCategories.Add(objNode);
+				}
+			}
+			this.ExpandedCategories = _lstExpandCategories;
 			cmdOK_Click(sender, e);
 		}
 
@@ -565,6 +599,17 @@ namespace Chummer
 			}
 		}
 
+		public List<TreeNode> ExpandedCategories
+		{
+			get
+			{
+				return _lstExpandCategories;
+			}
+			set
+			{
+				_lstExpandCategories = value;
+			}
+		}
 		/// <summary>
 		/// Whether or not a Limited version of the Spell was selected.
 		/// </summary>
@@ -639,7 +684,7 @@ namespace Chummer
         private void AcceptForm()
         {
 			_strSelectedSpell = treSpells.SelectedNode.Tag.ToString();
-            this.DialogResult = DialogResult.OK;
+			this.DialogResult = DialogResult.OK;
 		}
 
 		private void MoveControls()
