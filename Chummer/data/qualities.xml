@@ -1214,14 +1214,6 @@
 			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus />
-			<required>
-				<oneof>
-					<quality>Adept</quality>
-					<quality>Aspected Magician</quality>
-					<quality>Magician</quality>
-					<quality>Mystic Adept</quality>
-				</oneof>
-			</required>
 			<forbidden>
 				<oneof>
 					<quality>Astral Chameleon</quality>
