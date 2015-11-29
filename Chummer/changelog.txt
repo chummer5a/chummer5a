@@ -1,3 +1,9 @@
+Build 179:
+Application Change:
+
+Data Change:
+- Added missing required values for the Hospitalized lifestyles.
+
 Build 178: 
 Application Change: 
 - Fixed a calculation issue for the Edge attribute when using Sum-To-Ten or Priority.
