@@ -1220,6 +1220,10 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Sasquatch</metatype>
 				</oneof>
 			</required>
 			<forbidden>
