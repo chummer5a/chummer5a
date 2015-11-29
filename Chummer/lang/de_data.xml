@@ -1181,6 +1181,11 @@
 				<name>Shadowrun 5th Edition (German)</name>
 				<translate>Shadowrun 5th Edition (German)</translate>
 			</book>
+                        <book>  
+                                <id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+                                <name>Data Trails</name>
+                                <translate>Datenpfade</translate>
+                       </book>
 		</books>
 	</chummer>
 	<chummer file="critterpowers.xml">
@@ -6411,14 +6416,15 @@
 			<category translate="Sichtverstärkung">Vision Enhancements</category>
 			<category translate="Chemikalien">Chemicals</category>
 			<category translate="Cyberdecks" translated="True">Cyberdecks</category>
+			<category translate="Cyberdeck-Module" translated="True">Cyberdeck Modules</category>
 			<category translate="Panzerungsverstärkungen" translated="True">Armor Enhancements</category>
 			<category translate="Audiogeräte" translated="True">Audio Devices</category>
 			<category translate="Einbruchswerkzeug" translated="True">Breaking and Entering Gear</category>
 			<category translate="BTLs" translated="True">BTLs</category>
-			<category translate="Commlinks" translated="True">Commlinks</category>
+			<category translate="Kommlinks" translated="True">Commlinks</category>
 			<category translate="Programme, Standard" translated="True">Common Programs</category>
 			<category translate="Kommunikation und Gegenmaßnahmen" translated="True">Communications and Countermeasures</category>
-			<category translate="Custom" translated="True">Custom</category>
+			<category translate="Eigene" translated="True">Custom</category>
 			<category translate="Verkleidungen" translated="True">Disguises</category>
 			<category translate="Elektronikzubehör" translated="True">Electronics Accessories</category>
 			<category translate="Extraktionszubehör">Extraction Devices</category>
@@ -6477,6 +6483,180 @@
 				<translate>Fairlight Caliban</translate>
 			</gear>
 			<gear>
+        			<id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
+        			<name>Renraku Aguchi</name>
+        			<page>19</page>
+        			<translate>Renraku Aguchi</translate>
+      			</gear>
+		<gear>
+			<id>ca8c8e4f-39a2-4e91-a6c7-239dd772e4d9</id>
+			<name>Sony Angel</name>
+			<page>19</page>
+			<translate>Sony Angel</translate>
+		</gear>
+		<gear>
+			<id>8bd42918-2c19-4738-8945-b93be3d8e26d</id>
+			<name>Transys Arthur</name>
+			<page>19</page>
+			<translate>Transys Arthur</translate>
+		</gear>
+		<gear>
+			<id>22210eac-768e-42c9-94a0-84077cbcec53</id>
+			<name>Common Denominator Element</name>
+			<page>19</page>
+			<translate>Common Denominator Element</translate>
+		</gear>
+		<gear>
+			<id>00342e9b-4c68-4f9d-88e3-f43bfe94069d</id>
+			<name>Leviathan Technical LT-2100</name>
+			<page>19</page>
+			<translate>Leviathan Technical LT-2100</translate>
+		</gear>
+		<gear>
+			<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
+			<name>Microtronica Azteca Raptor</name>
+			<page>19</page>
+			<translate>Microtronica Azteca Raptor</translate>
+		</gear>
+		<gear>
+			<id>40a1ee23-8d27-4360-95ce-00557c773134</id>
+			<name>Xiao Technologies XT-2G</name>
+			<page>19</page>
+			<translate>Xiao Technologies XT-2G</translate>
+		</gear>
+		<gear>
+			<id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
+			<name>Matrix Systems GridGopher</name>
+			<page>19</page>
+			<translate>Matrix Systems GridGopher</translate>
+		</gear>
+		<gear>
+			<id>d3ea65d9-833a-47be-93c1-001bd437eb9c</id>
+			<name>MCT-3500</name>
+			<page>19</page>
+			<translate>MCT-3500</translate>
+		</gear>
+		<gear>
+			<id>146a6f15-f00f-45bb-abea-f574b2241915</id>
+			<name>FTL Quark</name>
+			<page>19</page>
+			<translate>FTL Quark</translate>
+		</gear>
+		<gear>
+			<id>117bb53e-3f24-4e53-b861-29564bad7281</id>
+			<name>Novatech NetNinja</name>
+			<page>19</page>
+			<translate>Novatech NetNinja</translate>
+		</gear>
+		<gear>
+			<id>b141098a-1bb3-4003-91fa-fff6958ab68f</id>
+			<name>Pulse Wave</name>
+			<page>19</page>
+			<translate>Pulse Wave</translate>
+		</gear>
+		<gear>
+			<id>07bb0fb2-a84c-4324-8a33-2cdc8f6955a2</id>
+			<name>Fuchi Cyber-X7</name>
+			<page>19</page>
+			<translate>Fuchi Cyber-X7</translate>
+		</gear>
+		<gear>
+			<id>d3de4703-7215-4046-bf17-a8e11f92b3e5</id>
+			<name>EvoTech Himitsu</name>
+			<page>69</page>
+			<translate>EvoTech Himitsu</translate>
+		</gear>
+		<gear>
+			<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
+			<name>MCT Blue Defender</name>
+			<page>69</page>
+			<translate>MCT Blue Defender</translate>
+		</gear>
+		<gear>
+			<id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
+			<name>Nixdorf Sekretar</name>
+			<page>69</page>
+			<translate>Nixdorf Sekretär</translate>
+		</gear>
+		<gear>
+			<id>784babc6-170b-4bcc-9572-699368e898de</id>
+			<name>Nixdorf Sekretar w/ Liebesekretar</name>
+			<page>69</page>
+			<translate>Nixdorf Sekretär mit Liebessekretär</translate>
+		</gear>
+		<gear>
+			<id>de794f9c-505f-4a09-8be9-f43749240799</id>
+			<name>MCT Trainee</name>
+			<page>72</page>
+			<translate>MCT Trainee</translate>
+		</gear>
+		<gear>
+			<id>0f8d360a-8c9a-41f4-ba5c-f4f8c5677145</id>
+			<name>Radio Shack PCD-500</name>
+			<page>72</page>
+			<translate>Radio Shack PCD-500</translate>
+		</gear>
+		<gear>
+			<id>1658d851-21a0-455e-9b87-ed04b4e010a5</id>
+			<name>C-K Analyst</name>
+			<page>72</page>
+			<translate>C-K Analyst</translate>
+		</gear>
+		<gear>
+			<id>b9d996cd-b670-4bf4-a021-047a887891a2</id>
+			<name>Little Hornet</name>
+			<page>72</page>
+			<translate>Little Hornet</translate>
+		</gear>
+		<gear>
+			<id>98a97367-8747-4ba9-ae97-ea371baaec13</id>
+			<name>Aztechnology Emissary</name>
+			<page>72</page>
+			<translate>Aztechnology Emissary</translate>
+		</gear>
+		<gear>
+			<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
+			<name>Microtronica Azteca 300</name>
+			<page>72</page>
+			<translate>Microtronica Azteca 300</translate>
+		</gear>
+		<gear>
+			<id>85828a80-cf4a-4f9f-8eb5-c2c5db5e98ab</id>
+			<name>Yak Killer</name>
+			<page>72</page>
+			<translate>Yak Killer</translate>
+		</gear>
+		<gear>
+			<id>88ad69c3-7e45-4a27-b6a2-bcc525fe3a73</id>
+			<name>Ring of Light Special</name>
+			<page>72</page>
+			<translate>Ring of Light Special</translate>
+		</gear>
+		<gear>
+			<id>396eb5a2-57d3-4a6f-b30d-d3809b073d54</id>
+			<name>Shiawase Cyber-4</name>
+			<page>72</page>
+			<translate>Shiawase Cyber-4</translate>
+		</gear>
+		<gear>
+			<id>aa94122a-6991-46d4-986d-13d72bff1c22</id>
+			<name>Xiao MPG-1</name>
+			<page>72</page>
+			<translate>Xiao MPG-1</translate>
+		</gear>
+		<gear>
+			<id>e19c44a6-02bd-445c-8def-e43c1a5704e0</id>
+			<name>Ares Echo Unlimited</name>
+			<page>72</page>
+			<translate>Ares Echo Unlimited</translate>
+		</gear>
+		<gear>
+			<id>c9cdce54-8b00-48c2-be2a-7e81a3d5a426</id>
+			<name>Fairlight Paladin</name>
+			<page>72</page>
+			<translate>Fairlight Paladin</translate>
+		</gear>
+			<gear>
 				<id>2e409fba-8b1a-42c4-8fa5-4d256ccd540d</id>
 				<name>AR Gloves</name>
 				<page>443</page>
@@ -6509,8 +6689,8 @@
 			<gear>
 				<id>418d5ba1-dd19-4179-add8-074be445a7b2</id>
 				<name>Trodes</name>
-				<page>449</page>
-				<translate>Elektroden</translate>
+				<page>443</page>
+				<translate>Troden</translate>
 			</gear>
 			<gear>
 				<id>566afc73-6047-46e2-9532-fd540c8b3838</id>
@@ -6521,19 +6701,19 @@
 			<gear>
 				<id>cb405ce6-6133-4b34-8d71-60387e78dd0c</id>
 				<name>Security Tags</name>
-				<page>374</page>
+				<page>444</page>
 				<translate>Sicherheits-RFID</translate>
 			</gear>
 			<gear>
 				<id>8751915f-0573-4c99-b97e-cb74b3788a8a</id>
 				<name>Sensor Tags</name>
-				<page>374</page>
+				<page>444</page>
 				<translate>Sensor-RFID</translate>
 			</gear>
 			<gear>
 				<id>baa9ba27-f93b-48da-91b7-cfcce0ba274d</id>
 				<name>Stealth Tags</name>
-				<page>374</page>
+				<page>444</page>
 				<translate>Spionage-RFID</translate>
 			</gear>
 			<gear>
@@ -6581,7 +6761,7 @@
 			<gear>
 				<id>fe598c15-fe7a-46f9-bc84-751cb32735e2</id>
 				<name>Edit</name>
-				<page>424</page>
+				<page>242</page>
 				<translate>Editieren</translate>
 			</gear>
 			<gear>
@@ -6599,7 +6779,7 @@
 			<gear translated="True">
 				<id>f3134808-861c-41df-8bdf-2d2c855e78a4</id>
 				<name>Blackout</name>
-				<page>272</page>
+				<page>242</page>
 				<translate>Blackout</translate>
 			</gear>
 			<gear>
@@ -6611,9 +6791,8 @@
 			<gear>
 				<id>168b8c61-9ea4-4816-8cf4-cb996067b6d6</id>
 				<name>Defuse</name>
-				<page>
-				</page>
-				<translate>Entschärfen</translate>
+				<page>243</page>
+				<translate>Splitterschutz</translate>
 			</gear>
 			<gear>
 				<id>67ea7c0c-1703-412b-80d3-9c23cc6d8291</id>
@@ -6624,8 +6803,8 @@
 			<gear>
 				<id>d5877f46-03e0-4603-b77a-f27e278202ab</id>
 				<name>Stealth</name>
-				<page>224</page>
-				<translate>Schleicher</translate>
+				<page>243</page>
+				<translate>Tarnkappe</translate>
 			</gear>
 			<gear>
 				<id>9bfce6cb-99ea-4b63-ad9f-e1bceb87bbd6</id>
@@ -6636,7 +6815,7 @@
 			<gear translated="True">
 				<id>2d8396ff-a4a9-4382-ab69-70d198856e7f</id>
 				<name>Agent</name>
-				<page>273</page>
+				<page>243</page>
 				<translate>Agent</translate>
 			</gear>
 			<gear>
@@ -6681,6 +6860,52 @@
 				<page>446</page>
 				<translate>Linguasoft</translate>
 			</gear>
+			
+	<!-- Region Cyberdeck Modules -->
+		<gear>
+			<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
+      			<name>Hardening</name>
+			<page>73</page>
+			<translate>Härte</translate>
+		</gear>
+		<gear>
+			<id>7355616d-5d79-4d0a-96f2-5ca4095fcabf</id>
+			<name>Induction Receiver</name>
+			<page>73</page>
+			<translate>Induktionsempfänger</translate>
+		</gear>
+		<gear>
+			<id>8706c98d-b53b-4a29-b21b-a921030ae801</id>
+			<name>Multidimensional Coprocessor</name>
+			<page>73</page>
+			<translate>Multidimensionaler Koprozessor</translate>
+		</gear>
+		<gear>
+			<id>9604bbf8-49a0-46ae-8a42-f7e2d473f5c2</id>
+			<name>Overwatch Mask</name>
+			<page>73</page>
+			<translate>Overwatch-Maske</translate>
+		</gear>
+		<gear>
+			<id>f11b2c82-6dbb-4e32-831f-1387fff2274c</id>
+			<name>Program Carrier</name>
+			<page>73</page>
+			<translate>Programmträger</translate>
+		</gear>
+		<gear>
+			<id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
+			<name>Self-Destruct</name>
+			<page>73</page>
+			<translate>Selbstzerstörung</translate>	
+		</gear>
+		<gear>
+			<id>ec2a95d8-0c4a-459b-85b3-420174c09d5e</id>
+			<name>Vectored Signal Filter</name>
+			<page>73</page>
+			<translate>Gerichteter Signalfilter</translate>
+		</gear>
+		<!-- End Region -->
+		
 			<gear>
 				<id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
 				<name>Certified Credstick, Standard</name>
