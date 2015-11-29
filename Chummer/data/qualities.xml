@@ -1220,6 +1220,10 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Sasquatch</metatype>
 				</oneof>
 			</required>
 			<forbidden>
@@ -2719,7 +2723,7 @@
 				<selecttext />
 			</bonus>
 			<source>RF</source>
-			<page>149</page>
+			<page>86</page>
 		</quality>
 		<quality>
 			<name>Restricted Gear</name>
@@ -9201,7 +9205,9 @@
 			<name>Dead Emotion</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9405,7 +9411,9 @@
 			<name>Practice, Practice, Practice</name>
 			<karma>2</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selectskill />
+			</bonus>
 			<source>HT</source>
 			<page>191</page>
 			<id>81fc0829-3456-4701-8ecc-f101d145b538</id>
