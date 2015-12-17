@@ -4565,7 +4565,14 @@ namespace Chummer
 					{
 						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
 					}
-					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
+					if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
+					{
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
+					}
+					else
+					{
+						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
+					}
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;

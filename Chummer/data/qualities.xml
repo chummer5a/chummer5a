@@ -9412,7 +9412,7 @@
 			<karma>2</karma>
 			<category>Positive</category>
 			<bonus>
-				<selectskill />
+				<selectskill excludecategory="Combat Active" />
 			</bonus>
 			<source>HT</source>
 			<page>191</page>

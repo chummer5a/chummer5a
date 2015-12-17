@@ -532,6 +532,7 @@
 			<name>Bone Lacing (Aluminum)</name>
 			<category>Bodyware</category>
 			<ess>1</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>12R</avail>
 			<cost>18000</cost>
@@ -549,6 +550,7 @@
 			<name>Bone Lacing (Plastic)</name>
 			<category>Bodyware</category>
 			<ess>0.5</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>8000</cost>
@@ -566,6 +568,7 @@
 			<name>Bone Lacing (Titanium)</name>
 			<category>Bodyware</category>
 			<ess>1.5</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>16R</avail>
 			<cost>30000</cost>
