@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -811,7 +812,7 @@ namespace Chummer
                             }
 							//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 							//	objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-							objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+							//objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							objExotic.Name = objXmlSkill.InnerText;
 							_objCharacter.Skills.Add(objExotic);
 						}
@@ -828,26 +829,27 @@ namespace Chummer
                                     }
 									//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 									//	objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-									objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+									//objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 									break;
 								}
 							}
 						}
 					}
 
+					//TODO: Sorry, whenever we get critter book...
 					// Set the Skill Group Ratings for the Critter.
-					foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
-					{
-						foreach (SkillGroup objSkill in _objCharacter.SkillGroups)
-						{
-							if (objSkill.Name == objXmlSkill.InnerText)
-							{
-								objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-								objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-								break;
-							}
-						}
-					}
+					//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
+					//{
+					//	foreach (SkillGroup objSkill in _objCharacter.SkillGroups)
+					//	{
+					//		if (objSkill.Name == objXmlSkill.InnerText)
+					//		{
+					//			objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+					//			objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
+					//			break;
+					//		}
+					//	}
+					//}
 
 					// Set the Knowledge Skill Ratings for the Critter.
 					foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
@@ -863,7 +865,7 @@ namespace Chummer
 						objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
 						//if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
 						//	objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-						objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+						//objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
 						_objCharacter.Skills.Add(objKnowledge);
 					}
 

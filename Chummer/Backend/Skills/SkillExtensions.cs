@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Chummer
+﻿namespace Chummer.Skills
 {
 	public static class SkillExtensions
 	{

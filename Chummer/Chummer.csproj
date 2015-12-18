@@ -108,10 +108,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\ExoticSkill.cs" />
-    <Compile Include="Backend\KnowledgeSkill.cs" />
-    <Compile Include="Backend\Skill.cs" />
-    <Compile Include="Backend\SkillExtensions.cs" />
+    <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Skills\ExoticSkill.cs" />
+    <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
+    <Compile Include="Backend\Skills\Skill.cs" />
+    <Compile Include="Backend\Skills\SkillExtensions.cs" />
+    <Compile Include="Backend\Skills\SkillGroup.cs" />
+    <None Include="Backend\Skills\SkillList.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,7 +239,37 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="UI\frmSkillTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\frmSkillTest.Designer.cs">
+      <DependentUpon>frmSkillTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
+    <Compile Include="UI\Shared\SkillControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\SkillControl2.Designer.cs">
+      <DependentUpon>SkillControl2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\SkillGroupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\SkillGroupControl.Designer.cs">
+      <DependentUpon>SkillGroupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\SkillsDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\SkillsDisplay.Designer.cs">
+      <DependentUpon>SkillsDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\SkillsTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\SkillsTabUserControl.Designer.cs">
+      <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -778,6 +811,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\frmSkillTest.resx">
+      <DependentUpon>frmSkillTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\SkillControl2.resx">
+      <DependentUpon>SkillControl2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\SkillGroupControl.resx">
+      <DependentUpon>SkillGroupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\SkillsDisplay.resx">
+      <DependentUpon>SkillsDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\SkillsTabUserControl.resx">
+      <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>

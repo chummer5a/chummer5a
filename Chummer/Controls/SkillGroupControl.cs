@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Skills;
 
 // GroupRatingChanged Event Handler.
 public delegate void GroupRatingChangedHandler(Object sender);
@@ -52,8 +53,8 @@ namespace Chummer
 
 			if (_blnCareer)
 			{
-				if (_objSkillGroup.RatingMaximum < 12)
-					_objSkillGroup.RatingMaximum = 12;
+				//if (_objSkillGroup.RatingMaximum < 12)
+				//	_objSkillGroup.RatingMaximum = 12;
 				nudSkill.Maximum = _objSkillGroup.RatingMaximum;
 				nudSkill.Visible = false;
                 nudKarma.Visible = false;
@@ -78,7 +79,7 @@ namespace Chummer
             if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
                 nudSkill.Value = nudSkill.Maximum - nudKarma.Value;
             _objSkillGroup.Base = Convert.ToInt32(nudSkill.Value);
-			_objSkillGroup.Rating = Convert.ToInt32(nudSkill.Value) + Convert.ToInt32(nudKarma.Value);
+			//_objSkillGroup.Rating = Convert.ToInt32(nudSkill.Value) + Convert.ToInt32(nudKarma.Value);
             GroupRatingChanged(this);
         }
 
@@ -87,7 +88,7 @@ namespace Chummer
             if (nudSkill.Value + nudKarma.Value > nudSkill.Maximum)
                 nudKarma.Value = nudSkill.Maximum - nudSkill.Value;
             _objSkillGroup.Karma = Convert.ToInt32(nudKarma.Value);
-            _objSkillGroup.Rating = Convert.ToInt32(nudSkill.Value) + Convert.ToInt32(nudKarma.Value);
+           // _objSkillGroup.Rating = Convert.ToInt32(nudSkill.Value) + Convert.ToInt32(nudKarma.Value);
             GroupRatingChanged(this);
         }
 
@@ -134,7 +135,7 @@ namespace Chummer
             }
             set
             {
-				_objSkillGroup.Name = value;
+				//_objSkillGroup.Name = value;
 				txtGroupName.Text = _objSkillGroup.DisplayName;
 
 				// Add a Tooltip that lists all of the skills that belong to this Skill Group.
@@ -194,7 +195,7 @@ namespace Chummer
             {
                 nudSkill.Value = value;
 				lblGroupRating.Text = value.ToString();
-				_objSkillGroup.Rating = value;
+				//_objSkillGroup.Rating = value;
 
 				if (value < _objSkillGroup.RatingMaximum)
 				{
@@ -258,7 +259,7 @@ namespace Chummer
             set
             {
                 nudSkill.Maximum = value;
-				_objSkillGroup.RatingMaximum = value;
+				//_objSkillGroup.RatingMaximum = value;
             }
 
         }

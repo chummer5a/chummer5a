@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -14,7 +18,7 @@ namespace Chummer
 	/// Character CharacterAttribute.
 	/// </summary>
 	[DebuggerDisplay("{_strAbbrev}")]
-	public class CharacterAttrib
+	public class CharacterAttrib : INotifyPropertyChanged
 	{
 		private int _intMetatypeMin = 1;
 		private int _intMetatypeMax = 6;
@@ -25,6 +29,8 @@ namespace Chummer
         private int _intKarma = 0;
 		private string _strAbbrev = "";
 		public Character _objCharacter;
+
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		#region Constructor, Save, Load, and Print Methods
 		/// <summary>
@@ -159,7 +165,8 @@ namespace Chummer
             set
             {
                 _intBase = value;
-            }
+				OnPropertyChanged();
+			}
         }
 
         /// <summary>
@@ -174,7 +181,8 @@ namespace Chummer
             set
             {
                 _intKarma = value;
-            }
+				OnPropertyChanged();
+			}
         }
 
         /// <summary>
@@ -193,6 +201,7 @@ namespace Chummer
 				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
 
 				_intValue = value - (MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum));
+				OnPropertyChanged();
 			}
 		}
 
@@ -209,6 +218,7 @@ namespace Chummer
 			set
 			{
 				_intAugModifier = value;
+				OnPropertyChanged();
 			}
 		}
 
@@ -925,6 +935,13 @@ namespace Chummer
 			}
 
 			return intBP;
+		}
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			
 		}
 		#endregion
 	}
@@ -1949,7 +1966,7 @@ namespace Chummer
 	/// <summary>
 	/// Object that represents a single Skill Group.
 	/// </summary>
-	public class SkillGroup
+	public class _SkillGroup
 	{
 		private string _strName = "";
 		private int _intRating = 0;
@@ -4018,8 +4035,8 @@ namespace Chummer
             _strName = objNode["name"].InnerText;
 		}
 
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
+		/// Print the object's XML to the XmlWriter.		/// <summary>
+
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Print(XmlTextWriter objWriter)
@@ -5403,28 +5420,28 @@ namespace Chummer
 				{
                     if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
 					{
-						intReturn = objSkill.TotalRating;
+						intReturn = objSkill.Pool;
 						// Add any Specialization bonus if applicable.
 						if (objSkill.HasSpecialization(_strCategory))
 							intReturn += 2;
 					}
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
@@ -5452,28 +5469,28 @@ namespace Chummer
 				{
                     if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
                     {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
-                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";

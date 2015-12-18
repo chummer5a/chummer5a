@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+using Chummer.Skills;
+
 namespace Chummer
 {
 	public partial class frmMain : Form
@@ -849,20 +851,20 @@ namespace Chummer
 			{
 				if (_frmRoller == null)
 				{
-					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
 					_frmRoller = frmRoller;
 					frmRoller.Show();
 				}
 				else
 				{
-					_frmRoller.Dice = objControl.SkillObject.TotalRating;
+					_frmRoller.Dice = objControl.SkillObject.Pool;
 					_frmRoller.Qualities = objControl.SkillObject.CharacterObject.Qualities;
 					_frmRoller.Focus();
 				}
 			}
 			else
 			{
-				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
 				frmRoller.Show();
 			}
 		}

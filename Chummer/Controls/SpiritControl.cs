@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 // ServicesOwedChanged Event Handler.
 public delegate void ServicesOwedChangedHandler(Object sender);
@@ -712,18 +713,18 @@ namespace Chummer
 			//}
 
 			// Set the Skill Group Ratings for the Critter.
-			foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
-			{
-				foreach (SkillGroup objSkill in objCharacter.SkillGroups)
-				{
-					if (objSkill.Name == objXmlSkill.InnerText)
-					{
-						objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-						objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
-						break;
-					}
-				}
-			}
+			//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/group"))
+			//{
+			//	foreach (SkillGroup objSkill in objCharacter.SkillGroups)
+			//	{
+			//		if (objSkill.Name == objXmlSkill.InnerText)
+			//		{
+			//			objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
+			//			objSkill.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(nudForce.Value), 0));
+			//			break;
+			//		}
+			//	}
+			//}
 
 			//TODO: WHEN IS THIS NEEDED, 4e holdover?
 			//// Set the Knowledge Skill Ratings for the Critter.

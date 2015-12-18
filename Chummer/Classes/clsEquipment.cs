@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -7159,7 +7160,7 @@ namespace Chummer
 					}
 				}
 
-				int intRating = objSkill.TotalRating + intSmartlinkBonus + intDicePoolModifier;
+				int intRating = objSkill.Pool + intSmartlinkBonus + intDicePoolModifier;
 				strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
@@ -7267,7 +7268,7 @@ namespace Chummer
 					}
 				}
 
-				strReturn = strSkill + " (" + objSkill.TotalRating + ")";
+				strReturn = strSkill + " (" + objSkill.Pool + ")";
 
 				if (objSkill.Specialization != "" && !objSkill.ExoticSkill)
 				{

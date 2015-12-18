@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+//using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 // MAGEnabledChanged Event Handler
 public delegate void MAGEnabledChangedHandler(Object sender);
@@ -171,19 +173,19 @@ namespace Chummer
 		private decimal _decPrototypeTranshuman = 0m;
 
 		// Attributes.
-		private Attribute _attBOD = new Attribute("BOD");
-        private Attribute _attAGI = new Attribute("AGI");
-        private Attribute _attREA = new Attribute("REA");
-        private Attribute _attSTR = new Attribute("STR");
-        private Attribute _attCHA = new Attribute("CHA");
-        private Attribute _attINT = new Attribute("INT");
-        private Attribute _attLOG = new Attribute("LOG");
-        private Attribute _attWIL = new Attribute("WIL");
-        private Attribute _attINI = new Attribute("INI");
-        private Attribute _attEDG = new Attribute("EDG");
-        private Attribute _attMAG = new Attribute("MAG");
-        private Attribute _attRES = new Attribute("RES");
-        private Attribute _attESS = new Attribute("ESS");
+		private CharacterAttrib _attBOD = new CharacterAttrib("BOD");
+        private CharacterAttrib _attAGI = new CharacterAttrib("AGI");
+        private CharacterAttrib _attREA = new CharacterAttrib("REA");
+        private CharacterAttrib _attSTR = new CharacterAttrib("STR");
+        private CharacterAttrib _attCHA = new CharacterAttrib("CHA");
+        private CharacterAttrib _attINT = new CharacterAttrib("INT");
+        private CharacterAttrib _attLOG = new CharacterAttrib("LOG");
+        private CharacterAttrib _attWIL = new CharacterAttrib("WIL");
+        private CharacterAttrib _attINI = new CharacterAttrib("INI");
+        private CharacterAttrib _attEDG = new CharacterAttrib("EDG");
+        private CharacterAttrib _attMAG = new CharacterAttrib("MAG");
+        private CharacterAttrib _attRES = new CharacterAttrib("RES");
+        private CharacterAttrib _attESS = new CharacterAttrib("ESS");
         private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnGroupMember = false;
@@ -232,8 +234,7 @@ namespace Chummer
 
         // Lists.
         private List<Improvement> _lstImprovements = new List<Improvement>();
-        private List<Skill> _lstSkills = new List<Skill>();
-        private List<SkillGroup> _lstSkillGroups = new List<SkillGroup>();
+	    private BindingList<SkillGroup> _lstSkillGroups = new BindingList<SkillGroup>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private List<Spell> _lstSpells = new List<Spell>();
@@ -320,6 +321,7 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
             _objImprovementManager = new ImprovementManager(this);
+			Skills = GetSkillList(this);
         }
 
         /// <summary>
@@ -628,23 +630,24 @@ namespace Chummer
             // <stuncmfilled />
             objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString());
 
+			//TODO: FIX BEFORE FINISH
             // <skillgroups>
-            objWriter.WriteStartElement("skillgroups");
-            foreach (SkillGroup objSkillGroup in _lstSkillGroups)
-            {
-                objSkillGroup.Save(objWriter);
-            }
-            // </skillgroups>
-            objWriter.WriteEndElement();
+            //objWriter.WriteStartElement("skillgroups");
+            //foreach (SkillGroup objSkillGroup in _lstSkillGroups)
+            //{
+            //    objSkillGroup.Save(objWriter);
+            //}
+            //// </skillgroups>
+            //objWriter.WriteEndElement();
 
             // <skills>
-            objWriter.WriteStartElement("skills");
-            foreach (Skill objSkill in _lstSkills)
-            {
-                objSkill.Save(objWriter);
-            }
-            // </skills>
-            objWriter.WriteEndElement();
+            //objWriter.WriteStartElement("skills");
+            //foreach (Skill objSkill in _lstSkills)
+            //{
+            //    objSkill.Save(objWriter);
+            //}
+            //// </skills>
+            //objWriter.WriteEndElement();
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
@@ -1817,59 +1820,62 @@ namespace Chummer
 
 			// Skills.
 
-	        for (int i = 0; i < _lstSkills.Count; i++)
-	        {
-				XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skills/skill[name = \"" + _lstSkills[i].Name + "\"]");
-				if (objXmlSkill != null)
-				{
-					_lstSkills[i] = Skill.Load(objXmlSkill, this);
-                }
-			}
+	  //      for (int i = 0; i < _lstSkills.Count; i++)
+	  //      {
+			//	XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skills/skill[name = \"" + _lstSkills[i].Name + "\"]");
+			//	if (objXmlSkill != null)
+			//	{
+			//		_lstSkills[i] = Skill.Load(objXmlSkill, this);
+   //             }
+			//}
 			
 
 			Timekeeper.Finish("load_char_skills_normal");
 			Timekeeper.Start("load_char_skills_exotic");
 
-			// Exotic Skills.
-			objXmlNodeList = objXmlDocument.SelectNodes("/character/skills/skill[exotic = \"True\"]");
-            foreach (XmlNode objXmlSkill in objXmlNodeList)
-            {
-                Skill objSkill = Skill.Load(objXmlSkill, this);
-                _lstSkills.Add(objSkill);
-            }
+			//// Exotic Skills.
+			//objXmlNodeList = objXmlDocument.SelectNodes("/character/skills/skill[exotic = \"True\"]");
+   //         foreach (XmlNode objXmlSkill in objXmlNodeList)
+   //         {
+   //             Skill objSkill = Skill.Load(objXmlSkill, this);
+   //             _lstSkills.Add(objSkill);
+   //         }
 
 			Timekeeper.Finish("load_char_skills_exotic");
-			Timekeeper.Start("load_char_skills_group");
-			// SkillGroups.
-			foreach (SkillGroup objGroup in _lstSkillGroups)
-            {
-                XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skillgroups/skillgroup[name = \"" + objGroup.Name + "\"]");
-                if (objXmlSkill != null)
-                {
-                    objGroup.Load(objXmlSkill);
-                    // If the character is set to ignore rules or is in Career Mode, Skill Groups should have a maximum Rating of 6 unless they have been given a higher maximum Rating already.
-                    if ((_blnIgnoreRules || _blnCreated) && objGroup.RatingMaximum < 12)
-                        objGroup.RatingMaximum = 12;
-                }
-            }
+			//TODO REMOVE BEFORE FINISH
+			//Timekeeper.Start("load_char_skills_group");
+			//// SkillGroups.
+			//foreach (SkillGroup objGroup in _lstSkillGroups)
+   //         {
+   //             XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/character/skillgroups/skillgroup[name = \"" + objGroup.Name + "\"]");
+   //             if (objXmlSkill != null)
+   //             {
+   //                 objGroup.Load(objXmlSkill);
+   //                 // If the character is set to ignore rules or is in Career Mode, Skill Groups should have a maximum Rating of 6 unless they have been given a higher maximum Rating already.
+   //                 if ((_blnIgnoreRules || _blnCreated) && objGroup.RatingMaximum < 12)
+   //                     objGroup.RatingMaximum = 12;
+   //             }
+   //         }
 
-			Timekeeper.Finish("load_char_skills_group");
+			//Timekeeper.Finish("load_char_skills_group");
 			Timekeeper.Start("load_char_skills_fix");
 
 
 			// Apply the broken skill group fix
-			foreach (Skill objSkill in _lstSkills)
-            {
-                foreach (SkillGroup objGroup in _lstSkillGroups)
-                {
-                    if (objGroup.Broken && objGroup.Name == objSkill.SkillGroup)
-                    {
-                        objSkill.FreeLevels = objGroup.Rating;
-                        objSkill.Base = objGroup.Rating;
-                        objSkill.Karma = objSkill.Rating - objSkill.Base;
-                    }
-                }
-            }
+
+			//TODO: reimplement?
+			//foreach (Skill objSkill in _lstSkills)
+   //         {
+   //             foreach (SkillGroup objGroup in _lstSkillGroups)
+   //             {
+   //                 if (objGroup.Broken && objGroup.Name == objSkill.SkillGroup)
+   //                 {
+   //                     objSkill.FreeLevels = objGroup.Rating;
+   //                     objSkill.Base = objGroup.Rating;
+   //                     objSkill.Karma = objSkill.Rating - objSkill.Base;
+   //                 }
+   //             }
+   //         }
 
             foreach (SkillGroup objGroup in _lstSkillGroups)
             {
@@ -1880,27 +1886,28 @@ namespace Chummer
 			Timekeeper.Start("load_char_skills_kno");
 
 			// Knowledge Skills.
-			List<ListItem> lstKnowledgeSkillOrder = new List<ListItem>();
-            objXmlNodeList = objXmlDocument.SelectNodes("/character/skills/skill[knowledge = \"True\"]");
-            // Sort the Knowledge Skills in alphabetical order.
-            foreach (XmlNode objXmlSkill in objXmlNodeList)
-            {
-                ListItem objGroup = new ListItem();
-                objGroup.Value = objXmlSkill["name"].InnerText;
-                objGroup.Name = objXmlSkill["name"].InnerText;
-                lstKnowledgeSkillOrder.Add(objGroup);
-            }
-            SortListItem objSort = new SortListItem();
-            lstKnowledgeSkillOrder.Sort(objSort.Compare);
+			//TODO: LOAD KNO SKILLS
+			//List<ListItem> lstKnowledgeSkillOrder = new List<ListItem>();
+   //         objXmlNodeList = objXmlDocument.SelectNodes("/character/skills/skill[knowledge = \"True\"]");
+   //         // Sort the Knowledge Skills in alphabetical order.
+   //         foreach (XmlNode objXmlSkill in objXmlNodeList)
+   //         {
+   //             ListItem objGroup = new ListItem();
+   //             objGroup.Value = objXmlSkill["name"].InnerText;
+   //             objGroup.Name = objXmlSkill["name"].InnerText;
+   //             lstKnowledgeSkillOrder.Add(objGroup);
+   //         }
+              SortListItem objSort = new SortListItem();
+   //         lstKnowledgeSkillOrder.Sort(objSort.Compare);
 
 
 
-            foreach (ListItem objItem in lstKnowledgeSkillOrder)
-            {
+   //         foreach (ListItem objItem in lstKnowledgeSkillOrder)
+   //         {
                 
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/character/skills/skill[knowledge = \"True\" and name = " + CleanXPath(objItem.Value) + "]");
-                _lstSkills.Add(Skill.Load(objNode, this));
-            }
+   //             XmlNode objNode = objXmlDocument.SelectSingleNode("/character/skills/skill[knowledge = \"True\" and name = " + CleanXPath(objItem.Value) + "]");
+   //             _lstSkills.Add(Skill.Load(objNode, this));
+   //         }
 
 			Timekeeper.Finish("load_char_skills_kno");
 			Timekeeper.Finish("load_char_skills");
@@ -2770,14 +2777,15 @@ namespace Chummer
             objWriter.WriteElementString("carryweight", (_attSTR.TotalValue * 10).ToString());
 
             // <skills>
-            objWriter.WriteStartElement("skills");
-            foreach (Skill objSkill in _lstSkills)
-            {
-                if (_objOptions.PrintSkillsWithZeroRating || (!_objOptions.PrintSkillsWithZeroRating && objSkill.Rating > 0) || objSkill.KnowledgeSkill)
-                    objSkill.Print(objWriter);
-            }
-            // </skills>
-            objWriter.WriteEndElement();
+			//TODO: SAVE SKILLS
+            //objWriter.WriteStartElement("skills");
+            //foreach (Skill objSkill in _lstSkills)
+            //{
+            //    if (_objOptions.PrintSkillsWithZeroRating || (!_objOptions.PrintSkillsWithZeroRating && objSkill.Rating > 0) || objSkill.KnowledgeSkill)
+            //        objSkill.Print(objWriter);
+            //}
+            //// </skills>
+            //objWriter.WriteEndElement();
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
@@ -3250,9 +3258,9 @@ namespace Chummer
             _strTechnomancerStream = "";
 
             // Reset all of the Lists.
+			// This kills the GC
             _lstImprovements = new List<Improvement>();
-            _lstSkills = new List<Skill>();
-            _lstSkillGroups = new List<SkillGroup>();
+            _lstSkillGroups = new BindingList<SkillGroup>();
             _lstContacts = new List<Contact>();
             _lstSpirits = new List<Spirit>();
             _lstSpells = new List<Spell>();
@@ -3278,9 +3286,9 @@ namespace Chummer
             _lstQualities = new List<Quality>();
             _lstOldQualities = new List<string>();
             _lstCalendar = new List<CalendarWeek>();
+			Skills = GetSkillList(this);
 
-            BuildSkillList();
-            BuildSkillGroupList();
+			BuildSkillGroupList();
         }
         #endregion
 
@@ -3290,91 +3298,81 @@ namespace Chummer
         /// </summary>
         private void BuildSkillGroupList()
         {
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+			//TODO MOVE SHIT SOMEWHERE (DYNAMIC?)
+            //XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-            // Populate the Skill Group list.
-            XmlNodeList objXmlGroupList = objXmlDocument.SelectNodes("/chummer/skillgroups/name");
+            //// Populate the Skill Group list.
+            //XmlNodeList objXmlGroupList = objXmlDocument.SelectNodes("/chummer/skillgroups/name");
 
-            // First pass, build up a list of all of the Skill Groups so we can sort them in alphabetical order for the current language.
-            List<ListItem> lstSkillOrder = new List<ListItem>();
-            foreach (XmlNode objXmlGroup in objXmlGroupList)
-            {
-                ListItem objGroup = new ListItem();
-                objGroup.Value = objXmlGroup.InnerText;
-                if (objXmlGroup.Attributes["translate"] != null)
-                    objGroup.Name = objXmlGroup.Attributes["translate"].InnerText;
-                else
-                    objGroup.Name = objXmlGroup.InnerText;
-                lstSkillOrder.Add(objGroup);
-            }
-            SortListItem objSort = new SortListItem();
-            lstSkillOrder.Sort(objSort.Compare);
+            //// First pass, build up a list of all of the Skill Groups so we can sort them in alphabetical order for the current language.
+            //List<ListItem> lstSkillOrder = new List<ListItem>();
+            //foreach (XmlNode objXmlGroup in objXmlGroupList)
+            //{
+            //    ListItem objGroup = new ListItem();
+            //    objGroup.Value = objXmlGroup.InnerText;
+            //    if (objXmlGroup.Attributes["translate"] != null)
+            //        objGroup.Name = objXmlGroup.Attributes["translate"].InnerText;
+            //    else
+            //        objGroup.Name = objXmlGroup.InnerText;
+            //    lstSkillOrder.Add(objGroup);
+            //}
+            //SortListItem objSort = new SortListItem();
+            //lstSkillOrder.Sort(objSort.Compare);
 
-            // Second pass, retrieve the Skill Groups in the order they're presented in the list.
-            foreach (ListItem objItem in lstSkillOrder)
-            {
-                XmlNode objXmlGroup = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + objItem.Value + "\"]");
-                SkillGroup objGroup = new SkillGroup();
-                objGroup.Name = objXmlGroup.InnerText;
-                // Maximum Skill Group Rating
-                objGroup.RatingMaximum = 6;
-                _lstSkillGroups.Add(objGroup);
-            }
+            //// Second pass, retrieve the Skill Groups in the order they're presented in the list.
+            //foreach (ListItem objItem in lstSkillOrder)
+            //{
+            //    XmlNode objXmlGroup = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + objItem.Value + "\"]");
+            //    SkillGroup objGroup = new SkillGroup();
+            //    objGroup.Name = objXmlGroup.InnerText;
+            //    // Maximum Skill Group Rating
+            //    objGroup.RatingMaximum = 6;
+            //    _lstSkillGroups.Add(objGroup);
+            //}
         }
 
-        /// <summary>
-        /// Buid the list of Skills.
-        /// </summary>
-        private void BuildSkillList()
-        {
-            // Load the Skills information.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-            // Populate the Skills list.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + Options.BookXPath() + ")]");
+		private static BindingList<Skill> GetSkillList(Character c)
+		{
+			BindingList<Skill> b = new BindingList<Skill>();
+			// Load the Skills information.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-            // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
-            List<ListItem> lstSkillOrder = new List<ListItem>();
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
-            {
-                ListItem objSkill = new ListItem();
-                objSkill.Value = objXmlSkill["name"].InnerText;
-                if (objXmlSkill["translate"] != null)
-                    objSkill.Name = objXmlSkill["translate"].InnerText;
-                else
-                    objSkill.Name = objXmlSkill["name"].InnerText;
-                lstSkillOrder.Add(objSkill);
-            }
-            SortListItem objSort = new SortListItem();
-            lstSkillOrder.Sort(objSort.Compare);
+			// Populate the Skills list.
+			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")]");
 
-            // Second pass, retrieve the Skills in the order they're presented in the list.
-            foreach (ListItem objItem in lstSkillOrder)
-            {
-                XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
-                Skill objSkill = new Skill(this);
-                objSkill.Name = objXmlSkill["name"].InnerText;
-	            objSkill.Id = Guid.Parse(objXmlSkill["id"].InnerText);
-                objSkill.SkillCategory = objXmlSkill["category"].InnerText;
-                objSkill.SkillGroup = objXmlSkill["skillgroup"].InnerText;
-                objSkill.Attribute = objXmlSkill["attribute"].InnerText;
-                if (objXmlSkill["default"].InnerText.ToLower() == "yes")
-                    objSkill.Default = true;
-                else
-                    objSkill.Default = false;
-                if (objXmlSkill["source"] != null)
-                    objSkill.Source = objXmlSkill["source"].InnerText;
-                if (objXmlSkill["page"] != null)
-                    objSkill.Page = objXmlSkill["page"].InnerText;
-                _lstSkills.Add(objSkill);
-            }
-        }
+			// First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
+			List<ListItem> lstSkillOrder = new List<ListItem>();
+			foreach (XmlNode objXmlSkill in objXmlSkillList)
+			{
+				ListItem objSkill = new ListItem();
+				objSkill.Value = objXmlSkill["name"].InnerText;
+				if (objXmlSkill["translate"] != null)
+					objSkill.Name = objXmlSkill["translate"].InnerText;
+				else
+					objSkill.Name = objXmlSkill["name"].InnerText;
+				lstSkillOrder.Add(objSkill);
+			}
+			SortListItem objSort = new SortListItem();
+			lstSkillOrder.Sort(objSort.Compare);
 
-        /// <summary>
-        /// Retrieve the name of the Object that created an Improvement.
-        /// </summary>
-        /// <param name="objImprovement">Improvement to check.</param>
-        public string GetObjectName(Improvement objImprovement)
+			// Second pass, retrieve the Skills in the order they're presented in the list.
+			foreach (ListItem objItem in lstSkillOrder)
+			{
+				XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
+				Skill objSkill = Skill.FromData(objXmlSkill, c);
+				b.Add(objSkill);
+			}
+
+
+			return b;
+		}
+
+		/// <summary>
+		/// Retrieve the name of the Object that created an Improvement.
+		/// </summary>
+		/// <param name="objImprovement">Improvement to check.</param>
+		public string GetObjectName(Improvement objImprovement)
         {
             string strReturn = "";
             switch (objImprovement.ImproveSource)
@@ -5685,24 +5683,16 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Skills (Active and Knowledge).
-        /// </summary>
-        public List<Skill> Skills
-        {
-            get
-            {
-                // If the List is not yet populated, go populate it.
-                if (_lstSkills.Count == 0)
-                    BuildSkillList();
-                return _lstSkills;
-            }
-        }
+	    /// <summary>
+	    /// Skills (Active and Knowledge).
+	    /// </summary>
+	    public BindingList<Skill> Skills { get; set; }
 
-        /// <summary>
-        /// Skill Groups.
-        /// </summary>
-        public List<SkillGroup> SkillGroups
+
+	    /// <summary>
+		/// Skill Groups.
+		/// </summary>
+		public BindingList<SkillGroup> SkillGroups
         {
             get
             {
@@ -7568,10 +7558,10 @@ namespace Chummer
                     strInterval = "1 " + LanguageManager.Instance.GetString("String_Week");
 
                 // Find the character's Negotiation total.
-                foreach (Skill objSkill in _lstSkills)
+                foreach (Skill objSkill in Skills)
                 {
                     if (objSkill.Name == "Negotiation")
-                        intTest = objSkill.TotalRating;
+                        intTest = objSkill.Pool;
                 }
 
                 strReturn = intTest.ToString() + " (" + intAvail.ToString() + ", " + strInterval + ")";

@@ -9,6 +9,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 public delegate void DiceRollerOpenHandler(Object sender);
 public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
@@ -608,70 +609,71 @@ namespace Chummer
 				}
 			}
 
+			//TODO: FIX BEFORE RELEASE
 			// Populate the Skill Groups list.
-			i = -1;
-			foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-			{
-				i++;
-				SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter, true);
-				objGroupControl.SkillGroupObject = objGroup;
+			//i = -1;
+			//foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+			//{
+			//	i++;
+			//	SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter, true);
+			//	objGroupControl.SkillGroupObject = objGroup;
 
-				// Attach an EventHandler for the GetRatingChanged Event.
-				objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
-				objGroupControl.GroupKarmaClicked += objGroup_KarmaClicked;
+			//	// Attach an EventHandler for the GetRatingChanged Event.
+			//	objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
+			//	objGroupControl.GroupKarmaClicked += objGroup_KarmaClicked;
 
-				// Populate the control, set its vertical position and add it to the Skill Groups Panel. A Skill Group cannot start with a Rating higher than 4.
-				objGroupControl.GroupName = objGroup.Name;
-				if (objGroup.Rating > objGroup.RatingMaximum)
-					objGroup.RatingMaximum = objGroup.Rating;
-				objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
-				objGroupControl.GroupRating = objGroup.Rating;
-				objGroupControl.Top = i * objGroupControl.Height;
-				objGroupControl.Width = 250;
+			//	// Populate the control, set its vertical position and add it to the Skill Groups Panel. A Skill Group cannot start with a Rating higher than 4.
+			//	objGroupControl.GroupName = objGroup.Name;
+			//	if (objGroup.Rating > objGroup.RatingMaximum)
+			//		objGroup.RatingMaximum = objGroup.Rating;
+			//	objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
+			//	objGroupControl.GroupRating = objGroup.Rating;
+			//	objGroupControl.Top = i * objGroupControl.Height;
+			//	objGroupControl.Width = 250;
 
-				if (_objCharacter.Uneducated)
-				{
-					objGroupControl.IsEnabled = !objGroup.HasTechnicalSkills;
-				}
+			//	if (_objCharacter.Uneducated)
+			//	{
+			//		objGroupControl.IsEnabled = !objGroup.HasTechnicalSkills;
+			//	}
 
-				if (_objCharacter.Uncouth)
-				{
-					objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
-				}
+			//	if (_objCharacter.Uncouth)
+			//	{
+			//		objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
+			//	}
 
-				panSkillGroups.Controls.Add(objGroupControl);
-			}
+			//	panSkillGroups.Controls.Add(objGroupControl);
+			//}
 
-			// Populate Knowledge Skills.
-			i = -1;
-			foreach (Skill objSkill in _objCharacter.Skills)
-			{
-				if (objSkill.KnowledgeSkill)
-				{
-					i++;
-					SkillControl objSkillControl = new SkillControl();
-					objSkillControl.SkillObject = objSkill;
+			//// Populate Knowledge Skills.
+			//i = -1;
+			//foreach (Skill objSkill in _objCharacter.Skills)
+			//{
+			//	if (objSkill.KnowledgeSkill)
+			//	{
+			//		i++;
+			//		SkillControl objSkillControl = new SkillControl();
+			//		objSkillControl.SkillObject = objSkill;
 
-					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-					objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-					objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-					objSkillControl.SpecializationLeave += objSkill_SpecializationLeave;
-					objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
-					objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
-					objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
+			//		// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+			//		objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
+			//		objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+			//		objSkillControl.SpecializationLeave += objSkill_SpecializationLeave;
+			//		objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
+			//		objSkillControl.SkillKarmaClicked += objKnowledgeSkill_KarmaClicked;
+			//		objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
 
-					objSkillControl.KnowledgeSkill = true;
-					objSkillControl.SkillCategory = objSkill.SkillCategory;
-					objSkillControl.AllowDelete = true;
-					objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
-					objSkillControl.SkillRating = objSkill.Rating;
-					objSkillControl.SkillName = objSkill.Name;
-					objSkillControl.SkillSpec = objSkill.Specialization;
-					objSkillControl.Top = i * objSkillControl.Height;
-					objSkillControl.AutoScroll = false;
-					panKnowledgeSkills.Controls.Add(objSkillControl);
-				}
-			}
+			//		objSkillControl.KnowledgeSkill = true;
+			//		objSkillControl.SkillCategory = objSkill.SkillCategory;
+			//		objSkillControl.AllowDelete = true;
+			//		objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
+			//		objSkillControl.SkillRating = objSkill.Rating;
+			//		objSkillControl.SkillName = objSkill.Name;
+			//		objSkillControl.SkillSpec = objSkill.Specialization;
+			//		objSkillControl.Top = i * objSkillControl.Height;
+			//		objSkillControl.AutoScroll = false;
+			//		panKnowledgeSkills.Controls.Add(objSkillControl);
+			//	}
+			//}
 
 
             // Populate Contacts and Enemies.
@@ -4083,124 +4085,125 @@ namespace Chummer
 
 		private void objSkill_KarmaClicked(Object sender)
 		{
-			SkillControl objSkillControl = (SkillControl)sender;
+			//TODO: SOME OF THIS SHIT NEEDS TO STAY (EXPENSES, file dirty, break confirmation)
+			//SkillControl objSkillControl = (SkillControl)sender;
 
-			// Make sure the character has enough Karma to improve the Skill Group.
-			int intKarmaCost = 0;
-			if (objSkillControl.SkillRating == 0)
-				intKarmaCost = _objOptions.KarmaNewActiveSkill;
-			else
-			{
-				intKarmaCost = (objSkillControl.SkillRating + 1) * _objOptions.KarmaImproveActiveSkill;
-			}
+			//// Make sure the character has enough Karma to improve the Skill Group.
+			//int intKarmaCost = 0;
+			//if (objSkillControl.SkillRating == 0)
+			//	intKarmaCost = _objOptions.KarmaNewActiveSkill;
+			//else
+			//{
+			//	intKarmaCost = (objSkillControl.SkillRating + 1) * _objOptions.KarmaImproveActiveSkill;
+			//}
 
-			// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill, double its cost.
-			if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-			    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-            {
-				intKarmaCost *= 2;
-            }
+			//// If the character is Uneducated and the Skill is a Technical Active Skill, Uncouth and a Social Active Skill, double its cost.
+			//if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
+			//    (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
+   //         {
+			//	intKarmaCost *= 2;
+   //         }
 
-            // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
-            if (_objCharacter.JackOfAllTrades)
-            {
-                if (objSkillControl.SkillRating + 1 <= 5) {
-                    //Jack of All Trades cannot go below 1 Karma cost.
-                    if (intKarmaCost > 1) intKarmaCost -= 1;
-                } else {
-                    intKarmaCost += 2;
-                }
-            }
+   //         // Jack of all trades lowers cost of skill by 1 up through rank 5, but adds 2 for ranks 6+, cant lower cost below 1
+   //         if (_objCharacter.JackOfAllTrades)
+   //         {
+   //             if (objSkillControl.SkillRating + 1 <= 5) {
+   //                 //Jack of All Trades cannot go below 1 Karma cost.
+   //                 if (intKarmaCost > 1) intKarmaCost -= 1;
+   //             } else {
+   //                 intKarmaCost += 2;
+   //             }
+   //         }
 
-			if (intKarmaCost > _objCharacter.Karma)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
+			//if (intKarmaCost > _objCharacter.Karma)
+			//{
+			//	MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//	return;
+			//}
 
-			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.GetDisplayName()).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
-				return;
+			//if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", objSkillControl.SkillObject.GetDisplayName()).Replace("{1}", (objSkillControl.SkillRating + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
+			//	return;
 
-			SkillGroup objSkillGroup = new SkillGroup();
-			foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-			{
-				if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
-				{
-					objSkillGroup = objSkillGroupControl.SkillGroupObject;
-					break;
-				}
-			}
+			//SkillGroup objSkillGroup = new SkillGroup();
+			//foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+			//{
+			//	if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
+			//	{
+			//		objSkillGroup = objSkillGroupControl.SkillGroupObject;
+			//		break;
+			//	}
+			//}
 
-			// If the Skill is Grouped, verify that the user wants to break the Group.
-			if (objSkillControl.IsGrouped)
-			{
-				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillGroup.DisplayName), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-					return;
-				else
-				{
-					string strSkillGroup = objSkillControl.SkillGroup;
-					int intRating = 0;
+			//// If the Skill is Grouped, verify that the user wants to break the Group.
+			//if (objSkillControl.IsGrouped)
+			//{
+			//	if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillGroup.DisplayName), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+			//		return;
+			//	else
+			//	{
+			//		string strSkillGroup = objSkillControl.SkillGroup;
+			//		int intRating = 0;
 
-					// Break the Skill Group itself.
-					foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-					{
-						if (objSkillGroupControl.GroupName == strSkillGroup)
-						{
-							intRating = objSkillGroupControl.GroupRating;
-							objSkillGroupControl.Broken = true;
-							break;
-						}
-					}
+			//		// Break the Skill Group itself.
+			//		foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+			//		{
+			//			if (objSkillGroupControl.GroupName == strSkillGroup)
+			//			{
+			//				intRating = objSkillGroupControl.GroupRating;
+			//				objSkillGroupControl.Broken = true;
+			//				break;
+			//			}
+			//		}
 
-					// Remove all of the Active Skills from the Skill Group being broken.
-					string strGroup = objSkillControl.SkillGroup;
-					foreach (SkillControl objActiveSkilll in panActiveSkills.Controls)
-					{
-						if (objActiveSkilll.IsGrouped && objActiveSkilll.SkillGroup == strGroup)
-						{
-							objActiveSkilll.SkillRating = intRating;
-							objActiveSkilll.IsGrouped = false;
-						}
-					}
-				}
-			}
-			else
-			{
-				// If the Skill is not Grouped, the Group should still be broken since a Skill from it has been advanced on its own.
-				if (objSkillControl.SkillGroup != "")
-				{
-					// Break the Skill Group.
-					foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-					{
-						if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
-						{
-							objSkillGroupControl.Broken = true;
-							break;
-						}
-					}
-				}
-			}
+			//		// Remove all of the Active Skills from the Skill Group being broken.
+			//		string strGroup = objSkillControl.SkillGroup;
+			//		foreach (SkillControl objActiveSkilll in panActiveSkills.Controls)
+			//		{
+			//			if (objActiveSkilll.IsGrouped && objActiveSkilll.SkillGroup == strGroup)
+			//			{
+			//				objActiveSkilll.SkillRating = intRating;
+			//				objActiveSkilll.IsGrouped = false;
+			//			}
+			//		}
+			//	}
+			//}
+			//else
+			//{
+			//	// If the Skill is not Grouped, the Group should still be broken since a Skill from it has been advanced on its own.
+			//	if (objSkillControl.SkillGroup != "")
+			//	{
+			//		// Break the Skill Group.
+			//		foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+			//		{
+			//			if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
+			//			{
+			//				objSkillGroupControl.Broken = true;
+			//				break;
+			//			}
+			//		}
+			//	}
+			//}
 
-			// Create the Karma Expense.
-			ExpenseLogEntry objExpense = new ExpenseLogEntry();
-			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseActiveSkill") + " " + objSkillControl.SkillObject.GetDisplayName() + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
-			_objCharacter.ExpenseEntries.Add(objExpense);
+			//// Create the Karma Expense.
+			//ExpenseLogEntry objExpense = new ExpenseLogEntry();
+			//objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseActiveSkill") + " " + objSkillControl.SkillObject.GetDisplayName() + " " + objSkillControl.SkillRating.ToString() + " -> " + (objSkillControl.SkillRating + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+			//_objCharacter.ExpenseEntries.Add(objExpense);
 
-			ExpenseUndo objUndo = new ExpenseUndo();
-			string strSkill = objSkillControl.SkillName;
-			if (objSkillControl.SkillName.Contains("Exotic"))
-				strSkill += " (" + objSkillControl.SkillSpec + ")";
-			objUndo.CreateKarma(KarmaExpenseType.ImproveSkill, strSkill);
-			objExpense.Undo = objUndo;
+			//ExpenseUndo objUndo = new ExpenseUndo();
+			//string strSkill = objSkillControl.SkillName;
+			//if (objSkillControl.SkillName.Contains("Exotic"))
+			//	strSkill += " (" + objSkillControl.SkillSpec + ")";
+			//objUndo.CreateKarma(KarmaExpenseType.ImproveSkill, strSkill);
+			//objExpense.Undo = objUndo;
 
-			_objCharacter.Karma -= intKarmaCost;
+			//_objCharacter.Karma -= intKarmaCost;
 
-			objSkillControl.SkillRating += 1;
+			//objSkillControl.SkillRating += 1;
 
-			UpdateCharacterInfo();
+			//UpdateCharacterInfo();
 
-			_blnIsDirty = true;
-			UpdateWindowTitle();
+			//_blnIsDirty = true;
+			//UpdateWindowTitle();
 		}
 
 		private void objKnowledgeSkill_KarmaClicked(Object sender)
@@ -20821,7 +20824,7 @@ namespace Chummer
 				case "2":
 					foreach (SkillControl objSkillControl in panActiveSkills.Controls)
 					{
-						if (objSkillControl.SkillObject.TotalRating > 0)
+						if (objSkillControl.SkillObject.Pool > 0)
 							objSkillControl.Visible = true;
 						else
 							objSkillControl.Visible = false;

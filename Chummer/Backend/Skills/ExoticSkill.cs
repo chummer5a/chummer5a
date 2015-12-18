@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Chummer;
 
-namespace Chummer
+namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{

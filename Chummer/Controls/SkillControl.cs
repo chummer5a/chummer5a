@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Skills;
 
 // RatingChanged Event Handler.
 public delegate void RatingChangedHandler(Object sender);
@@ -270,7 +271,7 @@ namespace Chummer
             }
             _intBaseRating = Convert.ToInt32(nudSkill.Value);
             _objSkill.Base = Convert.ToInt32(nudSkill.Value);
-            _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
+            //_objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
 
             RefreshControl();
 			RatingChanged(this);
@@ -284,7 +285,7 @@ namespace Chummer
             }
             _intKarmaRating = Convert.ToInt32(nudKarma.Value);
             _objSkill.Karma = Convert.ToInt32(nudKarma.Value);
-            _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
+            //_objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
             RefreshControl();
             RatingChanged(this);
         }
@@ -707,7 +708,7 @@ namespace Chummer
 
 				
                 lblSkillRating.Text = value.ToString();
-                _objSkill.Rating = value;
+                //_objSkill.Rating = value;
 
 				if (value < _objSkill.RatingMaximum)
 				{
@@ -885,7 +886,7 @@ namespace Chummer
 					
 
 					cboSkillName.Items.Clear();
-					cboSkillName.Items.AddRange(_objSkill.KnowledgeSkillCatagories.ToArray());
+					//cboSkillName.Items.AddRange(_objSkill.KnowledgeSkillCatagories.ToArray());
 					
 					_blnSkipRefresh = false;
 
@@ -933,7 +934,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.SkillGroup = value;
+				//_objSkill.SkillGroup = value;
             }
         }
 
@@ -1116,7 +1117,7 @@ namespace Chummer
             bool blnSkillsoft = false;
             ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
 
-            int intRating = _objSkill.TotalRating;
+            int intRating = _objSkill.Pool;
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
@@ -1283,24 +1284,24 @@ namespace Chummer
 					cmdImproveSkill.Enabled = false;
 			}
 
-			if (KnowledgeSkill && _objCharacter != null && SkillRating < SkillRatingMaximum && !_objCharacter.Created)
+			//if (KnowledgeSkill && _objCharacter != null && SkillRating < SkillRatingMaximum && !_objCharacter.Created)
 			{
-				List<Skill> joinList =
-					objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
+				//List<Skill> joinList =
+				//	objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
 
 				type = _objSkill.Fold.Count == 0;
 
 				if (type)
 				{
 
-					if (joinList.Count > 0)
-					{
-						cmdExpand.Visible = true;
-					}
-					else
-					{
-						cmdExpand.Visible = false;
-					}
+					//if (joinList.Count > 0)
+					//{
+					//	cmdExpand.Visible = true;
+					//}
+					//else
+					//{
+					//	cmdExpand.Visible = false;
+					//}
 				}
 				else
 				{

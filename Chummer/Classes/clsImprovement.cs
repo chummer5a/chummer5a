@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -1962,7 +1963,7 @@ namespace Chummer
 				}
 			}
 
-			if (bonusNode.LocalName == "knowledgeskilllevel")
+			if (bonusNode.LocalName == "knowledgeskilllevel" && false) //TODO PUT IN AGAIN AND FIX
 			{
 				Log.Info(new object[] {"knowledgeskilllevel", bonusNode.OuterXml});
 				int value;
@@ -2016,7 +2017,7 @@ namespace Chummer
 							{
 								Options.Add(node.InnerText);
 							}
-							objNSkill.KnowledgeSkillCatagories = Options;
+							//objNSkill.KnowledgeSkillCatagories = Options;  //TODO: WTHISTHIS?
 						}
 
 						_objCharacter.Skills.Add(objNSkill);
@@ -5571,8 +5572,12 @@ namespace Chummer
 		public void Commit()
 		{
             objFunctions.LogWrite(CommonFunctions.LogType.Entering, "Chummer.ImprovementManager", "Commit");
-            // Clear all of the Improvements from the Transaction List.
+			// Clear all of the Improvements from the Transaction List.
+
+			Skill.ImprovementHook(_lstTransaction, this);
+
 			_lstTransaction.Clear();
+
             objFunctions.LogWrite(CommonFunctions.LogType.Exiting, "Chummer.ImprovementManager", "Commit");
         }
 
