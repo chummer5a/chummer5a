@@ -29,7 +29,7 @@
 			</choices>
 			<source>SR5</source>
 			<page>321</page>
-		</mentor>
+		</mentor>b
 		<mentor>
 			<id>f32b8b69-0f6b-417d-bd06-6a85e1076a36</id>
 			<name>Cat</name>
@@ -1151,14 +1151,14 @@
 		<mentor>
 			<id/>
 			<name>Oak</name>
-			<advantage>All: +2 dice to Memory.</advantage>
-			<disadvantage>You need to make a CHA+Will (3) test to flee out of a dangerous area instead of waiting till the danger passed.</disadvantage>
+			<advantage>All: +2 dice to memory test.</advantage>
+			<disadvantage>A follower of Oak has to succeed in a CHA+WIL (3) test to retreat from a dangerous area instead of waiting till the danger passes.</disadvantage>
 			<bonus>
 				<memory>2</memory>
 			</bonus>
 			<choices>
 				<choice>
-					<name>Magician: +2 dice for Detection Spells.</name>
+					<name>Magician: +2 dice for Detection spells.</name>
 					<bonus>
 						<spellcategory>
 							<name>Detection</name>
@@ -1167,32 +1167,32 @@
 					</bonus>
 				</choice>
 				<choice>
-					<name>Adept: 1 free level of Mystic Armour.</name>
+					<name>Adept: 1 free level of Mystic Armor.</name>
 					<bonus>
 						<specificpower>
-							<name>Mystic Armour</name>
+							<name>Mystic Armor</name>
 							<val>1</val>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SHB2</source>
+			<page>179</page>
 		</mentor>
 		<mentor>
 			<id/>
-			<name>Artisan</name>
+			<name>Artist</name>
 			<advantage>All: +2 dice to Artisan or Forgery.</advantage>
-			<disadvantage>If you fail for two weeks to find an audience for a presentation of your ability, you have to make a WIL+ CHA (3) test. If you fail, you fall into depression (-2 Dice for every Skillcheck linked to Log, Int, Cha) for 1D6 Days. After that (or if you succeeded in the the Wil+Cha test) begins a new 14 Day period where you have to show off your skill.</disadvantage>
+			<disadvantage>If for more than two weeks the Artist fails to find an audience for a presentation of her ability, she has to make a WIL+ CHA (3) test. Should she fail, she fall into depression (-2 dice for every skill linked to LOG, INT or CHA) for 1d6 days. After that (or if she succeeded in the the WIL+CHA test) a new 14 day period begins in which she has to show off her skills.</disadvantage>
 			<bonus>
 				<selectskill limittoskill="Artisan,Forgery">
-					<val>1</val>
+					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>
 			</bonus>
 			<choices>
 				<choice>
-					<name>Magician: +2 dice for Illusion Spells, Rituals and Alchemical Preparations.</name>
+					<name>Magician: +2 dice for Illusion spells.</name>
 					<bonus>
 						<spellcategory>
 							<name>Illusion</name>
@@ -1207,44 +1207,56 @@
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SHB2</source>
+			<page>179</page>
 		</mentor>
 		<mentor>
 			<id/>
 			<name>Blacksmith</name>
-			<advantage>All: +2 dice to Artisan or Alchemy.</advantage>
-			<disadvantage>You have to pass a Cha + Wil (3) check to refrain from instantanously avenging an insult.</disadvantage>
+			<advantage>All: +2 dice to Artisan or Alchemy tests.</advantage>
+			<disadvantage>You have to pass a CHA + WIL (3) check to refrain from instantanously avenging an insult.</disadvantage>
 			<bonus>
 				<selectskill limittoskill="Artisan,Alchemy">
-					<val>1</val>
+					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>
 			</bonus>
 			<choices>
 				<choice>
-					<name>Magician: +2 dice when summoning Fire Spirits.</name>
+					<name>Magician: +2 dice for summoning spirits of fire.</name>
 				</choice>
 				<choice>
-					<name>Adept: 2 free levels of whatever Improved Precision is. You can have Enhanced Accuracy for now.</name>
+					<name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
 					<bonus>
 						<specificpower>
 							<name>Enhanced Accuracy (skill)</name>
-							<val>2</val>
+							<selectskill skillcategory="Combat Active">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
+						</specificpower>
+						<specificpower>
+							<name>Enhanced Accuracy (skill)</name>
+							<selectskill skillcategory="Combat Active">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SHB2</source>
+			<page>179</page>
 		</mentor>
 		<mentor>
 			<id/>
 			<name>Gambler</name>
-			<advantage>All: +2 to Con or Palming.</advantage>
+			<advantage>All: +2 to Etiquette or Palming.</advantage>
 			<disadvantage>Gain the Distinctive Style negative quality.</disadvantage>
 			<bonus>
-				<selectskill limittoskill="Palming,Con">
+				<selectskill limittoskill="Palming,Etiquett">
 					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>
@@ -1272,12 +1284,12 @@
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SHB2</source>
+			<page>179</page>
 		</mentor>
 		<mentor>
 			<id/>
-			<name>Daschund</name>
+			<name>Dachshund</name>
 			<advantage>All: +2 dice to Tracking.</advantage>
 			<disadvantage>A follower of Dachshund must succeed in a WIL+CHA (3) test, to follow the orders of a leader or a abide to a group decision.</disadvantage>
 			<bonus>
@@ -1297,23 +1309,23 @@
 					</bonus>
 				</choice>
 				<choice>
-					<name>Adept: 2 free level of Danger Sense.</name>
+					<name>Adept: 2 free level of Combat Sense.</name>
 					<bonus>
 						<specificpower>
-							<name>Danger Sense</name>
+							<name>Combat Sense</name>
 							<val>2</val>
 						</specificpower>
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SGG</source>
+			<page>231</page>
 		</mentor>
 		<mentor>
 			<id/>
 			<name>Electro Marten</name>
-			<advantage>All: +2 dice to Memory.</advantage>
-			<disadvantage>They have problems discerning between different signals. A follower of Electro Marten has to succeed in a CHA + WIL (3) test to not loose himself into the signals or follow the wrong one. In stressful situations, he is distracted for 3 Combatrounds, minus 1 for each hit. If he has no hits, he involuntarily attracts attention in the System.</disadvantage>
+			<advantage>All: +2 dice to Hardware or Electronic Warfare</advantage>
+			<disadvantage>Electro Marten has problems discerning between different signals. A follower of Electro Marten has to succeed in a CHA + WIL (3) test to not lose himself in the signals or hunt after the wrong one. In stressful situations, he is distracted for 3 combat rounds (minus 1 for each success). If he has no successes, he involuntarily attracts attention in the system.</disadvantage>
 			<bonus>
 				<selectskill limittoskill="Hardware,Electronic Warfare">
 					<val>2</val>
@@ -1340,116 +1352,26 @@
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SGG</source>
+			<page>232</page>
 		</mentor>
 		<mentor>
 			<id/>
-			<name>The Klabautermann</name>
-			<advantage>All: +2 dice to tests relating to seafaring (Not handled by Chummer).</advantage>
-			<disadvantage>Whenever a follower of Klabautermann is in Danger (whether real or in his imagination), or whenever he stays on a means of transportation (be it ship, car, plane or train) for prolonged times, he has to make a WIL + CHA (3) test. If he fails, the Character thinks he saw the Klabautermann. He falls into panic and tries to flee and might try to persuade others of the foolishness of their venture.</disadvantage>
-			<bonus />
+			<name>Klabautermann</name>
+			<advantage>All: +2 dice to Nautical Mechanic</advantage>
+			<disadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Nautical Mechanic</name>
+					<val>2</val>
+				</specificskill>
+			</bonus>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice for Detection Spells.</name>
 					<bonus>
 						<spellcategory>
 							<name>Detection</name>
-							<val>2</val>
-						</spellcategory>
-					</bonus>
-				</choice>
-				<choice>
-					<name>Adept: HAHA, YOU GET NOTHING.</name>
-					<bonus />
-				</choice>
-			</choices>
-			<source>SHB</source>
-			<page>0</page>
-		</mentor>
-		<mentor>
-			<id/>
-			<name>Luna</name>
-			<advantage>All: +2 dice to tests relating to seafaring (Not handled by Chummer).</advantage>
-			<disadvantage>
-				Luna is independent and free. A follower of Luna must make a CHA+WIL (3) test, if she wants to follow a direct order that doesn't suit her actual personal and sole wishes.
-				ESPECIALLY if her own logic tells her that it would be better to put back her own desires.
-			</disadvantage>
-			<bonus>
-				<specificskill>
-					<name>Negotiation</name>
-					<val>2</val>
-				</specificskill>
-			</bonus>
-			<choices>
-				<choice>
-					<name>Magician: +2 dice for Illusion Spells.</name>
-					<bonus>
-						<spellcategory>
-							<name>Illusion</name>
-							<val>2</val>
-						</spellcategory>
-					</bonus>
-				</choice>
-				<choice>
-					<name>Adept: 2 Levels of Improved Ability (Skill).</name>
-					<bonus>
-						<specificpower>Improved Ability (Skill)</specificpower>
-					</bonus>
-				</choice>
-			</choices>
-			<source>SHB</source>
-			<page>0</page>
-		</mentor>
-		<mentor>
-			<id/>
-			<name>The Tatzelwurm</name>
-			<advantage>All: +2 dice to Unarmed Combat.</advantage>
-			<disadvantage/>
-			<addqualities>
-				<addquality>Combat Junkie</addquality>
-			</addqualities>
-			<bonus>
-				<specificskill>
-					<name>Negotiation</name>
-					<val>2</val>
-				</specificskill>
-			</bonus>
-			<choices>
-				<choice>
-					<name>Magician: +2 dice for summon Earth Spirits.</name>
-					<bonus>
-						<spellcategory>
-							<name>Detection</name>
-							<val>2</val>
-						</spellcategory>
-					</bonus>
-				</choice>
-				<choice>
-					<name>Adept: 1 free level of Critical Strike.</name>
-					<bonus>
-						<specificpower>
-							<name>Critical Strike</name>
-							<val>1</val>
-						</specificpower>
-					</bonus>
-				</choice>
-			</choices>
-			<source>SHB</source>
-			<page>0</page>
-		</mentor>
-		<mentor>
-			<id/>
-			<name>Wulpertinger</name>
-			<advantage>All: +2 dice to dodge tests. Come on Germany, dodge isn't even a skill anymore.</advantage>
-			<disadvantage>Whenever the follower of Wolpertinger is in danger (real or imagined), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
-			<bonus />
-			<choices>
-				<choice>
-					<name>Magician: +2 dice for Illusion Spells.</name>
-					<bonus>
-						<spellcategory>
-							<name>Illusion</name>
 							<val>2</val>
 						</spellcategory>
 					</bonus>
@@ -1464,8 +1386,124 @@
 					</bonus>
 				</choice>
 			</choices>
-			<source>SHB</source>
-			<page>0</page>
+			<source>SGG</source>
+			<page>232</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Luna</name>
+			<advantage>All: +2 dice for Negotiation tests.</advantage>
+			<disadvantage>Luna is independent and free. A follower of Luna must pass a CHA+WIL(3) test to follow a direct order that does not correlate to her momentary personal wishes - especially if her own logic tells her that it would be better to disregard her own desires for the moment.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Negotiation</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for Illusion Spells.</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
+					<bonus>
+						<specificpower>
+							<name>Enhanced Accuracy (skill)</name>
+							<selectskill skillcategory="Combat Active">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
+						</specificpower>
+						<specificpower>
+							<name>Enhanced Accuracy (skill)</name>
+							<selectskill skillcategory="Combat Active">
+								<val>1</val>
+								<applytorating>no</applytorating>
+							</selectskill>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 1 free level of Spell Resistance</name>
+					<bonus>
+						<specificpower>
+							<name>Spell Resistance</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>SGG</source>
+			<page>233</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Tatzelwurm</name>
+			<advantage>All: +2 dice to Unarmed Combat.</advantage>
+			<disadvantage/>
+			<addqualities>
+				<addquality>Combat Junkie</addquality>
+			</addqualities>
+			<bonus>
+				<specificskill>
+					<name>Unarmed Combat</name>
+					<val>2</val>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for summoning spirits of earth</name>
+				</choice>
+				<choice>
+					<name>Adept: 1 free level of Critical Strike.</name>
+					<bonus>
+						<specificpower>
+							<name>Critical Strike</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>SGG</source>
+			<page>234</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Wolpertinger</name>
+			<advantage>All: +2 dice to dodge tests.</advantage>
+			<disadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
+			<bonus />
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for Illusion Spells.</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 free levels of Danger Sense.</name>
+					<bonus>
+						<specificpower>
+							<name>Danger Sense</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>SGG</source>
+			<page>234</page>
 		</mentor>
 	</mentors>
 </chummer>
