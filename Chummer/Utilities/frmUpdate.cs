@@ -44,7 +44,7 @@ namespace Chummer.Utilities
 				}
 			}
 
-			if (_blnSilentMode)
+			if (!_blnSilentMode)
 			{
 				WebClient wc = new WebClient();
 				wc.Encoding = Encoding.UTF8;
@@ -70,7 +70,7 @@ namespace Chummer.Utilities
 
 		public void GetChummerVersion()
 		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest?access_token=57a56647a10857141ac53bf891c6127da2d7f20b");
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 			request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
 			request.Accept = "application/json";
 			// Get the response.
