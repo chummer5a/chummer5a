@@ -309,11 +309,11 @@ namespace Chummer
                 if (!blnFound)
                 {
                     _objSkill.Specializations.Clear();
-                    if (cboSpec.Text != string.Empty)
-                    {
-                        SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
-                        _objSkill.Specializations.Add(objSpec);
-                    }
+                    //if (cboSpec.Text != string.Empty)
+                    //{
+                    //    SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
+                    //    _objSkill.Specializations.Add(objSpec);
+                    //}
                     SpecializationChanged(this);
                 }
             }
@@ -514,8 +514,8 @@ namespace Chummer
             string strSelectedValue = frmPickItem.SelectedItem;
 
             // charge the karma and add the spec
-            SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
-            _objSkill.Specializations.Add(objSpec);
+            //SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
+            //_objSkill.Specializations.Add(objSpec);
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
@@ -524,7 +524,7 @@ namespace Chummer
             _objSkill.CharacterObject.Karma -= _objSkill.CharacterObject.Options.KarmaSpecialization;
 
             ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
+            //objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
             objEntry.Undo = objUndo;
 
             lblSpec.Text = _objSkill.Specialization;

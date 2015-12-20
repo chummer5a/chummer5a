@@ -51,6 +51,8 @@ namespace Chummer.UI.Shared
 			cboSpec.DisplayMember = "Name";
 			cboSpec.ValueMember = "Value";
 
+			cboSpec.DataBindings.Add("Enabled", skill, "Leveled", false, DataSourceUpdateMode.OnPropertyChanged);
+
 			cboSpec.DataBindings.Add("Text", skill, "Specialization", false, DataSourceUpdateMode.OnPropertyChanged);
 			cboSpec.SelectedIndex = -1;
 

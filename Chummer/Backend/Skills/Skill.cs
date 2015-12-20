@@ -354,6 +354,11 @@ namespace Chummer.Skills
 			get { return PoolOtherAttribute(UsedAttribute.Augmented); }
 		}
 
+		public bool Leveled
+		{
+			get { return Rating > 0; }
+		}
+
 		/// <summary>
 		/// The total, general pourpose dice pool for this skill, using another
 		/// value for the linked attribute. This allows calculation of dice pools
@@ -495,6 +500,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
 				if (Specializations.Count > 0)
 				{
 					return Specializations[0].Name;
@@ -503,7 +509,11 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (Specializations.Count >= 1)
+				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
+
+
+
+				if (Specializations.Count >= 1 && Specializations[0].Free)
 				{
 					if (string.IsNullOrWhiteSpace(value))
 					{
@@ -511,16 +521,17 @@ namespace Chummer.Skills
 					}
 					else if (Specializations[0].Name != value)
 					{
-						Specializations[0] = new SkillSpecialization(value);
+						Specializations[0] = new SkillSpecialization(value, true);
 					}
 				}
 				else
 				{
 					if (!String.IsNullOrWhiteSpace(value))
 					{
-						Specializations.Add(new SkillSpecialization(value));
+						Specializations.Add(new SkillSpecialization(value, true));
 					}
 				}
+
 			}
 		}
 

@@ -807,8 +807,8 @@ namespace Chummer
 							objExotic.Attribute = "AGI";
 							if (objXmlSkill.Attributes["spec"] != null)
                             {
-                                SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-                                objExotic.Specializations.Add(objSpec);
+                                //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                                //objExotic.Specializations.Add(objSpec);
                             }
 							//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 							//	objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
@@ -824,8 +824,8 @@ namespace Chummer
 								{
 									if (objXmlSkill.Attributes["spec"] != null)
                                     {
-                                        SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-                                        objSkill.Specializations.Add(objSpec);
+                                        //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                                        //objSkill.Specializations.Add(objSpec);
                                     }
 									//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 									//	objSkill.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
@@ -859,8 +859,8 @@ namespace Chummer
 						objKnowledge.KnowledgeSkill = true;
 						if (objXmlSkill.Attributes["spec"] != null)
                         {
-                            SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-                            objKnowledge.Specializations.Add(objSpec);
+                            //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+                            //objKnowledge.Specializations.Add(objSpec);
                         }
 						objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
 						//if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
