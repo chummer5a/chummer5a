@@ -5,12 +5,15 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using System.IO.Compression.FileSystem;
+using System.IO.Compression;
+using System.Reflection;
 
 namespace Chummer
 {
+	
 	public partial class frmUpdate : Form
 	{
+
 		private bool _blnSilentMode;
 		private bool _blnSilentCheck;
 		private bool _blnDownloaded = false;
@@ -141,7 +144,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// When running in silent mode, the update window will not be shown.
+		/// Latest release build number located on Github.
 		/// </summary>
 		public string LatestVersion
 		{
@@ -152,6 +155,21 @@ namespace Chummer
 			set
 			{
 				strLatestVersion = value;
+			}
+		}
+
+
+
+		/// <summary>
+		/// Latest release build number located on Github.
+		/// </summary>
+		public string CurrentVersion
+		{
+			get
+			{
+				Version version = Assembly.GetExecutingAssembly().GetName().Version;
+				string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+				return strCurrentVersion;
 			}
 		}
 
@@ -176,7 +194,7 @@ namespace Chummer
 			Log.Enter("DownloadUpdates");
 			string strAppPath = Application.ExecutablePath;
 			string strArchive = strAppPath + ".old";
-			string strNewPath = Path.Combine(Path.GetTempPath(), "chummer5.zip");
+			string strNewPath = Path.Combine(Path.GetTempPath(), ("chummer"+LatestVersion+".zip"));
 			string strFilePath = Environment.CurrentDirectory + Path.DirectorySeparatorChar;
 			
 			WebClient Client = new WebClient();
@@ -192,13 +210,10 @@ namespace Chummer
 		/// </summary>
 		private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
 		{
-			Log.Info("wc_DownloadProgressChanged");
 			double bytesIn = double.Parse(e.BytesReceived.ToString());
 			double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
 			double percentage = bytesIn / totalBytes * 100;
-
 			pgbOverallProgress.Value = int.Parse(Math.Truncate(percentage).ToString());
-			Log.Exit("wc_DownloadProgressChanged");
 		}
 
 
@@ -210,21 +225,19 @@ namespace Chummer
 			cmdUpdate.Text = "Restart";
 			cmdUpdate.Enabled = true;
 			Log.Info("wc_DownloadExeFileCompleted");
-			string strAppPath = Application.StartupPath;
-			string strArchive = strAppPath + "/old";
-			string strNewPath = Path.Combine(Path.GetTempPath(), "chummer5.exe");
-
-			Log.Info("Validate the EXE");
-
-				Log.Info("EXE validated");
+			
 				_blnDownloaded = true;
 
 				// Copy over the executable.
 				try
 				{
-					Log.Info("strArchive = " + strArchive);
-					Log.Info("strAppPath = " + strAppPath);
-					Log.Info("strNewPath = " + strNewPath);
+				string appPath = Application.StartupPath;
+				string zipPath = Path.Combine(Path.GetTempPath(), ("chummer"+ CurrentVersion +".zip"));
+				Log.Info("Creating archive from application path: ", appPath);
+				ZipFile.CreateFromDirectory(appPath, zipPath, CompressionLevel.Fastest, true);
+
+				Log.Info("Extracting downloaded archive into application path: ", zipPath);
+				ZipFile.ExtractToDirectory(zipPath, appPath);
 
 				_blnDownloaded = true;
 				}

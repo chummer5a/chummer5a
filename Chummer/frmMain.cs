@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
-using Chummer.Utilities;
 
 namespace Chummer
 {
