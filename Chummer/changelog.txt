@@ -6,6 +6,7 @@ Data Change:
 - Added missing required values for the Hospitalized lifestyles.
 - The quality Practice, Practice, Practice now excludes Combat Active skills from being selected.
 - The Foregrip accessory has both an Under and Barrel slot. 
+- Fixed the Range for the spell Knockout to be Touch.
 
 Build 178: 
 Application Change: 
