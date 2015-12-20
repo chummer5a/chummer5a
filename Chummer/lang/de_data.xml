@@ -6860,7 +6860,6 @@
 				<page>446</page>
 				<translate>Linguasoft</translate>
 			</gear>
-			
 	<!-- Region Cyberdeck Modules -->
 		<gear>
 			<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
@@ -6905,7 +6904,6 @@
 			<translate>Gerichteter Signalfilter</translate>
 		</gear>
 		<!-- End Region -->
-		
 			<gear>
 				<id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
 				<name>Certified Credstick, Standard</name>
@@ -12758,7 +12756,7 @@
 			<quality>
 				<id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
 				<name>Double Jointed</name>
-				<page>90</page>
+		<page>84</page>
 				<translate>Gummigelenke</translate>
 			</quality>
 			<quality>
@@ -12892,16 +12890,14 @@
 			<quality>
 				<id>225f0d31-8c03-4283-9a22-558ab01a6c47</id>
 				<name>Natural Athlete</name>
-				<page>
-				</page>
-				<translate>Natürlicher Athlet</translate>
+		<page>84</page>
+		<translate>Bewegungstalent</translate>
 			</quality>
 			<quality>
 				<id>52648a83-1d2a-4b04-b7fc-ee5a62bce4f7</id>
 				<name>Natural Hardening</name>
-				<page>
-				</page>
-				<translate>Resistenz gegen Signalspitzen</translate>
+		<page>85</page>
+		<translate>Natürliche Härte</translate>
 			</quality>
 			<quality>
 				<id>8d558134-210d-4c96-b487-021a44409075</id>
@@ -12924,7 +12920,7 @@
 			<quality>
 				<id>291efdb6-a8b8-49ce-b2be-72f9d3f8a243</id>
 				<name>Quick Healer</name>
-				<page>92</page>
+		<page>85</page>
 				<translate>Schnellheilung</translate>
 			</quality>
 			<quality>
@@ -13286,41 +13282,49 @@
 			<quality>
 				<id>c6939a14-58c0-4168-b936-8124fd09ffe6</id>
 				<name>Focused Concentration (Rating 3)</name>
+		<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 3)</translate>
 			</quality>
 			<quality>
 				<id>79979e99-6776-4c93-b202-b630fabf3b30</id>
 				<name>Focused Concentration (Rating 4)</name>
+		<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 4)</translate>
 			</quality>
 			<quality>
 				<id>0e911cb1-da5c-4117-ae20-ffbf7f607c7d</id>
 				<name>Focused Concentration (Rating 5)</name>
+		<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 5)</translate>
 			</quality>
 			<quality>
 				<id>90ce7689-1dd8-437b-98ad-f10207380684</id>
 				<name>Focused Concentration (Rating 6)</name>
+		<page>84</page>
 				<translate>Erhöhte Konzentrationsfähigkeit (Stufe 6)</translate>
 			</quality>
 			<quality>
 				<id>5c18a150-8e38-4f6d-b4f5-b1b674a3581e</id>
 				<name>Gearhead</name>
+		<page>85</page>
 				<translate>Rennpilot</translate>
 			</quality>
 			<quality>
 				<id>0f3a0971-1cc5-47d6-a32d-d098ecdfb4d9</id>
 				<name>Indomitable (Mental)</name>
+		<page>84</page>
 				<translate>Durchsetzungskraft (Mental)</translate>
 			</quality>
 			<quality>
 				<id>58e6a651-cdd7-4144-a2cc-4cee24526e92</id>
 				<name>Indomitable (Physical)</name>
+		<page>84</page>
 				<translate>Durchsetzungskraft (Physisch)</translate>
 			</quality>
 			<quality>
 				<id>b9f1dbeb-1728-4250-a066-4773f758fe6a</id>
 				<name>Indomitable (Social)</name>
+		<page>84</page>
 				<translate>Durchsetzungskraft (Sozial)</translate>
 			</quality>
 			<quality>
@@ -13401,51 +13405,61 @@
 			<quality>
 				<id>cfdc255a-bb46-4d9c-8960-e4181455f4e3</id>
 				<name>Allergy (Uncommon, Extreme)</name>
-				<translate>Allergie (Selten, Extrem)</translate>
+		<page>88</page>
+		<translate>Allergie (Selten, extrem)</translate>
 			</quality>
 			<quality>
 				<id>8a40007a-9876-4998-a7c9-047248cfbc52</id>
 				<name>Allergy (Common, Extreme)</name>
-				<translate>Allergie (Häufig, Extrem)</translate>
+		<page>88</page>
+		<translate>Allergie (Häufig, extrem)</translate>
 			</quality>
 			<quality>
 				<id>dda02333-10e3-4295-9392-691ff3a7bd4a</id>
 				<name>Code of Honor</name>
+		<page>89</page>
 				<translate>Ehrenkodex</translate>
 			</quality>
 			<quality>
 				<id>0cf25fda-725b-49fd-a8cf-de589e938065</id>
 				<name>Insomnia (Basic)</name>
+		<page>92</page>
 				<translate>Schlaflosigkeit (einfach)</translate>
 			</quality>
 			<quality>
 				<id>149e6bf7-a6b4-4893-b755-4d983372079c</id>
 				<name>Insomnia (Full)</name>
+		<page>92</page>
 				<translate>Schlaflosigkeit (voll)</translate>
 			</quality>
 			<quality>
 				<id>c9cd05ad-cd3c-451e-8285-e0fb1d95ebc1</id>
 				<name>Loss of Confidence</name>
+		<page>96</page>
 				<translate>Verunsichert</translate>
 			</quality>
 			<quality>
 				<id>e00623e1-54b0-4a91-b234-3c7e141deef4</id>
 				<name>SINner (Corporate)</name>
+		<page>93</page>
 				<translate>SIN-Mensch (Konzernbürger)</translate>
 			</quality>
 			<quality>
 				<id>9ac85feb-ae1e-4996-8514-3570d411e1d5</id>
 				<name>SINner (National)</name>
+		<page>93</page>
 				<translate>SIN-Mensch (Staatlich)</translate>
 			</quality>
 			<quality>
 				<id>318d2edd-833b-48c5-a3e1-343bf03848a5</id>
 				<name>SINner (Corporate Limited)</name>
-				<translate>SIN-Mensch (Eingeschrenkt Konzern)</translate>
+		<page>93</page>
+		<translate>SIN-Mensch (Eingeschränkte Konzern)</translate>
 			</quality>
 			<quality>
 				<id>8ba2830a-3f10-4877-9752-93be051b205b</id>
 				<name>Social Stress</name>
+		<page>94</page>
 				<translate>Sozialstress</translate>
 			</quality>
 			<quality>
@@ -13481,6 +13495,7 @@
 			<quality>
 				<id>e96c7280-b9b0-4112-8b65-a3568c7ca13e</id>
 				<name>Unsteady Hands</name>
+		<page>91</page>
 				<translate>Händezittern</translate>
 			</quality>
 			<quality>
@@ -13602,10 +13617,10 @@
 				<page>146</page>
 				<translate>Tierführung</translate>
 				<specs>
-					<spec translate="Herding">Herding</spec>
-					<spec translate="Riding">Riding</spec>
-					<spec translate="Training">Training</spec>
-					<spec translate="[Animal Type]">[Animal Type]</spec>
+		  <spec translate="Hüten">Herding</spec>
+		  <spec translate="Reiten">Riding</spec>
+		  <spec translate="Abrichten">Training</spec>
+		  <spec translate="[Tierart]">[Animal Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13625,10 +13640,10 @@
 				<page>131</page>
 				<translate>Projektilwaffen</translate>
 				<specs>
-					<spec translate="Bow">Bow</spec>
-					<spec translate="Crossbow">Crossbow</spec>
-					<spec translate="Non-Standard Ammunition">Non-Standard Ammunition</spec>
-					<spec translate="Slingshot">Slingshot</spec>
+		  <spec translate="Bogen">Bow</spec>
+		  <spec translate="Armbrust">Crossbow</spec>
+		  <spec translate="Spezialmunition">Non-Standard Ammunition</spec>
+		  <spec translate="Schleuder">Slingshot</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13643,7 +13658,7 @@
 					<spec translate="Feuerwaffen">Firearms</spec>
 					<spec translate="Schwere Waffen">Heavy Weapons</spec>
 					<spec translate="Waffenzubehör, im Singular auch -ausbau">Weapon Accessories</spec>
-					<spec translate="Melee Weapons">Melee Weapons</spec>
+		  <spec translate="Nachkampfwaffen">Melee Weapons</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13653,10 +13668,10 @@
 				<translate>Handwerk</translate>
 				<specs>
 					<spec translate="Schreinern">Carpentry</spec>
-					<spec translate="Cooking">Cooking</spec>
-					<spec translate="Drawing">Drawing</spec>
-					<spec translate="Sculpting">Sculpting</spec>
-					<spec translate="[Discipline]">[Discipline]</spec>
+		  <spec translate="Kochen">Cooking</spec>
+		  <spec translate="Malerei">Drawing</spec>
+		  <spec translate="Bildhauerei">Sculpting</spec>
+		  <spec translate="[Handwerk]">[Discipline]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13689,19 +13704,12 @@
 				<page>132</page>
 				<translate>Schnellfeuerwaffen</translate>
 				<specs>
-					<spec translate="Assault Rifles">Assault Rifles</spec>
+		  <spec translate="Sturmgewehre">Assault Rifles</spec>
 					<spec translate="Cyber-Implant">Cyber-Implant</spec>
-					<spec translate="Machine Pistols">Machine Pistols</spec>
-					<spec translate="Submachine Guns">Submachine Guns</spec>
+		  <spec translate="Automatikpistolen">Machine Pistols</spec>
+		  <spec translate="Maschinenpistolen">Submachine Guns</spec>
 				</specs>
 			</skill>
-			<specs>
-				<spec translate="Sturmgewehre">Assault Rifles</spec>
-				<spec translate="Schwere Sturmgewehre">Battle Rifles</spec>
-				<spec translate="Karabiner">Carbines</spec>
-				<spec translate="Maschinenpistolen">Machine Pistols</spec>
-				<spec translate="Maschinengewehre">Submachine Guns</spec>
-			</specs>
 			<skill>
 				<id>5e5f2f7f-f63b-4f65-a65d-91b3d4523c6f</id>
 				<name>Automotive Mechanic</name>
@@ -13768,11 +13776,11 @@
 				<page>144</page>
 				<translate>Chemie</translate>
 				<specs>
-					<spec translate="Analytical">Analytical</spec>
-					<spec translate="Biochemistry">Biochemistry</spec>
-					<spec translate="Inorganic">Inorganic</spec>
-					<spec translate="Organic">Organic</spec>
-					<spec translate="Physical">Physical</spec>
+		  <spec translate="Analytisch">Analytical</spec>
+		  <spec translate="Biochemie">Biochemistry</spec>
+		  <spec translate="Anorganisch">Inorganic</spec>
+		  <spec translate="Organisch">Organic</spec>
+		  <spec translate="Physikalisch">Physical</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13794,7 +13802,7 @@
 				<page>143</page>
 				<translate>Kompilieren</translate>
 				<specs>
-					<spec translate="[Sprite Type]">[Sprite Type]</spec>
+		  <spec translate="[Spriteart]">[Sprite Type]</spec>
 				</specs>
 			</skill>
 			<skill translated="True">
@@ -13803,10 +13811,10 @@
 				<page>144</page>
 				<translate>Computer</translate>
 				<specs>
-					<spec translate="Edit File">Edit File</spec>
-					<spec translate="Matrix Perception">Matrix Perception</spec>
-					<spec translate="Matrix Search">Matrix Search</spec>
-					<spec translate="[Action]">[Action]</spec>
+		  <spec translate="Datei Editieren">Edit File</spec>
+		  <spec translate="Matrixwahrnehmung">Matrix Perception</spec>
+		  <spec translate="Matrixsuche">Matrix Search</spec>
+		  <spec translate="[Aktion]">[Action]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13825,9 +13833,9 @@
 				<page>142</page>
 				<translate>Antimagie</translate>
 				<specs>
-					<spec translate="Combat">Combat</spec>
-					<spec translate="Detection">Detection</spec>
-					<spec translate="Health">Health</spec>
+		  <spec translate="Kampf">Combat</spec>
+		  <spec translate="Wahrnehmung">Detection</spec>
+		  <spec translate="Heilung">Health</spec>
 					<spec translate="Illusion">Illusion</spec>
 					<spec translate="Manipulation">Manipulation</spec>
 				</specs>
@@ -13838,12 +13846,12 @@
 				<page>145</page>
 				<translate>Matrixkampf</translate>
 				<specs>
-					<spec translate="Devices">Devices</spec>
-					<spec translate="Grids">Grids</spec>
+		  <spec translate="Gerät">Devices</spec>
+		  <spec translate="Gitter">Grids</spec>
 					<spec translate="IC">IC</spec>
 					<spec translate="Personas">Personas</spec>
 					<spec translate="Sprites">Sprites</spec>
-					<spec translate="[Target Type]">[Target Type]</spec>
+		  <spec translate="[Zieltyp]">[Target Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13853,9 +13861,9 @@
 				<translate>Kybernetik</translate>
 				<specs>
 					<spec translate="Bodyware">Bodyware</spec>
-					<spec translate="Cyberglieder">Cyberlimbs</spec>
+		  <spec translate="Cybergliedmaßen">Cyberlimbs</spec>
 					<spec translate="Headware">Headware</spec>
-					<spec translate="Repair">Repair</spec>
+		  <spec translate="Reparieren">Repair</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13864,7 +13872,7 @@
 				<page>143</page>
 				<translate>Dekompilieren</translate>
 				<specs>
-					<spec translate="[Sprite Type]">[Sprite Type]</spec>
+		  <spec translate="[Spriteart]">[Sprite Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13928,10 +13936,10 @@
 				<page>133</page>
 				<translate>Entfesseln</translate>
 				<specs>
-					<spec translate="Contortionism">Contortionism</spec>
-					<spec translate="Cuffs">Cuffs</spec>
-					<spec translate="Ropes">Ropes</spec>
-					<spec translate="Zip Ties">Zip Ties</spec>
+		  <spec translate="Schlangenmensch">Contortionism</spec>
+		  <spec translate="Handschellen">Cuffs</spec>
+		  <spec translate="Seile">Ropes</spec>
+		  <spec translate="Kabelbinder">Zip Ties</spec>
 					<spec translate="[Other Restraint]">[Other Restraint]</spec>
 				</specs>
 			</skill>
@@ -13943,9 +13951,9 @@
 				<specs>
 					<spec translate="Corporate">Corporate</spec>
 					<spec translate="High Society">High Society</spec>
-					<spec translate="Media">Media</spec>
-					<spec translate="Mercenary">Mercenary</spec>
-					<spec translate="Street">Street</spec>
+		  <spec translate="Medienwelt">Media</spec>
+		  <spec translate="Söldner">Mercenary</spec>
+		  <spec translate="Straße">Street</spec>
 					<spec translate="Yakuza">Yakuza</spec>
 				</specs>
 			</skill>
@@ -13955,11 +13963,11 @@
 				<page>144</page>
 				<translate>Erste Hilfe</translate>
 				<specs>
-					<spec translate="Broken Bones">Broken Bones</spec>
-					<spec translate="Burns">Burns</spec>
-					<spec translate="Gunshot Wounds">Gunshot Wounds</spec>
-					<spec translate="Resuscitation">Resuscitation</spec>
-					<spec translate="[Type of Treatment]">[Type of Treatment]</spec>
+		  <spec translate="Knochenbrüche">Broken Bones</spec>
+		  <spec translate="Verbrennungen">Burns</spec>
+		  <spec translate="Schussverletzungen">Gunshot Wounds</spec>
+		  <spec translate="Wiederbelebung">Resuscitation</spec>
+		  <spec translate="[Art der Behandlung]">[Type of Treatment]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -13994,11 +14002,11 @@
 				<page>132</page>
 				<translate>Akrobatik</translate>
 				<specs>
-					<spec translate="Balance">Balance</spec>
+		  <spec translate="Balancieren">Balance</spec>
 					<spec translate="Tanzen">Dance</spec>
 					<spec translate="Parkour">Parkour</spec>
-					<spec translate="Climbing">Climbing</spec>
-					<spec translate="Leaping">Leaping</spec>
+		  <spec translate="Klettern">Climbing</spec>
+		  <spec translate="Springen">Leaping</spec>
 					<spec translate="Rolling">Rolling</spec>
 				</specs>
 			</skill>
@@ -14008,8 +14016,8 @@
 				<page>144</page>
 				<translate>Hacking</translate>
 				<specs>
-					<spec translate="Devices">Devices</spec>
-					<spec translate="Files">Files</spec>
+		  <spec translate="Geräte">Devices</spec>
+		  <spec translate="Dateien">Files</spec>
 					<spec translate="Hosts">Hosts</spec>
 					<spec translate="Personas">Personas</spec>
 				</specs>
@@ -14020,10 +14028,10 @@
 				<page>144</page>
 				<translate>Hardware</translate>
 				<specs>
-					<spec translate="Commlinks">Commlinks</spec>
+		  <spec translate="Kommlinks">Commlinks</spec>
 					<spec translate="Cyberdecks">Cyberdecks</spec>
 					<spec translate="Smartguns">Smartguns</spec>
-					<spec translate="[Hardware Type]">[Hardware Type]</spec>
+		  <spec translate="[Hardwaretyp]">[Hardware Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14033,10 +14041,10 @@
 				<translate>Schwere Waffen</translate>
 				<specs>
 					<spec translate="Granatwerfer">Grenade Launchers</spec>
-					<spec translate="Granatwerfer">Guided Missiles</spec>
+		  <spec translate="Lenkraketenwerfer">Guided Missiles</spec>
 					<spec translate="Maschinengewehre">Machine Guns</spec>
 					<spec translate="Raketenwerfer">Rocket Launchers</spec>
-					<spec translate="Assault Cannons">Assault Cannons</spec>
+		  <spec translate="Sturmkanonen">Assault Cannons</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14050,7 +14058,7 @@
 					<spec translate="Bauteile">Structural</spec>
 					<spec translate="Schweißen">Welding</spec>
 					<spec translate="HVAC">HVAC</spec>
-					<spec translate="Industrial Robotics">Industrial Robotics</spec>
+		  <spec translate="Industrieroboter">Industrial Robotics</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14080,9 +14088,9 @@
 				<page>138</page>
 				<translate>Führung</translate>
 				<specs>
-					<spec translate="Command">Command</spec>
+		  <spec translate="Kommandieren">Command</spec>
 					<spec translate="Direct">Direct</spec>
-					<spec translate="Inspire">Inspire</spec>
+		  <spec translate="Inspirieren">Inspire</spec>
 					<spec translate="Rally">Rally</spec>
 				</specs>
 			</skill>
@@ -14092,12 +14100,12 @@
 				<page>145</page>
 				<translate>Schlosser</translate>
 				<specs>
-					<spec translate="Combination">Combination</spec>
-					<spec translate="Keypad">Keypad</spec>
-					<spec translate="Maglock">Maglock</spec>
-					<spec translate="Tumbler">Tumbler</spec>
-					<spec translate="Voice Recognition">Voice Recognition</spec>
-					<spec translate="[Lock Type]">[Lock Type]</spec>
+		  <spec translate="Kombination">Combination</spec>
+		  <spec translate="Tastenfeld">Keypad</spec>
+		  <spec translate="Magschloss">Maglock</spec>
+		  <spec translate="Schließzylinder">Tumbler</spec>
+		  <spec translate="Stimmerkennung">Voice Recognition</spec>
+		  <spec translate="[Art des Schlosses]">[Lock Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14108,8 +14116,8 @@
 				<specs>
 					<spec translate="Schrotflinten">Shotguns</spec>
 					<spec translate="Scharfschützengewehre">Sniper Rifles</spec>
-					<spec translate="Extended-Range Shots">Extended-Range Shots</spec>
-					<spec translate="Long-Range Shots">Long-Range Shots</spec>
+		  <spec translate="Schließen auf Lange Entfernung">Extended-Range Shots</spec>
+		  <spec translate="Schließen auf Maximale Entfernung">Long-Range Shots</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14144,10 +14152,10 @@
 				<page>145</page>
 				<translate>Navigation</translate>
 				<specs>
-					<spec translate="Augmented Reality Markers">Augmented Reality Markers</spec>
-					<spec translate="Celestial">Celestial</spec>
-					<spec translate="Compass">Compass</spec>
-					<spec translate="Maps">Maps</spec>
+		  <spec translate="AR-Wegweiser">Augmented Reality Markers</spec>
+		  <spec translate="Astronimische Navigation">Celestial</spec>
+		  <spec translate="Kompass">Compass</spec>
+		  <spec translate="Karten">Maps</spec>
 					<spec translate="GPS">GPS</spec>
 				</specs>
 			</skill>
@@ -14157,9 +14165,9 @@
 				<page>139</page>
 				<translate>Verhandlung</translate>
 				<specs>
-					<spec translate="Handeln">Bargaining</spec>
+		  <spec translate="Feilschen">Bargaining</spec>
 					<spec translate="Diplomatie">Diplomacy</spec>
-					<spec translate="Contracts">Contracts</spec>
+		  <spec translate="Verträge">Contracts</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14168,9 +14176,9 @@
 				<page>133</page>
 				<translate>Fingerfertigkeit</translate>
 				<specs>
-					<spec translate="Zaubertricks">Legerdemain</spec>
+		  <spec translate="Taschenspielerei">Legerdemain</spec>
 					<spec translate="Taschendiebstahl">Pickpocket</spec>
-					<spec translate="Pilfering">Pilfering</spec>
+		  <spec translate="Stehlen">Pilfering</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14184,7 +14192,7 @@
 					<spec translate="Schmecken">Taste</spec>
 					<spec translate="Tasten">Touch</spec>
 					<spec translate="Sehen">Visual</spec>
-					<spec translate="Searching">Searching</spec>
+		  <spec translate="Durchsuchen">Searching</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14247,25 +14255,19 @@
 				<page>131</page>
 				<translate>Pistolen</translate>
 				<specs>
-					<spec translate="Holdouts">Holdouts</spec>
-					<spec translate="Revolvers">Revolvers</spec>
-					<spec translate="Semi-Automatics">Semi-Automatics</spec>
-					<spec translate="Tasers">Tasers</spec>
-				</specs>
-			</skill>
-			<specs>
-				<spec translate="Holdouts">Hold-Outs</spec>
-				<spec translate="Revolvers">Revolvers</spec>
+		  <spec translate="Holdout">Holdouts</spec>
+		  <spec translate="Revolver">Revolvers</spec>
 				<spec translate="Halbautomatik">Semi-Automatics</spec>
 				<spec translate="Taser">Tasers</spec>
 			</specs>
+	  </skill>
 			<skill>
 				<id>3a38bbcf-38b0-435b-98f2-4ce8c50e8490</id>
 				<name>Registering</name>
 				<page>143</page>
 				<translate>Registrieren</translate>
 				<specs>
-					<spec translate="[Sprite Type]">[Sprite Type]</spec>
+		  <spec translate="[Spriteart]">[Sprite Type]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14283,11 +14285,11 @@
 				<page>133</page>
 				<translate>Laufen</translate>
 				<specs>
-					<spec translate="Sprinten">Sprinting</spec>
+		  <spec translate="Sprint">Sprinting</spec>
 					<spec translate="Stadt">Urban</spec>
 					<spec translate="Wildnis">Wilderness</spec>
-					<spec translate="Desert">Desert</spec>
-					<spec translate="Distance">Distance</spec>
+		  <spec translate="Wüste">Desert</spec>
+		  <spec translate="Langstrecke">Distance</spec>
 					<spec translate="[Terrain]">[Terrain]</spec>
 				</specs>
 			</skill>
@@ -14297,8 +14299,8 @@
 				<page>145</page>
 				<translate>Software</translate>
 				<specs>
-					<spec translate="Data Bombs">Data Bombs</spec>
-					<spec translate="[Complex Form]">[Complex Form]</spec>
+		  <spec translate="Datenbomben">Data Bombs</spec>
+		  <spec translate="[Komplexe Form]">[Complex Form]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14307,9 +14309,9 @@
 				<page>143</page>
 				<translate>Spruchzauberei</translate>
 				<specs>
-					<spec translate="Combat">Combat</spec>
-					<spec translate="Detection">Detection</spec>
-					<spec translate="Health">Health</spec>
+		  <spec translate="Kampf">Combat</spec>
+		  <spec translate="Wahrnehmung">Detection</spec>
+		  <spec translate="Kelung">Health</spec>
 					<spec translate="Illusion">Illusion</spec>
 					<spec translate="Manipulation">Manipulation</spec>
 				</specs>
@@ -14354,7 +14356,7 @@
 				<translate>Schwimmen</translate>
 				<specs>
 					<spec translate="Langstrecken">Long Distance</spec>
-					<spec translate="Dash">Dash</spec>
+		  <spec translate="Kurzstrecke">Dash</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14363,9 +14365,9 @@
 				<page>132</page>
 				<translate>Wurfwaffen</translate>
 				<specs>
-					<spec translate="Aerodynamic">Aerodynamic</spec>
-					<spec translate="Blades">Blades</spec>
-					<spec translate="Non-Aerodynamic">Non-Aerodynamic</spec>
+		  <spec translate="Aerodynamisch">Aerodynamic</spec>
+		  <spec translate="Wurfklingen">Blades</spec>
+		  <spec translate="Nicht-Aerodynamisch">Non-Aerodynamic</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14389,9 +14391,9 @@
 				<page>132</page>
 				<translate>Waffenloser Kampf</translate>
 				<specs>
-					<spec translate="Blocking">Blocking</spec>
-					<spec translate="Cyber Implants">Cyber Implants</spec>
-					<spec translate="Subduing Combat">Subduing Combat</spec>
+		  <spec translate="Blocken">Blocking</spec>
+		  <spec translate="Cyberimplantatwaffen">Cyber Implants</spec>
+		  <spec translate="Festhaltekampf">Subduing Combat</spec>
 					<spec translate="[Martial Art]">[Martial Art]</spec>
 				</specs>
 			</skill>
@@ -14464,12 +14466,12 @@
 				<name>Free-Fall</name>
 				<translate>Freifall</translate>
 				<specs>
-					<spec translate="BASE Jumping">BASE Jumping</spec>
-					<spec translate="Break-Fall">Break-Fall</spec>
+		  <spec translate="Basejumping">BASE Jumping</spec>
+		  <spec translate="Abrollen">Break-Fall</spec>
 					<spec translate="Bungee">Bungee</spec>
 					<spec translate="HALO">HALO</spec>
 					<spec translate="Low Altitude">Low Altitude</spec>
-					<spec translate="Parachute">Parachute</spec>
+		  <spec translate="Fallschirm">Parachute</spec>
 					<spec translate="Static Line">Static Line</spec>
 					<spec translate="Wingsuit">Wingsuit</spec>
 					<spec translate="Zipline">Zipline</spec>
@@ -14478,11 +14480,12 @@
 			<skill>
 				<id>e7e5a43f-9762-4863-86dc-3fd7799e53a2</id>
 				<name>Impersonation</name>
+		<page>139</page>
 				<translate>Verkörperung</translate>
 				<specs>
-					<spec translate="Dwarf">Dwarf</spec>
+		  <spec translate="Zwerg">Dwarf</spec>
 					<spec translate="Elf">Elf</spec>
-					<spec translate="Human">Human</spec>
+		  <spec translate="Mensch">Human</spec>
 					<spec translate="Ork">Ork</spec>
 					<spec translate="Troll">Troll</spec>
 				</specs>
@@ -14490,12 +14493,13 @@
 			<skill>
 				<id>53f96d6a-363b-4c14-be1d-68e74930c67b</id>
 				<name>Performance</name>
+		<page>139</page>
 				<translate>Vorführung</translate>
 				<specs>
-					<spec translate="Acting">Acting</spec>
-					<spec translate="Comedy">Comedy</spec>
-					<spec translate="Presentation">Presentation</spec>
-					<spec translate="[Musical Instrument]">[Musical Instrument]</spec>
+		  <spec translate="Schauspiel">Acting</spec>
+		  <spec translate="Komik">Comedy</spec>
+		  <spec translate="Präsentation">Presentation</spec>
+		  <spec translate="[Musikinstrument]">[Musical Instrument]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14512,11 +14516,12 @@
 			<skill>
 				<id>9cff9aa7-d092-4f89-8b7b-3ab835818874</id>
 				<name>Sneaking</name>
+		<page>133</page>
 				<translate>Schleichen</translate>
 				<specs>
-					<spec translate="Desert">Desert</spec>
-					<spec translate="Jungle">Jungle</spec>
-					<spec translate="Urban">Urban</spec>
+		  <spec translate="Wüste">Desert</spec>
+		  <spec translate="Dschungel">Jungle</spec>
+		  <spec translate="Stadt">Urban</spec>
 					<spec translate="Wilderness">Wilderness</spec>
 					<spec translate="[Terrain]">[Terrain]</spec>
 				</specs>
@@ -19774,13 +19779,13 @@
 				<id>d57d2c64-1f61-4f5f-a465-8ce0dfacec6a</id>
 				<name>Smartgun System, Internal</name>
 				<page>435</page>
-				<translate>Smartgunsystem, Internal</translate>
+		<translate>Smartgunsystem, intern</translate>
 			</accessory>
 			<accessory>
 				<id>b3562903-b1c6-4300-9f6e-25e0102aa69b</id>
 				<name>Smartgun System, External</name>
 				<page>435</page>
-				<translate>Smartgunsystem, External</translate>
+		<translate>Smartgunsystem, extern</translate>
 			</accessory>
 			<accessory>
 				<id>3c329adb-7c13-4d2c-b25c-49be89173fa1</id>
