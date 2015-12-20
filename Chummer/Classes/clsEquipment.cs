@@ -6256,6 +6256,91 @@ namespace Chummer
 				foreach (string strMode in strModes)
 					lstModes.Add(strMode);
 
+				// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+				if (AmmoLoaded != "")
+				{
+					CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
+					// Look for Ammo on the character.
+					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					if (objGear == null)
+					{
+						Vehicle objFoundVehicle;
+						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+					}
+					if (objGear != null)
+					{
+						if (objGear.WeaponBonus != null)
+						{
+								if (objGear.WeaponBonus["firemode"] != null)
+								{
+									if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+									{
+									strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+									// Move the contents of the array to a list so it's easier to work with.
+									foreach (string strMode in strModes)
+										lstModes.Add(strMode);
+									}
+									else
+									{
+										lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+									}
+								}
+								if (objGear.WeaponBonus["modereplace"] != null)
+								{
+									lstModes.Clear();
+									if (objGear.WeaponBonus["modereplace"].InnerText.Contains('/'))
+									{
+										strModes = objGear.WeaponBonus["modereplace"].InnerText.Split('/');
+									}
+									else
+									{
+										strModes[0] = objGear.WeaponBonus["modereplace"].InnerText;
+									}
+									// Move the contents of the array to a list so it's easier to work with.
+								foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+								}
+						}
+
+						// Do the same for any plugins.
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (objChild.WeaponBonus != null)
+							{
+								if (objGear.WeaponBonus["firemode"] != null)
+								{
+									if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+									{
+										strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+										// Move the contents of the array to a list so it's easier to work with.
+										foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+									}
+									else
+									{
+										lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+									}
+								}
+								if (objGear.WeaponBonus["firemodereplace"] != null)
+								{
+									if (objGear.WeaponBonus["firemodereplace"].InnerText.Contains('/'))
+									{
+										lstModes.Clear();
+										strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+										// Move the contents of the array to a list so it's easier to work with.
+										foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+
 				foreach (WeaponMod objMod in _lstWeaponMods)
 				{
 					if (objMod.AddMode != "")

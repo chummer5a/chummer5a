@@ -23514,11 +23514,11 @@ namespace Chummer
             else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmSumtoTenMetatype frmSelectMetatype = new frmSumtoTenMetatype(_objCharacter);
-				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[0].ToString();
-				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[0].ToString();
-				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[0].ToString();
-				frmSelectMetatype.Special = _objCharacter.SpecialPriority[0].ToString();
-				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[0].ToString();
+				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[2].ToString();
+				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[2].ToString();
+				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[2].ToString();
+				frmSelectMetatype.Special = _objCharacter.SpecialPriority[2].ToString();
+				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[2].ToString();
 				frmSelectMetatype.ShowDialog(this);
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
