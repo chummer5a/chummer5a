@@ -4,12 +4,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+using Chummer.Utilities;
+
 namespace Chummer
 {
 	public partial class frmMain : Form
 	{
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
+		private frmUpdate _frmUpdate;
 		private Character _objCharacter;
 
         #region Control Events
@@ -17,7 +20,9 @@ namespace Chummer
 		{
 			InitializeComponent();
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
-			this.Text = string.Format("Chummer 5a - Version {0}.{1}.{2}",version.Major, version.Minor, version.Build);
+			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+
+			this.Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
             /** Dashboard **/
@@ -27,10 +32,22 @@ namespace Chummer
 			// If Automatic Updates are enabled, check for updates immediately.
 			if (GlobalOptions.Instance.AutomaticUpdate)
 			{
-                frmUpdate frmAutoUpdate = new frmUpdate();
+				frmUpdate frmAutoUpdate = new frmUpdate();
                 frmAutoUpdate.SilentMode = true;
                 frmAutoUpdate.Visible = false;
                 frmAutoUpdate.ShowDialog(this);
+			}
+			else
+			{
+				frmUpdate frmAutoUpdate = new frmUpdate();
+				frmAutoUpdate.GetChummerVersion();
+				Version verCurrentVersion = new Version(strCurrentVersion);
+				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
+
+				var result = verCurrentVersion.CompareTo(verLatestVersion);
+				if (result != 0)
+					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
+				return;
 			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -136,8 +153,17 @@ namespace Chummer
 
 		private void mnuToolsUpdate_Click(object sender, EventArgs e)
 		{
-            frmUpdate frmUpdateApp = new frmUpdate();
-            frmUpdateApp.ShowDialog(this);
+			// Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
+			if (_frmUpdate == null)
+			{
+				frmUpdate frmUpdate = new frmUpdate();
+				_frmUpdate = frmUpdate;
+				_frmUpdate.Show();
+			}
+			else
+			{
+				_frmUpdate.Focus();
+			}
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
