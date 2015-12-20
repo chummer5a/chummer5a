@@ -1206,11 +1206,11 @@ namespace Chummer
             // Modifiers only apply when not Defaulting.
             if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
 			{
-				if (_objSkill.RatingModifiers != 0)
+				if (_objSkill.PoolModifiers != 0)
 				{
 					if (_objSkill.CharacterObject.Options.EnforceMaximumSkillRatingModifier)
 					{
-						int intModifier = _objSkill.RatingModifiers;
+						int intModifier = _objSkill.PoolModifiers;
 						if (intModifier > Convert.ToInt32(Math.Floor(Convert.ToDouble(intSkillRating, GlobalOptions.Instance.CultureInfo) * 0.5)))
 						{
 							int intMax = intModifier;
@@ -1221,10 +1221,10 @@ namespace Chummer
 								strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (0 " + LanguageManager.Instance.GetString("String_Of") + " " + intMax.ToString() + ")";
 						}
 						else
-							strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.RatingModifiers.ToString() + ")";
+							strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.PoolModifiers.ToString() + ")";
 					}
 					else
-						strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.RatingModifiers.ToString() + ")";
+						strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.PoolModifiers.ToString() + ")";
 				}
 				// Dice Pool Modifiers.
 				strTooltip += _objSkill.DicePoolModifiersTooltip;

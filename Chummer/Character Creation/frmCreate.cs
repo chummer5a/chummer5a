@@ -7476,7 +7476,7 @@ namespace Chummer
             XmlNode nodSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
             int i = panActiveSkills.Controls.Count;
-            Skill objSkill = new ExoticSkill(_objCharacter, frmPickExoticSkill.SelectedExoticSkill);
+            Skill objSkill = new ExoticSkill(_objCharacter, nodSkill);
             objSkill.Attribute = nodSkill["CharacterAttribute"].InnerText;
             //if (_objCharacter.MaxSkillRating > 0)
             //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;

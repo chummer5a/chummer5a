@@ -151,5 +151,19 @@ namespace Chummer.UI.Shared
 
 			skills.Filter(selectedItem.Item2);
 		}
+
+		private void btnExotic_Click(object sender, EventArgs e)
+		{
+			XmlDocument document = XmlManager.Instance.Load("skills.xml");
+			frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill();
+			frmPickExoticSkill.ShowDialog(this);
+
+			if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
+				return;
+
+			XmlNode node =
+				document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+			ObjCharacter.Skills.Add(new ExoticSkill(ObjCharacter, node));
+		}
 	}
 }

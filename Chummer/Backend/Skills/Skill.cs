@@ -73,7 +73,7 @@ namespace Chummer.Skills
 				if (Debugger.IsAttached)
 					Debugger.Break();
 
-				ExoticSkill s2 = new ExoticSkill(character, n["name"].InnerText);
+				ExoticSkill s2 = new ExoticSkill(character, n);
 
 				s = s2;
 			}
@@ -138,6 +138,8 @@ namespace Chummer.Skills
 
 		public Skill(Character character)
 		{
+			//TODO REMOVE, keept because LOTS of places require this
+			//Refactor still underway
 			_character = character;  //INIT FROM HERE?
 			
 			_objId = Guid.NewGuid();
@@ -148,7 +150,7 @@ namespace Chummer.Skills
 		}
 
 		//load from data
-		private Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText) //Ugly hack, needs by then
+		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText) //Ugly hack, needs by then
 		{
 			_name = n["name"].InnerText; //No need to catch errors (for now), if missing we are fsked anyway
 			UsedAttribute = CharacterObject.GetAttribute(n["attribute"].InnerText);
@@ -159,7 +161,11 @@ namespace Chummer.Skills
 
 			UsedAttribute.PropertyChanged += OnLinkedAttributeChanged;
 
-
+			_spec = new List<ListItem>();
+			foreach (XmlNode node in n["specs"].ChildNodes)
+			{
+				_spec.Add(ListItem.AutoXml(node.InnerText, node));
+			}
 		}
 
 		//Load from .chum5
@@ -171,7 +177,7 @@ namespace Chummer.Skills
 		#endregion
 
 		private readonly SkillGroup _skillGroup;
-		private bool _skillGroupLinked = true; //Auto broken and 'kind' of true
+		protected bool _skillGroupLinked = true; //Auto broken and 'kind' of true
  		protected readonly CharacterAttrib UsedAttribute;
 		private readonly Guid _objId;
 		private readonly Character _character;
@@ -180,9 +186,13 @@ namespace Chummer.Skills
 		protected readonly string _group;
 		protected int _skillFromSp = 0;
 		protected int _skillFromKarma = 0; //This is also used for career advances
-		private string _name;
+		protected string _name;
+		protected List<ListItem> _spec;
 		
-		//TODO CALCULATIONS STUFF HERE
+		/// <summary>
+		/// The amount of points this skill have from skill points and bonuses
+		/// to the skill rating
+		/// </summary>
 		public int Base
 		{
 			get
@@ -204,7 +214,7 @@ namespace Chummer.Skills
 					}
 					else //TODO: refactor to a little pretier later. Use IsLocked instead. Set _linked to false if group is 0;
 					{
-						if (_skillGroup != null && _skillGroup.Karma == 0) //auto break if not getting anything, otherwise, require manual break
+						if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
 						{
 							_skillGroupLinked = false;
 							_skillFromSp = tempval;
@@ -215,6 +225,9 @@ namespace Chummer.Skills
 			}
 		}
 
+		/// <summary>
+		/// Amount of skill points bought with karma
+		/// </summary>
 		public int Karma
 		{
 			get { return _skillFromKarma; }
@@ -227,7 +240,7 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					if (_skillGroup != null && _skillGroup.Karma == 0) //auto break if not getting anything, otherwise, require manual break
+					if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
 					{
 						_skillGroupLinked = false;
 						_skillFromKarma = value;
@@ -237,6 +250,10 @@ namespace Chummer.Skills
 			}
 		}
 
+		/// <summary>
+		/// Levels in this skill. Read only. You probably want to increase
+		/// Karma instead
+		/// </summary>
 		public int Rating
 		{
 			get { return Karma + Base; }
@@ -247,6 +264,9 @@ namespace Chummer.Skills
 			}
 		}
 
+		/// <summary>
+		/// How many free points this skill have
+		/// </summary>
 		public int FreeLevels
 		{
 			get
@@ -260,6 +280,9 @@ namespace Chummer.Skills
 			
 		}
 
+		/// <summary>
+		/// Maximum possible rating
+		/// </summary>
 		public int RatingMaximum
 		{
 			get {
@@ -272,8 +295,10 @@ namespace Chummer.Skills
 			
 		}
 
-		//TODO READ FROM IMPROVEMENT
-		public int RatingModifiers
+		/// <summary>
+		/// Things that modify the dicepool of the skill
+		/// </summary>
+		public int PoolModifiers
 		{
 			get
 			{
@@ -321,7 +346,6 @@ namespace Chummer.Skills
 			}
 		}
 
-		//TODO CALCULATE
 		/// <summary>
 		/// The total, general pourpose dice pool for this skill
 		/// </summary>
@@ -341,11 +365,11 @@ namespace Chummer.Skills
 		{
 			if (Rating > 0)
 			{
-				return Rating + attribute + RatingModifiers;
+				return Rating + attribute + PoolModifiers;
 			}
 			if (_default)
 			{
-				return attribute + RatingModifiers - 1;
+				return attribute + PoolModifiers - 1;
 			}
 			return 0;
 		}
@@ -355,10 +379,18 @@ namespace Chummer.Skills
 			get { return _character; }
 		}
 
+		//TODO change to the acctual characterattribute object
+		/// <summary>
+		/// The Abbreviation of the linke attribute. This way due legacy
+		/// </summary>
 		public virtual string Attribute
 		{
 			get { return UsedAttribute.Abbrev; }
-			set { } //TODO REFACTOR AWAY
+			set
+			{
+				if (Debugger.IsAttached)
+					Debugger.Break();
+			} //TODO REFACTOR AWAY
 		}
 
 		//TODO OVERRIDE IN CHILD CLASS
@@ -396,7 +428,7 @@ namespace Chummer.Skills
 		{
 			get { return !(_skillGroup != null && IsGrouped && (SkillGroupObject.Karma + SkillGroupObject.Base) > 0); }
 		}
-		//TODO OVERRIDE IN CHILD CLASS
+		
 		public virtual bool ExoticSkill
 		{
 			get { return false; }
@@ -452,6 +484,10 @@ namespace Chummer.Skills
 			}
 		} //TODO REFACTOR?
 
+		public IReadOnlyList<ListItem> CGLSpecializations { get { return _spec; } } 
+
+		
+
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
 		//Or just ignore support for multiple specizalizations even if the rules say it is possible?
 		public List<SkillSpecialization> Specializations { get; } = new List<SkillSpecialization>();
@@ -467,7 +503,7 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (Specializations.Count > 1)
+				if (Specializations.Count >= 1)
 				{
 					if (string.IsNullOrWhiteSpace(value))
 					{
@@ -544,7 +580,7 @@ namespace Chummer.Skills
 		private static readonly ReverseTree<string> dependencyTree =
 			new ReverseTree<string>(nameof(DisplayPool),
 				new ReverseTree<string>(nameof(Pool),
-					new ReverseTree<string>(nameof(RatingModifiers)),
+					new ReverseTree<string>(nameof(PoolModifiers)),
 					new ReverseTree<string>(nameof(AttributeModifiers)),
 					new ReverseTree<string>(nameof(Rating),
 						new ReverseTree<string>(nameof(Karma)),
@@ -573,7 +609,9 @@ namespace Chummer.Skills
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsUnlocked)));
 
-			if (!_skillGroupLinked) return;
+			if (!_skillGroupLinked && _character.Created) return;
+
+			_skillGroupLinked = true;
 
 			_skillFromSp = SkillGroupObject.Base;
 			_skillFromKarma = SkillGroupObject.Karma;
@@ -596,7 +634,7 @@ namespace Chummer.Skills
 		{
 			if(improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillLevel 
 			&& imp.ImprovedName == _name))
-				OnPropertyChanged(nameof(RatingModifiers));
+				OnPropertyChanged(nameof(PoolModifiers));
 		}
 		//I also think this prevents GC. But there is no good way to do it...
 		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;

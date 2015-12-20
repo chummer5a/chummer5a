@@ -31,6 +31,7 @@
 			this.splitSkills = new System.Windows.Forms.SplitContainer();
 			this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.btnExotic = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
 			this.splitSkills.SuspendLayout();
@@ -47,6 +48,7 @@
 			// splitSkills.Panel1
 			// 
 			this.splitSkills.Panel1.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel1.Controls.Add(this.btnExotic);
 			this.splitSkills.Panel1.Controls.Add(this.cboDisplayFilter);
 			this.splitSkills.Panel1.Controls.Add(this.label1);
 			this.splitSkills.Panel1.Resize += new System.EventHandler(this.Panel1_Resize);
@@ -63,7 +65,7 @@
 			this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboDisplayFilter.FormattingEnabled = true;
 			this.cboDisplayFilter.IntegralHeight = false;
-			this.cboDisplayFilter.Location = new System.Drawing.Point(632, 3);
+			this.cboDisplayFilter.Location = new System.Drawing.Point(537, 3);
 			this.cboDisplayFilter.Name = "cboDisplayFilter";
 			this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
 			this.cboDisplayFilter.TabIndex = 1;
@@ -77,6 +79,16 @@
 			this.label1.Size = new System.Drawing.Size(63, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Skill Groups";
+			// 
+			// btnExotic
+			// 
+			this.btnExotic.Location = new System.Drawing.Point(744, 3);
+			this.btnExotic.Name = "btnExotic";
+			this.btnExotic.Size = new System.Drawing.Size(89, 23);
+			this.btnExotic.TabIndex = 2;
+			this.btnExotic.Text = "Add Exotic Skill";
+			this.btnExotic.UseVisualStyleBackColor = true;
+			this.btnExotic.Click += new System.EventHandler(this.btnExotic_Click);
 			// 
 			// SkillsTabUserControl
 			// 
@@ -99,5 +111,6 @@
 		private System.Windows.Forms.SplitContainer splitSkills;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox cboDisplayFilter;
+		private System.Windows.Forms.Button btnExotic;
 	}
 }

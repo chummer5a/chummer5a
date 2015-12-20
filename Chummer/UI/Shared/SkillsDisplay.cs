@@ -61,7 +61,7 @@ namespace Chummer.UI.Shared
 				_map.Add(content, c);
 				_controls.Add(c);
 				tblContents.Controls.Add(c);
-				
+				SkillsDisplay_Resize(null, null); //Updates size to show new item.
 			}
 			else if (Debugger.IsAttached) Debugger.Break();
 
