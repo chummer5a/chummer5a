@@ -1,6 +1,8 @@
 Build 179:
 Application Change:
-- Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added.
+- Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
+- Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodeplace nodes. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
+- Fixed a crash issue caused by changing priority selection in Sum to Ten mode. Fixes #572.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
