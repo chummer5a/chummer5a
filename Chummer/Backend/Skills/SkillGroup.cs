@@ -45,12 +45,14 @@ namespace Chummer.Skills
 		private List<Skill> _affectedSkills = new List<Skill>(); 
 		private int _skillFromSp;
 		private int _skillFromKarma;
-		private string _groupName;
+		private readonly string _groupName;
 		private readonly Character _character;
 		private SkillGroup(Character character, string groupName)
 		{
 			_character = character;
 			_groupName = groupName;
+
+			ImprovementEvent += OnImprovementEvent;
 		}
 		
 		//TODO CALCULATIONS STUFF HERE
@@ -92,8 +94,14 @@ namespace Chummer.Skills
 
 		public int FreeLevels
 		{
-			get;
-			set; //TODO REFACTOR AWAY
+			get
+			{
+				return (from improvement in _character.Improvements
+						where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
+						   && improvement.ImprovedName == _groupName
+						select improvement.Value).Sum();
+			}
+			
 		}
 		public int RatingMaximum
 		{
@@ -165,13 +173,40 @@ namespace Chummer.Skills
 			get { return Name; } //TODO TRANSLATE
 		}
 
-		public bool HasCombatSkills { get { return false; } }
-		public bool HasPhysicalSkills { get { return false; } }
-		public bool HasSocialSkills { get { return false; } }
-		public bool HasTechnicalSkills { get { return false; } }
-		public bool HasVehicleSkills { get { return false; } }
-		public bool HasMagicalSkills { get { return false; } }
-		public bool HasResonanceSkills { get { return false; } }
+		public bool HasCombatSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Combat Active"); }
+		}
+
+		public bool HasPhysicalSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Physical Active"); ; }
+		}
+
+		public bool HasSocialSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Social Active"); ; }
+		}
+
+		public bool HasTechnicalSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Technical Active"); ; }
+		}
+
+		public bool HasVehicleSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Vehicle Active"); ; }
+		}
+
+		public bool HasMagicalSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Magical Active"); ; }
+		}
+
+		public bool HasResonanceSkills
+		{
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Resonance Active"); ; }
+		}
 
 		public Character Character
 		{
@@ -184,6 +219,30 @@ namespace Chummer.Skills
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+
+		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
+		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+		{
+			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel
+			                            && imp.ImprovedName == _groupName))
+			{
+				OnPropertyChanged(nameof(FreeLevels));
+				OnPropertyChanged(nameof(Base));
+				OnPropertyChanged(nameof(Base));
+			}
+
+		}
+		//I also think this prevents GC. But there is no good way to do it...
+		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
+		//To get when things change in improvementmanager
+		//Ugly, ugly done, but we cannot get events out of it today
+		// FUTURE REFACTOR HERE
+		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
+		internal static void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
+		{
+			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 		}
 	}
 }

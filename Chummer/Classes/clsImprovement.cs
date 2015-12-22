@@ -132,7 +132,8 @@ namespace Chummer
 			AddContact = 117,
 			Seeker = 118,
 			PublicAwareness = 119,
-			PrototypeTranshuman = 120
+			PrototypeTranshuman = 120,
+
 
 		}
 
@@ -168,6 +169,7 @@ namespace Chummer
             Art = 27,
             Enhancement = 28,
 			Custom = 999,
+	        Heritage
         }
 
 		private string _strImprovedName = "";
@@ -1997,7 +1999,7 @@ namespace Chummer
 						Skill objNSkill = new Skill(_objCharacter);
 						objNSkill.Id = id;
 						objNSkill.IdImprovement = true;
-						objNSkill.AllowDelete = false;
+						//objNSkill.AllowDelete = false;
 						objNSkill.KnowledgeSkill = true;
 						objNSkill.LockKnowledge = true;
 						objNSkill.SkillCategory = group;
@@ -5575,7 +5577,7 @@ namespace Chummer
 			// Clear all of the Improvements from the Transaction List.
 
 			Skill.ImprovementHook(_lstTransaction, this);
-
+			SkillGroup.ImprovementHook(_lstTransaction, this);
 			_lstTransaction.Clear();
 
             objFunctions.LogWrite(CommonFunctions.LogType.Exiting, "Chummer.ImprovementManager", "Commit");

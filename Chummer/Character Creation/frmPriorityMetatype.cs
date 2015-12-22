@@ -1659,6 +1659,10 @@ namespace Chummer
                     intFreeLevels = 4;
                 else if (cboTalent.SelectedValue.ToString() == "C")
                     intFreeLevels = 2;
+
+	            AddFreeSkills(intFreeLevels);
+
+
                 //foreach (Skill objSkill in _objCharacter.Skills)
                 //{
                 //    if (cboSkill1.Visible && objSkill.Name == cboSkill1.Text && !blnGroup)
@@ -1727,19 +1731,6 @@ namespace Chummer
                 //    }
                 //}
 
-                //// Ignore Rules
-                //if (_objCharacter.IgnoreRules)
-                //{
-                //    foreach (Skill objSkill in _objCharacter.Skills)
-                //    {
-                //        objSkill.RatingMaximum = 99;
-                //    }
-                //    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                //    {
-                //        objSkillGroup.RatingMaximum = 99;
-                //    }
-                //}
-
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
                 _objCharacter.TotalSpecial = Convert.ToInt32(lblSpecial.Text);
@@ -1790,7 +1781,27 @@ namespace Chummer
             }
         }
 
-		/// <summary>
+	    private void AddFreeSkills(int intFreeLevels)
+	    {
+		    ImprovementManager manager = new ImprovementManager(_objCharacter);
+		    Improvement.ImprovementType type;
+		    type = "Aspected Magican".Equals(cboTalents.SelectedValue) ? Improvement.ImprovementType.SkillGroupLevel : Improvement.ImprovementType.SkillLevel;
+
+		    if (cboSkill1.Visible)
+		    {
+			    manager.CreateImprovement(cboSkill1.Text, Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
+		    }
+
+			if (cboSkill2.Visible)
+			{
+				manager.CreateImprovement(cboSkill2.Text, Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
+			}
+
+			manager.Commit();
+		    
+	    }
+
+	    /// <summary>
 		/// Convert Force, 1D6, or 2D6 into a usable value.
 		/// </summary>
 		/// <param name="strIn">Expression to convert.</param>

@@ -9,6 +9,16 @@ using System.Xml;
 using Chummer.Annotations;
 using Chummer.Datastructures;
 
+/*
+ * When comming back:
+ * Karma can exceed ratingMaximum
+ * 
+ * Base = Group + FreeLevels
+ * Should be
+ * Base = Group > FreeLevels ? Group : FreeLevels 
+ */
+
+
 namespace Chummer.Skills
 {
 	[DebuggerDisplay("{_name} {_skillFromSp} {_skillFromKarma}")]
@@ -197,15 +207,18 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return _skillFromSp + FreeLevels;
+				return _skillGroupLinked ? Math.Max(_skillFromSp, FreeLevels) : _skillFromSp + FreeLevels;
 			}
 			set
 			{
 				int tempval = value - FreeLevels;
+				tempval = Math.Min(tempval, RatingMaximum - (FreeLevels + Karma)); //Don't go above rating
+				tempval = Math.Max(tempval, 0); //Not setting belov 0
+				
 
 				if (tempval != _skillFromSp)
 				{
-					tempval = Math.Max(tempval, 0);
+					
 
 					if (!_skillGroupLinked)
 					{
@@ -233,9 +246,14 @@ namespace Chummer.Skills
 			get { return _skillFromKarma; }
 			set
 			{
+				int tempval = value;
+
+				tempval = Math.Min(tempval, RatingMaximum - Base); //Don't go above rating
+				tempval = Math.Max(tempval, 0); //Not setting belov 0
+
 				if (!_skillGroupLinked)
 				{
-					_skillFromKarma = value;
+					_skillFromKarma = tempval;
 					OnPropertyChanged();
 				}
 				else
@@ -243,7 +261,7 @@ namespace Chummer.Skills
 					if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
 					{
 						_skillGroupLinked = false;
-						_skillFromKarma = value;
+						_skillFromKarma = tempval;
 						OnPropertyChanged();
 					}
 				}
@@ -257,15 +275,10 @@ namespace Chummer.Skills
 		public int Rating
 		{
 			get { return Karma + Base; }
-			private set
-			{
-				int diff = (Karma + Base) - value;
-				//Play with karma first, cause
-			}
 		}
 
 		/// <summary>
-		/// How many free points this skill have
+		/// How many free points this skill have. This would otherwise count as karma.
 		/// </summary>
 		public int FreeLevels
 		{
@@ -274,10 +287,9 @@ namespace Chummer.Skills
 				return (from improvement in CharacterObject.Improvements
 					where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
 					   && improvement.ImprovedName == _name
-					select improvement.Value).Sum();
+					select improvement.Value).Sum(); //Caching this is probably a good idea
 
 			}
-			
 		}
 
 		/// <summary>
@@ -287,12 +299,11 @@ namespace Chummer.Skills
 		{
 			get {
 				int otherbonus = 0; //TODO READ FROM IMPMANAGER
+				//TODO: Disallow street sams magic skills, etc (ASPECTED!!)
 				return (_character.Created
 					? 12
 					: (this.KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
-
 			}
-			
 		}
 
 		/// <summary>
@@ -405,7 +416,6 @@ namespace Chummer.Skills
 			{
 				return false;
 			}
-			set { } //TODO REFACTOR AWAY
 		}
 
 		public bool Default

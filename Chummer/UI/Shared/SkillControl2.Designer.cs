@@ -74,7 +74,7 @@
 			// 
 			this.nudSkill.Location = new System.Drawing.Point(168, 1);
 			this.nudSkill.Maximum = new decimal(new int[] {
-            6,
+            99,
             0,
             0,
             0});

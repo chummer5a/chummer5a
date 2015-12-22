@@ -21,5 +21,10 @@ namespace Chummer.Skills
 					objXmlWeapon.Attributes["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText));
 
 		}
+
+		public override bool AllowDelete
+		{
+			get { return !CharacterObject.Created; }
+		}
 	}
 }
