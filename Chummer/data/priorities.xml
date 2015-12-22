@@ -43,6 +43,11 @@
 			<category>Heritage</category>
 			<metatypes>
 				<metatype>
+					<name>E-Ghost</name>
+					<value>9</value>
+					<karma>0</karma>
+				</metatype>
+				<metatype>
 					<name>Human</name>
 					<value>9</value>
 					<karma>0</karma>
