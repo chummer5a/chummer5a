@@ -360,6 +360,7 @@ namespace Chummer
 				{
 					if (objXmlQuality["name"].InnerText.StartsWith("Infected"))
 					{
+						//There was something I was going to do with this, but I can't remember what it was.
 					}
 					if ((_objCharacter.Metatype == "A.I." || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && chkLimitList.Checked)
 					{
@@ -478,7 +479,25 @@ namespace Chummer
 			if (objXmlQuality["limit"] != null)
 			{
 				if (objXmlQuality["limit"].InnerText == "no")
+				{
 					blnAllowMultiple = true;
+				}
+				else
+				{
+					int intQualityLimit = Convert.ToInt32(objXmlQuality["limit"].InnerText);
+					int intQualityCount = 0;
+					foreach (Quality objQuality in _objCharacter.Qualities)
+					{
+						if (objQuality.Name == objXmlQuality["name"].InnerText)
+						{
+							intQualityCount++;
+						}
+					}
+					if (intQualityCount < intQualityLimit)
+					{
+						blnAllowMultiple = true;
+					}
+				}
 			}
 			if (!blnAllowMultiple)
 			{

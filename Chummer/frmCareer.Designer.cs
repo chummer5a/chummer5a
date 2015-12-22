@@ -67,6 +67,11 @@
 			this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
 			this.lblAttributes = new System.Windows.Forms.Label();
 			this.panAttributes = new System.Windows.Forms.Panel();
+			this.cmdImproveDEP = new System.Windows.Forms.Button();
+			this.lblDEP = new System.Windows.Forms.Label();
+			this.lblDEPAug = new System.Windows.Forms.Label();
+			this.lblDEPMetatype = new System.Windows.Forms.Label();
+			this.lblDEPLabel = new System.Windows.Forms.Label();
 			this.cmdImproveRES = new System.Windows.Forms.Button();
 			this.cmdImproveMAG = new System.Windows.Forms.Button();
 			this.cmdImproveBOD = new System.Windows.Forms.Button();
@@ -379,6 +384,10 @@
 			this.treMetamagic = new System.Windows.Forms.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
+			this.cboCyberwareGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearAttack = new System.Windows.Forms.ComboBox();
 			this.tabCyberwareCM = new System.Windows.Forms.TabControl();
 			this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
 			this.chkCyberwareMatrixCM1 = new System.Windows.Forms.CheckBox();
@@ -1092,10 +1101,6 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.cboCyberwareGearDataProcessing = new System.Windows.Forms.ComboBox();
-			this.cboCyberwareGearFirewall = new System.Windows.Forms.ComboBox();
-			this.cboCyberwareGearSleaze = new System.Windows.Forms.ComboBox();
-			this.cboCyberwareGearAttack = new System.Windows.Forms.ComboBox();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1284,6 +1289,11 @@
 			// 
 			// panAttributes
 			// 
+			this.panAttributes.Controls.Add(this.cmdImproveDEP);
+			this.panAttributes.Controls.Add(this.lblDEP);
+			this.panAttributes.Controls.Add(this.lblDEPAug);
+			this.panAttributes.Controls.Add(this.lblDEPMetatype);
+			this.panAttributes.Controls.Add(this.lblDEPLabel);
 			this.panAttributes.Controls.Add(this.cmdImproveRES);
 			this.panAttributes.Controls.Add(this.cmdImproveMAG);
 			this.panAttributes.Controls.Add(this.cmdImproveBOD);
@@ -1342,8 +1352,61 @@
 			this.panAttributes.Controls.Add(this.lblBODMetatype);
 			this.panAttributes.Location = new System.Drawing.Point(288, 48);
 			this.panAttributes.Name = "panAttributes";
-			this.panAttributes.Size = new System.Drawing.Size(324, 291);
+			this.panAttributes.Size = new System.Drawing.Size(324, 315);
 			this.panAttributes.TabIndex = 6;
+			// 
+			// cmdImproveDEP
+			// 
+			this.cmdImproveDEP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cmdImproveDEP.Image = global::Chummer.Properties.Resources.add;
+			this.cmdImproveDEP.Location = new System.Drawing.Point(203, 286);
+			this.cmdImproveDEP.Name = "cmdImproveDEP";
+			this.cmdImproveDEP.Size = new System.Drawing.Size(24, 24);
+			this.cmdImproveDEP.TabIndex = 77;
+			this.cmdImproveDEP.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.tipTooltip.SetToolTip(this.cmdImproveDEP, "Burn a point of Edge");
+			this.cmdImproveDEP.UseVisualStyleBackColor = true;
+			this.cmdImproveDEP.Click += new System.EventHandler(this.cmdImproveDEP_Click);
+			// 
+			// lblDEP
+			// 
+			this.lblDEP.AutoSize = true;
+			this.lblDEP.Enabled = false;
+			this.lblDEP.Location = new System.Drawing.Point(124, 292);
+			this.lblDEP.Name = "lblDEP";
+			this.lblDEP.Size = new System.Drawing.Size(19, 13);
+			this.lblDEP.TabIndex = 76;
+			this.lblDEP.Text = "[0]";
+			// 
+			// lblDEPAug
+			// 
+			this.lblDEPAug.AutoSize = true;
+			this.lblDEPAug.Enabled = false;
+			this.lblDEPAug.Location = new System.Drawing.Point(169, 292);
+			this.lblDEPAug.Name = "lblDEPAug";
+			this.lblDEPAug.Size = new System.Drawing.Size(19, 13);
+			this.lblDEPAug.TabIndex = 75;
+			this.lblDEPAug.Text = "[0]";
+			// 
+			// lblDEPMetatype
+			// 
+			this.lblDEPMetatype.AutoSize = true;
+			this.lblDEPMetatype.Enabled = false;
+			this.lblDEPMetatype.Location = new System.Drawing.Point(271, 292);
+			this.lblDEPMetatype.Name = "lblDEPMetatype";
+			this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
+			this.lblDEPMetatype.TabIndex = 74;
+			this.lblDEPMetatype.Text = "0 / 0 (0)";
+			// 
+			// lblDEPLabel
+			// 
+			this.lblDEPLabel.AutoSize = true;
+			this.lblDEPLabel.Enabled = false;
+			this.lblDEPLabel.Location = new System.Drawing.Point(3, 292);
+			this.lblDEPLabel.Name = "lblDEPLabel";
+			this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
+			this.lblDEPLabel.TabIndex = 73;
+			this.lblDEPLabel.Text = "Depth (DEP)";
 			// 
 			// cmdImproveRES
 			// 
@@ -2805,10 +2868,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabPeople.Controls.Add(this.tabContacts);
 			this.tabPeople.Controls.Add(this.tabEnemies);
-			this.tabPeople.Location = new System.Drawing.Point(285, 340);
+			this.tabPeople.Location = new System.Drawing.Point(285, 373);
 			this.tabPeople.Name = "tabPeople";
 			this.tabPeople.SelectedIndex = 0;
-			this.tabPeople.Size = new System.Drawing.Size(547, 265);
+			this.tabPeople.Size = new System.Drawing.Size(547, 232);
 			this.tabPeople.TabIndex = 91;
 			// 
 			// tabContacts
@@ -2822,7 +2885,7 @@
 			this.tabContacts.Location = new System.Drawing.Point(4, 22);
 			this.tabContacts.Name = "tabContacts";
 			this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabContacts.Size = new System.Drawing.Size(539, 239);
+			this.tabContacts.Size = new System.Drawing.Size(539, 206);
 			this.tabContacts.TabIndex = 0;
 			this.tabContacts.Text = "Contacts";
 			// 
@@ -2834,7 +2897,7 @@
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(530, 187);
+			this.panContacts.Size = new System.Drawing.Size(530, 154);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
 			// 
@@ -2891,7 +2954,7 @@
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEnemies.Size = new System.Drawing.Size(539, 239);
+			this.tabEnemies.Size = new System.Drawing.Size(539, 206);
 			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -2933,7 +2996,7 @@
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(3, 48);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(530, 187);
+			this.panEnemies.Size = new System.Drawing.Size(530, 154);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -5038,6 +5101,50 @@
 			this.tabCyberware.TabIndex = 4;
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
+			// 
+			// cboCyberwareGearDataProcessing
+			// 
+			this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
+			this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(673, 300);
+			this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
+			this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearDataProcessing.TabIndex = 214;
+			this.cboCyberwareGearDataProcessing.Visible = false;
+			this.cboCyberwareGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearFirewall
+			// 
+			this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearFirewall.FormattingEnabled = true;
+			this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(750, 300);
+			this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
+			this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearFirewall.TabIndex = 213;
+			this.cboCyberwareGearFirewall.Visible = false;
+			this.cboCyberwareGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearFirewall_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearSleaze
+			// 
+			this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearSleaze.FormattingEnabled = true;
+			this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(555, 300);
+			this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
+			this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearSleaze.TabIndex = 212;
+			this.cboCyberwareGearSleaze.Visible = false;
+			this.cboCyberwareGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearSleaze_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearAttack
+			// 
+			this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearAttack.FormattingEnabled = true;
+			this.cboCyberwareGearAttack.Location = new System.Drawing.Point(481, 300);
+			this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
+			this.cboCyberwareGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearAttack.TabIndex = 211;
+			this.cboCyberwareGearAttack.Visible = false;
+			this.cboCyberwareGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearAttack_SelectedIndexChanged);
 			// 
 			// tabCyberwareCM
 			// 
@@ -13030,50 +13137,6 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// cboCyberwareGearDataProcessing
-			// 
-			this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
-			this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(673, 300);
-			this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
-			this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(30, 21);
-			this.cboCyberwareGearDataProcessing.TabIndex = 214;
-			this.cboCyberwareGearDataProcessing.Visible = false;
-			this.cboCyberwareGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearDataProcessing_SelectedIndexChanged);
-			// 
-			// cboCyberwareGearFirewall
-			// 
-			this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboCyberwareGearFirewall.FormattingEnabled = true;
-			this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(750, 300);
-			this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
-			this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(30, 21);
-			this.cboCyberwareGearFirewall.TabIndex = 213;
-			this.cboCyberwareGearFirewall.Visible = false;
-			this.cboCyberwareGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearFirewall_SelectedIndexChanged);
-			// 
-			// cboCyberwareGearSleaze
-			// 
-			this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboCyberwareGearSleaze.FormattingEnabled = true;
-			this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(555, 300);
-			this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
-			this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(30, 21);
-			this.cboCyberwareGearSleaze.TabIndex = 212;
-			this.cboCyberwareGearSleaze.Visible = false;
-			this.cboCyberwareGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearSleaze_SelectedIndexChanged);
-			// 
-			// cboCyberwareGearAttack
-			// 
-			this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboCyberwareGearAttack.FormattingEnabled = true;
-			this.cboCyberwareGearAttack.Location = new System.Drawing.Point(481, 300);
-			this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
-			this.cboCyberwareGearAttack.Size = new System.Drawing.Size(30, 21);
-			this.cboCyberwareGearAttack.TabIndex = 211;
-			this.cboCyberwareGearAttack.Visible = false;
-			this.cboCyberwareGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearAttack_SelectedIndexChanged);
-			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14282,6 +14345,11 @@
 		private System.Windows.Forms.ComboBox cboCyberwareGearFirewall;
 		private System.Windows.Forms.ComboBox cboCyberwareGearSleaze;
 		private System.Windows.Forms.ComboBox cboCyberwareGearAttack;
+		private System.Windows.Forms.Button cmdImproveDEP;
+		internal System.Windows.Forms.Label lblDEP;
+		internal System.Windows.Forms.Label lblDEPAug;
+		internal System.Windows.Forms.Label lblDEPMetatype;
+		internal System.Windows.Forms.Label lblDEPLabel;
 	}
 }
 

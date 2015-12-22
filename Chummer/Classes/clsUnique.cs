@@ -583,7 +583,7 @@ namespace Chummer
 					intReturn = TotalAugmentedMaximum;
 
 				// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")))
+				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
 				{
 					if (intReturn < 0)
 						return 0;

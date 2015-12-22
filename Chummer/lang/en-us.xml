@@ -872,6 +872,14 @@
 			<text>RES</text>
 		</string>
 		<string>
+			<key>String_AttributeDEPLong</key>
+			<text>Depth</text>
+		</string>
+		<string>
+			<key>String_AttributeDEPShort</key>
+			<text>DEP</text>
+		</string>
+		<string>
 			<key>String_AttributeINILong</key>
 			<text>Initiative</text>
 		</string>

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95279469-5A3E-42E6-993C-6A403586C86E}</ProjectGuid>
@@ -32,7 +33,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -44,7 +44,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -80,22 +79,13 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Legacy|x86'">
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Legacy\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LEGACY</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
@@ -230,6 +220,12 @@
     </Compile>
     <Compile Include="frmSelectLifestyleQuality.Designer.cs">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmUpdate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUpdate.Designer.cs">
+      <DependentUpon>frmUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="lang\language.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -628,12 +624,6 @@
     <Compile Include="frmTest.Designer.cs">
       <DependentUpon>frmTest.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmUpdate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Utilities\frmUpdate.Designer.cs">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -779,6 +769,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmUpdate.resx">
+      <DependentUpon>frmUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
@@ -974,9 +967,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmTest.resx">
       <DependentUpon>frmTest.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmUpdate.resx">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmViewer.resx">
       <DependentUpon>frmViewer.cs</DependentUpon>

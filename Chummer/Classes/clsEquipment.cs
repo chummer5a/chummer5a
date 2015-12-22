@@ -11105,6 +11105,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not an item is an A.I.'s Home Node.
+		/// </summary>
+		public bool HomeNode
+		{
+			get
+			{
+				return _blnHomeNode;
+			}
+			set
+			{
+				_blnHomeNode = value;
+			}
+		}
+
+		/// <summary>
 		/// Guid of a Cyberware Weapon.
 		/// </summary>
 		public string WeaponID
@@ -11607,21 +11622,6 @@ namespace Chummer
 			set
 			{
 				_strLocation = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not an item is an A.I.'s Home Node.
-		/// </summary>
-		public bool HomeNode
-		{
-			get
-			{
-				return _blnHomeNode;
-			}
-			set
-			{
-				_blnHomeNode = value;
 			}
 		}
 
@@ -12565,6 +12565,7 @@ namespace Chummer
         private int _intSleaze = 0;
         private int _intDataProcessing = 0;
         private int _intFirewall = 0;
+		private bool _blnHomeNode = false;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Commlink(Character objCharacter) : base(objCharacter)
@@ -13174,10 +13175,25 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Attack.
-        /// </summary>
-        public int Attack
+		/// <summary>
+		/// Whether or not an item is an A.I.'s Home Node.
+		/// </summary>
+		public bool HomeNode
+		{
+			get
+			{
+				return _blnHomeNode;
+			}
+			set
+			{
+				_blnHomeNode = value;
+			}
+		}
+
+		/// <summary>
+		/// Attack.
+		/// </summary>
+		public int Attack
         {
             get
             {
