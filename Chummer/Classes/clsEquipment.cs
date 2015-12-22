@@ -4565,14 +4565,7 @@ namespace Chummer
 					{
 						intAccessoryRating = Convert.ToInt32(objXmlAccessory["rating"].InnerText);
 					}
-					if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
-					}
-					else
-					{
-						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
-					}
+					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
@@ -5528,13 +5521,15 @@ namespace Chummer
 			get
 			{
 				int intReturn = 1;
-
-				if (CalculatedAmmo().Contains("x"))
+				string cachedBecauseOldCodeHurtsMyEyes = CalculatedAmmo();
+				if (cachedBecauseOldCodeHurtsMyEyes.Contains("x"))
 				{
-						intReturn = Convert.ToInt32(CalculatedAmmo()[0].ToString());
+					return cachedBecauseOldCodeHurtsMyEyes[0] - '0'; //first letter to int due ascii table workings
 				}
-
-				return intReturn;
+				else
+				{
+					return _lstAccessories.Count(x => x.Name == "Spare Clip") + 1;
+				}
 			}
 		}
 
@@ -6152,6 +6147,8 @@ namespace Chummer
 			bool blnAdditionalClip = false;
 			int intAmmoBonus = 0;
 
+			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name == "Extended Clip" ? 1 : 0) * x.Rating) : 0;
+
 			foreach (WeaponMod objMod in _lstWeaponMods)
 			{
 				// Replace the Ammo value.
@@ -6162,7 +6159,7 @@ namespace Chummer
 				}
 
 				// If the Mod is an Additional Clip that is not included with the base Weapon, turn on the Additional Clip flag.
-				if ((objMod.Name == "Additional Clip" || objMod.Name == "Additional Clip, Pistol") && !objMod.IncludedInWeapon)
+				if ((objMod.Name == "Spare Clip" || objMod.Name == "Additional Clip, Pistol") && !objMod.IncludedInWeapon)
 					blnAdditionalClip = true;
 
 				intAmmoBonus += objMod.AmmoBonus;
@@ -6195,6 +6192,12 @@ namespace Chummer
 						{
 							double dblBonus = Convert.ToDouble(intAmmoBonus, GlobalOptions.Instance.CultureInfo) / 100.0;
 							intAmmo += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intAmmo, GlobalOptions.Instance.CultureInfo) * dblBonus));
+						}
+
+						if (extendedMax > 0 && strAmmo.Contains("(c)"))
+						{
+							//Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
+							intAmmo = (intAmmo*(2 + extendedMax))/2; 
 						}
 
 						strAmmoString = intAmmo.ToString();
