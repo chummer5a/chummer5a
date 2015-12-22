@@ -1,6 +1,7 @@
 Build 179:
 Application Change:
 - Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added.
+- Each spare clip added to a weapon now tracks ammo individually. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
