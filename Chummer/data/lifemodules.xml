@@ -9,6 +9,7 @@
 		<stage order="5">Real Life</stage>
 	</stages>
 	<modules>
+		<!--Region Run Faster -->
 		<!-- Region Nationality -->
 		<module>
 			<id>f35ba316-dd0f-48ab-9f06-d7329305a44e</id>
@@ -3330,6 +3331,8 @@
 			<source>RF</source>
 			<page>75</page>
 		</module>
+		<!-- End Region -->
+		<!-- Region Real Life -->
 		<module>
 			<id>47bf63cf-9a2a-4008-b455-c8ab68add581</id>
 			<stage>Real Life</stage>
@@ -6116,8 +6119,9 @@
 			<source>RF</source>
 			<page>82</page>
 		</module>
-
-		<!--Data Trails modules-->
+<!-- End Region -->
+<!-- End Region -->
+		<!--Region Data Trails-->
 		<module>
 			<id>4b56f994-84d5-4acc-8d6f-278eae90f624</id>
 			<stage>Formative Years</stage>
@@ -6623,8 +6627,8 @@
 			<source>DT</source>
 			<page>53</page>
 		</module>
-
-		<!--Chrome Flesh modules-->
+	<!-- End Region -->
+		<!-- Region Chrome Flesh -->
 		<module>
 			<id>c211d6f3-c773-4ff7-a1a1-64b16f47757e</id>
 			<stage>Formative Years</stage>
@@ -6976,7 +6980,593 @@
 			<source>CF</source>
 			<page>61</page>
 		</module>
+<!-- End Region -->
+		<!-- Region Hard Targets-->
+		<!--Hard Targets modules-->
+		<module>
+			<id>efdee4d0-f6fb-4d75-816e-859e85ec29d4</id>
+			<stage>Nationality</stage>
+			<category>LifeModule</category>
+			<name>Caribbean League</name>
+			<karma>15</karma>
+			<!--<selectable/>-->
+			<versions>
+				<version>
+					<id></id>
+					<name>Greater Antilles</name>
+					<story>$real was born somewhere in the Greater Antilles area.</story>
+					<bonus>
+						<attributelevel>
+							<!--Defaults to <val>1</val>-->
+							<name>AGI</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Navigation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Swimming</name>
+						</skilllevel>
+						<skillgrouplevel>
+							<name>Athletics</name>
+							<val>1</val>
+						</skillgrouplevel>
+						<pushtext>Caribbean League</pushtext>
+						<freenegativequalities>-5</freenegativequalities>
+					</bonus>
+					<addqualities>
+						<addquality>SINner (National)</addquality>
+					</addqualities>
+				</version>
+				<version>
+					<id>ebce1884-43ef-4e22-bb4d-69c9856b2959</id>
+					<name>Lesser Antilles</name>
+					<story>$real was born in the tiny sliver of the Lesser Antilles region.</story>
+					<bonus>
+						<attributelevel>
+							<name>BOD</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Navigation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Swimming</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Diving</name>
+						</skilllevel>
+						<pushtext>Caribbean League</pushtext>
+						<freenegativequalities>-5</freenegativequalities>
+					</bonus>
+					<addqualities>
+						<addquality>SINner (National)</addquality>
+					</addqualities>
+				</version>
+				<version>
+					<id>0aea1207-b2ba-409d-8424-36c3366515e3</id>
+					<name>Bahama Archipelago</name>
+					<story>$real was born in the Bahamas.</story>
+					<bonus>
+						<attributelevel>
+							<name>BOD</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Navigation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Swimming</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Survival</name>
+						</skilllevel>
+						<freenegativequalities>-5</freenegativequalities>
+						<pushtext>Caribbean League</pushtext>
+					</bonus>
+					<addqualities>
+						<addquality>SINner (National)</addquality>
+					</addqualities>
+				</version>
+				<version>
+					<id>79179499-26e7-49d8-a354-910a1c46eeb8</id>
+					<name>Miami</name>
+					<story>$real was born in Miami.</story>
+					<bonus>
+						<attributelevel>
+							<name>BOD</name>
+						</attributelevel>
+						<skilllevel>
+							<name>Navigation</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Tracking</name>
+						</skilllevel>
+						<skilllevel>
+							<name>Etiquette</name>
+						</skilllevel>
+						<freenegativequalities>-5</freenegativequalities>
+						<pushtext>Caribbean League</pushtext>
+					</bonus>
+					<addqualities>
+						<addquality>SINner (National)</addquality>
+					</addqualities>
+				</version>
+				<version>
+					<id>35ece27f-6bd0-4e23-bed6-512952ff2818</id>
+					<name>SINless</name>
+					<story>While born in the Caribbean, $real is a citizen of nowhere, for one of several reasons.</story>
+					<bonus>
+						<attributelevel>
+							<name>AGI</name>
+						</attributelevel>
+						<knowledgeskilllevel>
+							<group>Street</group>
+							<name>[City]</name>
+						</knowledgeskilllevel>
+					</bonus>
+				</version>
+			</versions>
+			<bonus>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Caribbean History</name>
+					<group>Academic</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Island Nation]</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<french>French</french>
+						<spanish>Spanish</spanish>
+						<dutch>Dutch</dutch>
+						<english>English</english>
+						<val>0</val>
+					</options>
+					<group>Language</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<options>
+						<creole>Creole</creole>
+						<lucimi>Lucimi</lucimi>
+						<taino>Taino</taino>
+					</options>
+					<id></id>
+					<group>Language</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<story></story>
+			<source>HT</source>
+			<page>138</page>
+		</module>
+		<!-- Region Teen Years -->
+		<module>
+			<id>cf75cd28-5992-40d4-a9b4-837f3b3c4867</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Shanghaied</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>BOD</name>
+				</attributelevel>
+				<attributelevel>
+					<name>STR</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Diving</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Nautical Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Navigation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Swimming</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Academic</group>
+					<name>(Geography)</name>
+				</knowledgeskilllevel>
+				<freepositivequalities>3</freepositivequalities>
+			</bonus>
+			<addqualities>
+				<addquality>Sense of Direction</addquality>
+			</addqualities>
+			<story>$real was conscripted onto a ship.</story>
+			<source>HT</source>
+			<page>138</page>
+		</module>
+		<module>
+			<id>445984f2-d607-4124-afd3-b7c536016caa</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Pirate Captain</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<attributelevel>
+					<name>WIL</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Outdoors</name>
+					<val>1</val>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Diving</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Intimidation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Leadership</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Nautical Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Swimming</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Watercraft</name>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>[Local area] Waterways</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<freepositivequalities>8</freepositivequalities>
+			</bonus>
+			<addqualities>
+				<addquality>Fame (Local)</addquality>
+				<addquality>Linguist</addquality>
+			</addqualities>
+			<story>$real was a crime boss of the sea.</story>
+			<source>HT</source>
+			<page>138</page>
+		</module>
+		<module>
+			<id>caf84e62-05cd-4638-81d2-6d788f303e36</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Pirate Crewmember</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>STR</name>
+				</attributelevel>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Close Combat</name>
+					<val>1</val>
+				</skillgrouplevel>
+				<skillgrouplevel>
+					<name>Outdoors</name>
+					<val>1</val>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Lockpicking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Swimming</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pistols</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Nautical Mechanic</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Knots</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>[Local area] Waterways</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<story>$real was a pirate on the high seas.</story>
+			<source>HT</source>
+			<page>139</page>
+		</module>
 
+		<module>
+			<id>923cf93a-7892-43b5-8b2a-9b2cfba11acd</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Bocor Slave</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>STR</name>
+				</attributelevel>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<attributelevel>
+					<name>BOD</name>
+				</attributelevel>
+				<attributelevel>
+					<name>AGI</name>
+				</attributelevel>
+				<skillgrouplevel>
+					<name>Close Combat</name>
+					<val>1</val>
+				</skillgrouplevel>
+				<skilllevel>
+					<name>Armorer</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Artisan</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Industrial Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Nautical Mechanic</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Buildings</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Construction</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Farming</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<freenegativequalities>-10</freenegativequalities>
+			</bonus>
+			<addqualities>
+				<addquality>Insomnia (Basic)</addquality>
+			</addqualities>
+			<story>$real was imprisoned with vodou, living life as a zombie.</story>
+			<source>HT</source>
+			<page>139</page>
+		</module>
+
+
+		<module>
+			<id>469157a3-d76d-46d9-9562-031a48baa2be</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Assassin's Apprentice</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Armorer</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Con</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Demolitions</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Disguise</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Forgery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gymnastics</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Negotiation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Palming</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Retail Operations</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Sniper Nests</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Language</group>
+					<name>[Language]</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Language</group>
+					<name>[Language]</name>
+					<val>3</val>
+				</knowledgeskilllevel>
+				<freepositivequalities>8</freepositivequalities>
+			</bonus>
+			<addqualities>
+				<addquality>Blandness</addquality>
+			</addqualities>
+			<story>$real spent time as a triggerman's assistant.</story>
+			<source>HT</source>
+			<page>200</page>
+		</module>
+
+		<module>
+			<id>67f740bd-b3a8-40d0-9590-2a3d0d90d0da</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Guardian Angel</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>WIL</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Clubs</name>
+				</skilllevel>
+				<skilllevel>
+					<name>First Aid</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gymnastics</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Intimidation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Medicine</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pistols</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Running</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Tracking</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Small Group Tactics</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Assassin Networks</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Runner Hangouts</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Weapons Manufacturers</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<freepositivequalities>10</freepositivequalities>
+			</bonus>
+			<addqualities>
+				<addquality>Guts</addquality>
+			</addqualities>
+			<story>$real had a change of heart and instead of killing people for money protected people for free.</story>
+			<source>HT</source>
+			<page>200</page>
+		</module>
+		<module>
+			<id>716c4baf-5944-46da-8c1e-905ccd8962fc</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Ritual Killer</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>WIL</name>
+					<val>2</val>
+				</attributelevel>
+				<skilllevel>
+					<name>Arcana</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Counterspelling</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Ritual Spellcasting</name>
+					<val>3</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Spellcasting</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Survival</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Tracking</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<group>Professional</group>
+					<name>Security Techniques</name>
+					<val>1</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<group>Street</group>
+					<name>Material Links</name>
+					<val>2</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<!--need to add Rituals: Curse, Prodigal Spell-->
+			<story>$real used ritual magic to complete contracts.  Quite scary.</story>
+			<source>HT</source>
+			<page>200</page>
+		</module>
+		<!-- End Region -->
 	</modules>
 	<storybuilder>
 		<macros>

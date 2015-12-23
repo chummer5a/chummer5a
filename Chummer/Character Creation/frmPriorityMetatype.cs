@@ -1344,7 +1344,8 @@ namespace Chummer
                     _objCharacter.EDG.Karma = 0;
                     _objCharacter.MAG.Karma = 0;
                     _objCharacter.RES.Karma = 0;
-                }
+					_objCharacter.DEP.Karma = 0;
+				}
 
 				// Add any Critter Powers the Metatype/Critter should have.
 				XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");

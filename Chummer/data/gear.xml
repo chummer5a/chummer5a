@@ -301,6 +301,22 @@
       <source>SR5</source>
       <page>434</page>
     </gear>
+		<gear>
+			<id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
+			<name>Ammo: Taurus Omni-6 Heavy</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>2R</avail>
+			<costfor>10</costfor>
+			<weaponbonus>
+				<apreplace>-1</apreplace>
+				<damagereplace>7P</damagereplace>
+				<modereplace>SS</modereplace>
+			</weaponbonus>
+			<cost>20</cost>
+			<source>SR5</source>
+			<page>434</page>
+		</gear>
     <gear>
       <id>b2a0b340-c793-4322-8422-8b03d18a6fae</id>
       <name>Ammo: Regular Ammo</name>

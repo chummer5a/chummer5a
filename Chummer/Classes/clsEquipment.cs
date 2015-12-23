@@ -4360,14 +4360,15 @@ namespace Chummer
 		private string _strAmmo = "";
 		private string _strAmmoCategory = "";
 		private int _intConceal = 0;
-		private int _intAmmoRemaining = 0;
-		private int _intAmmoRemaining2 = 0;
-		private int _intAmmoRemaining3 = 0;
-		private int _intAmmoRemaining4 = 0;
-		private Guid _guiAmmoLoaded = new Guid();
-		private Guid _guiAmmoLoaded2 = new Guid();
-		private Guid _guiAmmoLoaded3 = new Guid();
-		private Guid _guiAmmoLoaded4 = new Guid();
+		private List<Clip> _ammo = new List<Clip>();
+		//private int _intAmmoRemaining = 0;
+		//private int _intAmmoRemaining2 = 0;
+		//private int _intAmmoRemaining3 = 0;
+		//private int _intAmmoRemaining4 = 0;
+		//private Guid _guiAmmoLoaded = new Guid();
+		//private Guid _guiAmmoLoaded2 = new Guid();
+		//private Guid _guiAmmoLoaded3 = new Guid();
+		//private Guid _guiAmmoLoaded4 = new Guid();
 		private int _intActiveAmmoSlot = 1;
 		private string _strAvail = "";
 		private int _intCost = 0;
@@ -4622,14 +4623,14 @@ namespace Chummer
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("ammo", _strAmmo);
 			objWriter.WriteElementString("ammocategory", _strAmmoCategory);
-			objWriter.WriteElementString("ammoremaining", _intAmmoRemaining.ToString());
-			objWriter.WriteElementString("ammoremaining2", _intAmmoRemaining2.ToString());
-			objWriter.WriteElementString("ammoremaining3", _intAmmoRemaining3.ToString());
-			objWriter.WriteElementString("ammoremaining4", _intAmmoRemaining4.ToString());
-			objWriter.WriteElementString("ammoloaded", _guiAmmoLoaded.ToString());
-			objWriter.WriteElementString("ammoloaded2", _guiAmmoLoaded2.ToString());
-			objWriter.WriteElementString("ammoloaded3", _guiAmmoLoaded3.ToString());
-			objWriter.WriteElementString("ammoloaded4", _guiAmmoLoaded4.ToString());
+
+			objWriter.WriteStartElement("clips");
+			foreach (Clip clip in _ammo)
+			{
+				clip.Save(objWriter);
+			}
+			objWriter.WriteEndElement();
+
 			objWriter.WriteElementString("conceal", _intConceal.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _intCost.ToString());
@@ -4711,62 +4712,41 @@ namespace Chummer
 			catch
 			{
 			}
-			try
+
+			_ammo.Clear();
+			if (objNode["clips"] != null)
 			{
-				_intAmmoRemaining = Convert.ToInt32(objNode["ammoremaining"].InnerText);
+				XmlNode clipNode = objNode["clips"];
+
+				foreach (XmlNode node in clipNode.ChildNodes)
+				{
+					try
+					{
+						_ammo.Add(Clip.Load(node));
+					}
+					catch (Exception)
+					{
+						if (System.Diagnostics.Debugger.IsAttached)
+							System.Diagnostics.Debugger.Break();
+					}
+				}
 			}
-			catch
+			else //Load old clips
 			{
+				foreach (string s in new[] {"", "2", "3", "4"})
+				{
+					int ammo;
+					Guid guid;
+
+					if (objNode.TryGetField("ammoremaining" + s, out ammo) &&
+					    objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out guid) &&
+					    ammo > 0 && guid != Guid.Empty)
+					{
+						_ammo.Add(new Clip(guid, ammo));
+					}
+				}
 			}
-			try
-			{
-				_intAmmoRemaining2 = Convert.ToInt32(objNode["ammoremaining2"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAmmoRemaining3 = Convert.ToInt32(objNode["ammoremaining3"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAmmoRemaining4 = Convert.ToInt32(objNode["ammoremaining4"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_guiAmmoLoaded = Guid.Parse(objNode["ammoloaded"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_guiAmmoLoaded2 = Guid.Parse(objNode["ammoloaded2"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_guiAmmoLoaded3 = Guid.Parse(objNode["ammoloaded3"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_guiAmmoLoaded4 = Guid.Parse(objNode["ammoloaded4"].InnerText);
-			}
-			catch
-			{
-			}
+			
 			try
 			{
 				_intConceal = Convert.ToInt32(objNode["conceal"].InnerText);
@@ -4932,15 +4912,8 @@ namespace Chummer
 			if (blnCopy)
 			{
 				_guiID = Guid.NewGuid();
-				_guiAmmoLoaded = Guid.Empty;
-				_guiAmmoLoaded2 = Guid.Empty;
-				_guiAmmoLoaded3 = Guid.Empty;
-				_guiAmmoLoaded4 = Guid.Empty;
+				_ammo = new List<Clip>();
 				_intActiveAmmoSlot = 1;
-				_intAmmoRemaining = 0;
-				_intAmmoRemaining2 = 0;
-				_intAmmoRemaining3 = 0;
-				_intAmmoRemaining4 = 0;
 			}
 		}
 
@@ -5022,21 +4995,14 @@ namespace Chummer
 			}
 
 			// Currently loaded Ammo.
-			Guid guiAmmo = new Guid();
-			if (_intActiveAmmoSlot == 1)
-				guiAmmo = _guiAmmoLoaded;
-			else if (_intActiveAmmoSlot == 2)
-				guiAmmo = _guiAmmoLoaded2;
-			else if (_intActiveAmmoSlot == 3)
-				guiAmmo = _guiAmmoLoaded3;
-			else if (_intActiveAmmoSlot == 4)
-				guiAmmo = _guiAmmoLoaded4;
+			Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
 
 			objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo));
-			objWriter.WriteElementString("ammoslot1", GetAmmoName(_guiAmmoLoaded));
-			objWriter.WriteElementString("ammoslot2", GetAmmoName(_guiAmmoLoaded2));
-			objWriter.WriteElementString("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
-			objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
+			//Don't seem to be used
+			//objWriter.WriteElementString("ammoslot1", GetAmmoName(_guiAmmoLoaded));
+			//objWriter.WriteElementString("ammoslot2", GetAmmoName(_guiAmmoLoaded2));
+			//objWriter.WriteElementString("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
+			//objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
 			objWriter.WriteElementString("dicepool", DicePool);
 
@@ -5415,43 +5381,8 @@ namespace Chummer
 		/// </summary>
 		public int AmmoRemaining
 		{
-			get
-			{
-				switch (_intActiveAmmoSlot)
-				{
-					case 1:
-						return _intAmmoRemaining;
-					case 2:
-						return _intAmmoRemaining2;
-					case 3:
-						return _intAmmoRemaining3;
-					case 4:
-						return _intAmmoRemaining4;
-					default:
-						return _intAmmoRemaining;
-				}
-			}
-			set
-			{
-				switch (_intActiveAmmoSlot)
-				{
-					case 1:
-						_intAmmoRemaining = value;
-						break;
-					case 2:
-						_intAmmoRemaining2 = value;
-						break;
-					case 3:
-						_intAmmoRemaining3 = value;
-						break;
-					case 4:
-						_intAmmoRemaining4 = value;
-						break;
-					default:
-						_intAmmoRemaining = value;
-						break;
-				}
-			}
+			get { return GetClip(_intActiveAmmoSlot).Ammo; }
+			set { GetClip(_intActiveAmmoSlot).Ammo = value; }
 		}
 
 		/// <summary>
@@ -5459,43 +5390,8 @@ namespace Chummer
 		/// </summary>
 		public string AmmoLoaded
 		{
-			get
-			{
-				switch (_intActiveAmmoSlot)
-				{
-					case 1:
-						return _guiAmmoLoaded.ToString();
-					case 2:
-						return _guiAmmoLoaded2.ToString();
-					case 3:
-						return _guiAmmoLoaded3.ToString();
-					case 4:
-						return _guiAmmoLoaded4.ToString();
-					default:
-						return _guiAmmoLoaded.ToString();
-				}
-			}
-			set
-			{
-				switch (_intActiveAmmoSlot)
-				{
-					case 1:
-						_guiAmmoLoaded = Guid.Parse(value);
-						break;
-					case 2:
-						_guiAmmoLoaded2 = Guid.Parse(value);
-						break;
-					case 3:
-						_guiAmmoLoaded3 = Guid.Parse(value);
-						break;
-					case 4:
-						_guiAmmoLoaded4 = Guid.Parse(value);
-						break;
-					default:
-						_guiAmmoLoaded = Guid.Parse(value);
-						break;
-				}
-			}
+			get { return  GetClip(_intActiveAmmoSlot).Guid.ToString(); }
+			set { GetClip(_intActiveAmmoSlot).Guid = Guid.Parse(value); }
 		}
 
 		/// <summary>
@@ -5521,13 +5417,15 @@ namespace Chummer
 			get
 			{
 				int intReturn = 1;
-
-				if (CalculatedAmmo().Contains("x"))
+				string cachedBecauseOldCodeHurtsMyEyes = CalculatedAmmo();
+				if (cachedBecauseOldCodeHurtsMyEyes.Contains("x"))
 				{
-						intReturn = Convert.ToInt32(CalculatedAmmo()[0].ToString());
+					return cachedBecauseOldCodeHurtsMyEyes[0] - '0'; //first letter to int due ascii table workings
 				}
-
-				return intReturn;
+				else
+				{
+					return _lstAccessories.Count(x => x.Name == "Spare Clip") + 1;
+				}
 			}
 		}
 
@@ -6145,6 +6043,8 @@ namespace Chummer
 			bool blnAdditionalClip = false;
 			int intAmmoBonus = 0;
 
+			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name == "Extended Clip" ? 1 : 0) * x.Rating) : 0;
+
 			foreach (WeaponMod objMod in _lstWeaponMods)
 			{
 				// Replace the Ammo value.
@@ -6155,7 +6055,7 @@ namespace Chummer
 				}
 
 				// If the Mod is an Additional Clip that is not included with the base Weapon, turn on the Additional Clip flag.
-				if ((objMod.Name == "Additional Clip" || objMod.Name == "Additional Clip, Pistol") && !objMod.IncludedInWeapon)
+				if ((objMod.Name == "Spare Clip" || objMod.Name == "Additional Clip, Pistol") && !objMod.IncludedInWeapon)
 					blnAdditionalClip = true;
 
 				intAmmoBonus += objMod.AmmoBonus;
@@ -6188,6 +6088,12 @@ namespace Chummer
 						{
 							double dblBonus = Convert.ToDouble(intAmmoBonus, GlobalOptions.Instance.CultureInfo) / 100.0;
 							intAmmo += Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intAmmo, GlobalOptions.Instance.CultureInfo) * dblBonus));
+						}
+
+						if (extendedMax > 0 && strAmmo.Contains("(c)"))
+						{
+							//Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
+							intAmmo = (intAmmo*(2 + extendedMax))/2; 
 						}
 
 						strAmmoString = intAmmo.ToString();
@@ -6248,6 +6154,91 @@ namespace Chummer
 				// Move the contents of the array to a list so it's easier to work with.
 				foreach (string strMode in strModes)
 					lstModes.Add(strMode);
+
+				// Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+				if (AmmoLoaded != "")
+				{
+					CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
+					// Look for Ammo on the character.
+					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
+					if (objGear == null)
+					{
+						Vehicle objFoundVehicle;
+						objGear = objFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles, out objFoundVehicle);
+					}
+					if (objGear != null)
+					{
+						if (objGear.WeaponBonus != null)
+						{
+								if (objGear.WeaponBonus["firemode"] != null)
+								{
+									if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+									{
+									strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+									// Move the contents of the array to a list so it's easier to work with.
+									foreach (string strMode in strModes)
+										lstModes.Add(strMode);
+									}
+									else
+									{
+										lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+									}
+								}
+								if (objGear.WeaponBonus["modereplace"] != null)
+								{
+									lstModes.Clear();
+									if (objGear.WeaponBonus["modereplace"].InnerText.Contains('/'))
+									{
+										strModes = objGear.WeaponBonus["modereplace"].InnerText.Split('/');
+									}
+									else
+									{
+										strModes[0] = objGear.WeaponBonus["modereplace"].InnerText;
+									}
+									// Move the contents of the array to a list so it's easier to work with.
+								foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+								}
+						}
+
+						// Do the same for any plugins.
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (objChild.WeaponBonus != null)
+							{
+								if (objGear.WeaponBonus["firemode"] != null)
+								{
+									if (objGear.WeaponBonus["firemode"].InnerText.Contains('/'))
+									{
+										strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+										// Move the contents of the array to a list so it's easier to work with.
+										foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+									}
+									else
+									{
+										lstModes.Add(objGear.WeaponBonus["firemode"].InnerText);
+									}
+								}
+								if (objGear.WeaponBonus["firemodereplace"] != null)
+								{
+									if (objGear.WeaponBonus["firemodereplace"].InnerText.Contains('/'))
+									{
+										lstModes.Clear();
+										strModes = objGear.WeaponBonus["firemode"].InnerText.Split('/');
+
+										// Move the contents of the array to a list so it's easier to work with.
+										foreach (string strMode in strModes)
+											lstModes.Add(strMode);
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
 
 				foreach (WeaponMod objMod in _lstWeaponMods)
 				{
@@ -7494,6 +7485,48 @@ namespace Chummer
 			}
 		}
 		#endregion
+
+		private Clip GetClip(int clip)
+		{
+			//1 indexed due legacy
+			clip--;
+
+			for (int i = _ammo.Count; i <= clip; i++)
+			{
+				_ammo.Add(new Clip(Guid.Empty, 0));
+			}
+
+
+			return _ammo[clip];
+		}
+
+		private class Clip
+		{
+			internal Guid Guid { get; set; }
+			internal int Ammo { get; set; }
+
+			internal static Clip Load(XmlNode node)
+			{
+				return new Clip(Guid.Parse(node["id"].InnerText), int.Parse(node["count"].InnerText));
+			}
+
+			internal void Save(XmlTextWriter writer)
+			{
+				if (Guid != Guid.Empty || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
+				{
+					writer.WriteStartElement("clip");
+					writer.WriteElementString("id", Guid.ToString());
+					writer.WriteElementString("count", Ammo.ToString());
+					writer.WriteEndElement();
+				}
+			}
+
+			internal Clip(Guid guid, int ammo)
+			{
+				Guid = guid;
+				Ammo = ammo;
+			}
+		}
 	}
 
 	/// <summary>
@@ -11013,6 +11046,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not an item is an A.I.'s Home Node.
+		/// </summary>
+		public bool HomeNode
+		{
+			get
+			{
+				return _blnHomeNode;
+			}
+			set
+			{
+				_blnHomeNode = value;
+			}
+		}
+
+		/// <summary>
 		/// Guid of a Cyberware Weapon.
 		/// </summary>
 		public string WeaponID
@@ -11515,21 +11563,6 @@ namespace Chummer
 			set
 			{
 				_strLocation = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not an item is an A.I.'s Home Node.
-		/// </summary>
-		public bool HomeNode
-		{
-			get
-			{
-				return _blnHomeNode;
-			}
-			set
-			{
-				_blnHomeNode = value;
 			}
 		}
 
@@ -12473,6 +12506,7 @@ namespace Chummer
         private int _intSleaze = 0;
         private int _intDataProcessing = 0;
         private int _intFirewall = 0;
+		private bool _blnHomeNode = false;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Commlink(Character objCharacter) : base(objCharacter)
@@ -13082,10 +13116,25 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Attack.
-        /// </summary>
-        public int Attack
+		/// <summary>
+		/// Whether or not an item is an A.I.'s Home Node.
+		/// </summary>
+		public bool HomeNode
+		{
+			get
+			{
+				return _blnHomeNode;
+			}
+			set
+			{
+				_blnHomeNode = value;
+			}
+		}
+
+		/// <summary>
+		/// Attack.
+		/// </summary>
+		public int Attack
         {
             get
             {

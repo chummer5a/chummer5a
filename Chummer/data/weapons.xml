@@ -4063,7 +4063,7 @@
 			<reach>0</reach>
 			<damage>6P</damage>
 			<ap>-</ap>
-			<mode>SA/SS</mode>
+			<mode>SA</mode>
 			<rc>0</rc>
 			<ammo>6(cy)</ammo>
 			<avail>3R</avail>
@@ -8213,7 +8213,7 @@
 			<id>8eec5df1-88e2-4822-b156-9c2340a33efc</id>
 			<name>Foregrip</name>
 			<rating>0</rating>
-			<mount>Barrel</mount>
+			<mount>Under/Barrel</mount>
 			<avail>2</avail>
 			<cost>100</cost>
 			<rc>1</rc>
