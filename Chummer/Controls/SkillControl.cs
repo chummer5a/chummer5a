@@ -1052,7 +1052,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.AllowDelete = value;
+				//_objSkill.AllowDelete = value;
                 if (value)
                 {
                     cmdDelete.Visible = true;

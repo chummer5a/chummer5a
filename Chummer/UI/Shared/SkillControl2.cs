@@ -19,17 +19,17 @@ namespace Chummer.UI.Shared
 			this.skill = skill;
 			InitializeComponent();
 
-			skill.PropertyChanged += (sender, args) =>
-			{
-				if (args.PropertyName == nameof(skill.IsUnlocked))
-				{
-					if(skill.IsUnlocked == false)
-						cboSpec.SelectedIndex = -1;
+			//skill.PropertyChanged += (sender, args) =>
+			//{
+			//	if (args.PropertyName == nameof(skill.IsUnlocked))
+			//	{
+			//		if(skill.IsUnlocked == false)
+			//			cboSpec.SelectedIndex = -1;
 
-					nudSkill.Enabled = _lock && skill.IsUnlocked;
-					nudKarma.Enabled = skill.IsUnlocked;
-				}
-			};
+			//		nudSkill.Enabled = _lock && skill.IsUnlocked;
+			//		nudKarma.Enabled = skill.IsUnlocked;
+			//	}
+			//};
 
 			//Display
 			lblName.DataBindings.Add("Text", skill, "DisplayName");
@@ -41,7 +41,7 @@ namespace Chummer.UI.Shared
 			nudSkill.DataBindings.Add("Value", skill, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
 
 			//nudKarma.DataBindings.Add("Enabled", skill, "IsUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
-			//nudSkill.DataBindings.Add("Enabled", skill, "IsUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
+			nudSkill.DataBindings.Add("Enabled", skill, "BaseUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
 			
 			//Delete button
 			cmdDelete.Visible = skill.AllowDelete;

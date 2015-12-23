@@ -133,7 +133,8 @@ namespace Chummer
 			Seeker = 118,
 			PublicAwareness = 119,
 			PrototypeTranshuman = 120,
-
+			SkillBase,
+			SkillGroupBase
 
 		}
 

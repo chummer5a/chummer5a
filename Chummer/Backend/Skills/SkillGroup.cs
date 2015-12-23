@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Chummer.Annotations;
+using Chummer.Datastructures;
 
 namespace Chummer.Skills
 {
@@ -29,7 +31,7 @@ namespace Chummer.Skills
 
 			SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
 			skill.CharacterObject.SkillGroups.Add(newGroup);
-			newGroup._affectedSkills.Add(skill);
+			newGroup.Add(skill);
 
 			//BindingList don't have sort, so we have to play dirty
 			List<SkillGroup> g = new List<SkillGroup>(skill.CharacterObject.SkillGroups.OrderBy(x => x.DisplayName));
@@ -42,6 +44,24 @@ namespace Chummer.Skills
 			return newGroup;
 		}
 
+		private void Add(Skill skill)
+		{
+			_affectedSkills.Add(skill);
+			skill.PropertyChanged += SkillOnPropertyChanged;
+		}
+
+		private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
+			{
+				if(_baseBrokenOldValue != BaseUnbroken)
+					OnPropertyChanged(nameof(BaseUnbroken));
+
+				_baseBrokenOldValue = BaseUnbroken;
+			}
+		}
+
+		private bool _baseBrokenOldValue;
 		private List<Skill> _affectedSkills = new List<Skill>(); 
 		private int _skillFromSp;
 		private int _skillFromKarma;
@@ -60,18 +80,17 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return _skillFromSp + FreeLevels;
+				return _skillFromSp + FreeBase;
 
 			}
 			set
 			{
-				int tempval = value - FreeLevels;
-
-				if (tempval != _skillFromSp)
+				if (this.BaseUnbroken)
 				{
+					int tempval = value - FreeBase;
+
 					_skillFromSp = Math.Max(tempval, 0);
-
-
+					
 					OnPropertyChanged();
 				}
 			}
@@ -87,22 +106,39 @@ namespace Chummer.Skills
 			}
 		}
 
+		public bool BaseUnbroken
+		{
+			get { return !_affectedSkills.Any(x => x.IBase > 0); }
+		}
+
 		public int Rating
 		{
 			get { return Karma + Base; }
 		}
 
-		public int FreeLevels
+		internal int FreeBase
 		{
 			get
 			{
 				return (from improvement in _character.Improvements
-						where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
-						   && improvement.ImprovedName == _groupName
-						select improvement.Value).Sum();
+					   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
+					      && improvement.ImprovedName == _groupName
+					  select improvement.Value).Sum();
+			} 
+		}
+
+		int FreeLevels
+		{
+			get
+			{
+				return (from improvement in _character.Improvements
+					   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
+						  && improvement.ImprovedName == _groupName
+					  select improvement.Value).Sum();
 			}
 			
 		}
+
 		public int RatingMaximum
 		{
 			get
@@ -111,10 +147,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		public bool Broken { get; set; }
-
-		//TODO READ FROM IMPROVEMENT
-		public int RatingModifiers
+		public int PoolModifiers
 		{
 			get
 			{
@@ -163,6 +196,11 @@ namespace Chummer.Skills
 			}
 		}
 
+		public Character Character
+		{
+			get { return _character; }
+		}
+
 		public string Name
 		{
 			get { return _groupName; }
@@ -208,11 +246,6 @@ namespace Chummer.Skills
 			get { return _affectedSkills.Any(x => x.SkillCategory == "Resonance Active"); ; }
 		}
 
-		public Character Character
-		{
-			get { return _character; }
-		}
-
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		[NotifyPropertyChangedInvocator]
@@ -220,8 +253,7 @@ namespace Chummer.Skills
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-
+		
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
 		{
@@ -230,11 +262,12 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(nameof(FreeLevels));
 				OnPropertyChanged(nameof(Base));
-				OnPropertyChanged(nameof(Base));
+				//OnPropertyChanged(nameof(Base));
 			}
 
 		}
-		//I also think this prevents GC. But there is no good way to do it...
+
+		//I also think this prevents GC. But there is no good way to do it short of rewriting improvements
 		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
 		//To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
@@ -244,5 +277,8 @@ namespace Chummer.Skills
 		{
 			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 		}
+
+		[Obsolete("Only here as old code depends on it, remove in time")]
+		public bool Broken { get; set; }
 	}
 }

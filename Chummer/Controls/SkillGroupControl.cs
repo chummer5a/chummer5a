@@ -62,14 +62,14 @@ namespace Chummer
 				lblGroupRating.Visible = true;
 			}
 
-            if (_objSkillGroup.FreeLevels > 0)
-                nudSkill.Minimum = _objSkillGroup.FreeLevels;
-            else
-                nudSkill.Minimum = 0;
+   //         if (_objSkillGroup.FreeLevels > 0)
+   //             nudSkill.Minimum = _objSkillGroup.FreeLevels;
+   //         else
+   //             nudSkill.Minimum = 0;
 
-			if (_objSkillGroup.Broken)
-				IsEnabled = false;
-            this.Width = nudKarma.Left + nudKarma.Width;
+			//if (_objSkillGroup.Broken)
+			//	IsEnabled = false;
+   //         this.Width = nudKarma.Left + nudKarma.Width;
         }
 
 		private void nudSkill_ValueChanged(object sender, EventArgs e)
@@ -163,7 +163,7 @@ namespace Chummer
         {
             get
             {
-                return _objSkillGroup.FreeLevels;
+	            return 0;//_objSkillGroup.FreeLevels;
             }
         }
 

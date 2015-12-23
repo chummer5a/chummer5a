@@ -22,7 +22,7 @@ using Chummer.Datastructures;
 namespace Chummer.Skills
 {
 	[DebuggerDisplay("{_name} {_skillFromSp} {_skillFromKarma}")]
-	public class Skill : INotifyPropertyChanged
+	public partial class Skill : INotifyPropertyChanged
 	{
 		#region REMOVELATERANDPLACEINCHILD
 		
@@ -138,14 +138,15 @@ namespace Chummer.Skills
 			_skillGroup = Skills.SkillGroup.Get(this);
 			if (_skillGroup != null)
 			{
-				_skillGroup.PropertyChanged += (sender, args) => OnSkillGroupChanged();
+				_skillGroup.PropertyChanged += OnSkillGroupChanged;
+					
+					//+= OnSkillGroupChanged();
 			}
 
 			ImprovementEvent += OnImprovementEvent;
 		}
 
-		
-
+		[Obsolete]
 		public Skill(Character character)
 		{
 			//TODO REMOVE, keept because LOTS of places require this
@@ -199,49 +200,10 @@ namespace Chummer.Skills
 		protected string _name;
 		protected List<ListItem> _spec;
 		
-		/// <summary>
-		/// The amount of points this skill have from skill points and bonuses
-		/// to the skill rating
-		/// </summary>
-		public int Base
-		{
-			get
-			{
-				return _skillGroupLinked ? Math.Max(_skillFromSp, FreeLevels) : _skillFromSp + FreeLevels;
-			}
-			set
-			{
-				int tempval = value - FreeLevels;
-				tempval = Math.Min(tempval, RatingMaximum - (FreeLevels + Karma)); //Don't go above rating
-				tempval = Math.Max(tempval, 0); //Not setting belov 0
-				
-
-				if (tempval != _skillFromSp)
-				{
-					
-
-					if (!_skillGroupLinked)
-					{
-						_skillFromSp = tempval;
-						OnPropertyChanged();
-					}
-					else //TODO: refactor to a little pretier later. Use IsLocked instead. Set _linked to false if group is 0;
-					{
-						if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
-						{
-							_skillGroupLinked = false;
-							_skillFromSp = tempval;
-							OnPropertyChanged();
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Amount of skill points bought with karma
-		/// </summary>
-		public int Karma
+		
+		
+		
+		public int OLDKarma
 		{
 			get { return _skillFromKarma; }
 			set
@@ -284,10 +246,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return (from improvement in CharacterObject.Improvements
-					where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-					   && improvement.ImprovedName == _name
-					select improvement.Value).Sum(); //Caching this is probably a good idea
+				throw new NotImplementedException(); //Caching this is probably a good idea
 
 			}
 		}
@@ -605,8 +564,10 @@ namespace Chummer.Skills
 					new ReverseTree<string>(nameof(AttributeModifiers)),
 					new ReverseTree<string>(nameof(Rating),
 						new ReverseTree<string>(nameof(Karma)),
-						new ReverseTree<string>(nameof(Base),
-							new ReverseTree<string>(nameof(FreeLevels))
+						new ReverseTree<string>(nameof(BaseUnlocked),
+							new ReverseTree<string>(nameof(Base),
+								new ReverseTree<string>(nameof(FreeLevels))  //<--Change (To non visible?)
+							)
 						)
 					)
 				)
@@ -626,8 +587,19 @@ namespace Chummer.Skills
 			}
 		}
 
-		private void OnSkillGroupChanged()
+		private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs propertyChangedEventArg)
 		{
+			if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Base))
+			{
+				OnPropertyChanged(propertyChangedEventArg.PropertyName);
+				
+			}
+			else
+			{
+				
+			}
+
+			return;
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsUnlocked)));
 
 			if (!_skillGroupLinked && _character.Created) return;

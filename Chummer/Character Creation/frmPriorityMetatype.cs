@@ -1784,8 +1784,7 @@ namespace Chummer
 	    private void AddFreeSkills(int intFreeLevels)
 	    {
 		    ImprovementManager manager = new ImprovementManager(_objCharacter);
-		    Improvement.ImprovementType type;
-		    type = "Aspected Magican".Equals(cboTalents.SelectedValue) ? Improvement.ImprovementType.SkillGroupLevel : Improvement.ImprovementType.SkillLevel;
+		    var type = "Aspected Magician".Equals(cboTalents.SelectedValue) ? Improvement.ImprovementType.SkillGroupBase : Improvement.ImprovementType.SkillBase;
 
 		    if (cboSkill1.Visible)
 		    {
