@@ -22,6 +22,11 @@ namespace Chummer
 			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
 			this.Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
+
+#if DEBUG
+	        Text += " DEBUG BUILD";
+#endif
+
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
             /** Dashboard **/
