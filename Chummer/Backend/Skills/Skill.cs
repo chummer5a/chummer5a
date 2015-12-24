@@ -225,6 +225,7 @@ namespace Chummer.Skills
 						_skillGroupLinked = false;
 						_skillFromKarma = tempval;
 						OnPropertyChanged();
+						
 					}
 				}
 			}

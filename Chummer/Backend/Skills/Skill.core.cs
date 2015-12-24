@@ -35,15 +35,15 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					return _base;
+					return _base + FreeBase();
 				}
 			}
 			set
 			{
-				if (_skillGroup?.Base == 0)
+				if (_skillGroup == null || _skillGroup.Base == 0)
 				{
-					var old = _base;
-					_base = Math.Max(0, value - FreeBase());
+					var old = _base; //TODO: SWARP MIN MAX ORDER
+					_base = Math.Min(Math.Max(0, value - FreeBase()), RatingMaximum - (IKarma + FreeBase()));
 					if(old != _base) OnPropertyChanged();
 				}
 			}

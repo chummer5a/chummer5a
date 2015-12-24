@@ -13,23 +13,10 @@ namespace Chummer.UI.Shared
 	public partial class SkillControl2 : UserControl
 	{
 		private Skill skill;
-		private bool _lock = true;
 		public SkillControl2(Skill skill)
 		{
 			this.skill = skill;
 			InitializeComponent();
-
-			//skill.PropertyChanged += (sender, args) =>
-			//{
-			//	if (args.PropertyName == nameof(skill.IsUnlocked))
-			//	{
-			//		if(skill.IsUnlocked == false)
-			//			cboSpec.SelectedIndex = -1;
-
-			//		nudSkill.Enabled = _lock && skill.IsUnlocked;
-			//		nudKarma.Enabled = skill.IsUnlocked;
-			//	}
-			//};
 
 			//Display
 			lblName.DataBindings.Add("Text", skill, "DisplayName");
@@ -70,7 +57,7 @@ namespace Chummer.UI.Shared
 				if (skill.CharacterObject.BuildMethod == CharacterBuildMethod.Karma ||
 					skill.CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
 				{
-					_lock = nudSkill.Enabled = false;
+					nudSkill.Enabled = false;
 				}
 			}
 		}

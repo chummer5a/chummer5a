@@ -89,7 +89,7 @@ namespace Chummer.Skills
 				{
 					int tempval = value - FreeBase;
 
-					_skillFromSp = Math.Max(tempval, 0);
+					_skillFromSp = Math.Min(Math.Max(tempval, 0), RatingMaximum - (Karma + FreeBase));
 					
 					OnPropertyChanged();
 				}
