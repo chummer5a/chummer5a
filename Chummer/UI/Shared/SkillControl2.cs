@@ -21,27 +21,27 @@ namespace Chummer.UI.Shared
 			InitializeComponent();
 
 			//Display
-			lblName.DataBindings.Add("Text", skill, "DisplayName");
-			lblAttribute.DataBindings.Add("Text", skill, "Attribute");
-			lblModifiedRating.DataBindings.Add("Text", skill, "DisplayPool", false, DataSourceUpdateMode.OnPropertyChanged);
+			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
+			lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			//Up down boxes
-			nudKarma.DataBindings.Add("Value", skill, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
-			nudSkill.DataBindings.Add("Value", skill, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
+			nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
+			nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			nudSkill.DataBindings.Add("Enabled", skill, "BaseUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
+			nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
 			
 			//Delete button
 			cmdDelete.Visible = skill.AllowDelete;
 
 			//dropdown/spec
 			cboSpec.DataSource = skill.CGLSpecializations;
-			cboSpec.DisplayMember = "Name";
-			cboSpec.ValueMember = "Value";
+			cboSpec.DisplayMember = nameof(ListItem.Name);
+			cboSpec.ValueMember = nameof(ListItem.Value);
 
-			cboSpec.DataBindings.Add("Enabled", skill, "Leveled", false, DataSourceUpdateMode.OnPropertyChanged);
+			cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
 
-			cboSpec.DataBindings.Add("Text", skill, "Specialization", false, DataSourceUpdateMode.OnPropertyChanged);
+			cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 			cboSpec.SelectedIndex = -1;
         }
 

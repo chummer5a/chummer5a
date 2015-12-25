@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Chummer.Skills
 {
@@ -11,12 +9,12 @@ namespace Chummer.Skills
 		private int _karma;
 		private bool _buyWithKarma;
 
-		internal int IBase
+		internal int Ibase
 		{
 			get { return _base + FreeBase(); }
 		}
 
-		internal int IKarma
+		internal int Ikarma
 		{
 			get { return _karma + FreeKarma(); }
 		}
@@ -53,7 +51,7 @@ namespace Chummer.Skills
 					int old = _base; // old value, not needed, don't fire too many events...
 
 					//Calculate how far above maximum we are. 
-					int overMax = (-1) * (RatingMaximum - (value + IKarma));
+					int overMax = (-1) * (RatingMaximum - (value + Ikarma));
 
 					if (overMax > 0) //Too much
 					{
@@ -142,7 +140,7 @@ namespace Chummer.Skills
 									//TODO: Disallow street sams magic skills, etc (ASPECTED!!)
 				return (_character.Created
 					? 12
-					: (this.KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
+					: (KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
 			}
 		}
 

@@ -245,12 +245,12 @@ namespace Chummer
 	        else
 		        this.Width = cmdChangeSpec.Left + cmdChangeSpec.Width;
 
-	        if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
-            {
-                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                    nudSkill.Enabled = false;
-                cmdBreakGroup.Visible = false;
-            }
+	        //if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
+         //   {
+         //       if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+         //           nudSkill.Enabled = false;
+         //       cmdBreakGroup.Visible = false;
+         //   }
 
             this.Height = lblSpec.Height + 10;
 

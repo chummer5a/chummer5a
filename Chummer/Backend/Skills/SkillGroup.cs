@@ -1,17 +1,129 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Chummer.Annotations;
-using Chummer.Datastructures;
 
 namespace Chummer.Skills
 {
 	public class SkillGroup : INotifyPropertyChanged
 	{
+		#region Core calculations
+		private int _skillFromSp;
+		private int _skillFromKarma;
+
+		public int Base
+		{
+			get
+			{
+				return _skillFromSp + FreeBase();
+
+			}
+			set
+			{
+				if (BaseUnbroken)
+				{
+					int old = _skillFromSp;
+
+					//Calculate how far above maximum we are. 
+					int overMax = (-1) * (RatingMaximum - (value + _skillFromKarma + FreeLevels()));
+
+					//reduce value by max or 0
+					//TODO karma from skill, karma other stuff might be reduced
+					value -= Math.Max(0, overMax);
+
+					//and save back, cannot go under 0
+					_skillFromSp = Math.Max(0, value - FreeBase());
+
+					if (old != _skillFromSp) OnPropertyChanged();
+				}
+			}
+		}
+
+		public int Karma
+		{
+			get { return _skillFromKarma + FreeLevels(); }
+			set
+			{
+				if (KarmaUnbroken)
+				{
+					int old = _skillFromKarma;
+
+					//Calculate how far above maximum we are. 
+					int overMax = (-1) * (RatingMaximum - (value + _skillFromSp + FreeBase()));
+
+					//reduce value by max or 0
+					//TODO can remove karma from skills
+					value -= Math.Max(0, overMax);
+
+					//and save back, cannot go under 0
+					_skillFromKarma = Math.Max(0, value - FreeLevels());
+
+					if (old != _skillFromKarma) OnPropertyChanged();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Is it possible to increment this skill group from points
+		/// Inverted to simplifly databinding
+		/// </summary>
+		public bool BaseUnbroken
+		{
+			get
+			{
+				return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.Ibase > 0);
+			}
+		}
+
+		/// <summary>
+		/// Is it possible to increment this skill group from karma
+		/// Inverted to simplifly databinding
+		/// </summary>
+		public bool KarmaUnbroken
+		{
+			get
+			{
+				int high = _affectedSkills.Max(x => x.Ibase);
+				bool ret = _affectedSkills.Any(x => x.Ibase + x.Ikarma < high);
+
+				return !ret;
+			}
+		}
+
+		public int Rating
+		{
+			get { return Karma + Base; }
+		}
+
+		internal int FreeBase()
+		{
+			return (from improvement in _character.Improvements
+					where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
+					   && improvement.ImprovedName == _groupName
+					select improvement.Value).Sum();
+		}
+
+		int FreeLevels()
+		{
+			return (from improvement in _character.Improvements
+					where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
+					   && improvement.ImprovedName == _groupName
+					select improvement.Value).Sum();
+		}
+
+		public int RatingMaximum
+		{
+			get
+			{
+				return (_character.Created ? 12 : 6);
+			}
+		}
+
+		#endregion
+
+		#region All the other stuff that is required
 		internal static SkillGroup Get(Skill skill)
 		{
 			if(skill.SkillGroupObject != null) return skill.SkillGroupObject;
@@ -78,11 +190,10 @@ namespace Chummer.Skills
 
 		private bool _baseBrokenOldValue;
 		private bool _karmaBrokenOldValue;
-		private List<Skill> _affectedSkills = new List<Skill>(); 
-		private int _skillFromSp;
-		private int _skillFromKarma;
+		private readonly List<Skill> _affectedSkills = new List<Skill>(); 
 		private readonly string _groupName;
 		private readonly Character _character;
+
 		private SkillGroup(Character character, string groupName)
 		{
 			_character = character;
@@ -90,117 +201,6 @@ namespace Chummer.Skills
 			_baseBrokenOldValue = BaseUnbroken;
 
 			ImprovementEvent += OnImprovementEvent;
-		}
-		
-		//TODO CALCULATIONS STUFF HERE
-		public int Base
-		{
-			get
-			{
-				return _skillFromSp + FreeBase();
-
-			}
-			set
-			{
-				if (this.BaseUnbroken)
-				{
-					int max = 0;
-					int old = _skillFromSp;
-
-					//Calculate how far above maximum we are. 
-					int overMax = (-1)*(RatingMaximum - (value + _skillFromKarma + FreeLevels()));
-					
-					//reduce value by max or 0
-					//TODO karma from skill, karma other stuff might be reduced
-					value -= Math.Max(0, overMax);
-
-					//and save back, cannot go under 0
-					_skillFromSp = Math.Max(0, value -  FreeBase());
-
-					if(old != _skillFromSp) OnPropertyChanged();
-				}
-			}
-		}
-
-		public int Karma
-		{
-			get { return _skillFromKarma + FreeLevels(); }
-			set
-			{
-				if (this.KarmaUnbroken)
-				{
-					int max = 0;
-					int old = _skillFromKarma;
-
-					//Calculate how far above maximum we are. 
-					int overMax = (-1)*(RatingMaximum - (value + _skillFromSp + FreeBase()));
-
-					//reduce value by max or 0
-					//TODO can remove karma from skills
-					value -= Math.Max(0, overMax);
-
-					//and save back, cannot go under 0
-					_skillFromKarma = Math.Max(0, value - FreeLevels());
-
-					if (old != _skillFromKarma) OnPropertyChanged();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Is it possible to increment this skill group from points
-		/// Inverted to simplifly databinding
-		/// </summary>
-		public bool BaseUnbroken
-		{
-			get
-			{
-				return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.IBase > 0);
-			}
-		}
-
-		/// <summary>
-		/// Is it possible to increment this skill group from karma
-		/// Inverted to simplifly databinding
-		/// </summary>
-		public bool KarmaUnbroken
-		{
-			get
-			{
-				int high = _affectedSkills.Max(x => x.IBase);
-				bool ret = _affectedSkills.Any(x => x.IBase + x.IKarma < high);
-
-				return !ret;
-			}
-		}
-
-		public int Rating
-		{
-			get { return Karma + Base; }
-		}
-
-		internal int FreeBase()
-		{
-			return (from improvement in _character.Improvements
-				   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
-				      && improvement.ImprovedName == _groupName
-				  select improvement.Value).Sum();	
-		}
-
-		int FreeLevels()
-		{
-			return (from improvement in _character.Improvements
-				   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
-					  && improvement.ImprovedName == _groupName
-				  select improvement.Value).Sum();
-		}
-
-		public int RatingMaximum
-		{
-			get
-			{
-				return (_character.Created ? 12 : 6);
-			}
 		}
 
 		public Character Character
@@ -225,32 +225,32 @@ namespace Chummer.Skills
 
 		public bool HasPhysicalSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Physical Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Physical Active"); }
 		}
 
 		public bool HasSocialSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Social Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Social Active"); }
 		}
 
 		public bool HasTechnicalSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Technical Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Technical Active"); }
 		}
 
 		public bool HasVehicleSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Vehicle Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Vehicle Active"); }
 		}
 
 		public bool HasMagicalSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Magical Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Magical Active"); }
 		}
 
 		public bool HasResonanceSkills
 		{
-			get { return _affectedSkills.Any(x => x.SkillCategory == "Resonance Active"); ; }
+			get { return _affectedSkills.Any(x => x.SkillCategory == "Resonance Active"); }
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -285,7 +285,6 @@ namespace Chummer.Skills
 			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 		}
 
-		[Obsolete("Only here as old code depends on it, remove in time")]
-		public bool Broken { get; set; }
+		#endregion
 	}
 }

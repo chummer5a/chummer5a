@@ -247,12 +247,6 @@ namespace Chummer.Skills
 			set { } //TODO REFACTOR AWAY
 		}
 
-		
-		//public bool IsUnlocked
-		//{
-		//	get { return !(_skillGroup != null && IsGrouped && (SkillGroupObject.Karma + SkillGroupObject.Base) > 0); }
-		//}
-		
 		public virtual bool ExoticSkill
 		{
 			get { return false; }

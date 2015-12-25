@@ -4693,42 +4693,43 @@ namespace Chummer
 
         private void objGroup_RatingChanged(Object sender)
         {
+			//TODO REMOVE
             // Handle the GroupRatingChanged event for the SkillGroupControl object.
-            SkillGroupControl objGroupControl = (SkillGroupControl)sender;
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            //SkillGroupControl objGroupControl = (SkillGroupControl)sender;
+            //XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-            // Retrieve the list of Skills that are associated with the Skill Group.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + objGroupControl.GroupName + "\"]");
+            //// Retrieve the list of Skills that are associated with the Skill Group.
+            //XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + objGroupControl.GroupName + "\"]");
 
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
-            {
-                // Run through all of the Skills in the Active Skill Panel and update the ones that match the Skills in the Skill Group.
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    if (objSkillControl.SkillName == objXmlSkill["name"].InnerText)
-                    {
-                        if (objGroupControl.GroupRating > 0 && !objGroupControl.SkillGroupObject.Broken)
-                        {
-                            // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
-                            if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
-                                objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
-                            objSkillControl.SkillBase = objGroupControl.GroupRating;
-                            objSkillControl.IsGrouped = true;
-                        }
-                        else if (!objGroupControl.SkillGroupObject.Broken)
-                        {
-                            // Returning a Group's Rating back to 0 should release the Skill from the Group and re-enable the SkillControl.
-                            objSkillControl.SkillBase = 0;
-                            objSkillControl.IsGrouped = false;
-                        }
-                    }
-                }
-            }
+            //foreach (XmlNode objXmlSkill in objXmlSkillList)
+            //{
+            //    // Run through all of the Skills in the Active Skill Panel and update the ones that match the Skills in the Skill Group.
+            //    foreach (SkillControl objSkillControl in panActiveSkills.Controls)
+            //    {
+            //        if (objSkillControl.SkillName == objXmlSkill["name"].InnerText)
+            //        {
+            //            if (objGroupControl.GroupRating > 0 && !objGroupControl.SkillGroupObject.Broken)
+            //            {
+            //                // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
+            //                if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
+            //                    objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
+            //                objSkillControl.SkillBase = objGroupControl.GroupRating;
+            //                objSkillControl.IsGrouped = true;
+            //            }
+            //            else if (!objGroupControl.SkillGroupObject.Broken)
+            //            {
+            //                // Returning a Group's Rating back to 0 should release the Skill from the Group and re-enable the SkillControl.
+            //                objSkillControl.SkillBase = 0;
+            //                objSkillControl.IsGrouped = false;
+            //            }
+            //        }
+            //    }
+            //}
 
-            UpdateCharacterInfo();
+            //UpdateCharacterInfo();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+            //_blnIsDirty = true;
+            //UpdateWindowTitle();
         }
         #endregion
 
@@ -15835,27 +15836,27 @@ namespace Chummer
                         {
                             int intMin = 999;
                             bool blnApplyModifier = false;
-
+							//TODO CALCULATE SKILLS
                             // Find the matching Skill Group.
-                            foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-                            {
-                                if (objGroup.Broken && objGroup.Name == objSkillControl.SkillGroup)
-                                {
-                                    // Determine the lowest Rating amongst the Skills in the Groups.
-                                    foreach (Skill objSkill in _objCharacter.Skills)
-                                    {
-                                        if (objSkill.SkillGroup == objGroup.Name)
-                                        {
-                                            if (objSkill.Rating < intMin)
-                                            {
-                                                intMin = objSkill.Rating;
-                                                blnApplyModifier = true;
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
+                            //foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+                            //{
+                            //    if (objGroup.Broken && objGroup.Name == objSkillControl.SkillGroup)
+                            //    {
+                            //        // Determine the lowest Rating amongst the Skills in the Groups.
+                            //        foreach (Skill objSkill in _objCharacter.Skills)
+                            //        {
+                            //            if (objSkill.SkillGroup == objGroup.Name)
+                            //            {
+                            //                if (objSkill.Rating < intMin)
+                            //                {
+                            //                    intMin = objSkill.Rating;
+                            //                    blnApplyModifier = true;
+                            //                }
+                            //            }
+                            //        }
+                            //        break;
+                            //    }
+                            //}
 
                             if (blnApplyModifier)
                             {
@@ -21434,7 +21435,7 @@ namespace Chummer
                     {
                         if (objSkill.Rating != objGroup.Rating && objSkill.SkillGroup == objGroup.Name)
                         {
-                            objGroup.Broken = true;
+                            //objGroup.Broken = true;
                             break;
                         }
                     }

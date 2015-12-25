@@ -271,11 +271,11 @@ namespace Chummer
 		{
 			get
 			{
-				return _objSkillGroup.Broken;
+				return false; // _objSkillGroup.Broken;
 			}
 			set
 			{
-				_objSkillGroup.Broken = value;
+				//_objSkillGroup.Broken = value;
 
 				if (value)
 				{

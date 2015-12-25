@@ -220,18 +220,18 @@ namespace Chummer
 				//}  
 
 				// Skill Groups.
-				foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-				{
-					if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
-					{
-						// <skillgroup>
-						objWriter.WriteStartElement("skillgroup");
-						objWriter.WriteElementString("name", objSkillGroup.Name);
-						objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
-						// </skillgroup>
-						objWriter.WriteEndElement();
-					}
-				}
+				//foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+				//{
+				//	if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
+				//	{
+				//		// <skillgroup>
+				//		objWriter.WriteStartElement("skillgroup");
+				//		objWriter.WriteElementString("name", objSkillGroup.Name);
+				//		objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+				//		// </skillgroup>
+				//		objWriter.WriteEndElement();
+				//	}
+				//}
 				// </skills>
 				objWriter.WriteEndElement();
 			}
