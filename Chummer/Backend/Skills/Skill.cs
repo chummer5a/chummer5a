@@ -195,8 +195,6 @@ namespace Chummer.Skills
 		protected readonly bool _default;
 		protected readonly string Category;
 		protected readonly string _group;
-		protected int _skillFromSp = 0;
-		protected int _skillFromKarma = 0; //This is also used for career advances
 		protected string _name;
 		protected List<ListItem> _spec;
 		
@@ -249,25 +247,11 @@ namespace Chummer.Skills
 			set { } //TODO REFACTOR AWAY
 		}
 
-		public bool IsGrouped
-		{
-			get { return _skillGroupLinked && _skillGroup != null; }
-			set
-			{
-				_skillGroupLinked = value;
-				if (_skillGroupLinked && _skillGroup != null)
-				{
-					_skillFromKarma = SkillGroupObject.Karma;
-					_skillFromSp = SkillGroupObject.Base;
-				}
-				OnPropertyChanged();
-			}
-		}
-
-		public bool IsUnlocked
-		{
-			get { return !(_skillGroup != null && IsGrouped && (SkillGroupObject.Karma + SkillGroupObject.Base) > 0); }
-		}
+		
+		//public bool IsUnlocked
+		//{
+		//	get { return !(_skillGroup != null && IsGrouped && (SkillGroupObject.Karma + SkillGroupObject.Base) > 0); }
+		//}
 		
 		public virtual bool ExoticSkill
 		{

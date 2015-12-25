@@ -965,11 +965,11 @@ namespace Chummer
 		{
 			get
 			{
-				return _objSkill.IsGrouped;
+				return false; // _objSkill.IsGrouped;
 			}
 			set
 			{
-				_objSkill.IsGrouped = value;
+				//_objSkill.IsGrouped = value;
 
 				// When Grouped in Career Mode, everything but the Improve button is disabled.
 				if (value)
@@ -986,16 +986,16 @@ namespace Chummer
 					cboSpec.Enabled = true;
 
 				// If we're in Create Mode, show the Break Group button if the Skill is Grouped.
-				if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
-					cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
-                else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
-                {
-                    if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                        nudSkill.Enabled = false;
-                    cmdBreakGroup.Visible = false;
-                }
-				else
-					cmdBreakGroup.Visible = false;
+				//if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
+				//	cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
+    //            else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
+    //            {
+    //                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+    //                    nudSkill.Enabled = false;
+    //                cmdBreakGroup.Visible = false;
+    //            }
+				//else
+				//	cmdBreakGroup.Visible = false;
 			}
 		}
 
@@ -1258,13 +1258,13 @@ namespace Chummer
 			// Specializations should not be enabled for Active Skills in Create Mode if their Rating is 0.
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && !_objSkill.CharacterObject.Created)
 			{
-				if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
-					cboSpec.Enabled = true;
-				else
-				{
-					cboSpec.Enabled = false;
-					cboSpec.Text = "";
-				}
+				//if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
+				//	cboSpec.Enabled = true;
+				//else
+				//{
+				//	cboSpec.Enabled = false;
+				//	cboSpec.Text = "";
+				//}
 			}
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && _objSkill.CharacterObject.Created)
 			{

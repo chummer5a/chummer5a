@@ -9,6 +9,7 @@ namespace Chummer.Skills
 	{
 		private int _base;
 		private int _karma;
+		private bool _buyWithKarma;
 
 		internal int IBase
 		{
@@ -117,7 +118,17 @@ namespace Chummer.Skills
 		/// </summary>
 		public bool BuyWithKarma
 		{
-			get; set;
+			get
+			{
+				_buyWithKarma |= ForceBuyWithKarma();
+
+
+				return _buyWithKarma;
+			}
+			set
+			{
+				_buyWithKarma = value;
+			}
 		}
 
 		/// <summary>
@@ -205,8 +216,7 @@ namespace Chummer.Skills
 			}
 			return 0;
 		}
-
-
+		
 		private int FreeKarma()
 		{
 			return (from improvement in CharacterObject.Improvements
@@ -221,6 +231,11 @@ namespace Chummer.Skills
 				   where improvement.ImproveType == Improvement.ImprovementType.SkillBase
 					  && improvement.ImprovedName == _name
 				  select improvement.Value).Sum();
+		}
+
+		private bool ForceBuyWithKarma()
+		{
+			return _karma > 0 || _skillGroup.Karma > 0 || _skillGroup.Base > 0;
 		}
 	}
 }
