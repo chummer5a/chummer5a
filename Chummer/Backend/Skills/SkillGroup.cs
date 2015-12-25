@@ -54,14 +54,30 @@ namespace Chummer.Skills
 		{
 			if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
 			{
-				if(_baseBrokenOldValue != BaseUnbroken)
+				if (_baseBrokenOldValue != BaseUnbroken)
 					OnPropertyChanged(nameof(BaseUnbroken));
 
 				_baseBrokenOldValue = BaseUnbroken;
 			}
+
+			if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base) ||
+			    propertyChangedEventArgs.PropertyName == nameof(Skill.Karma))
+			{
+				if (!KarmaUnbroken && _skillFromKarma > 0)
+				{
+					_skillFromKarma = 0;
+					OnPropertyChanged(nameof(Karma));
+				}
+
+				if (_karmaBrokenOldValue != KarmaUnbroken) { 
+					OnPropertyChanged(nameof(KarmaUnbroken));
+}
+				_karmaBrokenOldValue = KarmaUnbroken;
+			}
 		}
 
 		private bool _baseBrokenOldValue = true;
+		private bool _karmaBrokenOldValue;
 		private List<Skill> _affectedSkills = new List<Skill>(); 
 		private int _skillFromSp;
 		private int _skillFromKarma;
@@ -87,10 +103,7 @@ namespace Chummer.Skills
 			{
 				if (this.BaseUnbroken)
 				{
-					int tempval = value - FreeBase;
-
-					_skillFromSp = Math.Min(Math.Max(tempval, 0), RatingMaximum - (Karma + FreeBase));
-					
+					_skillFromSp = Math.Min(Math.Max(value - FreeBase, 0), RatingMaximum - (Karma + FreeBase));
 					OnPropertyChanged();
 				}
 			}
@@ -101,16 +114,35 @@ namespace Chummer.Skills
 			get { return _skillFromKarma; }
 			set
 			{
-				_skillFromKarma = value;
+				_skillFromKarma = Math.Max(0, Math.Min(value - FreeLevels, RatingMaximum - (_affectedSkills.Max(x => x.IBase) + FreeLevels)));
 				OnPropertyChanged();
 			}
 		}
 
+		/// <summary>
+		/// Is it possible to increment this skill group from points
+		/// Inverted to simplifly databinding
+		/// </summary>
 		public bool BaseUnbroken
 		{
 			get
 			{
 				bool ret = _affectedSkills.Any(x => x.IBase > 0);
+				return !ret;
+			}
+		}
+
+		/// <summary>
+		/// Is it possible to increment this skill group from karma
+		/// Inverted to simplifly databinding
+		/// </summary>
+		public bool KarmaUnbroken
+		{
+			get
+			{
+				int high = _affectedSkills.Max(x => x.IBase);
+				bool ret = _affectedSkills.Any(x => x.IBase + x.IKarma < high);
+
 				return !ret;
 			}
 		}
@@ -148,55 +180,6 @@ namespace Chummer.Skills
 			get
 			{
 				return (_character.Created ? 12 : 6);
-			}
-		}
-
-		public int PoolModifiers
-		{
-			get
-			{
-				int intModifier = 0;
-				//Code copied from old skill. It seems to do something, but don't want to touch it with a 10 foot pole
-				#region Smelly
-				//TODO this ever gets used, refactor thing away?
-				//foreach (Improvement objImprovement in _character.Improvements)
-				//{
-				//	if (objImprovement.AddToRating && objImprovement.Enabled)
-				//	{
-				//		// Improvement for an individual Skill.
-				//		//TODO NOT WORKING FOR EXOTIC SKILLS (when is that needed?)
-				//		if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-				//			intModifier += objImprovement.Value;
-
-
-				//		// Improvement for a Skill Group.
-				//		if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _group)
-				//		{
-				//			if (!objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(_category))
-				//				intModifier += objImprovement.Value;
-				//		}
-				//		// Improvement for a Skill Category.
-				//		if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _category)
-				//		{
-				//			if (!objImprovement.Exclude.Contains(Name))
-				//				intModifier += objImprovement.Value;
-				//		}
-				//		// Improvement for a Skill linked to an CharacterAttribute.
-				//		if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _usedAttribute.Abbrev)
-				//		{
-				//			if (!objImprovement.Exclude.Contains(Name))
-				//				intModifier += objImprovement.Value;
-				//		}
-				//		// Improvement for Enhanced Articulation
-				//		if (_category == "Physical Active" && (_usedAttribute.Abbrev == "BOD" || _usedAttribute.Abbrev == "AGI" || _usedAttribute.Abbrev == "REA" || _usedAttribute.Abbrev == "STR"))
-				//		{
-				//			if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-				//				intModifier += objImprovement.Value;
-				//		}
-				//	}
-				//}
-				#endregion
-				return intModifier;
 			}
 		}
 
