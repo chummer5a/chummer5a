@@ -14,8 +14,8 @@ namespace Chummer.UI.Shared
 	public partial class SkillsTabUserControl : UserControl
 	{
 		
-		private SkillsDisplay<Skill> skills;
-		private SkillsDisplay<SkillGroup> groups;
+		private SkillsDisplay<Skill> _skills;
+		private SkillsDisplay<SkillGroup> _groups;
 
 		public SkillsTabUserControl()
 		{
@@ -108,31 +108,31 @@ namespace Chummer.UI.Shared
 					skill => skill.Attribute == attribute));
 
 			ret.AddRange(
-				from SkillGroup _group
+				from SkillGroup @group
 				in _character.SkillGroups
 				select new Tuple<string, Func<Skill, bool>>(
-					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {_group.DisplayName}", 
-					skill => skill.SkillGroupObject == _group));
+					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
+					skill => skill.SkillGroupObject == @group));
 
 			return ret;
 		}
 
 		private void MakeSkillDisplays()
 		{
-			groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
+			_groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
 				Width = 255
 			};
-			splitSkills.Panel1.Controls.Add(groups);
+			splitSkills.Panel1.Controls.Add(_groups);
 
-			skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
+			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
 				Location = new Point(265, 39),
 				Width = 565
 			};
 
-			splitSkills.Panel1.Controls.Add(skills);
+			splitSkills.Panel1.Controls.Add(_skills);
 		}
 
 
@@ -140,8 +140,8 @@ namespace Chummer.UI.Shared
 		{
 			int height = splitSkills.Panel1.Height;
 
-			if( skills != null) skills.Height = height - skills.Top;
-			if( groups != null) groups.Height = height - groups.Top;
+			if( _skills != null) _skills.Height = height - _skills.Top;
+			if( _groups != null) _groups.Height = height - _groups.Top;
 		}
 
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -149,7 +149,7 @@ namespace Chummer.UI.Shared
 			ComboBox csender = (ComboBox) sender;
 			Tuple<string, Func<Skill, bool>> selectedItem = (Tuple<string, Func<Skill, bool>>)csender.SelectedItem;
 
-			skills.Filter(selectedItem.Item2);
+			_skills.Filter(selectedItem.Item2);
 		}
 
 		private void btnExotic_Click(object sender, EventArgs e)
