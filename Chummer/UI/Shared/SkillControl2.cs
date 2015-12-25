@@ -29,7 +29,6 @@ namespace Chummer.UI.Shared
 			nudKarma.DataBindings.Add("Value", skill, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
 			nudSkill.DataBindings.Add("Value", skill, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
 
-			//nudKarma.DataBindings.Add("Enabled", skill, "IsUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
 			nudSkill.DataBindings.Add("Enabled", skill, "BaseUnlocked", false, DataSourceUpdateMode.OnPropertyChanged);
 			
 			//Delete button

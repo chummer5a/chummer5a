@@ -76,7 +76,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		private bool _baseBrokenOldValue = true;
+		private bool _baseBrokenOldValue;
 		private bool _karmaBrokenOldValue;
 		private List<Skill> _affectedSkills = new List<Skill>(); 
 		private int _skillFromSp;
@@ -87,6 +87,7 @@ namespace Chummer.Skills
 		{
 			_character = character;
 			_groupName = groupName;
+			_baseBrokenOldValue = BaseUnbroken;
 
 			ImprovementEvent += OnImprovementEvent;
 		}
@@ -127,8 +128,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				bool ret = _affectedSkills.Any(x => x.IBase > 0);
-				return !ret;
+				return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.IBase > 0);
 			}
 		}
 

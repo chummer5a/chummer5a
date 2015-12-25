@@ -5600,4 +5600,12 @@ namespace Chummer
 
 		#endregion
 	}
+
+	public static class ImprovementExtensions
+	{
+		public static bool HaveSkillPoints(this CharacterBuildMethod method)
+		{
+			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;
+		}
+	}
 }

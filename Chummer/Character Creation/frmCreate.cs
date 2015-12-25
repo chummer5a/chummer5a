@@ -16310,8 +16310,8 @@ namespace Chummer
                     objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
 	                objSkillControl.SkillBase = objSkillControl.SkillObject.Base;
                     objSkillControl.RefreshControl();
-                    if (!objSkillControl.IsGrouped)
-                        intSkills += objSkillControl.SkillBase - objSkillControl.SkillObject.FreeLevels;
+                    //if (!objSkillControl.IsGrouped)
+                    //    intSkills += objSkillControl.SkillBase - objSkillControl.SkillObject.FreeLevels;
                     if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
                     {
                         bool blnFound = false;
