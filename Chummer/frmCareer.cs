@@ -17945,10 +17945,11 @@ namespace Chummer
 				}
 			}
 
+			string ammoString = objWeapon.CalculatedAmmo(true);
 			// Determine which loading methods are available to the Weapon.
-			if (objWeapon.CalculatedAmmo(true).Contains(" or ") || objWeapon.CalculatedAmmo(true).Contains("x") || objWeapon.CalculatedAmmo(true).Contains("Special") || objWeapon.CalculatedAmmo(true).Contains("+"))
+			if (ammoString.Contains(" or ") || ammoString.Contains("x") || ammoString.Contains("Special") || ammoString.Contains("+"))
 			{
-				string strWeaponAmmo = objWeapon.CalculatedAmmo(true).ToLower();
+				string strWeaponAmmo = ammoString.ToLower();
 				if (strWeaponAmmo.Contains("external source"))
 					blnExternalSource = true;
 				// Get rid of external source, special, or belt, and + energy.
@@ -17957,8 +17958,8 @@ namespace Chummer
 				strWeaponAmmo = strWeaponAmmo.Replace(" + energy", "");
 				strWeaponAmmo = strWeaponAmmo.Replace(" or belt", " or 250(belt)");
 
-				string[] strSplit = new string[] { " or " };
-				string[] strAmmos = strWeaponAmmo.Split(strSplit, StringSplitOptions.RemoveEmptyEntries);
+				
+				string[] strAmmos = strWeaponAmmo.Split( new []{" or "}, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (string strAmmo in strAmmos)
 				{
@@ -17977,7 +17978,7 @@ namespace Chummer
 			else
 			{
 				// Nothing weird in the ammo string, so just use the number given.
-				string strAmmo = objWeapon.CalculatedAmmo(true);
+				string strAmmo = ammoString;
 				if (strAmmo.Contains("("))
 					strAmmo = strAmmo.Substring(0, strAmmo.IndexOf("("));
 				lstCount.Add(strAmmo);

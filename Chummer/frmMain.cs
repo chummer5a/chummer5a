@@ -22,6 +22,11 @@ namespace Chummer
 			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 
 			this.Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
+
+#if DEBUG
+	        Text += " DEBUG BUILD";
+#endif
+
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
             /** Dashboard **/
@@ -352,7 +357,7 @@ namespace Chummer
 			(sender as Form).FormClosed -= ActiveMdiChild_FormClosed;
 			(sender as Form).Dispose();
 			((sender as Form).Tag as TabPage).Dispose();
-			GC.Collect();
+			
 			// Don't show the tab control if there is only one window open.
 			if (tabForms.TabCount <= 1)
 				tabForms.Visible = false;

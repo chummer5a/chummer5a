@@ -10,6 +10,7 @@ Application Change:
 - Handling has been split up into normal and offroad handling. The implementation method should prevent any issues from cropping up, but I've eaten my hat on that before. Please report any issues to the normal outlets.
 - Calendar entries can now be removed. Fixes #552.
 - The optional rule to have Essence Loss only reduce RES/MAG maximums has been re-enabled. Fixes #596.
+- Each spare clip added to a weapon now tracks ammo individually rather than the previous hard-coded limit of four active slots. As a result of this change, Spare Clips no longer have the ability to directly store ammunition as a child item; they will be updated to display their currently loaded ammunition as an Extra value shortly.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

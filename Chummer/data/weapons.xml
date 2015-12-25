@@ -8026,9 +8026,7 @@
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>5</cost>
-			<allowgear>
-				<gearcategory>Ammunition</gearcategory>
-			</allowgear>
+			<allowgear />
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
