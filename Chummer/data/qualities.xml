@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-345</version>
+	<version>-350</version>
 	<categories>
 		<category>Positive</category>
 		<category>Negative</category>
@@ -2440,7 +2440,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>2</publicawareness>
+				<publicawareness>2</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2468,7 +2468,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>3</publicawareness>
+				<publicawareness>3</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2497,7 +2497,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>5</publicawareness>
+				<publicawareness>5</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -2525,7 +2525,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>8</publicawareness>
+				<publicawareness>8</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -8188,7 +8188,7 @@
 			<category>Positive</category>
 			<addweapon>Bite (Infected)</addweapon>
 			<bonus>
-								<selectattributes>
+				<selectattributes>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
@@ -9437,9 +9437,9 @@
 			<name>Cyber-Singularity Seeker</name>
 			<karma>12</karma>
 			<category>Positive</category>
-      <bonus>
-        <cyberseeker>WIL</cyberseeker>
-      </bonus>
+			<bonus>
+				<cyberseeker>WIL</cyberseeker>
+			</bonus>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -9468,11 +9468,11 @@
 			<name>Redliner</name>
 			<karma>10</karma>
 			<category>Positive</category>
-      <bonus>
-        <cyberseeker>AGI</cyberseeker>
-        <cyberseeker>STR</cyberseeker>
-        <cyberseeker>BOX</cyberseeker>  <!--physical boxes, hardcoded to times 3 elsewhere -->
-      </bonus>
+			<bonus>
+				<cyberseeker>AGI</cyberseeker>
+				<cyberseeker>STR</cyberseeker>
+				<cyberseeker>BOX</cyberseeker><!--physical boxes, hardcoded to times 3 elsewhere -->
+			</bonus>
 			<source>CF</source>
 			<page>55</page>
 		</quality>
@@ -9777,6 +9777,112 @@
 			<bonus />
 			<source>HT</source>
 			<page>191</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<quality>
+				<name>Faceless</name>
+				<karma>-6</karma>
+				<category>Negative</category>
+				<source>HT</source>
+				<page>191</page>
+				<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			</quality>
+		</quality>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Rigger 5.0-->
+		<!-- Region Positive Qualities -->
+		<quality>
+			<name>Chaser</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Dealer Connection</name>
+			<karma>3</karma>
+			<limit>4</limit>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Grease Monkey</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus>
+				<skillgroup>
+					<name>Engineering</name>
+					<bonus>1</bonus>
+				</skillgroup>
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Speed Demon</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Stunt Driver</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Subtle Pilot</name>
+			<karma>4</karma>
+			<limit>no</limit>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Negative Qualities -->
+		<quality>
+			<name>Accident Prone</name>
+			<karma>-4</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Motion Sickness</name>
+			<karma>-4</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Too Much Data</name>
+			<karma>-3</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>34</page>
 			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
 		</quality>
 		<!-- End Region -->

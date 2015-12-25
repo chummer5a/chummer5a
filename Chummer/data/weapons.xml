@@ -7391,6 +7391,32 @@
 		<!-- End Region-->
 		<!-- Region Hard Targets -->
 		<weapon>
+			<id>3a60c3ee-9f6f-46cb-be2f-bec0bccc3318</id>
+			<name>Tactical Grapple Gun</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<spec>Grapple Gun</spec>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9S</damage>
+			<ap>-2</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<accessories>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
+			</accessories>
+			<ammo>1(b)</ammo>
+			<avail>15F</avail>
+			<cost>10000</cost>
+			<range>Heavy Crossbows</range>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>187</page>
+		</weapon>
+		<weapon>
 			<id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
 			<name>Sapphire Knife</name>
 			<category>Blades</category>
@@ -8637,6 +8663,8 @@
 			<id>b8c019cc-5772-43b0-8ba8-a08581bab406</id>
 			<name>Overclocked</name>
 			<mount></mount>
+			<damage>-2</damage>
+			<damagetype>P</damagetype>
 			<avail>6F</avail>
 			<cost>200</cost>
 			<rating>0</rating>

@@ -9111,6 +9111,38 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+
+		private void cmdDeleteWeek_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				ListViewItem objTest = lstCalendar.SelectedItems[0];
+			}
+			catch
+			{
+				return;
+			}
+
+			CalendarWeek objWeek = new CalendarWeek();
+			ListViewItem objItem = lstCalendar.SelectedItems[0];
+
+			// Find the selected Calendar Week.
+			foreach (CalendarWeek objCharacterWeek in _objCharacter.Calendar)
+			{
+				if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
+				{
+					objWeek = objCharacterWeek;
+					if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCalendarWeek")))
+						return;
+					_objCharacter.Calendar.Remove(objWeek);
+					_blnIsDirty = true;
+					UpdateWindowTitle();
+					PopulateCalendar();
+					break;
+				}
+			}
+		}
+
 		private void cmdEditWeek_Click(object sender, EventArgs e)
 		{
 			try
@@ -10331,6 +10363,8 @@ namespace Chummer
 			// Set the Vehicle properties for the window.
 			frmPickVehicleMod.VehicleCost = Convert.ToInt32(objSelectedVehicle.Cost);
 			frmPickVehicleMod.Body = objSelectedVehicle.Body;
+			frmPickVehicleMod.Seats = objSelectedVehicle.Seats;
+			frmPickVehicleMod.Handling = objSelectedVehicle.Handling;
 			frmPickVehicleMod.Speed = objSelectedVehicle.Speed;
 			frmPickVehicleMod.Accel = objSelectedVehicle.Accel;
 			frmPickVehicleMod.DeviceRating = objSelectedVehicle.DeviceRating;
@@ -19811,7 +19845,7 @@ namespace Chummer
 				_objCharacter.HomeNodeCategory = "Vehicle";
 				_objCharacter.HomeNodeDataProcessing = 0;
 				_objCharacter.HomeNodePilot = objVehicle.Pilot;
-				_objCharacter.HomeNodeHandling = objVehicle.Handling;
+				_objCharacter.HomeNodeHandling = objVehicle.TotalHandling;
 				_objCharacter.HomeNodeSensor = objVehicle.CalculatedSensor;
 			}
 			else

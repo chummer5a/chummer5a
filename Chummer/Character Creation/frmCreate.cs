@@ -9187,8 +9187,10 @@ namespace Chummer
             frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter);
             // Set the Vehicle properties for the window.
             frmPickVehicleMod.VehicleCost = Convert.ToInt32(objSelectedVehicle.Cost);
-            frmPickVehicleMod.Body = objSelectedVehicle.Body;
-            frmPickVehicleMod.Speed = objSelectedVehicle.Speed;
+            frmPickVehicleMod.Body = objSelectedVehicle.TotalBody;
+			frmPickVehicleMod.Seats = objSelectedVehicle.Seats;
+			frmPickVehicleMod.Handling = objSelectedVehicle.Handling;
+			frmPickVehicleMod.Speed = objSelectedVehicle.Speed;
             frmPickVehicleMod.Accel = objSelectedVehicle.Accel;
             frmPickVehicleMod.DeviceRating = objSelectedVehicle.DeviceRating;
             frmPickVehicleMod.HasModularElectronics = objSelectedVehicle.HasModularElectronics();
@@ -16736,7 +16738,7 @@ namespace Chummer
 
                 // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-                    _objCharacter.EDG.MetatypeMaximum = _objCharacter.Rating;
+                    _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)

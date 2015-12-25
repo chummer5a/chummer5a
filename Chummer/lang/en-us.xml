@@ -1538,6 +1538,10 @@
 			<text>Are you sure you want to delete this Stacked Focus?</text>
 		</string>
 		<string>
+			<key>Message_DeleteCalendarWeek</key>
+			<text>Are you sure you want to delete this Calendar Entry?</text>
+		</string>
+		<string>
 			<key>Message_SpiritServices</key>
 			<text>A Spirit cannot owe more services than your current Summoning Skill Rating.</text>
 		</string>
@@ -4248,6 +4252,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Button_EditWeek</key>
 			<text>Edit Week</text>
+		</string>
+		<string>
+			<key>Button_DeleteWeek</key>
+			<text>Delete Week</text>
 		</string>
 		<string>
 			<key>Button_ChangeStartWeek</key>

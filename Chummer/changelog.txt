@@ -2,17 +2,26 @@ Build 179:
 Application Change:
 - First things first, good news bad news. Good news, automatic updates will be functional again for updates after 179. Bad news, due to a change in implementation of the automatic updates this brings an end to .Net 4.0 support. Chummer will no longer launch without .Net 4.5 or higher installed on your system. 
 - Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
-- Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodeplace nodes. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
+- Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodereplace nodes of weaponbonus. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
 - Fixed a crash issue caused by changing priority selection in Sum to Ten mode. Fixes #572.
 - Qualities can have their Limit assigned as either 'no' or a numeric value. This is intended as something of a placeholder until proper levels for qualities are implemented at a later date. 
-- Added the Depth statistic for AI; this shouldn't have an effect on existing characters.
+- Support for AI characters added. Xeno/Protosapients and E-Ghosts are treated as Metavariants.
+- Weapon Accessories can now modify the AP, Damage and FireMode of weapons using the damage, damagereplace, damagetype, ap, apreplace, firemode and firemodereplace keys. Currently this is used exclusively for the Overclocked mod (Okay technically it's currently an accessory, but there's no practical difference between the two at the moment so it goes where I say it goes.) Fixes #472
+- Handling has been split up into normal and offroad handling. The implementation method should prevent any issues from cropping up, but I've eaten my hat on that before. Please report any issues to the normal outlets.
+- Calendar entries can now be removed. Fixes #552.
+- The optional rule to have Essence Loss only reduce RES/MAG maximums has been re-enabled. Fixes #596.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
 - The quality Practice, Practice, Practice now excludes Combat Active skills from being selected.
 - The Foregrip accessory has both an Under and Barrel slot. 
 - Fixed the Range for the spell Knockout to be Touch.
-- Included Life Modules from Hard Targets, courtesy of Eric Dufurrena.
+- Included Life Modules from Rigger 5.0, courtesy of Eric Dufurrena.
+- Included content from Rigger 5.0, courtesy of Fweeba. Note: Most modifications do the things they're supposed to, with the exception of Sensor. New modification point system won't be done for a while. https://www.reddit.com/r/Shadowrun/comments/3xv4qp/rigger_50_chummer_files
+
+New Strings:
+- Message_DeleteCalendarWeek
+- Button_DeleteWeek
 
 Build 178: 
 Application Change: 

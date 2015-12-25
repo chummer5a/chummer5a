@@ -52,9 +52,9 @@
 			this.lblKarmaContactExtra = new System.Windows.Forms.Label();
 			this.nudKarmaContact = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaContact = new System.Windows.Forms.Label();
-            this.lblKarmaEnemyExtra = new System.Windows.Forms.Label();
-            this.nudKarmaEnemy = new System.Windows.Forms.NumericUpDown();
-            this.lblKarmaEnemy = new System.Windows.Forms.Label();
+			this.lblKarmaEnemyExtra = new System.Windows.Forms.Label();
+			this.nudKarmaEnemy = new System.Windows.Forms.NumericUpDown();
+			this.lblKarmaEnemy = new System.Windows.Forms.Label();
 			this.lblKarmaNuyenPerExtra = new System.Windows.Forms.Label();
 			this.nudKarmaNuyenPer = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaNuyenPer = new System.Windows.Forms.Label();
@@ -208,6 +208,7 @@
 			this.nudKarmaJoinGroup = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
 			this.tabOptionalRules = new System.Windows.Forms.TabPage();
+			this.chkMissions = new System.Windows.Forms.CheckBox();
 			this.chkContactPoints = new System.Windows.Forms.CheckBox();
 			this.chkMayBuyQualities = new System.Windows.Forms.CheckBox();
 			this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
@@ -249,7 +250,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkMissions = new System.Windows.Forms.CheckBox();
+			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -257,6 +258,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaImproveComplexForm)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
@@ -490,33 +492,6 @@
 			this.lblKarmaCarryover.TabIndex = 50;
 			this.lblKarmaCarryover.Tag = "Label_Options_Carryover";
 			this.lblKarmaCarryover.Text = "Carryover for New Character";
-            // 
-            // lblKarmaEnemyExtra
-            // 
-            this.lblKarmaEnemyExtra.AutoSize = true;
-            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(219, 474);
-            this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
-            this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
-            this.lblKarmaEnemyExtra.TabIndex = 49;
-            this.lblKarmaEnemyExtra.Tag = "Label_Options_ConnectionLoyalty";
-            this.lblKarmaEnemyExtra.Text = "x (Connection + Loyalty)";
-            // 
-            // nudKarmaEnemy
-            // 
-            this.nudKarmaEnemy.Location = new System.Drawing.Point(166, 472);
-            this.nudKarmaEnemy.Name = "nudKarmaEnemy";
-            this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaEnemy.TabIndex = 48;
-            // 
-            // lblKarmaEnemy
-            // 
-            this.lblKarmaEnemy.AutoSize = true;
-            this.lblKarmaEnemy.Location = new System.Drawing.Point(8, 474);
-            this.lblKarmaEnemy.Name = "lblKarmaEnemy";
-            this.lblKarmaEnemy.Size = new System.Drawing.Size(49, 13);
-            this.lblKarmaEnemy.TabIndex = 47;
-            this.lblKarmaEnemy.Tag = "Label_Options_Enemies";
-            this.lblKarmaEnemy.Text = "Enemies";
 			// 
 			// lblKarmaContactExtra
 			// 
@@ -544,6 +519,33 @@
 			this.lblKarmaContact.TabIndex = 44;
 			this.lblKarmaContact.Tag = "Label_Options_Contacts";
 			this.lblKarmaContact.Text = "Contacts";
+			// 
+			// lblKarmaEnemyExtra
+			// 
+			this.lblKarmaEnemyExtra.AutoSize = true;
+			this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(219, 474);
+			this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
+			this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
+			this.lblKarmaEnemyExtra.TabIndex = 49;
+			this.lblKarmaEnemyExtra.Tag = "Label_Options_ConnectionLoyalty";
+			this.lblKarmaEnemyExtra.Text = "x (Connection + Loyalty)";
+			// 
+			// nudKarmaEnemy
+			// 
+			this.nudKarmaEnemy.Location = new System.Drawing.Point(166, 472);
+			this.nudKarmaEnemy.Name = "nudKarmaEnemy";
+			this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
+			this.nudKarmaEnemy.TabIndex = 48;
+			// 
+			// lblKarmaEnemy
+			// 
+			this.lblKarmaEnemy.AutoSize = true;
+			this.lblKarmaEnemy.Location = new System.Drawing.Point(8, 474);
+			this.lblKarmaEnemy.Name = "lblKarmaEnemy";
+			this.lblKarmaEnemy.Size = new System.Drawing.Size(47, 13);
+			this.lblKarmaEnemy.TabIndex = 47;
+			this.lblKarmaEnemy.Tag = "Label_Options_Enemies";
+			this.lblKarmaEnemy.Text = "Enemies";
 			// 
 			// lblKarmaNuyenPerExtra
 			// 
@@ -1674,13 +1676,13 @@
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroup);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaCarryover);
 			this.tabKarmaCosts.Controls.Add(this.nudKarmaImproveSkillGroup);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaContact);
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaContact); 
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaContactExtra);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemy); 
-            this.tabKarmaCosts.Controls.Add(this.nudKarmaEnemy);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemyExtra);
-            this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroupExtra);
+			this.tabKarmaCosts.Controls.Add(this.lblKarmaContact);
+			this.tabKarmaCosts.Controls.Add(this.nudKarmaContact);
+			this.tabKarmaCosts.Controls.Add(this.lblKarmaContactExtra);
+			this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemy);
+			this.tabKarmaCosts.Controls.Add(this.nudKarmaEnemy);
+			this.tabKarmaCosts.Controls.Add(this.lblKarmaEnemyExtra);
+			this.tabKarmaCosts.Controls.Add(this.lblKarmaImproveSkillGroupExtra);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaAttribute);
 			this.tabKarmaCosts.Controls.Add(this.nudKarmaAttribute);
 			this.tabKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtra);
@@ -2289,6 +2291,17 @@
 			this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
 			this.tabOptionalRules.Text = "Optional Rules";
 			// 
+			// chkMissions
+			// 
+			this.chkMissions.AutoSize = true;
+			this.chkMissions.Location = new System.Drawing.Point(8, 75);
+			this.chkMissions.Name = "chkMissions";
+			this.chkMissions.Size = new System.Drawing.Size(197, 17);
+			this.chkMissions.TabIndex = 33;
+			this.chkMissions.Tag = "Checkbox_Options_Missions";
+			this.chkMissions.Text = "Hide Qualities prohibited by Missions";
+			this.chkMissions.UseVisualStyleBackColor = true;
+			// 
 			// chkContactPoints
 			// 
 			this.chkContactPoints.AutoSize = true;
@@ -2513,6 +2526,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkESSLossReducesMaximumOnly);
 			this.tabHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts);
 			this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit);
 			this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualities);
@@ -2801,16 +2815,17 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkMissions
+			// chkESSLossReducesMaximumOnly
 			// 
-			this.chkMissions.AutoSize = true;
-			this.chkMissions.Location = new System.Drawing.Point(8, 75);
-			this.chkMissions.Name = "chkMissions";
-			this.chkMissions.Size = new System.Drawing.Size(197, 17);
-			this.chkMissions.TabIndex = 33;
-			this.chkMissions.Tag = "Checkbox_Options_Missions";
-			this.chkMissions.Text = "Hide Qualities prohibited by Missions";
-			this.chkMissions.UseVisualStyleBackColor = true;
+			this.chkESSLossReducesMaximumOnly.AutoSize = true;
+			this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 164);
+			this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
+			this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
+			this.chkESSLossReducesMaximumOnly.TabIndex = 19;
+			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
+			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
+			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
+			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.cgkESSLossReducesMaximumOnly_CheckedChanged);
 			// 
 			// frmOptions
 			// 
@@ -2840,6 +2855,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaImproveComplexForm)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
@@ -3123,5 +3139,6 @@
 		private System.Windows.Forms.CheckBox chkLifeModule;
 		private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
 		private System.Windows.Forms.CheckBox chkMissions;
+		private System.Windows.Forms.CheckBox chkESSLossReducesMaximumOnly;
 	}
 }

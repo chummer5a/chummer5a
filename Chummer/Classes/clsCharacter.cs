@@ -5311,7 +5311,15 @@ namespace Chummer
                 strReturn = (intINI).ToString();
 
                 int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-                strReturn += " + " + intExtraIP.ToString() + "d6";
+
+
+				// A.I.s always have 4 Matrix Initiative Passes.
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
+				}
+
+				strReturn += " + " + intExtraIP.ToString() + "d6";
 
                 return strReturn;
             }
@@ -5338,9 +5346,9 @@ namespace Chummer
                     intIP = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
                 }
 
-                // A.I.s always have 3 Matrix Initiative Passes.
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-                    intIP = 3;
+                // A.I.s always have 4 Matrix Initiative Passes.
+                if (_strMetatype == "A.I.")
+                    intIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
                 intIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePassAdd);
@@ -5363,12 +5371,33 @@ namespace Chummer
                 int intINI = (_attINT.TotalValue) + WoundModifiers;
                 if (intINI < 0)
                     intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
 
                 int intExtraIP = 3;
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
 
-                return strReturn;
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4;
+                    if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
+
+				return strReturn;
             }
         }
 
@@ -5379,18 +5408,38 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
+				string strReturn = "";
 
-                int intINI = (_attINT.TotalValue) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
+				int intINI = (_attINT.TotalValue) + WoundModifiers;
+				if (intINI < 0)
+					intINI = 0;
 
-                int intExtraIP = 4;
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				int intExtraIP = 4;
 
-                return strReturn;
-            }
+				if (_strMetatype == "A.I.")
+				{
+					if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
+
+				return strReturn;
+			}
         }
 
         /// <summary>
