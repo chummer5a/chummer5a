@@ -49,7 +49,7 @@ namespace Chummer.Skills
 				if (_skillGroup == null || _skillGroup.Base == 0)
 				{
 					int max = 0;
-					var old = _base; // old value, not needed, don't fire too many events...
+					int old = _base; // old value, not needed, don't fire too many events...
 
 					//Calculate how far above maximum we are. 
 					int overMax = (-1) * (RatingMaximum - (value + IKarma));
@@ -62,13 +62,11 @@ namespace Chummer.Skills
 						Karma -= max; //reduce both by that amount
 						overMax -= max;
 
-						_base = Math.Max(0, value - (overMax + FreeBase())); //reduce value by leftovers
-					}
-					else
-					{
-						_base = Math.Max(value - FreeBase(), 0);
+						value -= overMax; //reduce value by leftovers, later prevents it going belov 0
 					}
 					
+					_base = Math.Max(0, value - FreeBase());
+
 					//if old != base, base changed
 					if (old != _base) OnPropertyChanged();
 
@@ -90,8 +88,16 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				var old = _karma;
-				_karma = Math.Max(0, Math.Min(value - ( FreeKarma() + _skillGroup?.Karma ?? 0), RatingMaximum - (IBase + FreeKarma() + _skillGroup?.Karma ?? 0))); 
+				int old = _karma;
+
+				//Calculate how far above maximum we are. 
+				int overMax = (-1)*(RatingMaximum - (value + Base));
+
+				value -= Math.Max(0, overMax); //reduce by 0 or points over. 
+
+				//Handle free levels, don,t go below 0
+				_karma = Math.Max(0, value - (FreeKarma() + _skillGroup?.Karma ?? 0)); 
+
 				if(old != _karma) OnPropertyChanged();
 				
 			}

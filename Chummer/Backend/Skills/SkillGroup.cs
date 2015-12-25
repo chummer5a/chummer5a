@@ -97,26 +97,53 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return _skillFromSp + FreeBase;
+				return _skillFromSp + FreeBase();
 
 			}
 			set
 			{
 				if (this.BaseUnbroken)
 				{
-					_skillFromSp = Math.Min(Math.Max(value - FreeBase, 0), RatingMaximum - (Karma + FreeBase));
-					OnPropertyChanged();
+					int max = 0;
+					int old = _skillFromSp;
+
+					//Calculate how far above maximum we are. 
+					int overMax = (-1)*(RatingMaximum - (value + _skillFromKarma + FreeLevels()));
+					
+					//reduce value by max or 0
+					//TODO karma from skill, karma other stuff might be reduced
+					value -= Math.Max(0, overMax);
+
+					//and save back, cannot go under 0
+					_skillFromSp = Math.Max(0, value -  FreeBase());
+
+					if(old != _skillFromSp) OnPropertyChanged();
 				}
 			}
 		}
 
 		public int Karma
 		{
-			get { return _skillFromKarma; }
+			get { return _skillFromKarma + FreeLevels(); }
 			set
 			{
-				_skillFromKarma = Math.Max(0, Math.Min(value - FreeLevels, RatingMaximum - (_affectedSkills.Max(x => x.IBase) + FreeLevels)));
-				OnPropertyChanged();
+				if (this.KarmaUnbroken)
+				{
+					int max = 0;
+					int old = _skillFromKarma;
+
+					//Calculate how far above maximum we are. 
+					int overMax = (-1)*(RatingMaximum - (value + _skillFromSp + FreeBase()));
+
+					//reduce value by max or 0
+					//TODO can remove karma from skills
+					value -= Math.Max(0, overMax);
+
+					//and save back, cannot go under 0
+					_skillFromKarma = Math.Max(0, value - FreeLevels());
+
+					if (old != _skillFromKarma) OnPropertyChanged();
+				}
 			}
 		}
 
@@ -152,27 +179,20 @@ namespace Chummer.Skills
 			get { return Karma + Base; }
 		}
 
-		internal int FreeBase
+		internal int FreeBase()
 		{
-			get
-			{
-				return (from improvement in _character.Improvements
-					   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
-					      && improvement.ImprovedName == _groupName
-					  select improvement.Value).Sum();
-			} 
+			return (from improvement in _character.Improvements
+				   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
+				      && improvement.ImprovedName == _groupName
+				  select improvement.Value).Sum();	
 		}
 
-		int FreeLevels
+		int FreeLevels()
 		{
-			get
-			{
-				return (from improvement in _character.Improvements
-					   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
-						  && improvement.ImprovedName == _groupName
-					  select improvement.Value).Sum();
-			}
-			
+			return (from improvement in _character.Improvements
+				   where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
+					  && improvement.ImprovedName == _groupName
+				  select improvement.Value).Sum();
 		}
 
 		public int RatingMaximum
