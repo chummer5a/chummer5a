@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -12,6 +13,7 @@ namespace Chummer.UI.Shared
 {
 	public partial class SkillControl2 : UserControl
 	{
+		private static double total = 0;
 		private Skill skill;
 		public SkillControl2(Skill skill)
 		{
@@ -42,9 +44,7 @@ namespace Chummer.UI.Shared
 
 			cboSpec.DataBindings.Add("Text", skill, "Specialization", false, DataSourceUpdateMode.OnPropertyChanged);
 			cboSpec.SelectedIndex = -1;
-
-
-		}
+        }
 
 		private void SkillControl2_Load(object sender, EventArgs e)
 		{

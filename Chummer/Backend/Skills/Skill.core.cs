@@ -43,7 +43,7 @@ namespace Chummer.Skills
 				if (_skillGroup == null || _skillGroup.Base == 0)
 				{
 					var old = _base; //TODO: SWARP MIN MAX ORDER
-					_base = Math.Min(Math.Max(0, value - FreeBase()), RatingMaximum - (IKarma + FreeBase()));
+					_base = Math.Max(0, Math.Min(value - FreeBase(), RatingMaximum - (IKarma + FreeBase())));
 					if(old != _base) OnPropertyChanged();
 				}
 			}
@@ -61,12 +61,13 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return _karma;
-				
+				return _karma + FreeKarma() + _skillGroup?.Karma ?? 0;
 			}
 			set
 			{
-				_karma = value; 
+				var old = _karma;
+				_karma = Math.Max(0, Math.Min(value - ( FreeKarma() + _skillGroup?.Karma ?? 0), RatingMaximum - (IBase + FreeKarma() + _skillGroup?.Karma ?? 0))); 
+				if(old != _karma) OnPropertyChanged();
 				
 			}
 		}

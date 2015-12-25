@@ -21,7 +21,7 @@ namespace Chummer.Skills
 				if (skillGroup._groupName == skill.SkillGroup)
 				{
 					if(!skillGroup._affectedSkills.Contains(skill))
-						skillGroup._affectedSkills.Add(skill);
+						skillGroup.Add(skill);
 					return skillGroup;
 
 				}
@@ -61,7 +61,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		private bool _baseBrokenOldValue;
+		private bool _baseBrokenOldValue = true;
 		private List<Skill> _affectedSkills = new List<Skill>(); 
 		private int _skillFromSp;
 		private int _skillFromKarma;
@@ -108,7 +108,11 @@ namespace Chummer.Skills
 
 		public bool BaseUnbroken
 		{
-			get { return !_affectedSkills.Any(x => x.IBase > 0); }
+			get
+			{
+				bool ret = _affectedSkills.Any(x => x.IBase > 0);
+				return !ret;
+			}
 		}
 
 		public int Rating

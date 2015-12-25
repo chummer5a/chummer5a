@@ -21,7 +21,7 @@ using Chummer.Datastructures;
 
 namespace Chummer.Skills
 {
-	[DebuggerDisplay("{_name} {_skillFromSp} {_skillFromKarma}")]
+	[DebuggerDisplay("{_name} {_base} {_karma}")]
 	public partial class Skill : INotifyPropertyChanged
 	{
 		#region REMOVELATERANDPLACEINCHILD
@@ -593,11 +593,11 @@ namespace Chummer.Skills
 			if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Base))
 			{
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
-				
 			}
-			else
+			else if(propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
 			{
-				
+
+				OnPropertyChanged(propertyChangedEventArg.PropertyName);
 			}
 
 			return;
