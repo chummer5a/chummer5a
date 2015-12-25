@@ -1655,10 +1655,8 @@ namespace Chummer
                 objXmlSumtoTenList = objXmlDocumentSumtoTen.SelectNodes("/chummer/sum10priorities/SumtoTen[category = \"Skills\" and value = \"" + cboSkills.SelectedValue + "\"]");
                 if (objXmlSumtoTenList[0]["skills"] != null)
                 {
-                    _objCharacter.SkillPoints = Convert.ToInt32(objXmlSumtoTenList[0]["skills"].InnerText);
-                    _objCharacter.SkillPointsMaximum = _objCharacter.SkillPoints;
-                    _objCharacter.SkillGroupPoints = Convert.ToInt32(objXmlSumtoTenList[0]["skillgroups"].InnerText);
-                    _objCharacter.SkillGroupPointsMaximum = _objCharacter.SkillGroupPoints;
+                    _objCharacter.SkillPointsMaximum = Convert.ToInt32(objXmlSumtoTenList[0]["skills"].InnerText);
+					_objCharacter.SkillGroupPointsMaximum = Convert.ToInt32(objXmlSumtoTenList[0]["skillgroups"].InnerText);
                 }
 
 				// Load the SumtoTen information.

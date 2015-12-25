@@ -14,6 +14,8 @@ namespace Chummer.UI.Shared
 {
 	public partial class SkillsDisplay<TType> : UserControl
 	{
+		public PropertyChangedEventHandler ChildPropertyChanged;
+
 		private readonly BindingList<TType> _contents;
 		private readonly Func<TType, Control> _createFunc;
 		private readonly List<Control> _controls = new List<Control>();
@@ -65,6 +67,17 @@ namespace Chummer.UI.Shared
 			}
 			else if (Debugger.IsAttached) Debugger.Break();
 
+			INotifyPropertyChanged possibleInterface = (INotifyPropertyChanged) content;
+			if (possibleInterface != null)
+			{
+				possibleInterface.PropertyChanged += OnChildChanged;
+			}
+
+		}
+
+		private void OnChildChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			ChildPropertyChanged?.Invoke(sender, propertyChangedEventArgs);
 		}
 
 		public void Filter(Func<TType, bool> predicate)
@@ -76,13 +89,6 @@ namespace Chummer.UI.Shared
 
 			}
 			tblContents.ResumeLayout();
-
-		}
-
-		private void ContentOnSizeChanged(object sender, EventArgs eventArgs)
-		{
-			
-
 		}
 
 		private void SkillsDisplay_Resize(object sender, EventArgs e)

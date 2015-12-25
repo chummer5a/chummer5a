@@ -69,7 +69,9 @@ namespace Chummer
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
             _objCharacter.ErasedChanged += objCharacter_ErasedChanged;
 
-            GlobalOptions.Instance.MRUChanged += PopulateMRU;
+	        tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
+
+			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
@@ -86,10 +88,12 @@ namespace Chummer
             MoveControls();
         }
 
-        /// <summary>
-        /// Set the form to Loading mode so that certain events do not fire while data is being populated.
-        /// </summary>
-        public bool Loading
+		
+
+		/// <summary>
+		/// Set the form to Loading mode so that certain events do not fire while data is being populated.
+		/// </summary>
+		public bool Loading
         {
             set
             {
@@ -2303,10 +2307,17 @@ namespace Chummer
 
             }
         }
-        #endregion
 
-        #region Menu Events
-        private void mnuFileSave_Click(object sender, EventArgs e)
+		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{  //TODO: This fires an ABOSURD amount of times, put acctual code on a n ms delay, or not return early if last call was within n ms?
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+			UpdateCharacterInfo();
+		}
+		#endregion
+
+		#region Menu Events
+		private void mnuFileSave_Click(object sender, EventArgs e)
         {
             SaveCharacter();
         }
@@ -15660,239 +15671,13 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                // Get the total point value
-                foreach (SkillGroupControl objGroupControl in panSkillGroups.Controls)
-                {
-                    if (objGroupControl.GroupRating > objGroupControl.GroupRatingMinimum)
-                    {
-                        intSkillGroupsPoints += objGroupControl.BaseRating - objGroupControl.GroupRatingMinimum;
-                    }
-                    for (int i = 1; i <= objGroupControl.KarmaRating; i++)
-                    {
-                        intKarmaPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
-						}
-                    }
-                }
-            }
-            else
-            {
-                foreach (SkillGroupControl objGroupControl in panSkillGroups.Controls)
-                {
-                    if (objGroupControl.GroupRating > objGroupControl.GroupRatingMinimum)
-                    {
-                        // The first point in a Skill Group costs KaramNewSkillGroup.
-                        // Each additional beyond 1 costs i x KarmaImproveSkillGroup.
-                        intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-                        intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-							intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						}
-                        for (int i = objGroupControl.GroupRatingMinimum + 2; i <= objGroupControl.GroupRating; i++)
-                        {
-							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-							{
-								intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-								intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-							}
-                            intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-                            intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-                        }
-                    }
-
-                    // If the Skill Group has been broken, get the Rating value for the lowest Skill in the Group.
-                    if (objGroupControl.Broken && _objOptions.BreakSkillGroupsInCreateMode)
-                    {
-                        int intMin = 999;
-                        foreach (Skill objSkill in _objCharacter.Skills)
-                        {
-                            if (objSkill.SkillGroup == objGroupControl.GroupName)
-                            {
-                                if (objSkill.Rating < intMin)
-                                    intMin = objSkill.Rating;
-                            }
-                        }
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-							intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						}
-						intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-                        intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-                        for (int i = 2; i <= intMin; i++)
-                        {
-							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-							{
-								intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-								intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-							}
-                            intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-                            intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-                        }
-                    }
-                }
-                lblSkillGroupsBP.Text = String.Format("{0} " + strPoints, intSkillGroupsPoints.ToString());
-                intFreestyleBP += intSkillGroupsPoints;
-            }
-
-            // ------------------------------------------------------------------------------
-            // Calculate the BP used by Active Skills.
-            int intActivePointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    for (int i = 1; i <= objSkillControl.SkillKarma; i++)
-                    {
-                        intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill);
-	                    if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-	                    {
-                            intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
-	                    }
-						//Jack of All Trades gives a 1 point karma discount for skills below rank 6, but costs 2 extra above that, minimum cost of 1
-                        if (_objCharacter.JackOfAllTrades)
-	                    {
-		                    if (i <= 5)
-		                    {
-                                if (intActivePointsUsed > 1) intActivePointsUsed -= 1;
-		                    }
-		                    else
-		                    {
-                                intActivePointsUsed += 2; 
-		                    }
-	                    }
-                    }
-                    if (objSkillControl.SkillSpec != "" && objSkillControl.BuyWithKarma && !objSkillControl.SkillObject.ExoticSkill)
-                        intKarmaPointsRemain -= _objCharacter.Options.KarmaSpecialization;
-                }
-                intFreestyleBP += intActivePointsUsed;
-                intKarmaPointsRemain -= intActivePointsUsed;
-            }
-            else
-            {
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    if (objSkillControl.SkillRating > objSkillControl.SkillRatingMinimum && !objSkillControl.IsGrouped)
-                    {
-                        // The first point in a Skill costs KarmaNewActiveSkill.
-                        // Each additional beyond 1 costs i x KarmaImproveActiveSkill.
-
-                        //Uneducated, Uncouth character handler.
-                        //First level of skill
-                        if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-                        {
-                            intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill * 2;
-                            intActivePointsUsed += _objOptions.KarmaNewActiveSkill * 2;
-                        }
-                        else
-                        {
-                            intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill;
-                            intActivePointsUsed += _objOptions.KarmaNewActiveSkill;
-                        }
-	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
-	                    {
-                            intKarmaPointsRemain += 1;
-                            intActivePointsUsed -= 1;
-						}
-                        //Subsequent levels of skills
-                        for (int i = objSkillControl.SkillRatingMinimum + 2; i <= objSkillControl.SkillRating; i++)
-                        {
-                            if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-                            {
-                                intKarmaPointsRemain -= (i * _objOptions.KarmaImproveActiveSkill) * 2;
-                                intActivePointsUsed += (i * _objOptions.KarmaImproveActiveSkill * 2);
-                            }
-                            else
-                            {
-                                intKarmaPointsRemain -= i * _objOptions.KarmaImproveActiveSkill;
-                                intActivePointsUsed += i * _objOptions.KarmaImproveActiveSkill;
-                            }
-
-							if (_objCharacter.JackOfAllTrades)
-							{
-								if (objSkillControl.SkillRating <= 5)
-								{
-                                    intKarmaPointsRemain += 1;
-                                    intActivePointsUsed -= 1;
-								}
-								else
-								{
-                                    intKarmaPointsRemain -= 2;
-                                    intActivePointsUsed += 2;
-								}
-							}
-						}
-
-                        // If the ability to break Skill Groups is enabled, refund the cost of the first X points of the Skill, where X is the minimum Rating for all Skill that used to a part of the Group.
-                        if (_objOptions.BreakSkillGroupsInCreateMode)
-                        {
-                            int intMin = 999;
-                            bool blnApplyModifier = false;
-							//TODO CALCULATE SKILLS
-                            // Find the matching Skill Group.
-                            //foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-                            //{
-                            //    if (objGroup.Broken && objGroup.Name == objSkillControl.SkillGroup)
-                            //    {
-                            //        // Determine the lowest Rating amongst the Skills in the Groups.
-                            //        foreach (Skill objSkill in _objCharacter.Skills)
-                            //        {
-                            //            if (objSkill.SkillGroup == objGroup.Name)
-                            //            {
-                            //                if (objSkill.Rating < intMin)
-                            //                {
-                            //                    intMin = objSkill.Rating;
-                            //                    blnApplyModifier = true;
-                            //                }
-                            //            }
-                            //        }
-                            //        break;
-                            //    }
-                            //}
-
-                            if (blnApplyModifier)
-                            {
-                                // Refund the first X points of Karma cost for the Skill.
-                                if (intMin >= 1)
-                                {
-                                    intKarmaPointsRemain += _objOptions.KarmaNewActiveSkill;
-                                    intActivePointsUsed -= _objOptions.KarmaNewActiveSkill;
-                                }
-                                if (intMin > 1)
-                                {
-                                    for (int i = 2; i <= intMin; i++)
-                                    {
-                                        intKarmaPointsRemain += i * _objOptions.KarmaImproveActiveSkill;
-                                        intActivePointsUsed -= i * _objOptions.KarmaImproveActiveSkill;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Specialization Cost (Exotic skills do not count since their "Spec" is actually what the Skill is being used for and cannot be Specialized).
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
-                    {
-                        if (objSkillControl.BuyWithKarma)
-                        {
-                            // Each Specialization costs KarmaSpecialization.
-                            intKarmaPointsRemain -= _objOptions.KarmaSpecialization;
-                            intActivePointsUsed += _objOptions.KarmaSpecialization;
-                        }
-                    }
-                }
-
-                lblActiveSkillsBP.Text = String.Format("{0} " + strPoints, intActivePointsUsed.ToString());
-                intFreestyleBP += intActivePointsUsed;
-            }
+            int intSkillGroupsPoints = _objCharacter.SkillGroups.TotalCostKarma();
+            
+			lblSkillGroupsBP.Text = String.Format("{0} " + strPoints, intSkillGroupsPoints.ToString());
+			// ------------------------------------------------------------------------------
+			// Calculate the BP used by Active Skills.
+			intKarmaPointsRemain -= _objCharacter.Skills.TotalCostKarma();
+            
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
@@ -15960,6 +15745,7 @@ namespace Chummer
                 }
             }
 
+			//TODO: Remaining is named USED?
             _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - knowledgeFreePointsUsed;
             intKarmaPointsRemain -= knowledgeKarmaUsed;
 
@@ -16304,38 +16090,12 @@ namespace Chummer
                 //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
                 lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
 
+				//TODO: Change order of this and kno, Wastefull but possible to use SP for KNO
                 // Update the character's Skill information.
-                int intSkills = 0;
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
-	                objSkillControl.SkillBase = objSkillControl.SkillObject.Base;
-                    objSkillControl.RefreshControl();
-                    //if (!objSkillControl.IsGrouped)
-                    //    intSkills += objSkillControl.SkillBase - objSkillControl.SkillObject.FreeLevels;
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
-                    {
-                        bool blnFound = false;
-                        if (objSkillControl.SkillName == "Artisan")
-                        {
-                            // Look for the Inspired quality to see if we get a free specialization
-                            foreach (Quality objQuality in _objCharacter.Qualities)
-                            {
-                                if (objQuality.Name == "Inspired")
-                                    blnFound = true;
-                            }
-                        }
-                        if (!blnFound && !objSkillControl.BuyWithKarma)
-                        {
-                            intSkills++;
-                        }
-                    }
-                }
-                _objCharacter.SkillPoints = _objCharacter.SkillPointsMaximum - intSkills;
-                lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints.ToString(), _objCharacter.SkillPointsMaximum.ToString());
+               lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints, _objCharacter.SkillPointsMaximum);
 
                 // Update the character's Knowledge Skill information.
-                intSkills = 0;
+                int intSkills = 0;
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
                     intSkills += objSkillControl.SkillBase;
@@ -16357,14 +16117,8 @@ namespace Chummer
                 lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intSkills).ToString(), intKnowledgeSkillPoints.ToString());
 
                 // Update the character's skill group information.
-                int intSkillGroups = 0;
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    intSkillGroups += objSkillGroupControl.BaseRating - objSkillGroupControl.GroupRatingMinimum;
-                }
-                lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints.ToString(), _objCharacter.SkillGroupPointsMaximum.ToString());
-                _objCharacter.SkillGroupPoints = _objCharacter.SkillGroupPointsMaximum - intSkillGroups;
-
+                lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);
+                
                 // Condition Monitor.
                 double dblBOD = _objCharacter.BOD.TotalValue;
                 double dblWIL = _objCharacter.WIL.TotalValue;

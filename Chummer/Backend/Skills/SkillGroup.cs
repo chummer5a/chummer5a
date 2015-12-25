@@ -285,6 +285,33 @@ namespace Chummer.Skills
 			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 		}
 
+		public int CurrentSpCost()
+		{
+			return _skillFromSp;
+		}
+
+		public int CurrentKarmaCost()
+		{
+			if (_skillFromKarma == 0) return 0;
+
+			int upper = _affectedSkills.Min(x => x.Rating);
+			int lower = upper - _skillFromKarma;
+
+			int cost = upper*(upper + 1);
+			cost -= lower*(lower - 1);
+			cost /= 2; //We get sqre, need triangle
+			
+			return cost * _character.Options.KarmaImproveSkillGroup; 
+		}
+
+		
+		public IEnumerable<Skill> GetEnumerable() //Databinding shits itself if this implements IEnumerable
+		{
+			return _affectedSkills;
+		}
+
 		#endregion
+
+
 	}
 }

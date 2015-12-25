@@ -6529,11 +6529,7 @@ namespace Chummer
         {
             get
             {
-                return _intSkillPoints;
-            }
-            set
-            {
-                _intSkillPoints = value;
+                return SkillPointsMaximum - Skills.TotalCostSp();
             }
         }
 
@@ -6559,12 +6555,9 @@ namespace Chummer
         {
             get
             {
-                return _intSkillGroups;
+                return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase());
             }
-            set
-            {
-                _intSkillGroups = value;
-            }
+            
         }
 
         /// <summary>

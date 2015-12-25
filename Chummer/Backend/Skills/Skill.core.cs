@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Chummer.Skills
@@ -214,6 +215,93 @@ namespace Chummer.Skills
 			}
 			return 0;
 		}
+
+		/// <summary>
+		/// How much Sp this costs. Price during career mode is undefined
+		/// </summary>
+		/// <returns></returns>
+		public int CurrentSpCost()
+		{
+			return _base + 
+				((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+		}
+
+		/// <summary>
+		/// How much karma this costs. Return value during career mode is undefined
+		/// </summary>
+		/// <returns></returns>
+		public int CurrentKarmaCost()
+		{
+			//No rating can obv not cost anything
+			//Makes debugging easier as we often only care about value calculation
+			if (Rating == 0) return 0; 
+			
+
+			int cost = 0;
+			if (_skillGroup?.Karma > 0)
+			{
+				int groupUpper = _skillGroup.GetEnumerable().Min(x => x.Base + x.Karma);
+				int groupLower = groupUpper - _skillGroup.Karma;
+
+				int lower = Base + FreeKarma(); //Might be an error here
+
+				cost = RangeCost(lower, groupLower) + RangeCost(groupUpper, Rating);
+			}
+			else
+			{
+				int lower = Base + FreeKarma();
+
+				cost = RangeCost(lower, Rating);
+			}
+
+			//Don't think this is going to happen, but if it happens i want to know
+			if (cost < 0 && Debugger.IsAttached)
+				Debugger.Break();
+
+			cost = Math.Max(0, cost); //Don't give karma back...
+
+			cost +=  //Spec
+					(!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
+					_character.Options.KarmaSpecialization : 0;
+
+
+			return cost;
+
+		}
+
+		private int RangeCost(int lower, int upper)
+		{
+			//TODO: this don't handle buying new skills if new skill price != upgrade price
+			int cost = upper * (upper + 1); //cost if nothing else was there
+			cost -= lower*(lower + 1); //remove "karma" costs from base + free
+
+			cost /= 2; //we get square, we need triangle
+
+			cost *= _character.Options.KarmaImproveActiveSkill;
+			return cost;
+		}
+
+		/// <summary>
+		/// Karma price to upgrade. Returns negative if impossible
+		/// </summary>
+		/// <returns>Price in karma</returns>
+		public int UpgradeKarmaCost()
+		{
+			if (Rating <= RatingMaximum)
+			{
+				return -1;
+			}
+			else if (Rating == 0)
+			{
+				return _character.Options.KarmaNewActiveSkill;
+			}
+			else
+			{
+				return Rating == 0
+					? _character.Options.KarmaNewActiveSkill
+					: (Rating + 1)*_character.Options.KarmaImproveActiveSkill;
+			}
+		}
 		
 		private int FreeKarma()
 		{
@@ -233,7 +321,7 @@ namespace Chummer.Skills
 
 		private bool ForceBuyWithKarma()
 		{
-			return _karma > 0 || _skillGroup.Karma > 0 || _skillGroup.Base > 0;
+			return _karma > 0 || _skillGroup?.Karma > 0 || _skillGroup?.Base > 0;
 		}
 	}
 }

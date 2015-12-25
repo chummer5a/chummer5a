@@ -188,8 +188,7 @@ namespace Chummer.Skills
 		#endregion
 
 		private readonly SkillGroup _skillGroup;
-		protected bool _skillGroupLinked = true; //Auto broken and 'kind' of true
- 		protected readonly CharacterAttrib UsedAttribute;
+		protected readonly CharacterAttrib UsedAttribute;
 		private readonly Guid _objId;
 		private readonly Character _character;
 		protected readonly bool _default;
@@ -327,10 +326,12 @@ namespace Chummer.Skills
 					if (string.IsNullOrWhiteSpace(value))
 					{
 						Specializations.RemoveAt(0);
+						OnPropertyChanged();
 					}
 					else if (Specializations[0].Name != value)
 					{
 						Specializations[0] = new SkillSpecialization(value, true);
+						OnPropertyChanged();
 					}
 				}
 				else
@@ -338,6 +339,7 @@ namespace Chummer.Skills
 					if (!String.IsNullOrWhiteSpace(value))
 					{
 						Specializations.Add(new SkillSpecialization(value, true));
+						OnPropertyChanged();
 					}
 				}
 
@@ -346,8 +348,6 @@ namespace Chummer.Skills
 
 		public string DicePoolModifiersTooltip { get; }
 		
-		
-
 		public SkillGroup SkillGroupObject { get { return _skillGroup; } } 
 		
 		public string Page { get; private set; }

@@ -1747,10 +1747,8 @@ namespace Chummer
                 objXmlPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue + "\"]");
                 if (objXmlPriorityList[0]["skills"] != null)
                 {
-                    _objCharacter.SkillPoints = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
-                    _objCharacter.SkillPointsMaximum = _objCharacter.SkillPoints;
-                    _objCharacter.SkillGroupPoints = Convert.ToInt32(objXmlPriorityList[0]["skillgroups"].InnerText);
-                    _objCharacter.SkillGroupPointsMaximum = _objCharacter.SkillGroupPoints;
+					_objCharacter.SkillPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
+					_objCharacter.SkillGroupPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skillgroups"].InnerText);
                 }
 
 				// Load the Priority information.

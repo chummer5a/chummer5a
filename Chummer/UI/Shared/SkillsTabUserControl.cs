@@ -13,7 +13,8 @@ namespace Chummer.UI.Shared
 {
 	public partial class SkillsTabUserControl : UserControl
 	{
-		
+		public event PropertyChangedEventHandler ChildPropertyChanged; 
+
 		private SkillsDisplay<Skill> _skills;
 		private SkillsDisplay<SkillGroup> _groups;
 
@@ -67,6 +68,9 @@ namespace Chummer.UI.Shared
 			cboDisplayFilter.DisplayMember = "Item1";
 			cboDisplayFilter.SelectedIndex = 0;
 			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+
+			_skills.ChildPropertyChanged += ChildPropertyChanged;
+			_groups.ChildPropertyChanged += ChildPropertyChanged;
 
 			Visible = true;
 			Panel1_Resize(null, null);
