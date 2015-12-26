@@ -310,6 +310,8 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (Rating == 0) return ""; //Unleveled skills cannot have a specialization;
+
 				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
 				if (Specializations.Count > 0)
 				{
@@ -327,11 +329,13 @@ namespace Chummer.Skills
 					{
 						Specializations.RemoveAt(0);
 						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 					else if (Specializations[0].Name != value)
 					{
 						Specializations[0] = new SkillSpecialization(value, true);
 						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 				}
 				else
@@ -340,6 +344,7 @@ namespace Chummer.Skills
 					{
 						Specializations.Add(new SkillSpecialization(value, true));
 						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 				}
 
@@ -426,10 +431,12 @@ namespace Chummer.Skills
 			if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Base))
 			{
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
+				KarmaSpecForcedMightChange();
 			}
 			else if(propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
 			{
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
+				KarmaSpecForcedMightChange();
 			}
 		}
 

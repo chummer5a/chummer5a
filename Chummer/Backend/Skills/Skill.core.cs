@@ -10,16 +10,35 @@ namespace Chummer.Skills
 		private int _karma;
 		private bool _buyWithKarma;
 
+		/// <summary>
+		/// Base for internal use. No calling into other classes, making recursive loops impossible
+		/// </summary>
 		internal int Ibase
 		{
 			get { return _base + FreeBase(); }
 		}
 
+		/// <summary>
+		/// Karma for internal use. No calling into other classes, making recursive loops impossible
+		/// </summary>
 		internal int Ikarma
 		{
 			get { return _karma + FreeKarma(); }
 		}
 
+		/// <summary>
+		/// How many points REALLY are in _base. Better that subclasses calculating Base - FreeBase()
+		/// </summary>
+		protected int BasePoints { get { return _base; } }
+
+		/// <summary>
+		/// How many points REALLY are in _karma Better htan subclasses calculating Karma - FreeKarma()
+		/// </summary>
+		protected int KarmaPoints { get { return _karma; } }
+
+		/// <summary>
+		/// Is it possible to place points in Base or is it prevented? (Build method or skill group)
+		/// </summary>
 		public bool BaseUnlocked
 		{
 			get { return _character.BuildMethod.HaveSkillPoints() && 
@@ -28,7 +47,7 @@ namespace Chummer.Skills
 
 		/// <summary>
 		/// The amount of points this skill have from skill points and bonuses
-		/// to the skill rating
+		/// to the skill rating that would be optained in some points of character creation
 		/// </summary>
 		public int Base
 		{
@@ -72,19 +91,20 @@ namespace Chummer.Skills
 
 					//if max is changed, karma was too
 					if(max != 0) OnPropertyChanged(nameof(Karma));
+					KarmaSpecForcedMightChange();
 				}
 			}
 		}
 
 		
 		/// <summary>
-		/// Amount of skill points bought with karma
+		/// Amount of skill points bought with karma and bonues to the skills rating
 		/// </summary>
 		public int Karma
 		{
 			get
 			{
-				return _karma + FreeKarma() + _skillGroup?.Karma ?? 0;
+				return _karma + FreeKarma() + (_skillGroup?.Karma ?? 0);
 			}
 			set
 			{
@@ -96,10 +116,10 @@ namespace Chummer.Skills
 				value -= Math.Max(0, overMax); //reduce by 0 or points over. 
 
 				//Handle free levels, don,t go below 0
-				_karma = Math.Max(0, value - (FreeKarma() + _skillGroup?.Karma ?? 0)); 
+				_karma = Math.Max(0, value - (FreeKarma() + (_skillGroup?.Karma ?? 0))); 
 
 				if(old != _karma) OnPropertyChanged();
-				
+				KarmaSpecForcedMightChange();
 			}
 		}
 
@@ -119,14 +139,12 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				_buyWithKarma |= ForceBuyWithKarma();
-
-
 				return _buyWithKarma;
 			}
 			set
 			{
-				_buyWithKarma = value;
+				_buyWithKarma = (value ||  ForceBuyWithKarma()) && !UnForceBuyWithKarma();
+				OnPropertyChanged();
 			}
 		}
 
@@ -139,7 +157,7 @@ namespace Chummer.Skills
 			{
 				int otherbonus = 0; //TODO READ FROM IMPMANAGER
 									//TODO: Disallow street sams magic skills, etc (ASPECTED!!)
-				return (_character.Created
+				return (_character.Created 
 					? 12
 					: (KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
 			}
@@ -198,7 +216,7 @@ namespace Chummer.Skills
 
 		/// <summary>
 		/// The total, general pourpose dice pool for this skill, using another
-		/// value for the linked attribute. This allows calculation of dice pools
+		/// value for the attribute part of the test. This allows calculation of dice pools
 		/// while using cyberlimbs or while rigging
 		/// </summary>
 		/// <param name="attribute">The value of the used attribute</param>
@@ -220,7 +238,7 @@ namespace Chummer.Skills
 		/// How much Sp this costs. Price during career mode is undefined
 		/// </summary>
 		/// <returns></returns>
-		public int CurrentSpCost()
+		public virtual int CurrentSpCost()
 		{
 			return _base + 
 				((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
@@ -230,7 +248,7 @@ namespace Chummer.Skills
 		/// How much karma this costs. Return value during career mode is undefined
 		/// </summary>
 		/// <returns></returns>
-		public int CurrentKarmaCost()
+		public virtual int CurrentKarmaCost()
 		{
 			//No rating can obv not cost anything
 			//Makes debugging easier as we often only care about value calculation
@@ -269,7 +287,13 @@ namespace Chummer.Skills
 
 		}
 
-		private int RangeCost(int lower, int upper)
+		/// <summary>
+		/// Calculate the karma cost of increasing a skill from lower to upper
+		/// </summary>
+		/// <param name="lower">Staring rating of skill</param>
+		/// <param name="upper">End rating of the skill</param>
+		/// <returns></returns>
+		protected int RangeCost(int lower, int upper)
 		{
 			//TODO: this don't handle buying new skills if new skill price != upgrade price
 			int cost = upper * (upper + 1); //cost if nothing else was there
@@ -285,7 +309,7 @@ namespace Chummer.Skills
 		/// Karma price to upgrade. Returns negative if impossible
 		/// </summary>
 		/// <returns>Price in karma</returns>
-		public int UpgradeKarmaCost()
+		public virtual int UpgradeKarmaCost()
 		{
 			if (Rating <= RatingMaximum)
 			{
@@ -302,8 +326,12 @@ namespace Chummer.Skills
 					: (Rating + 1)*_character.Options.KarmaImproveActiveSkill;
 			}
 		}
-		
-		private int FreeKarma()
+
+		/// <summary>
+		/// How many free points of this skill have gotten, with the exception of some things during character creation
+		/// </summary>
+		/// <returns></returns>
+		protected int FreeKarma()
 		{
 			return (from improvement in CharacterObject.Improvements
 				   where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
@@ -311,7 +339,11 @@ namespace Chummer.Skills
 				  select improvement.Value).Sum();
 		}
 
-		private int FreeBase()
+		/// <summary>
+		/// How many free points this skill have gotten during some parts of character creation
+		/// </summary>
+		/// <returns></returns>
+		protected int FreeBase()
 		{
 			return (from improvement in CharacterObject.Improvements
 				   where improvement.ImproveType == Improvement.ImprovementType.SkillBase
@@ -319,9 +351,39 @@ namespace Chummer.Skills
 				  select improvement.Value).Sum();
 		}
 
+		/// <summary>
+		/// Do circumstances force the Specialization to be bought with karma?
+		/// </summary>
+		/// <returns></returns>
 		private bool ForceBuyWithKarma()
 		{
-			return _karma > 0 || _skillGroup?.Karma > 0 || _skillGroup?.Base > 0;
+			return !string.IsNullOrWhiteSpace(Specialization) && (_karma > 0 || _skillGroup?.Karma > 0 || _skillGroup?.Base > 0);
+		}
+
+		/// <summary>
+		/// Do circumstances force the Specialization to not be bought with karma?
+		/// </summary>
+		/// <returns></returns>
+		private bool UnForceBuyWithKarma()
+		{
+			return Rating == 0;
+		}
+
+		/// <summary>
+		/// This checks if BuyWithKarma have been force changed and fires an event if so
+		/// </summary>
+		private void KarmaSpecForcedMightChange()
+		{
+			if (!BuyWithKarma && ForceBuyWithKarma())
+			{
+				_buyWithKarma = true;
+				OnPropertyChanged(nameof(BuyWithKarma));
+			}
+			else if (BuyWithKarma && UnForceBuyWithKarma())
+			{
+				_buyWithKarma = false;
+				OnPropertyChanged(nameof(BuyWithKarma));
+			}
 		}
 	}
 }
