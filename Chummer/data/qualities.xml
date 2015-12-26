@@ -6813,79 +6813,6 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<!-- End Region -->
-		<!-- Region Run Faster Infected Qualities -->
-		<quality>
-			<name>Infected: Banshee</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>32</karma>
-			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<bonus>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-				</selectattributes>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Elf</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<metatype>Free Spirit</metatype>
-					<metatypecategory>Shapeshifter</metatypecategory>
-				</oneof>
-			</forbidden>
-			<powers>
-				<power>Dual Natured</power>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Silver">Vulnerability</power>
-				<power select="Wood">Vulnerability</power>
-			</powers>
-			<source>RF</source>
-			<page>80</page>
-		</quality>
-		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Run Faster Infected Qualities -->
 		<quality>
@@ -6893,8 +6820,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<enabletab>
 					<name>critter</name>
@@ -6964,16 +6889,115 @@
 				<power select="Sunlight, Mild">Allergy</power>
 				<power select="Sasquatch Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>136</page>
+		</quality>
+		<quality>
+			<name>Infected: Banshee</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Silver">Vulnerability</power>
+				<power select="Wood">Vulnerability</power>
+			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>80</page>
 		</quality>
 		<quality>
 			<name>Infected: Dzoo-Noo-Qua</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>43</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7055,6 +7079,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>137</page>
 		</quality>
@@ -7063,8 +7107,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7141,6 +7183,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7149,8 +7211,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 1</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7228,6 +7288,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7236,7 +7316,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Gnawer)</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7309,6 +7388,17 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Bone">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7317,8 +7407,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7360,6 +7448,26 @@
 					<optionalpower select="Toxins">Immunity</optionalpower>
 				</optionalpowers>
 			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<required>
 				<allof>
 					<metatype>Dwarf</metatype>
@@ -7399,6 +7507,26 @@
 				<power select="Metahuman Bone">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7407,8 +7535,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
-			<!-- <addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 1</addweapon> -->
 			<implemented>no</implemented>
 			<bonus>
 				<selectattributes>
@@ -7492,6 +7618,26 @@
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7500,8 +7646,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected)</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7583,6 +7727,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7591,8 +7755,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>30</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 2</addweapon>
-			<addweapon>Claws (Infected) 3</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7678,6 +7840,26 @@
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7686,8 +7868,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>54</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7784,8 +7984,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>44</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7883,8 +8101,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>44</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7982,7 +8218,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>38</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8065,6 +8300,17 @@
 			<addqualities>
 				<addquality>Mystic Adept</addquality>
 			</addqualities>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<powers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
@@ -8084,7 +8330,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>38</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8186,7 +8442,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>48</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8290,7 +8556,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8384,7 +8660,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8484,8 +8770,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>47</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8587,8 +8891,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8688,8 +9010,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>

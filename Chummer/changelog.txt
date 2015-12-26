@@ -11,6 +11,7 @@ Application Change:
 - Calendar entries can now be removed. Fixes #552.
 - The optional rule to have Essence Loss only reduce RES/MAG maximums has been re-enabled. Fixes #596.
 - Each spare clip added to a weapon now tracks ammo individually rather than the previous hard-coded limit of four active slots. As a result of this change, Spare Clips no longer have the ability to directly store ammunition as a child item; they will be updated to display their currently loaded ammunition as an Extra value shortly.
+- Qualities can now add natural weapons directly using the naturalweapons node. Mostly this is for the infected, because "Bite (Infected) 2" offends me.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -19,6 +20,7 @@ Data Change:
 - Fixed the Range for the spell Knockout to be Touch.
 - Included Life Modules from Rigger 5.0, courtesy of Eric Dufurrena.
 - Included content from Rigger 5.0, courtesy of Fweeba. Note: Most modifications do the things they're supposed to, with the exception of Sensor. New modification point system won't be done for a while. https://www.reddit.com/r/Shadowrun/comments/3xv4qp/rigger_50_chummer_files
+- Addweapon nodes removed from the Infected.
 
 New Strings:
 - Message_DeleteCalendarWeek

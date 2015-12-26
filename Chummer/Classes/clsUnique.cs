@@ -1165,6 +1165,35 @@ namespace Chummer
 				}
 			}
 
+			if (objXmlQuality.InnerXml.Contains("<naturalweapons>"))
+            {
+				foreach (XmlNode objXmlNaturalWeapon in objXmlQuality["naturalweapons"].SelectNodes("naturalweapon"))
+				{
+					TreeNode objGearWeaponNode = new TreeNode();
+					Weapon objWeapon = new Weapon(_objCharacter);
+					objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+					objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+					objWeapon.WeaponType = "Melee";
+					objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+					objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
+					objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+					objWeapon.Mode = "0";
+					objWeapon.RC = "0";
+					objWeapon.Concealability = 0;
+					objWeapon.Avail = "0";
+					objWeapon.Cost = 0;
+					objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+					objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+					objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+					objGearWeaponNode.ForeColor = SystemColors.GrayText;
+					objGearWeaponNode.Text = objWeapon.Name;
+					objGearWeaponNode.Tag = objWeapon.InternalId;
+					objWeaponNodes.Add(objGearWeaponNode);
+
+					_objCharacter.Weapons.Add(objWeapon);
+				}
+			}
+
 			// If the item grants a bonus, pass the information to the Improvement Manager.
 			if (objXmlQuality.InnerXml.Contains("<bonus>"))
 			{
