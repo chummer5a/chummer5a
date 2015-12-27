@@ -3264,7 +3264,7 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS = new CharacterAttrib("ESS");
             _attESS._objCharacter = this;
-			_attDEP = new Attribute("DEP");
+			_attDEP = new CharacterAttrib("DEP");
 			_attDEP._objCharacter = this;
             _blnMAGEnabled = false;
             _blnRESEnabled = false;
