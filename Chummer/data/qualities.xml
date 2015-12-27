@@ -5,7 +5,7 @@
 		<category>Positive</category>
 		<category>Negative</category>
 	</categories>
-	<!--Region Shadowrun Core Positive Qualities -->
+		<!--Region Shadowrun Core Positive Qualities -->
 	<qualities>
 		<quality>
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
@@ -976,7 +976,11 @@
 			<name>Magician</name>
 			<karma>30</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<contributetolimit>no</contributetolimit>
@@ -994,7 +998,11 @@
 			<name>Adept</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+					</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1012,7 +1020,11 @@
 			<name>Mystic Adept</name>
 			<karma>35</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1030,7 +1042,11 @@
 			<name>Technomancer</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>RES</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1048,7 +1064,11 @@
 			<name>Aspected Magician</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -4677,21 +4697,6 @@
 			<bonus/>
 			<source>SR5</source>
 			<page>309</page>
-		</quality>
-		<quality>
-			<id>4e7dae85-29a3-4f1d-88ed-f7a4d1abde7e</id>
-			<name>Natural Weapon: Claws (Sasquatch)</name>
-			<karma>0</karma>
-			<category>Positive</category>
-			<required>
-				<allof>
-					<metatype>Sasquatch</metatype>
-				</allof>
-			</required>
-			<bonus/>
-			<addweapon>Claws (Sasquatch)</addweapon>
-			<source>RF</source>
-			<page>106</page>
 		</quality>
 		<!-- End Region -->
 		<!-- Region Run Faster Metagenetic Qualities -->

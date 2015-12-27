@@ -8022,6 +8022,7 @@
 		<accessory>
 			<id>4ed24342-276e-4455-acba-22b551e4d775</id>
 			<name>Spare Clip</name>
+			<ammoslots>1</ammoslots>
 			<mount/>
 			<rating>0</rating>
 			<avail>4</avail>
@@ -8034,10 +8035,9 @@
 			<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 			<name>Speed Loader</name>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
 			<mount/>
-			<allowgear>
-				<gearcategory>Ammunition</gearcategory>
-			</allowgear>
+			<allowgear />
 			<avail>2</avail>
 			<cost>25</cost>
 			<source>SR5</source>
@@ -8513,6 +8513,7 @@
 			<id>5157f235-47c7-4121-aebb-d76709c4b6f8</id>
 			<name>Explosive Magazine</name>
 			<mount></mount>
+			<ammoslots>1</ammoslots>
 			<rating>0</rating>
 			<avail>2F</avail>
 			<cost>20</cost>
@@ -8523,6 +8524,7 @@
 			<id>d40d2fc6-3aad-4793-843d-20e3597b2365</id>
 			<name>Extended Clip</name>
 			<mount></mount>
+			<ammoslots>1</ammoslots>
 			<rating>2</rating>
 			<avail>6R</avail>
 			<cost>35</cost>

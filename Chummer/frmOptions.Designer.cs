@@ -228,6 +228,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
 			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
 			this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
 			this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
@@ -250,7 +251,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1389,7 +1389,7 @@
 			// 
 			// nudBP
 			// 
-			this.nudBP.Location = new System.Drawing.Point(87, 65);
+			this.nudBP.Location = new System.Drawing.Point(103, 65);
 			this.nudBP.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -1408,16 +1408,16 @@
 			// 
 			this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboBuildMethod.FormattingEnabled = true;
-			this.cboBuildMethod.Location = new System.Drawing.Point(20, 65);
+			this.cboBuildMethod.Location = new System.Drawing.Point(8, 65);
 			this.cboBuildMethod.Name = "cboBuildMethod";
-			this.cboBuildMethod.Size = new System.Drawing.Size(61, 21);
+			this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
 			this.cboBuildMethod.TabIndex = 5;
 			this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
 			// 
 			// lblMaxAvail
 			// 
 			this.lblMaxAvail.AutoSize = true;
-			this.lblMaxAvail.Location = new System.Drawing.Point(22, 95);
+			this.lblMaxAvail.Location = new System.Drawing.Point(38, 95);
 			this.lblMaxAvail.Name = "lblMaxAvail";
 			this.lblMaxAvail.Size = new System.Drawing.Size(59, 13);
 			this.lblMaxAvail.TabIndex = 7;
@@ -1426,7 +1426,7 @@
 			// 
 			// nudMaxAvail
 			// 
-			this.nudMaxAvail.Location = new System.Drawing.Point(87, 92);
+			this.nudMaxAvail.Location = new System.Drawing.Point(103, 92);
 			this.nudMaxAvail.Name = "nudMaxAvail";
 			this.nudMaxAvail.Size = new System.Drawing.Size(42, 20);
 			this.nudMaxAvail.TabIndex = 8;
@@ -2552,6 +2552,18 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
+			// chkESSLossReducesMaximumOnly
+			// 
+			this.chkESSLossReducesMaximumOnly.AutoSize = true;
+			this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 164);
+			this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
+			this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
+			this.chkESSLossReducesMaximumOnly.TabIndex = 19;
+			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
+			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
+			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
+			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.cgkESSLossReducesMaximumOnly_CheckedChanged);
+			// 
 			// chkAllowCyberwareESSDiscounts
 			// 
 			this.chkAllowCyberwareESSDiscounts.AutoSize = true;
@@ -2814,18 +2826,6 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
-			// 
-			// chkESSLossReducesMaximumOnly
-			// 
-			this.chkESSLossReducesMaximumOnly.AutoSize = true;
-			this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 164);
-			this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
-			this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
-			this.chkESSLossReducesMaximumOnly.TabIndex = 19;
-			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
-			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
-			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
-			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.cgkESSLossReducesMaximumOnly_CheckedChanged);
 			// 
 			// frmOptions
 			// 

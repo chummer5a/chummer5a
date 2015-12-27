@@ -5432,7 +5432,11 @@ namespace Chummer
 				}
 				else
 				{
-					return _lstAccessories.Count(x => x.Name == "Spare Clip") + 1;
+					foreach (WeaponAccessory objAccessory in _lstAccessories)
+					{
+						intReturn += objAccessory.AmmoSlots;
+					}
+					return intReturn;
 				}
 			}
 		}
@@ -6868,8 +6872,7 @@ namespace Chummer
                 {
                     if (objPower.Name.StartsWith("Enhanced Accuracy (skill)"))
                     {
-                        string strPowerSkill = objPower.FullName.Substring(("Enhanced Accuracy (skill) (").Length);
-                        strPowerSkill = strPowerSkill.Substring(0, strPowerSkill.Length - 1);
+                        string strPowerSkill = objPower.Extra;
 
                         string strSkill = "";
                         string strSpec = "";
@@ -7622,6 +7625,10 @@ namespace Chummer
 	public class WeaponAccessory
 	{
 		private Guid _guiID = new Guid();
+		private readonly Character _objCharacter;
+		private XmlNode _nodAllowGear;
+		private List<Gear> _lstGear = new List<Gear>();
+		private Weapon _objParent;
 		private string _strName = "";
 		private string _strMount = "";
 		private string _strRC = "";
@@ -7632,25 +7639,22 @@ namespace Chummer
 		private string _strFireModeReplace = "";
 		private string _strAPReplace = "";
 		private string _strAP = "";
-        private int _intRating = 0;
-		private int _intRCGroup = 0;
 		private string _strConceal = "";
 		private string _strAvail = "";
 		private string _strCost = "";
-		private bool _blnIncludedInWeapon = false;
-		private bool _blnInstalled = true;
 		private string _strSource = "";
 		private string _strPage = "";
 		private string _strNotes = "";
-		private readonly Character _objCharacter;
 		private string _strAltName = "";
 		private string _strAltPage = "";
-		private XmlNode _nodAllowGear;
-		private List<Gear> _lstGear = new List<Gear>();
-		private bool _blnDiscountCost = false;
-		private Weapon _objParent;
 		private string _strDicePool = "";
         private int _intAccuracy = 0;
+		private int _intRating = 0;
+		private int _intRCGroup = 0;
+		private int _intAmmoSlots = 0;
+		private bool _blnDiscountCost = false;
+		private bool _blnIncludedInWeapon = false;
+		private bool _blnInstalled = true;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public WeaponAccessory(Character objCharacter)
@@ -7675,6 +7679,8 @@ namespace Chummer
 				_intRCGroup = Convert.ToInt32(objXmlAccessory["rcgroup"].InnerText);
 			if (objXmlAccessory.InnerXml.Contains("<conceal>"))
 				_strConceal = (objXmlAccessory["conceal"].InnerText);
+			if (objXmlAccessory.InnerXml.Contains("<ammoslots>"))
+				_intAmmoSlots = Convert.ToInt32(objXmlAccessory["ammoslots"].InnerText);
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
 			_strSource = objXmlAccessory["source"].InnerText;
@@ -7765,6 +7771,7 @@ namespace Chummer
 				}
 				objWriter.WriteEndElement();
 			}
+			objWriter.WriteElementString("ammoslots", _strDamageType);
 			objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
 			objWriter.WriteElementString("damagereplace", _strDamageReplace);
@@ -7846,6 +7853,10 @@ namespace Chummer
 			}
 			catch
 			{
+			}
+			if (objNode.InnerXml.Contains("ammoslots"))
+			{
+				_intAmmoSlots = Convert.ToInt32(objNode["ammoslots"].InnerText);
 			}
 
 			if (objNode.InnerXml.Contains("<gears>"))
@@ -8003,6 +8014,20 @@ namespace Chummer
 			set
 			{
 				_strName = value;
+			}
+		}
+		/// <summary>
+		/// The accessory adds to the weapon's ammunition slots.
+		/// </summary>
+		public int AmmoSlots
+		{
+			get
+			{
+				return _intAmmoSlots;
+			}
+			set
+			{
+				_intAmmoSlots = value;
 			}
 		}
 		/// <summary>

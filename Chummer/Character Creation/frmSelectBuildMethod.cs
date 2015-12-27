@@ -6,7 +6,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectBP : Form
+    public partial class frmSelectBuildMethod : Form
     {
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
@@ -15,7 +15,7 @@ namespace Chummer
 	    int intNuyenBP = 0;
 
 		#region Control Events
-		public frmSelectBP(Character objCharacter, bool blnUseCurrentValues = false)
+		public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
@@ -186,7 +186,7 @@ namespace Chummer
 			}
         }
 
-        private void frmSelectBP_Load(object sender, EventArgs e)
+        private void frmSelectBuildMethod_Load(object sender, EventArgs e)
         {
             this.Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);

@@ -552,11 +552,11 @@
     <Compile Include="Selection Forms\frmSelectArmor.Designer.cs">
       <DependentUpon>frmSelectArmor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmSelectBP.cs">
+    <Compile Include="Character Creation\frmSelectBuildMethod.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmSelectBP.Designer.cs">
-      <DependentUpon>frmSelectBP.cs</DependentUpon>
+    <Compile Include="Character Creation\frmSelectBuildMethod.Designer.cs">
+      <DependentUpon>frmSelectBuildMethod.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectCyberware.cs">
       <SubType>Form</SubType>
@@ -611,12 +611,6 @@
     </Compile>
     <Compile Include="frmSellItem.Designer.cs">
       <DependentUpon>frmSellItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Character Creation\frmSumtoTenMetatype.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Character Creation\frmSumtoTenMetatype.Designer.cs">
-      <DependentUpon>frmSumtoTenMetatype.cs</DependentUpon>
     </Compile>
     <Compile Include="frmTest.cs">
       <SubType>Form</SubType>
@@ -720,9 +714,6 @@
     </Compile>
     <EmbeddedResource Include="Character Creation\frmSelectLifeModule.resx">
       <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmSumtoTenMetatype.resx">
-      <DependentUpon>frmSumtoTenMetatype.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConditionMonitorUserControl.resx">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
@@ -934,8 +925,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectArmor.resx">
       <DependentUpon>frmSelectArmor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmSelectBP.resx">
-      <DependentUpon>frmSelectBP.cs</DependentUpon>
+    <EmbeddedResource Include="Character Creation\frmSelectBuildMethod.resx">
+      <DependentUpon>frmSelectBuildMethod.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectCyberware.resx">
       <DependentUpon>frmSelectCyberware.cs</DependentUpon>
@@ -1553,9 +1544,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\streams.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="data\SumtoTen.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\traditions.xml">

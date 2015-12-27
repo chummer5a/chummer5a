@@ -166,10 +166,10 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboBuildMethod.SelectedValue.ToString() == "BP")
-                nudBP.Value = 400;
-            else
-                nudBP.Value = 750;
+            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
+                nudBP.Value = 800;
+            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
+				nudBP.Value = 750;
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -787,20 +787,15 @@ namespace Chummer
             List<ListItem> lstBuildMethod = new List<ListItem>();
 
             ListItem objKarma = new ListItem();
-            objKarma.Value = "Karma";
+            objKarma.Value = LanguageManager.Instance.GetString("String_Karma");
             objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
 
-            ListItem objPriority = new ListItem();
-            objPriority.Value = "Priority";
-            objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
+            ListItem objLifeModules = new ListItem();
+			objLifeModules.Value = LanguageManager.Instance.GetString("String_LifeModule");
+			objLifeModules.Name = LanguageManager.Instance.GetString("String_LifeModule");
 
-            ListItem objSumtoTen = new ListItem();
-            objSumtoTen.Value = "SumtoTen";
-            objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
-
-            lstBuildMethod.Add(objSumtoTen);
             lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objPriority);
+            lstBuildMethod.Add(objLifeModules);
 
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";

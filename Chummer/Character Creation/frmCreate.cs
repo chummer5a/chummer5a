@@ -592,13 +592,11 @@ namespace Chummer
             {
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
                 {
-                    nudNuyen.Maximum = 10;
-                    
+                    nudNuyen.Maximum = _objCharacter.MaxNuyen;
                 }
                 else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     nudNuyen.Maximum = 200;
-                   
                 }
             }
             else
@@ -4020,7 +4018,7 @@ namespace Chummer
 
         private void mnuSpecialBPAvailLimit_Click(object sender, EventArgs e)
         {
-            frmSelectBP frmPickBP = new frmSelectBP(_objCharacter, true);
+            frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(_objCharacter, true);
             frmPickBP.ShowDialog(this);
 
             if (frmPickBP.DialogResult == DialogResult.Cancel)
@@ -15452,7 +15450,7 @@ namespace Chummer
             nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
 			nudDEP.Maximum = _objCharacter.DEP.TotalMaximum + intEssenceLoss;
 
-			/*nudAGI.Value = _objCharacter.AGI.Base;
+			nudAGI.Value = _objCharacter.AGI.Base;
 			nudBOD.Value = _objCharacter.BOD.Base;
             nudREA.Value = _objCharacter.REA.Base;
             nudSTR.Value = _objCharacter.STR.Base;
@@ -15463,7 +15461,7 @@ namespace Chummer
             nudEDG.Value = _objCharacter.EDG.Base;
             nudMAG.Value = _objCharacter.MAG.Base;
             nudRES.Value = _objCharacter.RES.Base;
-			nudDEP.Value = _objCharacter.DEP.Base;*/
+			nudDEP.Value = _objCharacter.DEP.Base;
 
 			nudKBOD.Value = _objCharacter.BOD.Karma;
             nudKAGI.Value = _objCharacter.AGI.Karma;
@@ -23569,7 +23567,7 @@ namespace Chummer
                     lstRemoveQuality.Add(objQuality);
             }
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter);
 				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[0].ToString();
@@ -23579,19 +23577,6 @@ namespace Chummer
 				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[0].ToString();
 				frmSelectMetatype.ShowDialog(this);
 				if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                    return;
-            }
-            else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                frmSumtoTenMetatype frmSelectMetatype = new frmSumtoTenMetatype(_objCharacter);
-				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[2].ToString();
-				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[2].ToString();
-				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[2].ToString();
-				frmSelectMetatype.Special = _objCharacter.SpecialPriority[2].ToString();
-				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[2].ToString();
-				frmSelectMetatype.ShowDialog(this);
-
-                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
             }
             else

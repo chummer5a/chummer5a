@@ -553,7 +553,7 @@ namespace Chummer
 			}
 
 			// Show the BP selection window.
-			frmSelectBP frmBP = new frmSelectBP(objCharacter);
+			frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter);
 			frmBP.ShowDialog();
 
 			if (frmBP.DialogResult == DialogResult.Cancel)
@@ -567,7 +567,7 @@ namespace Chummer
                 { return; }
             }
             // Show the Metatype selection window.
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
@@ -575,15 +575,6 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
             }
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                frmSumtoTenMetatype frmSumtoTenMetatype = new frmSumtoTenMetatype(objCharacter);
-                frmSumtoTenMetatype.ShowDialog();
-
-                if (frmSumtoTenMetatype.DialogResult == DialogResult.Cancel)
-                { return; }
-            }
-
 
 			// Add the Unarmed Attack Weapon to the character.
 			try

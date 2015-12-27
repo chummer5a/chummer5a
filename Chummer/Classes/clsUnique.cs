@@ -621,6 +621,15 @@ namespace Chummer
 						intReturn = 1;
 				}
 
+				if	(
+					(_strAbbrev == "MAG" && !(_objCharacter.AdeptEnabled || _objCharacter.MagicianEnabled)) || 
+					(_strAbbrev == "RES" && !_objCharacter.TechnomancerEnabled) || 
+					(_strAbbrev == "DEP" && !(_objCharacter.Metatype == "A.I."))
+					)
+				{
+					intReturn = 0;
+				}
+
 				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
 				{
 					if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
