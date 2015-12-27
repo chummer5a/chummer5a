@@ -204,10 +204,10 @@ namespace Chummer
 				lblSkillRating.Visible = true;
 				cmdImproveSkill.Visible = true;
 
-                if (_objSkill.FreeLevels > 0)
-                    nudSkill.Minimum = _objSkill.FreeLevels;
-                else
-                    nudSkill.Minimum = 0;
+                //if (_objSkill.FreeLevels > 0)
+                //    nudSkill.Minimum = _objSkill.FreeLevels;
+                //else
+                //    nudSkill.Minimum = 0;
 
 				// Show the Dice Rolling button if the option is enabled.
 				if (_objSkill.CharacterObject.Options.AllowSkillDiceRolling)
@@ -245,12 +245,12 @@ namespace Chummer
 	        else
 		        this.Width = cmdChangeSpec.Left + cmdChangeSpec.Width;
 
-	        if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
-            {
-                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                    nudSkill.Enabled = false;
-                cmdBreakGroup.Visible = false;
-            }
+	        //if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
+         //   {
+         //       if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+         //           nudSkill.Enabled = false;
+         //       cmdBreakGroup.Visible = false;
+         //   }
 
             this.Height = lblSpec.Height + 10;
 
@@ -309,11 +309,11 @@ namespace Chummer
                 if (!blnFound)
                 {
                     _objSkill.Specializations.Clear();
-                    if (cboSpec.Text != string.Empty)
-                    {
-                        SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
-                        _objSkill.Specializations.Add(objSpec);
-                    }
+                    //if (cboSpec.Text != string.Empty)
+                    //{
+                    //    SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
+                    //    _objSkill.Specializations.Add(objSpec);
+                    //}
                     SpecializationChanged(this);
                 }
             }
@@ -518,8 +518,8 @@ namespace Chummer
             string strSelectedValue = frmPickItem.SelectedItem;
 
             // charge the karma and add the spec
-            SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
-            _objSkill.Specializations.Add(objSpec);
+            //SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
+            //_objSkill.Specializations.Add(objSpec);
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
@@ -528,7 +528,7 @@ namespace Chummer
             _objSkill.CharacterObject.Karma -= _objSkill.CharacterObject.Options.KarmaSpecialization;
 
             ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
+            //objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
             objEntry.Undo = objUndo;
 
             lblSpec.Text = _objSkill.Specialization;
@@ -704,10 +704,10 @@ namespace Chummer
                 {
                     value = _objSkill.RatingMaximum;
                 }
-                if (value < _objSkill.FreeLevels)
-                {
-                    value = _objSkill.FreeLevels;
-                }
+                //if (value < _objSkill.FreeLevels)
+                //{
+                //    value = _objSkill.FreeLevels;
+                //}
 				//nudSkill.Value = value;
 
 				
@@ -809,7 +809,7 @@ namespace Chummer
         {
             get
             {
-                return _objSkill.FreeLevels;
+	            return 0;// _objSkill.FreeLevels;
             }
         }
 
@@ -969,11 +969,11 @@ namespace Chummer
 		{
 			get
 			{
-				return _objSkill.IsGrouped;
+				return false; // _objSkill.IsGrouped;
 			}
 			set
 			{
-				_objSkill.IsGrouped = value;
+				//_objSkill.IsGrouped = value;
 
 				// When Grouped in Career Mode, everything but the Improve button is disabled.
 				if (value)
@@ -990,16 +990,16 @@ namespace Chummer
 					cboSpec.Enabled = true;
 
 				// If we're in Create Mode, show the Break Group button if the Skill is Grouped.
-				if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
-					cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
-                else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
-                {
-                    if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                        nudSkill.Enabled = false;
-                    cmdBreakGroup.Visible = false;
-                }
-				else
-					cmdBreakGroup.Visible = false;
+				//if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
+				//	cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
+    //            else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
+    //            {
+    //                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+    //                    nudSkill.Enabled = false;
+    //                cmdBreakGroup.Visible = false;
+    //            }
+				//else
+				//	cmdBreakGroup.Visible = false;
 			}
 		}
 
@@ -1056,7 +1056,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.AllowDelete = value;
+				//_objSkill.AllowDelete = value;
                 if (value)
                 {
                     cmdDelete.Visible = true;
@@ -1161,14 +1161,14 @@ namespace Chummer
                     }
                 }
             }
-            if (_objSkill.FreeLevels > 0)
-            {
-                nudSkill.Minimum = _objSkill.FreeLevels;
-            }
-            else
-            {
-                nudSkill.Minimum = 0;
-            }
+            //if (_objSkill.FreeLevels > 0)
+            //{
+            //    nudSkill.Minimum = _objSkill.FreeLevels;
+            //}
+            //else
+            //{
+            //    nudSkill.Minimum = 0;
+            //}
 
             if (cboSpec.Text != "" && !_objSkill.ExoticSkill)
             {
@@ -1262,13 +1262,13 @@ namespace Chummer
 			// Specializations should not be enabled for Active Skills in Create Mode if their Rating is 0.
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && !_objSkill.CharacterObject.Created)
 			{
-				if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
-					cboSpec.Enabled = true;
-				else
-				{
-					cboSpec.Enabled = false;
-					cboSpec.Text = "";
-				}
+				//if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
+				//	cboSpec.Enabled = true;
+				//else
+				//{
+				//	cboSpec.Enabled = false;
+				//	cboSpec.Text = "";
+				//}
 			}
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && _objSkill.CharacterObject.Created)
 			{

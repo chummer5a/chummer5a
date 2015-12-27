@@ -9,10 +9,20 @@ using System.Xml;
 using Chummer.Annotations;
 using Chummer.Datastructures;
 
+/*
+ * When comming back:
+ * Karma can exceed ratingMaximum
+ * 
+ * Base = Group + FreeLevels
+ * Should be
+ * Base = Group > FreeLevels ? Group : FreeLevels 
+ */
+
+
 namespace Chummer.Skills
 {
-	[DebuggerDisplay("{_name} {_skillFromSp} {_skillFromKarma}")]
-	public class Skill : INotifyPropertyChanged
+	[DebuggerDisplay("{_name} {_base} {_karma}")]
+	public partial class Skill : INotifyPropertyChanged
 	{
 		#region REMOVELATERANDPLACEINCHILD
 		
@@ -128,14 +138,15 @@ namespace Chummer.Skills
 			_skillGroup = Skills.SkillGroup.Get(this);
 			if (_skillGroup != null)
 			{
-				_skillGroup.PropertyChanged += (sender, args) => OnSkillGroupChanged();
+				_skillGroup.PropertyChanged += OnSkillGroupChanged;
+					
+					//+= OnSkillGroupChanged();
 			}
 
 			ImprovementEvent += OnImprovementEvent;
 		}
 
-		
-
+		[Obsolete]
 		public Skill(Character character)
 		{
 			//TODO REMOVE, keept because LOTS of places require this
@@ -177,175 +188,16 @@ namespace Chummer.Skills
 		#endregion
 
 		private readonly SkillGroup _skillGroup;
-		protected bool _skillGroupLinked = true; //Auto broken and 'kind' of true
- 		protected readonly CharacterAttrib UsedAttribute;
+		protected readonly CharacterAttrib UsedAttribute;
 		private readonly Guid _objId;
 		private readonly Character _character;
 		protected readonly bool _default;
 		protected readonly string Category;
 		protected readonly string _group;
-		protected int _skillFromSp = 0;
-		protected int _skillFromKarma = 0; //This is also used for career advances
 		protected string _name;
 		protected List<ListItem> _spec;
 		
-		/// <summary>
-		/// The amount of points this skill have from skill points and bonuses
-		/// to the skill rating
-		/// </summary>
-		public int Base
-		{
-			get
-			{
-				return _skillFromSp + FreeLevels;
-			}
-			set
-			{
-				int tempval = value - FreeLevels;
-
-				if (tempval != _skillFromSp)
-				{
-					tempval = Math.Max(tempval, 0);
-
-					if (!_skillGroupLinked)
-					{
-						_skillFromSp = tempval;
-						OnPropertyChanged();
-					}
-					else //TODO: refactor to a little pretier later. Use IsLocked instead. Set _linked to false if group is 0;
-					{
-						if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
-						{
-							_skillGroupLinked = false;
-							_skillFromSp = tempval;
-							OnPropertyChanged();
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Amount of skill points bought with karma
-		/// </summary>
-		public int Karma
-		{
-			get { return _skillFromKarma; }
-			set
-			{
-				if (!_skillGroupLinked)
-				{
-					_skillFromKarma = value;
-					OnPropertyChanged();
-				}
-				else
-				{
-					if (_skillGroup == null || _skillGroup.Rating == 0) //auto break if not getting anything, otherwise, require manual break
-					{
-						_skillGroupLinked = false;
-						_skillFromKarma = value;
-						OnPropertyChanged();
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Levels in this skill. Read only. You probably want to increase
-		/// Karma instead
-		/// </summary>
-		public int Rating
-		{
-			get { return Karma + Base; }
-			private set
-			{
-				int diff = (Karma + Base) - value;
-				//Play with karma first, cause
-			}
-		}
-
-		/// <summary>
-		/// How many free points this skill have
-		/// </summary>
-		public int FreeLevels
-		{
-			get
-			{
-				return (from improvement in CharacterObject.Improvements
-					where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-					   && improvement.ImprovedName == _name
-					select improvement.Value).Sum();
-
-			}
-			
-		}
-
-		/// <summary>
-		/// Maximum possible rating
-		/// </summary>
-		public int RatingMaximum
-		{
-			get {
-				int otherbonus = 0; //TODO READ FROM IMPMANAGER
-				return (_character.Created
-					? 12
-					: (this.KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
-
-			}
-			
-		}
-
-		/// <summary>
-		/// Things that modify the dicepool of the skill
-		/// </summary>
-		public int PoolModifiers
-		{
-			get
-			{
-				int intModifier = 0;
-				//Code copied from old skill. It seems to do something, but don't want to touch it with a 10 foot pole
-				#region Smelly
-				foreach (Improvement objImprovement in CharacterObject.Improvements)
-				{
-					if (objImprovement.AddToRating && objImprovement.Enabled)
-					{
-						// Improvement for an individual Skill.
-						//TODO NOT WORKING FOR EXOTIC SKILLS (when is that needed?)
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-							intModifier += objImprovement.Value;
-						
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _group)
-						{
-							if (!objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(Category))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == Category)
-						{
-							if (!objImprovement.Exclude.Contains(Name))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill linked to an CharacterAttribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == UsedAttribute.Abbrev)
-						{
-							if (!objImprovement.Exclude.Contains(Name))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for Enhanced Articulation
-						if (Category == "Physical Active" && (UsedAttribute.Abbrev == "BOD" || UsedAttribute.Abbrev == "AGI" || UsedAttribute.Abbrev == "REA" || UsedAttribute.Abbrev == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-								intModifier += objImprovement.Value;
-						}
-					}
-				}
-				#endregion 
-				return intModifier;
-			}
-		}
-
+		
 		/// <summary>
 		/// The total, general pourpose dice pool for this skill
 		/// </summary>
@@ -354,26 +206,12 @@ namespace Chummer.Skills
 			get { return PoolOtherAttribute(UsedAttribute.Augmented); }
 		}
 
-		/// <summary>
-		/// The total, general pourpose dice pool for this skill, using another
-		/// value for the linked attribute. This allows calculation of dice pools
-		/// while using cyberlimbs or while rigging
-		/// </summary>
-		/// <param name="attribute">The value of the used attribute</param>
-		/// <returns></returns>
-		public int PoolOtherAttribute(int attribute)
+		public bool Leveled
 		{
-			if (Rating > 0)
-			{
-				return Rating + attribute + PoolModifiers;
-			}
-			if (_default)
-			{
-				return attribute + PoolModifiers - 1;
-			}
-			return 0;
+			get { return Rating > 0; }
 		}
 
+		
 		public Character CharacterObject
 		{
 			get { return _character; }
@@ -400,7 +238,6 @@ namespace Chummer.Skills
 			{
 				return false;
 			}
-			set { } //TODO REFACTOR AWAY
 		}
 
 		public bool Default
@@ -409,26 +246,6 @@ namespace Chummer.Skills
 			set { } //TODO REFACTOR AWAY
 		}
 
-		public bool IsGrouped
-		{
-			get { return _skillGroupLinked && _skillGroup != null; }
-			set
-			{
-				_skillGroupLinked = value;
-				if (_skillGroupLinked && _skillGroup != null)
-				{
-					_skillFromKarma = SkillGroupObject.Karma;
-					_skillFromSp = SkillGroupObject.Base;
-				}
-				OnPropertyChanged();
-			}
-		}
-
-		public bool IsUnlocked
-		{
-			get { return !(_skillGroup != null && IsGrouped && (SkillGroupObject.Karma + SkillGroupObject.Base) > 0); }
-		}
-		
 		public virtual bool ExoticSkill
 		{
 			get { return false; }
@@ -486,8 +303,6 @@ namespace Chummer.Skills
 
 		public IReadOnlyList<ListItem> CGLSpecializations { get { return _spec; } } 
 
-		
-
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
 		//Or just ignore support for multiple specizalizations even if the rules say it is possible?
 		public List<SkillSpecialization> Specializations { get; } = new List<SkillSpecialization>();
@@ -495,6 +310,9 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (Rating == 0) return ""; //Unleveled skills cannot have a specialization;
+
+				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
 				if (Specializations.Count > 0)
 				{
 					return Specializations[0].Name;
@@ -503,36 +321,38 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (Specializations.Count >= 1)
+				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
+				
+				if (Specializations.Count >= 1 && Specializations[0].Free)
 				{
 					if (string.IsNullOrWhiteSpace(value))
 					{
 						Specializations.RemoveAt(0);
+						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 					else if (Specializations[0].Name != value)
 					{
-						Specializations[0] = new SkillSpecialization(value);
+						Specializations[0] = new SkillSpecialization(value, true);
+						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 				}
 				else
 				{
 					if (!String.IsNullOrWhiteSpace(value))
 					{
-						Specializations.Add(new SkillSpecialization(value));
+						Specializations.Add(new SkillSpecialization(value, true));
+						OnPropertyChanged();
+						KarmaSpecForcedMightChange();
 					}
 				}
+
 			}
 		}
 
 		public string DicePoolModifiersTooltip { get; }
 		
-		//REFACTOR HOW?
-		public bool BuyWithKarma
-		{
-			get; set;
-            
-		}
-
 		public SkillGroup SkillGroupObject { get { return _skillGroup; } } 
 		
 		public string Page { get; private set; }
@@ -577,19 +397,20 @@ namespace Chummer.Skills
 		//A tree of dependencies. Once some of the properties are changed, 
 		//anything they depend on, also needs to raise OnChanged
 		//This tree keeps track of dependencies
-		private static readonly ReverseTree<string> dependencyTree =
-			new ReverseTree<string>(nameof(DisplayPool),
-				new ReverseTree<string>(nameof(Pool),
-					new ReverseTree<string>(nameof(PoolModifiers)),
-					new ReverseTree<string>(nameof(AttributeModifiers)),
-					new ReverseTree<string>(nameof(Rating),
-						new ReverseTree<string>(nameof(Karma)),
-						new ReverseTree<string>(nameof(Base),
-							new ReverseTree<string>(nameof(FreeLevels))
-						)
+		private static readonly ReverseTree<string> DependencyTree =
+		
+		new ReverseTree<string>(nameof(DisplayPool),
+			new ReverseTree<string>(nameof(Pool),
+				new ReverseTree<string>(nameof(PoolModifiers)),
+				new ReverseTree<string>(nameof(AttributeModifiers)),
+				new ReverseTree<string>(nameof(Rating),
+					new ReverseTree<string>(nameof(Karma)),
+					new ReverseTree<string>(nameof(BaseUnlocked),
+						new ReverseTree<string>(nameof(Base))
 					)
 				)
-			);
+			)
+		);
 		
 		
 		#endregion
@@ -599,28 +420,23 @@ namespace Chummer.Skills
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
-			foreach (string s in dependencyTree.Find(propertyName))
+			foreach (string s in DependencyTree.Find(propertyName))
 			{
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(s));
 			}
 		}
 
-		private void OnSkillGroupChanged()
+		private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs propertyChangedEventArg)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsUnlocked)));
-
-			if (!_skillGroupLinked && _character.Created) return;
-
-			_skillGroupLinked = true;
-
-			_skillFromSp = SkillGroupObject.Base;
-			_skillFromKarma = SkillGroupObject.Karma;
-
-			
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Base)));
-			foreach (string s in dependencyTree.Find(nameof(Karma)))
+			if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Base))
 			{
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(s));
+				OnPropertyChanged(propertyChangedEventArg.PropertyName);
+				KarmaSpecForcedMightChange();
+			}
+			else if(propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
+			{
+				OnPropertyChanged(propertyChangedEventArg.PropertyName);
+				KarmaSpecForcedMightChange();
 			}
 		}
 

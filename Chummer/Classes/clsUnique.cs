@@ -2443,25 +2443,25 @@ namespace Chummer
 				objNode["spec"].InnerText = "Holdouts";
 			_strSkillSpec = objNode["spec"].InnerText;
 
-            if (_strSkillSpec != "")
-            {
-                SkillSpecialization objSpec = new SkillSpecialization(_strSkillSpec);
-                _lstSpecializations.Add(objSpec);
-                _strSkillSpec = "";
-            }
+            //if (_strSkillSpec != "")
+            //{
+            //    SkillSpecialization objSpec = new SkillSpecialization(_strSkillSpec);
+            //    _lstSpecializations.Add(objSpec);
+            //    _strSkillSpec = "";
+            //}
 
 			_blnAllowDelete = Convert.ToBoolean(objNode["allowdelete"].InnerText);
 			_strAttribute = objNode["attribute"].InnerText;
-            if (objNode.InnerXml.Contains("skillspecializations"))
-            {
-                XmlNodeList nodSpecializations = objNode.SelectNodes("skillspecializations/skillspecialization");
-                foreach (XmlNode nodSpecialization in nodSpecializations)
-                {
-                    SkillSpecialization objSpec = new SkillSpecialization("");
-                    objSpec.Load(nodSpecialization);
-                    _lstSpecializations.Add(objSpec);
-                }
-            }
+            //if (objNode.InnerXml.Contains("skillspecializations"))
+            //{
+            //    XmlNodeList nodSpecializations = objNode.SelectNodes("skillspecializations/skillspecialization");
+            //    foreach (XmlNode nodSpecialization in nodSpecializations)
+            //    {
+            //        SkillSpecialization objSpec = new SkillSpecialization("");
+            //        objSpec.Load(nodSpecialization);
+            //        _lstSpecializations.Add(objSpec);
+            //    }
+            //}
             try
 			{
 				_strSource = objNode["source"].InnerText;
@@ -4036,19 +4036,22 @@ namespace Chummer
 		#endregion
 	}
 
-    /// <summary>
-    /// Type of Specialization
-    /// </summary>
-    public class SkillSpecialization
-    {
+	/// <summary>
+	/// Type of Specialization
+	/// </summary>
+	public class SkillSpecialization
+	{
 		private Guid _guiID = new Guid();
 		private string _strName = "";
+		private readonly bool _free;
 
 		#region Constructor, Create, Save, Load, and Print Methods
-		public SkillSpecialization(string strName)
+
+		public SkillSpecialization(string strName, bool free)
 		{
-            _strName = strName;
-            _guiID = Guid.NewGuid();
+			_strName = strName;
+			_guiID = Guid.NewGuid();
+			_free = free;
 		}
 
 		/// <summary>
@@ -4058,8 +4061,8 @@ namespace Chummer
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("name", _strName);
+			objWriter.WriteElementString("guid", _guiID.ToString());
+			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteEndElement();
 		}
 
@@ -4067,11 +4070,11 @@ namespace Chummer
 		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
-		{
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-		}
+		//public void Load(XmlNode objNode)
+		//{
+		//          _guiID = Guid.Parse(objNode["guid"].InnerText);
+		//          _strName = objNode["name"].InnerText;
+		//}
 
 		/// Print the object's XML to the XmlWriter.		/// <summary>
 
@@ -4084,37 +4087,37 @@ namespace Chummer
 			objWriter.WriteElementString("name", Name);
 			objWriter.WriteEndElement();
 		}
+
 		#endregion
 
 		#region Properties
-        /// <summary>
-        /// Internal identifier which will be used to identify this Spell in the Improvement system.
-        /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
 
-        /// <summary>
+		/// <summary>
+		/// Internal identifier which will be used to identify this Spell in the Improvement system.
+		/// </summary>
+		public string InternalId
+		{
+			get { return _guiID.ToString(); }
+		}
+
+		/// <summary>
 		/// Skill Specialization's name.
 		/// </summary>
 		public string Name
 		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
+			get { return _strName; }
+		}
+
+		/// <summary>
+		/// Is this a forced specialization or player entered
+		/// </summary>
+		public bool Free
+		{
+			get { return _free; } 
 		}
 
 		#endregion
-    }
+}
 
 	/// <summary>
 	/// Type of Spirit.

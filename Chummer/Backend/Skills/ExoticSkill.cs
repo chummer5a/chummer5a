@@ -9,6 +9,8 @@ namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{
+		private bool _allowVisible;
+
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
 			_spec.Clear();
@@ -20,6 +22,26 @@ namespace Chummer.Skills
 				_spec.Add(new ListItem(objXmlWeapon["name"].InnerText, 
 					objXmlWeapon.Attributes["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText));
 
+			_allowVisible = !CharacterObject.Created;
+		}
+
+		public override bool AllowDelete
+		{
+			get { return !CharacterObject.Created; }
+		}
+
+		public override int CurrentSpCost()
+		{
+			return BasePoints;
+		}
+
+		/// <summary>
+		/// How much karma this costs. Return value during career mode is undefined
+		/// </summary>
+		/// <returns></returns>
+		public override int CurrentKarmaCost()
+		{
+			return RangeCost(Base + FreeKarma(), Rating);
 		}
 	}
 }

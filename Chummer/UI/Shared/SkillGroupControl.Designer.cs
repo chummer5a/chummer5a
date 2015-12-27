@@ -39,7 +39,7 @@
 			// 
 			this.nudSkill.Location = new System.Drawing.Point(134, 1);
 			this.nudSkill.Maximum = new decimal(new int[] {
-            6,
+            99,
             0,
             0,
             0});
@@ -51,7 +51,7 @@
 			// 
 			this.nudKarma.Location = new System.Drawing.Point(180, 1);
 			this.nudKarma.Maximum = new decimal(new int[] {
-            6,
+            99,
             0,
             0,
             0});

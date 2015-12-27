@@ -23,9 +23,22 @@ namespace Chummer.UI.Shared
 
 		private void SkillGroupControl_Load(object sender, EventArgs e)
 		{
-			lblName.DataBindings.Add("Text", _skillGroup, "Name");
+			lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
+
 			nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
+			nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+
+
 			nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
+			nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+			
+			//_skillGroup.PropertyChanged += (o, args) =>
+			//{
+			//	if (args.PropertyName == nameof(SkillGroup.BaseUnbroken))
+			//	{
+			//		nudSkill.Enabled = _skillGroup.BaseUnbroken;
+			//	}
+			//};
 
 			if (_skillGroup.Character.Created)
 			{
@@ -36,7 +49,7 @@ namespace Chummer.UI.Shared
 				if (_skillGroup.Character.BuildMethod == CharacterBuildMethod.Karma ||
 					_skillGroup.Character.BuildMethod == CharacterBuildMethod.LifeModule)
 				{
-					nudSkill.Visible = false;
+					nudSkill.Enabled = false;
 				}
 			}
 		}
