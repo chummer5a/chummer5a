@@ -31,6 +31,7 @@ namespace Chummer.UI.Shared
 
 		private void SkillsDisplay_Load(object sender, EventArgs e)
 		{
+			tblContents.SuspendLayout();
 			foreach (TType content in _contents)
 			{
 				AddItem(content);
@@ -38,6 +39,7 @@ namespace Chummer.UI.Shared
 
 			_contents.RaiseListChangedEvents = true;
 			_contents.ListChanged += ContentsOnListChanged;
+			tblContents.ResumeLayout();
 		}
 
 		private void ContentsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)

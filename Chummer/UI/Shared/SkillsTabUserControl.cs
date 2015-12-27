@@ -62,7 +62,7 @@ namespace Chummer.UI.Shared
 			//Might also be useless horseshit, 2 lines
 
 			//Visible = false;
-			this.SuspendLayout();
+			//this.SuspendLayout();
 			MakeSkillDisplays();
 
 			parts.TaskEnd("MakeSkillDisplay()");
@@ -82,7 +82,8 @@ namespace Chummer.UI.Shared
 			_groups.ChildPropertyChanged += ChildPropertyChanged;
 
 			//Visible = true;
-			this.ResumeLayout();
+			//this.ResumeLayout(false);
+			//this.PerformLayout();
 			parts.TaskEnd("visible");
 			Panel1_Resize(null, null);
 			parts.TaskEnd("resize");
