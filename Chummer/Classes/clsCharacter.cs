@@ -14,6 +14,10 @@ using Chummer.Skills;
 public delegate void MAGEnabledChangedHandler(Object sender);
 // RESEnabledChanged Event Handler
 public delegate void RESEnabledChangedHandler(Object sender);
+// DEPEnabledChanged Event Handler
+public delegate void DEPEnabledChangedHandler(Object sender);
+// HomeNodeChanged Event Handler
+public delegate void HomeNodeChangedHandler(Object sender);
 // AdeptTabEnabledChanged Event Handler
 public delegate void AdeptTabEnabledChangedHandler(Object sender);
 // MagicianTabEnabledChanged Event Handler
@@ -113,6 +117,14 @@ namespace Chummer
         private string _strPlayerName = "";
         private string _strGameNotes = "";
 
+		// AI Home Node
+		private bool _blnHasHomeNode = false;
+		private string _strHomeNodeCategory = "";
+		private string _strHomeNodeHandling = "";
+		private int _intHomeNodePilot = 0;
+		private int _intHomeNodeSensor = 0;
+		private int _intHomeNodeDataProcessing = 3;
+
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
 
@@ -144,6 +156,7 @@ namespace Chummer
         private int _intMutantCritterBaseSkills = 0;
 
         // Special Flags.
+		
         private bool _blnAdeptEnabled = false;
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
@@ -167,7 +180,6 @@ namespace Chummer
         private bool _blnLightningReflexes = false;
         private bool _blnFame = false;
         private bool _blnBornRich = false;
-        private bool _blnBlackMarketPipeline = false;
         private bool _blnErased = false;
 		private int _intTrustFund = 0;
 		private decimal _decPrototypeTranshuman = 0m;
@@ -186,7 +198,9 @@ namespace Chummer
         private CharacterAttrib _attMAG = new CharacterAttrib("MAG");
         private CharacterAttrib _attRES = new CharacterAttrib("RES");
         private CharacterAttrib _attESS = new CharacterAttrib("ESS");
-        private bool _blnMAGEnabled = false;
+		private CharacterAttrib _attDEP = new CharacterAttrib("DEP");
+
+		private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnGroupMember = false;
         private string _strGroupName = "";
@@ -271,6 +285,7 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.ToString().Replace("0.0.", string.Empty);
 
 		// Events.
+		public event HomeNodeChangedHandler HomeNodeChanged;
 		public event AdeptTabEnabledChangedHandler AdeptTabEnabledChanged;
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
@@ -320,6 +335,7 @@ namespace Chummer
             _attMAG._objCharacter = this;
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
+			_attDEP._objCharacter = this;
             _objImprovementManager = new ImprovementManager(this);
 			Skills = GetSkillList(this);
         }
@@ -576,6 +592,7 @@ namespace Chummer
             // Include any special A.I. Attributes if applicable.
             if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
             {
+				_attDEP.Save(objWriter);
                 objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("signal", _intSignal.ToString());
             }
@@ -1700,6 +1717,8 @@ namespace Chummer
             // A.I. Attributes.
             try
             {
+				objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
+				_attDEP.Load(objXmlCharacter);
                 _intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
                 _intResponse = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/response").InnerText);
             }
@@ -1897,7 +1916,7 @@ namespace Chummer
    //             objGroup.Name = objXmlSkill["name"].InnerText;
    //             lstKnowledgeSkillOrder.Add(objGroup);
    //         }
-              SortListItem objSort = new SortListItem();
+            SortListItem objSort = new SortListItem();
    //         lstKnowledgeSkillOrder.Sort(objSort.Compare);
 
 
@@ -2683,6 +2702,7 @@ namespace Chummer
             _attRES.Print(objWriter);
             if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
             {
+				_attDEP.Print(objWriter);
                 objWriter.WriteElementString("signal", _intSignal.ToString());
                 objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("system", System.ToString());
@@ -3244,6 +3264,8 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS = new CharacterAttrib("ESS");
             _attESS._objCharacter = this;
+			_attDEP = new Attribute("DEP");
+			_attDEP._objCharacter = this;
             _blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnGroupMember = false;
@@ -3288,7 +3310,7 @@ namespace Chummer
             _lstCalendar = new List<CalendarWeek>();
 			Skills = GetSkillList(this);
 
-			BuildSkillGroupList();
+            BuildSkillGroupList();
         }
         #endregion
 
@@ -3329,50 +3351,50 @@ namespace Chummer
             //    objGroup.RatingMaximum = 6;
             //    _lstSkillGroups.Add(objGroup);
             //}
-        }
+            }
 
 
 		private static BindingList<Skill> GetSkillList(Character c)
-		{
+        {
 			BindingList<Skill> b = new BindingList<Skill>();
-			// Load the Skills information.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            // Load the Skills information.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-			// Populate the Skills list.
+            // Populate the Skills list.
 			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")]");
 
-			// First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
-			List<ListItem> lstSkillOrder = new List<ListItem>();
-			foreach (XmlNode objXmlSkill in objXmlSkillList)
-			{
-				ListItem objSkill = new ListItem();
-				objSkill.Value = objXmlSkill["name"].InnerText;
-				if (objXmlSkill["translate"] != null)
-					objSkill.Name = objXmlSkill["translate"].InnerText;
-				else
-					objSkill.Name = objXmlSkill["name"].InnerText;
-				lstSkillOrder.Add(objSkill);
-			}
-			SortListItem objSort = new SortListItem();
-			lstSkillOrder.Sort(objSort.Compare);
+            // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
+            List<ListItem> lstSkillOrder = new List<ListItem>();
+            foreach (XmlNode objXmlSkill in objXmlSkillList)
+            {
+                ListItem objSkill = new ListItem();
+                objSkill.Value = objXmlSkill["name"].InnerText;
+                if (objXmlSkill["translate"] != null)
+                    objSkill.Name = objXmlSkill["translate"].InnerText;
+                else
+                    objSkill.Name = objXmlSkill["name"].InnerText;
+                lstSkillOrder.Add(objSkill);
+            }
+            SortListItem objSort = new SortListItem();
+            lstSkillOrder.Sort(objSort.Compare);
 
-			// Second pass, retrieve the Skills in the order they're presented in the list.
-			foreach (ListItem objItem in lstSkillOrder)
-			{
-				XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
+            // Second pass, retrieve the Skills in the order they're presented in the list.
+            foreach (ListItem objItem in lstSkillOrder)
+            {
+                XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
 				Skill objSkill = Skill.FromData(objXmlSkill, c);
 				b.Add(objSkill);
-			}
+            }
 
 
 			return b;
-		}
+        }
 
-		/// <summary>
-		/// Retrieve the name of the Object that created an Improvement.
-		/// </summary>
-		/// <param name="objImprovement">Improvement to check.</param>
-		public string GetObjectName(Improvement objImprovement)
+        /// <summary>
+        /// Retrieve the name of the Object that created an Improvement.
+        /// </summary>
+        /// <param name="objImprovement">Improvement to check.</param>
+        public string GetObjectName(Improvement objImprovement)
         {
             string strReturn = "";
             switch (objImprovement.ImproveSource)
@@ -4503,6 +4525,9 @@ namespace Chummer
                 case "RES":
                 case "RESBase":
                     return _attRES;
+				case "DEP":
+				case "DEPBase":
+					return _attDEP;
                 case "ESS":
                     return _attESS;
                 default:
@@ -4643,7 +4668,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Essence (ESS) CharacterAttribute.
+		/// Depth (DEP) Attribute.
+		/// </summary>
+		public CharacterAttrib DEP
+		{
+			get
+			{
+				return _attDEP;
+			}
+		}
+
+		/// <summary>
+		/// Essence (ESS) Attribute.
         /// </summary>
         public CharacterAttrib ESS
         {
@@ -5276,6 +5312,14 @@ namespace Chummer
                 strReturn = (intINI).ToString();
 
                 int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
+
+
+				// A.I.s always have 4 Matrix Initiative Passes.
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
+				}
+
                 strReturn += " + " + intExtraIP.ToString() + "d6";
 
                 return strReturn;
@@ -5303,9 +5347,9 @@ namespace Chummer
                     intIP = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
                 }
 
-                // A.I.s always have 3 Matrix Initiative Passes.
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-                    intIP = 3;
+                // A.I.s always have 4 Matrix Initiative Passes.
+                if (_strMetatype == "A.I.")
+                    intIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
                 intIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePassAdd);
@@ -5328,10 +5372,31 @@ namespace Chummer
                 int intINI = (_attINT.TotalValue) + WoundModifiers;
                 if (intINI < 0)
                     intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
 
                 int intExtraIP = 3;
+
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4;
+                    if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
                 strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
 
                 return strReturn;
             }
@@ -5349,10 +5414,30 @@ namespace Chummer
                 int intINI = (_attINT.TotalValue) + WoundModifiers;
                 if (intINI < 0)
                     intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
 
                 int intExtraIP = 4;
+
+				if (_strMetatype == "A.I.")
+				{
+					if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
                 strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
 
                 return strReturn;
             }
@@ -5683,15 +5768,15 @@ namespace Chummer
             }
         }
 
-	    /// <summary>
-	    /// Skills (Active and Knowledge).
-	    /// </summary>
+        /// <summary>
+        /// Skills (Active and Knowledge).
+        /// </summary>
 	    public BindingList<Skill> Skills { get; set; }
 
 
-	    /// <summary>
-		/// Skill Groups.
-		/// </summary>
+        /// <summary>
+        /// Skill Groups.
+        /// </summary>
 		public BindingList<SkillGroup> SkillGroups
         {
             get
@@ -6196,16 +6281,20 @@ namespace Chummer
         {
             get
             {
-                double dblBOD = _attBOD.TotalValue;
-                int intCMPhysical = (int)Math.Ceiling(dblBOD / 2) + 8;
-                // Include Improvements in the Condition Monitor values.
-                intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
+				int intCMPhysical = 0;
+				if (_strMetatype == "A.I.")
                 {
                     // A.I.s add 1/2 their System to Physical CM since they do not have BOD.
-                    double dblSystem = System;
-                    intCMPhysical += (int)Math.Ceiling(dblSystem / 2);
+					double dblDEP = _attDEP.TotalValue;
+					intCMPhysical = (int)Math.Ceiling(dblDEP / 2) + 8;
                 }
+				else
+				{
+					double dblBOD = _attBOD.TotalValue;
+					intCMPhysical = (int)Math.Ceiling(dblBOD / 2) + 8;
+				}
+                // Include Improvements in the Condition Monitor values.
+                intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
                 return intCMPhysical;
             }
         }
@@ -6456,13 +6545,32 @@ namespace Chummer
         /// <summary>
         /// The calculated Physical Limit.
         /// </summary>
-        public int LimitPhysical
+        public string LimitPhysical
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3));
+				int intLimit = 0;
+				string strReturn = "";
+				if (_strMetatype == "A.I.")
+				{
+					if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
+					{
+						strReturn = _strHomeNodeHandling;
+						return strReturn;
+					}
+					else
+					{
+						strReturn = "0";
+						return strReturn;
+					}
+				}
+				else
+				{
+					intLimit = (Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3)));
+				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
-                return intLimit;
+				strReturn = Convert.ToString(intLimit);
+                return strReturn;
             }
         }
 
@@ -6473,7 +6581,34 @@ namespace Chummer
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+				int intLimit = 0;
+                if (_strMetatype == "A.I." && _blnHasHomeNode)
+				{
+					if (_strHomeNodeCategory == "Vehicle")
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+						if (_intHomeNodeSensor > intLimit)
+						{
+							intLimit = _intHomeNodeSensor;
+						}
+						if (_intHomeNodeDataProcessing > intLimit)
+						{
+							intLimit = _intHomeNodeDataProcessing;
+						}
+					}
+					else if (_strHomeNodeCategory == "Gear")
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+						if (_intHomeNodeDataProcessing > intLimit)
+						{
+							intLimit = _intHomeNodeDataProcessing;
+						}
+					}
+				}
+				else
+				{
+					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
                 return intLimit;
             }
@@ -6486,7 +6621,22 @@ namespace Chummer
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attCHA.TotalValue) * 2) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+				int intLimit = 0;
+				if (_strMetatype == "A.I." && _blnHasHomeNode)
+				{
+					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodeDataProcessing) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+					}
+					else
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodePilot) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+					}
+				}
+				else
+				{
+					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attCHA.TotalValue) * 2) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
                 return intLimit;
             }
@@ -6948,6 +7098,7 @@ namespace Chummer
         #endregion
 
         #region Special Functions and Enabled Check Properties
+
         /// <summary>
         /// Whether or not Adept options are enabled.
         /// </summary>
@@ -7948,6 +8099,95 @@ namespace Chummer
 		    }
 	    }
 
+		/// <summary>
+		/// Category of the Home Node. Expected values are Gear and Vehicle.
+		/// </summary>
+		public string HomeNodeCategory
+		{
+			get
+			{
+				return _strHomeNodeCategory;
+			}
+			set
+			{
+				_strHomeNodeCategory = value;
+			}
+		}
+
+		/// <summary>
+		/// Handling rating of the Home Node.
+		/// </summary>
+		public string HomeNodeHandling
+		{
+			get
+			{
+				return _strHomeNodeHandling;
+			}
+			set
+			{
+				_strHomeNodeHandling = value;
+			}
+		}
+
+		/// <summary>
+		/// Pilot rating of the Home Node.
+		/// </summary>
+		public int HomeNodePilot
+		{
+			get
+			{
+				return _intHomeNodePilot;
+			}
+			set
+			{
+				_intHomeNodePilot = value;
+			}
+		}
+
+		/// <summary>
+		/// Sensor Rating of the Home Node.
+		/// </summary>
+		public int HomeNodeSensor
+		{
+			get
+			{
+				return _intHomeNodeSensor;
+			}
+			set
+			{
+				_intHomeNodeSensor = value;
+			}
+		}
+
+		/// <summary>
+		/// Data Processing Rating of the Home Node.
+		/// </summary>
+		public int HomeNodeDataProcessing
+		{
+			get
+			{
+				return _intHomeNodeDataProcessing;
+			}
+			set
+			{
+				_intHomeNodeDataProcessing = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether a character currently has a Home Node.
+		/// </summary>
+		public bool HasHomeNode
+		{
+			get
+			{
+				return _blnHasHomeNode;
+			}
+			set
+			{
+				_blnHasHomeNode = value;
+			}
+		}
 	    #endregion
 	}
 }

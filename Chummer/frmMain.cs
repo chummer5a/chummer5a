@@ -12,6 +12,7 @@ namespace Chummer
 	{
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
+		private frmUpdate _frmUpdate;
         private Character _objCharacter;
 
         #region Control Events
@@ -19,7 +20,14 @@ namespace Chummer
 		{
 			InitializeComponent();
 			Version version = Assembly.GetExecutingAssembly().GetName().Version;
-			this.Text = string.Format("Chummer 5a - Version {0}.{1}.{2}",version.Major, version.Minor, version.Build);
+			string strCurrentVersion = string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+
+			this.Text = string.Format("Chummer 5a - Version " + strCurrentVersion);
+
+#if DEBUG
+	        Text += " DEBUG BUILD";
+#endif
+
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
             /** Dashboard **/
@@ -33,6 +41,18 @@ namespace Chummer
                 frmAutoUpdate.SilentMode = true;
                 frmAutoUpdate.Visible = false;
                 frmAutoUpdate.ShowDialog(this);
+			}
+			else
+			{
+				frmUpdate frmAutoUpdate = new frmUpdate();
+				frmAutoUpdate.GetChummerVersion();
+				Version verCurrentVersion = new Version(strCurrentVersion);
+				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
+
+				var result = verCurrentVersion.CompareTo(verLatestVersion);
+				if (result != 0)
+					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
+				return;
 			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -138,8 +158,17 @@ namespace Chummer
 
 		private void mnuToolsUpdate_Click(object sender, EventArgs e)
 		{
-            frmUpdate frmUpdateApp = new frmUpdate();
-            frmUpdateApp.ShowDialog(this);
+			// Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
+			if (_frmUpdate == null)
+			{
+				frmUpdate frmUpdate = new frmUpdate();
+				_frmUpdate = frmUpdate;
+				_frmUpdate.Show();
+		}
+			else
+			{
+				_frmUpdate.Focus();
+			}
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -329,7 +358,7 @@ namespace Chummer
 			(sender as Form).FormClosed -= ActiveMdiChild_FormClosed;
 			(sender as Form).Dispose();
 			((sender as Form).Tag as TabPage).Dispose();
-			GC.Collect();
+			
 			// Don't show the tab control if there is only one window open.
 			if (tabForms.TabCount <= 1)
 				tabForms.Visible = false;
@@ -525,7 +554,7 @@ namespace Chummer
 			}
 
 			// Show the BP selection window.
-			frmSelectBP frmBP = new frmSelectBP(objCharacter);
+			frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter);
 			frmBP.ShowDialog();
 
 			if (frmBP.DialogResult == DialogResult.Cancel)
@@ -539,7 +568,7 @@ namespace Chummer
                 { return; }
             }
             // Show the Metatype selection window.
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
@@ -547,15 +576,6 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
             }
-            else if (objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                frmSumtoTenMetatype frmSumtoTenMetatype = new frmSumtoTenMetatype(objCharacter);
-                frmSumtoTenMetatype.ShowDialog();
-
-                if (frmSumtoTenMetatype.DialogResult == DialogResult.Cancel)
-                { return; }
-            }
-
 
 			// Add the Unarmed Attack Weapon to the character.
 			try

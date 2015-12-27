@@ -46,9 +46,13 @@ namespace Chummer
 			}
 
 			List<ListItem> lstDVBase = new List<ListItem>();
+			ListItem objHalfStrength = new ListItem();
+			objHalfStrength.Value = "(STR/2)";
+			objHalfStrength.Name = "(" + LanguageManager.Instance.GetString("String_AttributeSTRShort") + "/2)";
+			lstDVBase.Add(objHalfStrength);
 			ListItem objStrength = new ListItem();
-			objStrength.Value = "(STR/2)";
-			objStrength.Name = "(" + LanguageManager.Instance.GetString("String_AttributeSTRShort") + "/2)";
+			objStrength.Value = "(STR)";
+			objStrength.Name = "(" + LanguageManager.Instance.GetString("String_AttributeSTRShort");
 			lstDVBase.Add(objStrength);
 			for (int i = 1; i <= 20; i++)
 			{

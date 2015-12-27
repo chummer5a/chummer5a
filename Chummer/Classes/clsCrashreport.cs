@@ -127,7 +127,7 @@ namespace Chummer
 					report.AppendFormat("Machine ID Primary= {0}", cv.GetValue("ProductId"));
 					report.AppendLine();
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 				}
 

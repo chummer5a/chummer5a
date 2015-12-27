@@ -159,7 +159,7 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.ToolStripMenuItem initativeToolStripMenuItem;
-        private DiceRollerControl diceRollerControl1;
+        //private DiceRollerControl diceRollerControl1;
 
 
     }

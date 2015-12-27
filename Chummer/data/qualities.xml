@@ -5,7 +5,7 @@
 		<category>Positive</category>
 		<category>Negative</category>
 	</categories>
-	<!--Region Shadowrun Core Positive Qualities -->
+		<!--Region Shadowrun Core Positive Qualities -->
 	<qualities>
 		<quality>
 			<id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
@@ -976,7 +976,11 @@
 			<name>Magician</name>
 			<karma>30</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<contributetolimit>no</contributetolimit>
@@ -994,7 +998,11 @@
 			<name>Adept</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+					</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1012,7 +1020,11 @@
 			<name>Mystic Adept</name>
 			<karma>35</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1030,7 +1042,11 @@
 			<name>Technomancer</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>RES</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1048,7 +1064,11 @@
 			<name>Aspected Magician</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<addattribute>
+					<name>MAG</name>
+				</addattribute>
+			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1220,6 +1240,10 @@
 					<quality>Aspected Magician</quality>
 					<quality>Magician</quality>
 					<quality>Mystic Adept</quality>
+					<metatype>Centaur</metatype>
+					<metatype>Naga</metatype>
+					<metatype>Pixie</metatype>
+					<metatype>Sasquatch</metatype>
 				</oneof>
 			</required>
 			<forbidden>
@@ -2436,7 +2460,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>2</publicawareness>
+				<publicawareness>2</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2464,7 +2488,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>3</publicawareness>
+				<publicawareness>3</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>1</value>
@@ -2493,7 +2517,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>5</publicawareness>
+				<publicawareness>5</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>2</value>
@@ -2521,7 +2545,7 @@
 			<category>Positive</category>
 			<bonus>
 				<fame />
-        <publicawareness>8</publicawareness>
+				<publicawareness>8</publicawareness>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>3</value>
@@ -2719,7 +2743,7 @@
 				<selecttext />
 			</bonus>
 			<source>RF</source>
-			<page>149</page>
+			<page>86</page>
 		</quality>
 		<quality>
 			<name>Restricted Gear</name>
@@ -4674,21 +4698,6 @@
 			<source>SR5</source>
 			<page>309</page>
 		</quality>
-		<quality>
-			<id>4e7dae85-29a3-4f1d-88ed-f7a4d1abde7e</id>
-			<name>Natural Weapon: Claws (Sasquatch)</name>
-			<karma>0</karma>
-			<category>Positive</category>
-			<required>
-				<allof>
-					<metatype>Sasquatch</metatype>
-				</allof>
-			</required>
-			<bonus/>
-			<addweapon>Claws (Sasquatch)</addweapon>
-			<source>RF</source>
-			<page>106</page>
-		</quality>
 		<!-- End Region -->
 		<!-- Region Run Faster Metagenetic Qualities -->
 		<!-- Region Positive Qualities -->
@@ -5657,7 +5666,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Low-Light Vision</name>
+			<name>Low-Light Vision (Changeling)</name>
 			<karma>4</karma>
 			<category>Positive</category>
 			<bonus />
@@ -5689,7 +5698,7 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<quality>
-			<name>Magic Sense</name>
+			<name>Magic Sense (Changeling)</name>
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus />
@@ -6809,79 +6818,6 @@
 			<metagenetic>yes</metagenetic>
 		</quality>
 		<!-- End Region -->
-		<!-- Region Run Faster Infected Qualities -->
-		<quality>
-			<name>Infected: Banshee</name>
-			<contributetolimit>no</contributetolimit>
-			<karma>32</karma>
-			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<bonus>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-				</selectattributes>
-			</bonus>
-			<required>
-				<allof>
-					<metatype>Elf</metatype>
-				</allof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Magic Resistance (Rating 1)</quality>
-					<quality>Magic Resistance (Rating 2)</quality>
-					<quality>Magic Resistance (Rating 3)</quality>
-					<quality>Magic Resistance (Rating 4)</quality>
-					<quality>Technomancer</quality>
-					<metatype>Free Spirit</metatype>
-					<metatypecategory>Shapeshifter</metatypecategory>
-				</oneof>
-			</forbidden>
-			<powers>
-				<power>Dual Natured</power>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Silver">Vulnerability</power>
-				<power select="Wood">Vulnerability</power>
-			</powers>
-			<source>RF</source>
-			<page>80</page>
-		</quality>
-		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Run Faster Infected Qualities -->
 		<quality>
@@ -6889,8 +6825,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<enabletab>
 					<name>critter</name>
@@ -6960,16 +6894,115 @@
 				<power select="Sunlight, Mild">Allergy</power>
 				<power select="Sasquatch Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>136</page>
+		</quality>
+		<quality>
+			<name>Infected: Banshee</name>
+			<contributetolimit>no</contributetolimit>
+			<karma>32</karma>
+			<category>Positive</category>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<initiative>1</initiative>
+				<movement>1</movement>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+				</optionalpowers>
+				<selectattributes>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+					<selectattribute>
+						<attribute>BOD</attribute>
+						<attribute>REA</attribute>
+						<attribute>STR</attribute>
+						<val>1</val>
+						<affectbase />
+					</selectattribute>
+				</selectattributes>
+			</bonus>
+			<required>
+				<allof>
+					<metatype>Elf</metatype>
+				</allof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Magic Resistance (Rating 1)</quality>
+					<quality>Magic Resistance (Rating 2)</quality>
+					<quality>Magic Resistance (Rating 3)</quality>
+					<quality>Magic Resistance (Rating 4)</quality>
+					<quality>Technomancer</quality>
+					<metatype>Free Spirit</metatype>
+					<metatypecategory>Shapeshifter</metatypecategory>
+				</oneof>
+			</forbidden>
+			<powers>
+				<power>Dual Natured</power>
+				<power>Essence Drain</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Silver">Vulnerability</power>
+				<power select="Wood">Vulnerability</power>
+			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>RF</source>
+			<page>80</page>
 		</quality>
 		<quality>
 			<name>Infected: Dzoo-Noo-Qua</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>43</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7051,6 +7084,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>137</page>
 		</quality>
@@ -7059,8 +7112,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>22</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7137,6 +7188,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7145,8 +7216,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 1</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7224,6 +7293,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7232,7 +7321,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Gnawer)</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7305,6 +7393,17 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Bone">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7313,8 +7412,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7356,6 +7453,26 @@
 					<optionalpower select="Toxins">Immunity</optionalpower>
 				</optionalpowers>
 			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<required>
 				<allof>
 					<metatype>Dwarf</metatype>
@@ -7395,6 +7512,26 @@
 				<power select="Metahuman Bone">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>138</page>
 		</quality>
@@ -7403,8 +7540,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
-			<!-- <addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 1</addweapon> -->
 			<implemented>no</implemented>
 			<bonus>
 				<selectattributes>
@@ -7488,6 +7623,26 @@
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7496,8 +7651,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>29</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected)</addweapon>
-			<addweapon>Claws (Infected)</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7579,6 +7732,26 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7587,8 +7760,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>30</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 2</addweapon>
-			<addweapon>Claws (Infected) 3</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7674,6 +7845,26 @@
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -7682,8 +7873,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>54</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7765,7 +7974,7 @@
 			<powers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Fire">Vulnerability</power>
 				<power select="Wood, Severe">Allergy</power>
@@ -7780,8 +7989,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>44</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7864,7 +8091,7 @@
 			<powers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Fire">Vulnerability</power>
 				<power select="Wood, Severe">Allergy</power>
@@ -7879,8 +8106,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>44</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -7963,7 +8208,7 @@
 			<powers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Fire">Vulnerability</power>
 				<power select="Wood, Severe">Allergy</power>
@@ -7978,7 +8223,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>38</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8061,11 +8305,22 @@
 			<addqualities>
 				<addquality>Mystic Adept</addquality>
 			</addqualities>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<powers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Allergy</power>
@@ -8080,7 +8335,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>38</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8167,7 +8432,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Allergy</power>
@@ -8182,9 +8447,19 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>48</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
-								<selectattributes>
+				<selectattributes>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
@@ -8271,7 +8546,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Allergy</power>
@@ -8286,7 +8561,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>27</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8363,9 +8648,8 @@
 			</forbidden>
 			<powers>
 				<power>Essence Drain</power>
-				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power>Infection</power>
 				<power select="Wood, Severe">Allergy</power>
@@ -8381,7 +8665,17 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8465,7 +8759,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power>Infection</power>
 				<power select="Wood, Severe">Allergy</power>
@@ -8481,8 +8775,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>47</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8569,7 +8881,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power>Infection</power>
 				<power select="Ferrous Metals, Moderate">Allergy</power>
@@ -8584,8 +8896,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8670,7 +9000,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power>Infection</power>
 				<power select="Ferrous Metals, Moderate">Allergy</power>
@@ -8685,8 +9015,26 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>37</karma>
 			<category>Positive</category>
-			<addweapon>Bite (Infected) 1</addweapon>
-			<addweapon>Claws (Infected) 2</addweapon>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Infected Claws</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+				<naturalweapon>
+					<name>Infected Bite</name>
+					<reach>-1</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>RF</source>
+					<page>137</page>
+				</naturalweapon>
+			</naturalweapons>
 			<bonus>
 				<selectattributes>
 					<selectattribute>
@@ -8768,7 +9116,7 @@
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
-				<power>Essense Loss</power>
+				<power>Essence Loss</power>
 				<power>Dual Natured</power>
 				<power>Infection</power>
 				<power select="Ferrous Metals, Moderate">Allergy</power>
@@ -8783,6 +9131,26 @@
 		<!-- Region Data Trails-->
 		<!--Region Data Trails Positive Qualities -->
 		<quality>
+			<id>5878014A-B7FB-45BC-859A-A22F907B0EA8</id>
+			<name>Chatty</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Limited to Communication via AR or VR</condition>
+				</limitmodifier>
+			</bonus>
+			<source>DT</source>
+			<page>146</page>
+		</quality>
+		<quality>
 			<id>2e3e5050-c77b-4ad8-8f7a-eff1b94b64a0</id>
 			<name>Data Anomaly</name>
 			<karma>3</karma>
@@ -8790,6 +9158,21 @@
 			<bonus />
 			<source>DT</source>
 			<page>44</page>
+		</quality>
+		<quality>
+			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
+			<name>Exceptional Entity</name>
+			<karma>25</karma>
+			<implemented>False</implemented>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<bonus />
+			<source>DT</source>
+			<page>147</page>
 		</quality>
 		<quality>
 			<id>72190f27-8bcf-48c4-bdbd-72bb91aa0dcf</id>
@@ -8819,6 +9202,21 @@
 			<page>44</page>
 		</quality>
 		<quality>
+			<id>0EE4765D-46D6-4AD9-A3EE-33D6A1167D9A</id>
+			<name>Hello World!</name>
+			<karma>8</karma>
+			<limit>3</limit>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>147</page>
+		</quality>
+		<quality>
 			<id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
 			<name>I C U</name>
 			<karma>6</karma>
@@ -8826,6 +9224,78 @@
 			<bonus />
 			<source>DT</source>
 			<page>44</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Improved Restoration</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
+			<id>36429E96-89FA-4E37-A20A-61A8D35A92AC</id>
+			<name>Inherent Program</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>148</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Low Profile</name>
+			<karma>15</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Munge</name>
+			<karma>15</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Multiprocessing</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
 		</quality>
 		<quality>
 			<id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
@@ -8867,6 +9337,72 @@
 			<page>45</page>
 		</quality>
 		<quality>
+			<id></id>
+			<name>Pilot Origins (Rating 1)</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Pilot Origins (Rating 2)</quality>
+					<quality>Pilot Origins (Rating 3)</quality>
+				</oneof>
+			</forbidden>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Pilot Origins (Rating 2)</name>
+			<karma>16</karma>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Pilot Origins (Rating 1)</quality>
+					<quality>Pilot Origins (Rating 3)</quality>
+				</oneof>
+			</forbidden>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Pilot Origins (Rating 3)</name>
+			<karma>24</karma>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<forbidden>
+				<oneof>
+					<quality>Pilot Origins (Rating 1)</quality>
+					<quality>Pilot Origins (Rating 2)</quality>
+				</oneof>
+			</forbidden>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
+		</quality>
+		<quality>
 			<id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
 			<name>Prime Datahaven Membership</name>
 			<karma>7</karma>
@@ -8900,6 +9436,80 @@
 			<source>DT</source>
 			<page>46</page>
 		</quality>
+		<quality>
+			<id>364CDB2A-C405-488C-8E08-631EF02EBCF2</id>
+			<name>Redundancy</name>
+			<karma>12</karma>
+			<category>Positive</category>
+			<bonus>
+				<conditionmonitor>
+					<physical>2</physical>
+				</conditionmonitor>
+			</bonus>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>6DCA4827-142C-4BC1-93AE-16F4F9C47ECA</id>
+			<name>Sapper</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>5A9EF869-FE86-4877-8D25-5F744C9CD007</id>
+			<name>Sensor Upgrade</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>33BE6D42-8E90-456F-85DE-AFB195747472</id>
+			<name>Snooper</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
+		<quality>
+			<id>130F2287-6E27-4A7B-A45C-0313E8ECAD73</id>
+			<name>Virtual Stability</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
 		<!-- End Region -->
 		<!--Region Data Trails Negative Qualities -->
 		<quality>
@@ -8921,6 +9531,22 @@
 			</required>
 			<source>DT</source>
 			<page>46</page>
+		</quality>
+		<quality>
+			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
+			<name>Corruptor</name>
+			<nomission/>
+			<karma>-10</karma>
+			<category>Negative</category>
+			<bonus />
+			<nomission/>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
 		</quality>
 		<quality>
 			<id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
@@ -8965,6 +9591,22 @@
 			<page>47</page>
 		</quality>
 		<quality>
+			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
+			<name>Easily Exploitable</name>
+			<nomission/>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<implemented>False</implemented>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
+		</quality>
+		<quality>
 			<id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
 			<name>Electronic Witness</name>
 			<karma>-5</karma>
@@ -8981,6 +9623,25 @@
 			<bonus />
 			<source>DT</source>
 			<page>48</page>
+		</quality>
+		<quality>
+			<id>40CEDA2D-B7D1-44C2-80F0-A26EA96DCBE2</id>
+			<name>Fragmentation</name>
+			<karma>-18</karma>
+			<category>Negative</category>
+			<bonus>
+				<specificattribute>
+					<name>ESS</name>
+					<val>-1</val>
+				</specificattribute>
+			</bonus>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>151</page>
 		</quality>
 		<quality>
 			<id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
@@ -9011,6 +9672,20 @@
 			<page>48</page>
 		</quality>
 		<quality>
+			<id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
+			<name>Persnickety Renter</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>152</page>
+		</quality>
+		<quality>
 			<id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
 			<name>Prank Warrior</name>
 			<nomission/>
@@ -9021,8 +9696,22 @@
 			<page>49</page>
 		</quality>
 		<quality>
+			<id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
+			<name>Real World Naiveté</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>152</page>
+		</quality>
+		<quality>
 			<id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
-			<name>Wanted by God</name>
+			<name>Wanted by GOD</name>
 			<nomission/>
 			<karma>-12</karma>
 			<category>Negative</category>
@@ -9093,9 +9782,9 @@
 			<name>Cyber-Singularity Seeker</name>
 			<karma>12</karma>
 			<category>Positive</category>
-      <bonus>
-        <cyberseeker>WIL</cyberseeker>
-      </bonus>
+			<bonus>
+				<cyberseeker>WIL</cyberseeker>
+			</bonus>
 			<source>CF</source>
 			<page>54</page>
 		</quality>
@@ -9124,11 +9813,11 @@
 			<name>Redliner</name>
 			<karma>10</karma>
 			<category>Positive</category>
-      <bonus>
-        <cyberseeker>AGI</cyberseeker>
-        <cyberseeker>STR</cyberseeker>
-        <cyberseeker>BOX</cyberseeker>  <!--physical boxes, hardcoded to times 3 elsewhere -->
-      </bonus>
+			<bonus>
+				<cyberseeker>AGI</cyberseeker>
+				<cyberseeker>STR</cyberseeker>
+				<cyberseeker>BOX</cyberseeker><!--physical boxes, hardcoded to times 3 elsewhere -->
+			</bonus>
 			<source>CF</source>
 			<page>55</page>
 		</quality>
@@ -9202,7 +9891,9 @@
 			<name>Dead Emotion</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9211,7 +9902,9 @@
 			<name>Dry Addict (Mild)</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9220,7 +9913,9 @@
 			<name>Dry Addict (Moderate)</name>
 			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9229,7 +9924,9 @@
 			<name>Dry Addict (Severe)</name>
 			<karma>-10</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9238,7 +9935,9 @@
 			<name>Dry Addict (Burnout)</name>
 			<karma>-13</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>57</page>
 		</quality>
@@ -9398,7 +10097,9 @@
 			<name>Practice, Practice, Practice</name>
 			<karma>2</karma>
 			<category>Positive</category>
-			<bonus />
+			<bonus>
+				<selectskill excludecategory="Combat Active" />
+			</bonus>
 			<source>HT</source>
 			<page>191</page>
 			<id>81fc0829-3456-4701-8ecc-f101d145b538</id>
@@ -9421,6 +10122,112 @@
 			<bonus />
 			<source>HT</source>
 			<page>191</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			<quality>
+				<name>Faceless</name>
+				<karma>-6</karma>
+				<category>Negative</category>
+				<source>HT</source>
+				<page>191</page>
+				<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+			</quality>
+		</quality>
+		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Rigger 5.0-->
+		<!-- Region Positive Qualities -->
+		<quality>
+			<name>Chaser</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Dealer Connection</name>
+			<karma>3</karma>
+			<limit>4</limit>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Grease Monkey</name>
+			<karma>8</karma>
+			<category>Positive</category>
+			<bonus>
+				<skillgroup>
+					<name>Engineering</name>
+					<bonus>1</bonus>
+				</skillgroup>
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Speed Demon</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Stunt Driver</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Subtle Pilot</name>
+			<karma>4</karma>
+			<limit>no</limit>
+			<category>Positive</category>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Negative Qualities -->
+		<quality>
+			<name>Accident Prone</name>
+			<karma>-4</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Motion Sickness</name>
+			<karma>-4</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>33</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
+		</quality>
+		<quality>
+			<name>Too Much Data</name>
+			<karma>-3</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>R5</source>
+			<page>34</page>
 			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
 		</quality>
 		<!-- End Region -->

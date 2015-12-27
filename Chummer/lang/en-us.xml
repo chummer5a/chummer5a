@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-355</version>
+	<version>-350</version>
 	<name>English (US)</name>
 	<strings>
 		<!-- Common Strings -->
@@ -297,10 +297,9 @@
 			<text>page</text>
 		</string>
 		<string>
-			<key>String_OverContactPoints</key>
+			<key>String_OverPriorityPoints</key>
 			<text>{0} of {1}: {2} Karma</text>
 		</string>
-		
 		<string>
 			<key>String_Of</key>
 			<text>of</text>
@@ -727,6 +726,10 @@
 			<text>Living Persona Gear</text>
 		</string>
 		<string>
+			<key>String_MountNone</key>
+			<text>None</text>
+		</string>
+		<string>
 			<key>String_MountTop</key>
 			<text>Top</text>
 		</string>
@@ -869,6 +872,14 @@
 			<text>RES</text>
 		</string>
 		<string>
+			<key>String_AttributeDEPLong</key>
+			<text>Depth</text>
+		</string>
+		<string>
+			<key>String_AttributeDEPShort</key>
+			<text>DEP</text>
+		</string>
+		<string>
 			<key>String_AttributeINILong</key>
 			<text>Initiative</text>
 		</string>
@@ -1001,6 +1012,10 @@
 		<string>
 			<key>Menu_FilePrint</key>
 			<text>&amp;Print</text>
+		</string>
+		<string>
+			<key>Menu_FilePrintPreview</key>
+			<text>&amp;Print Preview</text>
 		</string>
 		<string>
 			<key>Menu_FileClose</key>
@@ -1523,6 +1538,10 @@
 			<text>Are you sure you want to delete this Stacked Focus?</text>
 		</string>
 		<string>
+			<key>Message_DeleteCalendarWeek</key>
+			<text>Are you sure you want to delete this Calendar Entry?</text>
+		</string>
+		<string>
 			<key>Message_SpiritServices</key>
 			<text>A Spirit cannot owe more services than your current Summoning Skill Rating.</text>
 		</string>
@@ -1806,6 +1825,10 @@
 			<key>MessageTitle_WeaponUnderbarrel</key>
 			<text>Cannot Add Underbarrel Weapon</text>
 		</string>
+		<string>
+			<key>Message_CannotFindWeapon</key>
+			<text>Weapon was not found. Please remove the weapon and re-add it, as the name or other details may have been changed.</text>
+		</string>	
 		<string>
 			<key>Message_CannotModifyWeapon</key>
 			<text>Accessories cannot be added to this Weapon.</text>
@@ -4229,6 +4252,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Button_EditWeek</key>
 			<text>Edit Week</text>
+		</string>
+		<string>
+			<key>Button_DeleteWeek</key>
+			<text>Delete Week</text>
 		</string>
 		<string>
 			<key>Button_ChangeStartWeek</key>

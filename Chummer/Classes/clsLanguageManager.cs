@@ -488,7 +488,7 @@ namespace Chummer
                 strReturn = _objDictionary[strKey].Replace("\\n", "\n");
                 return strReturn;
             }
-            catch (KeyNotFoundException e) 
+            catch
             {
                 string strReturn = "Error in string return - " + _objDictionary[strKey].ToString();
                 return strReturn;

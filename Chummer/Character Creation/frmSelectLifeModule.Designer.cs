@@ -122,8 +122,8 @@
 			this.lblBPLabel.Name = "lblBPLabel";
 			this.lblBPLabel.Size = new System.Drawing.Size(24, 13);
 			this.lblBPLabel.TabIndex = 20;
-			this.lblBPLabel.Tag = "Label_BP";
-			this.lblBPLabel.Text = "BP:";
+			this.lblBPLabel.Tag = "Label_Karma";
+			this.lblBPLabel.Text = "Karma:";
 			// 
 			// lblSource
 			// 

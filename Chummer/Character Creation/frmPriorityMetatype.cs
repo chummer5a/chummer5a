@@ -14,7 +14,12 @@ namespace Chummer
 
 		private string _strXmlFile = "metatypes.xml";
         private string _strPrioritiesXmlFile = "priorities.xml";
-
+		private string _strMetatype = "";
+		private string _strAttributes = "";
+		private string _strSpecial = "";
+		private string _strSkills = "";
+		private string _strResources = "";
+		private int intBuildMethod = 0;
 		private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = false;
 
@@ -66,10 +71,65 @@ namespace Chummer
 				_strXmlFile = value;
 			}
 		}
+		public string Metatype
+		{
+			get
+			{
+				return _strMetatype;
+			}
+			set
+			{
+				_strMetatype = value;
+			}
+		}
+		public string Resources
+		{
+			get
+			{
+				return _strResources;
+			}
+			set
+			{
+				_strResources = value;
+			}
+		}
+		public string Skills
+		{
+			get
+			{
+				return _strSkills;
+			}
+			set
+			{
+				_strSkills = value;
+			}
+		}
+		public string Attributes
+		{
+			get
+			{
+				return _strAttributes;
+			}
+			set
+			{
+				_strAttributes = value;
+			}
+		}
+		public string Special
+		{
+			get
+			{
+				return _strSpecial;
+			}
+			set
+			{
+				_strSpecial = value;
+			}
+		}
 		#endregion
 
 		#region Form Events
-        public frmPriorityMetatype(Character objCharacter)
+		public frmPriorityMetatype(Character objCharacter)
         {
 			_objCharacter = objCharacter;
             InitializeComponent();
@@ -83,7 +143,7 @@ namespace Chummer
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-        }
+		}
 
         private void frmPriorityMetatype_FormClosed(object sender, FormClosedEventArgs e)
 		{
@@ -103,9 +163,14 @@ namespace Chummer
             XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
             if (_objCharacter.GameplayOption == "")
                 _objCharacter.GameplayOption = "Standard";
-
-            // Populate the Priority Category list.
-            _blnInitializing = true;
+			
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				intBuildMethod = 1;
+				lblSumtoTen.Visible = true;
+			}
+			// Populate the Priority Category list.
+			_blnInitializing = true;
             XmlNodeList objXmlPriorityCategoryList = objXmlDocumentPriority.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
             {
@@ -137,22 +202,22 @@ namespace Chummer
                             break;
                         case "Talent":
                             cboTalent.ValueMember = "Value";
-                            cboTalent.DisplayMember = "Name";
+							cboTalent.DisplayMember = "Name";
                             cboTalent.DataSource = lstItems;
                             break;
                         case "Attributes":
                             cboAttributes.ValueMember = "Value";
-                            cboAttributes.DisplayMember = "Name";
+							cboAttributes.DisplayMember = "Name";
                             cboAttributes.DataSource = lstItems;
                             break;
                         case "Skills":
                             cboSkills.ValueMember = "Value";
-                            cboSkills.DisplayMember = "Name";
+							cboSkills.DisplayMember = "Name";
                             cboSkills.DataSource = lstItems;
                             break;
                         case "Resources":
                             cboResources.ValueMember = "Value";
-                            cboResources.DisplayMember = "Name";
+							cboResources.DisplayMember = "Name";
                             cboResources.DataSource = lstItems;
                             break;
                         default:
@@ -161,17 +226,38 @@ namespace Chummer
                 }
             }
 
-            // Set Priority defaults.
-            cboHeritage.SelectedIndex = 0;
-            cboTalent.SelectedIndex = 1;
-            cboAttributes.SelectedIndex = 2;
-            cboSkills.SelectedIndex = 3;
-            cboResources.SelectedIndex = 4;
+			// Set Priority defaults.
+			if (_strAttributes != "")
+			{
+				int index = 0;
+                index = cboAttributes.FindString(_strAttributes);
+				cboAttributes.SelectedIndex = index;
+				index = cboHeritage.FindString(_strMetatype);
+				cboHeritage.SelectedIndex = index;
+				index = cboResources.FindString(_strResources);
+				cboResources.SelectedIndex = index;
+				index = cboSkills.FindString(_strSkills);
+				cboSkills.SelectedIndex = index;
+				index = cboTalent.FindString(_strSpecial);
+				cboTalent.SelectedIndex = index;
+			}
+			else
+			{
+				cboHeritage.SelectedIndex = 0;
+				cboTalent.SelectedIndex = 1;
+				cboAttributes.SelectedIndex = 2;
+				cboSkills.SelectedIndex = 3;
+				cboResources.SelectedIndex = 4;
+			}
             _blnInitializing = false;
 
             // Load Metatypes
             LoadMetatypes();
             PopulateTalents();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
             lstMetatypes.SelectedIndex = 0;
 
 			// Add Possession and Inhabitation to the list of Critter Tradition variations.
@@ -220,7 +306,7 @@ namespace Chummer
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load(_strXmlFile);
 
-				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
+				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
 				XmlNode objXmlMetatypeBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
 				
 				if (objXmlMetatypeBP["karma"] != null)
@@ -324,7 +410,11 @@ namespace Chummer
 				cboMetavariant.DisplayMember = "Name";
 				cboMetavariant.DataSource = lstMetavariants;
 			}
-        }
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
+		}
 
         private void lstMetatypes_DoubleClick(object sender, EventArgs e)
         {
@@ -342,7 +432,7 @@ namespace Chummer
 
             if (cboTalents.SelectedIndex >= 0)
             {
-                if (cboTalent.SelectedValue.ToString() == "A")
+                if (cboTalent.SelectedValue.ToString() == "A,4")
                 {
                     if (cboTalents.SelectedValue.ToString() == "Magician" || cboTalents.SelectedValue.ToString() == "Mystic Adept")
                     {
@@ -407,7 +497,7 @@ namespace Chummer
                         cboSkill2.Visible = false;
                     }
                 }
-                else if (cboTalent.SelectedValue.ToString() == "B")
+                else if (cboTalent.SelectedValue.ToString() == "B,3")
                 {
                     if (cboTalents.SelectedValue.ToString() == "Magician" || cboTalents.SelectedValue.ToString() == "Mystic Adept")
                     {
@@ -524,7 +614,7 @@ namespace Chummer
                         cboSkill2.Visible = false;
                     }
                 }
-                else if (cboTalent.SelectedValue.ToString() == "C")
+                else if (cboTalent.SelectedValue.ToString() == "C,2")
                 {
                     if (cboTalents.SelectedValue.ToString() == "Adept")
                     {
@@ -585,7 +675,7 @@ namespace Chummer
                         cboSkill2.Visible = false;
                     }
                 }
-                else if (cboTalent.SelectedValue.ToString() == "D")
+                else if (cboTalent.SelectedValue.ToString() == "D,1")
                 {
                     if (cboTalents.SelectedValue.ToString() == "Aspected Magician")
                     {
@@ -636,8 +726,12 @@ namespace Chummer
                 lblMetatypeSkillSelection.Visible = false;
                 cboSkill1.Visible = false;
                 cboSkill2.Visible = false;
-            }
-        }
+			}
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
+		}
 
 		private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -649,8 +743,8 @@ namespace Chummer
 
 			if (cboMetavariant.SelectedValue.ToString() != "None")
 			{
-                XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
-                XmlNode objXmlMetavariantBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
+                XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString().Split(',')[intBuildMethod] + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
+                XmlNode objXmlMetavariantBP = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString().Split(',')[intBuildMethod] + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
                 lblMetavariantBP.Text = objXmlMetavariantBP["karma"].InnerText;
                 lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
                 lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);
@@ -668,7 +762,7 @@ namespace Chummer
                 {
                     try
                     {
-                        XmlNodeList objXmlMetavariantList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
+                        XmlNodeList objXmlMetavariantList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString() + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]");
                         intSpecial = Convert.ToInt32(objXmlMetavariantList[0]["value"].InnerText);
                         lblSpecial.Text = objXmlMetavariantList[0]["value"].InnerText.ToString();
                     }
@@ -740,7 +834,7 @@ namespace Chummer
                 // Set the special attributes label.
                 if (lstMetatypes.SelectedItem != null)
                 {
-                    XmlNodeList objXmlMetatypeList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
+                    XmlNodeList objXmlMetatypeList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue.ToString() + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue.ToString() + "\"]");
 					XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
                     lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["bodmin"].InnerText, objXmlMetatype["bodmax"].InnerText, objXmlMetatype["bodaug"].InnerText);
                     lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["agimin"].InnerText, objXmlMetatype["agimax"].InnerText, objXmlMetatype["agiaug"].InnerText);
@@ -756,7 +850,11 @@ namespace Chummer
 
 	                lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
                 }
-            }
+			}
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
@@ -768,6 +866,10 @@ namespace Chummer
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			PopulateMetatypes();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
 
         private void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
@@ -775,32 +877,35 @@ namespace Chummer
             if (_blnInitializing)
                 return;
 
-            List<string> objPriorities = new List<string>() {"A", "B", "C", "D", "E"};
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
 
-            // Discover which priority rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
 
-            string strMissing = objPriorities[0].ToString();
+				string strMissing = objPriorities[0].ToString();
 
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (cboTalent.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
+					cboTalent.SelectedValue = strMissing;
 
-            if (cboAttributes.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
+				if (cboAttributes.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
+					cboAttributes.SelectedValue = strMissing;
 
-            if (cboSkills.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
+				if (cboSkills.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
+					cboSkills.SelectedValue = strMissing;
 
-            if (cboResources.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
+				if (cboResources.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
+					cboResources.SelectedValue = strMissing;
+			}
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -812,39 +917,45 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-        }
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
+		}
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnInitializing)
                 return;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
 
-            List<string> objPriorities = new List<string>() { "A", "B", "C", "D", "E" };
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
 
-            // Discover which priority rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
+				string strMissing = objPriorities[0].ToString();
 
-            string strMissing = objPriorities[0].ToString();
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (cboHeritage.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
+					cboHeritage.SelectedValue = strMissing;
 
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboHeritage.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
+				if (cboAttributes.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
+					cboAttributes.SelectedValue = strMissing;
 
-            if (cboAttributes.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
+				if (cboSkills.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
+					cboSkills.SelectedValue = strMissing;
 
-            if (cboSkills.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
+				if (cboResources.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
+					cboResources.SelectedValue = strMissing;
+			}
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -857,39 +968,42 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-        }
+			SumtoTen();
+		}
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnInitializing)
                 return;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
 
-            List<string> objPriorities = new List<string>() { "A", "B", "C", "D", "E" };
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
 
-            // Discover which priority rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
+				string strMissing = objPriorities[0].ToString();
 
-            string strMissing = objPriorities[0].ToString();
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (cboTalent.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
+					cboTalent.SelectedValue = strMissing;
 
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
+				if (cboHeritage.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
+					cboHeritage.SelectedValue = strMissing;
 
-            if (cboHeritage.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
+				if (cboSkills.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
+					cboSkills.SelectedValue = strMissing;
 
-            if (cboSkills.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
+				if (cboResources.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
+					cboResources.SelectedValue = strMissing;
+			}
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -901,39 +1015,42 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-        }
+			SumtoTen();
+		}
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnInitializing)
                 return;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
 
-            List<string> objPriorities = new List<string>() { "A", "B", "C", "D", "E" };
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
 
-            // Discover which priority rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
+				string strMissing = objPriorities[0].ToString();
 
-            string strMissing = objPriorities[0].ToString();
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (cboTalent.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
+					cboTalent.SelectedValue = strMissing;
 
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
+				if (cboAttributes.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
+					cboAttributes.SelectedValue = strMissing;
 
-            if (cboAttributes.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
+				if (cboHeritage.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
+					cboHeritage.SelectedValue = strMissing;
 
-            if (cboHeritage.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
-
-            if (cboResources.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-                cboResources.SelectedValue = strMissing;
+				if (cboResources.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
+					cboResources.SelectedValue = strMissing;
+			}
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -945,39 +1062,42 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-        }
+			SumtoTen();
+		}
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnInitializing)
                 return;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
 
-            List<string> objPriorities = new List<string>() { "A", "B", "C", "D", "E" };
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
 
-            // Discover which priority rating is not currently assigned
-            objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-            objPriorities.Remove(cboTalent.SelectedValue.ToString());
-            objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-            objPriorities.Remove(cboSkills.SelectedValue.ToString());
-            objPriorities.Remove(cboResources.SelectedValue.ToString());
-            if (objPriorities.Count == 0)
-                return;
+				string strMissing = objPriorities[0].ToString();
 
-            string strMissing = objPriorities[0].ToString();
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (cboTalent.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
+					cboTalent.SelectedValue = strMissing;
 
-            // Find the combo with the same value as this one and change it to the missing value.
-            _blnInitializing = true;
-            if (cboTalent.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboTalent.SelectedValue = strMissing;
+				if (cboAttributes.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
+					cboAttributes.SelectedValue = strMissing;
 
-            if (cboAttributes.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboAttributes.SelectedValue = strMissing;
+				if (cboSkills.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
+					cboSkills.SelectedValue = strMissing;
 
-            if (cboSkills.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboSkills.SelectedValue = strMissing;
-
-            if (cboHeritage.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-                cboHeritage.SelectedValue = strMissing;
+				if (cboHeritage.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
+					cboHeritage.SelectedValue = strMissing;
+			}
             _blnInitializing = false;
 
             string strMetatype = "";
@@ -989,7 +1109,8 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-        }
+			SumtoTen();
+		}
         #endregion
 
 		#region Custom Methods
@@ -998,7 +1119,13 @@ namespace Chummer
 		/// </summary>
         void MetatypeSelected()
         {
-            if (cboTalents.SelectedIndex == -1)
+
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen && (SumtoTen() != _objCharacter.SumtoTen))
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_SumtoTen").Replace("{0}", (_objCharacter.SumtoTen.ToString())).Replace("{1}", (SumtoTen().ToString())));
+				return;
+			}
+			if (cboTalents.SelectedIndex == -1)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_SelectTalent"), LanguageManager.Instance.GetString("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1253,8 +1380,11 @@ namespace Chummer
 					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
+					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
+					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
+					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;
 
-                    _objCharacter.BOD.Base = _objCharacter.BOD.TotalMinimum;
+					_objCharacter.BOD.Base = _objCharacter.BOD.TotalMinimum;
                     _objCharacter.AGI.Base = _objCharacter.AGI.TotalMinimum;
                     _objCharacter.REA.Base = _objCharacter.REA.TotalMinimum;
                     _objCharacter.STR.Base = _objCharacter.STR.TotalMinimum;
@@ -1262,8 +1392,11 @@ namespace Chummer
                     _objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
                     _objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
                     _objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
+					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
+					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
+					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
 
-                    _objCharacter.BOD.Karma = 0;
+					_objCharacter.BOD.Karma = 0;
                     _objCharacter.AGI.Karma = 0;
                     _objCharacter.REA.Karma = 0;
                     _objCharacter.STR.Karma = 0;
@@ -1274,7 +1407,8 @@ namespace Chummer
                     _objCharacter.EDG.Karma = 0;
                     _objCharacter.MAG.Karma = 0;
                     _objCharacter.RES.Karma = 0;
-                }
+					_objCharacter.DEP.Karma = 0;
+				}
 
 				// Add any Critter Powers the Metatype/Critter should have.
 				XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
@@ -1790,6 +1924,18 @@ namespace Chummer
             }
         }
 
+
+		private int SumtoTen()
+		{
+			int value = 0;
+			value += Convert.ToInt32(cboHeritage.SelectedValue.ToString().Split(',')[intBuildMethod]);
+			value += Convert.ToInt32(cboTalent.SelectedValue.ToString().Split(',')[intBuildMethod]);
+			value += Convert.ToInt32(cboAttributes.SelectedValue.ToString().Split(',')[intBuildMethod]);
+			value += Convert.ToInt32(cboSkills.SelectedValue.ToString().Split(',')[intBuildMethod]);
+			value += Convert.ToInt32(cboResources.SelectedValue.ToString().Split(',')[intBuildMethod]);
+			lblSumtoTen.Text = (value.ToString() + '/' + _objCharacter.SumtoTen.ToString());
+			return value;
+		}
 		/// <summary>
 		/// Convert Force, 1D6, or 2D6 into a usable value.
 		/// </summary>
@@ -2028,6 +2174,5 @@ namespace Chummer
 			cboPossessionMethod.Enabled = chkPossessionBased.Checked;
 		}
 		#endregion
-
-    }
+	}
 }

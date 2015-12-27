@@ -30,33 +30,33 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCareer));
-			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Physical");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Mental");
-			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Social");
-			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Qualities");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-			System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Rituals");
-			System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-			System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-			System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Critter Powers");
-			System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Weaknesses");
-			System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-			System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Bioware");
-			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Armor");
-			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Weapons");
-			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Gear");
-			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-			System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
+			System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+			System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+			System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Physical");
+			System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Mental");
+			System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Social");
+			System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+			System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Selected Qualities");
+			System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+			System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+			System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+			System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+			System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+			System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Selected Rituals");
+			System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+			System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+			System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("Critter Powers");
+			System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Weaknesses");
+			System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+			System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Selected Bioware");
+			System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+			System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Selected Armor");
+			System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Selected Weapons");
+			System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Selected Gear");
+			System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+			System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Selected Improvements");
 			this.StatusStrip = new System.Windows.Forms.StatusStrip();
 			this.tssKarmaLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssKarma = new System.Windows.Forms.ToolStripStatusLabel();
@@ -67,6 +67,11 @@
 			this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
 			this.lblAttributes = new System.Windows.Forms.Label();
 			this.panAttributes = new System.Windows.Forms.Panel();
+			this.cmdImproveDEP = new System.Windows.Forms.Button();
+			this.lblDEP = new System.Windows.Forms.Label();
+			this.lblDEPAug = new System.Windows.Forms.Label();
+			this.lblDEPMetatype = new System.Windows.Forms.Label();
+			this.lblDEPLabel = new System.Windows.Forms.Label();
 			this.cmdImproveRES = new System.Windows.Forms.Button();
 			this.cmdImproveMAG = new System.Windows.Forms.Button();
 			this.cmdImproveBOD = new System.Windows.Forms.Button();
@@ -379,13 +384,55 @@
 			this.treMetamagic = new System.Windows.Forms.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
-			this.lblCyberFirewall = new System.Windows.Forms.Label();
+			this.cboCyberwareGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboCyberwareGearAttack = new System.Windows.Forms.ComboBox();
+			this.tabCyberwareCM = new System.Windows.Forms.TabControl();
+			this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
+			this.chkCyberwareMatrixCM1 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM2 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM3 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM4 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM5 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM6 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM7 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM8 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM9 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM10 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM11 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM12 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM13 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM14 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM15 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM16 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM17 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM18 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM19 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM20 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM21 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM22 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM23 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM24 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM25 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM26 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM27 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM28 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM29 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM30 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM31 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM32 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM33 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM34 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM35 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM36 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM37 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM38 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM39 = new System.Windows.Forms.CheckBox();
+			this.chkCyberwareMatrixCM40 = new System.Windows.Forms.CheckBox();
 			this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
-			this.lblCyberDataProcessing = new System.Windows.Forms.Label();
 			this.lblCyberDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblCyberSleaze = new System.Windows.Forms.Label();
 			this.lblCyberSleazeLabel = new System.Windows.Forms.Label();
-			this.lblCyberAttack = new System.Windows.Forms.Label();
 			this.lblCyberAttackLabel = new System.Windows.Forms.Label();
 			this.lblCyberDeviceRating = new System.Windows.Forms.Label();
 			this.lblCyberDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -482,13 +529,15 @@
 			this.cmsDeleteArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsArmorSell = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabWeapons = new System.Windows.Forms.TabPage();
-			this.lblWeaponFirewall = new System.Windows.Forms.Label();
+			this.cboWeaponGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboWeaponGearAttack = new System.Windows.Forms.ComboBox();
+			this.lblWeaponRating = new System.Windows.Forms.Label();
+			this.lblWeaponRatingLabel = new System.Windows.Forms.Label();
 			this.lblWeaponFirewallLabel = new System.Windows.Forms.Label();
-			this.lblWeaponDataProcessing = new System.Windows.Forms.Label();
 			this.lblWeaponDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblWeaponSleaze = new System.Windows.Forms.Label();
 			this.lblWeaponSleazeLabel = new System.Windows.Forms.Label();
-			this.lblWeaponAttack = new System.Windows.Forms.Label();
 			this.lblWeaponAttackLabel = new System.Windows.Forms.Label();
 			this.lblWeaponDeviceRating = new System.Windows.Forms.Label();
 			this.lblWeaponDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -559,13 +608,13 @@
 			this.cmsAmmoFullBurst = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsAmmoSuppressiveFire = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabGear = new System.Windows.Forms.TabPage();
-			this.lblGearFirewall = new System.Windows.Forms.Label();
+			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-			this.lblGearDataProcessing = new System.Windows.Forms.Label();
 			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblGearSleaze = new System.Windows.Forms.Label();
 			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-			this.lblGearAttack = new System.Windows.Forms.Label();
 			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.lblGearDeviceRating = new System.Windows.Forms.Label();
 			this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -607,13 +656,96 @@
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
-			this.lblVehicleFirewall = new System.Windows.Forms.Label();
+			this.cboVehicleGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearAttack = new System.Windows.Forms.ComboBox();
+			this.panVehicleCM = new System.Windows.Forms.TabControl();
+			this.tabVehiclePhysicalCM = new System.Windows.Forms.TabPage();
+			this.chkVehiclePhysicalCM40 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM1 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM39 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM2 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM38 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM3 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM37 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM4 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM36 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM5 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM35 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM6 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM34 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM7 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM33 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM8 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM32 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM9 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM31 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM10 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM30 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM11 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM29 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM12 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM28 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM13 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM27 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM14 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM26 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM15 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM25 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM16 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM24 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM17 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM23 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM18 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM22 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM19 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM21 = new System.Windows.Forms.CheckBox();
+			this.chkVehiclePhysicalCM20 = new System.Windows.Forms.CheckBox();
+			this.tabVehicleMatrixCM = new System.Windows.Forms.TabPage();
+			this.chkVehicleMatrixCM1 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM2 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM3 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM4 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM5 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM6 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM7 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM8 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM9 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM10 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM11 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM12 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM13 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM14 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM15 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM16 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM17 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM18 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM19 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM20 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM21 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM22 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM23 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM24 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM25 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM26 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM27 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM28 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM29 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM30 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM31 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM32 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM33 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM34 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM35 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM36 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM37 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM38 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM39 = new System.Windows.Forms.CheckBox();
+			this.chkVehicleMatrixCM40 = new System.Windows.Forms.CheckBox();
 			this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
-			this.lblVehicleDataProcessing = new System.Windows.Forms.Label();
 			this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblVehicleSleaze = new System.Windows.Forms.Label();
 			this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
-			this.lblVehicleAttack = new System.Windows.Forms.Label();
 			this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
 			this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
 			this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
@@ -633,48 +765,6 @@
 			this.lblVehicleWeaponRangeMediumLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeShortLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeLabel = new System.Windows.Forms.Label();
-			this.panVehicleCM = new System.Windows.Forms.Panel();
-			this.chkVehicleCM40 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM39 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM38 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM37 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM36 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM35 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM34 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM33 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM32 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM31 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM30 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM29 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM28 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM27 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM26 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM25 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM24 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM23 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM22 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM21 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM20 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM19 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM18 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM17 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM16 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM15 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM14 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM13 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM12 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM11 = new System.Windows.Forms.CheckBox();
-			this.lblVehicleConditionMonitorLabel = new System.Windows.Forms.Label();
-			this.chkVehicleCM10 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM9 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM8 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM7 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM6 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM5 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM4 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM3 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM2 = new System.Windows.Forms.CheckBox();
-			this.chkVehicleCM1 = new System.Windows.Forms.CheckBox();
 			this.chkVehicleIncludedInWeapon = new System.Windows.Forms.CheckBox();
 			this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
@@ -1011,8 +1101,7 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblWeaponRating = new System.Windows.Forms.Label();
-			this.lblWeaponRatingLabel = new System.Windows.Forms.Label();
+			this.cmdDeleteWeek = new System.Windows.Forms.Button();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1038,6 +1127,8 @@
 			this.tabCritter.SuspendLayout();
 			this.tabInitiation.SuspendLayout();
 			this.tabCyberware.SuspendLayout();
+			this.tabCyberwareCM.SuspendLayout();
+			this.tabCyberwareMatrixCM.SuspendLayout();
 			this.cmsCyberware.SuspendLayout();
 			this.cmsDeleteCyberware.SuspendLayout();
 			this.tabStreetGear.SuspendLayout();
@@ -1057,6 +1148,8 @@
 			this.tabPets.SuspendLayout();
 			this.tabVehicles.SuspendLayout();
 			this.panVehicleCM.SuspendLayout();
+			this.tabVehiclePhysicalCM.SuspendLayout();
+			this.tabVehicleMatrixCM.SuspendLayout();
 			this.cmsVehicle.SuspendLayout();
 			this.cmdVehicleAmmoExpense.SuspendLayout();
 			this.cmsDeleteVehicle.SuspendLayout();
@@ -1197,6 +1290,11 @@
 			// 
 			// panAttributes
 			// 
+			this.panAttributes.Controls.Add(this.cmdImproveDEP);
+			this.panAttributes.Controls.Add(this.lblDEP);
+			this.panAttributes.Controls.Add(this.lblDEPAug);
+			this.panAttributes.Controls.Add(this.lblDEPMetatype);
+			this.panAttributes.Controls.Add(this.lblDEPLabel);
 			this.panAttributes.Controls.Add(this.cmdImproveRES);
 			this.panAttributes.Controls.Add(this.cmdImproveMAG);
 			this.panAttributes.Controls.Add(this.cmdImproveBOD);
@@ -1255,8 +1353,61 @@
 			this.panAttributes.Controls.Add(this.lblBODMetatype);
 			this.panAttributes.Location = new System.Drawing.Point(288, 48);
 			this.panAttributes.Name = "panAttributes";
-			this.panAttributes.Size = new System.Drawing.Size(324, 291);
+			this.panAttributes.Size = new System.Drawing.Size(324, 315);
 			this.panAttributes.TabIndex = 6;
+			// 
+			// cmdImproveDEP
+			// 
+			this.cmdImproveDEP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cmdImproveDEP.Image = global::Chummer.Properties.Resources.add;
+			this.cmdImproveDEP.Location = new System.Drawing.Point(203, 286);
+			this.cmdImproveDEP.Name = "cmdImproveDEP";
+			this.cmdImproveDEP.Size = new System.Drawing.Size(24, 24);
+			this.cmdImproveDEP.TabIndex = 77;
+			this.cmdImproveDEP.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.tipTooltip.SetToolTip(this.cmdImproveDEP, "Burn a point of Edge");
+			this.cmdImproveDEP.UseVisualStyleBackColor = true;
+			this.cmdImproveDEP.Click += new System.EventHandler(this.cmdImproveDEP_Click);
+			// 
+			// lblDEP
+			// 
+			this.lblDEP.AutoSize = true;
+			this.lblDEP.Enabled = false;
+			this.lblDEP.Location = new System.Drawing.Point(124, 292);
+			this.lblDEP.Name = "lblDEP";
+			this.lblDEP.Size = new System.Drawing.Size(19, 13);
+			this.lblDEP.TabIndex = 76;
+			this.lblDEP.Text = "[0]";
+			// 
+			// lblDEPAug
+			// 
+			this.lblDEPAug.AutoSize = true;
+			this.lblDEPAug.Enabled = false;
+			this.lblDEPAug.Location = new System.Drawing.Point(169, 292);
+			this.lblDEPAug.Name = "lblDEPAug";
+			this.lblDEPAug.Size = new System.Drawing.Size(19, 13);
+			this.lblDEPAug.TabIndex = 75;
+			this.lblDEPAug.Text = "[0]";
+			// 
+			// lblDEPMetatype
+			// 
+			this.lblDEPMetatype.AutoSize = true;
+			this.lblDEPMetatype.Enabled = false;
+			this.lblDEPMetatype.Location = new System.Drawing.Point(271, 292);
+			this.lblDEPMetatype.Name = "lblDEPMetatype";
+			this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
+			this.lblDEPMetatype.TabIndex = 74;
+			this.lblDEPMetatype.Text = "0 / 0 (0)";
+			// 
+			// lblDEPLabel
+			// 
+			this.lblDEPLabel.AutoSize = true;
+			this.lblDEPLabel.Enabled = false;
+			this.lblDEPLabel.Location = new System.Drawing.Point(3, 292);
+			this.lblDEPLabel.Name = "lblDEPLabel";
+			this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
+			this.lblDEPLabel.TabIndex = 73;
+			this.lblDEPLabel.Text = "Depth (DEP)";
 			// 
 			// cmdImproveRES
 			// 
@@ -2718,10 +2869,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabPeople.Controls.Add(this.tabContacts);
 			this.tabPeople.Controls.Add(this.tabEnemies);
-			this.tabPeople.Location = new System.Drawing.Point(285, 340);
+			this.tabPeople.Location = new System.Drawing.Point(285, 373);
 			this.tabPeople.Name = "tabPeople";
 			this.tabPeople.SelectedIndex = 0;
-			this.tabPeople.Size = new System.Drawing.Size(547, 265);
+			this.tabPeople.Size = new System.Drawing.Size(547, 232);
 			this.tabPeople.TabIndex = 91;
 			// 
 			// tabContacts
@@ -2735,7 +2886,7 @@
 			this.tabContacts.Location = new System.Drawing.Point(4, 22);
 			this.tabContacts.Name = "tabContacts";
 			this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabContacts.Size = new System.Drawing.Size(539, 239);
+			this.tabContacts.Size = new System.Drawing.Size(539, 206);
 			this.tabContacts.TabIndex = 0;
 			this.tabContacts.Text = "Contacts";
 			// 
@@ -2747,7 +2898,7 @@
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(530, 187);
+			this.panContacts.Size = new System.Drawing.Size(530, 154);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
 			// 
@@ -2804,7 +2955,7 @@
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEnemies.Size = new System.Drawing.Size(539, 239);
+			this.tabEnemies.Size = new System.Drawing.Size(539, 206);
 			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -2846,7 +2997,7 @@
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(3, 48);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(530, 187);
+			this.panEnemies.Size = new System.Drawing.Size(530, 154);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -3075,15 +3226,15 @@
 			this.treQualities.Indent = 15;
 			this.treQualities.Location = new System.Drawing.Point(6, 38);
 			this.treQualities.Name = "treQualities";
-			treeNode1.Name = "nodPositiveQualityRoot";
-			treeNode1.Tag = "Node_SelectedPositiveQualities";
-			treeNode1.Text = "Selected Positive Qualities";
-			treeNode2.Name = "nodNegativeQualityRoot";
-			treeNode2.Tag = "Node_SelectedNegativeQualities";
-			treeNode2.Text = "Selected Negative Qualities";
+			treeNode26.Name = "nodPositiveQualityRoot";
+			treeNode26.Tag = "Node_SelectedPositiveQualities";
+			treeNode26.Text = "Selected Positive Qualities";
+			treeNode27.Name = "nodNegativeQualityRoot";
+			treeNode27.Tag = "Node_SelectedNegativeQualities";
+			treeNode27.Text = "Selected Negative Qualities";
 			this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
+            treeNode26,
+            treeNode27});
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
@@ -3299,19 +3450,19 @@
 			this.treLimit.HideSelection = false;
 			this.treLimit.Location = new System.Drawing.Point(3, 35);
 			this.treLimit.Name = "treLimit";
-			treeNode3.Name = "trePhysicalRoot";
-			treeNode3.Tag = "Node_Physical";
-			treeNode3.Text = "Physical";
-			treeNode4.Name = "treMentalRoot";
-			treeNode4.Tag = "Node_Mental";
-			treeNode4.Text = "Mental";
-			treeNode5.Name = "treSocialRoot";
-			treeNode5.Tag = "Node_Social";
-			treeNode5.Text = "Social";
+			treeNode28.Name = "trePhysicalRoot";
+			treeNode28.Tag = "Node_Physical";
+			treeNode28.Text = "Physical";
+			treeNode29.Name = "treMentalRoot";
+			treeNode29.Tag = "Node_Mental";
+			treeNode29.Text = "Mental";
+			treeNode30.Name = "treSocialRoot";
+			treeNode30.Tag = "Node_Social";
+			treeNode30.Text = "Social";
 			this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5});
+            treeNode28,
+            treeNode29,
+            treeNode30});
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
@@ -3414,15 +3565,15 @@
 			this.treMartialArts.HideSelection = false;
 			this.treMartialArts.Location = new System.Drawing.Point(8, 35);
 			this.treMartialArts.Name = "treMartialArts";
-			treeNode6.Name = "treMartialArtsRoot";
-			treeNode6.Tag = "Node_SelectedMartialArts";
-			treeNode6.Text = "Selected Martial Arts";
-			treeNode7.Name = "nodQualities";
-			treeNode7.Tag = "";
-			treeNode7.Text = "Selected Qualities";
+			treeNode31.Name = "treMartialArtsRoot";
+			treeNode31.Tag = "Node_SelectedMartialArts";
+			treeNode31.Text = "Selected Martial Arts";
+			treeNode32.Name = "nodQualities";
+			treeNode32.Tag = "";
+			treeNode32.Text = "Selected Qualities";
 			this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7});
+            treeNode31,
+            treeNode32});
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
@@ -3913,35 +4064,35 @@
 			this.treSpells.HideSelection = false;
 			this.treSpells.Location = new System.Drawing.Point(8, 55);
 			this.treSpells.Name = "treSpells";
-			treeNode8.Name = "nodSpellCombatRoot";
-			treeNode8.Tag = "Node_SelectedCombatSpells";
-			treeNode8.Text = "Selected Combat Spells";
-			treeNode9.Name = "nodSpellDetectionRoot";
-			treeNode9.Tag = "Node_SelectedDetectionSpells";
-			treeNode9.Text = "Selected Detection Spells";
-			treeNode10.Name = "nodSpellHealthRoot";
-			treeNode10.Tag = "Node_SelectedHealthSpells";
-			treeNode10.Text = "Selected Health Spells";
-			treeNode11.Name = "nodSpellIllusionRoot";
-			treeNode11.Tag = "Node_SelectedIllusionSpells";
-			treeNode11.Text = "Selected Illusion Spells";
-			treeNode12.Name = "nodSpellManipulationRoot";
-			treeNode12.Tag = "Node_SelectedManipulationSpells";
-			treeNode12.Text = "Selected Manipulation Spells";
-			treeNode13.Name = "nodSpellGeomancyRoot";
-			treeNode13.Tag = "Node_SelectedGeomancyRituals";
-			treeNode13.Text = "Selected Rituals";
-			treeNode14.Name = "nodSpellEnchantmentRoot";
-			treeNode14.Tag = "Node_SelectedEnchantments";
-			treeNode14.Text = "Selected Enchantments";
+			treeNode33.Name = "nodSpellCombatRoot";
+			treeNode33.Tag = "Node_SelectedCombatSpells";
+			treeNode33.Text = "Selected Combat Spells";
+			treeNode34.Name = "nodSpellDetectionRoot";
+			treeNode34.Tag = "Node_SelectedDetectionSpells";
+			treeNode34.Text = "Selected Detection Spells";
+			treeNode35.Name = "nodSpellHealthRoot";
+			treeNode35.Tag = "Node_SelectedHealthSpells";
+			treeNode35.Text = "Selected Health Spells";
+			treeNode36.Name = "nodSpellIllusionRoot";
+			treeNode36.Tag = "Node_SelectedIllusionSpells";
+			treeNode36.Text = "Selected Illusion Spells";
+			treeNode37.Name = "nodSpellManipulationRoot";
+			treeNode37.Tag = "Node_SelectedManipulationSpells";
+			treeNode37.Text = "Selected Manipulation Spells";
+			treeNode38.Name = "nodSpellGeomancyRoot";
+			treeNode38.Tag = "Node_SelectedGeomancyRituals";
+			treeNode38.Text = "Selected Rituals";
+			treeNode39.Name = "nodSpellEnchantmentRoot";
+			treeNode39.Tag = "Node_SelectedEnchantments";
+			treeNode39.Text = "Selected Enchantments";
 			this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
+            treeNode33,
+            treeNode34,
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38,
+            treeNode39});
 			this.treSpells.ShowNodeToolTips = true;
 			this.treSpells.ShowRootLines = false;
 			this.treSpells.Size = new System.Drawing.Size(295, 333);
@@ -4060,6 +4211,7 @@
 			this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panPowers.AutoScroll = true;
 			this.panPowers.Location = new System.Drawing.Point(11, 54);
 			this.panPowers.Name = "panPowers";
 			this.panPowers.Size = new System.Drawing.Size(827, 554);
@@ -4387,11 +4539,11 @@
 			this.treComplexForms.HideSelection = false;
 			this.treComplexForms.Location = new System.Drawing.Point(8, 54);
 			this.treComplexForms.Name = "treComplexForms";
-			treeNode15.Name = "nodProgramAdvancedRoot";
-			treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
-			treeNode15.Text = "Selected Complex Forms";
+			treeNode40.Name = "nodProgramAdvancedRoot";
+			treeNode40.Tag = "Node_SelectedAdvancedComplexForms";
+			treeNode40.Text = "Selected Complex Forms";
 			this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15});
+            treeNode40});
 			this.treComplexForms.ShowNodeToolTips = true;
 			this.treComplexForms.ShowRootLines = false;
 			this.treComplexForms.Size = new System.Drawing.Size(295, 333);
@@ -4724,15 +4876,15 @@
 			this.treCritterPowers.HideSelection = false;
 			this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
 			this.treCritterPowers.Name = "treCritterPowers";
-			treeNode16.Name = "nodCritterPowerRoot";
-			treeNode16.Tag = "Node_CritterPowers";
-			treeNode16.Text = "Critter Powers";
-			treeNode17.Name = "nodCritterWeaknessRoot";
-			treeNode17.Tag = "Node_CritterWeaknesses";
-			treeNode17.Text = "Weaknesses";
+			treeNode41.Name = "nodCritterPowerRoot";
+			treeNode41.Tag = "Node_CritterPowers";
+			treeNode41.Text = "Critter Powers";
+			treeNode42.Name = "nodCritterWeaknessRoot";
+			treeNode42.Tag = "Node_CritterWeaknesses";
+			treeNode42.Text = "Weaknesses";
 			this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17});
+            treeNode41,
+            treeNode42});
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
@@ -4904,13 +5056,14 @@
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCyberware.Controls.Add(this.lblCyberFirewall);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearDataProcessing);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearFirewall);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearSleaze);
+			this.tabCyberware.Controls.Add(this.cboCyberwareGearAttack);
+			this.tabCyberware.Controls.Add(this.tabCyberwareCM);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewallLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberDataProcessing);
 			this.tabCyberware.Controls.Add(this.lblCyberDataProcessingLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberSleaze);
 			this.tabCyberware.Controls.Add(this.lblCyberSleazeLabel);
-			this.tabCyberware.Controls.Add(this.lblCyberAttack);
 			this.tabCyberware.Controls.Add(this.lblCyberAttackLabel);
 			this.tabCyberware.Controls.Add(this.lblCyberDeviceRating);
 			this.tabCyberware.Controls.Add(this.lblCyberDeviceRatingLabel);
@@ -4950,15 +5103,590 @@
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
 			// 
-			// lblCyberFirewall
+			// cboCyberwareGearDataProcessing
 			// 
-			this.lblCyberFirewall.AutoSize = true;
-			this.lblCyberFirewall.Location = new System.Drawing.Point(753, 304);
-			this.lblCyberFirewall.Name = "lblCyberFirewall";
-			this.lblCyberFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberFirewall.TabIndex = 185;
-			this.lblCyberFirewall.Text = "[0]";
-			this.lblCyberFirewall.Visible = false;
+			this.cboCyberwareGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearDataProcessing.FormattingEnabled = true;
+			this.cboCyberwareGearDataProcessing.Location = new System.Drawing.Point(673, 300);
+			this.cboCyberwareGearDataProcessing.Name = "cboCyberwareGearDataProcessing";
+			this.cboCyberwareGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearDataProcessing.TabIndex = 214;
+			this.cboCyberwareGearDataProcessing.Visible = false;
+			this.cboCyberwareGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearFirewall
+			// 
+			this.cboCyberwareGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearFirewall.FormattingEnabled = true;
+			this.cboCyberwareGearFirewall.Location = new System.Drawing.Point(750, 300);
+			this.cboCyberwareGearFirewall.Name = "cboCyberwareGearFirewall";
+			this.cboCyberwareGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearFirewall.TabIndex = 213;
+			this.cboCyberwareGearFirewall.Visible = false;
+			this.cboCyberwareGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearFirewall_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearSleaze
+			// 
+			this.cboCyberwareGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearSleaze.FormattingEnabled = true;
+			this.cboCyberwareGearSleaze.Location = new System.Drawing.Point(555, 300);
+			this.cboCyberwareGearSleaze.Name = "cboCyberwareGearSleaze";
+			this.cboCyberwareGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearSleaze.TabIndex = 212;
+			this.cboCyberwareGearSleaze.Visible = false;
+			this.cboCyberwareGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearSleaze_SelectedIndexChanged);
+			// 
+			// cboCyberwareGearAttack
+			// 
+			this.cboCyberwareGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCyberwareGearAttack.FormattingEnabled = true;
+			this.cboCyberwareGearAttack.Location = new System.Drawing.Point(481, 300);
+			this.cboCyberwareGearAttack.Name = "cboCyberwareGearAttack";
+			this.cboCyberwareGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboCyberwareGearAttack.TabIndex = 211;
+			this.cboCyberwareGearAttack.Visible = false;
+			this.cboCyberwareGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGearAttack_SelectedIndexChanged);
+			// 
+			// tabCyberwareCM
+			// 
+			this.tabCyberwareCM.Controls.Add(this.tabCyberwareMatrixCM);
+			this.tabCyberwareCM.ItemSize = new System.Drawing.Size(176, 18);
+			this.tabCyberwareCM.Location = new System.Drawing.Point(312, 327);
+			this.tabCyberwareCM.Name = "tabCyberwareCM";
+			this.tabCyberwareCM.SelectedIndex = 0;
+			this.tabCyberwareCM.Size = new System.Drawing.Size(360, 113);
+			this.tabCyberwareCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabCyberwareCM.TabIndex = 203;
+			// 
+			// tabCyberwareMatrixCM
+			// 
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM1);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM2);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM3);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM4);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM5);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM6);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM7);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM8);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM9);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM10);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM11);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM12);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM13);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM14);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM15);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM16);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM17);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM18);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM19);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM20);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM21);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM22);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM23);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM24);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM25);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM26);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM27);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM28);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM29);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM30);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM31);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM32);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM33);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM34);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM35);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM36);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM37);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM38);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM39);
+			this.tabCyberwareMatrixCM.Controls.Add(this.chkCyberwareMatrixCM40);
+			this.tabCyberwareMatrixCM.Location = new System.Drawing.Point(4, 22);
+			this.tabCyberwareMatrixCM.Name = "tabCyberwareMatrixCM";
+			this.tabCyberwareMatrixCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(352, 87);
+			this.tabCyberwareMatrixCM.TabIndex = 1;
+			this.tabCyberwareMatrixCM.Text = "Matrix Condition Monitor";
+			this.tabCyberwareMatrixCM.UseVisualStyleBackColor = true;
+			// 
+			// chkCyberwareMatrixCM1
+			// 
+			this.chkCyberwareMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkCyberwareMatrixCM1.Name = "chkCyberwareMatrixCM1";
+			this.chkCyberwareMatrixCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM1.TabIndex = 49;
+			this.chkCyberwareMatrixCM1.Tag = "1";
+			this.chkCyberwareMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM1.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM1.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM2
+			// 
+			this.chkCyberwareMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkCyberwareMatrixCM2.Name = "chkCyberwareMatrixCM2";
+			this.chkCyberwareMatrixCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM2.TabIndex = 50;
+			this.chkCyberwareMatrixCM2.Tag = "2";
+			this.chkCyberwareMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM2.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM3
+			// 
+			this.chkCyberwareMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkCyberwareMatrixCM3.Name = "chkCyberwareMatrixCM3";
+			this.chkCyberwareMatrixCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM3.TabIndex = 51;
+			this.chkCyberwareMatrixCM3.Tag = "3";
+			this.chkCyberwareMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM3.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM3.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM4
+			// 
+			this.chkCyberwareMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkCyberwareMatrixCM4.Name = "chkCyberwareMatrixCM4";
+			this.chkCyberwareMatrixCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM4.TabIndex = 52;
+			this.chkCyberwareMatrixCM4.Tag = "4";
+			this.chkCyberwareMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM4.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM4.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM5
+			// 
+			this.chkCyberwareMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkCyberwareMatrixCM5.Name = "chkCyberwareMatrixCM5";
+			this.chkCyberwareMatrixCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM5.TabIndex = 53;
+			this.chkCyberwareMatrixCM5.Tag = "5";
+			this.chkCyberwareMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM5.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM5.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM6
+			// 
+			this.chkCyberwareMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkCyberwareMatrixCM6.Name = "chkCyberwareMatrixCM6";
+			this.chkCyberwareMatrixCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM6.TabIndex = 54;
+			this.chkCyberwareMatrixCM6.Tag = "6";
+			this.chkCyberwareMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM6.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM6.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM7
+			// 
+			this.chkCyberwareMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkCyberwareMatrixCM7.Name = "chkCyberwareMatrixCM7";
+			this.chkCyberwareMatrixCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM7.TabIndex = 55;
+			this.chkCyberwareMatrixCM7.Tag = "7";
+			this.chkCyberwareMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM7.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM7.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM8
+			// 
+			this.chkCyberwareMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkCyberwareMatrixCM8.Name = "chkCyberwareMatrixCM8";
+			this.chkCyberwareMatrixCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM8.TabIndex = 56;
+			this.chkCyberwareMatrixCM8.Tag = "8";
+			this.chkCyberwareMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM8.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM8.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM9
+			// 
+			this.chkCyberwareMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM9.Location = new System.Drawing.Point(197, 6);
+			this.chkCyberwareMatrixCM9.Name = "chkCyberwareMatrixCM9";
+			this.chkCyberwareMatrixCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM9.TabIndex = 57;
+			this.chkCyberwareMatrixCM9.Tag = "9";
+			this.chkCyberwareMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM9.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM9.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM10
+			// 
+			this.chkCyberwareMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM10.Location = new System.Drawing.Point(221, 6);
+			this.chkCyberwareMatrixCM10.Name = "chkCyberwareMatrixCM10";
+			this.chkCyberwareMatrixCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM10.TabIndex = 58;
+			this.chkCyberwareMatrixCM10.Tag = "10";
+			this.chkCyberwareMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM10.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM10.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM11
+			// 
+			this.chkCyberwareMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM11.Location = new System.Drawing.Point(245, 6);
+			this.chkCyberwareMatrixCM11.Name = "chkCyberwareMatrixCM11";
+			this.chkCyberwareMatrixCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM11.TabIndex = 59;
+			this.chkCyberwareMatrixCM11.Tag = "11";
+			this.chkCyberwareMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM11.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM11.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM12
+			// 
+			this.chkCyberwareMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM12.Location = new System.Drawing.Point(269, 6);
+			this.chkCyberwareMatrixCM12.Name = "chkCyberwareMatrixCM12";
+			this.chkCyberwareMatrixCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM12.TabIndex = 60;
+			this.chkCyberwareMatrixCM12.Tag = "12";
+			this.chkCyberwareMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM12.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM12.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM13
+			// 
+			this.chkCyberwareMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM13.Location = new System.Drawing.Point(293, 6);
+			this.chkCyberwareMatrixCM13.Name = "chkCyberwareMatrixCM13";
+			this.chkCyberwareMatrixCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM13.TabIndex = 61;
+			this.chkCyberwareMatrixCM13.Tag = "13";
+			this.chkCyberwareMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM13.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM13.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM14
+			// 
+			this.chkCyberwareMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM14.Location = new System.Drawing.Point(317, 6);
+			this.chkCyberwareMatrixCM14.Name = "chkCyberwareMatrixCM14";
+			this.chkCyberwareMatrixCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM14.TabIndex = 62;
+			this.chkCyberwareMatrixCM14.Tag = "14";
+			this.chkCyberwareMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM14.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM14.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM15
+			// 
+			this.chkCyberwareMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM15.Location = new System.Drawing.Point(5, 31);
+			this.chkCyberwareMatrixCM15.Name = "chkCyberwareMatrixCM15";
+			this.chkCyberwareMatrixCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM15.TabIndex = 63;
+			this.chkCyberwareMatrixCM15.Tag = "15";
+			this.chkCyberwareMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM15.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM15.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM16
+			// 
+			this.chkCyberwareMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM16.Location = new System.Drawing.Point(29, 31);
+			this.chkCyberwareMatrixCM16.Name = "chkCyberwareMatrixCM16";
+			this.chkCyberwareMatrixCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM16.TabIndex = 64;
+			this.chkCyberwareMatrixCM16.Tag = "16";
+			this.chkCyberwareMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM16.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM16.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM17
+			// 
+			this.chkCyberwareMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM17.Location = new System.Drawing.Point(53, 31);
+			this.chkCyberwareMatrixCM17.Name = "chkCyberwareMatrixCM17";
+			this.chkCyberwareMatrixCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM17.TabIndex = 65;
+			this.chkCyberwareMatrixCM17.Tag = "17";
+			this.chkCyberwareMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM17.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM17.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM18
+			// 
+			this.chkCyberwareMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM18.Location = new System.Drawing.Point(77, 31);
+			this.chkCyberwareMatrixCM18.Name = "chkCyberwareMatrixCM18";
+			this.chkCyberwareMatrixCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM18.TabIndex = 66;
+			this.chkCyberwareMatrixCM18.Tag = "18";
+			this.chkCyberwareMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM18.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM18.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM19
+			// 
+			this.chkCyberwareMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM19.Location = new System.Drawing.Point(101, 31);
+			this.chkCyberwareMatrixCM19.Name = "chkCyberwareMatrixCM19";
+			this.chkCyberwareMatrixCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM19.TabIndex = 67;
+			this.chkCyberwareMatrixCM19.Tag = "19";
+			this.chkCyberwareMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM19.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM19.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM20
+			// 
+			this.chkCyberwareMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM20.Location = new System.Drawing.Point(125, 31);
+			this.chkCyberwareMatrixCM20.Name = "chkCyberwareMatrixCM20";
+			this.chkCyberwareMatrixCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM20.TabIndex = 68;
+			this.chkCyberwareMatrixCM20.Tag = "20";
+			this.chkCyberwareMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM20.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM20.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM21
+			// 
+			this.chkCyberwareMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM21.Location = new System.Drawing.Point(149, 31);
+			this.chkCyberwareMatrixCM21.Name = "chkCyberwareMatrixCM21";
+			this.chkCyberwareMatrixCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM21.TabIndex = 69;
+			this.chkCyberwareMatrixCM21.Tag = "21";
+			this.chkCyberwareMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM21.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM21.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM22
+			// 
+			this.chkCyberwareMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM22.Location = new System.Drawing.Point(173, 31);
+			this.chkCyberwareMatrixCM22.Name = "chkCyberwareMatrixCM22";
+			this.chkCyberwareMatrixCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM22.TabIndex = 70;
+			this.chkCyberwareMatrixCM22.Tag = "22";
+			this.chkCyberwareMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM22.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM22.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM23
+			// 
+			this.chkCyberwareMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM23.Location = new System.Drawing.Point(197, 31);
+			this.chkCyberwareMatrixCM23.Name = "chkCyberwareMatrixCM23";
+			this.chkCyberwareMatrixCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM23.TabIndex = 71;
+			this.chkCyberwareMatrixCM23.Tag = "23";
+			this.chkCyberwareMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM23.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM23.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM24
+			// 
+			this.chkCyberwareMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM24.Location = new System.Drawing.Point(221, 31);
+			this.chkCyberwareMatrixCM24.Name = "chkCyberwareMatrixCM24";
+			this.chkCyberwareMatrixCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM24.TabIndex = 72;
+			this.chkCyberwareMatrixCM24.Tag = "24";
+			this.chkCyberwareMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM24.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM24.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM25
+			// 
+			this.chkCyberwareMatrixCM25.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM25.Location = new System.Drawing.Point(245, 31);
+			this.chkCyberwareMatrixCM25.Name = "chkCyberwareMatrixCM25";
+			this.chkCyberwareMatrixCM25.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM25.TabIndex = 73;
+			this.chkCyberwareMatrixCM25.Tag = "25";
+			this.chkCyberwareMatrixCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM25.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM25.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM26
+			// 
+			this.chkCyberwareMatrixCM26.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM26.Location = new System.Drawing.Point(269, 31);
+			this.chkCyberwareMatrixCM26.Name = "chkCyberwareMatrixCM26";
+			this.chkCyberwareMatrixCM26.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM26.TabIndex = 74;
+			this.chkCyberwareMatrixCM26.Tag = "26";
+			this.chkCyberwareMatrixCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM26.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM26.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM27
+			// 
+			this.chkCyberwareMatrixCM27.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM27.Location = new System.Drawing.Point(293, 31);
+			this.chkCyberwareMatrixCM27.Name = "chkCyberwareMatrixCM27";
+			this.chkCyberwareMatrixCM27.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM27.TabIndex = 75;
+			this.chkCyberwareMatrixCM27.Tag = "27";
+			this.chkCyberwareMatrixCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM27.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM27.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM28
+			// 
+			this.chkCyberwareMatrixCM28.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM28.Location = new System.Drawing.Point(317, 31);
+			this.chkCyberwareMatrixCM28.Name = "chkCyberwareMatrixCM28";
+			this.chkCyberwareMatrixCM28.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM28.TabIndex = 76;
+			this.chkCyberwareMatrixCM28.Tag = "28";
+			this.chkCyberwareMatrixCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM28.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM28.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM29
+			// 
+			this.chkCyberwareMatrixCM29.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM29.Location = new System.Drawing.Point(5, 55);
+			this.chkCyberwareMatrixCM29.Name = "chkCyberwareMatrixCM29";
+			this.chkCyberwareMatrixCM29.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM29.TabIndex = 77;
+			this.chkCyberwareMatrixCM29.Tag = "29";
+			this.chkCyberwareMatrixCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM29.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM29.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM30
+			// 
+			this.chkCyberwareMatrixCM30.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM30.Location = new System.Drawing.Point(29, 55);
+			this.chkCyberwareMatrixCM30.Name = "chkCyberwareMatrixCM30";
+			this.chkCyberwareMatrixCM30.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM30.TabIndex = 78;
+			this.chkCyberwareMatrixCM30.Tag = "30";
+			this.chkCyberwareMatrixCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM30.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM30.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM31
+			// 
+			this.chkCyberwareMatrixCM31.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM31.Location = new System.Drawing.Point(53, 55);
+			this.chkCyberwareMatrixCM31.Name = "chkCyberwareMatrixCM31";
+			this.chkCyberwareMatrixCM31.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM31.TabIndex = 79;
+			this.chkCyberwareMatrixCM31.Tag = "31";
+			this.chkCyberwareMatrixCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM31.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM31.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM32
+			// 
+			this.chkCyberwareMatrixCM32.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM32.Location = new System.Drawing.Point(77, 55);
+			this.chkCyberwareMatrixCM32.Name = "chkCyberwareMatrixCM32";
+			this.chkCyberwareMatrixCM32.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM32.TabIndex = 80;
+			this.chkCyberwareMatrixCM32.Tag = "32";
+			this.chkCyberwareMatrixCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM32.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM32.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM33
+			// 
+			this.chkCyberwareMatrixCM33.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM33.Location = new System.Drawing.Point(101, 55);
+			this.chkCyberwareMatrixCM33.Name = "chkCyberwareMatrixCM33";
+			this.chkCyberwareMatrixCM33.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM33.TabIndex = 81;
+			this.chkCyberwareMatrixCM33.Tag = "33";
+			this.chkCyberwareMatrixCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM33.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM33.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM34
+			// 
+			this.chkCyberwareMatrixCM34.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM34.Location = new System.Drawing.Point(125, 55);
+			this.chkCyberwareMatrixCM34.Name = "chkCyberwareMatrixCM34";
+			this.chkCyberwareMatrixCM34.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM34.TabIndex = 82;
+			this.chkCyberwareMatrixCM34.Tag = "34";
+			this.chkCyberwareMatrixCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM34.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM34.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM35
+			// 
+			this.chkCyberwareMatrixCM35.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM35.Location = new System.Drawing.Point(149, 55);
+			this.chkCyberwareMatrixCM35.Name = "chkCyberwareMatrixCM35";
+			this.chkCyberwareMatrixCM35.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM35.TabIndex = 83;
+			this.chkCyberwareMatrixCM35.Tag = "35";
+			this.chkCyberwareMatrixCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM35.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM35.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM36
+			// 
+			this.chkCyberwareMatrixCM36.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM36.Location = new System.Drawing.Point(173, 55);
+			this.chkCyberwareMatrixCM36.Name = "chkCyberwareMatrixCM36";
+			this.chkCyberwareMatrixCM36.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM36.TabIndex = 84;
+			this.chkCyberwareMatrixCM36.Tag = "36";
+			this.chkCyberwareMatrixCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM36.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM36.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM37
+			// 
+			this.chkCyberwareMatrixCM37.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM37.Location = new System.Drawing.Point(197, 55);
+			this.chkCyberwareMatrixCM37.Name = "chkCyberwareMatrixCM37";
+			this.chkCyberwareMatrixCM37.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM37.TabIndex = 85;
+			this.chkCyberwareMatrixCM37.Tag = "37";
+			this.chkCyberwareMatrixCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM37.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM37.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM38
+			// 
+			this.chkCyberwareMatrixCM38.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM38.Location = new System.Drawing.Point(221, 55);
+			this.chkCyberwareMatrixCM38.Name = "chkCyberwareMatrixCM38";
+			this.chkCyberwareMatrixCM38.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM38.TabIndex = 86;
+			this.chkCyberwareMatrixCM38.Tag = "38";
+			this.chkCyberwareMatrixCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM38.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM38.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM39
+			// 
+			this.chkCyberwareMatrixCM39.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM39.Location = new System.Drawing.Point(245, 55);
+			this.chkCyberwareMatrixCM39.Name = "chkCyberwareMatrixCM39";
+			this.chkCyberwareMatrixCM39.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM39.TabIndex = 87;
+			this.chkCyberwareMatrixCM39.Tag = "39";
+			this.chkCyberwareMatrixCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM39.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM39.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
+			// 
+			// chkCyberwareMatrixCM40
+			// 
+			this.chkCyberwareMatrixCM40.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkCyberwareMatrixCM40.Location = new System.Drawing.Point(269, 55);
+			this.chkCyberwareMatrixCM40.Name = "chkCyberwareMatrixCM40";
+			this.chkCyberwareMatrixCM40.Size = new System.Drawing.Size(24, 24);
+			this.chkCyberwareMatrixCM40.TabIndex = 88;
+			this.chkCyberwareMatrixCM40.Tag = "40";
+			this.chkCyberwareMatrixCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkCyberwareMatrixCM40.UseVisualStyleBackColor = true;
+			this.chkCyberwareMatrixCM40.CheckedChanged += new System.EventHandler(this.chkCyberwareCM_CheckedChanged);
 			// 
 			// lblCyberFirewallLabel
 			// 
@@ -4971,16 +5699,6 @@
 			this.lblCyberFirewallLabel.Text = "Firewall:";
 			this.lblCyberFirewallLabel.Visible = false;
 			// 
-			// lblCyberDataProcessing
-			// 
-			this.lblCyberDataProcessing.AutoSize = true;
-			this.lblCyberDataProcessing.Location = new System.Drawing.Point(681, 304);
-			this.lblCyberDataProcessing.Name = "lblCyberDataProcessing";
-			this.lblCyberDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberDataProcessing.TabIndex = 183;
-			this.lblCyberDataProcessing.Text = "[0]";
-			this.lblCyberDataProcessing.Visible = false;
-			// 
 			// lblCyberDataProcessingLabel
 			// 
 			this.lblCyberDataProcessingLabel.AutoSize = true;
@@ -4992,16 +5710,6 @@
 			this.lblCyberDataProcessingLabel.Text = "Data Processing:";
 			this.lblCyberDataProcessingLabel.Visible = false;
 			// 
-			// lblCyberSleaze
-			// 
-			this.lblCyberSleaze.AutoSize = true;
-			this.lblCyberSleaze.Location = new System.Drawing.Point(562, 304);
-			this.lblCyberSleaze.Name = "lblCyberSleaze";
-			this.lblCyberSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberSleaze.TabIndex = 181;
-			this.lblCyberSleaze.Text = "[0]";
-			this.lblCyberSleaze.Visible = false;
-			// 
 			// lblCyberSleazeLabel
 			// 
 			this.lblCyberSleazeLabel.AutoSize = true;
@@ -5012,16 +5720,6 @@
 			this.lblCyberSleazeLabel.Tag = "Label_Sleaze";
 			this.lblCyberSleazeLabel.Text = "Sleaze:";
 			this.lblCyberSleazeLabel.Visible = false;
-			// 
-			// lblCyberAttack
-			// 
-			this.lblCyberAttack.AutoSize = true;
-			this.lblCyberAttack.Location = new System.Drawing.Point(490, 304);
-			this.lblCyberAttack.Name = "lblCyberAttack";
-			this.lblCyberAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblCyberAttack.TabIndex = 179;
-			this.lblCyberAttack.Text = "[0]";
-			this.lblCyberAttack.Visible = false;
 			// 
 			// lblCyberAttackLabel
 			// 
@@ -5313,15 +6011,15 @@
 			this.treCyberware.HideSelection = false;
 			this.treCyberware.Location = new System.Drawing.Point(8, 36);
 			this.treCyberware.Name = "treCyberware";
-			treeNode18.Name = "nodCyberwareRoot";
-			treeNode18.Tag = "Node_SelectedCyberware";
-			treeNode18.Text = "Selected Cyberware";
-			treeNode19.Name = "nodBioware";
-			treeNode19.Tag = "Node_SelectedBioware";
-			treeNode19.Text = "Selected Bioware";
+			treeNode43.Name = "nodCyberwareRoot";
+			treeNode43.Tag = "Node_SelectedCyberware";
+			treeNode43.Text = "Selected Cyberware";
+			treeNode44.Name = "nodBioware";
+			treeNode44.Tag = "Node_SelectedBioware";
+			treeNode44.Text = "Selected Bioware";
 			this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode18,
-            treeNode19});
+            treeNode43,
+            treeNode44});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
 			this.treCyberware.Size = new System.Drawing.Size(295, 572);
@@ -5581,11 +6279,11 @@
 			this.treLifestyles.HideSelection = false;
 			this.treLifestyles.Location = new System.Drawing.Point(6, 36);
 			this.treLifestyles.Name = "treLifestyles";
-			treeNode20.Name = "nodLifestylesRoot";
-			treeNode20.Tag = "Node_SelectedLifestyles";
-			treeNode20.Text = "Selected Lifestyles";
+			treeNode45.Name = "nodLifestylesRoot";
+			treeNode45.Tag = "Node_SelectedLifestyles";
+			treeNode45.Text = "Selected Lifestyles";
 			this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode20});
+            treeNode45});
 			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
 			this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -5951,11 +6649,11 @@
 			this.treArmor.HideSelection = false;
 			this.treArmor.Location = new System.Drawing.Point(6, 36);
 			this.treArmor.Name = "treArmor";
-			treeNode21.Name = "nodArmorRoot";
-			treeNode21.Tag = "Node_SelectedArmor";
-			treeNode21.Text = "Selected Armor";
+			treeNode46.Name = "nodArmorRoot";
+			treeNode46.Tag = "Node_SelectedArmor";
+			treeNode46.Text = "Selected Armor";
 			this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode46});
 			this.treArmor.ShowNodeToolTips = true;
 			this.treArmor.Size = new System.Drawing.Size(295, 537);
 			this.treArmor.TabIndex = 69;
@@ -6069,15 +6767,15 @@
 			// tabWeapons
 			// 
 			this.tabWeapons.BackColor = System.Drawing.SystemColors.Control;
+			this.tabWeapons.Controls.Add(this.cboWeaponGearDataProcessing);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearFirewall);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearSleaze);
+			this.tabWeapons.Controls.Add(this.cboWeaponGearAttack);
 			this.tabWeapons.Controls.Add(this.lblWeaponRating);
 			this.tabWeapons.Controls.Add(this.lblWeaponRatingLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponFirewall);
 			this.tabWeapons.Controls.Add(this.lblWeaponFirewallLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponDataProcessing);
 			this.tabWeapons.Controls.Add(this.lblWeaponDataProcessingLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponSleaze);
 			this.tabWeapons.Controls.Add(this.lblWeaponSleazeLabel);
-			this.tabWeapons.Controls.Add(this.lblWeaponAttack);
 			this.tabWeapons.Controls.Add(this.lblWeaponAttackLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponDeviceRating);
 			this.tabWeapons.Controls.Add(this.lblWeaponDeviceRatingLabel);
@@ -6142,14 +6840,68 @@
 			this.tabWeapons.Tag = "Tab_Weapons";
 			this.tabWeapons.Text = "Weapons";
 			// 
-			// lblWeaponFirewall
+			// cboWeaponGearDataProcessing
 			// 
-			this.lblWeaponFirewall.AutoSize = true;
-			this.lblWeaponFirewall.Location = new System.Drawing.Point(751, 371);
-			this.lblWeaponFirewall.Name = "lblWeaponFirewall";
-			this.lblWeaponFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponFirewall.TabIndex = 175;
-			this.lblWeaponFirewall.Text = "[0]";
+			this.cboWeaponGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearDataProcessing.FormattingEnabled = true;
+			this.cboWeaponGearDataProcessing.Location = new System.Drawing.Point(674, 368);
+			this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
+			this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearDataProcessing.TabIndex = 210;
+			this.cboWeaponGearDataProcessing.Visible = false;
+			this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboWeaponGearFirewall
+			// 
+			this.cboWeaponGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearFirewall.FormattingEnabled = true;
+			this.cboWeaponGearFirewall.Location = new System.Drawing.Point(755, 368);
+			this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
+			this.cboWeaponGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearFirewall.TabIndex = 209;
+			this.cboWeaponGearFirewall.Visible = false;
+			this.cboWeaponGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearFirewall_SelectedIndexChanged);
+			// 
+			// cboWeaponGearSleaze
+			// 
+			this.cboWeaponGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearSleaze.FormattingEnabled = true;
+			this.cboWeaponGearSleaze.Location = new System.Drawing.Point(556, 368);
+			this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
+			this.cboWeaponGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearSleaze.TabIndex = 208;
+			this.cboWeaponGearSleaze.Visible = false;
+			this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
+			// 
+			// cboWeaponGearAttack
+			// 
+			this.cboWeaponGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboWeaponGearAttack.FormattingEnabled = true;
+			this.cboWeaponGearAttack.Location = new System.Drawing.Point(482, 368);
+			this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
+			this.cboWeaponGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboWeaponGearAttack.TabIndex = 207;
+			this.cboWeaponGearAttack.Visible = false;
+			this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
+			// 
+			// lblWeaponRating
+			// 
+			this.lblWeaponRating.AutoSize = true;
+			this.lblWeaponRating.Location = new System.Drawing.Point(371, 195);
+			this.lblWeaponRating.Name = "lblWeaponRating";
+			this.lblWeaponRating.Size = new System.Drawing.Size(44, 13);
+			this.lblWeaponRating.TabIndex = 177;
+			this.lblWeaponRating.Text = "[Rating]";
+			// 
+			// lblWeaponRatingLabel
+			// 
+			this.lblWeaponRatingLabel.AutoSize = true;
+			this.lblWeaponRatingLabel.Location = new System.Drawing.Point(308, 195);
+			this.lblWeaponRatingLabel.Name = "lblWeaponRatingLabel";
+			this.lblWeaponRatingLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblWeaponRatingLabel.TabIndex = 176;
+			this.lblWeaponRatingLabel.Tag = "Label_Rating";
+			this.lblWeaponRatingLabel.Text = "Rating:";
 			// 
 			// lblWeaponFirewallLabel
 			// 
@@ -6161,15 +6913,6 @@
 			this.lblWeaponFirewallLabel.Tag = "Label_Firewall";
 			this.lblWeaponFirewallLabel.Text = "Firewall:";
 			// 
-			// lblWeaponDataProcessing
-			// 
-			this.lblWeaponDataProcessing.AutoSize = true;
-			this.lblWeaponDataProcessing.Location = new System.Drawing.Point(679, 371);
-			this.lblWeaponDataProcessing.Name = "lblWeaponDataProcessing";
-			this.lblWeaponDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponDataProcessing.TabIndex = 173;
-			this.lblWeaponDataProcessing.Text = "[0]";
-			// 
 			// lblWeaponDataProcessingLabel
 			// 
 			this.lblWeaponDataProcessingLabel.AutoSize = true;
@@ -6180,15 +6923,6 @@
 			this.lblWeaponDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblWeaponDataProcessingLabel.Text = "Data Processing:";
 			// 
-			// lblWeaponSleaze
-			// 
-			this.lblWeaponSleaze.AutoSize = true;
-			this.lblWeaponSleaze.Location = new System.Drawing.Point(560, 371);
-			this.lblWeaponSleaze.Name = "lblWeaponSleaze";
-			this.lblWeaponSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponSleaze.TabIndex = 171;
-			this.lblWeaponSleaze.Text = "[0]";
-			// 
 			// lblWeaponSleazeLabel
 			// 
 			this.lblWeaponSleazeLabel.AutoSize = true;
@@ -6198,15 +6932,6 @@
 			this.lblWeaponSleazeLabel.TabIndex = 170;
 			this.lblWeaponSleazeLabel.Tag = "Label_Sleaze";
 			this.lblWeaponSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblWeaponAttack
-			// 
-			this.lblWeaponAttack.AutoSize = true;
-			this.lblWeaponAttack.Location = new System.Drawing.Point(488, 371);
-			this.lblWeaponAttack.Name = "lblWeaponAttack";
-			this.lblWeaponAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblWeaponAttack.TabIndex = 169;
-			this.lblWeaponAttack.Text = "[0]";
 			// 
 			// lblWeaponAttackLabel
 			// 
@@ -6526,11 +7251,11 @@
 			this.treWeapons.HideSelection = false;
 			this.treWeapons.Location = new System.Drawing.Point(6, 36);
 			this.treWeapons.Name = "treWeapons";
-			treeNode22.Name = "nodWeaponsRoot";
-			treeNode22.Tag = "Node_SelectedWeapons";
-			treeNode22.Text = "Selected Weapons";
+			treeNode47.Name = "nodWeaponsRoot";
+			treeNode47.Tag = "Node_SelectedWeapons";
+			treeNode47.Text = "Selected Weapons";
 			this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode47});
 			this.treWeapons.ShowNodeToolTips = true;
 			this.treWeapons.Size = new System.Drawing.Size(295, 540);
 			this.treWeapons.TabIndex = 29;
@@ -6904,13 +7629,13 @@
 			// tabGear
 			// 
 			this.tabGear.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGear.Controls.Add(this.lblGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearDataProcessing);
+			this.tabGear.Controls.Add(this.cboGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearSleaze);
+			this.tabGear.Controls.Add(this.cboGearAttack);
 			this.tabGear.Controls.Add(this.lblGearFirewallLabel);
-			this.tabGear.Controls.Add(this.lblGearDataProcessing);
 			this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
-			this.tabGear.Controls.Add(this.lblGearSleaze);
 			this.tabGear.Controls.Add(this.lblGearSleazeLabel);
-			this.tabGear.Controls.Add(this.lblGearAttack);
 			this.tabGear.Controls.Add(this.lblGearAttackLabel);
 			this.tabGear.Controls.Add(this.lblGearDeviceRating);
 			this.tabGear.Controls.Add(this.lblGearDeviceRatingLabel);
@@ -6957,81 +7682,89 @@
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
 			// 
-			// lblGearFirewall
+			// cboGearDataProcessing
 			// 
-			this.lblGearFirewall.AutoSize = true;
-			this.lblGearFirewall.Location = new System.Drawing.Point(750, 164);
-			this.lblGearFirewall.Name = "lblGearFirewall";
-			this.lblGearFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblGearFirewall.TabIndex = 165;
-			this.lblGearFirewall.Text = "[0]";
+			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearDataProcessing.FormattingEnabled = true;
+			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 178);
+			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+			this.cboGearDataProcessing.TabIndex = 167;
+			this.cboGearDataProcessing.Visible = false;
+			this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboGearFirewall
+			// 
+			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearFirewall.FormattingEnabled = true;
+			this.cboGearFirewall.Location = new System.Drawing.Point(733, 178);
+			this.cboGearFirewall.Name = "cboGearFirewall";
+			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+			this.cboGearFirewall.TabIndex = 166;
+			this.cboGearFirewall.Visible = false;
+			this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
+			// 
+			// cboGearSleaze
+			// 
+			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearSleaze.FormattingEnabled = true;
+			this.cboGearSleaze.Location = new System.Drawing.Point(598, 178);
+			this.cboGearSleaze.Name = "cboGearSleaze";
+			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+			this.cboGearSleaze.TabIndex = 165;
+			this.cboGearSleaze.Visible = false;
+			this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
+			// 
+			// cboGearAttack
+			// 
+			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearAttack.FormattingEnabled = true;
+			this.cboGearAttack.Location = new System.Drawing.Point(531, 178);
+			this.cboGearAttack.Name = "cboGearAttack";
+			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+			this.cboGearAttack.TabIndex = 164;
+			this.cboGearAttack.Visible = false;
+			this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
 			// 
 			// lblGearFirewallLabel
 			// 
-			this.lblGearFirewallLabel.AutoSize = true;
-			this.lblGearFirewallLabel.Location = new System.Drawing.Point(703, 164);
+			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 164);
 			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-			this.lblGearFirewallLabel.Size = new System.Drawing.Size(45, 13);
-			this.lblGearFirewallLabel.TabIndex = 164;
+			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearFirewallLabel.TabIndex = 163;
 			this.lblGearFirewallLabel.Tag = "Label_Firewall";
 			this.lblGearFirewallLabel.Text = "Firewall:";
-			// 
-			// lblGearDataProcessing
-			// 
-			this.lblGearDataProcessing.AutoSize = true;
-			this.lblGearDataProcessing.Location = new System.Drawing.Point(678, 164);
-			this.lblGearDataProcessing.Name = "lblGearDataProcessing";
-			this.lblGearDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblGearDataProcessing.TabIndex = 163;
-			this.lblGearDataProcessing.Text = "[0]";
+			this.lblGearFirewallLabel.Visible = false;
 			// 
 			// lblGearDataProcessingLabel
 			// 
-			this.lblGearDataProcessingLabel.AutoSize = true;
-			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(584, 164);
+			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 164);
 			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
+			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearDataProcessingLabel.TabIndex = 162;
 			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-			this.lblGearDataProcessingLabel.Text = "Data Processing:";
-			// 
-			// lblGearSleaze
-			// 
-			this.lblGearSleaze.AutoSize = true;
-			this.lblGearSleaze.Location = new System.Drawing.Point(559, 164);
-			this.lblGearSleaze.Name = "lblGearSleaze";
-			this.lblGearSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblGearSleaze.TabIndex = 161;
-			this.lblGearSleaze.Text = "[0]";
+			this.lblGearDataProcessingLabel.Text = "Data Proc:";
+			this.lblGearDataProcessingLabel.Visible = false;
 			// 
 			// lblGearSleazeLabel
 			// 
-			this.lblGearSleazeLabel.AutoSize = true;
-			this.lblGearSleazeLabel.Location = new System.Drawing.Point(512, 164);
+			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 164);
 			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-			this.lblGearSleazeLabel.Size = new System.Drawing.Size(42, 13);
-			this.lblGearSleazeLabel.TabIndex = 160;
+			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearSleazeLabel.TabIndex = 161;
 			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
 			this.lblGearSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblGearAttack
-			// 
-			this.lblGearAttack.AutoSize = true;
-			this.lblGearAttack.Location = new System.Drawing.Point(487, 164);
-			this.lblGearAttack.Name = "lblGearAttack";
-			this.lblGearAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblGearAttack.TabIndex = 159;
-			this.lblGearAttack.Text = "[0]";
+			this.lblGearSleazeLabel.Visible = false;
 			// 
 			// lblGearAttackLabel
 			// 
-			this.lblGearAttackLabel.AutoSize = true;
-			this.lblGearAttackLabel.Location = new System.Drawing.Point(440, 164);
+			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 164);
 			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-			this.lblGearAttackLabel.Size = new System.Drawing.Size(41, 13);
-			this.lblGearAttackLabel.TabIndex = 158;
+			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
+			this.lblGearAttackLabel.TabIndex = 160;
 			this.lblGearAttackLabel.Tag = "Label_Attack";
 			this.lblGearAttackLabel.Text = "Attack:";
+			this.lblGearAttackLabel.Visible = false;
 			// 
 			// lblGearDeviceRating
 			// 
@@ -7328,11 +8061,11 @@
 			this.treGear.HideSelection = false;
 			this.treGear.Location = new System.Drawing.Point(6, 36);
 			this.treGear.Name = "treGear";
-			treeNode23.Name = "nodGearRoot";
-			treeNode23.Tag = "Node_SelectedGear";
-			treeNode23.Text = "Selected Gear";
+			treeNode48.Name = "nodGearRoot";
+			treeNode48.Tag = "Node_SelectedGear";
+			treeNode48.Text = "Selected Gear";
 			this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode48});
 			this.treGear.ShowNodeToolTips = true;
 			this.treGear.Size = new System.Drawing.Size(295, 540);
 			this.treGear.TabIndex = 49;
@@ -7453,13 +8186,14 @@
 			// tabVehicles
 			// 
 			this.tabVehicles.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabVehicles.Controls.Add(this.lblVehicleFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearDataProcessing);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearSleaze);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearAttack);
+			this.tabVehicles.Controls.Add(this.panVehicleCM);
 			this.tabVehicles.Controls.Add(this.lblVehicleFirewallLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessing);
 			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSleaze);
 			this.tabVehicles.Controls.Add(this.lblVehicleSleazeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleAttackLabel);
 			this.tabVehicles.Controls.Add(this.cmdAddVehicleLocation);
 			this.tabVehicles.Controls.Add(this.chkVehicleHomeNode);
@@ -7479,7 +8213,6 @@
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeMediumLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeShortLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLabel);
-			this.tabVehicles.Controls.Add(this.panVehicleCM);
 			this.tabVehicles.Controls.Add(this.chkVehicleIncludedInWeapon);
 			this.tabVehicles.Controls.Add(this.chkVehicleWeaponAccessoryInstalled);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAmmo);
@@ -7540,14 +8273,1122 @@
 			this.tabVehicles.Tag = "Tab_Vehicles";
 			this.tabVehicles.Text = "Vehicles & Drones";
 			// 
-			// lblVehicleFirewall
+			// cboVehicleGearDataProcessing
 			// 
-			this.lblVehicleFirewall.AutoSize = true;
-			this.lblVehicleFirewall.Location = new System.Drawing.Point(776, 128);
-			this.lblVehicleFirewall.Name = "lblVehicleFirewall";
-			this.lblVehicleFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleFirewall.TabIndex = 201;
-			this.lblVehicleFirewall.Text = "[0]";
+			this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearDataProcessing.FormattingEnabled = true;
+			this.cboVehicleGearDataProcessing.Location = new System.Drawing.Point(693, 125);
+			this.cboVehicleGearDataProcessing.Name = "cboVehicleGearDataProcessing";
+			this.cboVehicleGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearDataProcessing.TabIndex = 206;
+			this.cboVehicleGearDataProcessing.Visible = false;
+			this.cboVehicleGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboVehicleGearFirewall
+			// 
+			this.cboVehicleGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearFirewall.FormattingEnabled = true;
+			this.cboVehicleGearFirewall.Location = new System.Drawing.Point(777, 125);
+			this.cboVehicleGearFirewall.Name = "cboVehicleGearFirewall";
+			this.cboVehicleGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearFirewall.TabIndex = 205;
+			this.cboVehicleGearFirewall.Visible = false;
+			this.cboVehicleGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+			// 
+			// cboVehicleGearSleaze
+			// 
+			this.cboVehicleGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearSleaze.FormattingEnabled = true;
+			this.cboVehicleGearSleaze.Location = new System.Drawing.Point(576, 125);
+			this.cboVehicleGearSleaze.Name = "cboVehicleGearSleaze";
+			this.cboVehicleGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearSleaze.TabIndex = 204;
+			this.cboVehicleGearSleaze.Visible = false;
+			this.cboVehicleGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+			// 
+			// cboVehicleGearAttack
+			// 
+			this.cboVehicleGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearAttack.FormattingEnabled = true;
+			this.cboVehicleGearAttack.Location = new System.Drawing.Point(489, 125);
+			this.cboVehicleGearAttack.Name = "cboVehicleGearAttack";
+			this.cboVehicleGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearAttack.TabIndex = 203;
+			this.cboVehicleGearAttack.Visible = false;
+			this.cboVehicleGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
+			// 
+			// panVehicleCM
+			// 
+			this.panVehicleCM.Controls.Add(this.tabVehiclePhysicalCM);
+			this.panVehicleCM.Controls.Add(this.tabVehicleMatrixCM);
+			this.panVehicleCM.ItemSize = new System.Drawing.Size(176, 18);
+			this.panVehicleCM.Location = new System.Drawing.Point(420, 482);
+			this.panVehicleCM.Name = "panVehicleCM";
+			this.panVehicleCM.SelectedIndex = 0;
+			this.panVehicleCM.Size = new System.Drawing.Size(360, 113);
+			this.panVehicleCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.panVehicleCM.TabIndex = 202;
+			this.panVehicleCM.Visible = false;
+			// 
+			// tabVehiclePhysicalCM
+			// 
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM40);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM1);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM39);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM2);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM38);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM3);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM37);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM4);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM36);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM5);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM35);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM6);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM34);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM7);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM33);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM8);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM32);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM9);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM31);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM10);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM30);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM11);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM29);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM12);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM28);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM13);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM27);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM14);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM26);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM15);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM25);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM16);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM24);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM17);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM23);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM18);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM22);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM19);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM21);
+			this.tabVehiclePhysicalCM.Controls.Add(this.chkVehiclePhysicalCM20);
+			this.tabVehiclePhysicalCM.Location = new System.Drawing.Point(4, 22);
+			this.tabVehiclePhysicalCM.Name = "tabVehiclePhysicalCM";
+			this.tabVehiclePhysicalCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabVehiclePhysicalCM.Size = new System.Drawing.Size(352, 87);
+			this.tabVehiclePhysicalCM.TabIndex = 0;
+			this.tabVehiclePhysicalCM.Text = "Physical Condition Monitor";
+			this.tabVehiclePhysicalCM.UseVisualStyleBackColor = true;
+			// 
+			// chkVehiclePhysicalCM40
+			// 
+			this.chkVehiclePhysicalCM40.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM40.Location = new System.Drawing.Point(269, 55);
+			this.chkVehiclePhysicalCM40.Name = "chkVehiclePhysicalCM40";
+			this.chkVehiclePhysicalCM40.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM40.TabIndex = 48;
+			this.chkVehiclePhysicalCM40.Tag = "40";
+			this.chkVehiclePhysicalCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM40.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM40.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM1
+			// 
+			this.chkVehiclePhysicalCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkVehiclePhysicalCM1.Name = "chkVehiclePhysicalCM1";
+			this.chkVehiclePhysicalCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM1.TabIndex = 0;
+			this.chkVehiclePhysicalCM1.Tag = "1";
+			this.chkVehiclePhysicalCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM1.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM1.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM39
+			// 
+			this.chkVehiclePhysicalCM39.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM39.Location = new System.Drawing.Point(245, 55);
+			this.chkVehiclePhysicalCM39.Name = "chkVehiclePhysicalCM39";
+			this.chkVehiclePhysicalCM39.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM39.TabIndex = 47;
+			this.chkVehiclePhysicalCM39.Tag = "39";
+			this.chkVehiclePhysicalCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM39.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM39.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM2
+			// 
+			this.chkVehiclePhysicalCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkVehiclePhysicalCM2.Name = "chkVehiclePhysicalCM2";
+			this.chkVehiclePhysicalCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM2.TabIndex = 1;
+			this.chkVehiclePhysicalCM2.Tag = "2";
+			this.chkVehiclePhysicalCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM2.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM2.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM38
+			// 
+			this.chkVehiclePhysicalCM38.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM38.Location = new System.Drawing.Point(221, 55);
+			this.chkVehiclePhysicalCM38.Name = "chkVehiclePhysicalCM38";
+			this.chkVehiclePhysicalCM38.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM38.TabIndex = 46;
+			this.chkVehiclePhysicalCM38.Tag = "38";
+			this.chkVehiclePhysicalCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM38.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM38.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM3
+			// 
+			this.chkVehiclePhysicalCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkVehiclePhysicalCM3.Name = "chkVehiclePhysicalCM3";
+			this.chkVehiclePhysicalCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM3.TabIndex = 2;
+			this.chkVehiclePhysicalCM3.Tag = "3";
+			this.chkVehiclePhysicalCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM3.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM3.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM37
+			// 
+			this.chkVehiclePhysicalCM37.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM37.Location = new System.Drawing.Point(197, 55);
+			this.chkVehiclePhysicalCM37.Name = "chkVehiclePhysicalCM37";
+			this.chkVehiclePhysicalCM37.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM37.TabIndex = 45;
+			this.chkVehiclePhysicalCM37.Tag = "37";
+			this.chkVehiclePhysicalCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM37.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM37.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM4
+			// 
+			this.chkVehiclePhysicalCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkVehiclePhysicalCM4.Name = "chkVehiclePhysicalCM4";
+			this.chkVehiclePhysicalCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM4.TabIndex = 3;
+			this.chkVehiclePhysicalCM4.Tag = "4";
+			this.chkVehiclePhysicalCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM4.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM4.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM36
+			// 
+			this.chkVehiclePhysicalCM36.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM36.Location = new System.Drawing.Point(173, 55);
+			this.chkVehiclePhysicalCM36.Name = "chkVehiclePhysicalCM36";
+			this.chkVehiclePhysicalCM36.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM36.TabIndex = 44;
+			this.chkVehiclePhysicalCM36.Tag = "36";
+			this.chkVehiclePhysicalCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM36.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM36.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM5
+			// 
+			this.chkVehiclePhysicalCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkVehiclePhysicalCM5.Name = "chkVehiclePhysicalCM5";
+			this.chkVehiclePhysicalCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM5.TabIndex = 4;
+			this.chkVehiclePhysicalCM5.Tag = "5";
+			this.chkVehiclePhysicalCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM5.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM5.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM35
+			// 
+			this.chkVehiclePhysicalCM35.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM35.Location = new System.Drawing.Point(149, 55);
+			this.chkVehiclePhysicalCM35.Name = "chkVehiclePhysicalCM35";
+			this.chkVehiclePhysicalCM35.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM35.TabIndex = 43;
+			this.chkVehiclePhysicalCM35.Tag = "35";
+			this.chkVehiclePhysicalCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM35.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM35.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM6
+			// 
+			this.chkVehiclePhysicalCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkVehiclePhysicalCM6.Name = "chkVehiclePhysicalCM6";
+			this.chkVehiclePhysicalCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM6.TabIndex = 5;
+			this.chkVehiclePhysicalCM6.Tag = "6";
+			this.chkVehiclePhysicalCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM6.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM6.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM34
+			// 
+			this.chkVehiclePhysicalCM34.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM34.Location = new System.Drawing.Point(125, 55);
+			this.chkVehiclePhysicalCM34.Name = "chkVehiclePhysicalCM34";
+			this.chkVehiclePhysicalCM34.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM34.TabIndex = 42;
+			this.chkVehiclePhysicalCM34.Tag = "34";
+			this.chkVehiclePhysicalCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM34.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM34.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM7
+			// 
+			this.chkVehiclePhysicalCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkVehiclePhysicalCM7.Name = "chkVehiclePhysicalCM7";
+			this.chkVehiclePhysicalCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM7.TabIndex = 6;
+			this.chkVehiclePhysicalCM7.Tag = "7";
+			this.chkVehiclePhysicalCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM7.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM7.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM33
+			// 
+			this.chkVehiclePhysicalCM33.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM33.Location = new System.Drawing.Point(101, 55);
+			this.chkVehiclePhysicalCM33.Name = "chkVehiclePhysicalCM33";
+			this.chkVehiclePhysicalCM33.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM33.TabIndex = 41;
+			this.chkVehiclePhysicalCM33.Tag = "33";
+			this.chkVehiclePhysicalCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM33.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM33.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM8
+			// 
+			this.chkVehiclePhysicalCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkVehiclePhysicalCM8.Name = "chkVehiclePhysicalCM8";
+			this.chkVehiclePhysicalCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM8.TabIndex = 7;
+			this.chkVehiclePhysicalCM8.Tag = "8";
+			this.chkVehiclePhysicalCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM8.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM8.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM32
+			// 
+			this.chkVehiclePhysicalCM32.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM32.Location = new System.Drawing.Point(77, 55);
+			this.chkVehiclePhysicalCM32.Name = "chkVehiclePhysicalCM32";
+			this.chkVehiclePhysicalCM32.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM32.TabIndex = 40;
+			this.chkVehiclePhysicalCM32.Tag = "32";
+			this.chkVehiclePhysicalCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM32.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM32.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM9
+			// 
+			this.chkVehiclePhysicalCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM9.Location = new System.Drawing.Point(197, 6);
+			this.chkVehiclePhysicalCM9.Name = "chkVehiclePhysicalCM9";
+			this.chkVehiclePhysicalCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM9.TabIndex = 8;
+			this.chkVehiclePhysicalCM9.Tag = "9";
+			this.chkVehiclePhysicalCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM9.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM9.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM31
+			// 
+			this.chkVehiclePhysicalCM31.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM31.Location = new System.Drawing.Point(53, 55);
+			this.chkVehiclePhysicalCM31.Name = "chkVehiclePhysicalCM31";
+			this.chkVehiclePhysicalCM31.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM31.TabIndex = 39;
+			this.chkVehiclePhysicalCM31.Tag = "31";
+			this.chkVehiclePhysicalCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM31.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM31.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM10
+			// 
+			this.chkVehiclePhysicalCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM10.Location = new System.Drawing.Point(221, 6);
+			this.chkVehiclePhysicalCM10.Name = "chkVehiclePhysicalCM10";
+			this.chkVehiclePhysicalCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM10.TabIndex = 9;
+			this.chkVehiclePhysicalCM10.Tag = "10";
+			this.chkVehiclePhysicalCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM10.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM10.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM30
+			// 
+			this.chkVehiclePhysicalCM30.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM30.Location = new System.Drawing.Point(29, 55);
+			this.chkVehiclePhysicalCM30.Name = "chkVehiclePhysicalCM30";
+			this.chkVehiclePhysicalCM30.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM30.TabIndex = 38;
+			this.chkVehiclePhysicalCM30.Tag = "30";
+			this.chkVehiclePhysicalCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM30.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM30.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM11
+			// 
+			this.chkVehiclePhysicalCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM11.Location = new System.Drawing.Point(245, 6);
+			this.chkVehiclePhysicalCM11.Name = "chkVehiclePhysicalCM11";
+			this.chkVehiclePhysicalCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM11.TabIndex = 19;
+			this.chkVehiclePhysicalCM11.Tag = "11";
+			this.chkVehiclePhysicalCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM11.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM11.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM29
+			// 
+			this.chkVehiclePhysicalCM29.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM29.Location = new System.Drawing.Point(5, 55);
+			this.chkVehiclePhysicalCM29.Name = "chkVehiclePhysicalCM29";
+			this.chkVehiclePhysicalCM29.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM29.TabIndex = 37;
+			this.chkVehiclePhysicalCM29.Tag = "29";
+			this.chkVehiclePhysicalCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM29.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM29.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM12
+			// 
+			this.chkVehiclePhysicalCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM12.Location = new System.Drawing.Point(269, 6);
+			this.chkVehiclePhysicalCM12.Name = "chkVehiclePhysicalCM12";
+			this.chkVehiclePhysicalCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM12.TabIndex = 20;
+			this.chkVehiclePhysicalCM12.Tag = "12";
+			this.chkVehiclePhysicalCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM12.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM12.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM28
+			// 
+			this.chkVehiclePhysicalCM28.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM28.Location = new System.Drawing.Point(317, 31);
+			this.chkVehiclePhysicalCM28.Name = "chkVehiclePhysicalCM28";
+			this.chkVehiclePhysicalCM28.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM28.TabIndex = 36;
+			this.chkVehiclePhysicalCM28.Tag = "28";
+			this.chkVehiclePhysicalCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM28.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM28.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM13
+			// 
+			this.chkVehiclePhysicalCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM13.Location = new System.Drawing.Point(293, 6);
+			this.chkVehiclePhysicalCM13.Name = "chkVehiclePhysicalCM13";
+			this.chkVehiclePhysicalCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM13.TabIndex = 21;
+			this.chkVehiclePhysicalCM13.Tag = "13";
+			this.chkVehiclePhysicalCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM13.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM13.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM27
+			// 
+			this.chkVehiclePhysicalCM27.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM27.Location = new System.Drawing.Point(293, 31);
+			this.chkVehiclePhysicalCM27.Name = "chkVehiclePhysicalCM27";
+			this.chkVehiclePhysicalCM27.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM27.TabIndex = 35;
+			this.chkVehiclePhysicalCM27.Tag = "27";
+			this.chkVehiclePhysicalCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM27.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM27.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM14
+			// 
+			this.chkVehiclePhysicalCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM14.Location = new System.Drawing.Point(317, 6);
+			this.chkVehiclePhysicalCM14.Name = "chkVehiclePhysicalCM14";
+			this.chkVehiclePhysicalCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM14.TabIndex = 22;
+			this.chkVehiclePhysicalCM14.Tag = "14";
+			this.chkVehiclePhysicalCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM14.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM14.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM26
+			// 
+			this.chkVehiclePhysicalCM26.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM26.Location = new System.Drawing.Point(269, 31);
+			this.chkVehiclePhysicalCM26.Name = "chkVehiclePhysicalCM26";
+			this.chkVehiclePhysicalCM26.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM26.TabIndex = 34;
+			this.chkVehiclePhysicalCM26.Tag = "26";
+			this.chkVehiclePhysicalCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM26.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM26.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM15
+			// 
+			this.chkVehiclePhysicalCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM15.Location = new System.Drawing.Point(5, 31);
+			this.chkVehiclePhysicalCM15.Name = "chkVehiclePhysicalCM15";
+			this.chkVehiclePhysicalCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM15.TabIndex = 23;
+			this.chkVehiclePhysicalCM15.Tag = "15";
+			this.chkVehiclePhysicalCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM15.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM15.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM25
+			// 
+			this.chkVehiclePhysicalCM25.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM25.Location = new System.Drawing.Point(245, 31);
+			this.chkVehiclePhysicalCM25.Name = "chkVehiclePhysicalCM25";
+			this.chkVehiclePhysicalCM25.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM25.TabIndex = 33;
+			this.chkVehiclePhysicalCM25.Tag = "25";
+			this.chkVehiclePhysicalCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM25.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM25.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM16
+			// 
+			this.chkVehiclePhysicalCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM16.Location = new System.Drawing.Point(29, 31);
+			this.chkVehiclePhysicalCM16.Name = "chkVehiclePhysicalCM16";
+			this.chkVehiclePhysicalCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM16.TabIndex = 24;
+			this.chkVehiclePhysicalCM16.Tag = "16";
+			this.chkVehiclePhysicalCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM16.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM16.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM24
+			// 
+			this.chkVehiclePhysicalCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM24.Location = new System.Drawing.Point(221, 31);
+			this.chkVehiclePhysicalCM24.Name = "chkVehiclePhysicalCM24";
+			this.chkVehiclePhysicalCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM24.TabIndex = 32;
+			this.chkVehiclePhysicalCM24.Tag = "24";
+			this.chkVehiclePhysicalCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM24.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM24.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM17
+			// 
+			this.chkVehiclePhysicalCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM17.Location = new System.Drawing.Point(53, 31);
+			this.chkVehiclePhysicalCM17.Name = "chkVehiclePhysicalCM17";
+			this.chkVehiclePhysicalCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM17.TabIndex = 25;
+			this.chkVehiclePhysicalCM17.Tag = "17";
+			this.chkVehiclePhysicalCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM17.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM17.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM23
+			// 
+			this.chkVehiclePhysicalCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM23.Location = new System.Drawing.Point(197, 31);
+			this.chkVehiclePhysicalCM23.Name = "chkVehiclePhysicalCM23";
+			this.chkVehiclePhysicalCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM23.TabIndex = 31;
+			this.chkVehiclePhysicalCM23.Tag = "23";
+			this.chkVehiclePhysicalCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM23.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM23.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM18
+			// 
+			this.chkVehiclePhysicalCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM18.Location = new System.Drawing.Point(77, 31);
+			this.chkVehiclePhysicalCM18.Name = "chkVehiclePhysicalCM18";
+			this.chkVehiclePhysicalCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM18.TabIndex = 26;
+			this.chkVehiclePhysicalCM18.Tag = "18";
+			this.chkVehiclePhysicalCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM18.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM18.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM22
+			// 
+			this.chkVehiclePhysicalCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM22.Location = new System.Drawing.Point(173, 31);
+			this.chkVehiclePhysicalCM22.Name = "chkVehiclePhysicalCM22";
+			this.chkVehiclePhysicalCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM22.TabIndex = 30;
+			this.chkVehiclePhysicalCM22.Tag = "22";
+			this.chkVehiclePhysicalCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM22.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM22.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM19
+			// 
+			this.chkVehiclePhysicalCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM19.Location = new System.Drawing.Point(101, 31);
+			this.chkVehiclePhysicalCM19.Name = "chkVehiclePhysicalCM19";
+			this.chkVehiclePhysicalCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM19.TabIndex = 27;
+			this.chkVehiclePhysicalCM19.Tag = "19";
+			this.chkVehiclePhysicalCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM19.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM19.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM21
+			// 
+			this.chkVehiclePhysicalCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM21.Location = new System.Drawing.Point(149, 31);
+			this.chkVehiclePhysicalCM21.Name = "chkVehiclePhysicalCM21";
+			this.chkVehiclePhysicalCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM21.TabIndex = 29;
+			this.chkVehiclePhysicalCM21.Tag = "21";
+			this.chkVehiclePhysicalCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM21.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM21.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehiclePhysicalCM20
+			// 
+			this.chkVehiclePhysicalCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehiclePhysicalCM20.Location = new System.Drawing.Point(125, 31);
+			this.chkVehiclePhysicalCM20.Name = "chkVehiclePhysicalCM20";
+			this.chkVehiclePhysicalCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkVehiclePhysicalCM20.TabIndex = 28;
+			this.chkVehiclePhysicalCM20.Tag = "20";
+			this.chkVehiclePhysicalCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehiclePhysicalCM20.UseVisualStyleBackColor = true;
+			this.chkVehiclePhysicalCM20.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// tabVehicleMatrixCM
+			// 
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM1);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM2);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM3);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM4);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM5);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM6);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM7);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM8);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM9);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM10);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM11);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM12);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM13);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM14);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM15);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM16);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM17);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM18);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM19);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM20);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM21);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM22);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM23);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM24);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM25);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM26);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM27);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM28);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM29);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM30);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM31);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM32);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM33);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM34);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM35);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM36);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM37);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM38);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM39);
+			this.tabVehicleMatrixCM.Controls.Add(this.chkVehicleMatrixCM40);
+			this.tabVehicleMatrixCM.Location = new System.Drawing.Point(4, 22);
+			this.tabVehicleMatrixCM.Name = "tabVehicleMatrixCM";
+			this.tabVehicleMatrixCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabVehicleMatrixCM.Size = new System.Drawing.Size(352, 87);
+			this.tabVehicleMatrixCM.TabIndex = 1;
+			this.tabVehicleMatrixCM.Text = "Matrix Condition Monitor";
+			this.tabVehicleMatrixCM.UseVisualStyleBackColor = true;
+			// 
+			// chkVehicleMatrixCM1
+			// 
+			this.chkVehicleMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkVehicleMatrixCM1.Name = "chkVehicleMatrixCM1";
+			this.chkVehicleMatrixCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM1.TabIndex = 49;
+			this.chkVehicleMatrixCM1.Tag = "1";
+			this.chkVehicleMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM1.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM1.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM2
+			// 
+			this.chkVehicleMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkVehicleMatrixCM2.Name = "chkVehicleMatrixCM2";
+			this.chkVehicleMatrixCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM2.TabIndex = 50;
+			this.chkVehicleMatrixCM2.Tag = "2";
+			this.chkVehicleMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM2.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM3
+			// 
+			this.chkVehicleMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkVehicleMatrixCM3.Name = "chkVehicleMatrixCM3";
+			this.chkVehicleMatrixCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM3.TabIndex = 51;
+			this.chkVehicleMatrixCM3.Tag = "3";
+			this.chkVehicleMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM3.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM3.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM4
+			// 
+			this.chkVehicleMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkVehicleMatrixCM4.Name = "chkVehicleMatrixCM4";
+			this.chkVehicleMatrixCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM4.TabIndex = 52;
+			this.chkVehicleMatrixCM4.Tag = "4";
+			this.chkVehicleMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM4.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM4.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM5
+			// 
+			this.chkVehicleMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkVehicleMatrixCM5.Name = "chkVehicleMatrixCM5";
+			this.chkVehicleMatrixCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM5.TabIndex = 53;
+			this.chkVehicleMatrixCM5.Tag = "5";
+			this.chkVehicleMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM5.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM5.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM6
+			// 
+			this.chkVehicleMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkVehicleMatrixCM6.Name = "chkVehicleMatrixCM6";
+			this.chkVehicleMatrixCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM6.TabIndex = 54;
+			this.chkVehicleMatrixCM6.Tag = "6";
+			this.chkVehicleMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM6.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM6.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM7
+			// 
+			this.chkVehicleMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkVehicleMatrixCM7.Name = "chkVehicleMatrixCM7";
+			this.chkVehicleMatrixCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM7.TabIndex = 55;
+			this.chkVehicleMatrixCM7.Tag = "7";
+			this.chkVehicleMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM7.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM7.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM8
+			// 
+			this.chkVehicleMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkVehicleMatrixCM8.Name = "chkVehicleMatrixCM8";
+			this.chkVehicleMatrixCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM8.TabIndex = 56;
+			this.chkVehicleMatrixCM8.Tag = "8";
+			this.chkVehicleMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM8.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM8.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM9
+			// 
+			this.chkVehicleMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM9.Location = new System.Drawing.Point(197, 6);
+			this.chkVehicleMatrixCM9.Name = "chkVehicleMatrixCM9";
+			this.chkVehicleMatrixCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM9.TabIndex = 57;
+			this.chkVehicleMatrixCM9.Tag = "9";
+			this.chkVehicleMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM9.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM9.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM10
+			// 
+			this.chkVehicleMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM10.Location = new System.Drawing.Point(221, 6);
+			this.chkVehicleMatrixCM10.Name = "chkVehicleMatrixCM10";
+			this.chkVehicleMatrixCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM10.TabIndex = 58;
+			this.chkVehicleMatrixCM10.Tag = "10";
+			this.chkVehicleMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM10.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM10.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM11
+			// 
+			this.chkVehicleMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM11.Location = new System.Drawing.Point(245, 6);
+			this.chkVehicleMatrixCM11.Name = "chkVehicleMatrixCM11";
+			this.chkVehicleMatrixCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM11.TabIndex = 59;
+			this.chkVehicleMatrixCM11.Tag = "11";
+			this.chkVehicleMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM11.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM11.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM12
+			// 
+			this.chkVehicleMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM12.Location = new System.Drawing.Point(269, 6);
+			this.chkVehicleMatrixCM12.Name = "chkVehicleMatrixCM12";
+			this.chkVehicleMatrixCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM12.TabIndex = 60;
+			this.chkVehicleMatrixCM12.Tag = "12";
+			this.chkVehicleMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM12.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM12.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM13
+			// 
+			this.chkVehicleMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM13.Location = new System.Drawing.Point(293, 6);
+			this.chkVehicleMatrixCM13.Name = "chkVehicleMatrixCM13";
+			this.chkVehicleMatrixCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM13.TabIndex = 61;
+			this.chkVehicleMatrixCM13.Tag = "13";
+			this.chkVehicleMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM13.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM13.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM14
+			// 
+			this.chkVehicleMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM14.Location = new System.Drawing.Point(317, 6);
+			this.chkVehicleMatrixCM14.Name = "chkVehicleMatrixCM14";
+			this.chkVehicleMatrixCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM14.TabIndex = 62;
+			this.chkVehicleMatrixCM14.Tag = "14";
+			this.chkVehicleMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM14.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM14.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM15
+			// 
+			this.chkVehicleMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM15.Location = new System.Drawing.Point(5, 31);
+			this.chkVehicleMatrixCM15.Name = "chkVehicleMatrixCM15";
+			this.chkVehicleMatrixCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM15.TabIndex = 63;
+			this.chkVehicleMatrixCM15.Tag = "15";
+			this.chkVehicleMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM15.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM15.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM16
+			// 
+			this.chkVehicleMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM16.Location = new System.Drawing.Point(29, 31);
+			this.chkVehicleMatrixCM16.Name = "chkVehicleMatrixCM16";
+			this.chkVehicleMatrixCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM16.TabIndex = 64;
+			this.chkVehicleMatrixCM16.Tag = "16";
+			this.chkVehicleMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM16.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM16.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM17
+			// 
+			this.chkVehicleMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM17.Location = new System.Drawing.Point(53, 31);
+			this.chkVehicleMatrixCM17.Name = "chkVehicleMatrixCM17";
+			this.chkVehicleMatrixCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM17.TabIndex = 65;
+			this.chkVehicleMatrixCM17.Tag = "17";
+			this.chkVehicleMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM17.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM17.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM18
+			// 
+			this.chkVehicleMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM18.Location = new System.Drawing.Point(77, 31);
+			this.chkVehicleMatrixCM18.Name = "chkVehicleMatrixCM18";
+			this.chkVehicleMatrixCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM18.TabIndex = 66;
+			this.chkVehicleMatrixCM18.Tag = "18";
+			this.chkVehicleMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM18.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM18.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM19
+			// 
+			this.chkVehicleMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM19.Location = new System.Drawing.Point(101, 31);
+			this.chkVehicleMatrixCM19.Name = "chkVehicleMatrixCM19";
+			this.chkVehicleMatrixCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM19.TabIndex = 67;
+			this.chkVehicleMatrixCM19.Tag = "19";
+			this.chkVehicleMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM19.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM19.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM20
+			// 
+			this.chkVehicleMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM20.Location = new System.Drawing.Point(125, 31);
+			this.chkVehicleMatrixCM20.Name = "chkVehicleMatrixCM20";
+			this.chkVehicleMatrixCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM20.TabIndex = 68;
+			this.chkVehicleMatrixCM20.Tag = "20";
+			this.chkVehicleMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM20.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM20.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM21
+			// 
+			this.chkVehicleMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM21.Location = new System.Drawing.Point(149, 31);
+			this.chkVehicleMatrixCM21.Name = "chkVehicleMatrixCM21";
+			this.chkVehicleMatrixCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM21.TabIndex = 69;
+			this.chkVehicleMatrixCM21.Tag = "21";
+			this.chkVehicleMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM21.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM21.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM22
+			// 
+			this.chkVehicleMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM22.Location = new System.Drawing.Point(173, 31);
+			this.chkVehicleMatrixCM22.Name = "chkVehicleMatrixCM22";
+			this.chkVehicleMatrixCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM22.TabIndex = 70;
+			this.chkVehicleMatrixCM22.Tag = "22";
+			this.chkVehicleMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM22.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM22.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM23
+			// 
+			this.chkVehicleMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM23.Location = new System.Drawing.Point(197, 31);
+			this.chkVehicleMatrixCM23.Name = "chkVehicleMatrixCM23";
+			this.chkVehicleMatrixCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM23.TabIndex = 71;
+			this.chkVehicleMatrixCM23.Tag = "23";
+			this.chkVehicleMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM23.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM23.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM24
+			// 
+			this.chkVehicleMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM24.Location = new System.Drawing.Point(221, 31);
+			this.chkVehicleMatrixCM24.Name = "chkVehicleMatrixCM24";
+			this.chkVehicleMatrixCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM24.TabIndex = 72;
+			this.chkVehicleMatrixCM24.Tag = "24";
+			this.chkVehicleMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM24.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM24.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM25
+			// 
+			this.chkVehicleMatrixCM25.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM25.Location = new System.Drawing.Point(245, 31);
+			this.chkVehicleMatrixCM25.Name = "chkVehicleMatrixCM25";
+			this.chkVehicleMatrixCM25.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM25.TabIndex = 73;
+			this.chkVehicleMatrixCM25.Tag = "25";
+			this.chkVehicleMatrixCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM25.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM25.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM26
+			// 
+			this.chkVehicleMatrixCM26.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM26.Location = new System.Drawing.Point(269, 31);
+			this.chkVehicleMatrixCM26.Name = "chkVehicleMatrixCM26";
+			this.chkVehicleMatrixCM26.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM26.TabIndex = 74;
+			this.chkVehicleMatrixCM26.Tag = "26";
+			this.chkVehicleMatrixCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM26.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM26.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM27
+			// 
+			this.chkVehicleMatrixCM27.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM27.Location = new System.Drawing.Point(293, 31);
+			this.chkVehicleMatrixCM27.Name = "chkVehicleMatrixCM27";
+			this.chkVehicleMatrixCM27.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM27.TabIndex = 75;
+			this.chkVehicleMatrixCM27.Tag = "27";
+			this.chkVehicleMatrixCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM27.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM27.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM28
+			// 
+			this.chkVehicleMatrixCM28.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM28.Location = new System.Drawing.Point(317, 31);
+			this.chkVehicleMatrixCM28.Name = "chkVehicleMatrixCM28";
+			this.chkVehicleMatrixCM28.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM28.TabIndex = 76;
+			this.chkVehicleMatrixCM28.Tag = "28";
+			this.chkVehicleMatrixCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM28.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM28.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM29
+			// 
+			this.chkVehicleMatrixCM29.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM29.Location = new System.Drawing.Point(5, 55);
+			this.chkVehicleMatrixCM29.Name = "chkVehicleMatrixCM29";
+			this.chkVehicleMatrixCM29.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM29.TabIndex = 77;
+			this.chkVehicleMatrixCM29.Tag = "29";
+			this.chkVehicleMatrixCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM29.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM29.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM30
+			// 
+			this.chkVehicleMatrixCM30.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM30.Location = new System.Drawing.Point(29, 55);
+			this.chkVehicleMatrixCM30.Name = "chkVehicleMatrixCM30";
+			this.chkVehicleMatrixCM30.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM30.TabIndex = 78;
+			this.chkVehicleMatrixCM30.Tag = "30";
+			this.chkVehicleMatrixCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM30.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM30.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM31
+			// 
+			this.chkVehicleMatrixCM31.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM31.Location = new System.Drawing.Point(53, 55);
+			this.chkVehicleMatrixCM31.Name = "chkVehicleMatrixCM31";
+			this.chkVehicleMatrixCM31.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM31.TabIndex = 79;
+			this.chkVehicleMatrixCM31.Tag = "31";
+			this.chkVehicleMatrixCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM31.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM31.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM32
+			// 
+			this.chkVehicleMatrixCM32.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM32.Location = new System.Drawing.Point(77, 55);
+			this.chkVehicleMatrixCM32.Name = "chkVehicleMatrixCM32";
+			this.chkVehicleMatrixCM32.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM32.TabIndex = 80;
+			this.chkVehicleMatrixCM32.Tag = "32";
+			this.chkVehicleMatrixCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM32.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM32.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM33
+			// 
+			this.chkVehicleMatrixCM33.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM33.Location = new System.Drawing.Point(101, 55);
+			this.chkVehicleMatrixCM33.Name = "chkVehicleMatrixCM33";
+			this.chkVehicleMatrixCM33.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM33.TabIndex = 81;
+			this.chkVehicleMatrixCM33.Tag = "33";
+			this.chkVehicleMatrixCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM33.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM33.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM34
+			// 
+			this.chkVehicleMatrixCM34.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM34.Location = new System.Drawing.Point(125, 55);
+			this.chkVehicleMatrixCM34.Name = "chkVehicleMatrixCM34";
+			this.chkVehicleMatrixCM34.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM34.TabIndex = 82;
+			this.chkVehicleMatrixCM34.Tag = "34";
+			this.chkVehicleMatrixCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM34.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM34.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM35
+			// 
+			this.chkVehicleMatrixCM35.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM35.Location = new System.Drawing.Point(149, 55);
+			this.chkVehicleMatrixCM35.Name = "chkVehicleMatrixCM35";
+			this.chkVehicleMatrixCM35.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM35.TabIndex = 83;
+			this.chkVehicleMatrixCM35.Tag = "35";
+			this.chkVehicleMatrixCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM35.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM35.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM36
+			// 
+			this.chkVehicleMatrixCM36.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM36.Location = new System.Drawing.Point(173, 55);
+			this.chkVehicleMatrixCM36.Name = "chkVehicleMatrixCM36";
+			this.chkVehicleMatrixCM36.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM36.TabIndex = 84;
+			this.chkVehicleMatrixCM36.Tag = "36";
+			this.chkVehicleMatrixCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM36.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM36.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM37
+			// 
+			this.chkVehicleMatrixCM37.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM37.Location = new System.Drawing.Point(197, 55);
+			this.chkVehicleMatrixCM37.Name = "chkVehicleMatrixCM37";
+			this.chkVehicleMatrixCM37.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM37.TabIndex = 85;
+			this.chkVehicleMatrixCM37.Tag = "37";
+			this.chkVehicleMatrixCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM37.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM37.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM38
+			// 
+			this.chkVehicleMatrixCM38.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM38.Location = new System.Drawing.Point(221, 55);
+			this.chkVehicleMatrixCM38.Name = "chkVehicleMatrixCM38";
+			this.chkVehicleMatrixCM38.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM38.TabIndex = 86;
+			this.chkVehicleMatrixCM38.Tag = "38";
+			this.chkVehicleMatrixCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM38.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM38.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM39
+			// 
+			this.chkVehicleMatrixCM39.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM39.Location = new System.Drawing.Point(245, 55);
+			this.chkVehicleMatrixCM39.Name = "chkVehicleMatrixCM39";
+			this.chkVehicleMatrixCM39.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM39.TabIndex = 87;
+			this.chkVehicleMatrixCM39.Tag = "39";
+			this.chkVehicleMatrixCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM39.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM39.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
+			// 
+			// chkVehicleMatrixCM40
+			// 
+			this.chkVehicleMatrixCM40.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkVehicleMatrixCM40.Location = new System.Drawing.Point(269, 55);
+			this.chkVehicleMatrixCM40.Name = "chkVehicleMatrixCM40";
+			this.chkVehicleMatrixCM40.Size = new System.Drawing.Size(24, 24);
+			this.chkVehicleMatrixCM40.TabIndex = 88;
+			this.chkVehicleMatrixCM40.Tag = "40";
+			this.chkVehicleMatrixCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkVehicleMatrixCM40.UseVisualStyleBackColor = true;
+			this.chkVehicleMatrixCM40.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
 			// 
 			// lblVehicleFirewallLabel
 			// 
@@ -7559,15 +9400,6 @@
 			this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
 			this.lblVehicleFirewallLabel.Text = "Firewall:";
 			// 
-			// lblVehicleDataProcessing
-			// 
-			this.lblVehicleDataProcessing.AutoSize = true;
-			this.lblVehicleDataProcessing.Location = new System.Drawing.Point(690, 128);
-			this.lblVehicleDataProcessing.Name = "lblVehicleDataProcessing";
-			this.lblVehicleDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleDataProcessing.TabIndex = 199;
-			this.lblVehicleDataProcessing.Text = "[0]";
-			// 
 			// lblVehicleDataProcessingLabel
 			// 
 			this.lblVehicleDataProcessingLabel.AutoSize = true;
@@ -7578,15 +9410,6 @@
 			this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
 			// 
-			// lblVehicleSleaze
-			// 
-			this.lblVehicleSleaze.AutoSize = true;
-			this.lblVehicleSleaze.Location = new System.Drawing.Point(574, 128);
-			this.lblVehicleSleaze.Name = "lblVehicleSleaze";
-			this.lblVehicleSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleSleaze.TabIndex = 197;
-			this.lblVehicleSleaze.Text = "[0]";
-			// 
 			// lblVehicleSleazeLabel
 			// 
 			this.lblVehicleSleazeLabel.AutoSize = true;
@@ -7596,15 +9419,6 @@
 			this.lblVehicleSleazeLabel.TabIndex = 196;
 			this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
 			this.lblVehicleSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblVehicleAttack
-			// 
-			this.lblVehicleAttack.AutoSize = true;
-			this.lblVehicleAttack.Location = new System.Drawing.Point(488, 128);
-			this.lblVehicleAttack.Name = "lblVehicleAttack";
-			this.lblVehicleAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleAttack.TabIndex = 195;
-			this.lblVehicleAttack.Text = "[0]";
 			// 
 			// lblVehicleAttackLabel
 			// 
@@ -7797,545 +9611,6 @@
 			this.lblVehicleWeaponRangeLabel.TabIndex = 99;
 			this.lblVehicleWeaponRangeLabel.Tag = "Label_RangeHeading";
 			this.lblVehicleWeaponRangeLabel.Text = "Range";
-			// 
-			// panVehicleCM
-			// 
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM40);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM39);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM38);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM37);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM36);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM35);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM34);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM33);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM32);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM31);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM30);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM29);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM28);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM27);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM26);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM25);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM24);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM23);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM22);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM21);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM20);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM19);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM18);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM17);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM16);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM15);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM14);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM13);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM12);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM11);
-			this.panVehicleCM.Controls.Add(this.lblVehicleConditionMonitorLabel);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM10);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM9);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM8);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM7);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM6);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM5);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM4);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM3);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM2);
-			this.panVehicleCM.Controls.Add(this.chkVehicleCM1);
-			this.panVehicleCM.Location = new System.Drawing.Point(420, 479);
-			this.panVehicleCM.Name = "panVehicleCM";
-			this.panVehicleCM.Size = new System.Drawing.Size(255, 122);
-			this.panVehicleCM.TabIndex = 91;
-			this.panVehicleCM.Visible = false;
-			// 
-			// chkVehicleCM40
-			// 
-			this.chkVehicleCM40.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM40.Location = new System.Drawing.Point(219, 88);
-			this.chkVehicleCM40.Name = "chkVehicleCM40";
-			this.chkVehicleCM40.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM40.TabIndex = 48;
-			this.chkVehicleCM40.Tag = "40";
-			this.chkVehicleCM40.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM40.UseVisualStyleBackColor = true;
-			this.chkVehicleCM40.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM39
-			// 
-			this.chkVehicleCM39.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM39.Location = new System.Drawing.Point(195, 88);
-			this.chkVehicleCM39.Name = "chkVehicleCM39";
-			this.chkVehicleCM39.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM39.TabIndex = 47;
-			this.chkVehicleCM39.Tag = "39";
-			this.chkVehicleCM39.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM39.UseVisualStyleBackColor = true;
-			this.chkVehicleCM39.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM38
-			// 
-			this.chkVehicleCM38.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM38.Location = new System.Drawing.Point(171, 88);
-			this.chkVehicleCM38.Name = "chkVehicleCM38";
-			this.chkVehicleCM38.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM38.TabIndex = 46;
-			this.chkVehicleCM38.Tag = "38";
-			this.chkVehicleCM38.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM38.UseVisualStyleBackColor = true;
-			this.chkVehicleCM38.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM37
-			// 
-			this.chkVehicleCM37.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM37.Location = new System.Drawing.Point(147, 88);
-			this.chkVehicleCM37.Name = "chkVehicleCM37";
-			this.chkVehicleCM37.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM37.TabIndex = 45;
-			this.chkVehicleCM37.Tag = "37";
-			this.chkVehicleCM37.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM37.UseVisualStyleBackColor = true;
-			this.chkVehicleCM37.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM36
-			// 
-			this.chkVehicleCM36.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM36.Location = new System.Drawing.Point(123, 88);
-			this.chkVehicleCM36.Name = "chkVehicleCM36";
-			this.chkVehicleCM36.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM36.TabIndex = 44;
-			this.chkVehicleCM36.Tag = "36";
-			this.chkVehicleCM36.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM36.UseVisualStyleBackColor = true;
-			this.chkVehicleCM36.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM35
-			// 
-			this.chkVehicleCM35.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM35.Location = new System.Drawing.Point(99, 88);
-			this.chkVehicleCM35.Name = "chkVehicleCM35";
-			this.chkVehicleCM35.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM35.TabIndex = 43;
-			this.chkVehicleCM35.Tag = "35";
-			this.chkVehicleCM35.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM35.UseVisualStyleBackColor = true;
-			this.chkVehicleCM35.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM34
-			// 
-			this.chkVehicleCM34.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM34.Location = new System.Drawing.Point(75, 88);
-			this.chkVehicleCM34.Name = "chkVehicleCM34";
-			this.chkVehicleCM34.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM34.TabIndex = 42;
-			this.chkVehicleCM34.Tag = "34";
-			this.chkVehicleCM34.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM34.UseVisualStyleBackColor = true;
-			this.chkVehicleCM34.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM33
-			// 
-			this.chkVehicleCM33.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM33.Location = new System.Drawing.Point(51, 88);
-			this.chkVehicleCM33.Name = "chkVehicleCM33";
-			this.chkVehicleCM33.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM33.TabIndex = 41;
-			this.chkVehicleCM33.Tag = "33";
-			this.chkVehicleCM33.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM33.UseVisualStyleBackColor = true;
-			this.chkVehicleCM33.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM32
-			// 
-			this.chkVehicleCM32.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM32.Location = new System.Drawing.Point(27, 88);
-			this.chkVehicleCM32.Name = "chkVehicleCM32";
-			this.chkVehicleCM32.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM32.TabIndex = 40;
-			this.chkVehicleCM32.Tag = "32";
-			this.chkVehicleCM32.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM32.UseVisualStyleBackColor = true;
-			this.chkVehicleCM32.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM31
-			// 
-			this.chkVehicleCM31.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM31.Location = new System.Drawing.Point(3, 88);
-			this.chkVehicleCM31.Name = "chkVehicleCM31";
-			this.chkVehicleCM31.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM31.TabIndex = 39;
-			this.chkVehicleCM31.Tag = "31";
-			this.chkVehicleCM31.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM31.UseVisualStyleBackColor = true;
-			this.chkVehicleCM31.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM30
-			// 
-			this.chkVehicleCM30.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM30.Location = new System.Drawing.Point(219, 64);
-			this.chkVehicleCM30.Name = "chkVehicleCM30";
-			this.chkVehicleCM30.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM30.TabIndex = 38;
-			this.chkVehicleCM30.Tag = "30";
-			this.chkVehicleCM30.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM30.UseVisualStyleBackColor = true;
-			this.chkVehicleCM30.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM29
-			// 
-			this.chkVehicleCM29.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM29.Location = new System.Drawing.Point(195, 64);
-			this.chkVehicleCM29.Name = "chkVehicleCM29";
-			this.chkVehicleCM29.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM29.TabIndex = 37;
-			this.chkVehicleCM29.Tag = "29";
-			this.chkVehicleCM29.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM29.UseVisualStyleBackColor = true;
-			this.chkVehicleCM29.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM28
-			// 
-			this.chkVehicleCM28.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM28.Location = new System.Drawing.Point(171, 64);
-			this.chkVehicleCM28.Name = "chkVehicleCM28";
-			this.chkVehicleCM28.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM28.TabIndex = 36;
-			this.chkVehicleCM28.Tag = "28";
-			this.chkVehicleCM28.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM28.UseVisualStyleBackColor = true;
-			this.chkVehicleCM28.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM27
-			// 
-			this.chkVehicleCM27.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM27.Location = new System.Drawing.Point(147, 64);
-			this.chkVehicleCM27.Name = "chkVehicleCM27";
-			this.chkVehicleCM27.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM27.TabIndex = 35;
-			this.chkVehicleCM27.Tag = "27";
-			this.chkVehicleCM27.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM27.UseVisualStyleBackColor = true;
-			this.chkVehicleCM27.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM26
-			// 
-			this.chkVehicleCM26.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM26.Location = new System.Drawing.Point(123, 64);
-			this.chkVehicleCM26.Name = "chkVehicleCM26";
-			this.chkVehicleCM26.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM26.TabIndex = 34;
-			this.chkVehicleCM26.Tag = "26";
-			this.chkVehicleCM26.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM26.UseVisualStyleBackColor = true;
-			this.chkVehicleCM26.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM25
-			// 
-			this.chkVehicleCM25.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM25.Location = new System.Drawing.Point(99, 64);
-			this.chkVehicleCM25.Name = "chkVehicleCM25";
-			this.chkVehicleCM25.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM25.TabIndex = 33;
-			this.chkVehicleCM25.Tag = "25";
-			this.chkVehicleCM25.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM25.UseVisualStyleBackColor = true;
-			this.chkVehicleCM25.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM24
-			// 
-			this.chkVehicleCM24.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM24.Location = new System.Drawing.Point(75, 64);
-			this.chkVehicleCM24.Name = "chkVehicleCM24";
-			this.chkVehicleCM24.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM24.TabIndex = 32;
-			this.chkVehicleCM24.Tag = "24";
-			this.chkVehicleCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM24.UseVisualStyleBackColor = true;
-			this.chkVehicleCM24.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM23
-			// 
-			this.chkVehicleCM23.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM23.Location = new System.Drawing.Point(51, 64);
-			this.chkVehicleCM23.Name = "chkVehicleCM23";
-			this.chkVehicleCM23.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM23.TabIndex = 31;
-			this.chkVehicleCM23.Tag = "23";
-			this.chkVehicleCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM23.UseVisualStyleBackColor = true;
-			this.chkVehicleCM23.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM22
-			// 
-			this.chkVehicleCM22.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM22.Location = new System.Drawing.Point(27, 64);
-			this.chkVehicleCM22.Name = "chkVehicleCM22";
-			this.chkVehicleCM22.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM22.TabIndex = 30;
-			this.chkVehicleCM22.Tag = "22";
-			this.chkVehicleCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM22.UseVisualStyleBackColor = true;
-			this.chkVehicleCM22.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM21
-			// 
-			this.chkVehicleCM21.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM21.Location = new System.Drawing.Point(3, 64);
-			this.chkVehicleCM21.Name = "chkVehicleCM21";
-			this.chkVehicleCM21.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM21.TabIndex = 29;
-			this.chkVehicleCM21.Tag = "21";
-			this.chkVehicleCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM21.UseVisualStyleBackColor = true;
-			this.chkVehicleCM21.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM20
-			// 
-			this.chkVehicleCM20.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM20.Location = new System.Drawing.Point(219, 40);
-			this.chkVehicleCM20.Name = "chkVehicleCM20";
-			this.chkVehicleCM20.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM20.TabIndex = 28;
-			this.chkVehicleCM20.Tag = "20";
-			this.chkVehicleCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM20.UseVisualStyleBackColor = true;
-			this.chkVehicleCM20.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM19
-			// 
-			this.chkVehicleCM19.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM19.Location = new System.Drawing.Point(195, 40);
-			this.chkVehicleCM19.Name = "chkVehicleCM19";
-			this.chkVehicleCM19.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM19.TabIndex = 27;
-			this.chkVehicleCM19.Tag = "19";
-			this.chkVehicleCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM19.UseVisualStyleBackColor = true;
-			this.chkVehicleCM19.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM18
-			// 
-			this.chkVehicleCM18.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM18.Location = new System.Drawing.Point(171, 40);
-			this.chkVehicleCM18.Name = "chkVehicleCM18";
-			this.chkVehicleCM18.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM18.TabIndex = 26;
-			this.chkVehicleCM18.Tag = "18";
-			this.chkVehicleCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM18.UseVisualStyleBackColor = true;
-			this.chkVehicleCM18.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM17
-			// 
-			this.chkVehicleCM17.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM17.Location = new System.Drawing.Point(147, 40);
-			this.chkVehicleCM17.Name = "chkVehicleCM17";
-			this.chkVehicleCM17.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM17.TabIndex = 25;
-			this.chkVehicleCM17.Tag = "17";
-			this.chkVehicleCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM17.UseVisualStyleBackColor = true;
-			this.chkVehicleCM17.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM16
-			// 
-			this.chkVehicleCM16.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM16.Location = new System.Drawing.Point(123, 40);
-			this.chkVehicleCM16.Name = "chkVehicleCM16";
-			this.chkVehicleCM16.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM16.TabIndex = 24;
-			this.chkVehicleCM16.Tag = "16";
-			this.chkVehicleCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM16.UseVisualStyleBackColor = true;
-			this.chkVehicleCM16.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM15
-			// 
-			this.chkVehicleCM15.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM15.Location = new System.Drawing.Point(99, 40);
-			this.chkVehicleCM15.Name = "chkVehicleCM15";
-			this.chkVehicleCM15.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM15.TabIndex = 23;
-			this.chkVehicleCM15.Tag = "15";
-			this.chkVehicleCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM15.UseVisualStyleBackColor = true;
-			this.chkVehicleCM15.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM14
-			// 
-			this.chkVehicleCM14.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM14.Location = new System.Drawing.Point(75, 40);
-			this.chkVehicleCM14.Name = "chkVehicleCM14";
-			this.chkVehicleCM14.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM14.TabIndex = 22;
-			this.chkVehicleCM14.Tag = "14";
-			this.chkVehicleCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM14.UseVisualStyleBackColor = true;
-			this.chkVehicleCM14.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM13
-			// 
-			this.chkVehicleCM13.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM13.Location = new System.Drawing.Point(51, 40);
-			this.chkVehicleCM13.Name = "chkVehicleCM13";
-			this.chkVehicleCM13.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM13.TabIndex = 21;
-			this.chkVehicleCM13.Tag = "13";
-			this.chkVehicleCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM13.UseVisualStyleBackColor = true;
-			this.chkVehicleCM13.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM12
-			// 
-			this.chkVehicleCM12.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM12.Location = new System.Drawing.Point(27, 40);
-			this.chkVehicleCM12.Name = "chkVehicleCM12";
-			this.chkVehicleCM12.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM12.TabIndex = 20;
-			this.chkVehicleCM12.Tag = "12";
-			this.chkVehicleCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM12.UseVisualStyleBackColor = true;
-			this.chkVehicleCM12.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM11
-			// 
-			this.chkVehicleCM11.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM11.Location = new System.Drawing.Point(3, 40);
-			this.chkVehicleCM11.Name = "chkVehicleCM11";
-			this.chkVehicleCM11.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM11.TabIndex = 19;
-			this.chkVehicleCM11.Tag = "11";
-			this.chkVehicleCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM11.UseVisualStyleBackColor = true;
-			this.chkVehicleCM11.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// lblVehicleConditionMonitorLabel
-			// 
-			this.lblVehicleConditionMonitorLabel.AutoSize = true;
-			this.lblVehicleConditionMonitorLabel.Location = new System.Drawing.Point(0, 0);
-			this.lblVehicleConditionMonitorLabel.Name = "lblVehicleConditionMonitorLabel";
-			this.lblVehicleConditionMonitorLabel.Size = new System.Drawing.Size(89, 13);
-			this.lblVehicleConditionMonitorLabel.TabIndex = 18;
-			this.lblVehicleConditionMonitorLabel.Tag = "Label_ConditionMonitor";
-			this.lblVehicleConditionMonitorLabel.Text = "Condition Monitor";
-			// 
-			// chkVehicleCM10
-			// 
-			this.chkVehicleCM10.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM10.Location = new System.Drawing.Point(219, 16);
-			this.chkVehicleCM10.Name = "chkVehicleCM10";
-			this.chkVehicleCM10.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM10.TabIndex = 9;
-			this.chkVehicleCM10.Tag = "10";
-			this.chkVehicleCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM10.UseVisualStyleBackColor = true;
-			this.chkVehicleCM10.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM9
-			// 
-			this.chkVehicleCM9.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM9.Location = new System.Drawing.Point(195, 16);
-			this.chkVehicleCM9.Name = "chkVehicleCM9";
-			this.chkVehicleCM9.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM9.TabIndex = 8;
-			this.chkVehicleCM9.Tag = "9";
-			this.chkVehicleCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM9.UseVisualStyleBackColor = true;
-			this.chkVehicleCM9.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM8
-			// 
-			this.chkVehicleCM8.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM8.Location = new System.Drawing.Point(171, 16);
-			this.chkVehicleCM8.Name = "chkVehicleCM8";
-			this.chkVehicleCM8.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM8.TabIndex = 7;
-			this.chkVehicleCM8.Tag = "8";
-			this.chkVehicleCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM8.UseVisualStyleBackColor = true;
-			this.chkVehicleCM8.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM7
-			// 
-			this.chkVehicleCM7.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM7.Location = new System.Drawing.Point(147, 16);
-			this.chkVehicleCM7.Name = "chkVehicleCM7";
-			this.chkVehicleCM7.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM7.TabIndex = 6;
-			this.chkVehicleCM7.Tag = "7";
-			this.chkVehicleCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM7.UseVisualStyleBackColor = true;
-			this.chkVehicleCM7.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM6
-			// 
-			this.chkVehicleCM6.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM6.Location = new System.Drawing.Point(123, 16);
-			this.chkVehicleCM6.Name = "chkVehicleCM6";
-			this.chkVehicleCM6.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM6.TabIndex = 5;
-			this.chkVehicleCM6.Tag = "6";
-			this.chkVehicleCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM6.UseVisualStyleBackColor = true;
-			this.chkVehicleCM6.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM5
-			// 
-			this.chkVehicleCM5.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM5.Location = new System.Drawing.Point(99, 16);
-			this.chkVehicleCM5.Name = "chkVehicleCM5";
-			this.chkVehicleCM5.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM5.TabIndex = 4;
-			this.chkVehicleCM5.Tag = "5";
-			this.chkVehicleCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM5.UseVisualStyleBackColor = true;
-			this.chkVehicleCM5.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM4
-			// 
-			this.chkVehicleCM4.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM4.Location = new System.Drawing.Point(75, 16);
-			this.chkVehicleCM4.Name = "chkVehicleCM4";
-			this.chkVehicleCM4.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM4.TabIndex = 3;
-			this.chkVehicleCM4.Tag = "4";
-			this.chkVehicleCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM4.UseVisualStyleBackColor = true;
-			this.chkVehicleCM4.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM3
-			// 
-			this.chkVehicleCM3.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM3.Location = new System.Drawing.Point(51, 16);
-			this.chkVehicleCM3.Name = "chkVehicleCM3";
-			this.chkVehicleCM3.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM3.TabIndex = 2;
-			this.chkVehicleCM3.Tag = "3";
-			this.chkVehicleCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM3.UseVisualStyleBackColor = true;
-			this.chkVehicleCM3.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM2
-			// 
-			this.chkVehicleCM2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM2.Location = new System.Drawing.Point(27, 16);
-			this.chkVehicleCM2.Name = "chkVehicleCM2";
-			this.chkVehicleCM2.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM2.TabIndex = 1;
-			this.chkVehicleCM2.Tag = "2";
-			this.chkVehicleCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM2.UseVisualStyleBackColor = true;
-			this.chkVehicleCM2.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
-			// 
-			// chkVehicleCM1
-			// 
-			this.chkVehicleCM1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkVehicleCM1.Location = new System.Drawing.Point(3, 16);
-			this.chkVehicleCM1.Name = "chkVehicleCM1";
-			this.chkVehicleCM1.Size = new System.Drawing.Size(24, 24);
-			this.chkVehicleCM1.TabIndex = 0;
-			this.chkVehicleCM1.Tag = "1";
-			this.chkVehicleCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkVehicleCM1.UseVisualStyleBackColor = true;
-			this.chkVehicleCM1.CheckedChanged += new System.EventHandler(this.chkVehicleCM_CheckedChanged);
 			// 
 			// chkVehicleIncludedInWeapon
 			// 
@@ -8779,14 +10054,14 @@
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
 			this.treVehicles.Name = "treVehicles";
-			treeNode24.Name = "nodVehiclesRoot";
-			treeNode24.Tag = "Node_SelectedVehicles";
-			treeNode24.Text = "Selected Vehicles";
+			treeNode49.Name = "nodVehiclesRoot";
+			treeNode49.Tag = "Node_SelectedVehicles";
+			treeNode49.Text = "Selected Vehicles";
 			this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode49});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
-			this.treVehicles.Size = new System.Drawing.Size(403, 572);
+			this.treVehicles.Size = new System.Drawing.Size(403, 364);
 			this.treVehicles.TabIndex = 30;
 			this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
 			this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
@@ -9479,8 +10754,8 @@
 			// chtKarma
 			// 
 			this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			chartArea1.Name = "ChartArea1";
-			this.chtKarma.ChartAreas.Add(chartArea1);
+			chartArea3.Name = "ChartArea1";
+			this.chtKarma.ChartAreas.Add(chartArea3);
 			this.chtKarma.Location = new System.Drawing.Point(0, 391);
 			this.chtKarma.Name = "chtKarma";
 			this.chtKarma.Size = new System.Drawing.Size(409, 208);
@@ -9566,8 +10841,8 @@
 			// chtNuyen
 			// 
 			this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			chartArea2.Name = "ChartArea1";
-			this.chtNuyen.ChartAreas.Add(chartArea2);
+			chartArea4.Name = "ChartArea1";
+			this.chtNuyen.ChartAreas.Add(chartArea4);
 			this.chtNuyen.Location = new System.Drawing.Point(0, 391);
 			this.chtNuyen.Name = "chtNuyen";
 			this.chtNuyen.Size = new System.Drawing.Size(410, 208);
@@ -9653,6 +10928,7 @@
 			// tabCalendar
 			// 
 			this.tabCalendar.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCalendar.Controls.Add(this.cmdDeleteWeek);
 			this.tabCalendar.Controls.Add(this.cmdChangeStartWeek);
 			this.tabCalendar.Controls.Add(this.cmdEditWeek);
 			this.tabCalendar.Controls.Add(this.cmdAddWeek);
@@ -9890,11 +11166,11 @@
 			this.treImprovements.HideSelection = false;
 			this.treImprovements.Location = new System.Drawing.Point(8, 35);
 			this.treImprovements.Name = "treImprovements";
-			treeNode25.Name = "nodImprovementsRoot";
-			treeNode25.Tag = "Node_SelectedImprovements";
-			treeNode25.Text = "Selected Improvements";
+			treeNode50.Name = "nodImprovementsRoot";
+			treeNode50.Tag = "Node_SelectedImprovements";
+			treeNode50.Text = "Selected Improvements";
 			this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
+            treeNode50});
 			this.treImprovements.ShowNodeToolTips = true;
 			this.treImprovements.Size = new System.Drawing.Size(295, 573);
 			this.treImprovements.TabIndex = 81;
@@ -11863,24 +13139,17 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// lblWeaponRating
+			// cmdDeleteWeek
 			// 
-			this.lblWeaponRating.AutoSize = true;
-			this.lblWeaponRating.Location = new System.Drawing.Point(371, 195);
-			this.lblWeaponRating.Name = "lblWeaponRating";
-			this.lblWeaponRating.Size = new System.Drawing.Size(44, 13);
-			this.lblWeaponRating.TabIndex = 177;
-			this.lblWeaponRating.Text = "[Rating]";
-			// 
-			// lblWeaponRatingLabel
-			// 
-			this.lblWeaponRatingLabel.AutoSize = true;
-			this.lblWeaponRatingLabel.Location = new System.Drawing.Point(308, 195);
-			this.lblWeaponRatingLabel.Name = "lblWeaponRatingLabel";
-			this.lblWeaponRatingLabel.Size = new System.Drawing.Size(41, 13);
-			this.lblWeaponRatingLabel.TabIndex = 176;
-			this.lblWeaponRatingLabel.Tag = "Label_Rating";
-			this.lblWeaponRatingLabel.Text = "Rating:";
+			this.cmdDeleteWeek.AutoSize = true;
+			this.cmdDeleteWeek.Location = new System.Drawing.Point(186, 6);
+			this.cmdDeleteWeek.Name = "cmdDeleteWeek";
+			this.cmdDeleteWeek.Size = new System.Drawing.Size(83, 23);
+			this.cmdDeleteWeek.TabIndex = 5;
+			this.cmdDeleteWeek.Tag = "Button_DeleteWeek";
+			this.cmdDeleteWeek.Text = "Delete Week";
+			this.cmdDeleteWeek.UseVisualStyleBackColor = true;
+			this.cmdDeleteWeek.Click += new System.EventHandler(this.cmdDeleteWeek_Click);
 			// 
 			// frmCareer
 			// 
@@ -11941,6 +13210,8 @@
 			this.tabInitiation.PerformLayout();
 			this.tabCyberware.ResumeLayout(false);
 			this.tabCyberware.PerformLayout();
+			this.tabCyberwareCM.ResumeLayout(false);
+			this.tabCyberwareMatrixCM.ResumeLayout(false);
 			this.cmsCyberware.ResumeLayout(false);
 			this.cmsDeleteCyberware.ResumeLayout(false);
 			this.tabStreetGear.ResumeLayout(false);
@@ -11966,7 +13237,8 @@
 			this.tabVehicles.ResumeLayout(false);
 			this.tabVehicles.PerformLayout();
 			this.panVehicleCM.ResumeLayout(false);
-			this.panVehicleCM.PerformLayout();
+			this.tabVehiclePhysicalCM.ResumeLayout(false);
+			this.tabVehicleMatrixCM.ResumeLayout(false);
 			this.cmsVehicle.ResumeLayout(false);
 			this.cmdVehicleAmmoExpense.ResumeLayout(false);
 			this.cmsDeleteVehicle.ResumeLayout(false);
@@ -12482,48 +13754,6 @@
 		private System.Windows.Forms.Label lblStunCMLabel;
 		private System.Windows.Forms.Label lblPhysicalCMLabel;
 		private System.Windows.Forms.TabPage tabConditionMonitor;
-		private System.Windows.Forms.Panel panVehicleCM;
-		private System.Windows.Forms.CheckBox chkVehicleCM40;
-		private System.Windows.Forms.CheckBox chkVehicleCM39;
-		private System.Windows.Forms.CheckBox chkVehicleCM38;
-		private System.Windows.Forms.CheckBox chkVehicleCM37;
-		private System.Windows.Forms.CheckBox chkVehicleCM36;
-		private System.Windows.Forms.CheckBox chkVehicleCM35;
-		private System.Windows.Forms.CheckBox chkVehicleCM34;
-		private System.Windows.Forms.CheckBox chkVehicleCM33;
-		private System.Windows.Forms.CheckBox chkVehicleCM32;
-		private System.Windows.Forms.CheckBox chkVehicleCM31;
-		private System.Windows.Forms.CheckBox chkVehicleCM30;
-		private System.Windows.Forms.CheckBox chkVehicleCM29;
-		private System.Windows.Forms.CheckBox chkVehicleCM28;
-		private System.Windows.Forms.CheckBox chkVehicleCM27;
-		private System.Windows.Forms.CheckBox chkVehicleCM26;
-		private System.Windows.Forms.CheckBox chkVehicleCM25;
-		private System.Windows.Forms.CheckBox chkVehicleCM24;
-		private System.Windows.Forms.CheckBox chkVehicleCM23;
-		private System.Windows.Forms.CheckBox chkVehicleCM22;
-		private System.Windows.Forms.CheckBox chkVehicleCM21;
-		private System.Windows.Forms.CheckBox chkVehicleCM20;
-		private System.Windows.Forms.CheckBox chkVehicleCM19;
-		private System.Windows.Forms.CheckBox chkVehicleCM18;
-		private System.Windows.Forms.CheckBox chkVehicleCM17;
-		private System.Windows.Forms.CheckBox chkVehicleCM16;
-		private System.Windows.Forms.CheckBox chkVehicleCM15;
-		private System.Windows.Forms.CheckBox chkVehicleCM14;
-		private System.Windows.Forms.CheckBox chkVehicleCM13;
-		private System.Windows.Forms.CheckBox chkVehicleCM12;
-		private System.Windows.Forms.CheckBox chkVehicleCM11;
-		private System.Windows.Forms.Label lblVehicleConditionMonitorLabel;
-		private System.Windows.Forms.CheckBox chkVehicleCM10;
-		private System.Windows.Forms.CheckBox chkVehicleCM9;
-		private System.Windows.Forms.CheckBox chkVehicleCM8;
-		private System.Windows.Forms.CheckBox chkVehicleCM7;
-		private System.Windows.Forms.CheckBox chkVehicleCM6;
-		private System.Windows.Forms.CheckBox chkVehicleCM5;
-		private System.Windows.Forms.CheckBox chkVehicleCM4;
-		private System.Windows.Forms.CheckBox chkVehicleCM3;
-		private System.Windows.Forms.CheckBox chkVehicleCM2;
-		private System.Windows.Forms.CheckBox chkVehicleCM1;
 		private System.Windows.Forms.Label lblDrainAttributesValue;
 		private System.Windows.Forms.Label lblWeaponRangeExtreme;
 		private System.Windows.Forms.Label lblWeaponRangeLong;
@@ -12924,41 +14154,21 @@
         private System.Windows.Forms.Label lblTargetLabel;
         private System.Windows.Forms.Label lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
-        private System.Windows.Forms.Label lblGearFirewall;
-        private System.Windows.Forms.Label lblGearFirewallLabel;
-        private System.Windows.Forms.Label lblGearDataProcessing;
-        private System.Windows.Forms.Label lblGearDataProcessingLabel;
-        private System.Windows.Forms.Label lblGearSleaze;
-        private System.Windows.Forms.Label lblGearSleazeLabel;
-        private System.Windows.Forms.Label lblGearAttack;
-        private System.Windows.Forms.Label lblGearAttackLabel;
         private System.Windows.Forms.Label lblGearDeviceRating;
         private System.Windows.Forms.Label lblGearDeviceRatingLabel;
-        private System.Windows.Forms.Label lblCyberFirewall;
         private System.Windows.Forms.Label lblCyberFirewallLabel;
-        private System.Windows.Forms.Label lblCyberDataProcessing;
         private System.Windows.Forms.Label lblCyberDataProcessingLabel;
-        private System.Windows.Forms.Label lblCyberSleaze;
         private System.Windows.Forms.Label lblCyberSleazeLabel;
-        private System.Windows.Forms.Label lblCyberAttack;
         private System.Windows.Forms.Label lblCyberAttackLabel;
         private System.Windows.Forms.Label lblCyberDeviceRating;
         private System.Windows.Forms.Label lblCyberDeviceRatingLabel;
-        private System.Windows.Forms.Label lblVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleFirewallLabel;
-        private System.Windows.Forms.Label lblVehicleDataProcessing;
         private System.Windows.Forms.Label lblVehicleDataProcessingLabel;
-        private System.Windows.Forms.Label lblVehicleSleaze;
         private System.Windows.Forms.Label lblVehicleSleazeLabel;
-        private System.Windows.Forms.Label lblVehicleAttack;
         private System.Windows.Forms.Label lblVehicleAttackLabel;
-        private System.Windows.Forms.Label lblWeaponFirewall;
         private System.Windows.Forms.Label lblWeaponFirewallLabel;
-        private System.Windows.Forms.Label lblWeaponDataProcessing;
         private System.Windows.Forms.Label lblWeaponDataProcessingLabel;
-        private System.Windows.Forms.Label lblWeaponSleaze;
         private System.Windows.Forms.Label lblWeaponSleazeLabel;
-        private System.Windows.Forms.Label lblWeaponAttack;
         private System.Windows.Forms.Label lblWeaponAttackLabel;
         private System.Windows.Forms.Label lblWeaponDeviceRating;
         private System.Windows.Forms.Label lblWeaponDeviceRatingLabel;
@@ -13004,6 +14214,157 @@
         private System.Windows.Forms.FlowLayoutPanel panContacts;
 		private System.Windows.Forms.Label lblWeaponRating;
 		private System.Windows.Forms.Label lblWeaponRatingLabel;
+		private System.Windows.Forms.TabControl panVehicleCM;
+		private System.Windows.Forms.TabPage tabVehicleMatrixCM;
+		private System.Windows.Forms.TabPage tabVehiclePhysicalCM;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM40;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM1;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM39;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM2;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM38;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM3;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM37;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM4;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM36;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM5;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM35;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM6;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM34;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM7;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM33;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM8;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM32;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM9;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM31;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM10;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM30;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM11;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM29;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM12;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM28;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM13;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM27;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM14;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM26;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM15;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM25;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM16;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM24;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM17;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM23;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM18;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM22;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM19;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM21;
+		private System.Windows.Forms.CheckBox chkVehiclePhysicalCM20;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM1;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM2;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM3;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM4;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM5;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM6;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM7;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM8;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM9;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM10;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM11;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM12;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM13;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM14;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM15;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM16;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM17;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM18;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM19;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM20;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM21;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM22;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM23;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM24;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM25;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM26;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM27;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM28;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM29;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM30;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM31;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM32;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM33;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM34;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM35;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM36;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM37;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM38;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM39;
+		private System.Windows.Forms.CheckBox chkVehicleMatrixCM40;
+		private System.Windows.Forms.TabControl tabCyberwareCM;
+		private System.Windows.Forms.TabPage tabCyberwareMatrixCM;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM1;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM2;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM3;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM4;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM5;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM6;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM7;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM8;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM9;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM10;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM11;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM12;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM13;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM14;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM15;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM16;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM17;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM18;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM19;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM20;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM21;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM22;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM23;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM24;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM25;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM26;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM27;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM28;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM29;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM30;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM31;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM32;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM33;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM34;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM35;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM36;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM37;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM38;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM39;
+		private System.Windows.Forms.CheckBox chkCyberwareMatrixCM40;
+		private System.Windows.Forms.ComboBox cboGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboGearFirewall;
+		private System.Windows.Forms.ComboBox cboGearSleaze;
+		private System.Windows.Forms.ComboBox cboGearAttack;
+		private System.Windows.Forms.Label lblGearFirewallLabel;
+		private System.Windows.Forms.Label lblGearDataProcessingLabel;
+		private System.Windows.Forms.Label lblGearSleazeLabel;
+		private System.Windows.Forms.Label lblGearAttackLabel;
+		private System.Windows.Forms.ComboBox cboVehicleGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboVehicleGearFirewall;
+		private System.Windows.Forms.ComboBox cboVehicleGearSleaze;
+		private System.Windows.Forms.ComboBox cboVehicleGearAttack;
+		private System.Windows.Forms.ComboBox cboWeaponGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboWeaponGearFirewall;
+		private System.Windows.Forms.ComboBox cboWeaponGearSleaze;
+		private System.Windows.Forms.ComboBox cboWeaponGearAttack;
+		private System.Windows.Forms.ComboBox cboCyberwareGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboCyberwareGearFirewall;
+		private System.Windows.Forms.ComboBox cboCyberwareGearSleaze;
+		private System.Windows.Forms.ComboBox cboCyberwareGearAttack;
+		private System.Windows.Forms.Button cmdImproveDEP;
+		internal System.Windows.Forms.Label lblDEP;
+		internal System.Windows.Forms.Label lblDEPAug;
+		internal System.Windows.Forms.Label lblDEPMetatype;
+		internal System.Windows.Forms.Label lblDEPLabel;
+		private System.Windows.Forms.Button cmdDeleteWeek;
 	}
 }
 
