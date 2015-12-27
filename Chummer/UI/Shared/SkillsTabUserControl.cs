@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -52,29 +53,41 @@ namespace Chummer.UI.Shared
 			if (!(_character != null && _loadCalled)) return;
 
 			_initialized = true;
-
+			Stopwatch sw = Stopwatch.StartNew();
+			Stopwatch parts = Stopwatch.StartNew();
 			//Keep everything visible until ready to display everything. This 
 			//seems to prevent redrawing everything each time anything is added
 			//Not benched, but should be faster
 
 			//Might also be useless horseshit, 2 lines
 
-			Visible = false;
+			//Visible = false;
+			this.SuspendLayout();
 			MakeSkillDisplays();
 
+			parts.TaskEnd("MakeSkillDisplay()");
 			_dropDownList = GenerateDropdownFilter();
+
+			parts.TaskEnd("GenerateDropDown()");
+
 			cboDisplayFilter.DataSource = _dropDownList;
 			cboDisplayFilter.ValueMember = "Item2";
 			cboDisplayFilter.DisplayMember = "Item1";
 			cboDisplayFilter.SelectedIndex = 0;
 			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
 
+			parts.TaskEnd("_ddl databind");
+
 			_skills.ChildPropertyChanged += ChildPropertyChanged;
 			_groups.ChildPropertyChanged += ChildPropertyChanged;
 
-			Visible = true;
+			//Visible = true;
+			this.ResumeLayout();
+			parts.TaskEnd("visible");
 			Panel1_Resize(null, null);
-			
+			parts.TaskEnd("resize");
+			sw.Stop();
+			Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 			//this.Update();
 			//this.ResumeLayout(true);
 			//this.PerformLayout();
@@ -123,12 +136,21 @@ namespace Chummer.UI.Shared
 
 		private void MakeSkillDisplays()
 		{
+			Stopwatch sw = Stopwatch.StartNew();
 			_groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
 				Width = 255
 			};
+			sw.Stop();
+			Debug.WriteLine("_groups in {0} ms", sw.Elapsed.TotalMilliseconds);
+			sw.Restart();
+
 			splitSkills.Panel1.Controls.Add(_groups);
+
+			sw.Stop();
+			Debug.WriteLine("Added _groups in {0} ms", sw.Elapsed.TotalMilliseconds);
+			sw.Restart();
 
 			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
@@ -136,7 +158,15 @@ namespace Chummer.UI.Shared
 				Width = 565
 			};
 
+			sw.Stop();
+			Debug.WriteLine("_skills in {0} ms", sw.Elapsed.TotalMilliseconds);
+			sw.Restart();
+
 			splitSkills.Panel1.Controls.Add(_skills);
+
+			sw.Stop();
+			Debug.WriteLine("Added _skills in {0} ms", sw.Elapsed.TotalMilliseconds);
+			
 		}
 
 
