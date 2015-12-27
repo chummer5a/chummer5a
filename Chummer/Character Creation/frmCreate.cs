@@ -21547,50 +21547,50 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSkill in objXmlKit.SelectNodes("knowledgeskills/skill"))
                 {
-                    int i = panKnowledgeSkills.Controls.Count;
-                    Skill objSkill = new Skill(_objCharacter);
-                    objSkill.Name = objXmlSkill["name"].InnerText;
+     //               int i = panKnowledgeSkills.Controls.Count;
+     //               Skill objSkill = new Skill(_objCharacter);
+     //               objSkill.Name = objXmlSkill["name"].InnerText;
 
-                    SkillControl objSkillControl = new SkillControl();
-                    objSkillControl.SkillObject = objSkill;
+     //               SkillControl objSkillControl = new SkillControl();
+     //               objSkillControl.SkillObject = objSkill;
 
-                    // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                    objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
+     //               // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+     //               objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
+     //               objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+     //               objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
 
-                    objSkillControl.KnowledgeSkill = true;
-                    objSkillControl.AllowDelete = true;
+     //               objSkillControl.KnowledgeSkill = true;
+     //               objSkillControl.AllowDelete = true;
 
-					if (_objCharacter.IgnoreRules)
-					{
-						objSkillControl.SkillRatingMaximum = 12;
-					}
-					else
-					{
-						objSkillControl.SkillRatingMaximum = 6;
-					}
-					// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-					objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
-                    panKnowledgeSkills.Controls.Add(objSkillControl);
+					//if (_objCharacter.IgnoreRules)
+					//{
+					//	objSkillControl.SkillRatingMaximum = 12;
+					//}
+					//else
+					//{
+					//	objSkillControl.SkillRatingMaximum = 6;
+					//}
+					//// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+					//objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+     //               panKnowledgeSkills.Controls.Add(objSkillControl);
 
-                    objSkillControl.SkillName = objXmlSkill["name"].InnerText;
+     //               objSkillControl.SkillName = objXmlSkill["name"].InnerText;
 
-                    // Make sure it's not going above the maximum number.
-                    if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
-                        objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
-                    else
-                        objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
+     //               // Make sure it's not going above the maximum number.
+     //               if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
+     //                   objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
+     //               else
+     //                   objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
 
-                    if (objXmlSkill["spec"] != null)
-                        objSkillControl.SkillSpec = objXmlSkill["spec"].InnerText;
-                    else
-                        objSkillControl.SkillSpec = "";
+     //               if (objXmlSkill["spec"] != null)
+     //                   objSkillControl.SkillSpec = objXmlSkill["spec"].InnerText;
+     //               else
+     //                   objSkillControl.SkillSpec = "";
 
-                    if (objXmlSkill["category"] != null)
-                        objSkillControl.SkillCategory = objXmlSkill["category"].InnerText;
+     //               if (objXmlSkill["category"] != null)
+     //                   objSkillControl.SkillCategory = objXmlSkill["category"].InnerText;
 
-                    _objCharacter.Skills.Add(objSkill);
+     //               _objCharacter.Skills.Add(objSkill);
                 }
             }
 

@@ -248,6 +248,12 @@
       <DependentUpon>frmSkillTest.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
+    <Compile Include="UI\Shared\KnowledgeSkillControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\KnowledgeSkillControl.Designer.cs">
+      <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\SkillControl2.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -816,6 +822,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\frmSkillTest.resx">
       <DependentUpon>frmSkillTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\KnowledgeSkillControl.resx">
+      <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\SkillControl2.resx">
       <DependentUpon>SkillControl2.cs</DependentUpon>

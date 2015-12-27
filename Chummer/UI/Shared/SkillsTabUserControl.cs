@@ -18,6 +18,7 @@ namespace Chummer.UI.Shared
 
 		private SkillsDisplay<Skill> _skills;
 		private SkillsDisplay<SkillGroup> _groups;
+		private SkillsDisplay<KnowledgeSkill> _knoSkills; 
 
 		public SkillsTabUserControl()
 		{
@@ -143,15 +144,11 @@ namespace Chummer.UI.Shared
 				Location = new Point(0, 15),
 				Width = 255
 			};
-			sw.Stop();
-			Debug.WriteLine("_groups in {0} ms", sw.Elapsed.TotalMilliseconds);
-			sw.Restart();
+			sw.TaskEnd("_groups");
 
 			splitSkills.Panel1.Controls.Add(_groups);
 
-			sw.Stop();
-			Debug.WriteLine("Added _groups in {0} ms", sw.Elapsed.TotalMilliseconds);
-			sw.Restart();
+			sw.TaskEnd("_group add");
 
 			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
@@ -159,14 +156,20 @@ namespace Chummer.UI.Shared
 				Width = 565
 			};
 
-			sw.Stop();
-			Debug.WriteLine("_skills in {0} ms", sw.Elapsed.TotalMilliseconds);
-			sw.Restart();
+			sw.TaskEnd("_skills");
 
 			splitSkills.Panel1.Controls.Add(_skills);
 
-			sw.Stop();
-			Debug.WriteLine("Added _skills in {0} ms", sw.Elapsed.TotalMilliseconds);
+			sw.TaskEnd("_skills add");
+
+			_knoSkills = new SkillsDisplay<KnowledgeSkill>(_character.KnowledgeSkills,
+				knoSkill => new KnowledgeSkillControl(knoSkill))
+			{
+				Location = new Point(3, 50),
+				Width = splitSkills.Panel2.Width - 6,
+			};
+
+			splitSkills.Panel2.Controls.Add(_knoSkills);
 			
 		}
 
@@ -199,6 +202,11 @@ namespace Chummer.UI.Shared
 			XmlNode node =
 				document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 			ObjCharacter.Skills.Add(new ExoticSkill(ObjCharacter, node));
+		}
+
+		private void btnKnowledge_Click(object sender, EventArgs e)
+		{
+			ObjCharacter.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
 	}
 }

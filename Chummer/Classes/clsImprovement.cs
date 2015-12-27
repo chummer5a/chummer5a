@@ -2011,7 +2011,7 @@ namespace Chummer
 						String name;
 						if (bonusNode.TryGetField("name", out name))
 						{
-							objNSkill.Name = name;
+							//objNSkill.Name = name;
 						}
 						if (bonusNode["options"] != null)
 						{

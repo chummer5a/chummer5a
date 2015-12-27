@@ -128,6 +128,8 @@ namespace Chummer.Skills
 		{
 			if(skill.SkillGroupObject != null) return skill.SkillGroupObject;
 
+			if (skill.SkillGroup == null) return null;
+
 			foreach (SkillGroup skillGroup in skill.CharacterObject.SkillGroups)
 			{
 				if (skillGroup._groupName == skill.SkillGroup)

@@ -5683,11 +5683,12 @@ namespace Chummer
             }
         }
 
-	    /// <summary>
-	    /// Skills (Active and Knowledge).
-	    /// </summary>
-	    public BindingList<Skill> Skills { get; set; }
+		/// <summary>
+		/// Active Skills
+		/// </summary>
+		public BindingList<Skill> Skills { get; set; } 
 
+		public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
 
 	    /// <summary>
 		/// Skill Groups.

@@ -188,7 +188,7 @@ namespace Chummer.Skills
 		#endregion
 
 		private readonly SkillGroup _skillGroup;
-		protected readonly CharacterAttrib UsedAttribute;
+		protected CharacterAttrib UsedAttribute;
 		private readonly Guid _objId;
 		private readonly Character _character;
 		protected readonly bool _default;
@@ -261,11 +261,6 @@ namespace Chummer.Skills
 		public virtual string Name
 		{
 			get { return _name; }
-			set
-			{
-				throw new InvalidOperationException("Name cannot be set on a standart skill");
-				_name = value;
-			}
 		} //I
 
 		//TODO RENAME DESCRIPTIVE

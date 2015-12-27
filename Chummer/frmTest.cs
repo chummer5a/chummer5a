@@ -813,7 +813,7 @@ namespace Chummer
 							//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 							//	objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							//objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
-							objExotic.Name = objXmlSkill.InnerText;
+							//objExotic.Name = objXmlSkill.InnerText;
 							_objCharacter.Skills.Add(objExotic);
 						}
 						else
@@ -852,22 +852,22 @@ namespace Chummer
 					//}
 
 					// Set the Knowledge Skill Ratings for the Critter.
-					foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
-					{
-						Skill objKnowledge = new Skill(_objCharacter);
-						objKnowledge.Name = objXmlSkill.InnerText;
-						objKnowledge.KnowledgeSkill = true;
-						if (objXmlSkill.Attributes["spec"] != null)
-                        {
-                            //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
-                            //objKnowledge.Specializations.Add(objSpec);
-                        }
-						objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
-						//if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
-						//	objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-						//objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
-						_objCharacter.Skills.Add(objKnowledge);
-					}
+					//foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
+					//{
+					//	Skill objKnowledge = new Skill(_objCharacter);
+					//	objKnowledge.Name = objXmlSkill.InnerText;
+					//	objKnowledge.KnowledgeSkill = true;
+					//	if (objXmlSkill.Attributes["spec"] != null)
+     //                   {
+     //                       //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
+     //                       //objKnowledge.Specializations.Add(objSpec);
+     //                   }
+					//	objKnowledge.SkillCategory = objXmlSkill.Attributes["category"].InnerText;
+					//	//if (Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText) > 6)
+					//	//	objKnowledge.RatingMaximum = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+					//	//objKnowledge.Rating = Convert.ToInt32(objXmlSkill.Attributes["rating"].InnerText);
+					//	_objCharacter.Skills.Add(objKnowledge);
+					//}
 
 					// If this is a Critter with a Force (which dictates their Skill Rating/Maximum Skill Rating), set their Skill Rating Maximums.
 					if (intForce > 0)

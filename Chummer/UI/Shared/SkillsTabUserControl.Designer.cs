@@ -29,11 +29,13 @@
 		private void InitializeComponent()
 		{
 			this.splitSkills = new System.Windows.Forms.SplitContainer();
+			this.btnExotic = new System.Windows.Forms.Button();
 			this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.btnExotic = new System.Windows.Forms.Button();
+			this.btnKnowledge = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
+			this.splitSkills.Panel2.SuspendLayout();
 			this.splitSkills.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -56,9 +58,20 @@
 			// splitSkills.Panel2
 			// 
 			this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel2.Controls.Add(this.btnKnowledge);
 			this.splitSkills.Size = new System.Drawing.Size(836, 611);
 			this.splitSkills.SplitterDistance = 435;
 			this.splitSkills.TabIndex = 0;
+			// 
+			// btnExotic
+			// 
+			this.btnExotic.Location = new System.Drawing.Point(744, 3);
+			this.btnExotic.Name = "btnExotic";
+			this.btnExotic.Size = new System.Drawing.Size(89, 23);
+			this.btnExotic.TabIndex = 2;
+			this.btnExotic.Text = "Add Exotic Skill";
+			this.btnExotic.UseVisualStyleBackColor = true;
+			this.btnExotic.Click += new System.EventHandler(this.btnExotic_Click);
 			// 
 			// cboDisplayFilter
 			// 
@@ -80,15 +93,15 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Skill Groups";
 			// 
-			// btnExotic
+			// btnKnowledge
 			// 
-			this.btnExotic.Location = new System.Drawing.Point(744, 3);
-			this.btnExotic.Name = "btnExotic";
-			this.btnExotic.Size = new System.Drawing.Size(89, 23);
-			this.btnExotic.TabIndex = 2;
-			this.btnExotic.Text = "Add Exotic Skill";
-			this.btnExotic.UseVisualStyleBackColor = true;
-			this.btnExotic.Click += new System.EventHandler(this.btnExotic_Click);
+			this.btnKnowledge.Location = new System.Drawing.Point(3, 21);
+			this.btnKnowledge.Name = "btnKnowledge";
+			this.btnKnowledge.Size = new System.Drawing.Size(75, 23);
+			this.btnKnowledge.TabIndex = 0;
+			this.btnKnowledge.Text = "button1";
+			this.btnKnowledge.UseVisualStyleBackColor = true;
+			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
 			// 
 			// SkillsTabUserControl
 			// 
@@ -100,6 +113,7 @@
 			this.Load += new System.EventHandler(this.SkillsTabUserControl_Load);
 			this.splitSkills.Panel1.ResumeLayout(false);
 			this.splitSkills.Panel1.PerformLayout();
+			this.splitSkills.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).EndInit();
 			this.splitSkills.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -112,5 +126,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox cboDisplayFilter;
 		private System.Windows.Forms.Button btnExotic;
+		private System.Windows.Forms.Button btnKnowledge;
 	}
 }

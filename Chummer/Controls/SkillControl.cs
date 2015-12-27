@@ -348,7 +348,7 @@ namespace Chummer
 		{
 			if (_lockKnowledge) return;
 
-			_objSkill.Name = cboSkillName.Text;
+			//_objSkill.Name = cboSkillName.Text;
 
 			XmlDocument objXmlDocument = new XmlDocument();
 			objXmlDocument = XmlManager.Instance.Load("skills.xml");
@@ -375,7 +375,7 @@ namespace Chummer
 		
 		private void cboSkillName_TextChanged(object sender, EventArgs e)
 		{
-			_objSkill.Name = cboSkillName.Text;
+			//_objSkill.Name = cboSkillName.Text;
 			
 			RefreshControl();
 			
@@ -633,7 +633,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.Name = value;
+				//_objSkill.Name = value;
 				lblSkillName.Text = _objSkill.GetDisplayName();
 
 				if (!KnowledgeSkill)
