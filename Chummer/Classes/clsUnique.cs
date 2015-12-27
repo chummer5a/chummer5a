@@ -166,7 +166,7 @@ namespace Chummer
             {
                 _intBase = value;
 				OnPropertyChanged();
-			}
+            }
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Chummer
             {
                 _intKarma = value;
 				OnPropertyChanged();
-			}
+            }
         }
 
         /// <summary>
@@ -592,8 +592,8 @@ namespace Chummer
 				if (intReturn > TotalAugmentedMaximum)
 					intReturn = TotalAugmentedMaximum;
 
-				// An CharacterAttribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
-				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")))
+				// An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
+				if (_objCharacter.CritterEnabled || _strAbbrev == "EDG" || _intMetatypeMax == 0 || (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES")) || (_objCharacter.MetatypeCategory != "A.I." && _strAbbrev == "DEP"))
 				{
 					if (intReturn < 0)
 						return 0;
@@ -629,6 +629,15 @@ namespace Chummer
 				{
 					if (intReturn < 1)
 						intReturn = 1;
+				}
+
+				if	(
+					(_strAbbrev == "MAG" && !(_objCharacter.AdeptEnabled || _objCharacter.MagicianEnabled)) || 
+					(_strAbbrev == "RES" && !_objCharacter.TechnomancerEnabled) || 
+					(_strAbbrev == "DEP" && !(_objCharacter.Metatype == "A.I."))
+					)
+				{
+					intReturn = 0;
 				}
 
 				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
@@ -1179,6 +1188,35 @@ namespace Chummer
 					objWeapons.Add(objGearWeapon);
 
 					_guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+				}
+			}
+
+			if (objXmlQuality.InnerXml.Contains("<naturalweapons>"))
+            {
+				foreach (XmlNode objXmlNaturalWeapon in objXmlQuality["naturalweapons"].SelectNodes("naturalweapon"))
+				{
+					TreeNode objGearWeaponNode = new TreeNode();
+					Weapon objWeapon = new Weapon(_objCharacter);
+					objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+					objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+					objWeapon.WeaponType = "Melee";
+					objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+					objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
+					objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+					objWeapon.Mode = "0";
+					objWeapon.RC = "0";
+					objWeapon.Concealability = 0;
+					objWeapon.Avail = "0";
+					objWeapon.Cost = 0;
+					objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+					objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+					objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+					objGearWeaponNode.ForeColor = SystemColors.GrayText;
+					objGearWeaponNode.Text = objWeapon.Name;
+					objGearWeaponNode.Tag = objWeapon.InternalId;
+					objWeaponNodes.Add(objGearWeaponNode);
+
+					_objCharacter.Weapons.Add(objWeapon);
 				}
 			}
 
@@ -3894,7 +3932,7 @@ namespace Chummer
 			}
 		}
 
-		
+
 		#endregion
 
 		#region Methods
@@ -5102,9 +5140,9 @@ namespace Chummer
 						decimal decDV = Convert.ToDecimal(nav.Evaluate(xprDV).ToString());
 						decDV = Math.Floor(decDV);
 						int intDV = Convert.ToInt32(decDV);
-						// Drain cannot be lower than 1.
-						if (intDV < 1)
-							intDV = 1;
+						// Drain cannot be lower than 2.
+						if (intDV < 2)
+							intDV = 2;
 						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
 					}
 				}

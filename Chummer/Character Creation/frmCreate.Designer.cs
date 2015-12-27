@@ -1,4 +1,6 @@
-﻿namespace Chummer
+﻿using System;
+
+namespace Chummer
 {
     partial class frmCreate
     {
@@ -317,6 +319,11 @@
 			this.lblMetatype = new System.Windows.Forms.Label();
 			this.lblMetatypeLabel = new System.Windows.Forms.Label();
 			this.panAttributes = new System.Windows.Forms.Panel();
+			this.nudKDEP = new System.Windows.Forms.NumericUpDown();
+			this.lblDEPAug = new System.Windows.Forms.Label();
+			this.lblDEPMetatype = new System.Windows.Forms.Label();
+			this.nudDEP = new System.Windows.Forms.NumericUpDown();
+			this.lblDEPLabel = new System.Windows.Forms.Label();
 			this.nudKRES = new System.Windows.Forms.NumericUpDown();
 			this.nudKMAG = new System.Windows.Forms.NumericUpDown();
 			this.nudKEDG = new System.Windows.Forms.NumericUpDown();
@@ -661,13 +668,13 @@
 			this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
 			this.cmdAddWeapon = new SplitButton();
 			this.tabGear = new System.Windows.Forms.TabPage();
-			this.lblGearFirewall = new System.Windows.Forms.Label();
+			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-			this.lblGearDataProcessing = new System.Windows.Forms.Label();
 			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblGearSleaze = new System.Windows.Forms.Label();
 			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-			this.lblGearAttack = new System.Windows.Forms.Label();
 			this.lblGearAttackLabel = new System.Windows.Forms.Label();
 			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -708,13 +715,13 @@
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
-			this.lblVehicleFirewall = new System.Windows.Forms.Label();
+			this.cboVehicleGearDataProcessing = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearFirewall = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearSleaze = new System.Windows.Forms.ComboBox();
+			this.cboVehicleGearAttack = new System.Windows.Forms.ComboBox();
 			this.lblVehicleFirewallLabel = new System.Windows.Forms.Label();
-			this.lblVehicleDataProcessing = new System.Windows.Forms.Label();
 			this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
-			this.lblVehicleSleaze = new System.Windows.Forms.Label();
 			this.lblVehicleSleazeLabel = new System.Windows.Forms.Label();
-			this.lblVehicleAttack = new System.Windows.Forms.Label();
 			this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeExtreme = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponRangeLong = new System.Windows.Forms.Label();
@@ -777,7 +784,7 @@
 			this.treVehicles = new System.Windows.Forms.TreeView();
 			this.cmdAddVehicle = new SplitButton();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
-			this.chkAutoBackstory = new System.Windows.Forms.CheckBox();
+			this.btnCreateBackstory = new System.Windows.Forms.Button();
 			this.lblPublicAwareTotal = new System.Windows.Forms.Label();
 			this.lblNotorietyTotal = new System.Windows.Forms.Label();
 			this.lblStreetCredTotal = new System.Windows.Forms.Label();
@@ -939,6 +946,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).BeginInit();
 			this.panAttributes.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).BeginInit();
@@ -1027,8 +1036,8 @@
 			// 
 			this.tssBPLabel.Name = "tssBPLabel";
 			this.tssBPLabel.Size = new System.Drawing.Size(24, 19);
-			this.tssBPLabel.Tag = "Label_BP";
-			this.tssBPLabel.Text = "BP:";
+			this.tssBPLabel.Tag = "Label_Karma";
+			this.tssBPLabel.Text = "Karma:";
 			// 
 			// tssBP
 			// 
@@ -1041,8 +1050,8 @@
 			// 
 			this.tssBPRemainLabel.Name = "tssBPRemainLabel";
 			this.tssBPRemainLabel.Size = new System.Drawing.Size(84, 19);
-			this.tssBPRemainLabel.Tag = "Label_BPRemaining";
-			this.tssBPRemainLabel.Text = "BP Remaining:";
+			this.tssBPRemainLabel.Tag = "Label_KarmaRemaining";
+			this.tssBPRemainLabel.Text = "Karma Remaining:";
 			// 
 			// tssBPRemain
 			// 
@@ -1379,7 +1388,7 @@
 			// chkCharacterCreated
 			// 
 			this.chkCharacterCreated.AutoSize = true;
-			this.chkCharacterCreated.Location = new System.Drawing.Point(686, 11);
+			this.chkCharacterCreated.Location = new System.Drawing.Point(657, 8);
 			this.chkCharacterCreated.Name = "chkCharacterCreated";
 			this.chkCharacterCreated.Size = new System.Drawing.Size(152, 17);
 			this.chkCharacterCreated.TabIndex = 62;
@@ -3349,10 +3358,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabPeople.Controls.Add(this.tabContacts);
 			this.tabPeople.Controls.Add(this.tabEnemies);
-			this.tabPeople.Location = new System.Drawing.Point(288, 342);
+			this.tabPeople.Location = new System.Drawing.Point(288, 375);
 			this.tabPeople.Name = "tabPeople";
 			this.tabPeople.SelectedIndex = 0;
-			this.tabPeople.Size = new System.Drawing.Size(544, 263);
+			this.tabPeople.Size = new System.Drawing.Size(544, 230);
 			this.tabPeople.TabIndex = 94;
 			// 
 			// tabContacts
@@ -3368,7 +3377,7 @@
 			this.tabContacts.Location = new System.Drawing.Point(4, 22);
 			this.tabContacts.Name = "tabContacts";
 			this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabContacts.Size = new System.Drawing.Size(536, 237);
+			this.tabContacts.Size = new System.Drawing.Size(536, 204);
 			this.tabContacts.TabIndex = 0;
 			this.tabContacts.Text = "Contacts";
 			// 
@@ -3440,7 +3449,7 @@
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(530, 187);
+			this.panContacts.Size = new System.Drawing.Size(530, 154);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
 			// 
@@ -3455,7 +3464,7 @@
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEnemies.Size = new System.Drawing.Size(536, 237);
+			this.tabEnemies.Size = new System.Drawing.Size(536, 204);
 			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -3497,7 +3506,7 @@
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(3, 48);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(530, 187);
+			this.panEnemies.Size = new System.Drawing.Size(530, 154);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -3649,8 +3658,8 @@
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
 			this.lblQualityBPLabel.Size = new System.Drawing.Size(24, 13);
 			this.lblQualityBPLabel.TabIndex = 66;
-			this.lblQualityBPLabel.Tag = "Label_BP";
-			this.lblQualityBPLabel.Text = "BP:";
+			this.lblQualityBPLabel.Tag = "Label_Karma";
+			this.lblQualityBPLabel.Text = "Karma:";
 			// 
 			// lblQualitySource
 			// 
@@ -3764,6 +3773,11 @@
 			// 
 			// panAttributes
 			// 
+			this.panAttributes.Controls.Add(this.nudKDEP);
+			this.panAttributes.Controls.Add(this.lblDEPAug);
+			this.panAttributes.Controls.Add(this.lblDEPMetatype);
+			this.panAttributes.Controls.Add(this.nudDEP);
+			this.panAttributes.Controls.Add(this.lblDEPLabel);
 			this.panAttributes.Controls.Add(this.nudKRES);
 			this.panAttributes.Controls.Add(this.nudKMAG);
 			this.panAttributes.Controls.Add(this.nudKEDG);
@@ -3821,8 +3835,56 @@
 			this.panAttributes.Controls.Add(this.lblBODMetatype);
 			this.panAttributes.Location = new System.Drawing.Point(288, 48);
 			this.panAttributes.Name = "panAttributes";
-			this.panAttributes.Size = new System.Drawing.Size(356, 291);
+			this.panAttributes.Size = new System.Drawing.Size(356, 317);
 			this.panAttributes.TabIndex = 6;
+			// 
+			// nudKDEP
+			// 
+			this.nudKDEP.Enabled = false;
+			this.nudKDEP.Location = new System.Drawing.Point(174, 289);
+			this.nudKDEP.Name = "nudKDEP";
+			this.nudKDEP.Size = new System.Drawing.Size(40, 20);
+			this.nudKDEP.TabIndex = 59;
+			this.nudKDEP.ValueChanged += new System.EventHandler(this.nudKDEP_ValueChanged);
+			// 
+			// lblDEPAug
+			// 
+			this.lblDEPAug.AutoSize = true;
+			this.lblDEPAug.Enabled = false;
+			this.lblDEPAug.Location = new System.Drawing.Point(220, 291);
+			this.lblDEPAug.Name = "lblDEPAug";
+			this.lblDEPAug.Size = new System.Drawing.Size(19, 13);
+			this.lblDEPAug.TabIndex = 58;
+			this.lblDEPAug.Text = "[0]";
+			// 
+			// lblDEPMetatype
+			// 
+			this.lblDEPMetatype.AutoSize = true;
+			this.lblDEPMetatype.Enabled = false;
+			this.lblDEPMetatype.Location = new System.Drawing.Point(288, 291);
+			this.lblDEPMetatype.Name = "lblDEPMetatype";
+			this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
+			this.lblDEPMetatype.TabIndex = 57;
+			this.lblDEPMetatype.Text = "0 / 0 (0)";
+			// 
+			// nudDEP
+			// 
+			this.nudDEP.Enabled = false;
+			this.nudDEP.Location = new System.Drawing.Point(128, 289);
+			this.nudDEP.Name = "nudDEP";
+			this.nudDEP.Size = new System.Drawing.Size(40, 20);
+			this.nudDEP.TabIndex = 56;
+			this.nudDEP.ValueChanged += new System.EventHandler(this.nudDEP_ValueChanged);
+			// 
+			// lblDEPLabel
+			// 
+			this.lblDEPLabel.AutoSize = true;
+			this.lblDEPLabel.Enabled = false;
+			this.lblDEPLabel.Location = new System.Drawing.Point(3, 291);
+			this.lblDEPLabel.Name = "lblDEPLabel";
+			this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
+			this.lblDEPLabel.TabIndex = 55;
+			this.lblDEPLabel.Text = "Depth (DEP)";
 			// 
 			// nudKRES
 			// 
@@ -4032,11 +4094,6 @@
 			this.nudRES.Name = "nudRES";
 			this.nudRES.Size = new System.Drawing.Size(40, 20);
 			this.nudRES.TabIndex = 31;
-			this.nudRES.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.nudRES.ValueChanged += new System.EventHandler(this.nudRES_ValueChanged);
 			// 
 			// lblRESLabel
@@ -4066,11 +4123,6 @@
 			this.nudMAG.Name = "nudMAG";
 			this.nudMAG.Size = new System.Drawing.Size(40, 20);
 			this.nudMAG.TabIndex = 28;
-			this.nudMAG.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.nudMAG.ValueChanged += new System.EventHandler(this.nudMAG_ValueChanged);
 			// 
 			// lblMAGLabel
@@ -5297,6 +5349,7 @@
 			this.panPowers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.panPowers.AutoScroll = true;
 			this.panPowers.Location = new System.Drawing.Point(11, 54);
 			this.panPowers.Name = "panPowers";
 			this.panPowers.Size = new System.Drawing.Size(827, 554);
@@ -7776,13 +7829,13 @@
 			// tabGear
 			// 
 			this.tabGear.BackColor = System.Drawing.SystemColors.Control;
-			this.tabGear.Controls.Add(this.lblGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearDataProcessing);
+			this.tabGear.Controls.Add(this.cboGearFirewall);
+			this.tabGear.Controls.Add(this.cboGearSleaze);
+			this.tabGear.Controls.Add(this.cboGearAttack);
 			this.tabGear.Controls.Add(this.lblGearFirewallLabel);
-			this.tabGear.Controls.Add(this.lblGearDataProcessing);
 			this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
-			this.tabGear.Controls.Add(this.lblGearSleaze);
 			this.tabGear.Controls.Add(this.lblGearSleazeLabel);
-			this.tabGear.Controls.Add(this.lblGearAttack);
 			this.tabGear.Controls.Add(this.lblGearAttackLabel);
 			this.tabGear.Controls.Add(this.nudAdeptWayDiscount);
 			this.tabGear.Controls.Add(this.label3);
@@ -7827,81 +7880,89 @@
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
 			// 
-			// lblGearFirewall
+			// cboGearDataProcessing
 			// 
-			this.lblGearFirewall.AutoSize = true;
-			this.lblGearFirewall.Location = new System.Drawing.Point(750, 166);
-			this.lblGearFirewall.Name = "lblGearFirewall";
-			this.lblGearFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblGearFirewall.TabIndex = 155;
-			this.lblGearFirewall.Text = "[0]";
+			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearDataProcessing.FormattingEnabled = true;
+			this.cboGearDataProcessing.Location = new System.Drawing.Point(667, 180);
+			this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+			this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+			this.cboGearDataProcessing.TabIndex = 159;
+			this.cboGearDataProcessing.Visible = false;
+			this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboGearFirewall
+			// 
+			this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearFirewall.FormattingEnabled = true;
+			this.cboGearFirewall.Location = new System.Drawing.Point(733, 180);
+			this.cboGearFirewall.Name = "cboGearFirewall";
+			this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+			this.cboGearFirewall.TabIndex = 158;
+			this.cboGearFirewall.Visible = false;
+			this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
+			// 
+			// cboGearSleaze
+			// 
+			this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearSleaze.FormattingEnabled = true;
+			this.cboGearSleaze.Location = new System.Drawing.Point(598, 180);
+			this.cboGearSleaze.Name = "cboGearSleaze";
+			this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+			this.cboGearSleaze.TabIndex = 157;
+			this.cboGearSleaze.Visible = false;
+			this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
+			// 
+			// cboGearAttack
+			// 
+			this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboGearAttack.FormattingEnabled = true;
+			this.cboGearAttack.Location = new System.Drawing.Point(531, 180);
+			this.cboGearAttack.Name = "cboGearAttack";
+			this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+			this.cboGearAttack.TabIndex = 156;
+			this.cboGearAttack.Visible = false;
+			this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
 			// 
 			// lblGearFirewallLabel
 			// 
-			this.lblGearFirewallLabel.AutoSize = true;
-			this.lblGearFirewallLabel.Location = new System.Drawing.Point(703, 166);
+			this.lblGearFirewallLabel.Location = new System.Drawing.Point(733, 166);
 			this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-			this.lblGearFirewallLabel.Size = new System.Drawing.Size(45, 13);
+			this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearFirewallLabel.TabIndex = 154;
 			this.lblGearFirewallLabel.Tag = "Label_Firewall";
 			this.lblGearFirewallLabel.Text = "Firewall:";
-			// 
-			// lblGearDataProcessing
-			// 
-			this.lblGearDataProcessing.AutoSize = true;
-			this.lblGearDataProcessing.Location = new System.Drawing.Point(678, 166);
-			this.lblGearDataProcessing.Name = "lblGearDataProcessing";
-			this.lblGearDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblGearDataProcessing.TabIndex = 153;
-			this.lblGearDataProcessing.Text = "[0]";
+			this.lblGearFirewallLabel.Visible = false;
 			// 
 			// lblGearDataProcessingLabel
 			// 
-			this.lblGearDataProcessingLabel.AutoSize = true;
-			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(584, 166);
+			this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(667, 166);
 			this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
+			this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearDataProcessingLabel.TabIndex = 152;
 			this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-			this.lblGearDataProcessingLabel.Text = "Data Processing:";
-			// 
-			// lblGearSleaze
-			// 
-			this.lblGearSleaze.AutoSize = true;
-			this.lblGearSleaze.Location = new System.Drawing.Point(559, 166);
-			this.lblGearSleaze.Name = "lblGearSleaze";
-			this.lblGearSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblGearSleaze.TabIndex = 151;
-			this.lblGearSleaze.Text = "[0]";
+			this.lblGearDataProcessingLabel.Text = "Data Proc:";
+			this.lblGearDataProcessingLabel.Visible = false;
 			// 
 			// lblGearSleazeLabel
 			// 
-			this.lblGearSleazeLabel.AutoSize = true;
-			this.lblGearSleazeLabel.Location = new System.Drawing.Point(512, 166);
+			this.lblGearSleazeLabel.Location = new System.Drawing.Point(598, 166);
 			this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-			this.lblGearSleazeLabel.Size = new System.Drawing.Size(42, 13);
+			this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearSleazeLabel.TabIndex = 150;
 			this.lblGearSleazeLabel.Tag = "Label_Sleaze";
 			this.lblGearSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblGearAttack
-			// 
-			this.lblGearAttack.AutoSize = true;
-			this.lblGearAttack.Location = new System.Drawing.Point(487, 166);
-			this.lblGearAttack.Name = "lblGearAttack";
-			this.lblGearAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblGearAttack.TabIndex = 149;
-			this.lblGearAttack.Text = "[0]";
+			this.lblGearSleazeLabel.Visible = false;
 			// 
 			// lblGearAttackLabel
 			// 
-			this.lblGearAttackLabel.AutoSize = true;
-			this.lblGearAttackLabel.Location = new System.Drawing.Point(440, 166);
+			this.lblGearAttackLabel.Location = new System.Drawing.Point(531, 166);
 			this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-			this.lblGearAttackLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
 			this.lblGearAttackLabel.TabIndex = 148;
 			this.lblGearAttackLabel.Tag = "Label_Attack";
 			this.lblGearAttackLabel.Text = "Attack:";
+			this.lblGearAttackLabel.Visible = false;
 			// 
 			// nudAdeptWayDiscount
 			// 
@@ -8349,13 +8410,13 @@
 			// tabVehicles
 			// 
 			this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
-			this.tabVehicles.Controls.Add(this.lblVehicleFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearDataProcessing);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearFirewall);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearSleaze);
+			this.tabVehicles.Controls.Add(this.cboVehicleGearAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleFirewallLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessing);
 			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSleaze);
 			this.tabVehicles.Controls.Add(this.lblVehicleSleazeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAttack);
 			this.tabVehicles.Controls.Add(this.lblVehicleAttackLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeExtreme);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLong);
@@ -8426,14 +8487,49 @@
 			this.tabVehicles.Text = "Vehicles & Drones";
 			this.tabVehicles.Click += new System.EventHandler(this.tabVehicles_Click);
 			// 
-			// lblVehicleFirewall
+			// cboVehicleGearDataProcessing
 			// 
-			this.lblVehicleFirewall.AutoSize = true;
-			this.lblVehicleFirewall.Location = new System.Drawing.Point(776, 128);
-			this.lblVehicleFirewall.Name = "lblVehicleFirewall";
-			this.lblVehicleFirewall.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleFirewall.TabIndex = 193;
-			this.lblVehicleFirewall.Text = "[0]";
+			this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearDataProcessing.FormattingEnabled = true;
+			this.cboVehicleGearDataProcessing.Location = new System.Drawing.Point(693, 123);
+			this.cboVehicleGearDataProcessing.Name = "cboVehicleGearDataProcessing";
+			this.cboVehicleGearDataProcessing.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearDataProcessing.TabIndex = 196;
+			this.cboVehicleGearDataProcessing.Visible = false;
+			this.cboVehicleGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+			// 
+			// cboVehicleGearFirewall
+			// 
+			this.cboVehicleGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearFirewall.FormattingEnabled = true;
+			this.cboVehicleGearFirewall.Location = new System.Drawing.Point(777, 123);
+			this.cboVehicleGearFirewall.Name = "cboVehicleGearFirewall";
+			this.cboVehicleGearFirewall.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearFirewall.TabIndex = 195;
+			this.cboVehicleGearFirewall.Visible = false;
+			this.cboVehicleGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+			// 
+			// cboVehicleGearSleaze
+			// 
+			this.cboVehicleGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearSleaze.FormattingEnabled = true;
+			this.cboVehicleGearSleaze.Location = new System.Drawing.Point(576, 123);
+			this.cboVehicleGearSleaze.Name = "cboVehicleGearSleaze";
+			this.cboVehicleGearSleaze.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearSleaze.TabIndex = 194;
+			this.cboVehicleGearSleaze.Visible = false;
+			this.cboVehicleGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+			// 
+			// cboVehicleGearAttack
+			// 
+			this.cboVehicleGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboVehicleGearAttack.FormattingEnabled = true;
+			this.cboVehicleGearAttack.Location = new System.Drawing.Point(489, 123);
+			this.cboVehicleGearAttack.Name = "cboVehicleGearAttack";
+			this.cboVehicleGearAttack.Size = new System.Drawing.Size(30, 21);
+			this.cboVehicleGearAttack.TabIndex = 193;
+			this.cboVehicleGearAttack.Visible = false;
+			this.cboVehicleGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
 			// 
 			// lblVehicleFirewallLabel
 			// 
@@ -8445,15 +8541,6 @@
 			this.lblVehicleFirewallLabel.Tag = "Label_Firewall";
 			this.lblVehicleFirewallLabel.Text = "Firewall:";
 			// 
-			// lblVehicleDataProcessing
-			// 
-			this.lblVehicleDataProcessing.AutoSize = true;
-			this.lblVehicleDataProcessing.Location = new System.Drawing.Point(690, 128);
-			this.lblVehicleDataProcessing.Name = "lblVehicleDataProcessing";
-			this.lblVehicleDataProcessing.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleDataProcessing.TabIndex = 191;
-			this.lblVehicleDataProcessing.Text = "[0]";
-			// 
 			// lblVehicleDataProcessingLabel
 			// 
 			this.lblVehicleDataProcessingLabel.AutoSize = true;
@@ -8464,15 +8551,6 @@
 			this.lblVehicleDataProcessingLabel.Tag = "Label_DataProcessing";
 			this.lblVehicleDataProcessingLabel.Text = "Data Proc:";
 			// 
-			// lblVehicleSleaze
-			// 
-			this.lblVehicleSleaze.AutoSize = true;
-			this.lblVehicleSleaze.Location = new System.Drawing.Point(574, 128);
-			this.lblVehicleSleaze.Name = "lblVehicleSleaze";
-			this.lblVehicleSleaze.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleSleaze.TabIndex = 189;
-			this.lblVehicleSleaze.Text = "[0]";
-			// 
 			// lblVehicleSleazeLabel
 			// 
 			this.lblVehicleSleazeLabel.AutoSize = true;
@@ -8482,15 +8560,6 @@
 			this.lblVehicleSleazeLabel.TabIndex = 188;
 			this.lblVehicleSleazeLabel.Tag = "Label_Sleaze";
 			this.lblVehicleSleazeLabel.Text = "Sleaze:";
-			// 
-			// lblVehicleAttack
-			// 
-			this.lblVehicleAttack.AutoSize = true;
-			this.lblVehicleAttack.Location = new System.Drawing.Point(488, 128);
-			this.lblVehicleAttack.Name = "lblVehicleAttack";
-			this.lblVehicleAttack.Size = new System.Drawing.Size(19, 13);
-			this.lblVehicleAttack.TabIndex = 187;
-			this.lblVehicleAttack.Text = "[0]";
 			// 
 			// lblVehicleAttackLabel
 			// 
@@ -8747,7 +8816,7 @@
 			// lblVehicleDevice
 			// 
 			this.lblVehicleDevice.AutoSize = true;
-			this.lblVehicleDevice.Location = new System.Drawing.Point(774, 82);
+			this.lblVehicleDevice.Location = new System.Drawing.Point(675, 150);
 			this.lblVehicleDevice.Name = "lblVehicleDevice";
 			this.lblVehicleDevice.Size = new System.Drawing.Size(47, 13);
 			this.lblVehicleDevice.TabIndex = 118;
@@ -8756,7 +8825,7 @@
 			// lblVehicleDeviceLabel
 			// 
 			this.lblVehicleDeviceLabel.AutoSize = true;
-			this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(725, 82);
+			this.lblVehicleDeviceLabel.Location = new System.Drawing.Point(626, 150);
 			this.lblVehicleDeviceLabel.Name = "lblVehicleDeviceLabel";
 			this.lblVehicleDeviceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblVehicleDeviceLabel.TabIndex = 117;
@@ -8822,7 +8891,7 @@
 			// lblVehicleSlots
 			// 
 			this.lblVehicleSlots.AutoSize = true;
-			this.lblVehicleSlots.Location = new System.Drawing.Point(708, 150);
+			this.lblVehicleSlots.Location = new System.Drawing.Point(764, 150);
 			this.lblVehicleSlots.Name = "lblVehicleSlots";
 			this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
 			this.lblVehicleSlots.TabIndex = 58;
@@ -8832,7 +8901,7 @@
 			// lblVehicleSlotsLabel
 			// 
 			this.lblVehicleSlotsLabel.AutoSize = true;
-			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(669, 150);
+			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(725, 150);
 			this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
 			this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblVehicleSlotsLabel.TabIndex = 57;
@@ -9124,7 +9193,7 @@
 			// tabCharacterInfo
 			// 
 			this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCharacterInfo.Controls.Add(this.chkAutoBackstory);
+			this.tabCharacterInfo.Controls.Add(this.btnCreateBackstory);
 			this.tabCharacterInfo.Controls.Add(this.lblPublicAwareTotal);
 			this.tabCharacterInfo.Controls.Add(this.lblNotorietyTotal);
 			this.tabCharacterInfo.Controls.Add(this.lblStreetCredTotal);
@@ -9169,19 +9238,15 @@
 			this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
 			this.tabCharacterInfo.Text = "Character Info";
 			// 
-			// chkAutoBackstory
+			// btnCreateBackstory
 			// 
-			this.chkAutoBackstory.AutoSize = true;
-			this.chkAutoBackstory.Checked = true;
-			this.chkAutoBackstory.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkAutoBackstory.Location = new System.Drawing.Point(637, 178);
-			this.chkAutoBackstory.Margin = new System.Windows.Forms.Padding(0);
-			this.chkAutoBackstory.Name = "chkAutoBackstory";
-			this.chkAutoBackstory.Size = new System.Drawing.Size(133, 17);
-			this.chkAutoBackstory.TabIndex = 91;
-			this.chkAutoBackstory.Text = "Automatic background";
-			this.chkAutoBackstory.UseVisualStyleBackColor = true;
-			this.chkAutoBackstory.CheckedChanged += new System.EventHandler(this.chkAutoBackstory_CheckedChanged);
+			this.btnCreateBackstory.Location = new System.Drawing.Point(634, 125);
+			this.btnCreateBackstory.Name = "btnCreateBackstory";
+			this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
+			this.btnCreateBackstory.TabIndex = 91;
+			this.btnCreateBackstory.Text = "Create Backstory";
+			this.btnCreateBackstory.UseVisualStyleBackColor = true;
+			this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
 			// 
 			// lblPublicAwareTotal
 			// 
@@ -9271,7 +9336,7 @@
 			// 
 			// cmdDeleteMugshot
 			// 
-			this.cmdDeleteMugshot.Location = new System.Drawing.Point(735, 152);
+			this.cmdDeleteMugshot.Location = new System.Drawing.Point(735, 195);
 			this.cmdDeleteMugshot.Name = "cmdDeleteMugshot";
 			this.cmdDeleteMugshot.Size = new System.Drawing.Size(103, 23);
 			this.cmdDeleteMugshot.TabIndex = 23;
@@ -9282,7 +9347,7 @@
 			// 
 			// cmdAddMugshot
 			// 
-			this.cmdAddMugshot.Location = new System.Drawing.Point(634, 152);
+			this.cmdAddMugshot.Location = new System.Drawing.Point(634, 195);
 			this.cmdAddMugshot.Name = "cmdAddMugshot";
 			this.cmdAddMugshot.Size = new System.Drawing.Size(95, 23);
 			this.cmdAddMugshot.TabIndex = 22;
@@ -9294,7 +9359,7 @@
 			// lblMugshot
 			// 
 			this.lblMugshot.AutoSize = true;
-			this.lblMugshot.Location = new System.Drawing.Point(631, 136);
+			this.lblMugshot.Location = new System.Drawing.Point(631, 168);
 			this.lblMugshot.Name = "lblMugshot";
 			this.lblMugshot.Size = new System.Drawing.Size(152, 13);
 			this.lblMugshot.TabIndex = 21;
@@ -9490,7 +9555,7 @@
 			// 
 			// picMugshot
 			// 
-			this.picMugshot.Location = new System.Drawing.Point(629, 181);
+			this.picMugshot.Location = new System.Drawing.Point(628, 224);
 			this.picMugshot.Name = "picMugshot";
 			this.picMugshot.Size = new System.Drawing.Size(210, 310);
 			this.picMugshot.TabIndex = 20;
@@ -10393,6 +10458,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
 			this.panAttributes.ResumeLayout(false);
 			this.panAttributes.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
@@ -11202,13 +11269,9 @@
         private System.Windows.Forms.Label lblArmorValue;
         private System.Windows.Forms.NumericUpDown nudAdeptWayDiscount;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblGearFirewall;
         private System.Windows.Forms.Label lblGearFirewallLabel;
-        private System.Windows.Forms.Label lblGearDataProcessing;
         private System.Windows.Forms.Label lblGearDataProcessingLabel;
-        private System.Windows.Forms.Label lblGearSleaze;
         private System.Windows.Forms.Label lblGearSleazeLabel;
-        private System.Windows.Forms.Label lblGearAttack;
         private System.Windows.Forms.Label lblGearAttackLabel;
         private System.Windows.Forms.Label lblCyberFirewall;
         private System.Windows.Forms.Label lblCyberFirewallLabel;
@@ -11220,13 +11283,9 @@
         private System.Windows.Forms.Label lblCyberAttackLabel;
         private System.Windows.Forms.Label lblCyberDeviceRating;
         private System.Windows.Forms.Label lblCyberDeviceRatingLabel;
-        private System.Windows.Forms.Label lblVehicleFirewall;
         private System.Windows.Forms.Label lblVehicleFirewallLabel;
-        private System.Windows.Forms.Label lblVehicleDataProcessing;
         private System.Windows.Forms.Label lblVehicleDataProcessingLabel;
-        private System.Windows.Forms.Label lblVehicleSleaze;
         private System.Windows.Forms.Label lblVehicleSleazeLabel;
-        private System.Windows.Forms.Label lblVehicleAttack;
         private System.Windows.Forms.Label lblVehicleAttackLabel;
         private System.Windows.Forms.Label lblWeaponFirewall;
         private System.Windows.Forms.Label lblWeaponFirewallLabel;
@@ -11313,10 +11372,23 @@
         private System.Windows.Forms.Label lblContactPoints;
         private System.Windows.Forms.Label lblContactPoints_Label;
         private System.Windows.Forms.Button cmdLifeModule;
-		private System.Windows.Forms.CheckBox chkAutoBackstory;
 		private System.Windows.Forms.TreeView treCritterPowers;
 		private System.Windows.Forms.Label lblWeaponRating;
 		private System.Windows.Forms.Label lblWeaponRatingLabel;
+		private System.Windows.Forms.Button btnCreateBackstory;
+		private System.Windows.Forms.ComboBox cboGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboGearFirewall;
+		private System.Windows.Forms.ComboBox cboGearSleaze;
+		private System.Windows.Forms.ComboBox cboGearAttack;
+		private System.Windows.Forms.ComboBox cboVehicleGearDataProcessing;
+		private System.Windows.Forms.ComboBox cboVehicleGearFirewall;
+		private System.Windows.Forms.ComboBox cboVehicleGearSleaze;
+		private System.Windows.Forms.ComboBox cboVehicleGearAttack;
+		internal System.Windows.Forms.NumericUpDown nudKDEP;
+		internal System.Windows.Forms.Label lblDEPAug;
+		internal System.Windows.Forms.Label lblDEPMetatype;
+		internal System.Windows.Forms.NumericUpDown nudDEP;
+		internal System.Windows.Forms.Label lblDEPLabel;
 		private System.Windows.Forms.TabPage tabPage1;
 		private UI.Shared.SkillsTabUserControl tabSkillsUc;
 	}

@@ -2161,7 +2161,7 @@
 					/></td>
 				<td style="text-align:center;" valign="top">E: <xsl:value-of select="ranges/extreme"
 					/></td>
-				<td colspan="3"/>
+				<td colspan="4"/>
 			</tr>
 		</xsl:if>
 
@@ -2989,8 +2989,8 @@
 
 	<xsl:template name="spells">
 		<tr>
-			<td colspan="7" valign="top"> Tradition: <xsl:value-of select="tradition/name"
-				/>&#160;&#160;&#160; Resist Drain with <xsl:value-of select="tradition/drain"/>
+			<td colspan="7" valign="top"> Tradition: <xsl:value-of select="tradition"
+				/>&#160;&#160;&#160; Resist Drain with <xsl:value-of select="drain"/>
 			</td>
 		</tr>
 		<xsl:variable name="sortedlist">
@@ -3478,7 +3478,7 @@
 												</xsl:call-template>
 											</xsl:for-each>
 											<tr>
-												<td class="rowsummary" colspan="7"> RANGED WEAPONS
+												<td class="rowsummary" colspan="9"> RANGED WEAPONS
 												</td>
 											</tr>
 										</table>

@@ -9,7 +9,6 @@ namespace Chummer
     public partial class frmSelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
-	    private bool _cboStageInit = false;
         private Character _objCharacter;
         private int _intStage;
         private String _strDefaultStageName;
@@ -19,7 +18,6 @@ namespace Chummer
 
 
 	    private String _strWorkStage = null;
-	    private String _strSearch = null;
         
         public frmSelectLifeModule(Character objCharacter, int stage)
         {

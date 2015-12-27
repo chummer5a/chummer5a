@@ -19,19 +19,16 @@
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="total" />
-													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="total + 2" />)</xsl:if>
+													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
-													<strong><xsl:value-of select="rating" /></strong>
+													<xsl:value-of select="rating" />
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:value-of select="attributemod" />
+												<td width="20%" style="text-align:center;" valign="top">
+													<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="ratingmod" />
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:value-of select="poolmod" />
 												</td>
 											</tr>
 		</xsl:for-each>
@@ -52,19 +49,16 @@
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="total" />
-													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="total + 2" />)</xsl:if>
+													<xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
-													<strong><xsl:value-of select="rating" /></strong>
+													<xsl:value-of select="rating" />
 												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:value-of select="attributemod" />
+												<td width="20%" style="text-align:center;" valign="top">
+													<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="ratingmod" />
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:value-of select="poolmod" />
 												</td>
 											</tr>
 		</xsl:for-each>
@@ -89,17 +83,7 @@
 														</xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="total" />
-															<xsl:if test="spec != ''"> (<xsl:value-of select="total + 2" />)</xsl:if>
-														</xsl:otherwise>
-													</xsl:choose>
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:choose>
-														<xsl:when test="islanguage = 'True' and rating = 0">
-															<strong>M</strong>
-														</xsl:when>
-														<xsl:otherwise>
-															<strong><xsl:value-of select="rating" /></strong>
+															<xsl:if test="spec != ''"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -109,7 +93,17 @@
 															M
 														</xsl:when>
 														<xsl:otherwise>
-															<xsl:value-of select="attributemod" />
+															<xsl:value-of select="rating" />
+														</xsl:otherwise>
+													</xsl:choose>
+												</td>
+												<td width="20%" style="text-align:center;" valign="top">
+													<xsl:choose>
+														<xsl:when test="islanguage = 'True' and rating = 0">
+															M
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -120,16 +114,6 @@
 														</xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="ratingmod" />
-														</xsl:otherwise>
-													</xsl:choose>
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:choose>
-														<xsl:when test="islanguage = 'True' and rating = 0">
-															M
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="poolmod" />
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -153,17 +137,7 @@
 														</xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="total" />
-															<xsl:if test="spec != ''"> (<xsl:value-of select="total + 2" />)</xsl:if>
-														</xsl:otherwise>
-													</xsl:choose>
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:choose>
-														<xsl:when test="islanguage = 'True' and rating = 0">
-															<strong>M</strong>
-														</xsl:when>
-														<xsl:otherwise>
-															<strong><xsl:value-of select="rating" /></strong>
+															<xsl:if test="spec != ''"> (<xsl:value-of select="specializedrating" />)</xsl:if>
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -173,7 +147,17 @@
 															M
 														</xsl:when>
 														<xsl:otherwise>
-															<xsl:value-of select="attributemod" />
+															<xsl:value-of select="rating" />
+														</xsl:otherwise>
+													</xsl:choose>
+												</td>
+												<td width="20%" style="text-align:center;" valign="top">
+													<xsl:choose>
+														<xsl:when test="islanguage = 'True' and rating = 0">
+															M
+														</xsl:when>
+														<xsl:otherwise>
+															<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -184,16 +168,6 @@
 														</xsl:when>
 														<xsl:otherwise>
 															<xsl:value-of select="ratingmod" />
-														</xsl:otherwise>
-													</xsl:choose>
-												</td>
-												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:choose>
-														<xsl:when test="islanguage = 'True' and rating = 0">
-															M
-														</xsl:when>
-														<xsl:otherwise>
-															<xsl:value-of select="poolmod" />
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>

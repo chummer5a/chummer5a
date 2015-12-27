@@ -212,7 +212,7 @@
       <descriptor>Direct</descriptor>
       <category>Combat</category>
       <type>M</type>
-      <range>LOS</range>
+      <range>T</range>
       <damage>S</damage>
       <duration>I</duration>
       <dv>F-6</dv>
@@ -2865,6 +2865,9 @@
       <damage>0</damage>
       <duration>Special</duration>
       <dv>Special</dv>
+      <bonus>
+      	<selecttext />
+      </bonus>
       <source>SG</source>
       <page>123</page>
     </spell>
@@ -2875,6 +2878,9 @@
       <category>Rituals</category>
       <type>M</type>
       <range>Special</range>
+      <bonus>
+      	<selecttext />
+      </bonus>
       <damage>0</damage>
       <duration>Special</duration>
       <dv>Special</dv>
