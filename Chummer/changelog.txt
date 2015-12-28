@@ -30,6 +30,7 @@ Data Change:
 - Minimum MAG/RES/DEP levels have been set to 0 for the appropriate metatypes.
 - Removed the quality "Natural Weapon: Claws" for the Sasquatch.
 - Added ammoslots entries for Speed Loader, Spare Clip, Explosive Magazine and Extended Clip.
+- Fixed a stupid error with the toxin/pathogen resistance qualities, dwarves and translation files. Fixes #590.
 
 New Strings:
 - Message_DeleteCalendarWeek

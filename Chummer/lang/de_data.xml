@@ -12942,6 +12942,12 @@
 				<translate>Pathogen- und Toxinresistenz</translate>
 			</quality>
 			<quality>
+				<id>139ca69c-e9d3-4540-a4c6-b8c778e70185</id>
+				<name>Resistance to Pathogens/Toxins</name>
+				<page>85</page>
+				<translate>Pathogen/Toxinresistenz</translate>
+			</quality>
+			<quality>
 				<id>c067baa6-0dfa-4783-a0c8-0873564f0308</id>
 				<name>Spirit Affinity</name>
 				<page>84</page>
