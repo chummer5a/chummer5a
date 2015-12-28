@@ -827,8 +827,9 @@ namespace Chummer
                     objContactControl.EntityType = objContact.EntityType;
                     objContactControl.BackColor = objContact.Colour;
                     objContactControl.IsGroup = objContact.IsGroup;
+					objContactControl.MouseDown += panContactControl_MouseDown;
 
-                    objContactControl.Top = intContact * objContactControl.Height;
+					objContactControl.Top = intContact * objContactControl.Height;
 
                     panContacts.Controls.Add(objContactControl);
                 }
@@ -5377,8 +5378,9 @@ namespace Chummer
             objContactControl.DeleteContact += objContact_DeleteContact;
             objContactControl.FileNameChanged += objContact_FileNameChanged;
             objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
+			objContactControl.MouseDown += panContactControl_MouseDown;
 
-            panContacts.Controls.Add(objContactControl);
+			panContacts.Controls.Add(objContactControl);
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -26022,7 +26024,57 @@ namespace Chummer
             panContacts.Focus();
         }
 
-        private void panEnemies_Click(object sender, System.EventArgs e)
+		private void panContacts_DragDrop(object sender, DragEventArgs e)
+		{
+			TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
+			Control source = wrapper.Control;
+
+			Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
+			Control destination = panContacts.GetChildAtPoint(mousePosition);
+
+			int indexDestination = panContacts.Controls.IndexOf(destination);
+			if (panContacts.Controls.IndexOf(source) < indexDestination)
+				indexDestination--;
+
+			panContacts.Controls.SetChildIndex(source, indexDestination);
+
+			foreach (ContactControl objControl in panContacts.Controls)
+			{
+				objControl.BackColor = SystemColors.Control;
+			}
+		}
+
+		private void panContacts_DragOver(object sender, DragEventArgs e)
+		{
+			Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
+			Control destination = panContacts.GetChildAtPoint(mousePosition);
+
+			if (destination == null)
+				return;
+
+			destination.BackColor = SystemColors.ControlDark;
+			foreach (ContactControl objControl in panContacts.Controls)
+			{
+				if (objControl != (destination as ContactControl))
+				{
+					objControl.BackColor = SystemColors.Control;
+				}
+			}
+			// Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
+		}
+
+		void panContacts_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
+
+		private void panContactControl_MouseDown(object sender, MouseEventArgs e)
+		{
+			Control source = (Control)sender;
+			source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+		}
+
+		private void panEnemies_Click(object sender, System.EventArgs e)
         {
             panEnemies.Focus();
         }

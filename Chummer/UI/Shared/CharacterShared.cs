@@ -16,7 +16,24 @@ namespace Chummer
 		protected CharacterOptions _objOptions;
 		protected CommonFunctions _objFunctions;
 
+		
+		/// <summary>
+		/// Wrapper for relocating contact forms. 
+		/// </summary>
+		public class TransportWrapper
+		{
+			private Control control;
 
+			public TransportWrapper(Control control)
+			{
+				this.control = control;
+			}
+
+			public Control Control
+			{
+				get { return control; }
+			}
+		}
 
 		protected void RedlinerCheck()
 		{

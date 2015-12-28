@@ -1032,7 +1032,7 @@ namespace Chummer
 			// tssBPLabel
 			// 
 			this.tssBPLabel.Name = "tssBPLabel";
-			this.tssBPLabel.Size = new System.Drawing.Size(24, 19);
+			this.tssBPLabel.Size = new System.Drawing.Size(44, 19);
 			this.tssBPLabel.Tag = "Label_Karma";
 			this.tssBPLabel.Text = "Karma:";
 			// 
@@ -1046,7 +1046,7 @@ namespace Chummer
 			// tssBPRemainLabel
 			// 
 			this.tssBPRemainLabel.Name = "tssBPRemainLabel";
-			this.tssBPRemainLabel.Size = new System.Drawing.Size(84, 19);
+			this.tssBPRemainLabel.Size = new System.Drawing.Size(104, 19);
 			this.tssBPRemainLabel.Tag = "Label_KarmaRemaining";
 			this.tssBPRemainLabel.Text = "Karma Remaining:";
 			// 
@@ -3439,6 +3439,7 @@ namespace Chummer
 			// 
 			// panContacts
 			// 
+			this.panContacts.AllowDrop = true;
 			this.panContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -3448,6 +3449,9 @@ namespace Chummer
 			this.panContacts.Size = new System.Drawing.Size(530, 154);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
+			this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
+			this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
+			this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
 			// 
 			// tabEnemies
 			// 
@@ -3652,7 +3656,7 @@ namespace Chummer
 			this.lblQualityBPLabel.AutoSize = true;
 			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 589);
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
-			this.lblQualityBPLabel.Size = new System.Drawing.Size(24, 13);
+			this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
 			this.lblQualityBPLabel.TabIndex = 66;
 			this.lblQualityBPLabel.Tag = "Label_Karma";
 			this.lblQualityBPLabel.Text = "Karma:";

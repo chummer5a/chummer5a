@@ -17,6 +17,7 @@ Application Change:
 - Fixed an issue that prevented priority/sum-to-ten from using the gameplay options for their nuyen limit.
 - Sum to Ten and Priority now use the same form for character generation. Doesn't mean anything particularly interesting for you guys, but may reduce or introduce some interesting new bugs. 
 - Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tiday as I'd like.
+- Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
