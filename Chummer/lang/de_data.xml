@@ -6666,7 +6666,7 @@
 				<id>e0a8b465-3a3b-455d-83ca-8d8b1777a04c</id>
 				<name>Biometric Reader</name>
 				<page>443</page>
-				<translate>Biometrischer Scanner, biometrisches Lesegerät</translate>
+				<translate>Biometrischer Scanner</translate>
 			</gear>
 			<gear>
 				<id>35b38293-313a-462c-9a24-f90056567883</id>
@@ -6726,13 +6726,13 @@
 				<id>6576cfa9-f2f5-4624-bbde-60a8f3f13785</id>
 				<name>Jammer, Area</name>
 				<page>445</page>
-				<translate>Störsender, Area</translate>
+				<translate>Störsender, Bereich</translate>
 			</gear>
 			<gear>
 				<id>f47ee634-8f59-43c5-8502-32e447f03980</id>
 				<name>Jammer, Directional</name>
 				<page>445</page>
-				<translate>Störsender, Directional</translate>
+				<translate>Störsender, Zielgerichtet</translate>
 			</gear>
 			<gear>
 				<id>d1fca845-ae01-4b39-a176-1506da699e0e</id>
@@ -6767,7 +6767,7 @@
 			<gear>
 				<id>a1e4b783-0751-43eb-b5bd-ee00f84b7bb3</id>
 				<name>Armor</name>
-				<page>440</page>
+				<page>242</page>
 				<translate>Panzerung</translate>
 			</gear>
 			<gear>
@@ -6932,7 +6932,7 @@
 				<id>fd2c8afe-7c0f-4b98-ae93-a6108531b236</id>
 				<name>Certified Credstick, Ebony</name>
 				<page>446</page>
-				<translate>Beglaubigter Credstick, Elfenbein</translate>
+				<translate>Beglaubigter Credstick, Ebenholz</translate>
 			</gear>
 			<gear>
 				<id>8a16bbb2-8028-4c74-b22b-7aad9d001073</id>
@@ -6950,7 +6950,7 @@
 				<id>64fa5212-1d58-4e94-9cc1-9e3eb10773ed</id>
 				<name>Tool Kit</name>
 				<page>447</page>
-				<translate>Tool Kit</translate>
+				<translate>Kiste</translate>
 			</gear>
 			<gear>
 				<id>4edec80a-e8df-4817-9728-4a6fc04d183e</id>
@@ -7105,7 +7105,7 @@
 			<gear>
 				<id>1345a189-50d2-44e0-aeea-73ce0f28390b</id>
 				<name>Directional Microphone</name>
-				<page>445</page>
+				<page>449</page>
 				<translate>Richtmikrofon</translate>
 			</gear>
 			<gear>
@@ -7183,7 +7183,7 @@
 			<gear>
 				<id>f5ac4b53-82ad-4a2f-8f3d-990e075951f7</id>
 				<name>Chisel</name>
-				<page>447</page>
+				<page>452</page>
 				<translate>Brecheisen</translate>
 			</gear>
 			<gear>
@@ -7214,12 +7214,12 @@
 				<id>17a4ed15-a9d3-40a6-b5d4-4a69f6c8b9d3</id>
 				<name>Monofilament Chainsaw</name>
 				<page>452</page>
-				<translate>Monofilament-Kettensäge</translate>
+				<translate>Monofilamentkettensäge</translate>
 			</gear>
 			<gear translated="True">
-				<id>c01b24b0-ed09-4044-95ec-bc7628b10f5e</id>
+				<id>62bffcd7-4a43-45cd-9cf7-3067ba9688f6</id>
 				<name>Bliss</name>
-				<page>257</page>
+				<page>413</page>
 				<translate>Bliss</translate>
 			</gear>
 			<gear translated="True">
@@ -7267,13 +7267,13 @@
 			<gear translated="True">
 				<id>d7ec13fa-8601-4f9c-a59c-6a86573b40ee</id>
 				<name>Nitro</name>
-				<page>412</page>
+				<page>414</page>
 				<translate>Nitro</translate>
 			</gear>
 			<gear translated="True">
 				<id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
 				<name>Novacoke</name>
-				<page>412</page>
+				<page>414</page>
 				<translate>Novacoke</translate>
 			</gear>
 			<gear translated="True">
@@ -7291,7 +7291,7 @@
 			<gear translated="True">
 				<id>3a946800-be1e-4bbb-899a-c3d1c48a3a31</id>
 				<name>Zen</name>
-				<page>382</page>
+				<page>414</page>
 				<translate>Zen</translate>
 			</gear>
 			<gear>
@@ -7328,7 +7328,7 @@
 				<id>1445f60b-49e1-45c9-98e4-054a79ca80f8</id>
 				<name>CS/Tear Gas</name>
 				<page>411</page>
-				<translate>CS/Tränengas</translate>
+				<translate>CS-/Tränengas</translate>
 			</gear>
 			<gear translated="True">
 				<id>e90016cf-cf44-4cd2-9343-c0f2a58e1aa2</id>
@@ -7382,7 +7382,7 @@
 				<id>8bed8fa9-b75e-44ad-8181-a9dcd1f110cd</id>
 				<name>Gecko Tape Gloves</name>
 				<page>453</page>
-				<translate>Gecko-Tape-Handschuhe</translate>
+				<translate>Geckotape-Handschuhe</translate>
 			</gear>
 			<gear>
 				<id>a39501ca-0df5-4fb7-8992-97b765383d17</id>
@@ -7424,14 +7424,13 @@
 				<id>241e831d-230a-403b-a4a1-1e601b1afdc3</id>
 				<name>Respirator</name>
 				<page>453</page>
-				<translate>Atemgerät</translate>
+				<translate>Atemschutzmaske</translate>
 			</gear>
 			<gear>
 				<id>27f9775d-cd14-4900-827f-ba00d26e0c67</id>
 				<name>Survival Kit</name>
-				<page>
-				</page>
-				<translate>Survival-Kiste</translate>
+				<page>453</page>
+				<translate>Survival-Kit</translate>
 			</gear>
 			<gear>
 				<id>59561c08-3269-470d-9d8b-3cde8a8ccbf8</id>
@@ -7816,106 +7815,6 @@
 				<translate>Biofeedback</translate>
 			</gear>
 			<gear>
-				<name>Security Tags</name>
-				<page>374</page>
-				<translate>Security Tags</translate>
-			</gear>
-			<gear>
-				<name>Sensor Tags</name>
-				<page>374</page>
-				<translate>Sensor Tags</translate>
-			</gear>
-			<gear>
-				<name>Stealth Tags</name>
-				<page>374</page>
-				<translate>Stealth Tags</translate>
-			</gear>
-			<gear>
-				<name>Headjammer</name>
-				<page>375f</page>
-				<translate>Headkom-Blocker</translate>
-			</gear>
-			<gear>
-				<name>Jammer, Area</name>
-				<page>375f</page>
-				<translate>Störsender, Area</translate>
-			</gear>
-			<gear>
-				<name>Jammer, Directional</name>
-				<page>375f</page>
-				<translate>Störsender, Directional</translate>
-			</gear>
-			<gear>
-				<name>Micro-Transceiver</name>
-				<page>375f</page>
-				<translate>Mikro-Transceiver</translate>
-			</gear>
-			<gear>
-				<name>Tag Eraser</name>
-				<page>375</page>
-				<translate>RFID-Löscher</translate>
-			</gear>
-			<gear>
-				<name>White Noise Generator</name>
-				<page>375f</page>
-				<translate>White-Noise-Generator</translate>
-			</gear>
-			<gear>
-				<name>Browse</name>
-				<page>272</page>
-				<translate>Schmöker</translate>
-			</gear>
-			<gear>
-				<name>Edit</name>
-				<page>271</page>
-				<translate>Editieren</translate>
-			</gear>
-			<gear>
-				<name>Armor</name>
-				<page>273</page>
-				<translate>Panzerung</translate>
-			</gear>
-			<gear>
-				<name>Biofeedback Filter</name>
-				<page>272</page>
-				<translate>Biofeedback-Filter</translate>
-			</gear>
-			<gear>
-				<name>Blackout</name>
-				<page>272</page>
-				<translate>Blackout</translate>
-			</gear>
-			<gear>
-				<name>Decrypt</name>
-				<page>273</page>
-				<translate>Entschlüsselung</translate>
-			</gear>
-			<gear>
-				<name>Defuse</name>
-				<page>272</page>
-				<translate>Entschärfen</translate>
-			</gear>
-			<gear>
-				<name>Exploit</name>
-				<page>272</page>
-				<translate>Ausnutzen</translate>
-			</gear>
-			<gear>
-				<name>Stealth</name>
-				<page>273</page>
-				<translate>Schleicher</translate>
-			</gear>
-			<gear>
-				<name>Track</name>
-				<page>272</page>
-				<translate>Aufspüren</translate>
-			</gear>
-			<gear>
-				<name>Agent</name>
-				<page>273</page>
-				<translate>Agent</translate>
-			</gear>
-			<gear>
 				<id>e8e7b222-99da-4a4f-9c4e-8ffa61838017</id>
 				<name>Concealable Holster</name>
 				<page>436</page>
@@ -7936,33 +7835,32 @@
 			<gear translated="True">
 				<id>f486f414-ee2c-46db-92ea-c682861d8fe0</id>
 				<name>Ammo: Hollow Points</name>
-				<translate>Hohlspitzmunition</translate>
+				<translate>Munition: Hohlspitzmunition</translate>
 				<page>436</page>
 			</gear>
 			<gear translated="True">
 				<id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
 				<name>Arrow: Standard</name>
-				<translate>Pfeil</translate>
-				<page>
-				</page>
+				<translate>Pfeil: Standard</translate>
+				<page>426</page>
 			</gear>
 			<gear translated="True">
 				<id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
 				<name>Arrow: Injection</name>
-				<translate>Injektionspfeil</translate>
-				<page>424</page>
+				<translate>Pfeil: Injektion</translate>
+				<page>426</page>
 			</gear>
 			<gear translated="True">
 				<id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
 				<name>Bolt: Standard</name>
-				<translate>Bolzen</translate>
-				<page>424</page>
+				<translate>Bolzen: Standard</translate>
+				<page>426</page>
 			</gear>
 			<gear translated="True">
 				<id>7d697849-0a11-4a38-8f07-2e5becf8efe0</id>
 				<name>Bolt: Injection</name>
-				<translate>Injektionsbolzen</translate>
-				<page>424</page>
+				<translate>Bolzen: Injektion</translate>
+				<page>426</page>
 			</gear>
 			<gear translated="True">
 				<id>d9bf2003-1911-4e65-b6a1-8babb761dd85</id>
@@ -8423,8 +8321,8 @@
 			<gear translated="True">
 				<id>cffae49c-30d1-42df-b47c-a407f3a86e7a</id>
 				<name>Toolbox</name>
-				<translate>Kiste</translate>
-				<page>447</page>
+				<translate>Toolbox</translate>
+				<page>242</page>
 			</gear>
 			<gear translated="True">
 				<id>7b8f4a4e-0bdb-4e05-ade4-bf558daf60a6</id>
@@ -8628,7 +8526,7 @@
 				<id>4a2468f8-0ec5-4f33-9a5d-46861e8a79f4</id>
 				<name>Combination Lock</name>
 				<translate>Zylinder-/Kombinationsschloss</translate>
-				<page>446</page>
+				<page>451</page>
 			</gear>
 			<gear translated="True">
 				<id>a2953d6e-8bb8-40a8-b7f6-997be35947cf</id>
@@ -8646,7 +8544,7 @@
 				<id>caa0f85d-e6f0-415a-98c7-fc4f16139964</id>
 				<name>Anti-Tamper Circuits</name>
 				<translate>Anti-Manipulations-System</translate>
-				<page>447</page>
+				<page>451</page>
 			</gear>
 			<gear translated="True">
 				<id>b9812675-b4c3-43ce-b564-c47a5f66b0fc</id>
@@ -8676,12 +8574,12 @@
 				<id>de595490-7f88-4b1c-b239-009a6c5c10f4</id>
 				<name>Crowbar</name>
 				<translate>Brecheisen</translate>
-				<page>447</page>
+				<page>452</page>
 			</gear>
 			<gear translated="True">
 				<id>97f888dd-7e0d-4f33-b4cc-396cddecdf62</id>
 				<name>Miniwelder Fuel Canister</name>
-				<translate>Mini-Schweißgerät Benzin</translate>
+				<translate>Mini-Schweißgerät Treibstoffkanister</translate>
 				<page>452</page>
 			</gear>
 			<gear translated="True">
@@ -8717,7 +8615,7 @@
 			<gear translated="True">
 				<id>8adaecd5-0c24-4982-8803-e4459e16589f</id>
 				<name>Standard Rope (100m)</name>
-				<translate>Standard Seil (100m)</translate>
+				<translate>Standardseil (100m)</translate>
 				<page>449</page>
 			</gear>
 			<gear translated="True">
@@ -8765,55 +8663,55 @@
 			<gear translated="True">
 				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
 				<name>DocWagon Contract, Basic</name>
-				<translate>DocWagon Vertrag, Standard</translate>
+				<translate>DocWagon-Vertrag, Standard</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
 				<name>DocWagon Contract, Gold</name>
-				<translate>DocWagon Vertrag, Gold</translate>
+				<translate>DocWagon-Vertrag, Gold</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
 				<name>DocWagon Contract, Platinum</name>
-				<translate>DocWagon Vertrag, Platin</translate>
+				<translate>DocWagon-Vertrag, Platin</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
 				<name>DocWagon Contract, Super-Platinum</name>
-				<translate>DocWagon Vertrag, Superplatin</translate>
+				<translate>DocWagon-Vertrag, Superplatin</translate>
 				<page>454</page>
 			</gear>
 			<gear translated="True">
 				<id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>
 				<name>Slap Patch, Antidote Patch</name>
-				<translate>Slap Patch, Antidote Patch</translate>
+				<translate>Slap-Patch, Antidot-Patch</translate>
 				<page>455</page>
 			</gear>
 			<gear translated="True">
 				<id>d1c0cab8-b4ea-4f08-b462-75b18246e1d8</id>
 				<name>Slap Patch, Chem Patch</name>
-				<translate>Slap Patch, Chem Patch</translate>
+				<translate>Slap-Patch, Chem-Patch</translate>
 				<page>455</page>
 			</gear>
 			<gear translated="True">
 				<id>320bd9e3-e261-4a45-aa03-c740b6855e73</id>
 				<name>Slap Patch, Stim Patch</name>
-				<translate>Slap Patch, Stim Patch</translate>
+				<translate>Slap-Patch, Stim-Patch</translate>
 				<page>455</page>
 			</gear>
 			<gear translated="True">
 				<id>5e4f9fdf-cf51-4ea1-9de0-8ca4f33af8b1</id>
 				<name>Slap Patch, Tranq Patch</name>
-				<translate>Slap Patch, Tranq Patch</translate>
+				<translate>Slap-Patch, Tranq-Patch</translate>
 				<page>455</page>
 			</gear>
 			<gear translated="True">
 				<id>5de1956f-0ec3-4fad-9e9a-d8b90ac1e3f4</id>
 				<name>Slap Patch, Trauma Patch</name>
-				<translate>Slap Patch, Trauma Patch</translate>
+				<translate>Slap-Patch, Trauma-Patch</translate>
 				<page>455</page>
 			</gear>
 			<gear translated="True">
@@ -9492,7 +9390,7 @@
 				<id>483ca04a-8522-4d12-96ab-4e21dd9a4300</id>
 				<name>Dreamchip</name>
 				<translate>Dreamchip</translate>
-				<page>413</page>
+				<page>415</page>
 			</gear>
 			<gear translated="True">
 				<id>ea044b03-009c-4515-baef-d37b6b1138af</id>
@@ -9503,15 +9401,14 @@
 			<gear translated="True">
 				<id>2e98e2af-6a0e-4b2f-a573-1766552b4ba4</id>
 				<name>Personaflix</name>
-				<translate>Personaflix</translate>
-				<page>
-				</page>
+				<translate>Personafix</translate>
+				<page>415</page>
 			</gear>
 			<gear translated="True">
 				<id>de2bd382-6339-479d-8120-59dd65bde6e6</id>
 				<name>Tripchip</name>
 				<translate>Tripchip</translate>
-				<page>416</page>
+				<page>415</page>
 			</gear>
 			<gear translated="True">
 				<id>5977fb0b-b74e-4eb9-b433-9b7c9877b14f</id>
@@ -13587,6 +13484,7 @@
 			<name translate="Hexerei">Sorcery</name>
 			<name translate="Heimlichkeit">Stealth</name>
 			<name translate="Tasken">Tasking</name>
+			<name translate="Schauspielerei">Acting</name>
 		</skillgroups>
 		<categories>
 			<category type="active" translate="Kampf-Aktionsfertigkeiten">Combat Active</category>
@@ -14282,7 +14180,7 @@
 				<page>143</page>
 				<translate>Ritualzauberei</translate>
 				<specs>
-					<spec translate="[Keyword]">[Keyword]</spec>
+					<spec translate="[Merkmal]">[Keyword]</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14425,6 +14323,7 @@
 			<skill>
 				<id>fc89344f-daa6-438e-b61d-23f10dd13e44</id>
 				<name>Alchemy</name>
+				<page>142</page>
 				<translate>Alchemie</translate>
 				<specs>
 					<spec translate="Combat">Combat</spec>
@@ -14441,35 +14340,39 @@
 			<skill>
 				<id>955d9376-3066-469d-8670-5170c1d59020</id>
 				<name>Artificing</name>
+				<page>143</page>
 				<translate>Fokusherstellung</translate>
 				<specs>
-					<spec translate="Focus Analysis">Focus Analysis</spec>
-					<spec translate="[Focus Type]">[Focus Type]</spec>
+					<spec translate="Fokusanalyse">Focus Analysis</spec>
+					<spec translate="[Fokusart]">[Focus Type]</spec>
 				</specs>
 			</skill>
 			<skill>
 				<id>ba624682-a5c0-4cf5-b47b-1021e6a1800d</id>
 				<name>Biotechnology</name>
+				<page>144</page>
 				<translate>Biotechnologie</translate>
 				<specs>
-					<spec translate="Bioinformatics">Bioinformatics</spec>
+					<spec translate="Bioinformatik">Bioinformatics</spec>
 					<spec translate="Bioware">Bioware</spec>
-					<spec translate="Cloning">Cloning</spec>
-					<spec translate="Gene Therapy">Gene Therapy</spec>
-					<spec translate="Vat Maintenance">Vat Maintenance</spec>
+					<spec translate="Klonen">Cloning</spec>
+					<spec translate="Gentherapie">Gene Therapy</spec>
+					<spec translate="Wartung von Zuchttanks">Vat Maintenance</spec>
 				</specs>
 			</skill>
 			<skill>
 				<id>a9d9b686-bc4a-4347-b011-ff8f41455965</id>
 				<name>Disenchanting</name>
+				<page>143</page>
 				<translate>Entzaubern</translate>
 				<specs>
-					<spec translate="[Type]">[Type]</spec>
+					<spec translate="[Art]">[Type]</spec>
 				</specs>
 			</skill>
 			<skill>
 				<id>f510ccc3-cf95-4461-b2f7-e966daaa5a91</id>
 				<name>Free-Fall</name>
+				<page>133</page>
 				<translate>Freifall</translate>
 				<specs>
 		  <spec translate="Basejumping">BASE Jumping</spec>
@@ -14480,7 +14383,7 @@
 		  <spec translate="Fallschirm">Parachute</spec>
 					<spec translate="Static Line">Static Line</spec>
 					<spec translate="Wingsuit">Wingsuit</spec>
-					<spec translate="Zipline">Zipline</spec>
+					<spec translate="Seilrutsche">Zipline</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -14511,12 +14414,13 @@
 			<skill>
 				<id>b8a24d87-465a-4365-9948-038fe1ac62c4</id>
 				<name>Pilot Walker</name>
+				<page>147</page>
 				<translate>Läufer</translate>
 				<specs>
-					<spec translate="Biped">Biped</spec>
-					<spec translate="Multiped">Multiped</spec>
-					<spec translate="Quadruped">Quadruped</spec>
-					<spec translate="Remote Operation">Remote Operation</spec>
+					<spec translate="Zweibeiner">Biped</spec>
+					<spec translate="Vielbeiner">Multiped</spec>
+					<spec translate="Vierbeiner">Quadruped</spec>
+					<spec translate="Fernsteuerung">Remote Operation</spec>
 				</specs>
 			</skill>
 			<skill>
@@ -19724,8 +19628,8 @@
 			<accessory>
 				<id>7ca0c689-a05e-4377-ae44-3dc15abe2ee2</id>
 				<name>Hidden Gun Arm Slide</name>
-				<page>368</page>
-				<translate>Versteckte Armhalterung</translate>
+				<page>436</page>
+				<translate>Springarm</translate>
 			</accessory>
 			<accessory>
 				<id>71a37dd2-d162-4829-a233-5afdd954691d</id>
@@ -19796,8 +19700,7 @@
 			<accessory>
 				<id>3c329adb-7c13-4d2c-b25c-49be89173fa1</id>
 				<name>Sound Suppressor</name>
-				<page>
-				</page>
+				<page></page>
 				<translate>Schallunterdrücker</translate>
 			</accessory>
 			<accessory>
@@ -19857,7 +19760,7 @@
 			<accessory>
 				<id>d34a93a8-b695-4c46-8e34-0948df68d44f</id>
 				<name>Silencer, Ares Light Fire 70</name>
-				<page>435</page>
+				<page>428</page>
 				<translate>Schalldämpfer, Ares Light Fire 70</translate>
 			</accessory>
 			<accessory>
@@ -20556,71 +20459,85 @@
 			<complexform>
 				<id>373638b9-4334-4645-99f5-c3673e4f809b</id>
 				<name>Cleaner</name>
+				<page>251</page>
 				<translate>Reiniger</translate>
 			</complexform>
 			<complexform>
 				<id>33e75cd6-cad7-43dd-87ac-9838c83eccb5</id>
 				<name>Diffusion of [Matrix Attribute]</name>
+				<page>250</page>
 				<translate>[Matrix Attribut]-Senkung</translate>
 			</complexform>
 			<complexform translated="True">
 				<id>6b4ed8d5-75c8-4415-9578-15afa4ac8494</id>
 				<name>Editor</name>
+				<page>250</page>
 				<translate>Editor</translate>
 			</complexform>
 			<complexform>
 				<id>2abb9759-30b1-490f-9b42-0d6b7d282526</id>
 				<name>Infusion of [Matrix Attribute]</name>
+				<page>250</page>
 				<translate>[Matrix Attribut]-Steigerung</translate>
 			</complexform>
 			<complexform>
 				<id>dbb1d719-c829-4c45-9a53-9ff538865c14</id>
 				<name>Static Veil</name>
+				<page>252</page>
 				<translate>Signalschleier</translate>
 			</complexform>
 			<complexform>
 				<id>d8b11a80-eb95-409e-a53b-18c48e09342e</id>
 				<name>Pulse Storm</name>
+				<page>252</page>
 				<translate>Signalsturm</translate>
 			</complexform>
 			<complexform>
 				<id>f53a57c9-5073-4af3-aff9-45e3e449ac59</id>
 				<name>Puppeteer</name>
+				<page>251</page>
 				<translate>Puppenspieler</translate>
 			</complexform>
 			<complexform>
 				<id>cfebf27d-707e-4ea2-a376-394738a11b3c</id>
 				<name>Resonance Channel</name>
+				<page>251</page>
 				<translate>Resonanzkanal</translate>
 			</complexform>
 			<complexform>
 				<id>704abd70-c0e6-4f06-b186-53a7cb856584</id>
 				<name>Resonance Spike</name>
+				<page>251</page>
 				<translate>Resonanzspike</translate>
 			</complexform>
 			<complexform>
 				<id>42cc98b0-2b3f-42a0-bbe7-fb7d2633d11a</id>
 				<name>Resonance Veil</name>
+				<page>251</page>
 				<translate>Resonantillusion</translate>
 			</complexform>
 			<complexform>
 				<id>f64ccd1d-634f-4cf3-a020-ab03247abf25</id>
 				<name>Static Bomb</name>
+				<page>251</page>
 				<translate>Resonanznebel</translate>
 			</complexform>
 			<complexform>
 				<id>7cd49196-0912-43c5-b1a1-c9da96432340</id>
 				<name>Stitches</name>
+				<page>252</page>
 				<translate>Zusammenflicken</translate>
 			</complexform>
 			<complexform>
 				<id>73ed88a2-7a5d-4b1c-bc2e-f92b80f6c593</id>
 				<name>Transcendent Grid</name>
+				<page>250</page>
 				<translate>Metagitter</translate>
 			</complexform>
 			<complexform>
 				<id>f9dc77ad-bc06-4a1b-a967-0e78efe136e4</id>
 				<name>Tattletale</name>
+				<page>250</page>
 				<translate>Petze</translate>
 			</complexform>
 		</complexforms>
