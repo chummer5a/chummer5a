@@ -7598,14 +7598,14 @@ namespace Chummer
 	        objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
             objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
 
-            objSkillControl.SkillCategory = nodSkill["category"].InnerText;
-            if (nodSkill["default"].InnerText == "Yes")
-                objSkill.Default = true;
-            else
-                objSkill.Default = false;
+            //objSkillControl.SkillCategory = nodSkill["category"].InnerText;
+            //if (nodSkill["default"].InnerText == "Yes")
+            //    objSkill.Default = true;
+            //else
+            //    objSkill.Default = false;
 
-            objSkill.ExoticSkill = true;
-            _objCharacter.Skills.Add(objSkill);
+            //objSkill.ExoticSkill = true;
+            //_objCharacter.Skills.Add(objSkill);
 
             // Populate the Skill's Specializations (if any).
             foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
@@ -22060,20 +22060,20 @@ namespace Chummer
                         objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
                         objSkillControl.SkillName = objXmlSkill["name"].InnerText;
 
-                        switch (objXmlSkill["name"].InnerText)
-                        {
-                            case "Exotic Ranged Weapon":
-                            case "Exotic Melee Weapon":
-                                objSkill.Attribute = "AGI";
-                                objSkillControl.SkillCategory = "Combat Active";
-                                objSkill.Default = true;
-                                break;
-                            default:
-                                objSkill.Attribute = "REA";
-                                objSkillControl.SkillCategory = "Vehicle Active";
-                                objSkill.Default = false;
-                                break;
-                        }
+                        //switch (objXmlSkill["name"].InnerText)
+                        //{
+                        //    case "Exotic Ranged Weapon":
+                        //    case "Exotic Melee Weapon":
+                        //        objSkill.Attribute = "AGI";
+                        //        objSkillControl.SkillCategory = "Combat Active";
+                        //        objSkill.Default = true;
+                        //        break;
+                        //    default:
+                        //        objSkill.Attribute = "REA";
+                        //        objSkillControl.SkillCategory = "Vehicle Active";
+                        //        objSkill.Default = false;
+                        //        break;
+                        //}
                         objSkill.ExoticSkill = true;
                         _objCharacter.Skills.Add(objSkill);
 

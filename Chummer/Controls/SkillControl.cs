@@ -1292,25 +1292,25 @@ namespace Chummer
 				//List<Skill> joinList =
 				//	objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
 
-				type = _objSkill.Fold.Count == 0;
+				//type = _objSkill.Fold.Count == 0;
 
-				if (type)
-				{
+				//if (type)
+				//{
 
-					//if (joinList.Count > 0)
-					//{
-					//	cmdExpand.Visible = true;
-					//}
-					//else
-					//{
-					//	cmdExpand.Visible = false;
-					//}
-				}
-				else
-				{
+				//	//if (joinList.Count > 0)
+				//	//{
+				//	//	cmdExpand.Visible = true;
+				//	//}
+				//	//else
+				//	//{
+				//	//	cmdExpand.Visible = false;
+				//	//}
+				//}
+				//else
+				//{
 
-					cmdExpand.Visible = true;
-				}
+				//	cmdExpand.Visible = true;
+				//}
 
 				//If 2 knowledgeskills have same name, offer to join them
 			}

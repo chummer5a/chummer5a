@@ -7531,14 +7531,14 @@ namespace Chummer
 			objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
 			objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
 
-			objSkillControl.SkillCategory = nodSkill["category"].InnerText;
-			if (nodSkill["default"].InnerText == "Yes")
-				objSkill.Default = true;
-			else
-				objSkill.Default = false;
+			//objSkillControl.SkillCategory = nodSkill["category"].InnerText;
+			//if (nodSkill["default"].InnerText == "Yes")
+			//	objSkill.Default = true;
+			//else
+			//	objSkill.Default = false;
 
-			objSkill.ExoticSkill = true;
-			_objCharacter.Skills.Add(objSkill);
+			//objSkill.ExoticSkill = true;
+			//_objCharacter.Skills.Add(objSkill);
 
 			// Populate the Skill's Specializations (if any).
 			foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))

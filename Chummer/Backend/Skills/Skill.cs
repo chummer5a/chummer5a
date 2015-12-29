@@ -24,8 +24,15 @@ namespace Chummer.Skills
 	[DebuggerDisplay("{_name} {_base} {_karma}")]
 	public partial class Skill : INotifyPropertyChanged
 	{
-		#region REMOVELATERANDPLACEINCHILD
-		
+		protected CharacterAttrib UsedAttribute; //Attribute this skill primarily depends on
+		private readonly Character _character; //The Character (parent) to this skill
+		protected readonly string Category; //Name of the skill category it belongs to
+		protected readonly string _group;  //Name of the skill group this skill belongs to (remove?)
+		protected string _name;  //English name of this skill
+		protected List<ListItem> _spec;  //List of suggested specializations for this skill
+
+		#region REMOVELATERANDPLACEINCHILDORNEVER?
+
 		public bool Absorb(Skill s)
 		{
 			return false;
@@ -37,19 +44,38 @@ namespace Chummer.Skills
 			get { return null; }
 		}
 
+		
+		public bool IdImprovement;
+		public bool LockKnowledge;
+
 		#endregion
 
 		#region REFACTORAWAY_NOTANYMORE_RENAME_MEANING
-		
-		//TODO STILL REMOVE THOSE
-		public bool IdImprovement;
-		public bool LockKnowledge;
-		
-		public void Save(XmlWriter xw) { }
+
+
+
 		public void Print(XmlWriter xw) { } //Not this one, due grouping, interface?
 		#endregion
 
 		#region Factory
+
+		public void WriteTo(XmlTextWriter writer)
+		{
+			writer.WriteStartElement("skill");
+			writer.WriteElementString("guid", Id.ToString());
+			writer.WriteElementString("suid", SkillId.ToString());
+			writer.WriteElementString("karma", _karma.ToString());
+			writer.WriteElementString("base", _base.ToString());  //this could acctually be saved in karma too during career
+
+			if (!CharacterObject.Created)
+			{
+				writer.WriteElementString("buywithkarma", _buyWithKarma.ToString());
+			}
+
+			writer.WriteEndElement();
+
+		}
+
 
 		/// <summary>
 		/// Load a skill from a xml node from a saved .chum5 file
@@ -57,13 +83,28 @@ namespace Chummer.Skills
 		/// <param name="n">The XML node describing the skill</param>
 		/// <param name="character">The character this skill belongs to</param>
 		/// <returns></returns>
-		public static Skill Load(XmlNode n, Character character)
+		public static Skill Load(Character character, XmlNode n)
 		{
-			if (Debugger.IsAttached)
-				Debugger.Break();
+			if (n["suid"] == null) return null; 
 
-			return new Skill(n, character);
+			XmlDocument skills = XmlManager.Instance.Load("skills.xml");
+			XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
+
+			if (node == null) return null;
+
+			Skill skill = node["Exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
+
+			XmlElement element = node["guid"];
+			if (element != null) skill.Id = Guid.Parse(element.InnerText);
+
+			node.TryGetField("karma", out skill._karma);
+			node.TryGetField("base", out skill._base);
+			node.TryGetField("buywithkarma", out skill._buyWithKarma);
+
+			return skill;
 		}
+
+
 		
 		protected static Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();  //TODO CACHE INVALIDATE
 
@@ -130,17 +171,13 @@ namespace Chummer.Skills
 
 		protected Skill(Character character, string group)
 		{
-			//DEBUGGING .CTOR, remove before using
-			_character = character;  //INIT FROM HERE?
-			_objId = Guid.NewGuid();
+			_character = character;
 			_group = group;
 			
-			_skillGroup = Skills.SkillGroup.Get(this);
-			if (_skillGroup != null)
+			SkillGroupObject = Skills.SkillGroup.Get(this);
+			if (SkillGroupObject != null)
 			{
-				_skillGroup.PropertyChanged += OnSkillGroupChanged;
-					
-					//+= OnSkillGroupChanged();
+				SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
 			}
 
 			ImprovementEvent += OnImprovementEvent;
@@ -153,7 +190,7 @@ namespace Chummer.Skills
 			//Refactor still underway
 			_character = character;  //INIT FROM HERE?
 			
-			_objId = Guid.NewGuid();
+			Id = Guid.NewGuid();
 
 			if (Debugger.IsAttached)
 				Debugger.Break();
@@ -166,10 +203,10 @@ namespace Chummer.Skills
 			_name = n["name"].InnerText; //No need to catch errors (for now), if missing we are fsked anyway
 			UsedAttribute = CharacterObject.GetAttribute(n["attribute"].InnerText);
 			Category = n["category"].InnerText;
-			_default = n["default"].InnerText.ToLower() == "yes";
+			Default = n["default"].InnerText.ToLower() == "yes";
 			Source = n["source"].InnerText;
 			Page = n["page"].InnerText;
-
+			SkillId = Guid.Parse(n["id"].InnerText);
 			UsedAttribute.PropertyChanged += OnLinkedAttributeChanged;
 
 			_spec = new List<ListItem>();
@@ -179,25 +216,8 @@ namespace Chummer.Skills
 			}
 		}
 
-		//Load from .chum5
-		private Skill(XmlNode n, Character character) : this(character, "FIX LATER")
-		{
-
-		}
-
 		#endregion
 
-		private readonly SkillGroup _skillGroup;
-		protected CharacterAttrib UsedAttribute;
-		private readonly Guid _objId;
-		private readonly Character _character;
-		protected readonly bool _default;
-		protected readonly string Category;
-		protected readonly string _group;
-		protected string _name;
-		protected List<ListItem> _spec;
-		
-		
 		/// <summary>
 		/// The total, general pourpose dice pool for this skill
 		/// </summary>
@@ -210,7 +230,6 @@ namespace Chummer.Skills
 		{
 			get { return Rating > 0; }
 		}
-
 		
 		public Character CharacterObject
 		{
@@ -240,11 +259,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		public bool Default
-		{
-			get { return _default; }
-			set { } //TODO REFACTOR AWAY
-		}
+		public bool Default { get; private set; }
 
 		public virtual bool ExoticSkill
 		{
@@ -267,22 +282,14 @@ namespace Chummer.Skills
 		/// <summary>
 		/// The Unique ID for this skill. This is unique and never repeating
 		/// </summary>
-		public Guid Id
-		{
-			get { return _objId; }
-			set
-			{
-				if (Debugger.IsAttached)
-					Debugger.Break();
-			} //TODO REFACTOR AWAY
-		}
+		public Guid Id { get; private set; } = Guid.NewGuid();
 
 		/// <summary>
 		/// The ID for this skill. This is persistent for active skills over 
 		/// multiple characters, ?and predefined knowledge skills,? but not
 		/// for skills where the user supplies a name (Exotic and Knowledge)
 		/// </summary>
-		public Guid SkillId { get; }
+		public Guid SkillId { get; private set; } = Guid.Empty;
 
 		public string SkillGroup { get { return _group; } }
 
@@ -348,8 +355,8 @@ namespace Chummer.Skills
 
 		public string DicePoolModifiersTooltip { get; }
 		
-		public SkillGroup SkillGroupObject { get { return _skillGroup; } } 
-		
+		public SkillGroup SkillGroupObject { get; }
+
 		public string Page { get; private set; }
 
 		public string Source { get; private set; }

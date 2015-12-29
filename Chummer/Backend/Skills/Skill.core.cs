@@ -42,7 +42,7 @@ namespace Chummer.Skills
 		public bool BaseUnlocked
 		{
 			get { return _character.BuildMethod.HaveSkillPoints() && 
-					(_skillGroup == null || _skillGroup.Base <= 0); }
+					(SkillGroupObject == null || SkillGroupObject.Base <= 0); }
 		}
 
 		/// <summary>
@@ -53,10 +53,10 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (_skillGroup?.Base > 0)
+				if (SkillGroupObject?.Base > 0)
 				{
 					_base = 0;
-					return _skillGroup.Base;
+					return SkillGroupObject.Base;
 				}
 				else
 				{
@@ -65,7 +65,7 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (_skillGroup == null || _skillGroup.Base == 0)
+				if (SkillGroupObject == null || SkillGroupObject.Base == 0)
 				{
 					int max = 0;
 					int old = _base; // old value, not needed, don't fire too many events...
@@ -104,7 +104,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return _karma + FreeKarma() + (_skillGroup?.Karma ?? 0);
+				return _karma + FreeKarma() + (SkillGroupObject?.Karma ?? 0);
 			}
 			set
 			{
@@ -116,7 +116,7 @@ namespace Chummer.Skills
 				value -= Math.Max(0, overMax); //reduce by 0 or points over. 
 
 				//Handle free levels, don,t go below 0
-				_karma = Math.Max(0, value - (FreeKarma() + (_skillGroup?.Karma ?? 0))); 
+				_karma = Math.Max(0, value - (FreeKarma() + (SkillGroupObject?.Karma ?? 0))); 
 
 				if(old != _karma) OnPropertyChanged();
 				KarmaSpecForcedMightChange();
@@ -227,7 +227,7 @@ namespace Chummer.Skills
 			{
 				return Rating + attribute + PoolModifiers;
 			}
-			if (_default)
+			if (Default)
 			{
 				return attribute + PoolModifiers - 1;
 			}
@@ -256,10 +256,10 @@ namespace Chummer.Skills
 			
 
 			int cost = 0;
-			if (_skillGroup?.Karma > 0)
+			if (SkillGroupObject?.Karma > 0)
 			{
-				int groupUpper = _skillGroup.GetEnumerable().Min(x => x.Base + x.Karma);
-				int groupLower = groupUpper - _skillGroup.Karma;
+				int groupUpper = SkillGroupObject.GetEnumerable().Min(x => x.Base + x.Karma);
+				int groupLower = groupUpper - SkillGroupObject.Karma;
 
 				int lower = Base + FreeKarma(); //Might be an error here
 
@@ -357,7 +357,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		private bool ForceBuyWithKarma()
 		{
-			return !string.IsNullOrWhiteSpace(Specialization) && (_karma > 0 || _skillGroup?.Karma > 0 || _skillGroup?.Base > 0);
+			return !string.IsNullOrWhiteSpace(Specialization) && (_karma > 0 || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0);
 		}
 
 		/// <summary>

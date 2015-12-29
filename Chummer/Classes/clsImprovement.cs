@@ -1940,7 +1940,7 @@ namespace Chummer
 					if (!blnFound)
 					{
 						Skill objNSkill = new Skill(_objCharacter);
-						objNSkill.Id = id;
+						//objNSkill.Id = id;
 						objNSkill.IdImprovement = true;
 						//objNSkill.AllowDelete = false;
 						objNSkill.KnowledgeSkill = true;
