@@ -582,14 +582,14 @@ namespace Chummer
 		public int ValueOf(Improvement.ImprovementType objImprovementType, bool blnAddToRating = false,
 			string strImprovedName = null)
 		{
-			Log.Enter("ValueOf");
-			Log.Info("objImprovementType = " + objImprovementType.ToString());
-			Log.Info("blnAddToRating = " + blnAddToRating.ToString());
-			Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+			//Log.Enter("ValueOf");
+			//Log.Info("objImprovementType = " + objImprovementType.ToString());
+			//Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+			//Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
 
             if (_objCharacter == null)
             {
-                Log.Exit("ValueOf");
+                //Log.Exit("ValueOf");
                 return 0;
             }
 
@@ -751,7 +751,7 @@ namespace Chummer
 				intCustomValue += intHighest;
 			}
 
-            Log.Exit("ValueOf");
+            //Log.Exit("ValueOf");
 
 			return intValue + intCustomValue;
 		}
@@ -763,9 +763,9 @@ namespace Chummer
 		/// <param name="intRating">Integer value to replace "Rating" with.</param>
 		private int ValueToInt(string strValue, int intRating = 1)
 		{
-            Log.Enter("ValueToInt");
-            Log.Info("strValue = " + strValue);
-			Log.Info("intRating = " + intRating.ToString());
+   //         Log.Enter("ValueToInt");
+   //         Log.Info("strValue = " + strValue);
+			//Log.Info("intRating = " + intRating.ToString());
             
 			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
@@ -787,8 +787,8 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				string strReturn = strValue.Replace("Rating", intRating.ToString());
-                Log.Info("strValue = " + strValue);
-                Log.Info("strReturn = " + strReturn);
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
                 XPathExpression xprValue = nav.Compile(strReturn);
 
 				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
@@ -796,12 +796,12 @@ namespace Chummer
 				decValue = Math.Floor(decValue);
 				int intValue = Convert.ToInt32(decValue);
 
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
 				return Convert.ToInt32(intValue);
 			}
 			else
 			{
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
                 if (strValue.Contains("FixedValues"))
 				{
 					string[] strValues = strValue.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
@@ -819,9 +819,9 @@ namespace Chummer
 		/// <param name="strName">Name of the XmlNode to look for.</param>
 		private bool NodeExists(XmlNode objXmlNode, string strName)
 		{
-            Log.Enter("NodeExists");
-			Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-            Log.Info("strName = " + strName);
+   //         Log.Enter("NodeExists");
+			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
+   //         Log.Info("strName = " + strName);
 
             bool blnReturn = false;
 			try

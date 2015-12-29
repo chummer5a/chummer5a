@@ -305,6 +305,7 @@ namespace Chummer
 			}
 
 			logWriter.WriteLine(stringBuilder.ToString());
+			Trace.WriteLine(stringBuilder.ToString());
 		}
 
 		public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
