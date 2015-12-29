@@ -143,7 +143,8 @@ namespace Chummer.UI.Shared
 			_groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
-				Width = 255
+				Size = new Size(255, splitSkills.Panel1.Height - 15)
+				
 			};
 			sw.TaskEnd("_groups");
 
@@ -154,7 +155,7 @@ namespace Chummer.UI.Shared
 			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
 				Location = new Point(265, 39),
-				Width = 565
+				Size = new Size(565, splitSkills.Panel1.Height - 39)
 			};
 
 			sw.TaskEnd("_skills");
@@ -167,7 +168,7 @@ namespace Chummer.UI.Shared
 				knoSkill => new KnowledgeSkillControl(knoSkill))
 			{
 				Location = new Point(3, 50),
-				Width = splitSkills.Panel2.Width - 6,
+				Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height -  50)
 			};
 
 			splitSkills.Panel2.Controls.Add(_knoSkills);
