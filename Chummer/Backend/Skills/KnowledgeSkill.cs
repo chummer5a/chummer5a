@@ -122,5 +122,22 @@ namespace Chummer.Skills
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
 		}
+
+		/// <summary>
+		/// How much karma this costs. Return value during career mode is undefined
+		/// </summary>
+		/// <returns></returns>
+		public override int CurrentKarmaCost()
+		{
+			int cost = Rating*(Rating + 1);
+			int lower = Base + FreeKarma();
+			cost -= lower*(lower + 1);
+
+			cost +=  //Spec
+					(!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
+					CharacterObject.Options.KarmaSpecialization : 0;
+
+			return cost;
+		}
 	}
 }

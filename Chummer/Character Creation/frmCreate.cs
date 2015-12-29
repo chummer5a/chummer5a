@@ -2321,6 +2321,7 @@ namespace Chummer
 		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{  //TODO: This fires an ABOSURD amount of times, put acctual code on a n ms delay, or not return early if last call was within n ms?
 			_blnIsDirty = true;
+			CalculateBP();
 			UpdateWindowTitle();
 			UpdateCharacterInfo();
 		}
@@ -16062,7 +16063,7 @@ namespace Chummer
 			int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
 			int intLifeModuleQualities = 0;
-			int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
+	
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
@@ -16072,24 +16073,11 @@ namespace Chummer
 				else if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
 				{
 					intNegativeQualities += (objQuality.BP * _objOptions.KarmaQuality);
-            }
+				}
 				else if (objQuality.Type == QualityType.LifeModule && objQuality.ContributeToBP)
 				{
 					intLifeModuleQualities += (objQuality.BP);
 				}
-
-				if (objQuality.Name == "Aged (Rating 1)")
-				{
-					intKnowledgeSkillPoints += 5;
-				}
-				else if (objQuality.Name == "Aged (Rating 2)")
-            {
-					intKnowledgeSkillPoints += 10;
-				}
-				else if (objQuality.Name == "Aged (Rating 3)")
-                {
-					intKnowledgeSkillPoints += 15;
-                }
             }
 
             // Deduct the amounts for free Qualities.
@@ -16168,78 +16156,15 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeFreePointsUsed = 0;
-            int knowledgeKarmaUsed = 0;
-			foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-            {
-                // start at 1, look at each point in the skill in turn and determine its cost
-                int ii = 1;
-                if (objSkillControl.SkillRating > 0) 
-                { 
-                    // points that came from skill points
-                    while (ii <= objSkillControl.SkillBase)
-                    {
-                        int cost = 1;
-                        // check for free double levels from qualities (make every other point free)
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") ||
-                                (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") ||
-                                (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") ||
-                                (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                        {
-                            if (ii%2 ==0) cost = 0;
-                        }
-                        knowledgeFreePointsUsed += cost;
-                        ii++;
-                    }
-
-                    // points that came from karma
-                    while (ii <= objSkillControl.SkillRating)
-                    {
-                        int costThisLevel = ii * _objOptions.KarmaImproveKnowledgeSkill;
-                        // was the first point bought with Karma
-                        if (ii == 1) 
-                            costThisLevel = _objOptions.KarmaNewKnowledgeSkill;
-                    
-                        // check for qualities that raise/lower cost for later ranks
-                        if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-						{
-                            costThisLevel *= 2;
-						}
-
-                        if (ii >= 3) {
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") ||
-                                (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") ||
-                                (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") ||
-                                (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                            {
-                                costThisLevel--;
-                            }
-                        }
-                        // note: don't check for Jack of all Trades during creation mode
-
-                        knowledgeKarmaUsed += costThisLevel;
-                        ii++;
-                    }
-
-                    // did we buy a specialization?
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty)
-                    {
-                        if (!objSkillControl.BuyWithKarma)
-                            knowledgeFreePointsUsed++;
-                        else
-                            knowledgeKarmaUsed += _objCharacter.Options.KarmaSpecialization;
-                    }
-                }
-            }
-
+            int knowledgeKarmaUsed = _objCharacter.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
 			//TODO: Remaining is named USED?
-            _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - knowledgeFreePointsUsed;
             intKarmaPointsRemain -= knowledgeKarmaUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
-            lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - knowledgeFreePointsUsed).ToString(), intKnowledgeSkillPoints.ToString());
-            lblPBuildKnowledgeSkills.Text = lblKnowledgeSkillPoints.Text;
-            lblKnowledgeSkillsBP.Text = String.Format("{0} " + strPoints, knowledgeKarmaUsed.ToString());
+            lblPBuildKnowledgeSkills.Text =
+		        $"{(_objCharacter.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.KnowledgeSkillPoints}";
+
+			lblKnowledgeSkillsBP.Text = String.Format("{0} " + strPoints, knowledgeKarmaUsed);
             intFreestyleBP += knowledgeKarmaUsed;
 
             // ------------------------------------------------------------------------------
@@ -20767,10 +20692,10 @@ namespace Chummer
             }
 
             // Check if the character has gone over on Knowledge Skills
-            if (_objCharacter.KnowledgeSkillPointsUsed < 0)
+            if (_objCharacter.KnowledgeSkillPointsRemain < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.KnowledgeSkillPointsUsed) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.KnowledgeSkillPointsRemain) * -1).ToString());
             }
 
             // Check if the character has gone over the Nuyen limit.

@@ -350,8 +350,8 @@ namespace Chummer
 
 			//_objSkill.Name = cboSkillName.Text;
 
-			_objSkill.Name = strSkillName;
-			cboSkillName.Text = strSkillName;
+			//_objSkill.Name = strSkillName;
+			//cboSkillName.Text = strSkillName;
 			RefreshControl();
 			XmlDocument objXmlDocument = new XmlDocument();
 			objXmlDocument = XmlManager.Instance.Load("skills.xml");

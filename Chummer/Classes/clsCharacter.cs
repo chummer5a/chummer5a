@@ -6659,19 +6659,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Number of free Knowledge Skill Points the character has used.
-        /// </summary>
-        public int KnowledgeSkillPointsUsed
-        {
-            get
-            {
-                return _intKnowledgeSkills;
-            }
-            set
-            {
-                _intKnowledgeSkills = value;
-            }
-        }
+		/// Number of free Knowledge skill points the character have remaining
+		/// </summary>
+	    public int KnowledgeSkillPointsRemain
+	    {
+		    get
+		    {
+			    return KnowledgeSkillPoints - KnowledgeSkills.Sum(x => x.CurrentSpCost());
+			}
+	    }
 
         /// <summary>
         /// Number of free Skill Points the character has.

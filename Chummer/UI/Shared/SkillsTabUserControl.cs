@@ -81,6 +81,7 @@ namespace Chummer.UI.Shared
 
 			_skills.ChildPropertyChanged += ChildPropertyChanged;
 			_groups.ChildPropertyChanged += ChildPropertyChanged;
+			_knoSkills.ChildPropertyChanged += ChildPropertyChanged;
 
 			//Visible = true;
 			//this.ResumeLayout(false);
