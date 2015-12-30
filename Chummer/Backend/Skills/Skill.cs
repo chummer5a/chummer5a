@@ -92,14 +92,14 @@ namespace Chummer.Skills
 
 			if (node == null) return null;
 
-			Skill skill = node["Exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
+			Skill skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
 
-			XmlElement element = node["guid"];
+			XmlElement element = n["guid"];
 			if (element != null) skill.Id = Guid.Parse(element.InnerText);
 
-			node.TryGetField("karma", out skill._karma);
-			node.TryGetField("base", out skill._base);
-			node.TryGetField("buywithkarma", out skill._buyWithKarma);
+			n.TryGetField("karma", out skill._karma);
+			n.TryGetField("base", out skill._base);
+			n.TryGetField("buywithkarma", out skill._buyWithKarma);
 
 			return skill;
 		}

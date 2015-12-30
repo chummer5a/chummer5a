@@ -1074,7 +1074,7 @@ namespace Chummer
 
             objXmlCharacter.TryGetField("special", out _intSpecial);
             objXmlCharacter.TryGetField("totalspecial", out _intTotalSpecial);
-            objXmlCharacter.TryGetField("attributes", out _intAttributes);
+            objXmlCharacter.TryGetField("attributes", out _intAttributes); //wonkey
             objXmlCharacter.TryGetField("totalattributes", out _intTotalAttributes);
             objXmlCharacter.TryGetField("contactpoints", out _intContactPoints);
             objXmlCharacter.TryGetField("contactpointsused", out _intContactPointsUsed);
@@ -1292,9 +1292,21 @@ namespace Chummer
 	        oldSKillGroupBackup = objXmlDocument.SelectSingleNode("/character/skillgroups")?.Clone();
 			Timekeeper.Start("load_char_skills_normal");
 
-	        foreach (XmlNode node in objXmlDocument.SelectNodes("/character/newskills/skill"))
+			//Load skills. Because sorting a BindingList is complicated we use a temporery normal list
+	        List<Skill> loadingSkills =
+				(from XmlNode node 
+				 in objXmlDocument.SelectNodes("/character/newskills/skills/skill")
+				 let skill = Skill.Load(this, node)
+				 where skill != null
+				 select skill
+				 ).ToList();
+
+	        loadingSkills.Sort(CompareSkills);
+
+			Skills.Clear();
+	        foreach (Skill skill in loadingSkills)
 	        {
-		        
+		        Skills.Add(skill);
 	        }
 
 			Timekeeper.Finish("load_char_skills_normal");
@@ -1748,7 +1760,30 @@ namespace Chummer
 	        return true;
         }
 
-        /// <summary>
+	    private int CompareSkills(Skill rhs, Skill lhs)
+	    {
+		    if (rhs is ExoticSkill)
+		    {
+			    if (lhs is ExoticSkill)
+			    {
+				    return (rhs.Specialization ?? "").CompareTo(lhs.Specialization ?? "");
+			    }
+			    else
+			    {
+				    return 1;
+			    }
+		    }
+		    else if (lhs is ExoticSkill)
+		    {
+			    return -1;
+		    }
+		    else
+		    {
+			    return rhs.DisplayName.CompareTo(lhs.DisplayName);
+		    }
+	    }
+
+	    /// <summary>
         /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
         /// This can be used to write multiple characters to a single XmlDocument.
         /// </summary>
