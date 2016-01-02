@@ -8625,7 +8625,7 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Armor objArmor = new Armor(_objCharacter);
-            objArmor.Create(objXmlArmor, objNode, cmsArmorMod);
+            objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
             if (objArmor.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -22845,7 +22845,7 @@ namespace Chummer
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, false, blnCreateChildren);
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, Convert.ToInt32(objXmlArmor["rating"].InnerText), false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.

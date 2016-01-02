@@ -611,8 +611,8 @@
 								<table width="100%" cellspacing="0" cellpadding="0" border="0">
 									<tr>
 										<td class="rowsummary" colspan="3"> Limits
-										<span class="rowsummarybutton" onClick="showhide(this,'SkillsBlock');" colspan="1">Zeigen: Ja</span>
-										<span class="rowsummarybutton" onClick="zalomit(this,'SkillsBlock');" colspan="1">Seitenumbruch: Nein</span>
+										<span class="rowsummarybutton" onClick="showhide(this,'LimitsBlock');" colspan="1">Zeigen: Ja</span>
+										<span class="rowsummarybutton" onClick="zalomit(this,'LimitsBlock');" colspan="1">Seitenumbruch: Nein</span>
 										</td>
 									</tr>
 								</table>

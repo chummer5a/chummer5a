@@ -149,6 +149,8 @@
 			this.chkRestrictRecoil = new System.Windows.Forms.CheckBox();
 			this.chkAutomaticCopyProtection = new System.Windows.Forms.CheckBox();
 			this.chkEnforceCapacity = new System.Windows.Forms.CheckBox();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.cmdUploadPastebin = new System.Windows.Forms.Button();
 			this.treSourcebook = new System.Windows.Forms.TreeView();
 			this.tabKarmaCosts = new System.Windows.Forms.TabPage();
 			this.cmdRestoreDefaultsKarma = new System.Windows.Forms.Button();
@@ -282,6 +284,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudBP)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
 			this.tabPage1.SuspendLayout();
+			this.tabPage3.SuspendLayout();
 			this.tabKarmaCosts.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaSymbolicLinkFocus)).BeginInit();
@@ -985,6 +988,7 @@
 			this.tabControl2.Controls.Add(this.tabGlobal);
 			this.tabControl2.Controls.Add(this.tabPage2);
 			this.tabControl2.Controls.Add(this.tabPage1);
+			this.tabControl2.Controls.Add(this.tabPage3);
 			this.tabControl2.Location = new System.Drawing.Point(243, 6);
 			this.tabControl2.Name = "tabControl2";
 			this.tabControl2.SelectedIndex = 0;
@@ -1570,6 +1574,28 @@
 			this.chkEnforceCapacity.Tag = "Checkbox_Option_EnforceCapacity";
 			this.chkEnforceCapacity.Text = "Enforce Capacity limits";
 			this.chkEnforceCapacity.UseVisualStyleBackColor = true;
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage3.Controls.Add(this.cmdUploadPastebin);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(548, 524);
+			this.tabPage3.TabIndex = 3;
+			this.tabPage3.Text = "Github Issues";
+			// 
+			// cmdUploadPastebin
+			// 
+			this.cmdUploadPastebin.Enabled = false;
+			this.cmdUploadPastebin.Location = new System.Drawing.Point(8, 7);
+			this.cmdUploadPastebin.Name = "cmdUploadPastebin";
+			this.cmdUploadPastebin.Size = new System.Drawing.Size(152, 23);
+			this.cmdUploadPastebin.TabIndex = 0;
+			this.cmdUploadPastebin.Text = "Upload file to Pastebin";
+			this.cmdUploadPastebin.UseVisualStyleBackColor = true;
+			this.cmdUploadPastebin.Click += new System.EventHandler(this.cmdUploadPastebin_Click);
 			// 
 			// treSourcebook
 			// 
@@ -2562,7 +2588,7 @@
 			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
 			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
 			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
-			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.cgkESSLossReducesMaximumOnly_CheckedChanged);
+			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.chkESSLossReducesMaximumOnly_CheckedChanged);
 			// 
 			// chkAllowCyberwareESSDiscounts
 			// 
@@ -2883,6 +2909,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
+			this.tabPage3.ResumeLayout(false);
 			this.tabKarmaCosts.ResumeLayout(false);
 			this.tabKarmaCosts.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).EndInit();
@@ -3140,5 +3167,7 @@
 		private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
 		private System.Windows.Forms.CheckBox chkMissions;
 		private System.Windows.Forms.CheckBox chkESSLossReducesMaximumOnly;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.Button cmdUploadPastebin;
 	}
 }

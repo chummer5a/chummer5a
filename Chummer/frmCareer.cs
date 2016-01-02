@@ -5816,7 +5816,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Armor objArmor = new Armor(_objCharacter);
-			objArmor.Create(objXmlArmor, objNode, cmsArmorMod);
+			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
 			if (objArmor.InternalId == Guid.Empty.ToString())
 				return;
 

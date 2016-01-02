@@ -16,8 +16,9 @@ Application Change:
 - Fixed a string formatting issue that prevented Accuracy modifications from adept powers from working properly for translated Chummer.
 - Fixed an issue that prevented priority/sum-to-ten from using the gameplay options for their nuyen limit.
 - Sum to Ten and Priority now use the same form for character generation. Doesn't mean anything particularly interesting for you guys, but may reduce or introduce some interesting new bugs. 
-- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tiday as I'd like.
+- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tidy as I'd like.
 - Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
+- Armor can now have a Rating; currently this is used exclusively for the cloaks from Hard Targets.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -32,6 +33,8 @@ Data Change:
 - Removed the quality "Natural Weapon: Claws" for the Sasquatch.
 - Added ammoslots entries for Speed Loader, Spare Clip, Explosive Magazine and Extended Clip.
 - Fixed a stupid error with the toxin/pathogen resistance qualities, dwarves and translation files. Fixes #590.
+- Cloaks now have Ratings and calculated values instead of the initial implementation. 
+- Fixed a formatting issue for the German version of the Shadowrun 5 Base character sheet.
 
 New Strings:
 - Message_DeleteCalendarWeek
