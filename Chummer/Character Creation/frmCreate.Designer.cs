@@ -3333,7 +3333,7 @@ namespace Chummer
 			this.tabCommon.Size = new System.Drawing.Size(838, 611);
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
-			this.tabCommon.Text = "Common";
+			this.tabCommon.Text = "Acc";
 			// 
 			// cmdLifeModule
 			// 
@@ -3849,11 +3849,11 @@ namespace Chummer
 			// 
 			// lblDEPAug
 			// 
-			this.lblDEPAug.AutoSize = true;
 			this.lblDEPAug.Enabled = false;
-			this.lblDEPAug.Location = new System.Drawing.Point(220, 291);
+			this.lblDEPAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblDEPAug.Location = new System.Drawing.Point(222, 289);
 			this.lblDEPAug.Name = "lblDEPAug";
-			this.lblDEPAug.Size = new System.Drawing.Size(19, 13);
+			this.lblDEPAug.Size = new System.Drawing.Size(60, 17);
 			this.lblDEPAug.TabIndex = 58;
 			this.lblDEPAug.Text = "[0]";
 			// 
@@ -3978,102 +3978,102 @@ namespace Chummer
 			// 
 			// lblRESAug
 			// 
-			this.lblRESAug.AutoSize = true;
 			this.lblRESAug.Enabled = false;
-			this.lblRESAug.Location = new System.Drawing.Point(220, 267);
+			this.lblRESAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRESAug.Location = new System.Drawing.Point(222, 265);
 			this.lblRESAug.Name = "lblRESAug";
-			this.lblRESAug.Size = new System.Drawing.Size(19, 13);
+			this.lblRESAug.Size = new System.Drawing.Size(60, 17);
 			this.lblRESAug.TabIndex = 43;
 			this.lblRESAug.Text = "[0]";
 			// 
 			// lblMAGAug
 			// 
-			this.lblMAGAug.AutoSize = true;
 			this.lblMAGAug.Enabled = false;
-			this.lblMAGAug.Location = new System.Drawing.Point(220, 241);
+			this.lblMAGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblMAGAug.Location = new System.Drawing.Point(222, 239);
 			this.lblMAGAug.Name = "lblMAGAug";
-			this.lblMAGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblMAGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblMAGAug.TabIndex = 42;
 			this.lblMAGAug.Text = "[0]";
 			// 
 			// lblEDGAug
 			// 
-			this.lblEDGAug.AutoSize = true;
-			this.lblEDGAug.Location = new System.Drawing.Point(220, 215);
+			this.lblEDGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblEDGAug.Location = new System.Drawing.Point(222, 213);
 			this.lblEDGAug.Name = "lblEDGAug";
-			this.lblEDGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblEDGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblEDGAug.TabIndex = 41;
 			this.lblEDGAug.Text = "[0]";
 			// 
 			// lblWILAug
 			// 
-			this.lblWILAug.AutoSize = true;
-			this.lblWILAug.Location = new System.Drawing.Point(220, 189);
+			this.lblWILAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblWILAug.Location = new System.Drawing.Point(222, 187);
 			this.lblWILAug.Name = "lblWILAug";
-			this.lblWILAug.Size = new System.Drawing.Size(19, 13);
+			this.lblWILAug.Size = new System.Drawing.Size(60, 17);
 			this.lblWILAug.TabIndex = 40;
 			this.lblWILAug.Text = "[0]";
 			// 
 			// lblLOGAug
 			// 
-			this.lblLOGAug.AutoSize = true;
-			this.lblLOGAug.Location = new System.Drawing.Point(220, 163);
+			this.lblLOGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblLOGAug.Location = new System.Drawing.Point(222, 161);
 			this.lblLOGAug.Name = "lblLOGAug";
-			this.lblLOGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblLOGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblLOGAug.TabIndex = 39;
 			this.lblLOGAug.Text = "[0]";
 			// 
 			// lblINTAug
 			// 
-			this.lblINTAug.AutoSize = true;
-			this.lblINTAug.Location = new System.Drawing.Point(220, 137);
+			this.lblINTAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblINTAug.Location = new System.Drawing.Point(222, 135);
 			this.lblINTAug.Name = "lblINTAug";
-			this.lblINTAug.Size = new System.Drawing.Size(19, 13);
+			this.lblINTAug.Size = new System.Drawing.Size(60, 17);
 			this.lblINTAug.TabIndex = 38;
 			this.lblINTAug.Text = "[0]";
 			// 
 			// lblCHAAug
 			// 
-			this.lblCHAAug.AutoSize = true;
-			this.lblCHAAug.Location = new System.Drawing.Point(220, 111);
+			this.lblCHAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCHAAug.Location = new System.Drawing.Point(222, 109);
 			this.lblCHAAug.Name = "lblCHAAug";
-			this.lblCHAAug.Size = new System.Drawing.Size(19, 13);
+			this.lblCHAAug.Size = new System.Drawing.Size(60, 17);
 			this.lblCHAAug.TabIndex = 37;
 			this.lblCHAAug.Text = "[0]";
 			// 
 			// lblSTRAug
 			// 
-			this.lblSTRAug.AutoSize = true;
-			this.lblSTRAug.Location = new System.Drawing.Point(220, 85);
+			this.lblSTRAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblSTRAug.Location = new System.Drawing.Point(222, 83);
 			this.lblSTRAug.Name = "lblSTRAug";
-			this.lblSTRAug.Size = new System.Drawing.Size(19, 13);
+			this.lblSTRAug.Size = new System.Drawing.Size(60, 17);
 			this.lblSTRAug.TabIndex = 36;
 			this.lblSTRAug.Text = "[0]";
 			// 
 			// lblREAAug
 			// 
-			this.lblREAAug.AutoSize = true;
-			this.lblREAAug.Location = new System.Drawing.Point(220, 59);
+			this.lblREAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblREAAug.Location = new System.Drawing.Point(222, 57);
 			this.lblREAAug.Name = "lblREAAug";
-			this.lblREAAug.Size = new System.Drawing.Size(19, 13);
+			this.lblREAAug.Size = new System.Drawing.Size(60, 17);
 			this.lblREAAug.TabIndex = 35;
 			this.lblREAAug.Text = "[0]";
 			// 
 			// lblAGIAug
 			// 
-			this.lblAGIAug.AutoSize = true;
-			this.lblAGIAug.Location = new System.Drawing.Point(220, 33);
+			this.lblAGIAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblAGIAug.Location = new System.Drawing.Point(222, 31);
 			this.lblAGIAug.Name = "lblAGIAug";
-			this.lblAGIAug.Size = new System.Drawing.Size(19, 13);
+			this.lblAGIAug.Size = new System.Drawing.Size(60, 17);
 			this.lblAGIAug.TabIndex = 34;
 			this.lblAGIAug.Text = "[0]";
 			// 
 			// lblBODAug
 			// 
-			this.lblBODAug.AutoSize = true;
-			this.lblBODAug.Location = new System.Drawing.Point(220, 7);
+			this.lblBODAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblBODAug.Location = new System.Drawing.Point(222, 5);
 			this.lblBODAug.Name = "lblBODAug";
-			this.lblBODAug.Size = new System.Drawing.Size(19, 13);
+			this.lblBODAug.Size = new System.Drawing.Size(60, 17);
 			this.lblBODAug.TabIndex = 33;
 			this.lblBODAug.Text = "[0]";
 			// 
