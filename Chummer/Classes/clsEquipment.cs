@@ -10430,6 +10430,7 @@ namespace Chummer
 				intReturn = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
 				intReturn += Convert.ToInt32(decCost);
 
+				intReturn = Convert.ToInt32(intReturn * dblPercentage);
 				if (_blnTrustFund)
 				{
 					intReturn += Convert.ToInt32(Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo));

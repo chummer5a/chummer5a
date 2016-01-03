@@ -340,11 +340,19 @@ namespace Chummer
 				decimal decModifier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				decMod += Convert.ToDecimal(decModifier / 100, GlobalOptions.Instance.CultureInfo);
 			}
-			
+
 			intNuyen = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
 			intNuyen += Convert.ToInt32(decCost);
 			lblCost.Text = String.Format("{0:###,###,##0¥}", intNuyen);
 
+			if (nudPercentage.Value != 100)
+			{
+				decimal decDiscount = 0;
+				decDiscount = decBaseCost + (decBaseCost * decMod);
+				decDiscount += decCost;
+				decDiscount = decDiscount * (nudPercentage.Value /100);
+				lblCost.Text += String.Format(" (" + "{0:###,###,##0¥}" +")", Convert.ToInt32(decDiscount));
+			}
 			return intNuyen;
 		}
 

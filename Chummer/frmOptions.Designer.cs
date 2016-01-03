@@ -2588,7 +2588,6 @@
 			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
 			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
 			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
-			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.chkESSLossReducesMaximumOnly_CheckedChanged);
 			// 
 			// chkAllowCyberwareESSDiscounts
 			// 
