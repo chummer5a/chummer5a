@@ -28,7 +28,7 @@ namespace Chummer
 			MoveControls();
 		}
 
-		private void frmSelectAdvancedLifestyle_Load(object sender, EventArgs e)
+		private void frmSelectLifestyle_Load(object sender, EventArgs e)
 		{
 			_blnSkipRefresh = true;
 
@@ -62,7 +62,7 @@ namespace Chummer
 				lstLifestyle.Add(objItem);
 				}
 			}
-			cboLifestyle.ValueMember = "Name";
+			cboLifestyle.ValueMember = "Value";
 			cboLifestyle.DisplayMember = "Name";
 			cboLifestyle.DataSource = lstLifestyle;
 

@@ -277,7 +277,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Tag = "Title_SelectAdvancedLifestyle";
 			this.Text = "Build Lifestyle";
-			this.Load += new System.EventHandler(this.frmSelectAdvancedLifestyle_Load);
+			this.Load += new System.EventHandler(this.frmSelectLifestyle_Load);
 			((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();
 			this.ResumeLayout(false);

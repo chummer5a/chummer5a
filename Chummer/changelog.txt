@@ -20,6 +20,8 @@ Application Change:
 - Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
 - Armor can now have a Rating; currently this is used exclusively for the cloaks from Hard Targets.
 - Fixed the percentage discount for basic lifestyles.
+- Fixed a translation issue for licences.
+- Fixed a translation issue for basic lifestyles. Fixes #608.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
