@@ -22,6 +22,7 @@ Application Change:
 - Fixed the percentage discount for basic lifestyles.
 - Fixed a translation issue for licences.
 - Fixed a translation issue for basic lifestyles. Fixes #608.
+- Armor improvements can now use Precedence attributes; this means that we can prevent a group of armour improvements from stacking with each other. Currently this is used for a small selection of skin-related qualities and biowares. See the Data Changes for more details. Fixes #602.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -38,6 +39,11 @@ Data Change:
 - Fixed a stupid error with the toxin/pathogen resistance qualities, dwarves and translation files. Fixes #590.
 - Cloaks now have Ratings and calculated values instead of the initial implementation. 
 - Fixed a formatting issue for the German version of the Shadowrun 5 Base character sheet.
+- The following armour improvements can no longer stack with each other: 
+	* Dermal Deposit changeling qualities
+	* Troll metatype dermal plating
+	* Orthoskin bioware
+	* Dermal Plating cyberware
 
 New Strings:
 - Message_DeleteCalendarWeek
