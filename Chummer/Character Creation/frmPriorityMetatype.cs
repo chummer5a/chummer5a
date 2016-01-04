@@ -1798,11 +1798,11 @@ namespace Chummer
                 // Set Free Skills/Skill Groups
                 int intFreeLevels = 0;
                 bool blnGroup = (cboTalents.SelectedValue.ToString() == "Aspected Magician");
-                if (cboTalent.SelectedValue.ToString() == "A")
+                if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "A")
                     intFreeLevels = 5;
-                else if (cboTalent.SelectedValue.ToString() == "B")
+                else if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "B")
                     intFreeLevels = 4;
-                else if (cboTalent.SelectedValue.ToString() == "C")
+                else if ((cboTalent.SelectedValue.ToString().Split(',')[0]) == "C")
                     intFreeLevels = 2;
                 foreach (Skill objSkill in _objCharacter.Skills)
                 {
