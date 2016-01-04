@@ -967,7 +967,10 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-			SumtoTen();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
@@ -1014,7 +1017,10 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-			SumtoTen();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
@@ -1061,7 +1067,10 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-			SumtoTen();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
@@ -1108,7 +1117,10 @@ namespace Chummer
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
-			SumtoTen();
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				SumtoTen();
+			}
 		}
         #endregion
 
