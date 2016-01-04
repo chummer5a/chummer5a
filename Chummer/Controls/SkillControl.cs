@@ -347,8 +347,12 @@ namespace Chummer
 		{
 			if (_lockKnowledge) return;
 
-			_objSkill.Name = cboSkillName.Text;
+			string strSkillName = cboSkillName.Text.Split('(')[0];
+			strSkillName = strSkillName.Substring(0, (strSkillName.Length - 1));
 
+			_objSkill.Name = strSkillName;
+			cboSkillName.Text = strSkillName;
+			RefreshControl();
 			XmlDocument objXmlDocument = new XmlDocument();
 			objXmlDocument = XmlManager.Instance.Load("skills.xml");
 

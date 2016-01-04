@@ -212,7 +212,7 @@
       <descriptor>Direct</descriptor>
       <category>Combat</category>
       <type>M</type>
-      <range>LOS</range>
+      <range>T</range>
       <damage>S</damage>
       <duration>I</duration>
       <dv>F-6</dv>

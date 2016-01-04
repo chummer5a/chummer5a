@@ -263,7 +263,7 @@
       <avail>(Rating * 4)R</avail>
       <cost>Rating * 6000</cost>
       <bonus>
-        <armor>Rating</armor>
+        <armor precedence="0">Rating</armor>
       </bonus>
       <source>SR5</source>
       <page>459</page>

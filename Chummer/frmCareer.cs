@@ -28,6 +28,7 @@ namespace Chummer
 		private int _intDragLevel = 0;
 		private MouseButtons _objDragButton = new MouseButtons();
 		private bool _blnDraggingGear = false;
+		private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
 
 		private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
 		private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
@@ -264,6 +265,11 @@ namespace Chummer
 			lblFoci.Visible = _objCharacter.MAGEnabled;
 			treFoci.Visible = _objCharacter.MAGEnabled;
 			cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
+
+			lblDEPLabel.Enabled = (_objCharacter.Metatype == "A.I.");
+			lblDEPAug.Enabled = (_objCharacter.Metatype == "A.I.");
+			lblDEP.Enabled = (_objCharacter.Metatype == "A.I.");
+			lblDEPMetatype.Enabled = (_objCharacter.Metatype == "A.I.");
 
 			lblRESLabel.Enabled = _objCharacter.RESEnabled;
 			lblRESAug.Enabled = _objCharacter.RESEnabled;
@@ -702,6 +708,7 @@ namespace Chummer
 					objContactControl.DeleteContact += objContact_DeleteContact;
 					objContactControl.FileNameChanged += objContact_FileNameChanged;
                     objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
+					objContactControl.MouseDown += panContactControl_MouseDown;
 					
 					objContactControl.ContactObject = objContact;
 					objContactControl.ContactName = objContact.Name;
@@ -4043,6 +4050,47 @@ namespace Chummer
 			_blnIsDirty = true;
 			UpdateWindowTitle();
 		}
+		
+		private void cmdImproveDEP_Click(object sender, EventArgs e)
+		{
+			// Make sure the character has enough Karma to improve the Attribute.
+			int intKarmaCost = 0;
+			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+				intKarmaCost = (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
+			else
+				intKarmaCost = (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
+
+			if (intKarmaCost > _objCharacter.Karma)
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+				return;
+			}
+
+			int intFromValue = 0;
+			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+				intFromValue = _objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers;
+			else
+				intFromValue = _objCharacter.DEP.Value - _objCharacter.EssencePenalty;
+
+			if (!ConfirmKarmaExpense(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense").Replace("{0}", LanguageManager.Instance.GetString("String_AttributeDEPShort")).Replace("{1}", (intFromValue + 1).ToString()).Replace("{2}", intKarmaCost.ToString())))
+				return;
+
+			// Create the Karma expense.
+			ExpenseLogEntry objExpense = new ExpenseLogEntry();
+			objExpense.Create(intKarmaCost * -1, LanguageManager.Instance.GetString("String_ExpenseAttribute") + " " + LanguageManager.Instance.GetString("String_AttributeDEPShort") + " " + (intFromValue).ToString() + " -> " + (intFromValue + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+			_objCharacter.ExpenseEntries.Add(objExpense);
+			_objCharacter.Karma -= intKarmaCost;
+
+			ExpenseUndo objUndo = new ExpenseUndo();
+			objUndo.CreateKarma(KarmaExpenseType.ImproveAttribute, "DEP");
+			objExpense.Undo = objUndo;
+
+			_objCharacter.DEP.Value += 1;
+            UpdateCharacterInfo();
+
+			_blnIsDirty = true;
+			UpdateWindowTitle();
+		}
 
 		private void nudResponse_ValueChanged(object sender, EventArgs e)
 		{
@@ -5042,9 +5090,58 @@ namespace Chummer
             {
                 cmdDeleteLimitModifier_Click(sender, e);
             }
-        }
+		}
+		private void panContacts_DragDrop(object sender, DragEventArgs e)
+		{
+			TransportWrapper wrapper = (TransportWrapper)e.Data.GetData(typeof(TransportWrapper));
+			Control source = wrapper.Control;
 
-        private void cmdAddContact_Click(object sender, EventArgs e)
+			Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
+			Control destination = panContacts.GetChildAtPoint(mousePosition);
+
+			int indexDestination = panContacts.Controls.IndexOf(destination);
+			if (panContacts.Controls.IndexOf(source) < indexDestination)
+				indexDestination--;
+
+			panContacts.Controls.SetChildIndex(source, indexDestination);
+
+			foreach (ContactControl objControl in panContacts.Controls)
+			{
+					objControl.BackColor = SystemColors.Control;
+			}
+		}
+
+		private void panContacts_DragOver(object sender, DragEventArgs e)
+		{
+			Point mousePosition = panContacts.PointToClient(new Point(e.X, e.Y));
+			Control destination = panContacts.GetChildAtPoint(mousePosition);
+
+			if (destination == null)
+				return;
+
+			destination.BackColor = SystemColors.ControlDark;
+			foreach (ContactControl objControl in panContacts.Controls)
+			{
+				if (objControl != (destination as ContactControl))
+				{
+					objControl.BackColor = SystemColors.Control;
+				}
+			}
+			// Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
+		}
+
+		void panContacts_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = DragDropEffects.Move;
+		}
+
+		private void panContactControl_MouseDown(object sender, MouseEventArgs e)
+		{
+			Control source = (Control)sender;
+			source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+		}
+
+		private void cmdAddContact_Click(object sender, EventArgs e)
 		{
 			Contact objContact = new Contact(_objCharacter);
 			_objCharacter.Contacts.Add(objContact);
@@ -5060,6 +5157,7 @@ namespace Chummer
 			objContactControl.DeleteContact += objContact_DeleteContact;
 			objContactControl.FileNameChanged += objContact_FileNameChanged;
             objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
+			objContactControl.MouseDown += panContactControl_MouseDown;
 
 			panContacts.Controls.Add(objContactControl);
 			UpdateCharacterInfo();
@@ -5112,10 +5210,13 @@ namespace Chummer
 			}
 
 			frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
+			frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
 			frmPickSpell.ShowDialog(this);
 			// Make sure the dialogue window was not canceled.
 			if (frmPickSpell.DialogResult == DialogResult.Cancel)
 				return;
+
+			lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
 
 			// Open the Spells XML file and locate the selected piece.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("spells.xml");
@@ -5715,7 +5816,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Armor objArmor = new Armor(_objCharacter);
-			objArmor.Create(objXmlArmor, objNode, cmsArmorMod);
+			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
 			if (objArmor.InternalId == Guid.Empty.ToString())
 				return;
 
@@ -9061,6 +9162,38 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+
+		private void cmdDeleteWeek_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				ListViewItem objTest = lstCalendar.SelectedItems[0];
+			}
+			catch
+			{
+				return;
+			}
+
+			CalendarWeek objWeek = new CalendarWeek();
+			ListViewItem objItem = lstCalendar.SelectedItems[0];
+
+			// Find the selected Calendar Week.
+			foreach (CalendarWeek objCharacterWeek in _objCharacter.Calendar)
+			{
+				if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
+				{
+					objWeek = objCharacterWeek;
+					if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteCalendarWeek")))
+						return;
+					_objCharacter.Calendar.Remove(objWeek);
+					_blnIsDirty = true;
+					UpdateWindowTitle();
+					PopulateCalendar();
+					break;
+				}
+			}
+		}
+
 		private void cmdEditWeek_Click(object sender, EventArgs e)
 		{
 			try
@@ -10281,6 +10414,8 @@ namespace Chummer
 			// Set the Vehicle properties for the window.
 			frmPickVehicleMod.VehicleCost = Convert.ToInt32(objSelectedVehicle.Cost);
 			frmPickVehicleMod.Body = objSelectedVehicle.Body;
+			frmPickVehicleMod.Seats = objSelectedVehicle.Seats;
+			frmPickVehicleMod.Handling = objSelectedVehicle.Handling;
 			frmPickVehicleMod.Speed = objSelectedVehicle.Speed;
 			frmPickVehicleMod.Accel = objSelectedVehicle.Accel;
 			frmPickVehicleMod.DeviceRating = objSelectedVehicle.DeviceRating;
@@ -17861,10 +17996,11 @@ namespace Chummer
 				}
 			}
 
+			string ammoString = objWeapon.CalculatedAmmo(true);
 			// Determine which loading methods are available to the Weapon.
-			if (objWeapon.CalculatedAmmo(true).Contains(" or ") || objWeapon.CalculatedAmmo(true).Contains("x") || objWeapon.CalculatedAmmo(true).Contains("Special") || objWeapon.CalculatedAmmo(true).Contains("+"))
+			if (ammoString.Contains(" or ") || ammoString.Contains("x") || ammoString.Contains("Special") || ammoString.Contains("+"))
 			{
-				string strWeaponAmmo = objWeapon.CalculatedAmmo(true).ToLower();
+				string strWeaponAmmo = ammoString.ToLower();
 				if (strWeaponAmmo.Contains("external source"))
 					blnExternalSource = true;
 				// Get rid of external source, special, or belt, and + energy.
@@ -17873,8 +18009,8 @@ namespace Chummer
 				strWeaponAmmo = strWeaponAmmo.Replace(" + energy", "");
 				strWeaponAmmo = strWeaponAmmo.Replace(" or belt", " or 250(belt)");
 
-				string[] strSplit = new string[] { " or " };
-				string[] strAmmos = strWeaponAmmo.Split(strSplit, StringSplitOptions.RemoveEmptyEntries);
+				
+				string[] strAmmos = strWeaponAmmo.Split( new []{" or "}, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (string strAmmo in strAmmos)
 				{
@@ -17893,7 +18029,7 @@ namespace Chummer
 			else
 			{
 				// Nothing weird in the ammo string, so just use the number given.
-				string strAmmo = objWeapon.CalculatedAmmo(true);
+				string strAmmo = ammoString;
 				if (strAmmo.Contains("("))
 					strAmmo = strAmmo.Substring(0, strAmmo.IndexOf("("));
 				lstCount.Add(strAmmo);
@@ -18038,7 +18174,7 @@ namespace Chummer
 						if (objChild.InternalId == objWeapon.AmmoLoaded)
 						{
 							// If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-							if (objChild.Parent.Name.StartsWith("Spare Clip"))
+							if (objChild.Parent.Name.StartsWith("Spare Clip") || objChild.Parent.Name.StartsWith("Speed Loader"))
 							{
 								TreeNode objNewNode = new TreeNode();
 								List<Weapon> lstWeapons = new List<Weapon>();
@@ -18100,7 +18236,7 @@ namespace Chummer
 				if (objSelectedAmmo.Quantity == intQty && objSelectedAmmo.Parent != null)
 				{
 					// If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
-					if (objSelectedAmmo.Parent.Name.StartsWith("Spare Clip"))
+					if (objSelectedAmmo.Parent.Name.StartsWith("Spare Clip") || objSelectedAmmo.Parent.Name.StartsWith("Speed Loader"))
 					{
 						if (objSelectedAmmo.Parent.Quantity > 0)
 							objSelectedAmmo.Parent.Quantity--;
@@ -18382,9 +18518,17 @@ namespace Chummer
 
 		private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
 		{
-			Gear objGear = new Gear(_objCharacter);
-			objGear = (Gear)_objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-			objGear.HomeNode = chkGearHomeNode.Checked;
+			Commlink objCommlink = _objFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+			if (objCommlink == null)
+				return;
+			objCommlink.HomeNode = chkGearHomeNode.Checked;
+			_objCharacter.HomeNodeCategory = "Gear";
+			_objCharacter.HomeNodeDataProcessing = objCommlink.TotalDataProcessing;
+			_objCharacter.HomeNodePilot = 0;
+			_objCharacter.HomeNodeHandling = "0";
+			_objCharacter.HomeNodeSensor = 0;
+			_objFunctions.ReplaceHomeNodes(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
+			_objCharacter.HasHomeNode = chkGearHomeNode.Checked;
 			RefreshSelectedGear();
 			UpdateCharacterInfo();
 
@@ -19749,14 +19893,33 @@ namespace Chummer
 					return;
 
 				objVehicle.HomeNode = chkVehicleHomeNode.Checked;
+				_objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
+				_objCharacter.HomeNodeCategory = "Vehicle";
+				_objCharacter.HomeNodeDataProcessing = 0;
+				_objCharacter.HomeNodePilot = objVehicle.Pilot;
+				_objCharacter.HomeNodeHandling = objVehicle.TotalHandling;
+				_objCharacter.HomeNodeSensor = objVehicle.CalculatedSensor;
 			}
 			else
 			{
-				Commlink objGear = new Commlink(_objCharacter);
+				Commlink objCommlink = new Commlink(_objCharacter);
 				Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
-				objGear = (Commlink)_objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
-				objGear.HomeNode = chkVehicleHomeNode.Checked;
+				objCommlink = (Commlink)_objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
+				if (objCommlink == null)
+				{
+					return;
+				}
+				objCommlink.HomeNode = chkVehicleHomeNode.Checked;
+				_objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
+				_objCharacter.HomeNodeCategory = "Gear";
+				_objCharacter.HomeNodeDataProcessing = objCommlink.TotalDataProcessing;
+				_objCharacter.HomeNodePilot = 0;
+				_objCharacter.HomeNodeHandling = "0";
+				_objCharacter.HomeNodeSensor = 0;
 			}
+
+			_objCharacter.HasHomeNode = chkVehicleHomeNode.Checked;
+			_objFunctions.ReplaceHomeNodes(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Gear, _objCharacter.Vehicles);
 
 			RefreshSelectedVehicle();
 			UpdateCharacterInfo();
@@ -22209,6 +22372,7 @@ namespace Chummer
 			lblEDG.Text = _objCharacter.EDG.Value.ToString();
 			lblMAG.Text = (_objCharacter.MAG.Value - intEssenceLoss).ToString();
 			lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
+			lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
 
 			_blnSkipUpdate = false;
 
@@ -22422,6 +22586,10 @@ namespace Chummer
 					lblRES.Text = "0";
 				else
 					lblRES.Text = (_objCharacter.RES.Value - intEssenceLoss).ToString();
+				if (_objCharacter.DEP.Value - intEssenceLoss < 0)
+					lblDEP.Text = "0";
+				else
+					lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
 
 				// If the Attribute reaches 0, the character has burned out.
 				if (_objCharacter.MAG.Value - intEssenceLoss < 1 && _objCharacter.MAGEnabled)
@@ -22532,8 +22700,8 @@ namespace Chummer
                     _objCharacter.MAGAdept = _objCharacter.MAG.TotalValue;
 
 				// If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
-				if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
-					_objCharacter.EDG.MetatypeMaximum = _objCharacter.Rating;
+				if (_objCharacter.Metatype == "A.I.")
+					_objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
 				// If the character is Cyberzombie, adjust their Attributes based on their Essence.
 				if (_objCharacter.MetatypeCategory == "Cyberzombie")
@@ -22632,6 +22800,7 @@ namespace Chummer
 				cmdImproveINT.Enabled = !(_objCharacter.INT.Value == _objCharacter.INT.TotalMaximum);
 				cmdImproveLOG.Enabled = !(_objCharacter.LOG.Value == _objCharacter.LOG.TotalMaximum);
 				cmdImproveWIL.Enabled = !(_objCharacter.WIL.Value == _objCharacter.WIL.TotalMaximum);
+				cmdImproveDEP.Enabled = !(_objCharacter.DEP.Value == _objCharacter.DEP.TotalMaximum);
 				cmdImproveEDG.Enabled = !(_objCharacter.EDG.Value == _objCharacter.EDG.TotalMaximum);
 
 				// Disable the Magic or Resonance Karma buttons if they have reached their current limits.
@@ -22932,6 +23101,19 @@ namespace Chummer
 				{
 					lblRESAug.Text = "";
 					tipTooltip.SetToolTip(lblRESAug, "");
+				}
+
+				// Attribute: Resonance.
+				lblDEPMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.DEP.TotalMinimum, _objCharacter.DEP.TotalMaximum, _objCharacter.DEP.TotalAugmentedMaximum);
+				if (_objCharacter.DEP.HasModifiers)
+				{
+					lblDEPAug.Text = string.Format("({0})", _objCharacter.DEP.TotalValue);
+					tipTooltip.SetToolTip(lblDEPAug, _objCharacter.DEP.ToolTip());
+				}
+				else
+				{
+					lblDEPAug.Text = "";
+					tipTooltip.SetToolTip(lblDEPAug, "");
 				}
 
 				// Update the MAG pseudo-Attributes if applicable.
@@ -24357,6 +24539,11 @@ namespace Chummer
 
 					if (objCommlink.Category != "Commlink Upgrade")
 						chkActiveCommlink.Visible = true;
+					if (_objCharacter.Metatype == "A.I.")
+					{
+						chkGearHomeNode.Visible = true;
+						chkGearHomeNode.Checked = objCommlink.HomeNode;
+					}
 				}
 				else
 				{
@@ -24432,12 +24619,6 @@ namespace Chummer
 				}
 
 				cmdGearReduceQty.Enabled = true;
-
-				if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && (objGear.GetType() == typeof(Commlink) || objGear.Category == "Nexus"))
-				{
-					chkGearHomeNode.Visible = true;
-					chkGearHomeNode.Checked = objGear.HomeNode;
-				}
 
 				treGear.SelectedNode.Text = objGear.DisplayName;
 			}
@@ -25854,12 +26035,11 @@ namespace Chummer
 							cboVehicleGearSleaze.Text = objCommlink.Sleaze.ToString();
 							cboVehicleGearDataProcessing.Text = objCommlink.DataProcessing.ToString();
 							cboVehicleGearFirewall.Text = objCommlink.Firewall.ToString();
-                        }
-
-						if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
-						{
-							chkVehicleHomeNode.Visible = true;
-							chkVehicleHomeNode.Checked = objGear.HomeNode;
+							if (_objCharacter.Metatype == "A.I.")
+							{
+								chkVehicleHomeNode.Visible = true;
+								chkVehicleHomeNode.Checked = objCommlink.HomeNode;
+							}
 						}
 					}
 					else
@@ -26065,12 +26245,11 @@ namespace Chummer
 						cboVehicleGearSleaze.Text = objCommlink.Sleaze.ToString();
 						cboVehicleGearDataProcessing.Text = objCommlink.DataProcessing.ToString();
 						cboVehicleGearFirewall.Text = objCommlink.Firewall.ToString();
-                    }
-
-					if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
-					{
-						chkVehicleHomeNode.Visible = true;
-						chkVehicleHomeNode.Checked = objGear.HomeNode;
+						if (_objCharacter.Metatype == "A.I.")
+						{
+							chkVehicleHomeNode.Visible = true;
+							chkVehicleHomeNode.Checked = objCommlink.HomeNode;
+						}
 					}
 				}
 				else
@@ -26296,12 +26475,11 @@ namespace Chummer
 						cboVehicleGearSleaze.Text = objCommlink.Sleaze.ToString();
 						cboVehicleGearDataProcessing.Text = objCommlink.DataProcessing.ToString();
 						cboVehicleGearFirewall.Text = objCommlink.Firewall.ToString();
-                    }
-
-					if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
-					{
-						chkVehicleHomeNode.Visible = true;
-						chkVehicleHomeNode.Checked = objGear.HomeNode;
+						if (_objCharacter.Metatype == "A.I.")
+						{
+							chkVehicleHomeNode.Visible = true;
+							chkVehicleHomeNode.Checked = objCommlink.HomeNode;
+						}
 					}
 				}
 				else
@@ -26682,12 +26860,11 @@ namespace Chummer
 							cboVehicleGearSleaze.Text = objCommlink.Sleaze.ToString();
 							cboVehicleGearDataProcessing.Text = objCommlink.DataProcessing.ToString();
 							cboVehicleGearFirewall.Text = objCommlink.Firewall.ToString();
-                        }
-
-						if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
-						{
-							chkVehicleHomeNode.Visible = true;
-							chkVehicleHomeNode.Checked = objGear.HomeNode;
+							if (_objCharacter.Metatype == "A.I.")
+							{
+								chkVehicleHomeNode.Visible = true;
+								chkVehicleHomeNode.Checked = objCommlink.HomeNode;
+							}
 						}
 					}
 				}
@@ -26734,12 +26911,11 @@ namespace Chummer
 					cboVehicleGearSleaze.Text = objCommlink.Sleaze.ToString();
 					cboVehicleGearDataProcessing.Text = objCommlink.DataProcessing.ToString();
 					cboVehicleGearFirewall.Text = objCommlink.Firewall.ToString();
-                }
-
-				if ((_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients") && objGear.GetType() == typeof(Commlink))
-				{
-					chkVehicleHomeNode.Visible = true;
-					chkVehicleHomeNode.Checked = objGear.HomeNode;
+					if (_objCharacter.Metatype == "A.I.")
+					{
+						chkVehicleHomeNode.Visible = true;
+						chkVehicleHomeNode.Checked = objCommlink.HomeNode;
+					}
 				}
 			}
 			else
@@ -29308,5 +29484,5 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle(false);
         }
-    }
+	}
 }

@@ -1,3 +1,61 @@
+Build 179:
+Application Change:
+- First things first, good news bad news. Good news, automatic updates will be functional again for updates after 179. Bad news, due to a change in implementation of the automatic updates this brings an end to .Net 4.0 support. Chummer will no longer launch without .Net 4.5 or higher installed on your system. 
+- Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
+- Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodereplace nodes of weaponbonus. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
+- Fixed a crash issue caused by changing priority selection in Sum to Ten mode. Fixes #572.
+- Qualities can have their Limit assigned as either 'no' or a numeric value. This is intended as something of a placeholder until proper levels for qualities are implemented at a later date. 
+- Support for AI characters added. Xeno/Protosapients and E-Ghosts are treated as Metavariants.
+- Weapon Accessories can now modify the AP, Damage and FireMode of weapons using the damage, damagereplace, damagetype, ap, apreplace, firemode and firemodereplace keys. Currently this is used exclusively for the Overclocked mod (Okay technically it's currently an accessory, but there's no practical difference between the two at the moment so it goes where I say it goes.) Fixes #472
+- Handling for vehicles has been split up into normal and offroad handling. The implementation method should prevent any issues from cropping up, but I've eaten my hat on that before.
+- Calendar entries can now be removed. Fixes #552.
+- The optional rule to have Essence Loss only reduce RES/MAG maximums has been re-enabled. Fixes #596.
+- Each spare clip added to a weapon now tracks ammo individually rather than the previous hard-coded limit of four active slots. As a result of this change, Spare Clips no longer have the ability to directly store ammunition as a child item; they will be updated to display their currently loaded ammunition as an Extra value shortly.
+- New key node for Weapon Accessories: ammoslot. ammoslot is an integer that adds the associated number of 'spare clip' items to the parent weapon. In most cases this will be 1 (Spare Clip, Speed Loader, etc.), but someone will probably come up with banana magazines that count as two mags or something eventually. Future proofing!
+- Qualities can now add natural weapons directly using the naturalweapons node. Mostly this is for the infected, because "Bite (Infected) 2" offends me.
+- Fixed a string formatting issue that prevented Accuracy modifications from adept powers from working properly for translated Chummer.
+- Fixed an issue that prevented priority/sum-to-ten from using the gameplay options for their nuyen limit.
+- Sum to Ten and Priority now use the same form for character generation. Doesn't mean anything particularly interesting for you guys, but may reduce or introduce some interesting new bugs. 
+- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tidy as I'd like.
+- Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
+- Armor can now have a Rating; currently this is used exclusively for the cloaks from Hard Targets.
+- Fixed the percentage discount for basic lifestyles.
+- Fixed a translation issue for licences.
+- Fixed a translation issue for basic lifestyles. Fixes #608.
+- Armor improvements can now use Precedence attributes; this means that we can prevent a group of armour improvements from stacking with each other. Currently this is used for a small selection of skin-related qualities and biowares. See the Data Changes for more details. Fixes #602.
+
+Data Change:
+- Added missing required values for the Hospitalized lifestyles.
+- The quality Practice, Practice, Practice now excludes Combat Active skills from being selected.
+- The Foregrip accessory has both an Under and Barrel slot. 
+- Fixed the Range for the spell Knockout to be Touch.
+- Included Life Modules from Rigger 5.0, courtesy of Eric Dufurrena.
+- Included content from Rigger 5.0, courtesy of Fweeba. Note: Most modifications do the things they're supposed to, with the exception of Sensor. New modification point system won't be done for a while. https://www.reddit.com/r/Shadowrun/comments/3xv4qp/rigger_50_chummer_files
+- Addweapon nodes removed from the Infected.
+- SumtoTen.xml is no longer required by the project and can be removed from existing installs.
+- Minimum MAG/RES/DEP levels have been set to 0 for the appropriate metatypes.
+- Removed the quality "Natural Weapon: Claws" for the Sasquatch.
+- Added ammoslots entries for Speed Loader, Spare Clip, Explosive Magazine and Extended Clip.
+- Fixed a stupid error with the toxin/pathogen resistance qualities, dwarves and translation files. Fixes #590.
+- Cloaks now have Ratings and calculated values instead of the initial implementation. 
+- Fixed a formatting issue for the German version of the Shadowrun 5 Base character sheet.
+- The following armour improvements can no longer stack with each other: 
+	* Dermal Deposit changeling qualities
+	* Troll metatype dermal plating
+	* Orthoskin bioware
+	* Dermal Plating cyberware
+
+New Strings:
+- Message_DeleteCalendarWeek
+- Button_DeleteWeek
+
+Build 178: 
+Application Change: 
+- Fixed a calculation issue for the Edge attribute when using Sum-To-Ten or Priority.
+- Fixed a crash issue caused when adding commlinks and cyberdecks.
+- Standard Knowledge Skills are suffixed with the Category they're a part of. There's a minor issue that preserves the skill name until the character is next loaded that will be fixed later. 
+- Clicking Add Again on the Spell Selection menu will preserve the currently opened spell categories. This is more or less just a proof of concept and will be expanded to other forms in later patches.
+
 Build 177:
 Application Change:
 - Fixed a crash when selecting positive lifestyle qualities. 

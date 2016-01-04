@@ -1814,10 +1814,11 @@
 		<!-- Region Hard Targets -->
 		<armor>
 			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
-			<name>Cloak (1)</name>
+			<name>Cloak</name>
 			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>1</armor>
+			<rating>6</rating>
+			<armorcapacity>Rating</armorcapacity>
+			<armor>0</armor>
 			<avail>0</avail>
 			<bonus>
 				<limitmodifier>
@@ -1825,205 +1826,34 @@
 					<value>-1</value>
 				</limitmodifier>
 			</bonus>
-      <cost>100</cost>
+      <cost>100 * Rating</cost>
 			<source>HT</source>
 			<page>184</page>
     </armor>
-    <armor>
-			<id>559b8760-ccb0-4b36-8884-cda6709c0023</id>
-			<name>Cloak (2)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>2</armor>
-			<avail>0</avail>
-			<cost>200</cost>
-			<source>HT</source>
-			<page>184</page>
-    </armor>
-    <armor>
-			<id>3cd66ce5-c23a-486a-b1fd-dbd74e8398ad</id>
-			<name>Cloak (3)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>3</armor>
-			<avail>0</avail>
-			<cost>300</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>bc3bb822-6f96-46ff-9c71-c6acd67f2910</id>
-			<name>Cloak (4)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>4</armor>
-			<avail>0</avail>
-			<cost>400</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>08b97650-7256-4d52-ba3f-f56185cb93ee</id>
-			<name>Cloak (5)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>5</armor>
-			<avail>0</avail>
-			<cost>500</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>8ff09885-44e0-4492-9a17-44259ec2bf57</id>
-			<name>Cloak (6)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>6</armor>
-			<avail>0</avail>
-			<cost>600</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
 		<armor>
 			<id>fc4074b5-b48a-43d4-8d9c-25a11da2a6a8</id>
-			<name>Designer Cloak (1)</name>
+			<name>Designer Cloak</name>
 			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>1</armor>
+			<rating>6</rating>
+			<armorcapacity>Rating</armorcapacity>
+			<armor>0</armor>
 			<avail>0</avail>
-			<cost>400</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>08324d51-c222-44bc-8ac7-b0dff9834689</id>
-			<name>Designer Cloak (2)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>2</armor>
-			<avail>0</avail>
-			<cost>500</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>19485abe-3680-4ddd-9807-8dfe530304a6</id>
-			<name>Designer Cloak (3)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>3</armor>
-			<avail>0</avail>
-			<cost>600</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>01280630-3f87-4216-93b0-3926cadac4c5</id>
-			<name>Designer Cloak (4)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>4</armor>
-			<avail>0</avail>
-			<cost>700</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>e9189459-ff56-469c-8f3e-9c9f333b95bb</id>
-			<name>Designer Cloak (5)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>5</armor>
-			<avail>0</avail>
-			<cost>800</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>676b9a17-3e90-43f7-9da5-d01bebe0c760</id>
-			<name>Designer Cloak (6)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>6</armor>
-			<avail>0</avail>
-			<cost>900</cost>
+			<cost>(100 * Rating) + 300</cost>
 			<source>HT</source>
 			<page>184</page>
 		</armor>
 		<armor>
 			<id>678353a1-b697-442a-aa3a-6e34b9178c4b</id>
-			<name>Ruthenium Polymer Cloak (1)</name>
+			<name>Ruthenium Polymer Cloak</name>
 			<category>Cloaks</category>
 			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
+			<rating>4</rating>
+			<armorcapacity>Rating</armorcapacity>
 			<avail>14F</avail>
-			<cost>4000</cost>
+			<cost>4000 * Rating</cost>
 			<source>HT</source>
 			<page>184</page>
 		</armor>
-		<armor>
-			<id>d465cc08-0aa3-4943-91a4-224ce17df6e1</id>
-			<name>Ruthenium Polymer Cloak (2)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>8000</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>dd69fdeb-5305-49bb-ba86-54b70422e239</id>
-			<name>Ruthenium Polymer Cloak (3)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>12000</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>4aea6d5a-5cdf-45d3-ae62-c5f1348c553d</id>
-			<name>Ruthenium Polymer Cloak (4)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>16000</cost>
-			<source>HT</source>
-			<page>184</page>
-    </armor>
 	<armor>
 			<id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
 			<name>One-Use Shoes</name>

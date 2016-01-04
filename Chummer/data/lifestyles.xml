@@ -95,6 +95,8 @@
 			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
 			<name>Hospitalized, Basic</name>
 			<cost>500</cost>
+			<dice>0</dice>
+			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
 			<page>373</page>
@@ -103,6 +105,8 @@
 			<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
 			<name>Hospitalized, Intensive</name>
 			<cost>1000</cost>
+			<dice>0</dice>
+			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
 			<page>373</page>

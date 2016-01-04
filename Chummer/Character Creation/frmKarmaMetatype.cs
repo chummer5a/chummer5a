@@ -523,7 +523,11 @@ namespace Chummer
                     _objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetavariant["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["resaug"].InnerText, intForce, 0));
                     _objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetavariant["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["edgaug"].InnerText, intForce, 0));
                     _objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetavariant["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["essaug"].InnerText, intForce, 0));
-                }
+					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
+					{
+						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetavariant["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetavariant["depaug"].InnerText, intForce, 0));
+					}
+				}
 				else if (_strXmlFile != "critters.xml" || lstMetatypes.SelectedValue.ToString() == "Ally Spirit")
 				{
 					_objCharacter.BOD.AssignLimits(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["bodaug"].InnerText, intForce, 0));
@@ -539,6 +543,10 @@ namespace Chummer
 					_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["resaug"].InnerText, intForce, 0));
 					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["edgaug"].InnerText, intForce, 0));
 					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
+					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
+					{
+						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
+					}
 				}
 				else
 				{
@@ -558,6 +566,10 @@ namespace Chummer
 					_objCharacter.RES.AssignLimits(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 3));
 					_objCharacter.EDG.AssignLimits(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3), ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 3));
 					_objCharacter.ESS.AssignLimits(ExpressionToString(objXmlMetatype["essmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["essaug"].InnerText, intForce, 0));
+					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
+					{
+						_objCharacter.DEP.AssignLimits(ExpressionToString(objXmlMetatype["depmin"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0), ExpressionToString(objXmlMetatype["depaug"].InnerText, intForce, 0));
+					}
 				}
 
 				// If we're working with a Critter, set the Attributes to their default values.
@@ -575,10 +587,14 @@ namespace Chummer
 					_objCharacter.RES.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
 					_objCharacter.EDG.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
 					_objCharacter.ESS.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
+					if (lstMetatypes.SelectedValue.ToString() == "A.I.")
+					{
+						_objCharacter.DEP.Value = Convert.ToInt32(ExpressionToString(objXmlMetatype["depmax"].InnerText, intForce, 0));
+					}
 				}
 
 				// Sprites can never have Physical Attributes or WIL.
-				if (lstMetatypes.SelectedValue.ToString().EndsWith("Sprite"))
+				if ((lstMetatypes.SelectedValue.ToString().EndsWith("Sprite") || cboCategory.SelectedValue.ToString().EndsWith("A.I.")))
 				{
 					_objCharacter.BOD.AssignLimits("0", "0", "0");
 					_objCharacter.AGI.AssignLimits("0", "0", "0");
@@ -588,7 +604,14 @@ namespace Chummer
 					_objCharacter.INI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
 					_objCharacter.INI.MetatypeMaximum = Convert.ToInt32(ExpressionToString(objXmlMetatype["inimax"].InnerText, intForce, 0));
 				}
-				
+
+				// Sprites can never have MAG or RES attributes.
+				if (cboCategory.SelectedValue.ToString().EndsWith("A.I."))
+				{
+					_objCharacter.MAG.AssignLimits("0", "0", "0");
+					_objCharacter.RES.AssignLimits("0", "0", "0");
+				}
+
 				// If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
 				if (cboCategory.SelectedValue.ToString() == "Shapeshifter" && cboMetavariant.SelectedValue.ToString() == "None")
 					cboMetavariant.SelectedValue = "Human";
@@ -731,6 +754,34 @@ namespace Chummer
 					_objCharacter.INT.Value = _objCharacter.INT.TotalMinimum;
 					_objCharacter.LOG.Value = _objCharacter.LOG.TotalMinimum;
 					_objCharacter.WIL.Value = _objCharacter.WIL.TotalMinimum;
+					_objCharacter.MAG.Value = _objCharacter.MAG.TotalMinimum;
+					_objCharacter.RES.Value = _objCharacter.RES.TotalMinimum;
+					_objCharacter.DEP.Value = _objCharacter.DEP.TotalMinimum;
+
+					_objCharacter.BOD.Base = _objCharacter.BOD.TotalMinimum;
+					_objCharacter.AGI.Base = _objCharacter.AGI.TotalMinimum;
+					_objCharacter.REA.Base = _objCharacter.REA.TotalMinimum;
+					_objCharacter.STR.Base = _objCharacter.STR.TotalMinimum;
+					_objCharacter.CHA.Base = _objCharacter.CHA.TotalMinimum;
+					_objCharacter.INT.Base = _objCharacter.INT.TotalMinimum;
+					_objCharacter.LOG.Base = _objCharacter.LOG.TotalMinimum;
+					_objCharacter.WIL.Base = _objCharacter.WIL.TotalMinimum;
+					_objCharacter.MAG.Base = _objCharacter.MAG.TotalMinimum;
+					_objCharacter.RES.Base = _objCharacter.RES.TotalMinimum;
+					_objCharacter.DEP.Base = _objCharacter.DEP.TotalMinimum;
+
+					_objCharacter.BOD.Karma = 0;
+					_objCharacter.AGI.Karma = 0;
+					_objCharacter.REA.Karma = 0;
+					_objCharacter.STR.Karma = 0;
+					_objCharacter.CHA.Karma = 0;
+					_objCharacter.INT.Karma = 0;
+					_objCharacter.LOG.Karma = 0;
+					_objCharacter.WIL.Karma = 0;
+					_objCharacter.EDG.Karma = 0;
+					_objCharacter.MAG.Karma = 0;
+					_objCharacter.RES.Karma = 0;
+					_objCharacter.DEP.Karma = 0;
 				}
 
 				// Add any Critter Powers the Metatype/Critter should have.

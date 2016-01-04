@@ -12,6 +12,10 @@ using System.Xml.XPath;
 public delegate void MAGEnabledChangedHandler(Object sender);
 // RESEnabledChanged Event Handler
 public delegate void RESEnabledChangedHandler(Object sender);
+// DEPEnabledChanged Event Handler
+public delegate void DEPEnabledChangedHandler(Object sender);
+// HomeNodeChanged Event Handler
+public delegate void HomeNodeChangedHandler(Object sender);
 // AdeptTabEnabledChanged Event Handler
 public delegate void AdeptTabEnabledChangedHandler(Object sender);
 // MagicianTabEnabledChanged Event Handler
@@ -111,8 +115,16 @@ namespace Chummer
         private string _strPlayerName = "";
         private string _strGameNotes = "";
 
-        // If true, the Character creation has been finalized and is maintained through Karma.
-        private bool _blnCreated = false;
+		// AI Home Node
+		private bool _blnHasHomeNode = false;
+		private string _strHomeNodeCategory = "";
+		private string _strHomeNodeHandling = "";
+		private int _intHomeNodePilot = 0;
+		private int _intHomeNodeSensor = 0;
+		private int _intHomeNodeDataProcessing = 3;
+
+		// If true, the Character creation has been finalized and is maintained through Karma.
+		private bool _blnCreated = false;
 
         // Build Points
 	    private int _intSumtoTen = 10;
@@ -141,8 +153,9 @@ namespace Chummer
         private int _intMetatypeBP = 0;
         private int _intMutantCritterBaseSkills = 0;
 
-        // Special Flags.
-        private bool _blnAdeptEnabled = false;
+		// Special Flags.
+		
+		private bool _blnAdeptEnabled = false;
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
         private bool _blnInitiationEnabled = false;
@@ -183,7 +196,8 @@ namespace Chummer
         private Attribute _attMAG = new Attribute("MAG");
         private Attribute _attRES = new Attribute("RES");
         private Attribute _attESS = new Attribute("ESS");
-        private bool _blnMAGEnabled = false;
+		private Attribute _attDEP = new Attribute("DEP");
+		private bool _blnMAGEnabled = false;
         private bool _blnRESEnabled = false;
         private bool _blnGroupMember = false;
         private string _strGroupName = "";
@@ -269,6 +283,7 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.ToString().Replace("0.0.", string.Empty);
 
 		// Events.
+		public event HomeNodeChangedHandler HomeNodeChanged;
 		public event AdeptTabEnabledChangedHandler AdeptTabEnabledChanged;
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
@@ -318,7 +333,8 @@ namespace Chummer
             _attMAG._objCharacter = this;
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
-            _objImprovementManager = new ImprovementManager(this);
+			_attDEP._objCharacter = this;
+			_objImprovementManager = new ImprovementManager(this);
         }
 
         /// <summary>
@@ -570,10 +586,11 @@ namespace Chummer
             _attMAG.Save(objWriter);
             _attRES.Save(objWriter);
             _attESS.Save(objWriter);
-            // Include any special A.I. Attributes if applicable.
-            if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-            {
-                objWriter.WriteElementString("response", _intResponse.ToString());
+			// Include any special A.I. Attributes if applicable.
+			if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
+			{
+				_attDEP.Save(objWriter);
+				objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("signal", _intSignal.ToString());
             }
             if (_intMaxSkillRating > 0)
@@ -1695,8 +1712,10 @@ namespace Chummer
 
             // A.I. Attributes.
             try
-            {
-                _intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
+			{
+				objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
+				_attDEP.Load(objXmlCharacter);
+				_intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
                 _intResponse = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/response").InnerText);
             }
             catch
@@ -2591,7 +2610,7 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("MAG", _attMAG.TotalValue.ToString());
-                XPathExpression xprDrain = nav.Compile(strDrain);
+				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
@@ -2649,7 +2668,7 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("RES", _attRES.TotalValue.ToString());
-                XPathExpression xprDrain = nav.Compile(strDrain);
+				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
@@ -2672,8 +2691,9 @@ namespace Chummer
             _attMAG.Print(objWriter);
             _attRES.Print(objWriter);
             if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-            {
-                objWriter.WriteElementString("signal", _intSignal.ToString());
+			{
+				_attDEP.Print(objWriter);
+				objWriter.WriteElementString("signal", _intSignal.ToString());
                 objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("system", System.ToString());
                 objWriter.WriteElementString("firewall", Firewall.ToString());
@@ -3233,7 +3253,9 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS = new Attribute("ESS");
             _attESS._objCharacter = this;
-            _blnMAGEnabled = false;
+			_attDEP = new Attribute("DEP");
+			_attDEP._objCharacter = this;
+			_blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnGroupMember = false;
             _strGroupName = "";
@@ -4502,7 +4524,10 @@ namespace Chummer
                 case "RES":
                 case "RESBase":
                     return _attRES;
-                case "ESS":
+				case "DEP":
+				case "DEPBase":
+					return _attDEP;
+				case "ESS":
                     return _attESS;
                 default:
                     return _attBOD;
@@ -4639,12 +4664,23 @@ namespace Chummer
             {
                 return _attRES;
             }
-        }
+		}
 
-        /// <summary>
-        /// Essence (ESS) Attribute.
-        /// </summary>
-        public Attribute ESS
+		/// <summary>
+		/// Depth (DEP) Attribute.
+		/// </summary>
+		public Attribute DEP
+		{
+			get
+			{
+				return _attDEP;
+			}
+		}
+
+		/// <summary>
+		/// Essence (ESS) Attribute.
+		/// </summary>
+		public Attribute ESS
         {
             get
             {
@@ -5275,7 +5311,15 @@ namespace Chummer
                 strReturn = (intINI).ToString();
 
                 int intExtraIP = 1 + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePass)) + Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.InitiativePassAdd));
-                strReturn += " + " + intExtraIP.ToString() + "d6";
+
+
+				// A.I.s always have 4 Matrix Initiative Passes.
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
+				}
+
+				strReturn += " + " + intExtraIP.ToString() + "d6";
 
                 return strReturn;
             }
@@ -5302,9 +5346,9 @@ namespace Chummer
                     intIP = 3 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
                 }
 
-                // A.I.s always have 3 Matrix Initiative Passes.
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-                    intIP = 3;
+                // A.I.s always have 4 Matrix Initiative Passes.
+                if (_strMetatype == "A.I.")
+                    intIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
 
                 // Add in any additional Matrix Initiative Pass bonuses.
                 intIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePassAdd);
@@ -5327,12 +5371,33 @@ namespace Chummer
                 int intINI = (_attINT.TotalValue) + WoundModifiers;
                 if (intINI < 0)
                     intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
 
                 int intExtraIP = 3;
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
 
-                return strReturn;
+				if (_strMetatype == "A.I.")
+				{
+					intExtraIP = 4;
+                    if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
+
+				return strReturn;
             }
         }
 
@@ -5343,18 +5408,38 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
+				string strReturn = "";
 
-                int intINI = (_attINT.TotalValue) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
-                strReturn = (_attINT.TotalValue).ToString();
+				int intINI = (_attINT.TotalValue) + WoundModifiers;
+				if (intINI < 0)
+					intINI = 0;
 
-                int intExtraIP = 4;
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				int intExtraIP = 4;
 
-                return strReturn;
-            }
+				if (_strMetatype == "A.I.")
+				{
+					if (_blnHasHomeNode)
+					{
+						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
+						{
+							intINI += _intHomeNodeDataProcessing;
+						}
+						else
+						{
+							intINI += _intHomeNodePilot;
+						}
+					}
+					strReturn = intINI.ToString();
+					strReturn += " + " + intExtraIP.ToString() + "d6";
+				}
+				else
+				{
+					strReturn = intINI.ToString();
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+				}
+
+				return strReturn;
+			}
         }
 
         /// <summary>
@@ -6203,16 +6288,20 @@ namespace Chummer
         {
             get
             {
-                double dblBOD = _attBOD.TotalValue;
-                int intCMPhysical = (int)Math.Ceiling(dblBOD / 2) + 8;
+				int intCMPhysical = 0;
+				if (_strMetatype == "A.I.")
+				{
+					// A.I.s add 1/2 their System to Physical CM since they do not have BOD.
+					double dblDEP = _attDEP.TotalValue;
+					intCMPhysical = (int)Math.Ceiling(dblDEP / 2) + 8;
+				}
+				else
+				{
+					double dblBOD = _attBOD.TotalValue;
+					intCMPhysical = (int)Math.Ceiling(dblBOD / 2) + 8;
+				}
                 // Include Improvements in the Condition Monitor values.
                 intCMPhysical += Convert.ToInt32(_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM));
-                if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-                {
-                    // A.I.s add 1/2 their System to Physical CM since they do not have BOD.
-                    double dblSystem = System;
-                    intCMPhysical += (int)Math.Ceiling(dblSystem / 2);
-                }
                 return intCMPhysical;
             }
         }
@@ -6463,14 +6552,33 @@ namespace Chummer
         /// <summary>
         /// The calculated Physical Limit.
         /// </summary>
-        public int LimitPhysical
+        public string LimitPhysical
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3));
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
-                return intLimit;
-            }
+				int intLimit = 0;
+				string strReturn = "";
+				if (_strMetatype == "A.I.")
+				{
+					if (_blnHasHomeNode && _strHomeNodeCategory == "Vehicle")
+					{
+						strReturn = _strHomeNodeHandling;
+						return strReturn;
+					}
+					else
+					{
+						strReturn = "0";
+						return strReturn;
+					}
+				}
+				else
+				{
+					intLimit = (Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3)));
+				}
+				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
+				strReturn = Convert.ToString(intLimit);
+                return strReturn;
+			}
         }
 
         /// <summary>
@@ -6480,9 +6588,36 @@ namespace Chummer
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
-                return intLimit;
+				int intLimit = 0;
+                if (_strMetatype == "A.I." && _blnHasHomeNode)
+				{
+					if (_strHomeNodeCategory == "Vehicle")
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+						if (_intHomeNodeSensor > intLimit)
+						{
+							intLimit = _intHomeNodeSensor;
+						}
+						if (_intHomeNodeDataProcessing > intLimit)
+						{
+							intLimit = _intHomeNodeDataProcessing;
+						}
+					}
+					else if (_strHomeNodeCategory == "Gear")
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+						if (_intHomeNodeDataProcessing > intLimit)
+						{
+							intLimit = _intHomeNodeDataProcessing;
+						}
+					}
+				}
+				else
+				{
+					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
+				}
+				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
+				return intLimit;
             }
         }
 
@@ -6493,7 +6628,22 @@ namespace Chummer
         {
             get
             {
-                int intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attCHA.TotalValue) * 2) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+				int intLimit = 0;
+				if (_strMetatype == "A.I." && _blnHasHomeNode)
+				{
+					if (_intHomeNodeDataProcessing >= _intHomeNodePilot)
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodeDataProcessing) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+					}
+					else
+					{
+						intLimit = Convert.ToInt32(Math.Ceiling((Convert.ToDecimal(_attCHA.TotalValue) + Convert.ToDecimal(_intHomeNodePilot) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+					}
+				}
+				else
+				{
+					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attCHA.TotalValue) * 2) + Convert.ToDecimal(_attWIL.TotalValue) + Math.Ceiling(Essence)) / 3));
+				}
                 intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.SocialLimit);
                 return intLimit;
             }
@@ -6952,13 +7102,14 @@ namespace Chummer
                     return false;
             }
         }
-        #endregion
+		#endregion
 
-        #region Special Functions and Enabled Check Properties
-        /// <summary>
-        /// Whether or not Adept options are enabled.
-        /// </summary>
-        public bool AdeptEnabled
+		#region Special Functions and Enabled Check Properties
+
+		/// <summary>
+		/// Whether or not Adept options are enabled.
+		/// </summary>
+		public bool AdeptEnabled
         {
             get
             {
@@ -7955,6 +8106,95 @@ namespace Chummer
 		    }
 	    }
 
-	    #endregion
+		/// <summary>
+		/// Category of the Home Node. Expected values are Gear and Vehicle.
+		/// </summary>
+		public string HomeNodeCategory
+		{
+			get
+			{
+				return _strHomeNodeCategory;
+			}
+			set
+			{
+				_strHomeNodeCategory = value;
+			}
+		}
+
+		/// <summary>
+		/// Handling rating of the Home Node.
+		/// </summary>
+		public string HomeNodeHandling
+		{
+			get
+			{
+				return _strHomeNodeHandling;
+			}
+			set
+			{
+				_strHomeNodeHandling = value;
+			}
+		}
+
+		/// <summary>
+		/// Pilot rating of the Home Node.
+		/// </summary>
+		public int HomeNodePilot
+		{
+			get
+			{
+				return _intHomeNodePilot;
+			}
+			set
+			{
+				_intHomeNodePilot = value;
+			}
+		}
+
+		/// <summary>
+		/// Sensor Rating of the Home Node.
+		/// </summary>
+		public int HomeNodeSensor
+		{
+			get
+			{
+				return _intHomeNodeSensor;
+			}
+			set
+			{
+				_intHomeNodeSensor = value;
+			}
+		}
+
+		/// <summary>
+		/// Data Processing Rating of the Home Node.
+		/// </summary>
+		public int HomeNodeDataProcessing
+		{
+			get
+			{
+				return _intHomeNodeDataProcessing;
+			}
+			set
+			{
+				_intHomeNodeDataProcessing = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether a character currently has a Home Node.
+		/// </summary>
+		public bool HasHomeNode
+		{
+			get
+			{
+				return _blnHasHomeNode;
+			}
+			set
+			{
+				_blnHasHomeNode = value;
+			}
+		}
+		#endregion
 	}
 }

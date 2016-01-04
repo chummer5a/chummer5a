@@ -2327,7 +2327,10 @@ namespace Chummer
 				Log.Info("armor");
 				Log.Info("armor = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUnique,
+				string strUseUnique = strUnique;
+				if (bonusNode.Attributes["precedence"] != null)
+					strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUseUnique,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 

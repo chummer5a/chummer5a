@@ -609,6 +609,18 @@ namespace Chummer
 					}
 				}
 
+				// Look in Licences.
+				objXmlDocument = XmlManager.Instance.Load("licenses.xml");
+				objNode = objXmlDocument.SelectSingleNode("/chummer/licenses/license[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
+				if (objNode != null)
+				{
+					if (objNode.Attributes["translate"] != null)
+					{
+						strReturn = objNode.Attributes["translate"].InnerText;
+						return strReturn;
+					}
+				}
+
 				// Look in Mentors.
 				objXmlDocument = XmlManager.Instance.Load("mentors.xml");
 				objNode = objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[name = \"" + strExtra.Replace("\"", string.Empty) + "\"]");

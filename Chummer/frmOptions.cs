@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Octokit;
+using System.Collections.Specialized;
+using System.Net;
 
 namespace Chummer
 {
@@ -11,9 +14,8 @@ namespace Chummer
 	{
 		private readonly CharacterOptions _characterOptions = new CharacterOptions();
 		private bool _skipRefresh;
-
-        #region Form Events
-        public frmOptions()
+		#region Form Events
+		public frmOptions()
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -72,6 +74,7 @@ namespace Chummer
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
             _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
+			_characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
             _characterOptions.ExceedNegativeQualities = chkExceedNegativeQualities.Checked;
                 if (chkExceedNegativeQualities.Checked)
                     chkExceedNegativeQualitiesLimit.Enabled = true;
@@ -165,10 +168,10 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboBuildMethod.SelectedValue.ToString() == "BP")
-                nudBP.Value = 400;
-            else
-                nudBP.Value = 750;
+            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
+                nudBP.Value = 800;
+            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
+				nudBP.Value = 750;
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -544,72 +547,73 @@ namespace Chummer
 	    {
             PopulateSourcebookTreeView();
 
-            chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
-            nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
-            nudContactMultiplier.Value = 3;
-            chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
-            nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
-            nudKnowledgeMultiplier.Value = 2;
-            chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
-	        chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
-	        chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
-	        chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
-	        chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
-	        chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
-	        chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
-	        chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
-	        chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
-	        chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;
-	        chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
-	        chkFreeKarmaContacts.Checked = _characterOptions.FreeKarmaContacts;
-	        chkFreeKarmaKnowledge.Checked = _characterOptions.FreeKarmaKnowledge;
-	        chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
-	        chkDontDoubleQualities.Checked = _characterOptions.DontDoubleQualities;
-	        chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
-	        chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
-	        nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
-	        nudKnowledgeMultiplier.Value = _characterOptions.FreeKnowledgeMultiplier;
-	        nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
-	        nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
-	        cboEssenceDecimals.SelectedValue = _characterOptions.EssenceDecimals == 0 ? "2" : _characterOptions.EssenceDecimals.ToString();
-	        chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
-	        chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
-	        chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
-	        chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
-	        nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
-	        chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
-	        chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
-	        chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
-	        chkArmorDegradation.Checked = _characterOptions.ArmorDegradation;
-	        chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
-	        chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
-	        chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
-	        chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
-	        chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;
-	        chkExceedPositiveQualities.Checked = _characterOptions.ExceedPositiveQualities;
-	        chkUseCalculatedVehicleSensorRatings.Checked = _characterOptions.UseCalculatedVehicleSensorRatings;
-	        chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
-	        chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
-	        chkAllowCustomTransgenics.Checked = _characterOptions.AllowCustomTransgenics;
-	        chkBreakSkillGroupsInCreateMode.Checked = _characterOptions.BreakSkillGroupsInCreateMode;
-	        chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
-	        chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
-	        chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
-	        chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
-	        chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
-	        chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
-	        chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
-	        chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
-	        chkContactPoints.Checked = _characterOptions.UseContactPoints;
-	        chkPrintNotes.Checked = _characterOptions.PrintNotes;
-	        chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
-            cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
-            nudBP.Value = _characterOptions.BuildPoints;
-            nudMaxAvail.Value = _characterOptions.Availability;
-            txtSettingName.Text = _characterOptions.Name;
-            txtSettingName.Enabled = cboSetting.SelectedValue.ToString() != "default.xml";
+			cboBuildMethod.SelectedValue = _characterOptions.BuildMethod;
+			cboEssenceDecimals.SelectedValue = _characterOptions.EssenceDecimals == 0 ? "2" : _characterOptions.EssenceDecimals.ToString();
+			chkAllowCustomTransgenics.Checked = _characterOptions.AllowCustomTransgenics;
+			chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
+			chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
+			chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
+			chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
+			chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
+			chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
+			chkArmorDegradation.Checked = _characterOptions.ArmorDegradation;
+			chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
+			chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
+			chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
+			chkBreakSkillGroupsInCreateMode.Checked = _characterOptions.BreakSkillGroupsInCreateMode;
+			chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
+			chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
+			chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
+			chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
+			chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
+			chkContactPoints.Checked = _characterOptions.UseContactPoints;
+			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
+			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
+			chkDontDoubleQualities.Checked = _characterOptions.DontDoubleQualities;
+			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
+			chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
+			chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
+			chkESSLossReducesMaximumOnly.Checked = _characterOptions.ESSLossReducesMaximumOnly;
+            chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
+			chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;
+			chkExceedNegativeQualitiesLimit.Enabled = chkExceedNegativeQualities.Checked;
+			chkExceedPositiveQualities.Checked = _characterOptions.ExceedPositiveQualities;
+			chkExtendAnyDetectionSpell.Checked = _characterOptions.ExtendAnyDetectionSpell;
+			chkFreeKarmaContacts.Checked = _characterOptions.FreeKarmaContacts;
+			chkFreeKarmaKnowledge.Checked = _characterOptions.FreeKarmaKnowledge;
+			chkIgnoreArt.Checked = _characterOptions.IgnoreArt;
+			chkKnowledgeMultiplier.Checked = _characterOptions.FreeKnowledgeMultiplierEnabled;
+			chkKnucks.Checked = _characterOptions.KnucksUseUnarmed;
+			chkLicenseEachRestrictedItem.Checked = _characterOptions.LicenseRestricted;
+			chkMaximumArmorModifications.Checked = _characterOptions.MaximumArmorModifications;
+			chkMayBuyQualities.Checked = _characterOptions.MayBuyQualities;
+			chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
+			chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
+			chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
+			chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
+			chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
+			chkPrintNotes.Checked = _characterOptions.PrintNotes;
+			chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
+			chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
+			chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
+			chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
+			chkUseCalculatedVehicleSensorRatings.Checked = _characterOptions.UseCalculatedVehicleSensorRatings;
+			chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
+			nudBP.Value = _characterOptions.BuildPoints;
+			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
+			nudContactMultiplier.Value = 3;
+			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
+			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
+			nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
+			nudKnowledgeMultiplier.Value = 2;
+			nudKnowledgeMultiplier.Value = _characterOptions.FreeKnowledgeMultiplier;
+			nudMaxAvail.Value = _characterOptions.Availability;
+			nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
+			nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
+			txtSettingName.Enabled = cboSetting.SelectedValue.ToString() != "default.xml";
+			txtSettingName.Text = _characterOptions.Name;
 
-            SetDefaultValueForLimbCount();
+			SetDefaultValueForLimbCount();
             PopulateKarmaFields();
 	    }
 
@@ -715,7 +719,7 @@ namespace Chummer
 
         private void CloseCreateForm()
         {
-            Form fc = Application.OpenForms["frmCreate"];
+            Form fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
 
             if (fc == null)
                 return;
@@ -726,7 +730,7 @@ namespace Chummer
             if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            fc = Application.OpenForms["frmCreate"];
+            fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
 
             if (fc != null)
                 fc.Close();
@@ -785,20 +789,15 @@ namespace Chummer
             List<ListItem> lstBuildMethod = new List<ListItem>();
 
             ListItem objKarma = new ListItem();
-            objKarma.Value = "Karma";
+            objKarma.Value = LanguageManager.Instance.GetString("String_Karma");
             objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
 
-            ListItem objPriority = new ListItem();
-            objPriority.Value = "Priority";
-            objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
+            ListItem objLifeModules = new ListItem();
+			objLifeModules.Value = LanguageManager.Instance.GetString("String_LifeModule");
+			objLifeModules.Name = LanguageManager.Instance.GetString("String_LifeModule");
 
-            ListItem objSumtoTen = new ListItem();
-            objSumtoTen.Value = "SumtoTen";
-            objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
-
-            lstBuildMethod.Add(objSumtoTen);
             lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objPriority);
+            lstBuildMethod.Add(objLifeModules);
 
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
@@ -1103,6 +1102,35 @@ namespace Chummer
                 GlobalOptions.Instance.SourcebookInfo.Add(newSource);
             }
         }
-        #endregion
-    }
+
+		private void cmdUploadPastebin_Click(object sender, EventArgs e)
+		{
+			#if DEBUG
+			string strFilePath = "Insert local file here";
+			System.Collections.Specialized.NameValueCollection Data	= new System.Collections.Specialized.NameValueCollection();
+			XmlDocument objDoc = new XmlDocument();
+			String line = "";
+            using (StreamReader sr = new StreamReader(strFilePath))
+			{
+				line = sr.ReadToEnd();
+			}
+			Data["api_paste_name"] = "Chummer";
+			Data["api_paste_expire_date"] = "N";
+			Data["api_paste_format"] = "xml";
+			Data["api_paste_code"] = line;
+			Data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
+			Data["api_option"] = "paste";
+
+			WebClient wb = new WebClient();
+				byte[] bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+
+				string response;
+				using (MemoryStream ms = new MemoryStream(bytes))
+				using (StreamReader reader = new StreamReader(ms))
+					response = reader.ReadToEnd();
+			Clipboard.SetText(response);
+			#endif
+		}
+		#endregion
+	}
 }

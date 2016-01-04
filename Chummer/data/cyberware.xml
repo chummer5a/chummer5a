@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <chummer>
-	<version>-345</version>
+	<version>-350</version>
 	<grades>
 		<grade>
 			<id>23382221-fd16-44ec-8da7-9b935ed2c1ee</id>
@@ -532,6 +532,7 @@
 			<name>Bone Lacing (Aluminum)</name>
 			<category>Bodyware</category>
 			<ess>1</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>12R</avail>
 			<cost>18000</cost>
@@ -549,6 +550,7 @@
 			<name>Bone Lacing (Plastic)</name>
 			<category>Bodyware</category>
 			<ess>0.5</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>8R</avail>
 			<cost>8000</cost>
@@ -566,6 +568,7 @@
 			<name>Bone Lacing (Titanium)</name>
 			<category>Bodyware</category>
 			<ess>1.5</ess>
+			<notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
 			<capacity>0</capacity>
 			<avail>16R</avail>
 			<cost>30000</cost>
@@ -588,7 +591,7 @@
 			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 3000</cost>
 			<bonus>
-				<armor>Rating</armor>
+				<armor precedence="0">Rating</armor>
 			</bonus>
 			<source>SR5</source>
 			<page>454</page>
@@ -2265,6 +2268,20 @@
 			<page>87</page>
 		</cyberware>
 		<cyberware>
+			<id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
+			<name>Remote Cyberhand</name>
+			<category>Cyberlimb Enhancement</category>
+			<ess>0.25</ess>
+			<bonus>
+				<selectside />
+			</bonus>
+			<capacity>[5]</capacity>
+			<avail>8</avail>
+			<cost>8000</cost>
+			<source>R5</source>
+			<page>130</page>
+		</cyberware>
+		<cyberware>
 			<id>f8baf2a8-2941-4eec-9bac-430e30b8f40c</id>
 			<name>Monkey Foot</name>
 			<category>Cyberlimb Enhancement</category>
@@ -2465,9 +2482,9 @@
 			<name>Liminal Body, Centaur</name>
 			<category>Cyberlimb</category>
 			<ess>3</ess>
-      <subsystems>
-        <subsystem>Cyberlimb</subsystem>
-      </subsystems>
+			<subsystems>
+				<subsystem>Cyberlimb</subsystem>
+			</subsystems>
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>

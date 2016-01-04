@@ -74,7 +74,16 @@ namespace Chummer
 		public Commlink FindCommlink(string strGuid, List<Gear> lstCommlink)
 		{
 			Commlink objReturn = new Commlink(_objCharacter);
-			foreach (Commlink objCommlink in lstCommlink)
+			List<Gear> lstCheckGear = new List<Gear>();
+
+			foreach (Gear objGear in lstCommlink)
+			{
+				if (objGear.Category == "Commlinks")
+				{
+					lstCheckGear.Add(objGear);
+				}
+			}
+			foreach (Commlink objCommlink in lstCheckGear)
 			{
 				if (objCommlink.InternalId == strGuid)
 					objReturn = objCommlink;
@@ -856,6 +865,30 @@ namespace Chummer
 
 			return lstReturn;
 		}
+
+		/// <summary>
+		/// Find and disable any other items selected as a home node.
+		/// </summary>
+		/// <param name="strGuid">GUID to whitelist when disabling other home nodes.</param>
+		/// <param name="lstGear">List of Gear to search within for Home Node status.</param>
+		/// <param name="lstVehicles">List of Gear to search within for Home Node status.</param>
+		public void ReplaceHomeNodes(string strGuid, List<Gear>lstGear, List<Vehicle> lstVehicles)
+		{
+			foreach (Commlink objGear in lstGear)
+			{
+				if (objGear.HomeNode && (objGear.InternalId.ToString() != strGuid))
+				{
+					objGear.HomeNode = false;
+				}
+			}
+			foreach (Vehicle objVehicle in lstVehicles)
+			{
+				if (objVehicle.HomeNode && (objVehicle.InternalId.ToString() != strGuid))
+				{
+					objVehicle.HomeNode = false;
+				}
+			}
+		}
 		#endregion
 
 		#region Delete Functions
@@ -958,6 +991,22 @@ namespace Chummer
 						objRemoveWeapon = objWeapon;
 				}
 				objVehicle.Weapons.Remove(objRemoveWeapon);
+			}
+		}
+
+		/// <summary>
+		/// Verify that the user wants to delete an item.
+		/// </summary>
+		public bool ConfirmDelete(string strMessage)
+		{
+			if (!_objCharacter.Options.ConfirmDelete)
+				return true;
+			else
+			{
+				if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+					return false;
+				else
+					return true;
 			}
 		}
 		#endregion
@@ -1458,21 +1507,6 @@ namespace Chummer
         } 
         #endregion
 
-        /// <summary>
-		/// Verify that the user wants to delete an item.
-		/// </summary>
-		public bool ConfirmDelete(string strMessage)
-		{
-			if (!_objCharacter.Options.ConfirmDelete)
-				return true;
-			else
-			{
-				if (MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-					return false;
-				else
-					return true;
-			}
-		}
 
         /// <summary>
         /// Word wraps the given text to fit within the specified width.

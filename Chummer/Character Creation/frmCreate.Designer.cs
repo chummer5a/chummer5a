@@ -319,6 +319,11 @@ namespace Chummer
 			this.lblMetatype = new System.Windows.Forms.Label();
 			this.lblMetatypeLabel = new System.Windows.Forms.Label();
 			this.panAttributes = new System.Windows.Forms.Panel();
+			this.nudKDEP = new System.Windows.Forms.NumericUpDown();
+			this.lblDEPAug = new System.Windows.Forms.Label();
+			this.lblDEPMetatype = new System.Windows.Forms.Label();
+			this.nudDEP = new System.Windows.Forms.NumericUpDown();
+			this.lblDEPLabel = new System.Windows.Forms.Label();
 			this.nudKRES = new System.Windows.Forms.NumericUpDown();
 			this.nudKMAG = new System.Windows.Forms.NumericUpDown();
 			this.nudKEDG = new System.Windows.Forms.NumericUpDown();
@@ -939,6 +944,8 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).BeginInit();
 			this.panAttributes.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).BeginInit();
@@ -1025,9 +1032,9 @@ namespace Chummer
 			// tssBPLabel
 			// 
 			this.tssBPLabel.Name = "tssBPLabel";
-			this.tssBPLabel.Size = new System.Drawing.Size(24, 19);
-			this.tssBPLabel.Tag = "Label_BP";
-			this.tssBPLabel.Text = "BP:";
+			this.tssBPLabel.Size = new System.Drawing.Size(44, 19);
+			this.tssBPLabel.Tag = "Label_Karma";
+			this.tssBPLabel.Text = "Karma:";
 			// 
 			// tssBP
 			// 
@@ -1039,9 +1046,9 @@ namespace Chummer
 			// tssBPRemainLabel
 			// 
 			this.tssBPRemainLabel.Name = "tssBPRemainLabel";
-			this.tssBPRemainLabel.Size = new System.Drawing.Size(84, 19);
-			this.tssBPRemainLabel.Tag = "Label_BPRemaining";
-			this.tssBPRemainLabel.Text = "BP Remaining:";
+			this.tssBPRemainLabel.Size = new System.Drawing.Size(104, 19);
+			this.tssBPRemainLabel.Tag = "Label_KarmaRemaining";
+			this.tssBPRemainLabel.Text = "Karma Remaining:";
 			// 
 			// tssBPRemain
 			// 
@@ -3326,7 +3333,7 @@ namespace Chummer
 			this.tabCommon.Size = new System.Drawing.Size(838, 611);
 			this.tabCommon.TabIndex = 0;
 			this.tabCommon.Tag = "Tab_Common";
-			this.tabCommon.Text = "Common";
+			this.tabCommon.Text = "Acc";
 			// 
 			// cmdLifeModule
 			// 
@@ -3347,10 +3354,10 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabPeople.Controls.Add(this.tabContacts);
 			this.tabPeople.Controls.Add(this.tabEnemies);
-			this.tabPeople.Location = new System.Drawing.Point(288, 342);
+			this.tabPeople.Location = new System.Drawing.Point(288, 375);
 			this.tabPeople.Name = "tabPeople";
 			this.tabPeople.SelectedIndex = 0;
-			this.tabPeople.Size = new System.Drawing.Size(544, 263);
+			this.tabPeople.Size = new System.Drawing.Size(544, 230);
 			this.tabPeople.TabIndex = 94;
 			// 
 			// tabContacts
@@ -3366,7 +3373,7 @@ namespace Chummer
 			this.tabContacts.Location = new System.Drawing.Point(4, 22);
 			this.tabContacts.Name = "tabContacts";
 			this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabContacts.Size = new System.Drawing.Size(536, 237);
+			this.tabContacts.Size = new System.Drawing.Size(536, 204);
 			this.tabContacts.TabIndex = 0;
 			this.tabContacts.Text = "Contacts";
 			// 
@@ -3432,15 +3439,19 @@ namespace Chummer
 			// 
 			// panContacts
 			// 
+			this.panContacts.AllowDrop = true;
 			this.panContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panContacts.AutoScroll = true;
 			this.panContacts.Location = new System.Drawing.Point(3, 48);
 			this.panContacts.Name = "panContacts";
-			this.panContacts.Size = new System.Drawing.Size(530, 187);
+			this.panContacts.Size = new System.Drawing.Size(530, 154);
 			this.panContacts.TabIndex = 25;
 			this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
+			this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
+			this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
+			this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
 			// 
 			// tabEnemies
 			// 
@@ -3453,7 +3464,7 @@ namespace Chummer
 			this.tabEnemies.Location = new System.Drawing.Point(4, 22);
 			this.tabEnemies.Name = "tabEnemies";
 			this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-			this.tabEnemies.Size = new System.Drawing.Size(536, 237);
+			this.tabEnemies.Size = new System.Drawing.Size(536, 204);
 			this.tabEnemies.TabIndex = 1;
 			this.tabEnemies.Text = "Enemies";
 			// 
@@ -3495,7 +3506,7 @@ namespace Chummer
 			this.panEnemies.AutoScroll = true;
 			this.panEnemies.Location = new System.Drawing.Point(3, 48);
 			this.panEnemies.Name = "panEnemies";
-			this.panEnemies.Size = new System.Drawing.Size(530, 187);
+			this.panEnemies.Size = new System.Drawing.Size(530, 154);
 			this.panEnemies.TabIndex = 41;
 			this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
 			// 
@@ -3645,10 +3656,10 @@ namespace Chummer
 			this.lblQualityBPLabel.AutoSize = true;
 			this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 589);
 			this.lblQualityBPLabel.Name = "lblQualityBPLabel";
-			this.lblQualityBPLabel.Size = new System.Drawing.Size(24, 13);
+			this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
 			this.lblQualityBPLabel.TabIndex = 66;
-			this.lblQualityBPLabel.Tag = "Label_BP";
-			this.lblQualityBPLabel.Text = "BP:";
+			this.lblQualityBPLabel.Tag = "Label_Karma";
+			this.lblQualityBPLabel.Text = "Karma:";
 			// 
 			// lblQualitySource
 			// 
@@ -3762,6 +3773,11 @@ namespace Chummer
 			// 
 			// panAttributes
 			// 
+			this.panAttributes.Controls.Add(this.nudKDEP);
+			this.panAttributes.Controls.Add(this.lblDEPAug);
+			this.panAttributes.Controls.Add(this.lblDEPMetatype);
+			this.panAttributes.Controls.Add(this.nudDEP);
+			this.panAttributes.Controls.Add(this.lblDEPLabel);
 			this.panAttributes.Controls.Add(this.nudKRES);
 			this.panAttributes.Controls.Add(this.nudKMAG);
 			this.panAttributes.Controls.Add(this.nudKEDG);
@@ -3819,8 +3835,56 @@ namespace Chummer
 			this.panAttributes.Controls.Add(this.lblBODMetatype);
 			this.panAttributes.Location = new System.Drawing.Point(288, 48);
 			this.panAttributes.Name = "panAttributes";
-			this.panAttributes.Size = new System.Drawing.Size(356, 291);
+			this.panAttributes.Size = new System.Drawing.Size(356, 317);
 			this.panAttributes.TabIndex = 6;
+			// 
+			// nudKDEP
+			// 
+			this.nudKDEP.Enabled = false;
+			this.nudKDEP.Location = new System.Drawing.Point(174, 289);
+			this.nudKDEP.Name = "nudKDEP";
+			this.nudKDEP.Size = new System.Drawing.Size(40, 20);
+			this.nudKDEP.TabIndex = 59;
+			this.nudKDEP.ValueChanged += new System.EventHandler(this.nudKDEP_ValueChanged);
+			// 
+			// lblDEPAug
+			// 
+			this.lblDEPAug.Enabled = false;
+			this.lblDEPAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblDEPAug.Location = new System.Drawing.Point(222, 289);
+			this.lblDEPAug.Name = "lblDEPAug";
+			this.lblDEPAug.Size = new System.Drawing.Size(60, 17);
+			this.lblDEPAug.TabIndex = 58;
+			this.lblDEPAug.Text = "[0]";
+			// 
+			// lblDEPMetatype
+			// 
+			this.lblDEPMetatype.AutoSize = true;
+			this.lblDEPMetatype.Enabled = false;
+			this.lblDEPMetatype.Location = new System.Drawing.Point(288, 291);
+			this.lblDEPMetatype.Name = "lblDEPMetatype";
+			this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
+			this.lblDEPMetatype.TabIndex = 57;
+			this.lblDEPMetatype.Text = "0 / 0 (0)";
+			// 
+			// nudDEP
+			// 
+			this.nudDEP.Enabled = false;
+			this.nudDEP.Location = new System.Drawing.Point(128, 289);
+			this.nudDEP.Name = "nudDEP";
+			this.nudDEP.Size = new System.Drawing.Size(40, 20);
+			this.nudDEP.TabIndex = 56;
+			this.nudDEP.ValueChanged += new System.EventHandler(this.nudDEP_ValueChanged);
+			// 
+			// lblDEPLabel
+			// 
+			this.lblDEPLabel.AutoSize = true;
+			this.lblDEPLabel.Enabled = false;
+			this.lblDEPLabel.Location = new System.Drawing.Point(3, 291);
+			this.lblDEPLabel.Name = "lblDEPLabel";
+			this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
+			this.lblDEPLabel.TabIndex = 55;
+			this.lblDEPLabel.Text = "Depth (DEP)";
 			// 
 			// nudKRES
 			// 
@@ -3914,102 +3978,102 @@ namespace Chummer
 			// 
 			// lblRESAug
 			// 
-			this.lblRESAug.AutoSize = true;
 			this.lblRESAug.Enabled = false;
-			this.lblRESAug.Location = new System.Drawing.Point(220, 267);
+			this.lblRESAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblRESAug.Location = new System.Drawing.Point(222, 265);
 			this.lblRESAug.Name = "lblRESAug";
-			this.lblRESAug.Size = new System.Drawing.Size(19, 13);
+			this.lblRESAug.Size = new System.Drawing.Size(60, 17);
 			this.lblRESAug.TabIndex = 43;
 			this.lblRESAug.Text = "[0]";
 			// 
 			// lblMAGAug
 			// 
-			this.lblMAGAug.AutoSize = true;
 			this.lblMAGAug.Enabled = false;
-			this.lblMAGAug.Location = new System.Drawing.Point(220, 241);
+			this.lblMAGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblMAGAug.Location = new System.Drawing.Point(222, 239);
 			this.lblMAGAug.Name = "lblMAGAug";
-			this.lblMAGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblMAGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblMAGAug.TabIndex = 42;
 			this.lblMAGAug.Text = "[0]";
 			// 
 			// lblEDGAug
 			// 
-			this.lblEDGAug.AutoSize = true;
-			this.lblEDGAug.Location = new System.Drawing.Point(220, 215);
+			this.lblEDGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblEDGAug.Location = new System.Drawing.Point(222, 213);
 			this.lblEDGAug.Name = "lblEDGAug";
-			this.lblEDGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblEDGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblEDGAug.TabIndex = 41;
 			this.lblEDGAug.Text = "[0]";
 			// 
 			// lblWILAug
 			// 
-			this.lblWILAug.AutoSize = true;
-			this.lblWILAug.Location = new System.Drawing.Point(220, 189);
+			this.lblWILAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblWILAug.Location = new System.Drawing.Point(222, 187);
 			this.lblWILAug.Name = "lblWILAug";
-			this.lblWILAug.Size = new System.Drawing.Size(19, 13);
+			this.lblWILAug.Size = new System.Drawing.Size(60, 17);
 			this.lblWILAug.TabIndex = 40;
 			this.lblWILAug.Text = "[0]";
 			// 
 			// lblLOGAug
 			// 
-			this.lblLOGAug.AutoSize = true;
-			this.lblLOGAug.Location = new System.Drawing.Point(220, 163);
+			this.lblLOGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblLOGAug.Location = new System.Drawing.Point(222, 161);
 			this.lblLOGAug.Name = "lblLOGAug";
-			this.lblLOGAug.Size = new System.Drawing.Size(19, 13);
+			this.lblLOGAug.Size = new System.Drawing.Size(60, 17);
 			this.lblLOGAug.TabIndex = 39;
 			this.lblLOGAug.Text = "[0]";
 			// 
 			// lblINTAug
 			// 
-			this.lblINTAug.AutoSize = true;
-			this.lblINTAug.Location = new System.Drawing.Point(220, 137);
+			this.lblINTAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblINTAug.Location = new System.Drawing.Point(222, 135);
 			this.lblINTAug.Name = "lblINTAug";
-			this.lblINTAug.Size = new System.Drawing.Size(19, 13);
+			this.lblINTAug.Size = new System.Drawing.Size(60, 17);
 			this.lblINTAug.TabIndex = 38;
 			this.lblINTAug.Text = "[0]";
 			// 
 			// lblCHAAug
 			// 
-			this.lblCHAAug.AutoSize = true;
-			this.lblCHAAug.Location = new System.Drawing.Point(220, 111);
+			this.lblCHAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCHAAug.Location = new System.Drawing.Point(222, 109);
 			this.lblCHAAug.Name = "lblCHAAug";
-			this.lblCHAAug.Size = new System.Drawing.Size(19, 13);
+			this.lblCHAAug.Size = new System.Drawing.Size(60, 17);
 			this.lblCHAAug.TabIndex = 37;
 			this.lblCHAAug.Text = "[0]";
 			// 
 			// lblSTRAug
 			// 
-			this.lblSTRAug.AutoSize = true;
-			this.lblSTRAug.Location = new System.Drawing.Point(220, 85);
+			this.lblSTRAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblSTRAug.Location = new System.Drawing.Point(222, 83);
 			this.lblSTRAug.Name = "lblSTRAug";
-			this.lblSTRAug.Size = new System.Drawing.Size(19, 13);
+			this.lblSTRAug.Size = new System.Drawing.Size(60, 17);
 			this.lblSTRAug.TabIndex = 36;
 			this.lblSTRAug.Text = "[0]";
 			// 
 			// lblREAAug
 			// 
-			this.lblREAAug.AutoSize = true;
-			this.lblREAAug.Location = new System.Drawing.Point(220, 59);
+			this.lblREAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblREAAug.Location = new System.Drawing.Point(222, 57);
 			this.lblREAAug.Name = "lblREAAug";
-			this.lblREAAug.Size = new System.Drawing.Size(19, 13);
+			this.lblREAAug.Size = new System.Drawing.Size(60, 17);
 			this.lblREAAug.TabIndex = 35;
 			this.lblREAAug.Text = "[0]";
 			// 
 			// lblAGIAug
 			// 
-			this.lblAGIAug.AutoSize = true;
-			this.lblAGIAug.Location = new System.Drawing.Point(220, 33);
+			this.lblAGIAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblAGIAug.Location = new System.Drawing.Point(222, 31);
 			this.lblAGIAug.Name = "lblAGIAug";
-			this.lblAGIAug.Size = new System.Drawing.Size(19, 13);
+			this.lblAGIAug.Size = new System.Drawing.Size(60, 17);
 			this.lblAGIAug.TabIndex = 34;
 			this.lblAGIAug.Text = "[0]";
 			// 
 			// lblBODAug
 			// 
-			this.lblBODAug.AutoSize = true;
-			this.lblBODAug.Location = new System.Drawing.Point(220, 7);
+			this.lblBODAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblBODAug.Location = new System.Drawing.Point(222, 5);
 			this.lblBODAug.Name = "lblBODAug";
-			this.lblBODAug.Size = new System.Drawing.Size(19, 13);
+			this.lblBODAug.Size = new System.Drawing.Size(60, 17);
 			this.lblBODAug.TabIndex = 33;
 			this.lblBODAug.Text = "[0]";
 			// 
@@ -4030,11 +4094,6 @@ namespace Chummer
 			this.nudRES.Name = "nudRES";
 			this.nudRES.Size = new System.Drawing.Size(40, 20);
 			this.nudRES.TabIndex = 31;
-			this.nudRES.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.nudRES.ValueChanged += new System.EventHandler(this.nudRES_ValueChanged);
 			// 
 			// lblRESLabel
@@ -4064,11 +4123,6 @@ namespace Chummer
 			this.nudMAG.Name = "nudMAG";
 			this.nudMAG.Size = new System.Drawing.Size(40, 20);
 			this.nudMAG.TabIndex = 28;
-			this.nudMAG.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.nudMAG.ValueChanged += new System.EventHandler(this.nudMAG_ValueChanged);
 			// 
 			// lblMAGLabel
@@ -10383,6 +10437,8 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudMysticAdeptMAGMagician)).EndInit();
 			this.panAttributes.ResumeLayout(false);
 			this.panAttributes.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudKDEP)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDEP)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKRES)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKMAG)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKEDG)).EndInit();
@@ -11306,6 +11362,11 @@ namespace Chummer
 		private System.Windows.Forms.ComboBox cboVehicleGearFirewall;
 		private System.Windows.Forms.ComboBox cboVehicleGearSleaze;
 		private System.Windows.Forms.ComboBox cboVehicleGearAttack;
+		internal System.Windows.Forms.NumericUpDown nudKDEP;
+		internal System.Windows.Forms.Label lblDEPAug;
+		internal System.Windows.Forms.Label lblDEPMetatype;
+		internal System.Windows.Forms.NumericUpDown nudDEP;
+		internal System.Windows.Forms.Label lblDEPLabel;
 	}
 }
 

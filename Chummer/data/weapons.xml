@@ -4063,7 +4063,7 @@
 			<reach>0</reach>
 			<damage>6P</damage>
 			<ap>-</ap>
-			<mode>SA/SS</mode>
+			<mode>SA</mode>
 			<rc>0</rc>
 			<ammo>6(cy)</ammo>
 			<avail>3R</avail>
@@ -7391,6 +7391,32 @@
 		<!-- End Region-->
 		<!-- Region Hard Targets -->
 		<weapon>
+			<id>3a60c3ee-9f6f-46cb-be2f-bec0bccc3318</id>
+			<name>Tactical Grapple Gun</name>
+			<category>Exotic Ranged Weapons</category>
+			<type>Ranged</type>
+			<spec>Grapple Gun</spec>
+			<conceal>6</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>9S</damage>
+			<ap>-2</ap>
+			<mode>SS</mode>
+			<rc>0</rc>
+			<accessories>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
+			</accessories>
+			<ammo>1(b)</ammo>
+			<avail>15F</avail>
+			<cost>10000</cost>
+			<range>Heavy Crossbows</range>
+			<allowaccessory>true</allowaccessory>
+			<source>HT</source>
+			<page>187</page>
+		</weapon>
+		<weapon>
 			<id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
 			<name>Sapphire Knife</name>
 			<category>Blades</category>
@@ -7996,13 +8022,12 @@
 		<accessory>
 			<id>4ed24342-276e-4455-acba-22b551e4d775</id>
 			<name>Spare Clip</name>
+			<ammoslots>1</ammoslots>
 			<mount/>
 			<rating>0</rating>
 			<avail>4</avail>
 			<cost>5</cost>
-			<allowgear>
-				<gearcategory>Ammunition</gearcategory>
-			</allowgear>
+			<allowgear />
 			<source>SR5</source>
 			<page>433</page>
 		</accessory>
@@ -8010,7 +8035,9 @@
 			<id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
 			<name>Speed Loader</name>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
 			<mount/>
+			<allowgear />
 			<avail>2</avail>
 			<cost>25</cost>
 			<source>SR5</source>
@@ -8210,7 +8237,7 @@
 			<id>8eec5df1-88e2-4822-b156-9c2340a33efc</id>
 			<name>Foregrip</name>
 			<rating>0</rating>
-			<mount>Barrel</mount>
+			<mount>Under/Barrel</mount>
 			<avail>2</avail>
 			<cost>100</cost>
 			<rc>1</rc>
@@ -8486,6 +8513,7 @@
 			<id>5157f235-47c7-4121-aebb-d76709c4b6f8</id>
 			<name>Explosive Magazine</name>
 			<mount></mount>
+			<ammoslots>1</ammoslots>
 			<rating>0</rating>
 			<avail>2F</avail>
 			<cost>20</cost>
@@ -8496,6 +8524,7 @@
 			<id>d40d2fc6-3aad-4793-843d-20e3597b2365</id>
 			<name>Extended Clip</name>
 			<mount></mount>
+			<ammoslots>1</ammoslots>
 			<rating>2</rating>
 			<avail>6R</avail>
 			<cost>35</cost>
@@ -8634,6 +8663,8 @@
 			<id>b8c019cc-5772-43b0-8ba8-a08581bab406</id>
 			<name>Overclocked</name>
 			<mount></mount>
+			<damage>-2</damage>
+			<damagetype>P</damagetype>
 			<avail>6F</avail>
 			<cost>200</cost>
 			<rating>0</rating>
