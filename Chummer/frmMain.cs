@@ -51,7 +51,6 @@ namespace Chummer
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
 				if (result != 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
-				return;
 			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -821,7 +820,7 @@ namespace Chummer
 			}
 
 			// Hide any unused items.
-			for (int x = i + 1; x <= 10; x++)
+			for (int x = i + 1; x < 10; x++)
 			{
 				ToolStripMenuItem objItem = new ToolStripMenuItem();
 				switch (x)
