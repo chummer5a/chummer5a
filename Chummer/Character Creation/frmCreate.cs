@@ -20811,8 +20811,6 @@ namespace Chummer
 		        //if (intContactPointsUsed > _objCharacter.ContactPoints)
 		        //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
 
-
-		        // Check if the character has positive qualities outnumbering negative qualities
 		        // Calculate the BP used by Enemies. These are added to the BP since they are technically
 		        // a Negative Quality.
 		        int intPointsUsed = 0;
@@ -20832,7 +20830,7 @@ namespace Chummer
 		        intPointsUsed = 0;
 		        foreach (Quality objQuality in _objCharacter.Qualities)
 		        {
-			        if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
+			        if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
 			        {
 				        intPointsUsed += objQuality.BP;
 			        }
@@ -20848,7 +20846,7 @@ namespace Chummer
 		        intPointsUsed = 0;
 		        foreach (Quality objQuality in _objCharacter.Qualities)
 		        {
-			        if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
+			        if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit)
 			        {
 				        intPointsUsed += objQuality.BP;
 				        intNegativePoints += objQuality.BP;
