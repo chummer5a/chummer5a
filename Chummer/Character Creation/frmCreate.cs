@@ -17239,9 +17239,11 @@ namespace Chummer
                 lblMovement.Text = _objCharacter.Movement;
                 lblSwim.Text = _objCharacter.Swim;
                 lblFly.Text = _objCharacter.Fly;
+				strTip = _objCharacter.CalculatedMovement;
+				tipTooltip.SetToolTip(lblMovement, strTip);
 
-                // Special Attribute-Only Test.
-                lblComposure.Text = _objCharacter.Composure.ToString();
+				// Special Attribute-Only Test.
+				lblComposure.Text = _objCharacter.Composure.ToString();
                 strTip = "WIL (" + _objCharacter.WIL.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
                 tipTooltip.SetToolTip(lblComposure, strTip);
                 lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();

@@ -6894,7 +6894,35 @@ namespace Chummer
                 _strMovement = value;
             }
         }
+		/// <summary>
+		/// Character's Movement rate in Metres per Combat Turn or Kilometres Per Hour.
+		/// </summary>
+		public string CalculatedMovement
+		{
+           get
+			{
+				string strReturn = "";
+				if (!Movement.Contains("/"))
+				{
+					return Movement;
+				}
+				else
+				{
+					string[] strMovement = Movement.Split('/');
+					int intWalking = Convert.ToInt32(strMovement[0]);
+					int intRunning = Convert.ToInt32(strMovement[1]);
 
+					int walkratekph = Convert.ToInt32(.001 * (60 * (20 * (intWalking))));
+					int runratekph = Convert.ToInt32(.001 * (60 * (20 * (intRunning))));
+					int walkratemph = Convert.ToInt32(0.62 * (.001 * (60 * (20 * (intWalking)))));
+					int runratemph = Convert.ToInt32(0.62 * (.001 * (60 * (20 * (intRunning)))));
+
+					strReturn = String.Format(LanguageManager.Instance.GetString("Tip_CalculatedMovement").Replace("{0}",intWalking.ToString()).Replace("{1}",walkratekph.ToString()).Replace("{2}",intRunning.ToString()).Replace("{3}",runratekph.ToString()));
+				}
+				
+				return strReturn;
+			}
+		}
         /// <summary>
         /// Character's walking Movement rate.
         /// </summary>

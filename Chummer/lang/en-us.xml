@@ -4410,6 +4410,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<!-- Other Info Tab -->
 		<string>
+			<key>Tip_CalculatedMovement</key>
+			<text>Walking: AGI X 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI X 4 ({2} MPCT) / ({3} KPH)</text>
+		</string>
+		<string>
 			<key>Label_OtherPhysicalCM</key>
 			<text>Physical Condition Track:</text>
 		</string>
