@@ -1223,7 +1223,7 @@ namespace Chummer
 			catch
 			{
 			}
-			if (objNode.InnerXml.Contains("rating"))
+			if (objNode.Attributes["rating"] != null)
 			{
 				_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			}
