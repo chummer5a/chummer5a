@@ -88,7 +88,7 @@
 			this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
 			this.cmdPrint.Location = new System.Drawing.Point(12, 12);
 			this.cmdPrint.Name = "cmdPrint";
-			this.cmdPrint.Size = new System.Drawing.Size(100, 23);
+			this.cmdPrint.Size = new System.Drawing.Size(80, 23);
 			this.cmdPrint.SplitMenuStrip = this.cmsPrintButton;
 			this.cmdPrint.TabIndex = 103;
 			this.cmdPrint.Tag = "Menu_FilePrint";

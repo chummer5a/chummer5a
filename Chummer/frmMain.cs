@@ -374,9 +374,14 @@ namespace Chummer
 			Character objCharacter = (Character)sender;
 			string strTitle = objCharacter.Name;
 			if (objCharacter.Alias.Trim() != string.Empty)
+			{
 				strTitle = objCharacter.Alias;
-			if (strTitle.Trim() == string.Empty)
+			}
+			else
+			{
 				strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+			}
+
 			try
 			{
 				tabForms.SelectedTab.Text = strTitle;

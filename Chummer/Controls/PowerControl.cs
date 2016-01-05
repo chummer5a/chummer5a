@@ -11,7 +11,8 @@ namespace Chummer
 {
     public partial class PowerControl : UserControl
     {
-		private Power _objPower;     
+		private Power _objPower;
+		private CommonFunctions functions = new CommonFunctions();
 
         // Events.
         public event PowerRatingChangedHandler PowerRatingChanged;
@@ -105,7 +106,7 @@ namespace Chummer
 			string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
 			if (_objPower.Notes != string.Empty)
 				strTooltip += "\n\n" + _objPower.Notes;
-			tipTooltip.SetToolTip(imgNotes, strTooltip);
+			tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
 		}
 		#endregion
 
@@ -126,8 +127,8 @@ namespace Chummer
 				string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
 				if (_objPower.Notes != string.Empty)
 					strTooltip += "\n\n" + _objPower.Notes;
-				tipTooltip.SetToolTip(imgNotes, strTooltip);
-                if (_objPower.FreeLevels > 0)
+				tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
+				if (_objPower.FreeLevels > 0)
                     nudRating.Minimum = _objPower.FreeLevels;
 			}
 		}

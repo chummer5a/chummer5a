@@ -26,6 +26,7 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private Contact _objContact;
+		private CommonFunctions functions = new CommonFunctions();
         private readonly Character _objCharacter;
         private string _strContactName;
         private string _strContactRole;
@@ -320,9 +321,8 @@ namespace Chummer
                 strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
             if (_objContact.Notes != string.Empty)
                 strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, strTooltip);
+            tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
         }
-
         private void cmsContact_Opening(object sender, CancelEventArgs e)
         {
             foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
@@ -437,9 +437,9 @@ namespace Chummer
                     string strTooltip = LanguageManager.Instance.GetString("Tip_Enemy_EditNotes");
                     if (_objContact.Notes != string.Empty)
                         strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip);
+					tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
 
-                    nudConnection.Minimum = 1;
+					nudConnection.Minimum = 1;
                 }
                 else
                 {
@@ -451,9 +451,9 @@ namespace Chummer
                     string strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
                     if (_objContact.Notes != string.Empty)
                         strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip);
+					tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
 
-                    nudConnection.Minimum = 1;
+					nudConnection.Minimum = 1;
                 }
             }
         }
