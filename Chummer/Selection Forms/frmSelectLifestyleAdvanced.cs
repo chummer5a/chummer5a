@@ -95,7 +95,6 @@ namespace Chummer
 						treLifestyleQualities.Nodes[2].Expand();
 					}
 					_objLifestyle.LifestyleQualities.Add(objQuality);
-
 				}
 			}
 			cboBaseLifestyle.ValueMember = "Value";
@@ -327,6 +326,7 @@ namespace Chummer
 			_objLifestyle.SecurityEntertainment = Convert.ToInt32(nudSecurityEntertainment.Value);
 			_objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
 			_objLifestyle.TrustFund = chkTrustFund.Checked;
+			_objLifestyle.LifestyleQualities.Clear();
 
 			// Get the starting Nuyen information.
 			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
@@ -356,6 +356,7 @@ namespace Chummer
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
 				objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+				_objLifestyle.LifestyleQualities.Add(objQuality);
 			}
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
             {
@@ -369,6 +370,7 @@ namespace Chummer
 					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
 					objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+					_objLifestyle.LifestyleQualities.Add(objQuality);
 				}
 			}
             foreach (TreeNode objNode in treLifestyleQualities.Nodes[2].Nodes)
@@ -377,6 +379,7 @@ namespace Chummer
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
 				objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+				_objLifestyle.LifestyleQualities.Add(objQuality);
 			}
             this.DialogResult = DialogResult.OK;
         }

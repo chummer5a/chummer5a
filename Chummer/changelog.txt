@@ -23,6 +23,7 @@ Application Change:
 - Fixed a translation issue for licences.
 - Fixed a translation issue for basic lifestyles. Fixes #608.
 - Armor improvements can now use Precedence attributes; this means that we can prevent a group of armour improvements from stacking with each other. Currently this is used for a small selection of skin-related qualities and biowares. See the Data Changes for more details. Fixes #602.
+- Fixed an issue with advanced lifestyles that created zombie qualities. Fun for the vodoun and shedim, everyone else not so much. Fixes #583.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

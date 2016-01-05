@@ -272,8 +272,8 @@ namespace Chummer
 				{
 					XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + GetQualityName(objNode.Tag.ToString()) + "\"]");
 					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-					_objLifestyle.LifestyleQualities.Add(objQuality);
 					objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
+					_objLifestyle.LifestyleQualities.Add(objQuality);
 				}
 			}
 			this.DialogResult = DialogResult.OK;
