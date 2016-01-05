@@ -967,21 +967,30 @@ namespace Chummer
                 objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
                 objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
                 objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-                if (objPower.MaxLevels > 0)
-                    foreach (Skill objSkill in _objCharacter.Skills)
-                        if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
-                        {
-                            int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                            if (intImprovedAbilityMaximum == 0)
-                            {
-                                intImprovedAbilityMaximum = 1;
-                            }
-                            objPower.MaxLevels = intImprovedAbilityMaximum;
-                        }
-                        else
-                        {
-                            objPowerControl.MaxLevels = objPower.MaxLevels;
-                        }
+				if (objPower.MaxLevels > 0)
+				{
+					if (objPower.Name == "Improved Ability (skill)")
+					{
+						foreach (Skill objSkill in _objCharacter.Skills)
+							if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
+							{
+								int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+								if (intImprovedAbilityMaximum == 0)
+								{
+									intImprovedAbilityMaximum = 1;
+								}
+								objPower.MaxLevels = intImprovedAbilityMaximum;
+							}
+							else
+							{
+								objPowerControl.MaxLevels = objPower.MaxLevels;
+							}
+					}
+					else
+					{
+						objPowerControl.MaxLevels = objPower.MaxLevels;
+					}
+				}
                 objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
                 if (objPower.Rating < 1)
                     objPower.Rating = 1;
@@ -5159,17 +5168,20 @@ namespace Chummer
             // Handle the PowerRatingChange Event for the PowerControl object.
             PowerControl objPowerControl = (PowerControl)sender;
 
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                foreach (Power objPower in _objCharacter.Powers)
-                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
-                    {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                    }
-            }
+			if (objPowerControl.PowerName == "Improved Ability (skill)")
+			{
+				foreach (Skill objSkill in _objCharacter.Skills)
+				{
+					foreach (Power objPower in _objCharacter.Powers)
+						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
+						{
+							double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+							intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+							objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+							objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+						}
+				}
+			}
             if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -5686,24 +5698,29 @@ namespace Chummer
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
             objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
 
-            if (frmPickPower.MaxLevels() > 0)
-                foreach (Skill objSkill in _objCharacter.Skills)
-                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
-                    {
-                        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        if (intImprovedAbilityMaximum == 0)
-                        {
-                            intImprovedAbilityMaximum = 1;
-                        }
-                        objPower.MaxLevels = intImprovedAbilityMaximum;
-                    }
-                    else
-                    {
-                        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-                    }
+			if (frmPickPower.MaxLevels() > 0)
+				if (objPower.Name == "Improved Ability (skill)")
+				{
+					foreach (Skill objSkill in _objCharacter.Skills)
+					{
+						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
+						{
+							int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+							if (intImprovedAbilityMaximum == 0)
+							{
+								intImprovedAbilityMaximum = 1;
+							}
+							objPower.MaxLevels = intImprovedAbilityMaximum;
+						}
+					}
+				}
+				else
+				{
+					objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+				}
 
-            // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+			// Open the Cyberware XML file and locate the selected piece.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
 

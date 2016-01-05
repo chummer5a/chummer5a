@@ -4945,18 +4945,22 @@ namespace Chummer
 					}
 				}
 			}
-
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                foreach (Power objPower in _objCharacter.Powers)
-                    if (objPower.Name == "Improved Ability (skill)" && objPower.Extra == objSkill.Name)
-                    {
-                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                    }
-            }
+			if (objPowerControl.PowerName == "Improved Ability (skill)")
+			{
+				foreach (Skill objSkill in _objCharacter.Skills)
+				{
+					foreach (Power objPower in _objCharacter.Powers)
+					{
+						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization +")")))
+							{
+								double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+								intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+								objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+								objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+							}
+					}
+				}
+			}
 
 			UpdateCharacterInfo();
 
