@@ -5373,11 +5373,13 @@ namespace Chummer
                     intINI = 0;
 
                 int intExtraIP = 3;
+				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
 
 				if (_strMetatype == "A.I.")
 				{
 					intExtraIP = 4;
-                    if (_blnHasHomeNode)
+					intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
+					if (_blnHasHomeNode)
 					{
 						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
 						{
@@ -5415,6 +5417,7 @@ namespace Chummer
 					intINI = 0;
 
 				int intExtraIP = 4;
+				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
 
 				if (_strMetatype == "A.I.")
 				{

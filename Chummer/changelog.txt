@@ -30,6 +30,7 @@ Application Change:
 - Fixed an issue relating to the Improved Ability power causing other powers to revert to 0 ranks. Fixes #488, fixes #436, fixes #378.
 - Fixed an issue with Improved Ability and exotic weapon skills not working together. Fixes #492.
 - Fixed adept powers to stack properly with free levels from qi foci and mentor spirits. May break in interesting ways. Should fix #615.
+- Matrix initiative can now benefit from the MatrixIniaitivePass improvement. Fixes #618.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -55,6 +56,7 @@ Data Change:
 - Fixed an incorrect limit modifier value for the Audio Analyser and Balance Tail cyberware that made some weird stuff happen. Fixes #616.
 - Did some boring admin stuff with armour and bioware.
 - Removed extraneous quality requirements from the Flexible Signature, Masking, Flux and Efficient Ritual metamagics.
+- Added <matrixinitiativepass>1</matrixinitiativepass> to the Multidimensional Coprocessor.
 
 New Strings:
 - Message_DeleteCalendarWeek
