@@ -53,6 +53,8 @@ Data Change:
 	* Dermal Plating cyberware
 - Fixed a crash for the Mutaqua infected qualities.
 - Fixed an incorrect limit modifier value for the Audio Analyser and Balance Tail cyberware that made some weird stuff happen. Fixes #616.
+- Did some boring admin stuff with armour and bioware.
+- Removed extraneous quality requirements from the Flexible Signature, Masking, Flux and Efficient Ritual metamagics.
 
 New Strings:
 - Message_DeleteCalendarWeek

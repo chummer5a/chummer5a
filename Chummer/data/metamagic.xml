@@ -44,8 +44,6 @@
       <required>
         <oneof>
           <art>Flexible Signature</art>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SR5</source>
@@ -59,8 +57,6 @@
       <required>
         <oneof>
           <art>Masking</art>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SR5</source>
@@ -222,8 +218,6 @@
       <required>
         <oneof>
           <art>Flexible Signature</art>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SG</source>
@@ -293,8 +287,6 @@
       <required>
         <oneof>
           <art>Advanced Ritual</art>
-          <quality>Adept</quality>
-          <quality>Mystic Adept</quality>
         </oneof>
       </required>
       <source>SG</source>
