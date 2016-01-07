@@ -1677,7 +1677,7 @@
 			<bonus>
 				<limitmodifier>
 					<limit>Social</limit>
-					<value>+1</value>
+					<value>1</value>
 					<condition>For musical performances</condition>
 				</limitmodifier>
 			</bonus>
@@ -1730,7 +1730,7 @@
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
-					<value>+1</value>
+					<value>1</value>
 					<condition>For climbing, jumping, running, or knockdown resist.</condition>
 				</limitmodifier>
 			</bonus>
