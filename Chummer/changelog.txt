@@ -29,6 +29,7 @@ Application Change:
 - Note tooltips now have a maximum with of 100 pixels. Prevents the tooltips for contact descriptions and such from running across the whole screen. There's a good chance I missed one or two, so let me know if you see any. Fixes #581.
 - Fixed an issue relating to the Improved Ability power causing other powers to revert to 0 ranks. Fixes #488, fixes #436, fixes #378.
 - Fixed an issue with Improved Ability and exotic weapon skills not working together. Fixes #492.
+- Fixed adept powers to stack properly with free levels from qi foci and mentor spirits. May break in interesting ways. Should fix #615.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

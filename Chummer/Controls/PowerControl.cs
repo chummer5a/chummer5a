@@ -31,28 +31,27 @@ namespace Chummer
 		{
 			this.Width = cmdDelete.Left + cmdDelete.Width;
 
-            decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
-            decimal newRating = actualRating + _objPower.FreeLevels;
-            
-            nudRating.Maximum = _objPower.MaxLevels;
+			decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
+			decimal newRating = actualRating + _objPower.FreeLevels;
+
+			nudRating.Maximum = _objPower.MaxLevels;
             nudRating.Minimum = _objPower.FreeLevels;
 
-            if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
-            {
-                nudRating.Value = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value); 
-            }
-            else 
-            {
-                if (actualRating > _objPower.FreeLevels)
-                {
-                    nudRating.Value = actualRating;
-                }
-                else
-                { 
-                    nudRating.Value = _objPower.FreeLevels; 
-                }
-            }
-            ;
+			if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
+			{
+				nudRating.Value = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value);
+			}
+			else
+			{
+				if (actualRating > _objPower.FreeLevels)
+				{
+					nudRating.Value = newRating;
+				}
+				else
+				{
+					nudRating.Value = _objPower.FreeLevels;
+				}
+			}
 		}
         
 		private void nudRating_ValueChanged(object sender, EventArgs e)
@@ -128,8 +127,6 @@ namespace Chummer
 				if (_objPower.Notes != string.Empty)
 					strTooltip += "\n\n" + _objPower.Notes;
 				tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
-				if (_objPower.FreeLevels > 0)
-                    nudRating.Minimum = _objPower.FreeLevels;
 			}
 		}
 
