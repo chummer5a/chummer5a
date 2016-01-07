@@ -18789,7 +18789,7 @@ namespace Chummer
 			if (cboGearSleaze.SelectedIndex == cboGearAttack.SelectedIndex)
 			{
 				cboGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-				objCommlink.Sleaze = Convert.ToInt32(cboGearAttack.SelectedValue);
+				objCommlink.Sleaze = Convert.ToInt32(cboGearSleaze.SelectedValue);
 			}
 
 			if (cboGearDataProcessing.SelectedIndex == cboGearAttack.SelectedIndex)
@@ -18830,13 +18830,13 @@ namespace Chummer
 				objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
 			}
 
-			if (cboGearDataProcessing.SelectedIndex == cboGearAttack.SelectedIndex)
+			if (cboGearDataProcessing.SelectedIndex == cboGearSleaze.SelectedIndex)
 			{
 				cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
 				objCommlink.DataProcessing = Convert.ToInt32(cboGearDataProcessing.SelectedValue);
 			}
 
-			if (cboGearFirewall.SelectedIndex == cboGearAttack.SelectedIndex)
+			if (cboGearFirewall.SelectedIndex == cboGearSleaze.SelectedIndex)
 			{
 				cboGearFirewall.SelectedIndex = Convert.ToInt32(strMissing);
 				objCommlink.Firewall = Convert.ToInt32(cboGearFirewall.SelectedValue);
@@ -18870,7 +18870,7 @@ namespace Chummer
 
 			if (cboGearAttack.SelectedIndex == cboGearDataProcessing.SelectedIndex)
 			{
-				cboGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+				cboGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
 				objCommlink.Attack = Convert.ToInt32(cboGearAttack.SelectedValue);
 			}
 
@@ -18903,7 +18903,7 @@ namespace Chummer
 			if (cboGearSleaze.SelectedIndex == cboGearFirewall.SelectedIndex)
 			{
 				cboGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-				objCommlink.Sleaze = Convert.ToInt32(cboGearFirewall.SelectedValue);
+				objCommlink.Sleaze = Convert.ToInt32(cboGearSleaze.SelectedValue);
 			}
 
 			if (cboGearDataProcessing.SelectedIndex == cboGearFirewall.SelectedIndex)
@@ -18945,7 +18945,7 @@ namespace Chummer
 				if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
 				{
 					cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearAttack.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
 				}
 
 				if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearAttack.SelectedIndex)
@@ -19035,7 +19035,7 @@ namespace Chummer
 				if (cboVehicleGearSleaze.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
 				{
 					cboVehicleGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearFirewall.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboVehicleGearSleaze.SelectedValue);
 				}
 
 				if (cboVehicleGearDataProcessing.SelectedIndex == cboVehicleGearFirewall.SelectedIndex)
@@ -19126,7 +19126,7 @@ namespace Chummer
 				if (cboCyberwareGearSleaze.SelectedIndex == cboCyberwareGearAttack.SelectedIndex)
 				{
 					cboCyberwareGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboCyberwareGearAttack.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboCyberwareGearSleaze.SelectedValue);
 				}
 
 				if (cboCyberwareGearDataProcessing.SelectedIndex == cboCyberwareGearAttack.SelectedIndex)
@@ -19221,7 +19221,7 @@ namespace Chummer
 
 				if (cboCyberwareGearAttack.SelectedIndex == cboCyberwareGearDataProcessing.SelectedIndex)
 				{
-					cboCyberwareGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					cboCyberwareGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
 					objCommlink.Attack = Convert.ToInt32(cboCyberwareGearAttack.SelectedValue);
 				}
 
@@ -19261,7 +19261,7 @@ namespace Chummer
 				if (cboCyberwareGearSleaze.SelectedIndex == cboCyberwareGearFirewall.SelectedIndex)
 				{
 					cboCyberwareGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboCyberwareGearFirewall.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboCyberwareGearSleaze.SelectedValue);
 				}
 
 				if (cboCyberwareGearDataProcessing.SelectedIndex == cboCyberwareGearFirewall.SelectedIndex)
@@ -19307,7 +19307,7 @@ namespace Chummer
 				if (cboWeaponGearSleaze.SelectedIndex == cboWeaponGearAttack.SelectedIndex)
 				{
 					cboWeaponGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboWeaponGearAttack.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboWeaponGearSleaze.SelectedValue);
 				}
 
 				if (cboWeaponGearDataProcessing.SelectedIndex == cboWeaponGearAttack.SelectedIndex)
@@ -19402,7 +19402,7 @@ namespace Chummer
 
 				if (cboWeaponGearAttack.SelectedIndex == cboWeaponGearDataProcessing.SelectedIndex)
 				{
-					cboWeaponGearDataProcessing.SelectedIndex = Convert.ToInt32(strMissing);
+					cboWeaponGearAttack.SelectedIndex = Convert.ToInt32(strMissing);
 					objCommlink.Attack = Convert.ToInt32(cboWeaponGearAttack.SelectedValue);
 				}
 
@@ -19442,7 +19442,7 @@ namespace Chummer
 				if (cboWeaponGearSleaze.SelectedIndex == cboWeaponGearFirewall.SelectedIndex)
 				{
 					cboWeaponGearSleaze.SelectedIndex = Convert.ToInt32(strMissing);
-					objCommlink.Sleaze = Convert.ToInt32(cboWeaponGearFirewall.SelectedValue);
+					objCommlink.Sleaze = Convert.ToInt32(cboWeaponGearSleaze.SelectedValue);
 				}
 
 				if (cboWeaponGearDataProcessing.SelectedIndex == cboWeaponGearFirewall.SelectedIndex)
@@ -22132,6 +22132,78 @@ namespace Chummer
 			}
 		}
 
+		private void chkGearCM_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_blnSkipRefresh)
+				return;
+
+			// Locate the selected Gear.
+			TreeNode objGearNode = new TreeNode();
+			objGearNode = treGear.SelectedNode;
+			if (treGear.SelectedNode.Level > 1)
+			{
+				while (objGearNode.Level > 1)
+					objGearNode = objGearNode.Parent;
+			}
+
+			Gear objGear = new Gear(_objCharacter);
+			foreach (Gear objCharacterGear in _objCharacter.Gear)
+			{
+				if (objCharacterGear.InternalId == objGearNode.Tag.ToString())
+				{
+					objGear = objCharacterGear;
+					break;
+				}
+			}
+
+			int intFillCount = 0;
+			CheckBox objCheck = (CheckBox)sender;
+			{
+				if (objCheck.Checked)
+				{
+					// If this is being checked, make sure everything before it is checked off.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objGearCM in tabMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objGearCM.Tag.ToString()) < Convert.ToInt32(objCheck.Tag.ToString()))
+							objGearCM.Checked = true;
+
+						if (objGearCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+				else
+				{
+					// If this is being unchecked, make sure everything after it is unchecked.
+					_blnSkipRefresh = true;
+					foreach (CheckBox objGearCM in tabMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objGearCM.Tag.ToString()) > Convert.ToInt32(objCheck.Tag.ToString()))
+							objGearCM.Checked = false;
+
+						if (objGearCM.Checked)
+							intFillCount += 1;
+					}
+					_blnSkipRefresh = false;
+				}
+				if (objGear.GetType() == typeof(Commlink))
+				{
+					Commlink objCommlink = (Commlink)objGear;
+					objCommlink.MatrixCMFilled = intFillCount;
+				}
+				else
+				{
+					objGear.MatrixCMFilled = intFillCount;
+				}
+
+				UpdateCharacterInfo();
+
+				_blnIsDirty = true;
+				UpdateWindowTitle();
+			}
+		}
+
 		private void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_blnSkipRefresh)
@@ -24466,6 +24538,7 @@ namespace Chummer
 				cmdGearSplitQty.Enabled = false;
 				cmdGearMergeQty.Enabled = false;
 				cmdGearMoveToVehicle.Enabled = false;
+				tabGearMatrixCM.Visible = false;
 				return;
 			}
 			cmdGearIncreaseQty.Enabled = false;
@@ -24493,6 +24566,34 @@ namespace Chummer
 				lblGearSource.Text = strBook + " " + strPage;
 				tipTooltip.SetToolTip(lblGearSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
 
+				_blnSkipRefresh = true;
+				if (objGear.DeviceRating > 0)
+				{
+					tabGearMatrixCM.Visible = true;
+					foreach (CheckBox objMatrixCM in tabMatrixCM.Controls.OfType<CheckBox>())
+					{
+						if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objGear.MatrixCM)
+						{
+							if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objGear.MatrixCMFilled)
+								objMatrixCM.Checked = true;
+							else
+								objMatrixCM.Checked = false;
+
+							objMatrixCM.Visible = true;
+						}
+						else
+						{
+							objMatrixCM.Checked = false;
+							objMatrixCM.Visible = false;
+							objMatrixCM.Text = "";
+						}
+					}
+				}
+				else
+				{
+					tabGearMatrixCM.Visible = false;
+				}
+				_blnSkipRefresh = false;
 				if (objGear.Category == "Ammunition")
 					cmdGearIncreaseQty.Enabled = true;
 
@@ -24538,7 +24639,6 @@ namespace Chummer
                     lblGearSleazeLabel.Visible = true;
                     lblGearDataProcessingLabel.Visible = true;
                     lblGearFirewallLabel.Visible = true;
-
 					if (objCommlink.Category != "Commlink Upgrade")
 						chkActiveCommlink.Visible = true;
 					if (_objCharacter.Metatype == "A.I.")

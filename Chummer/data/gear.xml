@@ -73,10 +73,10 @@
 				<id>60ab05a7-2850-410c-9261-c5df6b5cddf1</id>
 				<name>Arrow: Seeker Shaft</name>
 				<category>Ammunition</category>
+				<rating>0</rating>
 				<avail>12F</avail>
 				<costfor>1</costfor>
 				<cost>45</cost>
-				<rating>0</rating>
 				<source>HT</source>
 				<page>187</page>
 			</gear>
@@ -103,8 +103,8 @@
 				<costfor>10</costfor>
 				<cost>1000</cost>
 				<weaponbonus>
-					<damage>1</damage>
 					<ap>-5</ap>
+					<damage>1</damage>
 				</weaponbonus>
 				<source>HT</source>
 				<page>189</page>
@@ -132,8 +132,8 @@
 				<costfor>10</costfor>
 				<cost>10</cost>
 				<weaponbonus>
-					<damage>-4</damage>
 					<ap>+4</ap>
+					<damage>-4</damage>
 				</weaponbonus>
 				<source>HT</source>
 				<page>189</page>
@@ -167,12 +167,12 @@
 				<id>75ccb148-e774-429c-b854-a27816439626</id>
 				<name>Spare Clip</name>
 				<category>Ammunition</category>
-				<bonus>
-					<selectweapon />
-				</bonus>
 				<rating>0</rating>
 				<avail>4</avail>
 				<cost>5</cost>
+				<bonus>
+					<selectweapon />
+				</bonus>
 				<source>SR5</source>
 				<page>433</page>
 			</gear>
@@ -180,12 +180,12 @@
 				<id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
 				<name>Vindicator 200-Round Belt</name>
 				<category>Ammunition</category>
-				<bonus>
-					<selectweapon />
-				</bonus>
 				<rating>0</rating>
 				<avail>4</avail>
 				<cost>100</cost>
+				<bonus>
+					<selectweapon />
+				</bonus>
 				<source>RG</source>
 				<page>42</page>
 			</gear>
@@ -193,12 +193,12 @@
 				<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
 				<name>Speed Loader</name>
 				<category>Ammunition</category>
-				<bonus>
-					<selectweapon />
-				</bonus>
 				<rating>0</rating>
 				<avail>2</avail>
 				<cost>25</cost>
+				<bonus>
+					<selectweapon />
+				</bonus>
 				<source>SR5</source>
 				<page>433</page>
 			</gear>
@@ -236,8 +236,8 @@
 			<costfor>10</costfor>
 			<cost>80</cost>
 			<weaponbonus>
-				<damage>1</damage>
 				<ap>-1</ap>
+				<damage>1</damage>
 			</weaponbonus>
 			<source>SR5</source>
 			<page>434</page>
@@ -280,11 +280,11 @@
 			<rating>0</rating>
 			<avail>4F</avail>
 			<costfor>10</costfor>
-			<weaponbonus>
-				<damage>1</damage>
-				<ap>2</ap>
-			</weaponbonus>
 			<cost>70</cost>
+			<weaponbonus>
+				<ap>2</ap>
+				<damage>1</damage>
+			</weaponbonus>
 			<source>SR5</source>
 			<page>434</page>
 		</gear>
@@ -308,12 +308,12 @@
 				<rating>0</rating>
 				<avail>2R</avail>
 				<costfor>10</costfor>
+				<cost>20</cost>
 				<weaponbonus>
 					<apreplace>-1</apreplace>
 					<damagereplace>7P</damagereplace>
 					<modereplace>SS</modereplace>
 				</weaponbonus>
-				<cost>20</cost>
 				<source>SR5</source>
 				<page>434</page>
 			</gear>
@@ -390,8 +390,8 @@
 			<costfor>10</costfor>
 			<cost>10</cost>
 			<weaponbonus>
-				<damage>-1</damage>
 				<ap>4</ap>
+				<damage>-1</damage>
 			</weaponbonus>
 			<source>RG</source>
 			<page>54</page>
@@ -542,9 +542,9 @@
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 15</cost>
 			<bonus>
-				<damage>2</damage>
-				<ap>-1</ap>
 				<accuracy>-1</accuracy>
+				<ap>-1</ap>
+				<damage>2</damage>
 			</bonus>
 			<source>RG</source>
 			<page>23</page>
@@ -558,8 +558,8 @@
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
 			<bonus>
+				<ap>2</ap>
 				<damage>1</damage>
-				<ap>+2</ap>
 				<damagetype>S</damagetype>
 			</bonus>
 			<source>RG</source>
@@ -588,8 +588,8 @@
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 5</cost>
 			<bonus>
+				<ap>6</ap>
 				<damage>-2</damage>
-				<ap>+6</ap>
 				<damagetype>S</damagetype>
 			</bonus>
 			<source>RG</source>
@@ -604,8 +604,8 @@
 			<costfor>1</costfor>
 			<cost>(Rating * 2) + 25</cost>
 			<bonus>
-				<damagereplace>8S(e)</damagereplace>
 				<ap>-5</ap>
+				<damagereplace>8S(e)</damagereplace>
 			</bonus>
 			<source>RG</source>
 			<page>24</page>
@@ -619,8 +619,8 @@
 			<costfor>1</costfor>
 			<cost>(Rating * 25) + 25</cost>
 			<bonus>
-				<damagereplace>12S(e)</damagereplace>
 				<ap>-5</ap>
+				<damagereplace>12S(e)</damagereplace>
 			</bonus>
 			<source>RG</source>
 			<page>24</page>
@@ -648,9 +648,9 @@
 			<costfor>1</costfor>
 			<cost>20</cost>
 			<bonus>
-				<damage>2</damage>
-				<ap>-1</ap>
 				<accuracy>-1</accuracy>
+				<ap>-1</ap>
+				<damage>2</damage>
 			</bonus>
 			<source>RG</source>
 			<page>23</page>
@@ -664,8 +664,8 @@
 			<costfor>1</costfor>
 			<cost>10</cost>
 			<bonus>
+				<ap>2</ap>
 				<damage>1</damage>
-				<ap>+2</ap>
 				<damagetype>S</damagetype>
 			</bonus>
 			<source>RG</source>
@@ -694,8 +694,8 @@
 			<costfor>1</costfor>
 			<cost>10</cost>
 			<bonus>
+				<ap>6</ap>
 				<damage>-2</damage>
-				<ap>+6</ap>
 				<damagetype>S</damagetype>
 			</bonus>
 			<source>RG</source>
@@ -710,8 +710,8 @@
 			<costfor>1</costfor>
 			<cost>30</cost>
 			<bonus>
-				<damagereplace>8S(e)</damagereplace>
 				<ap>-5</ap>
+				<damagereplace>8S(e)</damagereplace>
 			</bonus>
 			<source>RG</source>
 			<page>24</page>
@@ -725,8 +725,8 @@
 			<costfor>1</costfor>
 			<cost>50</cost>
 			<bonus>
-				<damagereplace>12S(e)</damagereplace>
 				<ap>-5</ap>
+				<damagereplace>12S(e)</damagereplace>
 			</bonus>
 			<source>RG</source>
 			<page>24</page>
@@ -785,12 +785,12 @@
 			<category>Ammunition</category>
 			<rating>0</rating>
 			<avail>10R</avail>
-			<bonus>
-				<damagereplace>8S(e)</damagereplace>
-				<ap>-5</ap>
-			</bonus>
 			<costfor>4</costfor>
 			<cost>600</cost>
+			<bonus>
+				<ap>-5</ap>
+				<damagereplace>8S(e)</damagereplace>
+			</bonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>
@@ -800,12 +800,12 @@
 			<category>Ammunition</category>
 			<rating>0</rating>
 			<avail>10R</avail>
-			<bonus>
-				<damagereplace>8S(e)</damagereplace>
-				<ap>-5</ap>
-			</bonus>
 			<costfor>2</costfor>
 			<cost>650</cost>
+			<bonus>
+				<ap>-5</ap>
+				<damagereplace>8S(e)</damagereplace>
+			</bonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>
@@ -825,12 +825,12 @@
 			<name>Ammo: AV Rounds</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<bonus>
-				<ap>-1</ap>
-			</bonus>
 			<avail>14R</avail>
 			<costfor>10</costfor>
 			<cost>175</cost>
+			<bonus>
+				<ap>-1</ap>
+			</bonus>
 			<source>RG</source>
 			<page>55</page>
 		</gear>
@@ -839,13 +839,13 @@
 			<name>Ammo: Gyrojet</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<bonus>
-				<damage>-2S(e)</damage>
-				<ap>-5</ap>
-			</bonus>
 			<avail>15</avail>
 			<costfor>10</costfor>
 			<cost>160</cost>
+			<bonus>
+				<ap>-5</ap>
+				<damage>-2S(e)</damage>
+			</bonus>
 			<source>RG</source>
 			<page>28</page>
 		</gear>
@@ -967,11 +967,11 @@
 			<id>06798b15-40bb-4464-b6a8-a01466ee9b9e</id>
 			<name>Grenade: Gas</name>
 			<category>Ammunition</category>
+			<addoncategory>Chemtech</addoncategory>
+			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
 			<avail>4R</avail>
 			<addweapon>Grenade: Gas</addweapon>
-			<addoncategory>Chemtech</addoncategory>
-			<addoncategory>Toxins</addoncategory>
 			<cost>40</cost>
 			<source>SR5</source>
 			<page>435</page>
@@ -992,8 +992,8 @@
 			<name>Grenade: Thermal Smoke</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<addweapon>Grenade: Thermal Smoke</addweapon>
 			<avail>6R</avail>
+			<addweapon>Grenade: Thermal Smoke</addweapon>
 			<cost>60</cost>
 			<source>SR5</source>
 			<page>435</page>
@@ -1046,11 +1046,11 @@
 			<id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
 			<name>Minigrenade: Gas</name>
 			<category>Ammunition</category>
+			<addoncategory>Chemtech</addoncategory>
+			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
 			<avail>4R</avail>
 			<addweapon>Minigrenade: Gas</addweapon>
-			<addoncategory>Chemtech</addoncategory>
-			<addoncategory>Toxins</addoncategory>
 			<cost>40</cost>
 			<source>SR5</source>
 			<page>435</page>
@@ -1082,8 +1082,8 @@
 			<name>Paint Grenade</name>
 			<category>Ammunition</category>
 			<rating>0</rating>
-			<addweapon>Grenade: Paint</addweapon>
 			<avail>8R</avail>
+			<addweapon>Grenade: Paint</addweapon>
 			<cost>100</cost>
 			<source>RG</source>
 			<page>102</page>
@@ -1496,9 +1496,9 @@
 			<id>89a0f3c9-5ef6-41cd-981f-4ac690ee2ab3</id>
 			<name>Meta Link</name>
 			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
 			<rating>0</rating>
+			<capacity>0</capacity>
+			<armorcapacity>[2]</armorcapacity>
 			<devicerating>1</devicerating>
 			<attack>0</attack>
 			<sleaze>0</sleaze>
@@ -9611,1010 +9611,6 @@
 			<cost>25</cost>
 			<source>SR5</source>
 			<page>433</page>
-		</gear>
-		<gear>
-			<id>0025f1c7-45a4-4ec5-a692-e18aab2f97a9</id>
-			<name>Custom Item</name>
-			<category>Custom</category>
-			<rating>0</rating>
-			<avail>0</avail>
-			<cost>Variable(0-1000000)</cost>
-			<source>SR5</source>
-			<page>1</page>
-		</gear>
-		<gear>
-			<id>73e98bb9-4521-45a2-9185-13067fe6b90b</id>
-			<name>Renraku Aguchi</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>ca8c8e4f-39a2-4e91-a6c7-239dd772e4d9</id>
-			<name>Sony Angel</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>8bd42918-2c19-4738-8945-b93be3d8e26d</id>
-			<name>Transys Arthur</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<avail>2</avail>
-			<cost>100</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>22210eac-768e-42c9-94a0-84077cbcec53</id>
-			<name>Common Denominator Element</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>00342e9b-4c68-4f9d-88e3-f43bfe94069d</id>
-			<name>Leviathan Technical LT-2100</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>03d25169-214b-4e85-8a11-e33b022a6e32</id>
-			<name>Microtronica Azteca Raptor</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>40a1ee23-8d27-4360-95ce-00557c773134</id>
-			<name>Xiao Technologies XT-2G</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>2</firewall>
-			<avail>4</avail>
-			<cost>700</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>da11a064-34bb-409d-a5c5-8fad6ef602e4</id>
-			<name>Matrix Systems GridGopher</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>3</firewall>
-			<avail>6</avail>
-			<cost>1000</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>d3ea65d9-833a-47be-93c1-001bd437eb9c</id>
-			<name>MCT-3500</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>3</firewall>
-			<avail>6</avail>
-			<cost>1000</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>146a6f15-f00f-45bb-abea-f574b2241915</id>
-			<name>FTL Quark</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>4</firewall>
-			<avail>8</avail>
-			<cost>2500</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>117bb53e-3f24-4e53-b861-29564bad7281</id>
-			<name>Novatech NetNinja</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>5</dataprocessing>
-			<firewall>5</firewall>
-			<avail>10</avail>
-			<cost>3000</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>b141098a-1bb3-4003-91fa-fff6958ab68f</id>
-			<name>Pulse Wave</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>6</firewall>
-			<avail>12</avail>
-			<cost>5000</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>07bb0fb2-a84c-4324-8a33-2cdc8f6955a2</id>
-			<name>Fuchi Cyber-X7</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>7</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>7</dataprocessing>
-			<firewall>7</firewall>
-			<avail>14</avail>
-			<cost>8000</cost>
-			<source>DT</source>
-			<page>17</page>
-		</gear>
-		<gear>
-			<id>d3de4703-7215-4046-bf17-a8e11f92b3e5</id>
-			<name>EvoTech Himitsu</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attack>0</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>2</firewall>
-			<avail>8R</avail>
-			<cost>11000</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
-			<name>MCT Blue Defender</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>5</firewall>
-			<avail>7</avail>
-			<cost>2000</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
-			<name>Nixdorf Sekretar</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>2</firewall>
-			<avail>5</avail>
-			<cost>4000</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>784babc6-170b-4bcc-9572-699368e898de</id>
-			<name>Nixdorf Sekretar w/ Liebesekretar</name>
-			<category>Commlinks</category>
-			<armorcapacity>[2]</armorcapacity>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attack>0</attack>
-			<sleaze>0</sleaze>
-			<dataprocessing>6</dataprocessing>
-			<firewall>2</firewall>
-			<avail>6</avail>
-			<cost>6000</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>d66c8cfa-2d00-4f5f-ac7a-eed5f5f7dde7</id>
-			<name>Attack Dongle</name>
-			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>6</rating>
-			<devicerating>0</devicerating>
-			<avail>(Rating*2)R</avail>
-			<cost>(Rating*Rating)*3000</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>f52b8d11-f1ba-4fa2-9a1b-07a533b21b05</id>
-			<name>Stealth Dongle</name>
-			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>6</rating>
-			<devicerating>0</devicerating>
-			<avail>(Rating*2)R</avail>
-			<cost>(Rating*Rating)*3000</cost>
-			<source>DT</source>
-			<page>62</page>
-		</gear>
-		<gear>
-			<id>6c51c77c-7fb7-4ac4-aece-b800047d6d7f</id>
-			<name>Cable Tap</name>
-			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>8R</avail>
-			<cost>500</cost>
-			<source>DT</source>
-			<page>61</page>
-		</gear>
-		<gear>
-			<id>78c6b0ef-4ac5-4623-bf52-4f299e84d036</id>
-			<name>Stun Dongle</name>
-			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>6R</avail>
-			<cost>600</cost>
-			<source>DT</source>
-			<page>62</page>
-		</gear>
-		<gear>
-			<id>e2689c1f-4dd1-40b7-8771-1bb5926b5ebf</id>
-			<name>Receiver</name>
-			<category>Commlink Accessories</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>3</avail>
-			<cost>400</cost>
-			<source>DT</source>
-			<page>62</page>
-		</gear>
-		<gear>
-			<id>de794f9c-505f-4a09-8be9-f43749240799</id>
-			<name>MCT Trainee</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>2,1,1,2</attributearray>
-			<attack>2</attack>
-			<sleaze>1</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>2</firewall>
-			<programs>1</programs>
-			<gears>
-				<gear>
-					<name>Builtin Biofeedback Filter</name>
-					<category>Builtin Programs</category>
-				</gear>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>3R</avail>
-			<cost>17250</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>0f8d360a-8c9a-41f4-ba5c-f4f8c5677145</id>
-			<name>Radio Shack PCD-500</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>1</devicerating>
-			<attributearray>2,2,1,1</attributearray>
-			<attack>2</attack>
-			<sleaze>2</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<programs>1</programs>
-			<avail>2</avail>
-			<cost>21000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>1658d851-21a0-455e-9b87-ed04b4e010a5</id>
-			<name>C-K Analyst</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>1,5,4,3</attributearray>
-			<attack>1</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>3</firewall>
-			<programs>1</programs>
-			<gears>
-				<gear>
-					<name>Builtin Edit Program</name>
-					<category>Builtin Programs</category>
-				</gear>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>5R</avail>
-			<cost>83800</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>b9d996cd-b670-4bf4-a021-047a887891a2</id>
-			<name>Little Hornet</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>2</devicerating>
-			<attributearray>5,4,1,1</attributearray>
-			<attack>5</attack>
-			<sleaze>4</sleaze>
-			<dataprocessing>1</dataprocessing>
-			<firewall>1</firewall>
-			<programs>2</programs>
-			<avail>5R</avail>
-			<cost>89700</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>98a97367-8747-4ba9-ae97-ea371baaec13</id>
-			<name>Aztechnology Emissary</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>2,3,3,8</attributearray>
-			<attack>2</attack>
-			<sleaze>3</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>8</firewall>
-			<programs>1</programs>
-			<gears>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>8R</avail>
-			<cost>168000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>dfc9bfdc-ef5e-45f7-8df5-fd80e011f547</id>
-			<name>Microtronica Azteca 300</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>7,5,3,1</attributearray>
-			<attack>7</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>3</dataprocessing>
-			<firewall>1</firewall>
-			<programs>3</programs>
-			<avail>9R</avail>
-			<cost>200000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>85828a80-cf4a-4f9f-8eb5-c2c5db5e98ab</id>
-			<name>Yak Killer</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>3</devicerating>
-			<attributearray>7,6,2,3</attributearray>
-			<attack>7</attack>
-			<sleaze>6</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>3</firewall>
-			<programs>2</programs>
-			<gears>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>13R</avail>
-			<cost>194000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>88ad69c3-7e45-4a27-b6a2-bcc525fe3a73</id>
-			<name>Ring of Light Special</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,1,2,6</attributearray>
-			<attack>8</attack>
-			<sleaze>1</sleaze>
-			<dataprocessing>2</dataprocessing>
-			<firewall>6</firewall>
-			<programs>3</programs>
-			<gears>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>10R</avail>
-			<cost>242000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>396eb5a2-57d3-4a6f-b30d-d3809b073d54</id>
-			<name>Shiawase Cyber-4</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,6,4,2</attributearray>
-			<attack>8</attack>
-			<sleaze>6</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>2</firewall>
-			<programs>3</programs>
-			<avail>12R</avail>
-			<cost>331000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>aa94122a-6991-46d4-986d-13d72bff1c22</id>
-			<name>Xiao MPG-1</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>4</devicerating>
-			<attributearray>8,5,4,3</attributearray>
-			<attack>8</attack>
-			<sleaze>5</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>3</firewall>
-			<programs>3</programs>
-			<avail>13R</avail>
-			<cost>302000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>e19c44a6-02bd-445c-8def-e43c1a5704e0</id>
-			<name>Ares Echo Unlimited</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>5</devicerating>
-			<attributearray>9,6,4,5</attributearray>
-			<attack>9</attack>
-			<sleaze>6</sleaze>
-			<dataprocessing>4</dataprocessing>
-			<firewall>5</firewall>
-			<programs>3</programs>
-			<gears>
-				<gear>
-					<name>Ruggedized Case</name>
-					<category>Cyberdeck Cases</category>
-				</gear>
-				<gear>
-					<name>Locked Array</name>
-					<category>Specialty Condition</category>
-				</gear>
-			</gears>
-			<avail>15R</avail>
-			<cost>395900</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>c9cdce54-8b00-48c2-be2a-7e81a3d5a426</id>
-			<name>Fairlight Paladin</name>
-			<category>Cyberdecks</category>
-			<capacity>0</capacity>
-			<rating>0</rating>
-			<devicerating>6</devicerating>
-			<attributearray>9,9,8,8</attributearray>
-			<attack>9</attack>
-			<sleaze>9</sleaze>
-			<dataprocessing>8</dataprocessing>
-			<firewall>8</firewall>
-			<programs>6</programs>
-			<avail>20R</avail>
-			<cost>1050000</cost>
-			<source>DT</source>
-			<page>64</page>
-		</gear>
-		<gear>
-			<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
-			<name>Hardening</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>3R</avail>
-			<cost>1500</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>7355616d-5d79-4d0a-96f2-5ca4095fcabf</id>
-			<name>Induction Receiver</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>10R</avail>
-			<cost>1200</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>8706c98d-b53b-4a29-b21b-a921030ae801</id>
-			<name>Multidimensional Coprocessor</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>7R</avail>
-			<cost>1400</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>9604bbf8-49a0-46ae-8a42-f7e2d473f5c2</id>
-			<name>Overwatch Mask</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>9F</avail>
-			<cost>4200</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>f11b2c82-6dbb-4e32-831f-1387fff2274c</id>
-			<name>Program Carrier</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>2</avail>
-			<cost>900</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>4ab02099-2d3c-437f-bdba-26ec919283c3</id>
-			<name>Self-Destruct</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>12F</avail>
-			<cost>200</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>ec2a95d8-0c4a-459b-85b3-420174c09d5e</id>
-			<name>Vectored Signal Filter</name>
-			<category>Cyberdeck Modules</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>3</avail>
-			<cost>800</cost>
-			<source>DT</source>
-			<page>65</page>
-		</gear>
-		<gear>
-			<id>175df941-97a5-4527-ad6a-14ea1624f971</id>
-			<name>Bootstrap</name>
-			<category>Common Programs</category>
-			<rating>0</rating>
-			<avail>0</avail>
-			<cost>80</cost>
-			<source>DT</source>
-			<page>56</page>
-		</gear>
-		<gear>
-			<id>a0a5008f-deae-4d43-a714-5309b4d9c416</id>
-			<name>Search</name>
-			<category>Common Programs</category>
-			<rating>0</rating>
-			<avail>0</avail>
-			<cost>80</cost>
-			<source>DT</source>
-			<page>56</page>
-		</gear>
-		<gear>
-			<id>5d4a8d67-276d-4112-b060-b85c65370ac3</id>
-			<name>Shredder</name>
-			<category>Common Programs</category>
-			<rating>0</rating>
-			<avail>0</avail>
-			<cost>80</cost>
-			<source>DT</source>
-			<page>56</page>
-		</gear>
-		<gear>
-			<id>dd28044c-4745-49f8-8b79-2166f4e02769</id>
-			<name>Cat's Paw</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>56</page>
-		</gear>
-		<gear>
-			<id>6a63bad1-de71-4929-a298-2d4f6c50a494</id>
-			<name>Cloudless</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>56</page>
-		</gear>
-		<gear>
-			<id>e1e3753e-9e94-4e6e-860d-a8a03782baf3</id>
-			<name>Crash'</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>73872ee5-0d7e-4c00-84cc-b4e62bcbcd13</id>
-			<name>Detonator</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>500</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>dd3aede4-e0a2-425e-944d-c3d5c3a4b2d1</id>
-			<name>Evaluate</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>9a4f4240-d1f8-4034-af1c-24e2e5326ccf</id>
-			<name>Fly on a Wall</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>04e80043-eabb-4ae1-944e-189d6e9ef419</id>
-			<name>Hitchhiker</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>39a8d39a-5c1c-44c7-a7fe-e9f28899c69e</id>
-			<name>Nuke-from-Orbit</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>12F</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>d1fbeb34-3ae0-4cb1-9c0f-85131c749849</id>
-			<name>Paintjob</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>dd86897c-058e-4246-a921-9a556ec139d8</id>
-			<name>Smoke and Mirrors</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>b5bfc411-2c94-48c6-953a-b1a7c212c433</id>
-			<name>Swerve</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>86a6c880-f877-4268-a693-a9b9e2b6f480</id>
-			<name>Tantrum</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>1609bec9-f1c2-4834-a704-917fc8642724</id>
-			<name>Tarball</name>
-			<category>Hacking Programs</category>
-			<rating>0</rating>
-			<avail>4R</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>57</page>
-		</gear>
-		<gear>
-			<id>f860ec1a-b688-4975-95f4-4c11648b04f0</id>
-			<name>Add Attack Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>6638ae8f-d6e4-4d0b-ba3f-0fe05ef64ce0</id>
-			<name>Add Sleaze Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>d6802ad9-5dca-434a-bc92-bf8a17a8c5dc</id>
-			<name>Add Module</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<bonus>
-				<selecttext />
-			</bonus>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>e833a66b-f8b6-4720-b702-ee8efb8522c7</id>
-			<name>Increase Sleaze Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>e2c6eded-5897-4ae6-9911-230292d3f858</id>
-			<name>Increase Attack Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>0b2cb1ca-d97a-4aee-bf63-5c516b4d0e3e</id>
-			<name>Increase Data Processing Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>fe32ba65-0c81-48df-98cb-d80f740d54a5</id>
-			<name>Increase Firewall Modification</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>02100ba4-7b39-4cdc-9e7a-6c6454d34dae</id>
-			<name>Modify Matrix Attribute</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>48f8cb8e-dc9f-405e-b49a-fce3d61a1bda</id>
-			<name>Persona Firmware</name>
-			<category>Electronic Modification</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>0</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>f56affe6-0159-4f7a-ba4d-b5283bd25c44</id>
-			<name>Electronic Parts</name>
-			<category>Electronic Parts, Single</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>250</cost>
-			<source>DT</source>
-			<page>66</page>
-		</gear>
-		<gear>
-			<id>ec53ae4e-086f-4817-8cc2-ec574aa7cd51</id>
-			<name>Electronic Parts, Five-Pack</name>
-			<category>Electronic Parts</category>
-			<armorcapacity>[2]</armorcapacity>
-			<rating>0</rating>
-			<costfor>5</costfor>
-			<devicerating>0</devicerating>
-			<avail>0</avail>
-			<cost>1000</cost>
-			<source>DT</source>
-			<page>66</page>
 		</gear>
 		<!-- Region Hard Targets -->
 		<gear>

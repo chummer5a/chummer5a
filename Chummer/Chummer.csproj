@@ -1028,8 +1028,14 @@
     <None Include="data\bioware.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\books.xsc">
+      <DependentUpon>books.xsd</DependentUpon>
+    </None>
     <None Include="data\books.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\books.xss">
+      <DependentUpon>books.xsd</DependentUpon>
     </None>
     <None Include="data\books.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

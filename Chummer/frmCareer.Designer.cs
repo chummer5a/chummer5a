@@ -1102,6 +1102,32 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tabMatrixCM = new System.Windows.Forms.TabPage();
+			this.chkGearMatrixCM24 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM23 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM22 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM21 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM20 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM19 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM18 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM17 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM16 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM15 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM14 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM13 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM12 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM11 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM10 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM9 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM8 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM7 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM6 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM5 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM4 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM3 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM2 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM1 = new System.Windows.Forms.CheckBox();
+			this.tabGearMatrixCM = new System.Windows.Forms.TabControl();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1212,6 +1238,8 @@
 			this.cmsLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
+			this.tabMatrixCM.SuspendLayout();
+			this.tabGearMatrixCM.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -7633,6 +7661,7 @@
 			// tabGear
 			// 
 			this.tabGear.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGear.Controls.Add(this.tabGearMatrixCM);
 			this.tabGear.Controls.Add(this.cboGearDataProcessing);
 			this.tabGear.Controls.Add(this.cboGearFirewall);
 			this.tabGear.Controls.Add(this.cboGearSleaze);
@@ -13155,6 +13184,340 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// tabMatrixCM
+			// 
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM1);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM2);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM3);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM4);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM5);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM6);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM7);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM8);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM9);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM10);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM11);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM12);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM13);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM14);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM15);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM16);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM17);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM18);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM19);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM20);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM21);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM22);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM23);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM24);
+			this.tabMatrixCM.Location = new System.Drawing.Point(4, 22);
+			this.tabMatrixCM.Name = "tabMatrixCM";
+			this.tabMatrixCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
+			this.tabMatrixCM.TabIndex = 1;
+			this.tabMatrixCM.Text = "Matrix Condition Monitor";
+			this.tabMatrixCM.UseVisualStyleBackColor = true;
+			// 
+			// chkGearMatrixCM24
+			// 
+			this.chkGearMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM24.Location = new System.Drawing.Point(173, 57);
+			this.chkGearMatrixCM24.Name = "chkGearMatrixCM24";
+			this.chkGearMatrixCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM24.TabIndex = 74;
+			this.chkGearMatrixCM24.Tag = "24";
+			this.chkGearMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM24.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM24.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM23
+			// 
+			this.chkGearMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM23.Location = new System.Drawing.Point(149, 57);
+			this.chkGearMatrixCM23.Name = "chkGearMatrixCM23";
+			this.chkGearMatrixCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM23.TabIndex = 73;
+			this.chkGearMatrixCM23.Tag = "23";
+			this.chkGearMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM23.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM23.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM22
+			// 
+			this.chkGearMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM22.Location = new System.Drawing.Point(125, 57);
+			this.chkGearMatrixCM22.Name = "chkGearMatrixCM22";
+			this.chkGearMatrixCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM22.TabIndex = 72;
+			this.chkGearMatrixCM22.Tag = "22";
+			this.chkGearMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM22.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM22.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM21
+			// 
+			this.chkGearMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM21.Location = new System.Drawing.Point(101, 57);
+			this.chkGearMatrixCM21.Name = "chkGearMatrixCM21";
+			this.chkGearMatrixCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM21.TabIndex = 71;
+			this.chkGearMatrixCM21.Tag = "21";
+			this.chkGearMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM21.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM21.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM20
+			// 
+			this.chkGearMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM20.Location = new System.Drawing.Point(77, 57);
+			this.chkGearMatrixCM20.Name = "chkGearMatrixCM20";
+			this.chkGearMatrixCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM20.TabIndex = 70;
+			this.chkGearMatrixCM20.Tag = "20";
+			this.chkGearMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM20.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM20.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM19
+			// 
+			this.chkGearMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM19.Location = new System.Drawing.Point(53, 57);
+			this.chkGearMatrixCM19.Name = "chkGearMatrixCM19";
+			this.chkGearMatrixCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM19.TabIndex = 69;
+			this.chkGearMatrixCM19.Tag = "19";
+			this.chkGearMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM19.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM19.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM18
+			// 
+			this.chkGearMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM18.Location = new System.Drawing.Point(29, 57);
+			this.chkGearMatrixCM18.Name = "chkGearMatrixCM18";
+			this.chkGearMatrixCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM18.TabIndex = 68;
+			this.chkGearMatrixCM18.Tag = "18";
+			this.chkGearMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM18.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM18.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM17
+			// 
+			this.chkGearMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM17.Location = new System.Drawing.Point(5, 57);
+			this.chkGearMatrixCM17.Name = "chkGearMatrixCM17";
+			this.chkGearMatrixCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM17.TabIndex = 67;
+			this.chkGearMatrixCM17.Tag = "17";
+			this.chkGearMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM17.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM17.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM16
+			// 
+			this.chkGearMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM16.Location = new System.Drawing.Point(173, 31);
+			this.chkGearMatrixCM16.Name = "chkGearMatrixCM16";
+			this.chkGearMatrixCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM16.TabIndex = 66;
+			this.chkGearMatrixCM16.Tag = "16";
+			this.chkGearMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM16.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM16.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM15
+			// 
+			this.chkGearMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM15.Location = new System.Drawing.Point(149, 31);
+			this.chkGearMatrixCM15.Name = "chkGearMatrixCM15";
+			this.chkGearMatrixCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM15.TabIndex = 65;
+			this.chkGearMatrixCM15.Tag = "15";
+			this.chkGearMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM15.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM15.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM14
+			// 
+			this.chkGearMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM14.Location = new System.Drawing.Point(125, 31);
+			this.chkGearMatrixCM14.Name = "chkGearMatrixCM14";
+			this.chkGearMatrixCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM14.TabIndex = 64;
+			this.chkGearMatrixCM14.Tag = "14";
+			this.chkGearMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM14.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM14.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM13
+			// 
+			this.chkGearMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM13.Location = new System.Drawing.Point(101, 31);
+			this.chkGearMatrixCM13.Name = "chkGearMatrixCM13";
+			this.chkGearMatrixCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM13.TabIndex = 63;
+			this.chkGearMatrixCM13.Tag = "13";
+			this.chkGearMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM13.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM13.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM12
+			// 
+			this.chkGearMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM12.Location = new System.Drawing.Point(77, 31);
+			this.chkGearMatrixCM12.Name = "chkGearMatrixCM12";
+			this.chkGearMatrixCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM12.TabIndex = 60;
+			this.chkGearMatrixCM12.Tag = "12";
+			this.chkGearMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM12.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM12.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM11
+			// 
+			this.chkGearMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM11.Location = new System.Drawing.Point(53, 31);
+			this.chkGearMatrixCM11.Name = "chkGearMatrixCM11";
+			this.chkGearMatrixCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM11.TabIndex = 59;
+			this.chkGearMatrixCM11.Tag = "11";
+			this.chkGearMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM11.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM11.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM10
+			// 
+			this.chkGearMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM10.Location = new System.Drawing.Point(29, 31);
+			this.chkGearMatrixCM10.Name = "chkGearMatrixCM10";
+			this.chkGearMatrixCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM10.TabIndex = 58;
+			this.chkGearMatrixCM10.Tag = "10";
+			this.chkGearMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM10.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM10.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM9
+			// 
+			this.chkGearMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM9.Location = new System.Drawing.Point(5, 31);
+			this.chkGearMatrixCM9.Name = "chkGearMatrixCM9";
+			this.chkGearMatrixCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM9.TabIndex = 57;
+			this.chkGearMatrixCM9.Tag = "9";
+			this.chkGearMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM9.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM9.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM8
+			// 
+			this.chkGearMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkGearMatrixCM8.Name = "chkGearMatrixCM8";
+			this.chkGearMatrixCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM8.TabIndex = 56;
+			this.chkGearMatrixCM8.Tag = "8";
+			this.chkGearMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM8.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM8.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM7
+			// 
+			this.chkGearMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkGearMatrixCM7.Name = "chkGearMatrixCM7";
+			this.chkGearMatrixCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM7.TabIndex = 55;
+			this.chkGearMatrixCM7.Tag = "7";
+			this.chkGearMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM7.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM7.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM6
+			// 
+			this.chkGearMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkGearMatrixCM6.Name = "chkGearMatrixCM6";
+			this.chkGearMatrixCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM6.TabIndex = 54;
+			this.chkGearMatrixCM6.Tag = "6";
+			this.chkGearMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM6.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM6.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM5
+			// 
+			this.chkGearMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkGearMatrixCM5.Name = "chkGearMatrixCM5";
+			this.chkGearMatrixCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM5.TabIndex = 53;
+			this.chkGearMatrixCM5.Tag = "5";
+			this.chkGearMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM5.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM5.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM4
+			// 
+			this.chkGearMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkGearMatrixCM4.Name = "chkGearMatrixCM4";
+			this.chkGearMatrixCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM4.TabIndex = 52;
+			this.chkGearMatrixCM4.Tag = "4";
+			this.chkGearMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM4.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM4.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM3
+			// 
+			this.chkGearMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkGearMatrixCM3.Name = "chkGearMatrixCM3";
+			this.chkGearMatrixCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM3.TabIndex = 51;
+			this.chkGearMatrixCM3.Tag = "3";
+			this.chkGearMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM3.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM3.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM2
+			// 
+			this.chkGearMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkGearMatrixCM2.Name = "chkGearMatrixCM2";
+			this.chkGearMatrixCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM2.TabIndex = 50;
+			this.chkGearMatrixCM2.Tag = "2";
+			this.chkGearMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM1
+			// 
+			this.chkGearMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkGearMatrixCM1.Name = "chkGearMatrixCM1";
+			this.chkGearMatrixCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM1.TabIndex = 49;
+			this.chkGearMatrixCM1.Tag = "1";
+			this.chkGearMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM1.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// tabGearMatrixCM
+			// 
+			this.tabGearMatrixCM.Controls.Add(this.tabMatrixCM);
+			this.tabGearMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
+			this.tabGearMatrixCM.Location = new System.Drawing.Point(520, 205);
+			this.tabGearMatrixCM.Name = "tabGearMatrixCM";
+			this.tabGearMatrixCM.SelectedIndex = 0;
+			this.tabGearMatrixCM.Size = new System.Drawing.Size(213, 113);
+			this.tabGearMatrixCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabGearMatrixCM.TabIndex = 203;
+			this.tabGearMatrixCM.Visible = false;
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -13317,6 +13680,8 @@
 			this.cmsLimitModifier.ResumeLayout(false);
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
+			this.tabMatrixCM.ResumeLayout(false);
+			this.tabGearMatrixCM.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -14369,6 +14734,32 @@
 		internal System.Windows.Forms.Label lblDEPMetatype;
 		internal System.Windows.Forms.Label lblDEPLabel;
 		private System.Windows.Forms.Button cmdDeleteWeek;
+		private System.Windows.Forms.TabControl tabGearMatrixCM;
+		private System.Windows.Forms.TabPage tabMatrixCM;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM1;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM2;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM3;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM4;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM5;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM6;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM7;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM8;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM9;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM10;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM11;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM12;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM13;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM14;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM15;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM16;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM17;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM18;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM19;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM20;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM21;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM22;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM23;
+		private System.Windows.Forms.CheckBox chkGearMatrixCM24;
 	}
 }
 

@@ -171,12 +171,12 @@
       <avail>12</avail>
       <cost>24000</cost>
       <bonus>
-        <specificskill>
-          <name>Escape Artist</name>
-          <bonus>1</bonus>
-          <applytorating>no</applytorating>
-        </specificskill>
-        <physicallimit>+1</physicallimit>
+				<physicallimit>+1</physicallimit>
+				<specificskill>
+					<name>Escape Artist</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
       </bonus>
       <source>SR5</source>
       <page>459</page>
@@ -191,28 +191,28 @@
       <avail>Rating * 5</avail>
       <cost>Rating * 9000</cost>
       <bonus>
-        <skillcategory>
-          <name>Academic</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-        <skillcategory>
-          <name>Interest</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-        <skillcategory>
-          <name>Language</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-        <skillcategory>
-          <name>Professional</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-        <skillcategory>
-          <name>Street</name>
-          <bonus>Rating</bonus>
-        </skillcategory>
-        <mentallimit>Rating</mentallimit>
-        <memory>Rating</memory>
+				<memory>Rating</memory>
+				<mentallimit>Rating</mentallimit>
+				<skillcategory>
+					<name>Academic</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Interest</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Language</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Professional</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
+				<skillcategory>
+					<name>Street</name>
+					<bonus>Rating</bonus>
+				</skillcategory>
       </bonus>
       <source>SR5</source>
       <page>460</page>
@@ -350,6 +350,7 @@
       <avail>20R</avail>
       <cost>140000</cost>
       <bonus>
+				<lifestylecost>25</lifestylecost>
         <specificattribute>
           <name>BOD</name>
           <val>1</val>
@@ -366,7 +367,6 @@
           <name>STR</name>
           <val>1</val>
         </specificattribute>
-        <lifestylecost>25</lifestylecost>
       </bonus>
       <source>SR5</source>
       <page>459</page>
@@ -468,11 +468,11 @@
 			<category>Basic</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
+			<avail>12R</avail>
+			<cost>20000</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
-			<avail>12R</avail>
-			<cost>20000</cost>
 			<source>CF</source>
 			<page>112</page>
 		</bioware>
@@ -778,14 +778,14 @@
 			<id>8f12d662-9fc6-475f-8435-a11829c14956</id>
 			<name>Tailored Critter Pheremones</name>
 			<category>Basic</category>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<rating>3</rating>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>Rating * 4</avail>
 			<cost>Rating * 2000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>115</page>
 		</bioware>
@@ -820,12 +820,12 @@
 			<name>Minor Biosculpting Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Variable(50-500)</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -834,12 +834,12 @@
 			<name>Moderate Biosculpting Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Variable(50-500)</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -848,12 +848,12 @@
 			<name>Severe Biosculpting Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Variable(50-500)</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -863,20 +863,20 @@
 			<category>Biosculpting</category>
 			<rating>2</rating>
 			<ess>FixedValues(0.2,0.5)</ess>
+			<capacity>0</capacity>
+			<avail>FixedValues(8,12)</avail>
 			<required>
 				<oneof>
 					<metatype>Troll</metatype>
 				</oneof>
 			</required>
+			<cost>FixedValues(15000,25000)</cost>
 			<bonus>
 				<specificattribute>
 					<name>CHA</name>
 					<max>Rating</max>
 				</specificattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>FixedValues(8,12)</avail>
-			<cost>FixedValues(15000,25000)</cost>
 			<source>CF</source>
 			<page>73</page>
 		</bioware>
@@ -885,20 +885,20 @@
 			<name>Troll Reduction (Ork)</name>
 			<category>Biosculpting</category>
 			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
 			<required>
 				<oneof>
 					<metatype>Ork</metatype>
 				</oneof>
 			</required>
+			<cost>15000</cost>
 			<bonus>
 				<specificattribute>
 					<name>CHA</name>
 					<max>1</max>
 				</specificattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>8</avail>
-			<cost>15000</cost>
 			<source>CF</source>
 			<page>73</page>
 		</bioware>
@@ -907,12 +907,12 @@
 			<name>Ethnicity/Sex Change</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>10000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -921,12 +921,12 @@
 			<name>Metatype Modification</name>
 			<category>Biosculpting</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>20000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -936,13 +936,13 @@
 			<id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
 			<name>Claws</name>
 			<category>Bio-Weapons</category>
-			<ess>0.1*Rating</ess>
 			<rating>2</rating>
+			<ess>0.1*Rating</ess>
 			<notes>Rating is used to indicate number of claws.</notes>
 			<capacity>0</capacity>
 			<avail>4R</avail>
-			<cost>500</cost>
 			<addweapon>Claws (Bio-Weapon)</addweapon>
+			<cost>500</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -950,13 +950,13 @@
 			<id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
 			<name>Claws (Retractable)</name>
 			<category>Bio-Weapons</category>
-			<ess>0.15*Rating</ess>
 			<rating>2</rating>
+			<ess>0.15*Rating</ess>
 			<notes>Rating is used to indicate number of claws.</notes>
 			<capacity>0</capacity>
 			<avail>6R</avail>
-			<cost>1000</cost>
 			<addweapon>Retractable Claws (Bio-Weapon)</addweapon>
+			<cost>1000</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -967,8 +967,8 @@
 			<ess>0.3</ess>
 			<capacity>0</capacity>
 			<avail>8</avail>
-			<cost>10000</cost>
 			<addweapon>Electrical Discharge</addweapon>
+			<cost>10000</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -979,8 +979,8 @@
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>4</avail>
-			<cost>500</cost>
 			<addweapon>Fangs (Bio-Weapon)</addweapon>
+			<cost>500</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -991,8 +991,8 @@
 			<ess>0.15</ess>
 			<capacity>0</capacity>
 			<avail>6</avail>
-			<cost>1000</cost>
 			<addweapon>Retractable Fangs (Bio-Weapon)</addweapon>
+			<cost>1000</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -1003,8 +1003,8 @@
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>4</avail>
-			<cost>500</cost>
 			<addweapon>Horns (Bio-Weapon)</addweapon>
+			<cost>500</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
@@ -1015,8 +1015,8 @@
 			<ess>0.3</ess>
 			<capacity>0</capacity>
 			<avail>8R</avail>
-			<cost>2000</cost>
 			<addweapon></addweapon>
+			<cost>2000</cost>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1027,8 +1027,8 @@
 			<ess>0.25</ess>
 			<capacity>0</capacity>
 			<avail>8</avail>
-			<cost>4000</cost>
 			<addweapon></addweapon>
+			<cost>4000</cost>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1062,8 +1062,8 @@
 			<ess>0.2</ess>
 			<capacity>0</capacity>
 			<avail>12F</avail>
-			<cost>8000</cost>
 			<addweapon>Large Stinger</addweapon>
+			<cost>8000</cost>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1071,16 +1071,16 @@
 			<id>8832f6ac-0082-4b9b-9e1c-7f90874a23a1</id>
 			<name>Striking Callus</name>
 			<category>Bio-Weapons</category>
-			<ess>0.05*Rating</ess>
 			<rating>4</rating>
-			<bonus>
-				<unarmeddv>Rating*0.5</unarmeddv>
-				<unarmeddvphysical />
-			</bonus>
+			<ess>0.05*Rating</ess>
 			<notes>Rating is used to represent hands and feet. Every 2 Rating will grant +1 Unarmed damage.</notes>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Rating*250</cost>
+			<bonus>
+				<unarmeddv>Rating*0.5</unarmeddv>
+				<unarmeddvphysical />
+			</bonus>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1088,13 +1088,12 @@
 			<id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
 			<name>Tusk(s), Small</name>
 			<category>Bio-Weapons</category>
-			<ess>0</ess>
 			<rating>2</rating>
+			<ess>0</ess>
 			<notes>Rating is used to indicate number of tusks.</notes>
 			<capacity>0</capacity>
 			<avail>2</avail>
 			<cost>Rating*100</cost>
-			<addweapon></addweapon>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1102,8 +1101,8 @@
 			<id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
 			<name>Tusk(s), Medium</name>
 			<category>Bio-Weapons</category>
-			<ess>0.1*Rating</ess>
 			<rating>2</rating>
+			<ess>0.1*Rating</ess>
 			<notes>Rating is used to indicate number of tusks.</notes>
 			<capacity>0</capacity>
 			<avail>2</avail>
@@ -1116,13 +1115,13 @@
 			<id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
 			<name>Tusk(s), Large</name>
 			<category>Bio-Weapons</category>
-			<ess>0.2*Rating</ess>
 			<rating>2</rating>
+			<ess>0.2*Rating</ess>
 			<notes>Rating is used to indicate number of tusks.</notes>
 			<capacity>0</capacity>
 			<avail>8R</avail>
-			<cost>Rating*1000</cost>
 			<addweapon>Large Tusk(s)</addweapon>
+			<cost>Rating*1000</cost>
 			<source>CF</source>
 			<page>121</page>
 		</bioware>
@@ -1132,14 +1131,14 @@
 			<id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
 			<name>Bio-Tattoos</name>
 			<category>Cosmetic Bioware</category>
+			<rating>3</rating>
 			<ess>FixedValues(0,0.1,0.2)</ess>
+			<capacity>0</capacity>
+			<avail>FixedValues(4,5,6)</avail>
+			<cost>FixedValues(500,1000,1500)</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
-			<capacity>0</capacity>
-			<rating>3</rating>
-			<avail>FixedValues(4,5,6)</avail>
-			<cost>FixedValues(500,1000,1500)</cost>
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
@@ -1148,6 +1147,9 @@
 			<name>Chameleon Skin</name>
 			<category>Cosmetic Bioware</category>
 			<ess>0.2</ess>
+			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>2000</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
@@ -1155,9 +1157,6 @@
 					<condition>Stealth Skill: Must be completely naked</condition>
 				</limitmodifier>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>6</avail>
-			<cost>2000</cost>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -1166,6 +1165,9 @@
 			<name>Chameleon Skin (Dynamic)</name>
 			<category>Cosmetic Bioware</category>
 			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>4000</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Stealth</limit>
@@ -1173,9 +1175,6 @@
 					<condition>Stealth Skill: Must be completely naked</condition>
 				</limitmodifier>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>8</avail>
-			<cost>4000</cost>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -1217,12 +1216,12 @@
 			<name>Hair Growth</name>
 			<category>Cosmetic Bioware</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>200</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>108</page>
 		</bioware>
@@ -1275,12 +1274,12 @@
 			<name>Skin Pigmentation</name>
 			<category>Cosmetic Bioware</category>
 			<ess>0</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>200</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
@@ -1289,12 +1288,12 @@
 			<name>Skin Pigmentation (Permanent)</name>
 			<category>Cosmetic Bioware</category>
 			<ess>0.1</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>1000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>111</page>
 		</bioware>
@@ -1348,12 +1347,12 @@
 			<name>Limb replacement (Finger/Toe)</name>
 			<category>Cultured</category>
 			<ess>0.02</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>2000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
@@ -1362,12 +1361,12 @@
 			<name>Limb replacement (Hand/foot)</name>
 			<category>Cultured</category>
 			<ess>0.02</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>20000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
@@ -1376,12 +1375,12 @@
 			<name>Limb replacement (Half arm/leg)</name>
 			<category>Cultured</category>
 			<ess>0.02</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>12</avail>
 			<cost>40000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
@@ -1390,12 +1389,12 @@
 			<name>Limb replacement (Full arm/leg)</name>
 			<category>Cultured</category>
 			<ess>0.02</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>118</page>
 		</bioware>
@@ -1405,10 +1404,10 @@
 			<category>Cultured</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
+			<avail>4</avail>
 			<addqualities>
 				<addquality>Photographic Memory</addquality>
 			</addqualities>
-			<avail>4</avail>
 			<cost>10000</cost>
 			<source>CF</source>
 			<page>118</page>
@@ -1438,8 +1437,8 @@
 		<bioware>
 			<id>e99097a1-84d5-4038-8525-761d199c58a7</id>
 			<name>Trauma Damper</name>
-			<rating>4</rating>
 			<category>Cultured</category>
+			<rating>4</rating>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 4)R</avail>
@@ -1450,8 +1449,8 @@
 		<bioware>
 			<id>e78a9465-d399-4e94-bea8-7e98c8fc960d</id>
 			<name>Tremor Reducer</name>
-			<rating>3</rating>
 			<category>Cultured</category>
+			<rating>3</rating>
 			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>Rating * 6</avail>
@@ -1532,12 +1531,12 @@
 			<name>Hyperthymesia</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
-			<bonus>
-				<memory>2</memory>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>10</avail>
 			<cost>15000</cost>
+			<bonus>
+				<memory>2</memory>
+			</bonus>
 			<source>CF</source>
 			<page>159</page>
 		</bioware>
@@ -1568,15 +1567,15 @@
 			<name>Myostatin Inhibitor</name>
 			<category>Genemods</category>
 			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>10</avail>
+			<cost>30500</cost>
 			<bonus>
 				<specificattribute>
 					<name>STR</name>
 					<val>1</val>
 				</specificattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>10</avail>
-			<cost>30500</cost>
 			<source>CF</source>
 			<page>159</page>
 		</bioware>
@@ -1607,12 +1606,12 @@
 			<name>Thickened Digestive Tract Lining</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
-			<bonus>
-				<lifestylecost>10</lifestylecost>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>8000</cost>
+			<bonus>
+				<lifestylecost>10</lifestylecost>
+			</bonus>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1621,12 +1620,12 @@
 			<name>Adapsin</name>
 			<category>Genemods</category>
 			<ess>0.2</ess>
-			<bonus>
-				<cyberwareessmultiplier>90</cyberwareessmultiplier>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>16</avail>
 			<cost>30000</cost>
+			<bonus>
+				<cyberwareessmultiplier>90</cyberwareessmultiplier>
+			</bonus>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1635,19 +1634,19 @@
 			<name>Dareadrenaline</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
-			<bonus>
-			<specificattribute>
-				<name>WIL</name>
-				<bonus>1</bonus>
-				<applytorating>no</applytorating>
-			</specificattribute>
-			</bonus>
-				<addqualities>
-					<addquality>Poor Self Control (Thrill Seeker)</addquality>
-				</addqualities>
 			<capacity>0</capacity>
 			<avail>6</avail>
+			<addqualities>
+				<addquality>Poor Self Control (Thrill Seeker)</addquality>
+			</addqualities>
 			<cost>61000</cost>
+			<bonus>
+				<specificattribute>
+					<name>WIL</name>
+					<bonus>1</bonus>
+					<applytorating>no</applytorating>
+				</specificattribute>
+			</bonus>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1667,12 +1666,12 @@
 			<name>Hyper Glucagon</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
-			<bonus>
-				<lifestylecost>10</lifestylecost>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>8000</cost>
+			<bonus>
+				<lifestylecost>10</lifestylecost>
+			</bonus>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1681,6 +1680,9 @@
 			<name>Magnasense</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>7000</cost>
 			<bonus>
 				<specificskill>
 					<name>Navigation</name>
@@ -1688,9 +1690,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>8</avail>
-			<cost>7000</cost>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1700,15 +1699,15 @@
 			<category>Genemods</category>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<avail>6</avail>
+			<cost>38000</cost>
 			<bonus>
+				<physicallimit>1</physicallimit>
 				<skillgroup>
 					<name>Athletics</name>
 					<bonus>1</bonus>
 				</skillgroup>
-				<physicallimit>1</physicallimit>
 			</bonus>
-			<avail>6</avail>
-			<cost>38000</cost>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1717,15 +1716,15 @@
 			<name>PuSHed</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>14</avail>
+			<cost>62000</cost>
 			<bonus>
 				<skillattribute>
 					<name>LOG</name>
 					<bonus>1</bonus>
 				</skillattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>14</avail>
-			<cost>62000</cost>
 			<source>CF</source>
 			<page>160</page>
 		</bioware>
@@ -1734,15 +1733,15 @@
 			<name>Qualia</name>
 			<category>Genemods</category>
 			<ess>0.4</ess>
+			<capacity>0</capacity>
+			<avail>14</avail>
+			<cost>65000</cost>
 			<bonus>
 				<skillattribute>
 					<name>INT</name>
 					<bonus>1</bonus>
 				</skillattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>14</avail>
-			<cost>65000</cost>
 			<source>CF</source>
 			<page>161</page>
 		</bioware>
@@ -1763,6 +1762,8 @@
 			<category>Genemods</category>
 			<ess>0.1</ess>
 			<capacity>0</capacity>
+			<avail>5</avail>
+			<cost>9000</cost>
 			<bonus>
 				<specificskill>
 					<name>Gymnastics</name>
@@ -1770,8 +1771,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<avail>5</avail>
-			<cost>9000</cost>
 			<source>CF</source>
 			<page>161</page>
 		</bioware>
@@ -1780,12 +1779,12 @@
 			<name>Solus</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
-			<bonus>
-				<lifestylecost>-10</lifestylecost>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>8000</cost>
+			<bonus>
+				<lifestylecost>-10</lifestylecost>
+			</bonus>
 			<source>CF</source>
 			<page>161</page>
 		</bioware>
@@ -1794,13 +1793,13 @@
 			<name>Synaptic Acceleration</name>
 			<category>Genemods</category>
 			<ess>0.4</ess>
-			<bonus>
-				<initiativepass>1</initiativepass>
-				<initiative>1</initiative>
-			</bonus>
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>78000</cost>
+			<bonus>
+				<initiative>1</initiative>
+				<initiativepass>1</initiativepass>
+			</bonus>
 			<source>CF</source>
 			<page>162</page>
 		</bioware>
@@ -1809,6 +1808,9 @@
 			<name>Synch</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<capacity>0</capacity>
+			<avail>8</avail>
+			<cost>14000</cost>
 			<bonus>
 				<specificskill>
 					<name>Perception</name>
@@ -1816,9 +1818,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>8</avail>
-			<cost>14000</cost>
 			<source>CF</source>
 			<page>162</page>
 		</bioware>
@@ -2006,13 +2005,13 @@
 			<capacity>0</capacity>
 			<avail>10</avail>
 			<cost>47000</cost>
-			<source>CF</source>
 			<bonus>
 				<selectattribute>
 					<excludeattribute>EDG</excludeattribute>
 					<max>1</max>
 				</selectattribute>
 			</bonus>
+			<source>CF</source>
 			<page>157</page>
 		</bioware>
 		<bioware>
@@ -2055,12 +2054,12 @@
 			<name>Therapeutic Genetics</name>
 			<category>Genetic Restoration</category>
 			<ess>0.2</ess>
-			<bonus>
-				<selecttext />
-			</bonus>
 			<capacity>0</capacity>
 			<avail>10</avail>
 			<cost>90000</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>CF</source>
 			<page>156</page>
 		</bioware>
@@ -2278,8 +2277,8 @@
 			<forbidden>
 				<oneof>
 					<cyberwares>
-						<count>1</count>
 						<bioware>Bone Density Augmentation</bioware>
+						<count>1</count>
 					</cyberwares>
 				</oneof>
 			</forbidden>
@@ -2294,15 +2293,15 @@
 			<ess>0.2</ess>
 			<capacity>0</capacity>
 			<avail>14F</avail>
+			<addweapon>Bone Spike II</addweapon>
 			<required>
 				<oneof>
 					<cyberwares>
-						<count>1</count>
 						<bioware>Bone Density Augmentation</bioware>
+						<count>1</count>
 					</cyberwares>			
 			</oneof>
 			</required>
-			<addweapon>Bone Spike II</addweapon>
 			<cost>20000</cost>
 			<source>HT</source>
 			<page>185</page>
@@ -2314,15 +2313,15 @@
 			<ess>0.2</ess>
 			<capacity>0</capacity>
 			<avail>14F</avail>
+			<addweapon>Bone Spike III</addweapon>
 			<required>
 				<oneof>
 					<cyberwares>
-						<count>1</count>
 						<bioware>Bone Density Augmentation</bioware>
+						<count>1</count>
 					</cyberwares>
 			</oneof>
 			</required>
-			<addweapon>Bone Spike III</addweapon>
 			<cost>20000</cost>
 			<source>HT</source>
 			<page>185</page>

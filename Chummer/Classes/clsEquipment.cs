@@ -2816,13 +2816,7 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-			try
-			{
-				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
 			try
 			{
 				_strLimbSlot = objNode["limbslot"].InnerText;
@@ -10498,6 +10492,8 @@ namespace Chummer
 		protected bool _blnDiscountCost = false;
 		protected string _strGearName = "";
 		protected bool _blnIncludedInParent = false;
+		private int _intMatrixCM = 0;
+		private int _intMatrixCMFilled = 0;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Gear(Character objCharacter)
@@ -11068,6 +11064,8 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("devicerating", _intDeviceRating.ToString());
 			objWriter.WriteElementString("gearname", _strGearName);
+			objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString());
+			objWriter.WriteElementString("conditionmonitor", ConditionMonitor.ToString());
 			objWriter.WriteElementString("includedinparent", _blnIncludedInParent.ToString());
 			if (_intChildCostMultiplier != 1)
 				objWriter.WriteElementString("childcostmultiplier", _intChildCostMultiplier.ToString());
@@ -11104,25 +11102,10 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-            try
-            {
-                _strCapacity = objNode["capacity"].InnerText;
-            }
-            catch { }
-			try
-			{
-				_strArmorCapacity = objNode["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intMinRating = Convert.ToInt32(objNode["minrating"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
+			objNode.TryGetField("capacity", out _strCapacity);
+			objNode.TryGetField("armorcapacity", out _strArmorCapacity);
+			objNode.TryGetField("minrating", out _intMinRating);
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
@@ -12872,6 +12855,58 @@ namespace Chummer
 				}
 			}
 		}
+
+
+		/// <summary>
+		/// Base Matrix Boxes.
+		/// </summary>
+		public int BaseMatrixBoxes
+		{
+			get
+			{
+				int baseMatrixBoxes = 8;
+				return baseMatrixBoxes;
+			}
+		}
+
+		/// <summary>
+		/// Physical Condition Monitor boxes.
+		/// </summary>
+		public int MatrixCM
+		{
+			get
+			{
+				return BaseMatrixBoxes + Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_intDeviceRating, GlobalOptions.Instance.CultureInfo) / 2.0));
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor boxes filled.
+		/// </summary>
+		public int MatrixCMFilled
+		{
+			get
+			{
+				return _intMatrixCMFilled;
+			}
+			set
+			{
+				_intMatrixCMFilled = value;
+			}
+		}
+
+		/// <summary>
+		/// Matrix Condition Monitor for the Commlink.
+		/// </summary>
+		public int ConditionMonitor
+		{
+			get
+			{
+				double dblSystem = Math.Ceiling(Convert.ToDouble(DeviceRating, GlobalOptions.Instance.CultureInfo) / 2);
+				int intSystem = Convert.ToInt32(dblSystem, GlobalOptions.Instance.CultureInfo);
+				return 8 + intSystem;
+			}
+		}
 		#endregion
 	}
 
@@ -12886,7 +12921,6 @@ namespace Chummer
         private int _intSleaze = 0;
         private int _intDataProcessing = 0;
         private int _intFirewall = 0;
-		private bool _blnHomeNode = false;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Commlink(Character objCharacter) : base(objCharacter)
@@ -13204,7 +13238,7 @@ namespace Chummer
             objWriter.WriteElementString("attack", _intAttack.ToString());
             objWriter.WriteElementString("sleaze", _intSleaze.ToString());
             objWriter.WriteElementString("dataprocessing", _intDataProcessing.ToString());
-            objWriter.WriteElementString("firewall", _intFirewall.ToString());
+			objWriter.WriteElementString("firewall", _intFirewall.ToString());
             objWriter.WriteElementString("gearname", _strGearName);
 			objWriter.WriteStartElement("children");
 			foreach (Gear objGear in _objChildren)
@@ -13238,13 +13272,7 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-			try
-			{
-				_strArmorCapacity = objNode["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
+			_strArmorCapacity = objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
@@ -13497,21 +13525,6 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not an item is an A.I.'s Home Node.
-		/// </summary>
-		public bool HomeNode
-		{
-			get
-			{
-				return _blnHomeNode;
-			}
-			set
-			{
-				_blnHomeNode = value;
-			}
-		}
-
-		/// <summary>
 		/// Attack.
 		/// </summary>
 		public int Attack
@@ -13712,19 +13725,6 @@ namespace Chummer
 			get
 			{
 				return TotalDeviceRating;
-			}
-		}
-
-		/// <summary>
-		/// Matrix Condition Monitor for the Commlink.
-		/// </summary>
-		public int ConditionMonitor
-		{
-			get
-			{
-				double dblSystem = Math.Ceiling(Convert.ToDouble(TotalDeviceRating, GlobalOptions.Instance.CultureInfo) / 2);
-				int intSystem = Convert.ToInt32(dblSystem, GlobalOptions.Instance.CultureInfo);
-				return 8 + intSystem;
 			}
 		}
 		#endregion
