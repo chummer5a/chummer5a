@@ -31,6 +31,7 @@ Application Change:
 - Fixed an issue with Improved Ability and exotic weapon skills not working together. Fixes #492.
 - Fixed adept powers to stack properly with free levels from qi foci and mentor spirits. May break in interesting ways. Should fix #615.
 - Matrix initiative can now benefit from the MatrixIniaitivePass improvement. Fixes #618.
+- Added support for FixedValues for vehicle mods. Fixes #622.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -57,6 +58,7 @@ Data Change:
 - Did some boring admin stuff with armour and bioware.
 - Removed extraneous quality requirements from the Flexible Signature, Masking, Flux and Efficient Ritual metamagics.
 - Added <matrixinitiativepass>1</matrixinitiativepass> to the Multidimensional Coprocessor.
+- Renamed the Chameleon Coating from Stolen Souls to prevent conflicts with the Rigger 5.0 version.
 
 New Strings:
 - Message_DeleteCalendarWeek
