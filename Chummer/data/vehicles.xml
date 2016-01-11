@@ -2556,7 +2556,7 @@
 				<gear rating="2">Sensor Array</gear>
 			</gears>
 			<mods>
-				<gear>Realistic Features 1 (Drone)</gear>
+				<name rating="1">Realistic Features (Drone)</name>
 			</mods>
 			<avail>8</avail>
 			<cost>3000</cost>
@@ -3883,14 +3883,16 @@
 			<armor>0</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<weapons />
+			<subsystems>
+				<subsystem></subsystem>
+			</subsystems>
 			<mods>
 				<name>Synthetic Drone Arm</name>
 				<name>Synthetic Drone Arm</name>
 				<name>Synthetic Drone Leg</name>
 				<name>Synthetic Drone Leg</name>
-				<name>Realistic Features 1 (Drone)</name>
+				<name rating="1">Realistic Features (Drone)</name>
 			</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
@@ -6651,7 +6653,7 @@
 			<rating>4</rating>
 			<slots>0</slots>
 			<avail>FixedValues(2,4,8,12R)</avail>
-			<cost>FixedValues((Body * Body) * 100,(Body * Body) * 500,(Body * Body) * 100,(Body * Body) * 5000)</cost>
+			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 100,Body * Body * 5000)</cost>
 			<source>R5</source>
 			<page>125</page>
 		</mod>

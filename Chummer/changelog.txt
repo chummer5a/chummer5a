@@ -31,6 +31,10 @@ Application Change:
 - Fixed an issue with Improved Ability and exotic weapon skills not working together. Fixes #492.
 - Fixed adept powers to stack properly with free levels from qi foci and mentor spirits. May break in interesting ways. Should fix #615.
 - Matrix initiative can now benefit from the MatrixIniaitivePass improvement. Fixes #618.
+- Exotic Weapon skills without any karma spent on them can now be removed once you've entered career mode. 
+- Exotic Weapon skills can now properly have their karma costs refunded in career mode.
+- Exotic Weapon skills can't change their specialisation dynamically anymore once you're in career mode, because it breaks the karma refund. This is intentional and is unlikely to be changed unless you can present me with better-implemented code or a reason it shouldn't be like it is.
+- Skill specializations will now save their value as the English string if possible rather than whatever the user enters; this should fix #595. Note that this fix is PROBABLY not retroactive.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -57,11 +61,13 @@ Data Change:
 - Did some boring admin stuff with armour and bioware.
 - Removed extraneous quality requirements from the Flexible Signature, Masking, Flux and Efficient Ritual metamagics.
 - Added <matrixinitiativepass>1</matrixinitiativepass> to the Multidimensional Coprocessor.
+- Fixed crashes for the Festo pidgeon and Shiawase i-Doll.
 
 New Strings:
 - Message_DeleteCalendarWeek
 - Button_DeleteWeek
 - Tip_CalculatedMovement
+- Message_ConfirmExoticSkillRemove
 
 Build 178: 
 Application Change: 

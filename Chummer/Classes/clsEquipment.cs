@@ -7453,16 +7453,16 @@ namespace Chummer
 				{
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{
-                        if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
-                        {
-                            objSkill = objCharacterSkill;
-                            break;
-                        }
-                        if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
+						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
 						{
 							objSkill = objCharacterSkill;
 							break;
 						}
+						if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
+                        {
+                            objSkill = objCharacterSkill;
+                            break;
+                        }
 					}
 				}
 
@@ -14608,6 +14608,23 @@ namespace Chummer
 					XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
 					strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
 				}
+				else if (_strAvail.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strAvail.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					string strAvail = strValues[Convert.ToInt32(_intRating) - 1];
+					if (strAvail.EndsWith("F") || strAvail.EndsWith("R"))
+					{
+						string strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
+						strAvail = strAvail.Substring(0, strAvail.Length - 1);
+						int intAvailFix = Convert.ToInt32(strAvail);
+						strCalculated = intAvailFix.ToString() + strAvailSuffix;
+					}
+					else
+					{
+						int intAvailFix = Convert.ToInt32(strAvail);
+						strCalculated = intAvailFix.ToString();
+					}
+				}
 				else
 				{
 					// Just a straight cost, so return the value.
@@ -14655,10 +14672,13 @@ namespace Chummer
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 
 				string strCost = "";
-				string strCostExpression = "";
-				strCostExpression = _strCost;
-
-				strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+				strCost = _strCost;
+				if (_strCost.StartsWith("FixedValues"))
+				{
+					string[] strValues = strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					strCost = strValues[_intRating - 1];
+				}
+				strCost = strCost.Replace("Rating", _intRating.ToString());
 				strCost = strCost.Replace("Vehicle Cost", _intVehicleCost.ToString());
 				// If the Body is 0 (Microdrone), treat it as 2 for the purposes of determine Modification cost.
 				if (_intBody > 0)

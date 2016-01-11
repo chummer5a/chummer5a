@@ -550,10 +550,7 @@ namespace Chummer
 					// Populate the Skill's Specializations (if any).
 					foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
 					{
-						if (objXmlSpecialization.Attributes["translate"] != null)
-							objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-						else
-							objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+						objSkillControl.AddSpec(objXmlSpecialization.InnerText);
 					}
 
 					// Set the control's vertical position and add it to the Skills Panel.
@@ -590,6 +587,7 @@ namespace Chummer
 					objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
 					objSkillControl.SkillKarmaClicked += objSkill_KarmaClicked;
 					objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
+					objSkillControl.DeleteSkill += objSkill_DeleteExoticSkill;
 
 					objSkillControl.SkillName = objSkill.Name;
 					objSkillControl.SkillCategory = objSkill.SkillCategory;
@@ -1435,6 +1433,35 @@ namespace Chummer
 			this.Icon = this.Icon.Clone() as System.Drawing.Icon;
 			Timekeeper.Finish("load_frm_career");
 			Timekeeper.Finish("loading");
+		}
+
+		private void objSkill_DeleteExoticSkill(object sender)
+		{
+			if (!_objFunctions.ConfirmDelete(LanguageManager.Instance.GetString("Message_DeleteExoticSkill")))
+				return;
+
+			// Handle the DeleteSkill event for the SkillControl object.
+			SkillControl objSender = (SkillControl)sender;
+			bool blnFound = false;
+			foreach (SkillControl objSkillControl in panActiveSkills.Controls)
+			{
+				// Set the flag to show that we have found the Skill.
+				if (objSkillControl == objSender)
+				{
+					blnFound = true;
+					_objCharacter.Skills.Remove(objSkillControl.SkillObject);
+				}
+
+				// Once the Skill has been found, all of the other SkillControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
+				if (blnFound)
+					objSkillControl.Top -= 23;
+			}
+			// Remove the SkillControl that raised the Event.
+			panActiveSkills.Controls.Remove(objSender);
+			UpdateCharacterInfo();
+
+			_blnIsDirty = true;
+			UpdateWindowTitle();
 		}
 
 		private void frmCareer_FormClosing(object sender, FormClosingEventArgs e)
@@ -7581,7 +7608,9 @@ namespace Chummer
 
 			int i = panActiveSkills.Controls.Count;
 			Skill objSkill = new Skill(_objCharacter);
+			SkillSpecialization objSkillSpec = new SkillSpecialization(frmPickExoticSkill.SelectedExoticSkillSpecialisation);
 			objSkill.Attribute = nodSkill["attribute"].InnerText;
+			objSkill.Specializations.Add(objSkillSpec);
 			if (_objCharacter.MaxSkillRating > 0)
 				objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
@@ -7595,7 +7624,7 @@ namespace Chummer
 			objSkillControl.SkillKarmaClicked += objSkill_KarmaClicked;
 			objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
 			objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
-
+			objSkillControl.DeleteSkill += objSkill_DeleteExoticSkill;
 			objSkillControl.SkillCategory = nodSkill["category"].InnerText;
 			if (nodSkill["default"].InnerText == "Yes")
 				objSkill.Default = true;
@@ -7604,26 +7633,6 @@ namespace Chummer
 
 			objSkill.ExoticSkill = true;
 			_objCharacter.Skills.Add(objSkill);
-
-			// Populate the Skill's Specializations (if any).
-			foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
-			{
-				if (objXmlSpecialization.Attributes["translate"] != null)
-					objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-				else
-					objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-			}
-
-			// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-			XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\" or useskill = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\"]");
-			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-			{
-				if (objXmlWeapon["translate"] != null)
-					objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
-				else
-					objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
-			}
 
 			objSkillControl.SkillRatingMaximum = 12;
 			// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
@@ -13705,6 +13714,27 @@ namespace Chummer
 					int intRating = 0;
 					foreach (SkillControl objSkillControl in panActiveSkills.Controls)
 					{
+						if (objSkillControl.SkillName.StartsWith("Exotic Melee Weapon") || objSkillControl.SkillName.StartsWith("Exotic Ranged Weapon"))
+						{
+							//Handler for exotic skills from characters created prior to 5.179.
+							if (objSkillControl.SkillName.EndsWith("()"))
+							{
+								if ((objSkillControl.SkillName.Split(')') + objSkillControl.SkillSpec + ")") == objEntry.Undo.ObjectId)
+								{
+									objSkillControl.SkillRating--;
+									intRating = objSkillControl.SkillRating;
+									strSkillGroup = objSkillControl.SkillGroup;
+									break;
+								}
+							}
+							else if ((objSkillControl.SkillName + " (" + objSkillControl.SkillSpec + ")") == objEntry.Undo.ObjectId)
+							{
+								objSkillControl.SkillRating--;
+								intRating = objSkillControl.SkillRating;
+								strSkillGroup = objSkillControl.SkillGroup;
+								break;
+							}
+						}
 						if (objSkillControl.SkillName == objEntry.Undo.ObjectId)
 						{
 							objSkillControl.SkillRating--;
