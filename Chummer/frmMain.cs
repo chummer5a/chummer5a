@@ -43,6 +43,7 @@ namespace Chummer
 			}
 			else
 			{
+#if RELEASE
 				frmUpdate frmAutoUpdate = new frmUpdate();
 				frmAutoUpdate.GetChummerVersion();
 				Version verCurrentVersion = new Version(strCurrentVersion);
@@ -51,6 +52,7 @@ namespace Chummer
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
 				if (result != 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
+#endif
 			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;

@@ -873,6 +873,11 @@ namespace Chummer
 					XPathExpression xprCost = nav.Compile(strCostExpr);
 					intReturn = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost).ToString(), GlobalOptions.Instance.CultureInfo)));
 				}
+				else if (_strCost.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					intReturn = Convert.ToInt32(strValues[Convert.ToInt32(_intRating) - 1]);
+				}
 				else
 					intReturn = Convert.ToInt32(_strCost);
 
@@ -7454,15 +7459,15 @@ namespace Chummer
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{
 						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
-						{
-							objSkill = objCharacterSkill;
-							break;
-						}
-						if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
                         {
                             objSkill = objCharacterSkill;
                             break;
                         }
+						if (_strSpec2 == "" || objCharacterSkill.HasSpecialization(_strSpec2))
+						{
+							objSkill = objCharacterSkill;
+							break;
+						}
 					}
 				}
 
@@ -14685,6 +14690,12 @@ namespace Chummer
 					strCost = strCost.Replace("Body", _intBody.ToString());
 				else
 					strCost = strCost.Replace("Body", "2");
+				
+				if (_strCost.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					strCost = (strValues[Convert.ToInt32(_intRating) - 1]);
+				}
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
 				strCost = strCost.Replace("Accel", _strAccel);
 				XPathExpression xprCost = nav.Compile(strCost);
@@ -14723,7 +14734,11 @@ namespace Chummer
 				string strCost = "";
 				string strCostExpression = "";
 				strCostExpression = _strCost;
-
+				if (_strCost.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					strCostExpression = (strValues[Convert.ToInt32(_intRating) - 1]);
+				}
 				strCost = strCostExpression.Replace("Rating", _intRating.ToString());
 				strCost = strCost.Replace("Vehicle Cost", _intVehicleCost.ToString());
 				// If the Body is 0 (Microdrone), treat it as 2 for the purposes of determine Modification cost.
@@ -14750,8 +14765,16 @@ namespace Chummer
 		{
 			get
 			{
+				if (_strSlots.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					return Convert.ToInt32(strValues[Convert.ToInt32(_intRating) - 1]);
+				}
+				else
+				{
 				return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
 			}
+		}
 		}
 
 		/// <summary>
