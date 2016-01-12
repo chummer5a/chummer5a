@@ -9896,12 +9896,11 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				XmlNode objNode;
 
-				foreach (LifestyleQuality strQuality in _lstLifestyleQualities)
+				foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
 				{
 					string strThisQuality = "";
-					//string strQualityName = strQuality.Substring(0, strQuality.IndexOf('[') - 1);
-					string strQualityName = strQuality.Name;
-					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+					string strQualityName = objQuality.DisplayName;
+					objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 
 
 					if (objNode["translate"] != null)
@@ -10007,7 +10006,7 @@ namespace Chummer
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
+					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
 					if (objNode != null)
 					{
 						if (objNode["translate"] != null)
@@ -10062,7 +10061,7 @@ namespace Chummer
 				if (GlobalOptions.Instance.Language != "en-us")
 				{
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID + "\"]");
+					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
 					if (objNode != null)
 					{
 						if (objNode["altpage"] != null)
@@ -16605,6 +16604,10 @@ namespace Chummer
 			}
 			_strSource = objXmlLifestyleQuality["source"].InnerText;
 			_strPage = objXmlLifestyleQuality["page"].InnerText;
+			if (objNode.Text.Contains('('))
+			{
+				_strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
+			}
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
@@ -16637,7 +16640,7 @@ namespace Chummer
 			// Built-In Qualities appear as grey text to show that they cannot be removed.
 			if (objLifestyleQualitySource == QualitySource.BuiltIn)
 				objNode.ForeColor = SystemColors.GrayText;
-
+			objNode.Name = Name;
 			objNode.Text = DisplayName;
 			objNode.Tag = InternalId;
 		}

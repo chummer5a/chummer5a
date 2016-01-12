@@ -25784,56 +25784,56 @@ namespace Chummer
                     string strQualities = "";
 
                     lblLifestyleQualities.Text = "";
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID + "\"]");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
                     if (objNode["translate"] != null)
                         strBaseLifestyle = objNode["translate"].InnerText;
                     else
                         strBaseLifestyle = objNode["name"].InnerText;
 
-                    foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                    {
-                        if (strQualities.Length > 0)
-                            strQualities += ", ";
+					foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
+					{
+						if (strQualities.Length > 0)
+							strQualities += ", ";
 						string strQualityName = objQuality.DisplayName;
-						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
-                        XmlNode nodCost = objNode["lifestylecost"];
-                        if (nodCost != null)
-                        {
-                            string strCost = nodCost.InnerText;
-                            int intCost = Convert.ToInt32(strCost);
-                            if (intCost > 0)
-                            {
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [+" + intCost.ToString() + "%]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [+" + intCost.ToString() + "%]";
-                            }
-                            else
-                            {
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [" + intCost.ToString() + "%]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [" + intCost.ToString() + "%]";
-                            }
-                        }
-                        else
-                        {
-                            if (objNode["cost"] != null)
-                            {
-                                string strCost = objNode["cost"].InnerText;
-                                if (objNode["translate"] != null)
-                                    strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
-                                else
-                                    strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
-                            }
-                            else
-                            {
-                                strQualities += objNode["name"].InnerText;
-                            }
-                        }
-                    }
+						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+						XmlNode nodMultiplier = objNode["multiplier"];
+						if (objNode["translate"] != null)
+						{
+							strQualities += objNode["translate"].InnerText;
+						}
+						else
+						{
+							strQualities += objNode["name"].InnerText;
+						}
+						if (objQuality.Extra.Length > 0)
+						{
+							strQualities += " (" + objQuality.Extra + ")";
+						}
+						if (nodMultiplier != null)
+						{
+							string strMultiplier = nodMultiplier.InnerText;
+							int intCost = Convert.ToInt32(strMultiplier);
+							if (intCost > 0)
+							{
+								strQualities += " [+" + intCost.ToString() + "%]";
+							}
+							else
+							{
+								strQualities += " [" + intCost.ToString() + "%]";
+							}
+						}
+						else
+						{
+							if (objNode["cost"] != null)
+							{
+								string strCost = objNode["cost"].InnerText;
+								if (objNode["translate"] != null)
+									strQualities += " [" + strCost + "¥]";
+							}
+						}
+					}
 
-                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+					foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost)
                         {

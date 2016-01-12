@@ -19588,7 +19588,7 @@ namespace Chummer
                     string strQualities = "";
 
                     lblLifestyleQualities.Text = "";
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID + "\"]");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
                     if (objNode["translate"] != null)
                         strBaseLifestyle = objNode["translate"].InnerText;
                     else
@@ -19599,25 +19599,31 @@ namespace Chummer
 						if (strQualities.Length > 0)
 							strQualities += ", ";
 						string strQualityName = objQuality.DisplayName;
-						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 						XmlNode nodMultiplier = objNode["multiplier"];
+						if (objNode["translate"] != null)
+						{
+							strQualities += objNode["translate"].InnerText;
+						}
+						else
+						{
+							strQualities += objNode["name"].InnerText;
+						}
+						if (objQuality.Extra.Length > 0)
+						{
+							strQualities += " (" + objQuality.Extra + ")";
+						}
 						if (nodMultiplier != null)
 						{
 							string strMultiplier = nodMultiplier.InnerText;
 							int intCost = Convert.ToInt32(strMultiplier);
 							if (intCost > 0)
 							{
-								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [+" + intCost.ToString() + "%]";
-								else
-									strQualities += objNode["name"].InnerText + " [+" + intCost.ToString() + "%]";
+								strQualities += " [+" + intCost.ToString() + "%]";
 							}
 							else
 							{
-								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [" + intCost.ToString() + "%]";
-								else
-									strQualities += objNode["name"].InnerText + " [" + intCost.ToString() + "%]";
+								strQualities += " [" + intCost.ToString() + "%]";
 							}
 						}
 						else
@@ -19626,13 +19632,7 @@ namespace Chummer
 							{
 								string strCost = objNode["cost"].InnerText;
 								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
-								else
-									strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
-							}
-							else
-							{
-								strQualities += objNode["name"].InnerText;
+									strQualities +=  " [" + strCost + "¥]";
 							}
 						}
 					}
