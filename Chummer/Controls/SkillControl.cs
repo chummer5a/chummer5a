@@ -1134,7 +1134,19 @@ namespace Chummer
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
-	        foreach (Gear objGear in _objSkill.CharacterObject.Gear)
+			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			{
+				if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _objSkill.Name && objImprovement.Enabled)
+				{
+					if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > intSkillRating)
+					{
+						intSkillRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
+						blnSkillsoft = true;
+						break;
+					}
+				}
+			}
+			foreach (Gear objGear in _objSkill.CharacterObject.Gear)
             {
                 // Look for any Skillsoft that would conflict with the Skill's Rating.
                 if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))

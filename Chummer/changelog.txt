@@ -37,6 +37,7 @@ Application Change:
 - Exotic Weapon skills can't change their specialisation dynamically anymore once you're in career mode, because it breaks the karma refund. This is intentional and is unlikely to be changed unless you can present me with better-implemented code or a reason it shouldn't be like it is.
 - Skill specializations will now save their value as the English string if possible rather than whatever the user enters; this should fix #595. Note that this fix is PROBABLY not retroactive.
 - Fixed some issues with lifestyle qualities not saving properly if they contained an extra value. Fixes #623.
+- Active Hardwires now implemented according to the rules, fixes #617. They're effectively similar to skillwires, but you select the affected skill at the time of purchase. They're currently mutually exclusive, so you can't have skillwires and hardwires affecting the same skill. As with skillwires, the character's actual rating and their hardwire rating don't stack.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

@@ -3010,6 +3010,17 @@ namespace Chummer
 			{
 				int intRating = _intRating;
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
+				foreach (Improvement objImprovement in _objCharacter.Improvements)
+				{
+					if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _strName && objImprovement.Enabled)
+					{
+						if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > _intRating)
+						{
+							intRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
+							break;
+						}
+                    }
+				}
 				if (objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || _objCharacter.SkillsoftAccess)
 				{
 					foreach (Gear objGear in _objCharacter.Gear)
