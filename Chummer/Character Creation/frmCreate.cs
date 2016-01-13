@@ -14483,25 +14483,35 @@ namespace Chummer
                     }
                 }
             }
-            else
-            {
-                Armor objSelectedArmor = new Armor(_objCharacter);
-                Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+			// Locate the selected Gear.
+			bool blnIsGear = false;
+			Armor objSelectedArmor = new Armor(_objCharacter);
+			Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+			if (objGear != null)
+				blnIsGear = true;
 
-                objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objGear.DisplayName;
+			if (blnIsGear)
+			{
+				objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
+				treArmor.SelectedNode.Text = objGear.DisplayName;
 
-                // See if a Bonus node exists.
-                if (objGear.Bonus != null)
-                {
-                    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                    if (objGear.Bonus.InnerXml.Contains("Rating"))
-                    {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                    }
-                }
-            }
+				// See if a Bonus node exists.
+				if (objGear.Bonus != null)
+				{
+					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+					if (objGear.Bonus.InnerXml.Contains("Rating"))
+					{
+						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+					}
+				}
+			}
+			else
+			{
+				Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+				objArmor.Rating = Convert.ToInt32(nudArmorRating.Value);
+				treArmor.SelectedNode.Text = objArmor.DisplayName;
+			}
 
             RefreshSelectedArmor();
             UpdateCharacterInfo();
@@ -18213,7 +18223,16 @@ namespace Chummer
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
-                nudArmorRating.Enabled = false;
+				if (objArmor.MaxRating == 0)
+				{
+					nudArmorRating.Enabled = false;
+				}
+				else
+				{
+					nudArmorRating.Value = objArmor.Rating;
+					nudArmorRating.Maximum = objArmor.MaxRating;
+					nudArmorRating.Enabled = true;
+				}
 
                 _blnSkipRefresh = false;
             }

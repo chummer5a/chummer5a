@@ -915,6 +915,7 @@ namespace Chummer
 		private string _strAvail = "";
 		private string _strCost = "";
 		private int _intRating = 0;
+		private int _intMaxRating = 0;
 		private string _strSource = "";
 		private string _strPage = "";
 		private string _strArmorName = "";
@@ -954,7 +955,9 @@ namespace Chummer
             if (objXmlArmorNode["armoroverride"] != null)
                 _strO = objXmlArmorNode["armoroverride"].InnerText;
 			_intRating = intRating;
-            _strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
+			if (objXmlArmorNode["rating"] != null)
+				_intMaxRating = Convert.ToInt32(objXmlArmorNode["rating"].InnerText);
+			_strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
 			_strAvail = objXmlArmorNode["avail"].InnerText;
 			_strSource = objXmlArmorNode["source"].InnerText;
 			_strPage = objXmlArmorNode["page"].InnerText;
@@ -1169,6 +1172,7 @@ namespace Chummer
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("damage", _intDamage.ToString());
 			objWriter.WriteElementString("rating", _intRating.ToString());
+			objWriter.WriteElementString("rating", _intMaxRating.ToString());
 			objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in _lstArmorMods)
 			{
@@ -1214,67 +1218,26 @@ namespace Chummer
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
 			_strA = objNode["armor"].InnerText;
-            try
-            {
-                _strO = objNode["armoroverride"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-			{
-				_strArmorCapacity = objNode["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
-			if (objNode.Attributes["rating"] != null)
-			{
-				_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			}
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_strSource = objNode["source"].InnerText;
-			try
+			objNode.TryGetField("armoroverride", out _strO);
+			objNode.TryGetField("armorcapacity", out _strArmorCapacity);
+			objNode.TryGetField("rating", out _intRating);
+			objNode.TryGetField("maxrating", out _intMaxRating);
+			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetField("armorname", out _strArmorName);
+			objNode.TryGetField("equipped", out _blnEquipped);
+			objNode.TryGetField("extra", out _strExtra);
+			objNode.TryGetField("damage", out _intDamage);
+			objNode.TryGetField("location", out _strLocation);
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("discountedcost", out _blnDiscountCost);
+            try
 			{
-				_strPage = objNode["page"].InnerText;
+				_nodBonus = objNode["bonus"];
 			}
-			catch
-			{
-			}
-
-			try
-			{
-				_strArmorName = objNode["armorname"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnEquipped = Convert.ToBoolean(objNode["equipped"].InnerText);
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_strExtra = objNode["extra"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_intDamage = Convert.ToInt32(objNode["damage"].InnerText);
-			}
-			catch
-			{
-			}
-
+			catch { }
 			if (objNode.InnerXml.Contains("armormods"))
 			{
 				XmlNodeList nodMods = objNode.SelectNodes("armormods/armormod");
@@ -1308,37 +1271,6 @@ namespace Chummer
 							break;
 					}
 				}
-			}
-			try
-			{
-				_nodBonus = objNode["bonus"];
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_strLocation = objNode["location"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -1579,6 +1511,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Rating.
+		/// </summary>
+		public int MaxRating
+		{
+			get
+			{
+				return _intMaxRating;
+			}
+			set
+			{
+				_intMaxRating = value;
+			}
+		}
+
+		/// <summary>
 		/// Armor's Capacity.
 		/// </summary>
 		public string ArmorCapacity
@@ -1637,7 +1584,29 @@ namespace Chummer
 		{
 			get
 			{
-				return Convert.ToInt32(_strCost);
+				if (_strCost.Contains("Rating"))
+				{
+					// If the Capaicty is determined by the Rating, evaluate the expression.
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+					bool blnSquareBrackets = _strArmorCapacity.Contains('[');
+					string strCapacity = _strArmorCapacity;
+					if (blnSquareBrackets)
+						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+
+					string strReturn = nav.Evaluate(xprCapacity).ToString();
+					if (blnSquareBrackets)
+						strReturn = "[" + strReturn + "]";
+
+					return Convert.ToInt32(strReturn);
+				}
+				else
+				{
+					return Convert.ToInt32(_strCost);
+				}
 			}
 			set
 			{
@@ -2055,10 +2024,34 @@ namespace Chummer
 					strReturn = _strArmorCapacity;
 				}
 
-                foreach (ArmorMod am in this.ArmorMods)
-                {
-                    if (am.Name == "YNT Softweave Armor")
-                        strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
+				foreach (ArmorMod am in this.ArmorMods)
+				{
+					if (am.Name == "YNT Softweave Armor")
+					{ 
+						if (_strArmorCapacity.Contains("Rating"))
+						{
+							// If the Capaicty is determined by the Rating, evaluate the expression.
+							XmlDocument objXmlDocument = new XmlDocument();
+							XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+							// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+							bool blnSquareBrackets = _strArmorCapacity.Contains('[');
+							string strCapacity = _strArmorCapacity;
+							if (blnSquareBrackets)
+								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+
+							strReturn = nav.Evaluate(xprCapacity).ToString();
+							if (blnSquareBrackets)
+								strReturn = "[" + strReturn + "]";
+
+							return strReturn;
+						}
+						else
+						{
+							strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
+						}
+					}
                 }
 
 				return strReturn;
