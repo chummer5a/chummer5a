@@ -55,7 +55,7 @@ namespace Chummer
 				if (strAllowedMount != "")
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
 			}
-			strMount += "contains(mount, \"" + "Internal" + "\") or ";
+			strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
 			strMount += "mount = \"\"";
 			XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
