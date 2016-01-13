@@ -38,6 +38,7 @@ Application Change:
 - Skill specializations will now save their value as the English string if possible rather than whatever the user enters; this should fix #595. Note that this fix is PROBABLY not retroactive.
 - Fixed some issues with lifestyle qualities not saving properly if they contained an extra value. Fixes #623.
 - Active Hardwires now implemented according to the rules, fixes #617. They're effectively similar to skillwires, but you select the affected skill at the time of purchase. They're currently mutually exclusive, so you can't have skillwires and hardwires affecting the same skill. As with skillwires, the character's actual rating and their hardwire rating don't stack.
+- Fixed an issue that prevented accessories that came with a weapon from being flagged as Internal.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

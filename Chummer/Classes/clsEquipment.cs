@@ -4663,7 +4663,6 @@ namespace Chummer
 					{
 						objAccessory.Create(objXmlAccessory, objAccessoryNode, "Internal", intAccessoryRating);
 					}
-					objAccessory.Create(objXmlAccessory, objAccessoryNode, objXmlAccessory["mount"].InnerText, intAccessoryRating);
 					objAccessory.IncludedInWeapon = true;
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
