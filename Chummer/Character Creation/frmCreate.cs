@@ -19868,6 +19868,10 @@ namespace Chummer
                 {
                     if (objMod.MaxRating != "qty")
                     {
+						if (objMod.MaxRating == "Seats")
+						{
+							objMod.MaxRating = objSelectedVehicle.Seats.ToString();
+						}
                         if (Convert.ToInt32(objMod.MaxRating) > 0)
                         {
                             _blnSkipRefresh = true;

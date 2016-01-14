@@ -174,7 +174,7 @@
 				<gear rating="2">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name rating="2">Metahuman Adjustment</name>
+				<name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>0</avail>
 			<cost>3500</cost>
@@ -6494,7 +6494,7 @@
 			<id>a586e8b6-2737-4baa-a343-f366d33fe57a</id>
 			<name>Metahuman Adjustment</name>
 			<category>Cosmetic</category>
-			<rating>seats</rating>
+			<rating>Seats</rating>
 			<slots>0</slots>
 			<avail>4</avail>
 			<cost>Rating * 500</cost>
