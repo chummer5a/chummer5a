@@ -10035,9 +10035,19 @@
 		<quality>
 			<id>bd64ccab-5138-475d-8eb1-400ae4a11ac2</id>
 			<name>Quasimodo</name>
-			<karma>-2</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<specificskill>
+					<name>Intimidation</name>
+					<bonus>2</bonus>
+				</specificskill>
+				<skillcategory>
+					<name>Social Active</name>
+					<exclude>Intimidation</exclude>
+					<bonus>-3</bonus>
+				</skillcategory>
+			</bonus>
 			<source>CF</source>
 			<page>59</page>
 		</quality>
