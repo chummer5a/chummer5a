@@ -16873,8 +16873,16 @@ namespace Chummer
                     strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblCMStun, strCM);
 
-                // Armor Ratings.
-                lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
+				// Update the Spell Defence labels.
+				string strSpellTooltip = "";
+				lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+				strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": AGI (" + _objCharacter.AGI.TotalValue.ToString() + " + REA (" + _objCharacter.REA.TotalValue.ToString() + ")";
+				tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
+				lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
+				strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": "+ LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.TotalArmorRating.ToString() + " + BOD (" + _objCharacter.BOD.TotalValue.ToString() + ")";
+				tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
+				// Armor Ratings.
+				lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
                 string strArmorToolTip = "";
                 strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
                 if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)

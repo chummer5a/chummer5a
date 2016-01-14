@@ -32,30 +32,30 @@ namespace Chummer
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
-			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-			System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Physical");
-			System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Mental");
-			System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Social");
-			System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-			System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Qualities");
-			System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-			System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-			System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-			System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-			System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-			System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Rituals");
-			System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-			System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-			System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Critter Powers");
-			System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Weaknesses");
-			System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-			System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Bioware");
-			System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-			System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Armor");
-			System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Weapons");
-			System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Gear");
-			System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+			System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+			System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+			System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Physical");
+			System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Mental");
+			System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Social");
+			System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+			System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("Selected Qualities");
+			System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+			System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+			System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+			System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+			System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+			System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Selected Rituals");
+			System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+			System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+			System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Critter Powers");
+			System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("Weaknesses");
+			System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+			System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Selected Bioware");
+			System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+			System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Selected Armor");
+			System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Selected Weapons");
+			System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Selected Gear");
+			System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Selected Vehicles");
 			this.StatusStrip = new System.Windows.Forms.StatusStrip();
 			this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tssBP = new System.Windows.Forms.ToolStripStatusLabel();
@@ -137,6 +137,24 @@ namespace Chummer
 			this.label33 = new System.Windows.Forms.Label();
 			this.lblSelectedSpells = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakManaLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttBODLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDetectionLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttAGILabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttSTRLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttREALabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttWILLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttLOGLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttINTLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttCHALabel = new System.Windows.Forms.Label();
+			this.lbllSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceManipMentalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
+			this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
@@ -880,6 +898,25 @@ namespace Chummer
 			this.lblINI = new System.Windows.Forms.Label();
 			this.lblCMStun = new System.Windows.Forms.Label();
 			this.lblCMPhysical = new System.Windows.Forms.Label();
+			this.tabDefences = new System.Windows.Forms.TabPage();
+			this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
+			this.lbllSpellDefenceManipPhysical = new System.Windows.Forms.Label();
+			this.lblSpellDefenceManipMental = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionPhysical = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionMana = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttWIL = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttLOG = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttINT = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttCHA = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttSTR = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttREA = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttAGI = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttBOD = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDetection = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakPhysical = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakMana = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectSoak = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectDodge = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1005,6 +1042,8 @@ namespace Chummer
 			this.tabBPSummary.SuspendLayout();
 			this.tabBuildSummary.SuspendLayout();
 			this.tabOtherInfo.SuspendLayout();
+			this.tabDefences.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
 			this.cmsLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsMetamagic.SuspendLayout();
@@ -1900,6 +1939,205 @@ namespace Chummer
 			this.label7.Tag = "String_Karma";
 			this.label7.Text = "Karma";
 			this.tipTooltip.SetToolTip(this.label7, "Base Attribute value.");
+			// 
+			// lblSpellDefenceIndirectDodgeLabel
+			// 
+			this.lblSpellDefenceIndirectDodgeLabel.AutoSize = true;
+			this.lblSpellDefenceIndirectDodgeLabel.Location = new System.Drawing.Point(3, 32);
+			this.lblSpellDefenceIndirectDodgeLabel.Name = "lblSpellDefenceIndirectDodgeLabel";
+			this.lblSpellDefenceIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
+			this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
+			this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
+			this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceIndirectSoakLabel
+			// 
+			this.lblSpellDefenceIndirectSoakLabel.AutoSize = true;
+			this.lblSpellDefenceIndirectSoakLabel.Location = new System.Drawing.Point(3, 52);
+			this.lblSpellDefenceIndirectSoakLabel.Name = "lblSpellDefenceIndirectSoakLabel";
+			this.lblSpellDefenceIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
+			this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
+			this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
+			this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectSoakLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDirectSoakManaLabel
+			// 
+			this.lblSpellDefenceDirectSoakManaLabel.AutoSize = true;
+			this.lblSpellDefenceDirectSoakManaLabel.Location = new System.Drawing.Point(3, 72);
+			this.lblSpellDefenceDirectSoakManaLabel.Name = "lblSpellDefenceDirectSoakManaLabel";
+			this.lblSpellDefenceDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
+			this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
+			this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
+			this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDirectSoakPhysicalLabel
+			// 
+			this.lblSpellDefenceDirectSoakPhysicalLabel.AutoSize = true;
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Location = new System.Drawing.Point(3, 92);
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Name = "lblSpellDefenceDirectSoakPhysicalLabel";
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
+			this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttBODLabel
+			// 
+			this.lblSpellDefenceDecAttBODLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttBODLabel.Location = new System.Drawing.Point(3, 132);
+			this.lblSpellDefenceDecAttBODLabel.Name = "lblSpellDefenceDecAttBODLabel";
+			this.lblSpellDefenceDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
+			this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
+			this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
+			this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttBODLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDetectionLabel
+			// 
+			this.lblSpellDefenceDetectionLabel.AutoSize = true;
+			this.lblSpellDefenceDetectionLabel.Location = new System.Drawing.Point(3, 112);
+			this.lblSpellDefenceDetectionLabel.Name = "lblSpellDefenceDetectionLabel";
+			this.lblSpellDefenceDetectionLabel.Size = new System.Drawing.Size(84, 13);
+			this.lblSpellDefenceDetectionLabel.TabIndex = 33;
+			this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
+			this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDetectionLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttAGILabel
+			// 
+			this.lblSpellDefenceDecAttAGILabel.AutoSize = true;
+			this.lblSpellDefenceDecAttAGILabel.Location = new System.Drawing.Point(3, 152);
+			this.lblSpellDefenceDecAttAGILabel.Name = "lblSpellDefenceDecAttAGILabel";
+			this.lblSpellDefenceDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
+			this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
+			this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
+			this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttAGILabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttSTRLabel
+			// 
+			this.lblSpellDefenceDecAttSTRLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttSTRLabel.Location = new System.Drawing.Point(3, 192);
+			this.lblSpellDefenceDecAttSTRLabel.Name = "lblSpellDefenceDecAttSTRLabel";
+			this.lblSpellDefenceDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
+			this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
+			this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttSTRLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttREALabel
+			// 
+			this.lblSpellDefenceDecAttREALabel.AutoSize = true;
+			this.lblSpellDefenceDecAttREALabel.Location = new System.Drawing.Point(3, 172);
+			this.lblSpellDefenceDecAttREALabel.Name = "lblSpellDefenceDecAttREALabel";
+			this.lblSpellDefenceDecAttREALabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
+			this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
+			this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttREALabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttWILLabel
+			// 
+			this.lblSpellDefenceDecAttWILLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttWILLabel.Location = new System.Drawing.Point(3, 272);
+			this.lblSpellDefenceDecAttWILLabel.Name = "lblSpellDefenceDecAttWILLabel";
+			this.lblSpellDefenceDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
+			this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
+			this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
+			this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttWILLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttLOGLabel
+			// 
+			this.lblSpellDefenceDecAttLOGLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttLOGLabel.Location = new System.Drawing.Point(3, 252);
+			this.lblSpellDefenceDecAttLOGLabel.Name = "lblSpellDefenceDecAttLOGLabel";
+			this.lblSpellDefenceDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
+			this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
+			this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttLOGLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttINTLabel
+			// 
+			this.lblSpellDefenceDecAttINTLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttINTLabel.Location = new System.Drawing.Point(3, 232);
+			this.lblSpellDefenceDecAttINTLabel.Name = "lblSpellDefenceDecAttINTLabel";
+			this.lblSpellDefenceDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
+			this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
+			this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
+			this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttINTLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDecAttCHALabel
+			// 
+			this.lblSpellDefenceDecAttCHALabel.AutoSize = true;
+			this.lblSpellDefenceDecAttCHALabel.Location = new System.Drawing.Point(3, 212);
+			this.lblSpellDefenceDecAttCHALabel.Name = "lblSpellDefenceDecAttCHALabel";
+			this.lblSpellDefenceDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
+			this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
+			this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttCHALabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lbllSpellDefenceManipPhysicalLabel
+			// 
+			this.lbllSpellDefenceManipPhysicalLabel.AutoSize = true;
+			this.lbllSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(3, 351);
+			this.lbllSpellDefenceManipPhysicalLabel.Name = "lbllSpellDefenceManipPhysicalLabel";
+			this.lbllSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
+			this.lbllSpellDefenceManipPhysicalLabel.TabIndex = 59;
+			this.lbllSpellDefenceManipPhysicalLabel.Tag = "Label_lSpellDefenceManipPhysical";
+			this.lbllSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
+			this.tipTooltip.SetToolTip(this.lbllSpellDefenceManipPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceManipMentalLabel
+			// 
+			this.lblSpellDefenceManipMentalLabel.AutoSize = true;
+			this.lblSpellDefenceManipMentalLabel.Location = new System.Drawing.Point(3, 331);
+			this.lblSpellDefenceManipMentalLabel.Name = "lblSpellDefenceManipMentalLabel";
+			this.lblSpellDefenceManipMentalLabel.Size = new System.Drawing.Size(108, 13);
+			this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
+			this.lblSpellDefenceManipMentalLabel.Tag = "Label_lSpellDefenceManipMental";
+			this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceManipMentalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceIllusionPhysicalLabel
+			// 
+			this.lblSpellDefenceIllusionPhysicalLabel.AutoSize = true;
+			this.lblSpellDefenceIllusionPhysicalLabel.Location = new System.Drawing.Point(3, 311);
+			this.lblSpellDefenceIllusionPhysicalLabel.Name = "lblSpellDefenceIllusionPhysicalLabel";
+			this.lblSpellDefenceIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
+			this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
+			this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
+			this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceIllusionManaLabel
+			// 
+			this.lblSpellDefenceIllusionManaLabel.AutoSize = true;
+			this.lblSpellDefenceIllusionManaLabel.Location = new System.Drawing.Point(3, 291);
+			this.lblSpellDefenceIllusionManaLabel.Name = "lblSpellDefenceIllusionManaLabel";
+			this.lblSpellDefenceIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
+			this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
+			this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
+			this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblCounterspellingDiceLabel
+			// 
+			this.lblCounterspellingDiceLabel.AutoSize = true;
+			this.lblCounterspellingDiceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCounterspellingDiceLabel.Location = new System.Drawing.Point(3, 11);
+			this.lblCounterspellingDiceLabel.Name = "lblCounterspellingDiceLabel";
+			this.lblCounterspellingDiceLabel.Size = new System.Drawing.Size(124, 13);
+			this.lblCounterspellingDiceLabel.TabIndex = 62;
+			this.lblCounterspellingDiceLabel.Tag = "Label_CounterspellingDice";
+			this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
+			this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
 			// label8
 			// 
@@ -3734,15 +3972,15 @@ namespace Chummer
 			this.treQualities.Indent = 15;
 			this.treQualities.Location = new System.Drawing.Point(6, 38);
 			this.treQualities.Name = "treQualities";
-			treeNode1.Name = "nodPositiveQualityRoot";
-			treeNode1.Tag = "Node_SelectedPositiveQualities";
-			treeNode1.Text = "Selected Positive Qualities";
-			treeNode2.Name = "nodNegativeQualityRoot";
-			treeNode2.Tag = "Node_SelectedNegativeQualities";
-			treeNode2.Text = "Selected Negative Qualities";
+			treeNode25.Name = "nodPositiveQualityRoot";
+			treeNode25.Tag = "Node_SelectedPositiveQualities";
+			treeNode25.Text = "Selected Positive Qualities";
+			treeNode26.Name = "nodNegativeQualityRoot";
+			treeNode26.Tag = "Node_SelectedNegativeQualities";
+			treeNode26.Text = "Selected Negative Qualities";
 			this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
+            treeNode25,
+            treeNode26});
 			this.treQualities.ShowNodeToolTips = true;
 			this.treQualities.ShowPlusMinus = false;
 			this.treQualities.ShowRootLines = false;
@@ -4676,19 +4914,19 @@ namespace Chummer
 			this.treLimit.HideSelection = false;
 			this.treLimit.Location = new System.Drawing.Point(8, 33);
 			this.treLimit.Name = "treLimit";
-			treeNode3.Name = "trePhysicalRoot";
-			treeNode3.Tag = "Node_Physical";
-			treeNode3.Text = "Physical";
-			treeNode4.Name = "treMentalRoot";
-			treeNode4.Tag = "Node_Mental";
-			treeNode4.Text = "Mental";
-			treeNode5.Name = "treSocialRoot";
-			treeNode5.Tag = "Node_Social";
-			treeNode5.Text = "Social";
+			treeNode27.Name = "trePhysicalRoot";
+			treeNode27.Tag = "Node_Physical";
+			treeNode27.Text = "Physical";
+			treeNode28.Name = "treMentalRoot";
+			treeNode28.Tag = "Node_Mental";
+			treeNode28.Text = "Mental";
+			treeNode29.Name = "treSocialRoot";
+			treeNode29.Tag = "Node_Social";
+			treeNode29.Text = "Social";
 			this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5});
+            treeNode27,
+            treeNode28,
+            treeNode29});
 			this.treLimit.ShowNodeToolTips = true;
 			this.treLimit.ShowPlusMinus = false;
 			this.treLimit.ShowRootLines = false;
@@ -4764,14 +5002,14 @@ namespace Chummer
 			this.treMartialArts.HideSelection = false;
 			this.treMartialArts.Location = new System.Drawing.Point(8, 35);
 			this.treMartialArts.Name = "treMartialArts";
-			treeNode6.Name = "treMartialArtsRoot";
-			treeNode6.Tag = "Node_SelectedMartialArts";
-			treeNode6.Text = "Selected Martial Arts";
-			treeNode7.Name = "treQualitiesRoot";
-			treeNode7.Text = "Selected Qualities";
+			treeNode30.Name = "treMartialArtsRoot";
+			treeNode30.Tag = "Node_SelectedMartialArts";
+			treeNode30.Text = "Selected Martial Arts";
+			treeNode31.Name = "treQualitiesRoot";
+			treeNode31.Text = "Selected Qualities";
 			this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7});
+            treeNode30,
+            treeNode31});
 			this.treMartialArts.ShowNodeToolTips = true;
 			this.treMartialArts.ShowPlusMinus = false;
 			this.treMartialArts.ShowRootLines = false;
@@ -5246,35 +5484,35 @@ namespace Chummer
 			this.treSpells.HideSelection = false;
 			this.treSpells.Location = new System.Drawing.Point(8, 55);
 			this.treSpells.Name = "treSpells";
-			treeNode8.Name = "nodSpellCombatRoot";
-			treeNode8.Tag = "Node_SelectedCombatSpells";
-			treeNode8.Text = "Selected Combat Spells";
-			treeNode9.Name = "nodSpellDetectionRoot";
-			treeNode9.Tag = "Node_SelectedDetectionSpells";
-			treeNode9.Text = "Selected Detection Spells";
-			treeNode10.Name = "nodSpellHealthRoot";
-			treeNode10.Tag = "Node_SelectedHealthSpells";
-			treeNode10.Text = "Selected Health Spells";
-			treeNode11.Name = "nodSpellIllusionRoot";
-			treeNode11.Tag = "Node_SelectedIllusionSpells";
-			treeNode11.Text = "Selected Illusion Spells";
-			treeNode12.Name = "nodSpellManipulationRoot";
-			treeNode12.Tag = "Node_SelectedManipulationSpells";
-			treeNode12.Text = "Selected Manipulation Spells";
-			treeNode13.Name = "nodSpellGeomancyRoot";
-			treeNode13.Tag = "Node_SelectedGeomancyRituals";
-			treeNode13.Text = "Selected Rituals";
-			treeNode14.Name = "nodSpellEnchantmentRoot";
-			treeNode14.Tag = "Node_SelectedEnchantments";
-			treeNode14.Text = "Selected Enchantments";
+			treeNode32.Name = "nodSpellCombatRoot";
+			treeNode32.Tag = "Node_SelectedCombatSpells";
+			treeNode32.Text = "Selected Combat Spells";
+			treeNode33.Name = "nodSpellDetectionRoot";
+			treeNode33.Tag = "Node_SelectedDetectionSpells";
+			treeNode33.Text = "Selected Detection Spells";
+			treeNode34.Name = "nodSpellHealthRoot";
+			treeNode34.Tag = "Node_SelectedHealthSpells";
+			treeNode34.Text = "Selected Health Spells";
+			treeNode35.Name = "nodSpellIllusionRoot";
+			treeNode35.Tag = "Node_SelectedIllusionSpells";
+			treeNode35.Text = "Selected Illusion Spells";
+			treeNode36.Name = "nodSpellManipulationRoot";
+			treeNode36.Tag = "Node_SelectedManipulationSpells";
+			treeNode36.Text = "Selected Manipulation Spells";
+			treeNode37.Name = "nodSpellGeomancyRoot";
+			treeNode37.Tag = "Node_SelectedGeomancyRituals";
+			treeNode37.Text = "Selected Rituals";
+			treeNode38.Name = "nodSpellEnchantmentRoot";
+			treeNode38.Tag = "Node_SelectedEnchantments";
+			treeNode38.Text = "Selected Enchantments";
 			this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
+            treeNode32,
+            treeNode33,
+            treeNode34,
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38});
 			this.treSpells.ShowNodeToolTips = true;
 			this.treSpells.ShowRootLines = false;
 			this.treSpells.Size = new System.Drawing.Size(295, 333);
@@ -5639,11 +5877,11 @@ namespace Chummer
 			this.treComplexForms.HideSelection = false;
 			this.treComplexForms.Location = new System.Drawing.Point(8, 54);
 			this.treComplexForms.Name = "treComplexForms";
-			treeNode15.Name = "nodProgramAdvancedRoot";
-			treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
-			treeNode15.Text = "Selected Complex Forms";
+			treeNode39.Name = "nodProgramAdvancedRoot";
+			treeNode39.Tag = "Node_SelectedAdvancedComplexForms";
+			treeNode39.Text = "Selected Complex Forms";
 			this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15});
+            treeNode39});
 			this.treComplexForms.ShowNodeToolTips = true;
 			this.treComplexForms.ShowRootLines = false;
 			this.treComplexForms.Size = new System.Drawing.Size(295, 333);
@@ -5950,15 +6188,15 @@ namespace Chummer
 			this.treCritterPowers.HideSelection = false;
 			this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
 			this.treCritterPowers.Name = "treCritterPowers";
-			treeNode16.Name = "nodCritterPowerRoot";
-			treeNode16.Tag = "Node_CritterPowers";
-			treeNode16.Text = "Critter Powers";
-			treeNode17.Name = "nodCritterWeaknessRoot";
-			treeNode17.Tag = "Node_CritterWeaknesses";
-			treeNode17.Text = "Weaknesses";
+			treeNode40.Name = "nodCritterPowerRoot";
+			treeNode40.Tag = "Node_CritterPowers";
+			treeNode40.Text = "Critter Powers";
+			treeNode41.Name = "nodCritterWeaknessRoot";
+			treeNode41.Tag = "Node_CritterWeaknesses";
+			treeNode41.Text = "Weaknesses";
 			this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17});
+            treeNode40,
+            treeNode41});
 			this.treCritterPowers.ShowNodeToolTips = true;
 			this.treCritterPowers.ShowPlusMinus = false;
 			this.treCritterPowers.ShowRootLines = false;
@@ -6515,15 +6753,15 @@ namespace Chummer
 			this.treCyberware.HideSelection = false;
 			this.treCyberware.Location = new System.Drawing.Point(8, 36);
 			this.treCyberware.Name = "treCyberware";
-			treeNode18.Name = "nodCyberwareRoot";
-			treeNode18.Tag = "Node_SelectedCyberware";
-			treeNode18.Text = "Selected Cyberware";
-			treeNode19.Name = "nodBioware";
-			treeNode19.Tag = "Node_SelectedBioware";
-			treeNode19.Text = "Selected Bioware";
+			treeNode42.Name = "nodCyberwareRoot";
+			treeNode42.Tag = "Node_SelectedCyberware";
+			treeNode42.Text = "Selected Cyberware";
+			treeNode43.Name = "nodBioware";
+			treeNode43.Tag = "Node_SelectedBioware";
+			treeNode43.Text = "Selected Bioware";
 			this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode18,
-            treeNode19});
+            treeNode42,
+            treeNode43});
 			this.treCyberware.ShowNodeToolTips = true;
 			this.treCyberware.ShowRootLines = false;
 			this.treCyberware.Size = new System.Drawing.Size(295, 572);
@@ -6718,11 +6956,11 @@ namespace Chummer
 			this.treLifestyles.HideSelection = false;
 			this.treLifestyles.Location = new System.Drawing.Point(6, 36);
 			this.treLifestyles.Name = "treLifestyles";
-			treeNode20.Name = "nodLifestylesRoot";
-			treeNode20.Tag = "Node_SelectedLifestyles";
-			treeNode20.Text = "Selected Lifestyles";
+			treeNode44.Name = "nodLifestylesRoot";
+			treeNode44.Tag = "Node_SelectedLifestyles";
+			treeNode44.Text = "Selected Lifestyles";
 			this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode20});
+            treeNode44});
 			this.treLifestyles.ShowNodeToolTips = true;
 			this.treLifestyles.ShowRootLines = false;
 			this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -7146,11 +7384,11 @@ namespace Chummer
 			this.treArmor.HideSelection = false;
 			this.treArmor.Location = new System.Drawing.Point(6, 36);
 			this.treArmor.Name = "treArmor";
-			treeNode21.Name = "nodArmorRoot";
-			treeNode21.Tag = "Node_SelectedArmor";
-			treeNode21.Text = "Selected Armor";
+			treeNode45.Name = "nodArmorRoot";
+			treeNode45.Tag = "Node_SelectedArmor";
+			treeNode45.Text = "Selected Armor";
 			this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode45});
 			this.treArmor.ShowNodeToolTips = true;
 			this.treArmor.Size = new System.Drawing.Size(295, 537);
 			this.treArmor.TabIndex = 69;
@@ -7616,11 +7854,11 @@ namespace Chummer
 			this.treWeapons.HideSelection = false;
 			this.treWeapons.Location = new System.Drawing.Point(6, 36);
 			this.treWeapons.Name = "treWeapons";
-			treeNode22.Name = "nodWeaponsRoot";
-			treeNode22.Tag = "Node_SelectedWeapons";
-			treeNode22.Text = "Selected Weapons";
+			treeNode46.Name = "nodWeaponsRoot";
+			treeNode46.Tag = "Node_SelectedWeapons";
+			treeNode46.Text = "Selected Weapons";
 			this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode46});
 			this.treWeapons.ShowNodeToolTips = true;
 			this.treWeapons.Size = new System.Drawing.Size(295, 540);
 			this.treWeapons.TabIndex = 29;
@@ -8331,11 +8569,11 @@ namespace Chummer
 			this.treGear.HideSelection = false;
 			this.treGear.Location = new System.Drawing.Point(6, 36);
 			this.treGear.Name = "treGear";
-			treeNode23.Name = "nodGearRoot";
-			treeNode23.Tag = "Node_SelectedGear";
-			treeNode23.Text = "Selected Gear";
+			treeNode47.Name = "nodGearRoot";
+			treeNode47.Tag = "Node_SelectedGear";
+			treeNode47.Text = "Selected Gear";
 			this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode47});
 			this.treGear.ShowNodeToolTips = true;
 			this.treGear.Size = new System.Drawing.Size(295, 540);
 			this.treGear.TabIndex = 49;
@@ -9162,11 +9400,11 @@ namespace Chummer
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
 			this.treVehicles.Name = "treVehicles";
-			treeNode24.Name = "nodVehiclesRoot";
-			treeNode24.Tag = "Node_SelectedVehicles";
-			treeNode24.Text = "Selected Vehicles";
+			treeNode48.Name = "nodVehiclesRoot";
+			treeNode48.Tag = "Node_SelectedVehicles";
+			treeNode48.Text = "Selected Vehicles";
 			this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode48});
 			this.treVehicles.ShowNodeToolTips = true;
 			this.treVehicles.ShowRootLines = false;
 			this.treVehicles.Size = new System.Drawing.Size(403, 572);
@@ -9592,6 +9830,7 @@ namespace Chummer
 			this.tabInfo.Controls.Add(this.tabBPSummary);
 			this.tabInfo.Controls.Add(this.tabBuildSummary);
 			this.tabInfo.Controls.Add(this.tabOtherInfo);
+			this.tabInfo.Controls.Add(this.tabDefences);
 			this.tabInfo.Location = new System.Drawing.Point(0, 0);
 			this.tabInfo.Name = "tabInfo";
 			this.tabInfo.SelectedIndex = 0;
@@ -10238,6 +10477,212 @@ namespace Chummer
 			this.lblCMPhysical.TabIndex = 24;
 			this.lblCMPhysical.Text = "0";
 			// 
+			// tabDefences
+			// 
+			this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
+			this.tabDefences.Controls.Add(this.lblCounterspellingDiceLabel);
+			this.tabDefences.Controls.Add(this.nudCounterspellingDice);
+			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysical);
+			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMental);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMentalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysical);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionMana);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionManaLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWIL);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOG);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINT);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHA);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTR);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWILLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOGLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINTLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHALabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTRLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREALabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGILabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREA);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGI);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBOD);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBODLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDetection);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDetectionLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysical);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakMana);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoak);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoakLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodge);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel);
+			this.tabDefences.Location = new System.Drawing.Point(4, 22);
+			this.tabDefences.Name = "tabDefences";
+			this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
+			this.tabDefences.Size = new System.Drawing.Size(179, 611);
+			this.tabDefences.TabIndex = 3;
+			this.tabDefences.Text = "Spell Defence";
+			// 
+			// nudCounterspellingDice
+			// 
+			this.nudCounterspellingDice.Location = new System.Drawing.Point(133, 9);
+			this.nudCounterspellingDice.Name = "nudCounterspellingDice";
+			this.nudCounterspellingDice.Size = new System.Drawing.Size(40, 20);
+			this.nudCounterspellingDice.TabIndex = 61;
+			// 
+			// lbllSpellDefenceManipPhysical
+			// 
+			this.lbllSpellDefenceManipPhysical.AutoSize = true;
+			this.lbllSpellDefenceManipPhysical.Location = new System.Drawing.Point(160, 352);
+			this.lbllSpellDefenceManipPhysical.Name = "lbllSpellDefenceManipPhysical";
+			this.lbllSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lbllSpellDefenceManipPhysical.TabIndex = 60;
+			this.lbllSpellDefenceManipPhysical.Text = "0";
+			// 
+			// lblSpellDefenceManipMental
+			// 
+			this.lblSpellDefenceManipMental.AutoSize = true;
+			this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(160, 332);
+			this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
+			this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceManipMental.TabIndex = 58;
+			this.lblSpellDefenceManipMental.Text = "0";
+			// 
+			// lblSpellDefenceIllusionPhysical
+			// 
+			this.lblSpellDefenceIllusionPhysical.AutoSize = true;
+			this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(160, 312);
+			this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
+			this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
+			this.lblSpellDefenceIllusionPhysical.Text = "0";
+			// 
+			// lblSpellDefenceIllusionMana
+			// 
+			this.lblSpellDefenceIllusionMana.AutoSize = true;
+			this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(160, 292);
+			this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
+			this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionMana.TabIndex = 54;
+			this.lblSpellDefenceIllusionMana.Text = "0";
+			// 
+			// lblSpellDefenceDecAttWIL
+			// 
+			this.lblSpellDefenceDecAttWIL.AutoSize = true;
+			this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(160, 272);
+			this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
+			this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttWIL.TabIndex = 52;
+			this.lblSpellDefenceDecAttWIL.Text = "0";
+			// 
+			// lblSpellDefenceDecAttLOG
+			// 
+			this.lblSpellDefenceDecAttLOG.AutoSize = true;
+			this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(160, 252);
+			this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
+			this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttLOG.TabIndex = 51;
+			this.lblSpellDefenceDecAttLOG.Text = "0";
+			// 
+			// lblSpellDefenceDecAttINT
+			// 
+			this.lblSpellDefenceDecAttINT.AutoSize = true;
+			this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(160, 232);
+			this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
+			this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttINT.TabIndex = 50;
+			this.lblSpellDefenceDecAttINT.Text = "0";
+			// 
+			// lblSpellDefenceDecAttCHA
+			// 
+			this.lblSpellDefenceDecAttCHA.AutoSize = true;
+			this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(160, 212);
+			this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
+			this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttCHA.TabIndex = 49;
+			this.lblSpellDefenceDecAttCHA.Text = "0";
+			// 
+			// lblSpellDefenceDecAttSTR
+			// 
+			this.lblSpellDefenceDecAttSTR.AutoSize = true;
+			this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(160, 192);
+			this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
+			this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttSTR.TabIndex = 48;
+			this.lblSpellDefenceDecAttSTR.Text = "0";
+			// 
+			// lblSpellDefenceDecAttREA
+			// 
+			this.lblSpellDefenceDecAttREA.AutoSize = true;
+			this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(160, 172);
+			this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
+			this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttREA.TabIndex = 40;
+			this.lblSpellDefenceDecAttREA.Text = "0";
+			// 
+			// lblSpellDefenceDecAttAGI
+			// 
+			this.lblSpellDefenceDecAttAGI.AutoSize = true;
+			this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(160, 152);
+			this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
+			this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttAGI.TabIndex = 38;
+			this.lblSpellDefenceDecAttAGI.Text = "0";
+			// 
+			// lblSpellDefenceDecAttBOD
+			// 
+			this.lblSpellDefenceDecAttBOD.AutoSize = true;
+			this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(160, 132);
+			this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
+			this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttBOD.TabIndex = 36;
+			this.lblSpellDefenceDecAttBOD.Text = "0";
+			// 
+			// lblSpellDefenceDetection
+			// 
+			this.lblSpellDefenceDetection.AutoSize = true;
+			this.lblSpellDefenceDetection.Location = new System.Drawing.Point(160, 112);
+			this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
+			this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDetection.TabIndex = 34;
+			this.lblSpellDefenceDetection.Text = "0";
+			// 
+			// lblSpellDefenceDirectSoakPhysical
+			// 
+			this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
+			this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(160, 92);
+			this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
+			this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
+			this.lblSpellDefenceDirectSoakPhysical.Text = "0";
+			// 
+			// lblSpellDefenceDirectSoakMana
+			// 
+			this.lblSpellDefenceDirectSoakMana.AutoSize = true;
+			this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(160, 72);
+			this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
+			this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
+			this.lblSpellDefenceDirectSoakMana.Text = "0";
+			// 
+			// lblSpellDefenceIndirectSoak
+			// 
+			this.lblSpellDefenceIndirectSoak.AutoSize = true;
+			this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(160, 52);
+			this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
+			this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIndirectSoak.TabIndex = 28;
+			this.lblSpellDefenceIndirectSoak.Text = "0";
+			// 
+			// lblSpellDefenceIndirectDodge
+			// 
+			this.lblSpellDefenceIndirectDodge.AutoSize = true;
+			this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(160, 32);
+			this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
+			this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIndirectDodge.TabIndex = 26;
+			this.lblSpellDefenceIndirectDodge.Text = "0";
+			// 
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(11, 418);
@@ -10518,6 +10963,9 @@ namespace Chummer
 			this.tabBuildSummary.PerformLayout();
 			this.tabOtherInfo.ResumeLayout(false);
 			this.tabOtherInfo.PerformLayout();
+			this.tabDefences.ResumeLayout(false);
+			this.tabDefences.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
 			this.cmsLimitModifier.ResumeLayout(false);
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsMetamagic.ResumeLayout(false);
@@ -11367,6 +11815,43 @@ namespace Chummer
 		internal System.Windows.Forms.Label lblDEPMetatype;
 		internal System.Windows.Forms.NumericUpDown nudDEP;
 		internal System.Windows.Forms.Label lblDEPLabel;
+		private System.Windows.Forms.TabPage tabDefences;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakMana;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakManaLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectSoak;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectDodge;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
+		private System.Windows.Forms.Label lblCounterspellingDiceLabel;
+		internal System.Windows.Forms.NumericUpDown nudCounterspellingDice;
+		private System.Windows.Forms.Label lbllSpellDefenceManipPhysical;
+		private System.Windows.Forms.Label lbllSpellDefenceManipPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceManipMental;
+		private System.Windows.Forms.Label lblSpellDefenceManipMentalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionPhysical;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionMana;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionManaLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttWIL;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttLOG;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttINT;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttCHA;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttSTR;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttWILLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttLOGLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttINTLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttCHALabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttSTRLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttREALabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttAGILabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttREA;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttAGI;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttBOD;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttBODLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDetection;
+		private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysical;
 	}
 }
 
