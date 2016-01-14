@@ -1522,6 +1522,10 @@
 			<text>Are you sure you want to delete this Knowledge Skill?</text>
 		</string>
 		<string>
+			<key>Message_DeleteExoticSkill</key>
+			<text>Are you sure you want to delete this Exotic Skill?</text>
+		</string>
+		<string>
 			<key>Message_DeletePositiveQualityCareer</key>
 			<text>Are you sure you want to delete this Positive Quality? You will not receiving any Karma for removing it.</text>
 		</string>

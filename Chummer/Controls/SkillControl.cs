@@ -220,22 +220,21 @@ namespace Chummer
 					cmdDelete.Left += 30;
 					tipTooltip.SetToolTip(cmdRoll, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 				}
-				
-				if (!_objSkill.ExoticSkill)
-				{
-                    cboSpec.Visible = false;
-                    lblSpec.Visible = true;
-                    lblSpec.Text = _objSkill.Specialization;
-					cmdChangeSpec.Visible = true;
-					cboSpec.Enabled = false;
-				}
-                else
-                {
-                    cboSpec.Text = _objSkill.Specialization;
-                }
 
-                string strTip = LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization").Replace("{0}", _objSkill.CharacterObject.Options.KarmaSpecialization.ToString());
-				tipTooltip.SetToolTip(cmdChangeSpec, strTip);
+				lblSpec.Text = _objSkill.Specialization;
+				cboSpec.Visible = false;
+                lblSpec.Visible = true;
+				cboSpec.Enabled = false;
+				cmdChangeSpec.Visible = true;
+				if (_objSkill.ExoticSkill && (_objSkill.Rating == 0))
+				{
+					cmdChangeSpec.Image = global::Chummer.Properties.Resources.delete;
+				}
+				else
+				{
+					string strTip = LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization").Replace("{0}", _objSkill.CharacterObject.Options.KarmaSpecialization.ToString());
+					tipTooltip.SetToolTip(cmdChangeSpec, strTip);
+				}
 			}
 	        if (KnowledgeSkill)
 	        {
@@ -449,12 +448,12 @@ namespace Chummer
 
 		private void cmdChangeSpec_Click(object sender, EventArgs e)
 		{
-            if (_objSkill.CharacterObject.Karma < _objSkill.CharacterObject.Options.KarmaSpecialization)
-            {
-                MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
+			if (_objSkill.ExoticSkill)
+			{
+				DeleteSkill(this);
+			}
+			else
+			{ 
             XmlDocument objXmlDocument = new XmlDocument();
             objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
@@ -492,11 +491,15 @@ namespace Chummer
                     if (!blnFound)
                     {
                         ListItem objItem = new ListItem();
-                        if (objXmlSpecialization["translate"] != null)
-                            objItem.Name = objXmlSpecialization["translate"].InnerText;
-                        else
-                            objItem.Name = objXmlSpecialization.InnerText;
-                        objItem.Value = objItem.Name;
+							if (objXmlSpecialization.Attributes["translate"] != null)
+							{
+								objItem.Name = objXmlSpecialization.Attributes["translate"].InnerText;
+							}
+							else
+							{
+								objItem.Name = objXmlSpecialization.InnerText;
+							}
+                        objItem.Value = objXmlSpecialization.InnerText;
                         lstSpecializations.Add(objItem);
                     }
                 }
@@ -535,6 +538,7 @@ namespace Chummer
             this.Height = lblSpec.Height + 10;
 
             RatingChanged(this);
+			}
 		}
 
 		private void cboSpec_Leave(object sender, EventArgs e)
@@ -1101,6 +1105,12 @@ namespace Chummer
 		/// <param name="strSpec">String to add.</param>
         public void AddSpec(string strSpec)
         {
+			if (GlobalOptions.Instance.Language != "en-us")
+			{
+				ListItem objItem = new ListItem();
+				objItem.Value = strSpec;
+				objItem.Name = LanguageManager.Instance.TranslateExtra(strSpec);
+			}
             cboSpec.Items.Add(strSpec);
         }
 
@@ -1124,7 +1134,19 @@ namespace Chummer
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
-	        foreach (Gear objGear in _objSkill.CharacterObject.Gear)
+			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			{
+				if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _objSkill.Name && objImprovement.Enabled)
+				{
+					if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > intSkillRating)
+					{
+						intSkillRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
+						blnSkillsoft = true;
+						break;
+					}
+				}
+			}
+			foreach (Gear objGear in _objSkill.CharacterObject.Gear)
             {
                 // Look for any Skillsoft that would conflict with the Skill's Rating.
                 if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
@@ -1275,6 +1297,14 @@ namespace Chummer
 					cmdChangeSpec.Enabled = true;
 				else
 					cmdChangeSpec.Enabled = false;
+			}
+
+			if (_objSkill.ExoticSkill)
+			{
+				if (_objSkill.Rating > 0)
+					cmdChangeSpec.Enabled = false;
+				else
+					cmdChangeSpec.Enabled = true;
 			}
 
 			if (_objSkill.CharacterObject.Created)

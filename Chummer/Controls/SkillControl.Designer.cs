@@ -29,7 +29,6 @@
         {
 			this.components = new System.ComponentModel.Container();
 			this.nudSkill = new System.Windows.Forms.NumericUpDown();
-			this.cboSpec = new System.Windows.Forms.ComboBox();
 			this.cmdDelete = new System.Windows.Forms.Button();
 			this.lblModifiedRating = new System.Windows.Forms.Label();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
@@ -46,6 +45,7 @@
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.chkKarma = new System.Windows.Forms.CheckBox();
 			this.lblSpec = new System.Windows.Forms.Label();
+			this.cboSpec = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			this.SuspendLayout();
@@ -62,17 +62,6 @@
 			this.nudSkill.Size = new System.Drawing.Size(40, 20);
 			this.nudSkill.TabIndex = 3;
 			this.nudSkill.ValueChanged += new System.EventHandler(this.nudSkill_ValueChanged);
-			// 
-			// cboSpec
-			// 
-			this.cboSpec.FormattingEnabled = true;
-			this.cboSpec.Location = new System.Drawing.Point(358, 0);
-			this.cboSpec.Name = "cboSpec";
-			this.cboSpec.Size = new System.Drawing.Size(177, 21);
-			this.cboSpec.Sorted = true;
-			this.cboSpec.TabIndex = 7;
-			this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
-			this.cboSpec.Leave += new System.EventHandler(this.cboSpec_Leave);
 			// 
 			// cmdDelete
 			// 
@@ -130,7 +119,7 @@
 			this.cboKnowledgeSkillCategory.TabIndex = 8;
 			this.cboKnowledgeSkillCategory.Visible = false;
 			this.cboKnowledgeSkillCategory.SelectedIndexChanged += new System.EventHandler(this.cboKnowledgeSkillCategory_SelectedIndexChanged);
-            // 
+			// 
 			// cboSkillName
 			// 
 			this.cboSkillName.DropDownWidth = 250;
@@ -192,7 +181,7 @@
 			this.cmdChangeSpec.FlatAppearance.BorderSize = 0;
 			this.cmdChangeSpec.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.cmdChangeSpec.Image = global::Chummer.Properties.Resources.add;
-			this.cmdChangeSpec.Location = new System.Drawing.Point(541, -2);
+			this.cmdChangeSpec.Location = new System.Drawing.Point(541, -1);
 			this.cmdChangeSpec.Name = "cmdChangeSpec";
 			this.cmdChangeSpec.Size = new System.Drawing.Size(24, 24);
 			this.cmdChangeSpec.TabIndex = 10;
@@ -261,6 +250,17 @@
 			this.lblSpec.Text = "label1";
 			this.lblSpec.Visible = false;
 			// 
+			// cboSpec
+			// 
+			this.cboSpec.FormattingEnabled = true;
+			this.cboSpec.Location = new System.Drawing.Point(358, 0);
+			this.cboSpec.Name = "cboSpec";
+			this.cboSpec.Size = new System.Drawing.Size(177, 21);
+			this.cboSpec.Sorted = true;
+			this.cboSpec.TabIndex = 7;
+			this.cboSpec.TextChanged += new System.EventHandler(this.cboSpec_TextChanged);
+			this.cboSpec.Leave += new System.EventHandler(this.cboSpec_Leave);
+			// 
 			// SkillControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -290,11 +290,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
         }
         #endregion
 
         private System.Windows.Forms.NumericUpDown nudSkill;
-		private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.Button cmdDelete;
 		private System.Windows.Forms.Label lblModifiedRating;
 		private System.Windows.Forms.ToolTip tipTooltip;
@@ -311,5 +311,6 @@
         private System.Windows.Forms.CheckBox chkKarma;
         private System.Windows.Forms.Label lblSpec;
 		private System.Windows.Forms.Button cmdExpand;
+		private System.Windows.Forms.ComboBox cboSpec;
 	}
 }

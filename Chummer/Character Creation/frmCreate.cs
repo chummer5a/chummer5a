@@ -7577,6 +7577,7 @@ namespace Chummer
             int i = panActiveSkills.Controls.Count;
             Skill objSkill = new Skill(_objCharacter);
             objSkill.Attribute = nodSkill["attribute"].InnerText;
+			objSkill.Specialization = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
             if (_objCharacter.MaxSkillRating > 0)
                 objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
@@ -7589,7 +7590,7 @@ namespace Chummer
             objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
             objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
             objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
-
+			objSkillControl.SkillSpec = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
             objSkillControl.SkillCategory = nodSkill["category"].InnerText;
             if (nodSkill["default"].InnerText == "Yes")
                 objSkill.Default = true;
@@ -7599,25 +7600,25 @@ namespace Chummer
             objSkill.ExoticSkill = true;
             _objCharacter.Skills.Add(objSkill);
 
-            // Populate the Skill's Specializations (if any).
-            foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
-            {
-                if (objXmlSpecialization.Attributes["translate"] != null)
-                    objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-                else
-                    objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-            }
+			// Populate the Skill's Specializations (if any).
+			foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
+			{
+				if (objXmlSpecialization.Attributes["translate"] != null)
+					objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
+				else
+					objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+			}
 
-            // Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-            XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-            XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\" or useskill = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
-            foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-            {
-                if (objXmlWeapon["translate"] != null)
-                    objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
-                else
-                    objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
-            }
+			// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
+			XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+			XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\" or useskill = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+			{
+				if (objXmlWeapon["translate"] != null)
+					objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
+				else
+					objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
+			}
 
 			if (_objCharacter.IgnoreRules)
 			{
@@ -14482,25 +14483,35 @@ namespace Chummer
                     }
                 }
             }
-            else
-            {
-                Armor objSelectedArmor = new Armor(_objCharacter);
-                Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+			// Locate the selected Gear.
+			bool blnIsGear = false;
+			Armor objSelectedArmor = new Armor(_objCharacter);
+			Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+			if (objGear != null)
+				blnIsGear = true;
 
-                objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objGear.DisplayName;
+			if (blnIsGear)
+			{
+				objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
+				treArmor.SelectedNode.Text = objGear.DisplayName;
 
-                // See if a Bonus node exists.
-                if (objGear.Bonus != null)
-                {
-                    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                    if (objGear.Bonus.InnerXml.Contains("Rating"))
-                    {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                    }
-                }
-            }
+				// See if a Bonus node exists.
+				if (objGear.Bonus != null)
+				{
+					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+					if (objGear.Bonus.InnerXml.Contains("Rating"))
+					{
+						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+					}
+				}
+			}
+			else
+			{
+				Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+				objArmor.Rating = Convert.ToInt32(nudArmorRating.Value);
+				treArmor.SelectedNode.Text = objArmor.DisplayName;
+			}
 
             RefreshSelectedArmor();
             UpdateCharacterInfo();
@@ -18212,7 +18223,16 @@ namespace Chummer
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
-                nudArmorRating.Enabled = false;
+				if (objArmor.MaxRating == 0)
+				{
+					nudArmorRating.Enabled = false;
+				}
+				else
+				{
+					nudArmorRating.Value = objArmor.Rating;
+					nudArmorRating.Maximum = objArmor.MaxRating;
+					nudArmorRating.Enabled = true;
+				}
 
                 _blnSkipRefresh = false;
             }
@@ -19587,7 +19607,7 @@ namespace Chummer
                     string strQualities = "";
 
                     lblLifestyleQualities.Text = "";
-                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID + "\"]");
+                    XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + objLifestyle.SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
                     if (objNode["translate"] != null)
                         strBaseLifestyle = objNode["translate"].InnerText;
                     else
@@ -19598,25 +19618,31 @@ namespace Chummer
 						if (strQualities.Length > 0)
 							strQualities += ", ";
 						string strQualityName = objQuality.DisplayName;
-						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+						objNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
 						XmlNode nodMultiplier = objNode["multiplier"];
+						if (objNode["translate"] != null)
+						{
+							strQualities += objNode["translate"].InnerText;
+						}
+						else
+						{
+							strQualities += objNode["name"].InnerText;
+						}
+						if (objQuality.Extra.Length > 0)
+						{
+							strQualities += " (" + objQuality.Extra + ")";
+						}
 						if (nodMultiplier != null)
 						{
 							string strMultiplier = nodMultiplier.InnerText;
 							int intCost = Convert.ToInt32(strMultiplier);
 							if (intCost > 0)
 							{
-								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [+" + intCost.ToString() + "%]";
-								else
-									strQualities += objNode["name"].InnerText + " [+" + intCost.ToString() + "%]";
+								strQualities += " [+" + intCost.ToString() + "%]";
 							}
 							else
 							{
-								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [" + intCost.ToString() + "%]";
-								else
-									strQualities += objNode["name"].InnerText + " [" + intCost.ToString() + "%]";
+								strQualities += " [" + intCost.ToString() + "%]";
 							}
 						}
 						else
@@ -19625,13 +19651,7 @@ namespace Chummer
 							{
 								string strCost = objNode["cost"].InnerText;
 								if (objNode["translate"] != null)
-									strQualities += objNode["translate"].InnerText + " [" + strCost + "¥]";
-								else
-									strQualities += objNode["name"].InnerText + " [" + strCost + "¥]";
-							}
-							else
-							{
-								strQualities += objNode["name"].InnerText;
+									strQualities +=  " [" + strCost + "¥]";
 							}
 						}
 					}

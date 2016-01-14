@@ -1909,6 +1909,9 @@
 			<name>Active Hardwires</name>
 			<category>Bodyware</category>
 			<rating>6</rating>
+			<bonus>
+				<hardwires>Rating</hardwires>
+			</bonus>
 			<ess>Rating * 0.05</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 2)</avail>

@@ -32,6 +32,7 @@
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.cboCategory = new System.Windows.Forms.ComboBox();
 			this.cmdCancel = new System.Windows.Forms.Button();
+			this.cboSkillSpecialisations = new System.Windows.Forms.ComboBox();
 			this.SuspendLayout();
 			// 
 			// lblDescription
@@ -45,7 +46,7 @@
 			// 
 			// cmdOK
 			// 
-			this.cmdOK.Location = new System.Drawing.Point(171, 77);
+			this.cmdOK.Location = new System.Drawing.Point(171, 98);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 2;
@@ -66,7 +67,7 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(90, 77);
+			this.cmdCancel.Location = new System.Drawing.Point(90, 98);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
 			this.cmdCancel.TabIndex = 3;
@@ -75,6 +76,14 @@
 			this.cmdCancel.UseVisualStyleBackColor = true;
 			this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
 			// 
+			// cboSkillSpecialisations
+			// 
+			this.cboSkillSpecialisations.FormattingEnabled = true;
+			this.cboSkillSpecialisations.Location = new System.Drawing.Point(12, 71);
+			this.cboSkillSpecialisations.Name = "cboSkillSpecialisations";
+			this.cboSkillSpecialisations.Size = new System.Drawing.Size(234, 21);
+			this.cboSkillSpecialisations.TabIndex = 4;
+			// 
 			// frmSelectExoticSkill
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -82,8 +91,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(260, 111);
+			this.ClientSize = new System.Drawing.Size(260, 131);
 			this.ControlBox = false;
+			this.Controls.Add(this.cboSkillSpecialisations);
 			this.Controls.Add(this.cmdCancel);
 			this.Controls.Add(this.lblDescription);
 			this.Controls.Add(this.cmdOK);
@@ -107,5 +117,6 @@
 		private System.Windows.Forms.Button cmdOK;
 		private System.Windows.Forms.ComboBox cboCategory;
 		private System.Windows.Forms.Button cmdCancel;
+		private System.Windows.Forms.ComboBox cboSkillSpecialisations;
 	}
 }

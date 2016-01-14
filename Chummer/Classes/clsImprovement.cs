@@ -131,8 +131,8 @@ namespace Chummer
 			AddContact = 117,
 			Seeker = 118,
 			PublicAwareness = 119,
-			PrototypeTranshuman = 120
-
+			PrototypeTranshuman = 120,
+			Hardwire = 121
 		}
 
         public enum ImprovementSource
@@ -1111,7 +1111,7 @@ namespace Chummer
 			// Select a Skill.
 			if (bonusNode.LocalName == ("selectskill"))
 			{
-				Log.Info("selectrestricted");
+				Log.Info("selectskill");
 				if (_strForcedValue == "+2 to a Combat Skill")
 					_strForcedValue = "";
 
@@ -3995,6 +3995,62 @@ namespace Chummer
 				Log.Info("skillwire = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Skillwire, "",
+					ValueToInt(bonusNode.InnerText, intRating));
+			}
+
+			// Check for Hardwires.
+			if (bonusNode.LocalName == ("hardwires"))
+			{
+				Log.Info("hardwire");
+				Log.Info("hardwire = " + bonusNode.OuterXml.ToString());
+				Log.Info("Calling CreateImprovement");
+
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("_strForcedValue = " + _strForcedValue);
+
+				// Display the Select Skill window and record which Skill was selected.
+				frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+				if (strFriendlyName != "")
+					frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
+						.Replace("{0}", strFriendlyName);
+				else
+					frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
+
+				Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
+				if (bonusNode.OuterXml.Contains("skillgroup"))
+					frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
+				else if (bonusNode.OuterXml.Contains("skillcategory"))
+					frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
+				else if (bonusNode.OuterXml.Contains("excludecategory"))
+					frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
+				else if (bonusNode.OuterXml.Contains("limittoskill"))
+					frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
+				else if (bonusNode.OuterXml.Contains("limittoattribute"))
+					frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
+
+				if (_strForcedValue != "")
+				{
+					frmPickSkill.OnlySkill = _strForcedValue;
+					frmPickSkill.Opacity = 0;
+				}
+				frmPickSkill.ShowDialog();
+
+				// Make sure the dialogue window was not canceled.
+				if (frmPickSkill.DialogResult == DialogResult.Cancel)
+				{
+					Rollback();
+					_strForcedValue = "";
+					_strLimitSelection = "";
+					return false;
+				}
+
+				_strSelectedValue = frmPickSkill.SelectedSkill;
+				if (blnConcatSelectedValue)
+					strSourceName += " (" + _strSelectedValue + ")";
+
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("strSourceName = " + strSourceName);
+				CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Hardwire, "",
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 

@@ -2776,7 +2776,14 @@ namespace Chummer
                 {
                     if (strSpec != "")
                         strSpec += "; ";
-                    strSpec += objSpec.Name;
+					if (GlobalOptions.Instance.Language != "en-us")
+					{
+						strSpec += LanguageManager.Instance.TranslateExtra(objSpec.Name);
+					}
+					else
+					{
+						strSpec += objSpec.Name;
+					}
                 }
 
                 return strSpec;
@@ -3003,6 +3010,17 @@ namespace Chummer
 			{
 				int intRating = _intRating;
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
+				foreach (Improvement objImprovement in _objCharacter.Improvements)
+				{
+					if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _strName && objImprovement.Enabled)
+					{
+						if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > _intRating)
+						{
+							intRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
+							break;
+						}
+                    }
+				}
 				if (objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || _objCharacter.SkillsoftAccess)
 				{
 					foreach (Gear objGear in _objCharacter.Gear)
@@ -4051,6 +4069,7 @@ namespace Chummer
     {
 		private Guid _guiID = new Guid();
 		private string _strName = "";
+		private string _strDisplayName = "";
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public SkillSpecialization(string strName)
@@ -4067,7 +4086,8 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("skillspecialization");
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("name", _strName);
+			//objWriter.WriteElementString("displayname", _strDisplayName.ToString());
+			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteEndElement();
 		}
 
@@ -4079,6 +4099,7 @@ namespace Chummer
 		{
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             _strName = objNode["name"].InnerText;
+			objNode.TryGetField("displayname", out _strDisplayName);
 		}
 
 		/// <summary>
@@ -4089,7 +4110,7 @@ namespace Chummer
 		{
 
 			objWriter.WriteStartElement("skillspecialization");
-			objWriter.WriteElementString("name", Name);
+			objWriter.WriteElementString("displayname", Name);
 			objWriter.WriteEndElement();
 		}
 		#endregion
@@ -4121,8 +4142,30 @@ namespace Chummer
 			}
 		}
 
+		/// <summary>
+		/// Skill Specialization's name.
+		/// </summary>
+		public string DisplayName
+		{
+			get
+			{
+				string strReturn = _strName;
+
+				// Get the translated name if applicable.
+				if (GlobalOptions.Instance.Language != "en-us")
+				{
+					strReturn = LanguageManager.Instance.TranslateExtra(_strName);
+				}
+				return strReturn;
+			}
+			set
+			{
+				_strDisplayName = value;
+			}
+		}
+
 		#endregion
-    }
+	}
 
 	/// <summary>
 	/// Type of Spirit.

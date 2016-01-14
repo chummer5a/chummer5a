@@ -74,6 +74,7 @@ namespace Chummer
 				foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
 				{
 					TreeNode objNode = new TreeNode();
+					objNode.Name = objQuality.Name;
 					objNode.Text = objQuality.DisplayName;
 					objNode.Tag = objQuality.InternalId;
 
@@ -326,7 +327,7 @@ namespace Chummer
 			_objLifestyle.SecurityEntertainment = Convert.ToInt32(nudSecurityEntertainment.Value);
 			_objLifestyle.BaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
 			_objLifestyle.TrustFund = chkTrustFund.Checked;
-			_objLifestyle.LifestyleQualities.Clear();
+			//_objLifestyle.LifestyleQualities.Clear();
 
 			// Get the starting Nuyen information.
 			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
@@ -348,38 +349,6 @@ namespace Chummer
 					{
 						System.Diagnostics.Debugger.Break();
 					}
-			}
-
-			foreach (TreeNode objNode in treLifestyleQualities.Nodes[0].Nodes)
-			{
-				XmlNode objXmlLifestyleQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text + "\"]");
-				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-				objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
-				_objLifestyle.LifestyleQualities.Add(objQuality);
-			}
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
-            {
-				if ((objNode.Text == "Not a Home") && (_objLifestyle.BaseLifestyle == "Bolt Hole"))
-				{
-					//Already handled as part of the Bolt Hole shenanigans, doesn't need to be added again.
-				}
-				else
-				{ 
-					XmlNode objXmlLifestyleQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text + "\"]");
-					LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-					objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
-					_objLifestyle.LifestyleQualities.Add(objQuality);
-				}
-			}
-            foreach (TreeNode objNode in treLifestyleQualities.Nodes[2].Nodes)
-            {
-				XmlNode objXmlLifestyleQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Text + "\"]");
-				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-				objQuality.Create(objXmlLifestyleQuality, _objCharacter, QualitySource.Selected, objNode);
-				_objLifestyle.LifestyleQualities.Add(objQuality);
 			}
             this.DialogResult = DialogResult.OK;
         }

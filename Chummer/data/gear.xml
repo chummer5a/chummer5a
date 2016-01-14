@@ -3499,7 +3499,7 @@
 			<avail>0</avail>
 			<cost>500</cost>
 			<bonus>
-				<selecttext />
+				<selectskill />
 			</bonus>
 			<source>SR5</source>
 			<page>443</page>
@@ -3512,7 +3512,7 @@
 			<avail>8</avail>
 			<cost>5000</cost>
 			<bonus>
-				<selecttext />
+				<selectskill />
 			</bonus>
 			<source>SR5</source>
 			<page>443</page>
@@ -3525,7 +3525,7 @@
 			<avail>12</avail>
 			<cost>50000</cost>
 			<bonus>
-				<selecttext />
+				<selectskill />
 			</bonus>
 			<source>SR5</source>
 			<page>443</page>
