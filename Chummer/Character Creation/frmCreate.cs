@@ -665,7 +665,7 @@ namespace Chummer
                 if (objSkill.ExoticSkill)
                 {
                     i++;
-                    SkillControl objSkillControl = new SkillControl();
+                    SkillControl objSkillControl = new SkillControl(_objCharacter);
                     objSkillControl.SkillObject = objSkill;
 
                     // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -773,7 +773,7 @@ namespace Chummer
                 if (objSkill.KnowledgeSkill)
                 {
                     i++;
-                    SkillControl objSkillControl = new SkillControl();
+                    SkillControl objSkillControl = new SkillControl(_objCharacter);
                     objSkillControl.SkillObject = objSkill;
 
                     // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -7581,7 +7581,7 @@ namespace Chummer
             if (_objCharacter.MaxSkillRating > 0)
                 objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
-            SkillControl objSkillControl = new SkillControl();
+            SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
             objSkillControl.Width = 510;
 
@@ -22396,7 +22396,7 @@ namespace Chummer
                         int i = panActiveSkills.Controls.Count;
                         Skill objSkill = new Skill(_objCharacter);
 
-                        SkillControl objSkillControl = new SkillControl();
+                        SkillControl objSkillControl = new SkillControl(_objCharacter);
                         objSkillControl.SkillObject = objSkill;
                         objSkillControl.Width = 510;
 
@@ -22450,7 +22450,7 @@ namespace Chummer
                     else
                     {
                         // Find the correct Skill Control.
-                        SkillControl objSkillControl = new SkillControl();
+                        SkillControl objSkillControl = new SkillControl(_objCharacter);
                         foreach (SkillControl objControl in panActiveSkills.Controls)
                         {
                             if (objControl.SkillName == objXmlSkill["name"].InnerText)
@@ -22515,7 +22515,7 @@ namespace Chummer
                     Skill objSkill = new Skill(_objCharacter);
                     objSkill.Name = objXmlSkill["name"].InnerText;
 
-                    SkillControl objSkillControl = new SkillControl();
+                    SkillControl objSkillControl = new SkillControl(_objCharacter);
                     objSkillControl.SkillObject = objSkill;
 
                     // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.

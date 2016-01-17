@@ -14586,7 +14586,14 @@ namespace Chummer
 				string strCalculated = "";
 				string strReturn = "";
 
-				if (_strAvail.Contains("Rating"))
+                // Reordered to process fixed value strings
+                if (_strAvail.StartsWith("FixedValues"))
+				{
+					string[] strValues = _strAvail.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					_strAvail = strValues[Convert.ToInt32(_intRating) - 1];
+				}
+
+                if (_strAvail.Contains("Rating"))
 				{
 					// If the availability is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -14603,23 +14610,6 @@ namespace Chummer
 					}
 					XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
 					strCalculated = Convert.ToInt32(nav.Evaluate(xprAvail)).ToString() + strAvail;
-				}
-				else if (_strAvail.StartsWith("FixedValues"))
-				{
-					string[] strValues = _strAvail.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					string strAvail = strValues[Convert.ToInt32(_intRating) - 1];
-					if (strAvail.EndsWith("F") || strAvail.EndsWith("R"))
-					{
-						string strAvailSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-						strAvail = strAvail.Substring(0, strAvail.Length - 1);
-						int intAvailFix = Convert.ToInt32(strAvail);
-						strCalculated = intAvailFix.ToString() + strAvailSuffix;
-					}
-					else
-					{
-						int intAvailFix = Convert.ToInt32(strAvail);
-						strCalculated = intAvailFix.ToString();
-					}
 				}
 				else
 				{
@@ -14682,11 +14672,6 @@ namespace Chummer
 				else
 					strCost = strCost.Replace("Body", "2");
 				
-				if (_strCost.StartsWith("FixedValues"))
-				{
-					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-					strCost = (strValues[Convert.ToInt32(_intRating) - 1]);
-				}
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
 				strCost = strCost.Replace("Accel", _strAccel);
 				XPathExpression xprCost = nav.Compile(strCost);
