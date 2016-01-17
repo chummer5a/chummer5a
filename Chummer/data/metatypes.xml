@@ -125,7 +125,6 @@
 			<id>b3259991-b315-4dbe-ae3c-51f71a1116e2</id>
 			<name>Elf</name>
 			<karma>40</karma>
-			
 			<category>Metahuman</category>
 			<bodmin>1</bodmin>
 			<bodmax>6</bodmax>
@@ -413,7 +412,6 @@
 					</qualities>
 					<bonus />
 					<karma>70</karma>
-					
 					<source>RF</source>
 					<page>104</page>
 				</metavariant>
@@ -423,7 +421,6 @@
 			<id>08f2c9cc-f9f8-4f1a-9efb-63555af71788</id>
 			<name>Dwarf</name>
 			<karma>50</karma>
-			
 			<category>Metahuman</category>
 			<bodmin>3</bodmin>
 			<bodmax>8</bodmax>
@@ -551,27 +548,27 @@
 					<reamin>1</reamin>
 					<reamax>6</reamax>
 					<reaaug>10</reaaug>
-					<strmin>1</strmin>
-					<strmax>4</strmax>
-					<straug>8</straug>
+					<strmin>2</strmin>
+					<strmax>7</strmax>
+					<straug>11</straug>
+					<wilmin>1</wilmin>
+					<wilmax>6</wilmax>
+					<wilaug>10</wilaug>
+					<logmin>1</logmin>
+					<logmax>5</logmax>
+					<logaug>9</logaug>
+					<intmin>2</intmin>
+					<intmax>7</intmax>
+					<intaug>11</intaug>
 					<chamin>1</chamin>
-					<chamax>6</chamax>
-					<chaaug>10</chaaug>
-					<intmin>1</intmin>
-					<intmax>6</intmax>
-					<intaug>10</intaug>
-					<logmin>2</logmin>
-					<logmax>7</logmax>
-					<logaug>11</logaug>
-					<wilmin>2</wilmin>
-					<wilmax>7</wilmax>
-					<wilaug>11</wilaug>
-					<inimin>2</inimin>
-					<inimax>12</inimax>
-					<iniaug>20</iniaug>
+					<chamax>5</chamax>
+					<chaaug>9</chaaug>
 					<edgmin>1</edgmin>
 					<edgmax>6</edgmax>
 					<edgaug>6</edgaug>
+					<inimin>2</inimin>
+					<inimax>12</inimax>
+					<iniaug>20</iniaug>
 					<magmin>0</magmin>
 					<magmax>6</magmax>
 					<magaug>6</magaug>

@@ -39,6 +39,7 @@ Application Change:
 - Fixed some issues with lifestyle qualities not saving properly if they contained an extra value. Fixes #623.
 - Active Hardwires now implemented according to the rules, fixes #617. They're effectively similar to skillwires, but you select the affected skill at the time of purchase. They're currently mutually exclusive, so you can't have skillwires and hardwires affecting the same skill. As with skillwires, the character's actual rating and their hardwire rating don't stack.
 - Fixed an issue that prevented accessories that came with a weapon from being flagged as Internal.
+- Fixed some calculation issues for priority metatypes not showing the correct karma value when changing from a metavariant to a base metatype. Fixes #537.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -69,6 +70,7 @@ Data Change:
 - Renamed the Chameleon Coating from Stolen Souls to prevent conflicts with the Rigger 5.0 version.
 - Removed a couple of redundant lifestyle qualities. 
 - Altered the bonus for toolkits, facilities and workshops to be selectskill instead of selecttext. No real effect, just sets the extra value to the skill in question.
+- Fixed some stat issues for the Hanuman metavariant. Fixes #537.
 
 New Strings:
 - Message_DeleteCalendarWeek

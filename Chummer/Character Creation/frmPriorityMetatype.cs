@@ -846,8 +846,8 @@ namespace Chummer
                     lblINI.Text = string.Format("{0}/{1} ({2})", objXmlMetatype["inimin"].InnerText, objXmlMetatype["inimax"].InnerText, objXmlMetatype["iniaug"].InnerText);
                     lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
                     lblMetavariantQualities.Text = "None";
-
-	                lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
+					lblMetavariantBP.Text = "0";
+					lblSpecial.Text = objXmlMetatypeList[0]["value"].InnerText.ToString();
                 }
 			}
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
