@@ -6,13 +6,51 @@ namespace Chummer.Skills
 {
 	public class KnowledgeSkill : Skill
 	{
-		public KnowledgeSkill(Character character) : base(character, (string)null)
+		
+
+		private static readonly Dictionary<string, string> CategoriesSkillMap;  //Categories to their attribtue
+		private static readonly Dictionary<string, string> NameCategoryMap;  //names to their category
+
+		public static List<ListItem> DefaultKnowledgeSkillCatagories { get; }
+		public static List<ListItem> KnowledgeTypes { get; }
+
+		static KnowledgeSkill()
 		{
-			UsedAttribute = character.GetAttribute("LOG");
-			_spec = new List<ListItem>();
+			KnowledgeTypes = new List<ListItem>(); //Load the (possible translated) types of kno skills (Academic, Street...)
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+
+			XmlNodeList objXmlCategoryList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
+			foreach (XmlNode objXmlCategory in objXmlCategoryList)
+			{
+				string display = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+				KnowledgeTypes.Add(new ListItem(objXmlCategory.InnerText, display));
+			}
+
+
+			NameCategoryMap = new Dictionary<string, string>(); 
+			CategoriesSkillMap = new Dictionary<string, string>();
+			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
+			DefaultKnowledgeSkillCatagories = new List<ListItem>();
+			foreach (XmlNode objXmlSkill in objXmlSkillList)
+			{
+				string display = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+
+				DefaultKnowledgeSkillCatagories.Add(new ListItem(objXmlSkill["name"].InnerText, display));
+
+				NameCategoryMap[objXmlSkill["name"].InnerText] = objXmlSkill["category"].InnerText;
+				CategoriesSkillMap[objXmlSkill["category"].InnerText] = objXmlSkill["attribute"].InnerText;
+			}
 		}
 
 		private List<ListItem> _knowledgeSkillCatagories;
+		private string _type;
+		
+		public KnowledgeSkill(Character character) : base(character, (string)null)
+		{
+			UsedAttribute = character.GetAttribute("LOG");
+			_type = "";
+			_spec = new List<ListItem>();
+		}
 		
 		public List<ListItem> KnowledgeSkillCatagories
 		{
@@ -29,69 +67,16 @@ namespace Chummer.Skills
 		{
 			get { return _knowledgeSkillCatagories != null; }
 		}
-
-		private static Dictionary<string, string> _categoriesSkillMap; 
-		private static Dictionary<string, string> _nameCategoryMap; 
-		private static List<ListItem> _defaultKnowledgeSkillCatagories;  //TODO CACHE INVALIDATION
-		public static List<ListItem> DefaultKnowledgeSkillCatagories
-		{
-			get
-			{
-				if (_defaultKnowledgeSkillCatagories == null)
-				{
-					_nameCategoryMap = new Dictionary<string, string>();
-					_categoriesSkillMap = new Dictionary<string, string>();
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-					XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
-					_defaultKnowledgeSkillCatagories = new List<ListItem>();
-					foreach (XmlNode objXmlSkill in objXmlSkillList)
-					{
-						string display = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
-
-						_defaultKnowledgeSkillCatagories.Add(new ListItem(objXmlSkill["name"].InnerText, display));
-
-						_nameCategoryMap[objXmlSkill["name"].InnerText] = objXmlSkill["category"].InnerText;
-						_categoriesSkillMap[objXmlSkill["category"].InnerText] = objXmlSkill["attribute"].InnerText;
-					}
-				}
-				return _defaultKnowledgeSkillCatagories;
-			}
-		}
-
-		private static List<ListItem> _knowledgeTypes; 
-		public static List<ListItem> KnowledgeTypes
-		{
-			get
-			{
-				if (_knowledgeTypes == null)
-				{
-					_knowledgeTypes = new List<ListItem>();
-
-					
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-
-					XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
-					foreach (XmlNode objXmlCategory in objXmlSkillList)
-					{
-						string display = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-						
-						_knowledgeTypes.Add(new ListItem(objXmlCategory.InnerText, display));
-					}
-				}
-
-				return _knowledgeTypes;
-			}
-		}
-
+		
 		public string WriteableName
 		{
 			get { return _name; }
 			set
 			{
 				_name = value;
-				if (_nameCategoryMap.ContainsKey(value))
+				if (NameCategoryMap.ContainsKey(value))
 				{
-					_type = _nameCategoryMap[value];
+					_type = NameCategoryMap[value];
 					_spec.Clear();
 
 					XmlNodeList list =
@@ -107,21 +92,21 @@ namespace Chummer.Skills
 				OnPropertyChanged();
 			}
 		}
-
-		private string _type;
-
+		
 		public string Type
 		{
 			get { return _type; }
 			set
 			{
-				if (!_categoriesSkillMap.ContainsKey(value)) return;
-				UsedAttribute = CharacterObject.GetAttribute(_categoriesSkillMap[value]);
+				if (!CategoriesSkillMap.ContainsKey(value)) return;
+				UsedAttribute = CharacterObject.GetAttribute(CategoriesSkillMap[value]);
 				_type = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
 		}
+
+		
 
 		/// <summary>
 		/// How much karma this costs. Return value during career mode is undefined
@@ -138,6 +123,18 @@ namespace Chummer.Skills
 					CharacterObject.Options.KarmaSpecialization : 0;
 
 			return cost;
+		}
+
+		protected override void SaveExtendedData(XmlTextWriter writer)
+		{
+			writer.WriteElementString("name", _name);
+			writer.WriteElementString("type", _type);
+		}
+
+		public void Load(XmlNode node)
+		{
+			node.TryGetField("name", out _name);
+			node.TryGetField("type", out _type);
 		}
 	}
 }

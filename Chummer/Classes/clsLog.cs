@@ -17,6 +17,7 @@ namespace Chummer
 		private static bool logEnabled = false;
 		static Log()
 		{
+			Stopwatch sw = Stopwatch.StartNew();
 			if (GlobalOptions.Instance.UseLogging)
 			{
 				//TODO: Add listner to UseLogging to be able to start it mid run
@@ -25,6 +26,7 @@ namespace Chummer
 				stringBuilder = new StringBuilder();
 				logEnabled = true;
 			}
+			sw.TaskEnd("log open");
 		}
 
 		/// <summary>
@@ -281,6 +283,7 @@ namespace Chummer
 			if (!logEnabled)
 				return;
 
+			Stopwatch sw = Stopwatch.StartNew();
 			//TODO: Add timestamp to logs
 
 			stringBuilder.Clear();
@@ -304,8 +307,12 @@ namespace Chummer
 				stringBuilder.Length -= 2;
 			}
 
+			sw.TaskEnd("makeentry");
+
 			logWriter.WriteLine(stringBuilder.ToString());
+			sw.TaskEnd("filewrite");
 			Trace.WriteLine(stringBuilder.ToString());
+			sw.TaskEnd("screenwrite");
 		}
 
 		public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)

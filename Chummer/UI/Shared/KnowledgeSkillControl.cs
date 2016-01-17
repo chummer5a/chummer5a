@@ -56,6 +56,7 @@ namespace Chummer.UI.Shared
 				cboSkill.ValueMember = nameof(ListItem.Value);
 				cboSkill.SelectedIndex = -1;
 				cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
+				
 
 
 				//dropdown/spec

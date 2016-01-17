@@ -2319,7 +2319,7 @@ namespace Chummer
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Save(XmlTextWriter objWriter)
 		{
-			objWriter.WriteStartElement("skillspecialization");
+			objWriter.WriteStartElement("spec");
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			if(_free) objWriter.WriteElementString("free", "");

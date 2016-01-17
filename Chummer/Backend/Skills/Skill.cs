@@ -24,6 +24,12 @@ namespace Chummer.Skills
 	[DebuggerDisplay("{_name} {_base} {_karma}")]
 	public partial class Skill : INotifyPropertyChanged
 	{
+		/// <summary>
+		/// Called during save to allow derived classes to save additional infomation required to rebuild state
+		/// </summary>
+		/// <param name="writer"></param>
+		protected virtual void SaveExtendedData(XmlTextWriter writer) { }
+
 		protected CharacterAttrib UsedAttribute; //Attribute this skill primarily depends on
 		private readonly Character _character; //The Character (parent) to this skill
 		protected readonly string Category; //Name of the skill category it belongs to
@@ -72,6 +78,18 @@ namespace Chummer.Skills
 				writer.WriteElementString("buywithkarma", _buyWithKarma.ToString());
 			}
 
+			if (Specializations.Count != 0)
+			{
+				writer.WriteStartElement("specs");
+				foreach (SkillSpecialization specialization in Specializations)
+				{
+					specialization.Save(writer);
+				}
+				writer.WriteEndElement();
+			}
+
+			SaveExtendedData(writer);
+
 			writer.WriteEndElement();
 
 		}
@@ -85,14 +103,32 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public static Skill Load(Character character, XmlNode n)
 		{
-			if (n["suid"] == null) return null; 
+			if (n["suid"] == null) return null;
 
-			XmlDocument skills = XmlManager.Instance.Load("skills.xml");
-			XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
 
-			if (node == null) return null;
+			Guid suid;
+			if (!Guid.TryParse(n["suid"].InnerText, out suid))
+			{
+				return null;
+			}
+			Skill skill;
+			if (suid != Guid.Empty)
+			{
+				XmlDocument skills = XmlManager.Instance.Load("skills.xml");
+				XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
 
-			Skill skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
+				if (node == null) return null;
+
+				skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
+			}
+			else  //This is ugly but i'm not sure how to make it pretty
+			{
+				KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+				knoSkill.Load(n);
+
+				skill = knoSkill;
+
+			}
 
 			XmlElement element = n["guid"];
 			if (element != null) skill.Id = Guid.Parse(element.InnerText);
@@ -100,6 +136,11 @@ namespace Chummer.Skills
 			n.TryGetField("karma", out skill._karma);
 			n.TryGetField("base", out skill._base);
 			n.TryGetField("buywithkarma", out skill._buyWithKarma);
+
+			foreach (XmlNode spec in n.SelectNodes("specs/spec"))
+			{
+				skill.Specializations.Add(SkillSpecialization.Load(spec));
+			}
 
 			return skill;
 		}
@@ -424,7 +465,8 @@ namespace Chummer.Skills
 		{
 			foreach (string s in DependencyTree.Find(propertyName))
 			{
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(s));
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
 			}
 		}
 

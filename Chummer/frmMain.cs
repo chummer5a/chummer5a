@@ -50,7 +50,7 @@ namespace Chummer
 				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
 
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
-				if (result != 0)
+				if (result < 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
 				return;
 			}
