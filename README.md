@@ -8,7 +8,7 @@ This project picks up from the projects Chummer and Chummer5, character generato
 
 The repository for Keith's original code can be found at: https://code.google.com/p/chummer/, and a github repository has been created at https://github.com/chummer5a/chummer (Please note, this application is not maintained by the chummer5a team, and exists solely for historical purposes.)
 
-The repository for Adam Schmidt's original code can be found at: https://code.google.com/p/chummer5/, and a github repository has been created at https://github.com/chummer5a/chummer5 for archival purposes.
+The repository for Adam Schmidt's original code can be found at: https://github.com/chummer5a/chummer5a, and a github repository has been created at https://github.com/chummer5a/chummer5 for archival purposes.
 
 Pre-release automated builds are performed by Appveyor, and are accessible via [the Releases page](https://github.com/chummer5a/chummer5a/releases).
 
