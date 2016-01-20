@@ -804,7 +804,7 @@ namespace Chummer
 						{
 							Skill objExotic = new Skill(_objCharacter);
 							objExotic.ExoticSkill = true;
-							objExotic.Attribute = "AGI";
+							//objExotic.Attribute = "AGI";
 							if (objXmlSkill.Attributes["spec"] != null)
                             {
                                 //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);

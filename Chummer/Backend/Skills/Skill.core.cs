@@ -196,13 +196,13 @@ namespace Chummer.Skills
 								intModifier += objImprovement.Value;
 						}
 						// Improvement for a Skill linked to an CharacterAttribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == UsedAttribute.Abbrev)
+						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == AttributeObject.Abbrev)
 						{
 							if (!objImprovement.Exclude.Contains(Name))
 								intModifier += objImprovement.Value;
 						}
 						// Improvement for Enhanced Articulation
-						if (Category == "Physical Active" && (UsedAttribute.Abbrev == "BOD" || UsedAttribute.Abbrev == "AGI" || UsedAttribute.Abbrev == "REA" || UsedAttribute.Abbrev == "STR"))
+						if (Category == "Physical Active" && (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
 						{
 							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
 								intModifier += objImprovement.Value;
@@ -336,7 +336,7 @@ namespace Chummer.Skills
 			return (from improvement in CharacterObject.Improvements
 				   where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
 					  && improvement.ImprovedName == _name
-				  select improvement.Value).Sum();
+				  select improvement.Value).Sum();  //TODO change to ImpManager.ValueOf?
 		}
 
 		/// <summary>

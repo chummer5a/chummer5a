@@ -30,7 +30,7 @@ namespace Chummer.Skills
 		/// <param name="writer"></param>
 		protected virtual void SaveExtendedData(XmlTextWriter writer) { }
 
-		protected CharacterAttrib UsedAttribute; //Attribute this skill primarily depends on
+		protected CharacterAttrib AttributeObject; //Attribute this skill primarily depends on
 		private readonly Character _character; //The Character (parent) to this skill
 		protected readonly string Category; //Name of the skill category it belongs to
 		protected readonly string _group;  //Name of the skill group this skill belongs to (remove?)
@@ -145,6 +145,47 @@ namespace Chummer.Skills
 			return skill;
 		}
 
+		/// <summary>
+		/// Loads skill saved in legacy format
+		/// </summary>
+		/// <param name="character"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public static Skill LegacyLoad(Character character, XmlNode n)
+		{
+			Guid suid;
+			if (!n.TryGetField("id", Guid.TryParse, out suid))
+				return null;
+
+			if (n.TryCheckValue("knowledge", "True"))
+			{
+				return null;
+			}
+			else
+			{
+				XmlNode data = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{n["id"].InnerText}']");
+
+				//Some stuff apparently have a guid of 0000-000... (only exotic?)
+				if (data == null)
+				{
+					data = XmlManager.Instance.Load("skills.xml")
+						.SelectSingleNode($"/chummer/skills/skill[name = '{n["name"].InnerText}']");
+				}
+
+
+				Skill skill = Skill.FromData(data, character);
+
+				n.TryGetField("base", out skill._base);
+				n.TryGetField("karma", out skill._karma);
+
+				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
+
+				//TODO Specs
+
+				return skill;
+			}
+		}
+
 
 		
 		protected static Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();  //TODO CACHE INVALIDATE
@@ -242,13 +283,13 @@ namespace Chummer.Skills
 		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText) //Ugly hack, needs by then
 		{
 			_name = n["name"].InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-			UsedAttribute = CharacterObject.GetAttribute(n["attribute"].InnerText);
+			AttributeObject = CharacterObject.GetAttribute(n["attribute"].InnerText);
 			Category = n["category"].InnerText;
 			Default = n["default"].InnerText.ToLower() == "yes";
 			Source = n["source"].InnerText;
 			Page = n["page"].InnerText;
 			SkillId = Guid.Parse(n["id"].InnerText);
-			UsedAttribute.PropertyChanged += OnLinkedAttributeChanged;
+			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 
 			_spec = new List<ListItem>();
 			foreach (XmlNode node in n["specs"].ChildNodes)
@@ -264,7 +305,7 @@ namespace Chummer.Skills
 		/// </summary>
 		public int Pool
 		{
-			get { return PoolOtherAttribute(UsedAttribute.Augmented); }
+			get { return PoolOtherAttribute(AttributeObject.Augmented); }
 		}
 
 		public bool Leveled
@@ -281,14 +322,9 @@ namespace Chummer.Skills
 		/// <summary>
 		/// The Abbreviation of the linke attribute. This way due legacy
 		/// </summary>
-		public virtual string Attribute
+		public string Attribute
 		{
-			get { return UsedAttribute.Abbrev; }
-			set
-			{
-				if (Debugger.IsAttached)
-					Debugger.Break();
-			} //TODO REFACTOR AWAY
+			get { return AttributeObject.Abbrev; }
 		}
 
 		//TODO OVERRIDE IN CHILD CLASS
@@ -339,7 +375,7 @@ namespace Chummer.Skills
 			get { return Category; }
 			set
 			{
-				if (Debugger.IsAttached)
+				if (Debugger.IsAttached && false) //TODO REMOVE AGAIN
 					Debugger.Break();
 			}
 		} //TODO REFACTOR?

@@ -892,6 +892,7 @@
 			this.cmdNuyenSpent = new System.Windows.Forms.Button();
 			this.cmdNuyenGained = new System.Windows.Forms.Button();
 			this.tabCalendar = new System.Windows.Forms.TabPage();
+			this.cmdDeleteWeek = new System.Windows.Forms.Button();
 			this.cmdChangeStartWeek = new System.Windows.Forms.Button();
 			this.cmdEditWeek = new System.Windows.Forms.Button();
 			this.cmdAddWeek = new System.Windows.Forms.Button();
@@ -1101,7 +1102,8 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmdDeleteWeek = new System.Windows.Forms.Button();
+			this.tapNewSkills = new System.Windows.Forms.TabPage();
+			this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1212,6 +1214,7 @@
 			this.cmsLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
+			this.tapNewSkills.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -2795,6 +2798,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabCharacterTabs.Controls.Add(this.tabCommon);
 			this.tabCharacterTabs.Controls.Add(this.tabSkills);
+			this.tabCharacterTabs.Controls.Add(this.tapNewSkills);
 			this.tabCharacterTabs.Controls.Add(this.tabLimits);
 			this.tabCharacterTabs.Controls.Add(this.tabMartialArts);
 			this.tabCharacterTabs.Controls.Add(this.tabMagician);
@@ -10941,6 +10945,18 @@
 			this.tabCalendar.Tag = "Tab_Calendar";
 			this.tabCalendar.Text = "Calendar";
 			// 
+			// cmdDeleteWeek
+			// 
+			this.cmdDeleteWeek.AutoSize = true;
+			this.cmdDeleteWeek.Location = new System.Drawing.Point(186, 6);
+			this.cmdDeleteWeek.Name = "cmdDeleteWeek";
+			this.cmdDeleteWeek.Size = new System.Drawing.Size(83, 23);
+			this.cmdDeleteWeek.TabIndex = 5;
+			this.cmdDeleteWeek.Tag = "Button_DeleteWeek";
+			this.cmdDeleteWeek.Text = "Delete Week";
+			this.cmdDeleteWeek.UseVisualStyleBackColor = true;
+			this.cmdDeleteWeek.Click += new System.EventHandler(this.cmdDeleteWeek_Click);
+			// 
 			// cmdChangeStartWeek
 			// 
 			this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -13139,17 +13155,24 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// cmdDeleteWeek
+			// tapNewSkills
 			// 
-			this.cmdDeleteWeek.AutoSize = true;
-			this.cmdDeleteWeek.Location = new System.Drawing.Point(186, 6);
-			this.cmdDeleteWeek.Name = "cmdDeleteWeek";
-			this.cmdDeleteWeek.Size = new System.Drawing.Size(83, 23);
-			this.cmdDeleteWeek.TabIndex = 5;
-			this.cmdDeleteWeek.Tag = "Button_DeleteWeek";
-			this.cmdDeleteWeek.Text = "Delete Week";
-			this.cmdDeleteWeek.UseVisualStyleBackColor = true;
-			this.cmdDeleteWeek.Click += new System.EventHandler(this.cmdDeleteWeek_Click);
+			this.tapNewSkills.Controls.Add(this.tabSkillsUc);
+			this.tapNewSkills.Location = new System.Drawing.Point(4, 22);
+			this.tapNewSkills.Name = "tapNewSkills";
+			this.tapNewSkills.Size = new System.Drawing.Size(838, 611);
+			this.tapNewSkills.TabIndex = 17;
+			this.tapNewSkills.Text = "tabNewSkills";
+			this.tapNewSkills.UseVisualStyleBackColor = true;
+			// 
+			// tabSkillsUc
+			// 
+			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
+			this.tabSkillsUc.Name = "tabSkillsUc";
+			this.tabSkillsUc.ObjCharacter = null;
+			this.tabSkillsUc.Size = new System.Drawing.Size(838, 611);
+			this.tabSkillsUc.TabIndex = 1;
 			// 
 			// frmCareer
 			// 
@@ -13313,6 +13336,7 @@
 			this.cmsLimitModifier.ResumeLayout(false);
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
+			this.tapNewSkills.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -14365,6 +14389,8 @@
 		internal System.Windows.Forms.Label lblDEPMetatype;
 		internal System.Windows.Forms.Label lblDEPLabel;
 		private System.Windows.Forms.Button cmdDeleteWeek;
+		private System.Windows.Forms.TabPage tapNewSkills;
+		private UI.Shared.SkillsTabUserControl tabSkillsUc;
 	}
 }
 

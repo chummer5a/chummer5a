@@ -47,7 +47,7 @@ namespace Chummer.Skills
 		
 		public KnowledgeSkill(Character character) : base(character, (string)null)
 		{
-			UsedAttribute = character.GetAttribute("LOG");
+			AttributeObject = character.GetAttribute("LOG");
 			_type = "";
 			_spec = new List<ListItem>();
 		}
@@ -99,7 +99,7 @@ namespace Chummer.Skills
 			set
 			{
 				if (!CategoriesSkillMap.ContainsKey(value)) return;
-				UsedAttribute = CharacterObject.GetAttribute(CategoriesSkillMap[value]);
+				AttributeObject = CharacterObject.GetAttribute(CategoriesSkillMap[value]);
 				_type = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(AttributeModifiers));

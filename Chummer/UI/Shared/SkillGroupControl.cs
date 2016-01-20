@@ -25,27 +25,27 @@ namespace Chummer.UI.Shared
 		{
 			lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
-			nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
-			nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-
-
-			nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
-			nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
-			
-			//_skillGroup.PropertyChanged += (o, args) =>
-			//{
-			//	if (args.PropertyName == nameof(SkillGroup.BaseUnbroken))
-			//	{
-			//		nudSkill.Enabled = _skillGroup.BaseUnbroken;
-			//	}
-			//};
-
 			if (_skillGroup.Character.Created)
 			{
-				//TODO: Change display to play mode
+				nudKarma.Visible = false;
+				nudSkill.Visible = false;
+
+				btnCareerIncrease.Visible = true;
+				btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerIncrease), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+
+				lblGroupRating.Visible = true;
+				lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.Rating), false,
+					DataSourceUpdateMode.OnPropertyChanged);
 			}
 			else
 			{
+				nudKarma.DataBindings.Add("Value", _skillGroup, "Karma", false, DataSourceUpdateMode.OnPropertyChanged);
+				nudKarma.DataBindings.Add("Enabled", _skillGroup, "KarmaUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+
+				nudSkill.DataBindings.Add("Value", _skillGroup, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
+				nudSkill.DataBindings.Add("Enabled", _skillGroup, "BaseUnbroken", false, DataSourceUpdateMode.OnPropertyChanged);
+
 				if (_skillGroup.Character.BuildMethod == CharacterBuildMethod.Karma ||
 					_skillGroup.Character.BuildMethod == CharacterBuildMethod.LifeModule)
 				{

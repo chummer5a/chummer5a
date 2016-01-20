@@ -36,6 +36,8 @@
 			this.cboSpec = new System.Windows.Forms.ComboBox();
 			this.chkKarma = new System.Windows.Forms.CheckBox();
 			this.cmdDelete = new System.Windows.Forms.Button();
+			this.lblCareerRating = new System.Windows.Forms.Label();
+			this.btnCareerIncrease = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -120,10 +122,32 @@
 			this.cmdDelete.UseVisualStyleBackColor = true;
 			this.cmdDelete.Visible = false;
 			// 
+			// lblCareerRating
+			// 
+			this.lblCareerRating.AutoSize = true;
+			this.lblCareerRating.Location = new System.Drawing.Point(169, 4);
+			this.lblCareerRating.Name = "lblCareerRating";
+			this.lblCareerRating.Size = new System.Drawing.Size(35, 13);
+			this.lblCareerRating.TabIndex = 20;
+			this.lblCareerRating.Text = "label1";
+			this.lblCareerRating.Visible = false;
+			// 
+			// btnCareerIncrease
+			// 
+			this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
+			this.btnCareerIncrease.Location = new System.Drawing.Point(214, -2);
+			this.btnCareerIncrease.Name = "btnCareerIncrease";
+			this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
+			this.btnCareerIncrease.TabIndex = 21;
+			this.btnCareerIncrease.UseVisualStyleBackColor = true;
+			this.btnCareerIncrease.Visible = false;
+			// 
 			// SkillControl2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btnCareerIncrease);
+			this.Controls.Add(this.lblCareerRating);
 			this.Controls.Add(this.cmdDelete);
 			this.Controls.Add(this.chkKarma);
 			this.Controls.Add(this.cboSpec);
@@ -153,5 +177,7 @@
 		private System.Windows.Forms.ComboBox cboSpec;
 		private System.Windows.Forms.CheckBox chkKarma;
 		private System.Windows.Forms.Button cmdDelete;
+		private System.Windows.Forms.Label lblCareerRating;
+		private System.Windows.Forms.Button btnCareerIncrease;
 	}
 }

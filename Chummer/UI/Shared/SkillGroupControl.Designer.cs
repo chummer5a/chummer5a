@@ -31,6 +31,8 @@
 			this.nudSkill = new System.Windows.Forms.NumericUpDown();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.lblName = new System.Windows.Forms.Label();
+			this.lblGroupRating = new System.Windows.Forms.Label();
+			this.btnCareerIncrease = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			this.SuspendLayout();
@@ -68,10 +70,31 @@
 			this.lblName.TabIndex = 6;
 			this.lblName.Text = "[groupname]";
 			// 
+			// lblGroupRating
+			// 
+			this.lblGroupRating.AutoSize = true;
+			this.lblGroupRating.Location = new System.Drawing.Point(131, 4);
+			this.lblGroupRating.Name = "lblGroupRating";
+			this.lblGroupRating.Size = new System.Drawing.Size(35, 13);
+			this.lblGroupRating.TabIndex = 7;
+			this.lblGroupRating.Text = "label1";
+			// 
+			// btnCareerIncrease
+			// 
+			this.btnCareerIncrease.Image = global::Chummer.Properties.Resources.add;
+			this.btnCareerIncrease.Location = new System.Drawing.Point(180, -2);
+			this.btnCareerIncrease.Name = "btnCareerIncrease";
+			this.btnCareerIncrease.Size = new System.Drawing.Size(24, 24);
+			this.btnCareerIncrease.TabIndex = 22;
+			this.btnCareerIncrease.UseVisualStyleBackColor = true;
+			this.btnCareerIncrease.Visible = false;
+			// 
 			// SkillGroupControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btnCareerIncrease);
+			this.Controls.Add(this.lblGroupRating);
 			this.Controls.Add(this.lblName);
 			this.Controls.Add(this.nudKarma);
 			this.Controls.Add(this.nudSkill);
@@ -91,5 +114,7 @@
 		private System.Windows.Forms.NumericUpDown nudSkill;
 		private System.Windows.Forms.NumericUpDown nudKarma;
 		private System.Windows.Forms.Label lblName;
+		private System.Windows.Forms.Label lblGroupRating;
+		private System.Windows.Forms.Button btnCareerIncrease;
 	}
 }

@@ -92,6 +92,33 @@ namespace Chummer.Skills
 			}
 		}
 
+		/// <summary>
+		/// Can this skillgroup be increaced in career mode?
+		/// </summary>
+		public bool CareerIncrease
+		{
+			get
+			{
+				if (_affectedSkills.Count == 0) return false;
+
+				if (_affectedSkills.Any(x => x.Rating != _affectedSkills[0].Rating))
+				{
+					return false;
+				}
+
+				if (_affectedSkills.Any(x => x.Specializations.Count != 0))
+				{
+					return false;
+				}
+
+				return _affectedSkills.Max(x => x.Rating) < RatingMaximum;
+
+
+
+
+			}
+		}
+
 		public int Rating
 		{
 			get { return Karma + Base; }
@@ -276,6 +303,7 @@ namespace Chummer.Skills
 
 		}
 
+		//TODO static, but per character? This is probably a bug
 		//I also think this prevents GC. But there is no good way to do it short of rewriting improvements
 		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
 		//To get when things change in improvementmanager
@@ -313,7 +341,5 @@ namespace Chummer.Skills
 		}
 
 		#endregion
-
-
 	}
 }

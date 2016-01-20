@@ -5319,7 +5319,7 @@ namespace Chummer
         {
             int i = panKnowledgeSkills.Controls.Count;
             Skill objSkill = new KnowledgeSkill(_objCharacter);  //TODO KNOSKILLS NEED THIS SHIT (PROBABLY)
-            objSkill.Attribute = "LOG";
+            //objSkill.Attribute = "LOG";
             objSkill.SkillCategory = "Academic";
             //if (_objCharacter.MaxSkillRating > 0)
             //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
@@ -7584,7 +7584,7 @@ namespace Chummer
 
             int i = panActiveSkills.Controls.Count;
             Skill objSkill = new ExoticSkill(_objCharacter, nodSkill);
-            objSkill.Attribute = nodSkill["CharacterAttribute"].InnerText;
+            //objSkill.Attribute = nodSkill["CharacterAttribute"].InnerText;
             //if (_objCharacter.MaxSkillRating > 0)
             //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 

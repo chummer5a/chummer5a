@@ -50,6 +50,8 @@ namespace Chummer
 			_objController = new MainController(_objCharacter);
 			InitializeComponent();
 
+			tabSkills.Parent.Controls.Remove(tabSkills);
+
 			// Add EventHandlers for the MAG and RES enabled events and tab enabled events.
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
 			_objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
@@ -1260,128 +1262,8 @@ namespace Chummer
 					objSkillGroupControl.GroupRating = 0;
 			}
 
-			// Populate the Skill Filter DropDown.
-			List<ListItem> lstFilter = new List<ListItem>();
-			ListItem itmAll = new ListItem();
-			itmAll.Value = "0";
-			itmAll.Name = LanguageManager.Instance.GetString("String_SkillFilterAll");
-			ListItem itmRatingAboveZero = new ListItem();
-			itmRatingAboveZero.Value = "1";
-			itmRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero");
-			ListItem itmTotalRatingAboveZero = new ListItem();
-			itmTotalRatingAboveZero.Value = "2";
-			itmTotalRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero");
-			ListItem itmRatingEqualZero = new ListItem();
-			itmRatingEqualZero.Value = "3";
-			itmRatingEqualZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingZero");
-			lstFilter.Add(itmAll);
-			lstFilter.Add(itmRatingAboveZero);
-			lstFilter.Add(itmTotalRatingAboveZero);
-			lstFilter.Add(itmRatingEqualZero);
-
-			objXmlDocument = XmlManager.Instance.Load("skills.xml");
-			objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
-			foreach (XmlNode objNode in objXmlNodeList)
-			{
-				ListItem objItem = new ListItem();
-				objItem.Value = objNode.InnerText;
-				if (objNode.Attributes["translate"] != null)
-					objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.Attributes["translate"].InnerText;
-				else
-					objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.InnerText;
-				lstFilter.Add(objItem);
-			}
-
-			// Add items for Attributes.
-			ListItem itmBOD = new ListItem();
-			itmBOD.Value = "BOD";
-			itmBOD.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeBODShort");
-			ListItem itmAGI = new ListItem();
-			itmAGI.Value = "AGI";
-			itmAGI.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeAGIShort");
-			ListItem itmREA = new ListItem();
-			itmREA.Value = "REA";
-			itmREA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeREAShort");
-			ListItem itmSTR = new ListItem();
-			itmSTR.Value = "STR";
-			itmSTR.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeSTRShort");
-			ListItem itmCHA = new ListItem();
-			itmCHA.Value = "CHA";
-			itmCHA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeCHAShort");
-			ListItem itmINT = new ListItem();
-			itmINT.Value = "INT";
-			itmINT.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeINTShort");
-			ListItem itmLOG = new ListItem();
-			itmLOG.Value = "LOG";
-			itmLOG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeLOGShort");
-			ListItem itmWIL = new ListItem();
-			itmWIL.Value = "WIL";
-			itmWIL.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeWILShort");
-			ListItem itmMAG = new ListItem();
-			itmMAG.Value = "MAG";
-			itmMAG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeMAGShort");
-			ListItem itmRES = new ListItem();
-			itmRES.Value = "RES";
-			itmRES.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeRESShort");
-			lstFilter.Add(itmBOD);
-			lstFilter.Add(itmAGI);
-			lstFilter.Add(itmREA);
-			lstFilter.Add(itmSTR);
-			lstFilter.Add(itmCHA);
-			lstFilter.Add(itmINT);
-			lstFilter.Add(itmLOG);
-			lstFilter.Add(itmWIL);
-			lstFilter.Add(itmMAG);
-			lstFilter.Add(itmRES);
-
-			// Add Skill Groups to the filter.
-			objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
-			foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-			{
-				ListItem itmGroup = new ListItem();
-				itmGroup.Value = "GROUP:" + objGroup.Name;
-				itmGroup.Name = LanguageManager.Instance.GetString("String_ExpenseSkillGroup") + ": " + objGroup.DisplayName;
-				lstFilter.Add(itmGroup);
-			}
-
-			cboSkillFilter.DataSource = lstFilter;
-			cboSkillFilter.ValueMember = "Value";
-			cboSkillFilter.DisplayMember = "Name";
-			cboSkillFilter.SelectedIndex = 0;
-			cboSkillFilter_SelectedIndexChanged(null, null);
-
-            // If the option to re-group Skill Groups is enabled, run through the Skill Groups and see if they can be re-enabled.
-            if (_objOptions.AllowSkillRegrouping)
-            {
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    bool blnBroken = false;
-                    int intRating = -1;
-                    if (objSkillGroupControl.Broken)
-                    {
-                        foreach (SkillControl objControl in panActiveSkills.Controls)
-                        {
-                            if (objControl.SkillGroup == objSkillGroupControl.GroupName)
-                            {
-                                if (objControl.SkillRating > 5)
-                                    blnBroken = true;
-                                if (intRating == -1)
-                                    intRating = objControl.SkillRating;
-                                if (objControl.SkillRating != intRating)
-                                    blnBroken = true;
-                                if (objControl.SkillSpec != string.Empty)
-                                    blnBroken = true;
-                            }
-                        }
-                        if (!blnBroken)
-                        {
-                            objSkillGroupControl.Broken = false;
-                            objSkillGroupControl.GroupRating = intRating;
-                        }
-                    }
-                }
-            }
-
+			
+           
             if (_objCharacter.MetatypeCategory == "Cyberzombie")
 				mnuSpecialCyberzombie.Visible = false;
 
@@ -1414,6 +1296,8 @@ namespace Chummer
 			RefreshImprovements();
 
 			UpdateCharacterInfo();
+
+			tabSkillsUc.ObjCharacter = _objCharacter;
 
 			_blnIsDirty = false;
 			UpdateWindowTitle(false);
@@ -5042,7 +4926,7 @@ namespace Chummer
 		{
 			int i = panKnowledgeSkills.Controls.Count;
 			Skill objSkill = new Skill(_objCharacter);
-			objSkill.Attribute = "LOG";
+			//objSkill.Attribute = "LOG";
 			objSkill.SkillCategory = "Academic";
 			//if (_objCharacter.MaxSkillRating > 0)
 			//	objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
@@ -7516,7 +7400,7 @@ namespace Chummer
 
 			int i = panActiveSkills.Controls.Count;
 			Skill objSkill = new Skill(_objCharacter);
-			objSkill.Attribute = nodSkill["attribute"].InnerText;
+			//objSkill.Attribute = nodSkill["attribute"].InnerText;
 			//if (_objCharacter.MaxSkillRating > 0)
 			//	objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 

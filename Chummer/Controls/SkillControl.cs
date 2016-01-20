@@ -893,10 +893,10 @@ namespace Chummer
 					
 					_blnSkipRefresh = false;
 
-					if (_objSkill.SkillCategory != "")
-						cboKnowledgeSkillCategory.SelectedValue = _objSkill.SkillCategory;
-					else
-						_objSkill.Attribute = "LOG";
+					//if (_objSkill.SkillCategory != "")
+					//	cboKnowledgeSkillCategory.SelectedValue = _objSkill.SkillCategory;
+					//else
+					//	//_objSkill.Attribute = "LOG";
                 }
                 else
                 {
@@ -1023,7 +1023,7 @@ namespace Chummer
 					if (value == "")
 					{
 						cboKnowledgeSkillCategory.SelectedIndex = 0;
-						_objSkill.Attribute = "LOG";
+						//_objSkill.Attribute = "LOG";
 						_objSkill.SkillCategory = "Academic";
 					}
 					else
