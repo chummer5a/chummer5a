@@ -529,7 +529,7 @@ namespace Chummer
 				if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
 				{
 					i++;
-					SkillControl objSkillControl = new SkillControl();
+					SkillControl objSkillControl = new SkillControl(_objCharacter);
 					objSkillControl.SkillObject = objSkill;
 
 					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -579,7 +579,7 @@ namespace Chummer
 				if (objSkill.ExoticSkill)
 				{
 					i++;
-					SkillControl objSkillControl = new SkillControl();
+					SkillControl objSkillControl = new SkillControl(_objCharacter);
 					objSkillControl.SkillObject = objSkill;
 
 					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -666,7 +666,7 @@ namespace Chummer
 				if (objSkill.KnowledgeSkill)
 				{
 					i++;
-					SkillControl objSkillControl = new SkillControl();
+					SkillControl objSkillControl = new SkillControl(_objCharacter);
 					objSkillControl.SkillObject = objSkill;
 
 					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -5091,7 +5091,7 @@ namespace Chummer
             else
                 objSkill.RatingMaximum = 12;
 
-			SkillControl objSkillControl = new SkillControl();
+			SkillControl objSkillControl = new SkillControl(_objCharacter);
 			objSkillControl.SkillObject = objSkill;
 
 			// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -7614,7 +7614,7 @@ namespace Chummer
 			if (_objCharacter.MaxSkillRating > 0)
 				objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
-			SkillControl objSkillControl = new SkillControl();
+			SkillControl objSkillControl = new SkillControl(_objCharacter);
 			objSkillControl.SkillObject = objSkill;
 			objSkillControl.Width = 510;
 
@@ -22716,7 +22716,7 @@ namespace Chummer
 								int i = panKnowledgeSkills.Controls.Count;
 								Skill objKnowledge = new Skill(_objCharacter);
 
-								SkillControl objSkillControl = new SkillControl();
+								SkillControl objSkillControl = new SkillControl(_objCharacter);
 								objKnowledge.Name = objSkill.Name;
 								objSkillControl.SkillObject = objKnowledge;
 
@@ -22768,7 +22768,7 @@ namespace Chummer
 								int i = panKnowledgeSkills.Controls.Count;
 								Skill objKnowledge = new Skill(_objCharacter);
 
-								SkillControl objSkillControl = new SkillControl();
+								SkillControl objSkillControl = new SkillControl(_objCharacter);
 								objKnowledge.Name = objSkill.Name;
 								objSkillControl.SkillObject = objKnowledge;
 
