@@ -666,7 +666,7 @@ namespace Chummer
 				if (objSkill.KnowledgeSkill)
 				{
 					i++;
-					SkillControl objSkillControl = new SkillControl();
+					SkillControl objSkillControl = new SkillControl(_objCharacter);
 					objSkillControl.SkillObject = objSkill;
 
 					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.

@@ -15013,7 +15013,7 @@ namespace Chummer
 				XmlNodeList objXmlGearList = objXmlVehicle.SelectNodes("gears/gear");
 				foreach (XmlNode objXmlVehicleGear in objXmlGearList)
 				{
-					XmlNode objXmlGaer = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
+					XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
 					TreeNode objGearNode = new TreeNode();
 					Gear objGear = new Gear(_objCharacter);
 					int intRating = 0;
@@ -15037,8 +15037,8 @@ namespace Chummer
 
 					List<Weapon> objWeapons = new List<Weapon>();
 					List<TreeNode> objWeaponNodes = new List<TreeNode>();
-					objGear.Create(objXmlGaer, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
-					objGear.Cost = "0";
+					objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+					//objGear.Cost = "0";
 					objGear.Quantity = intQty;
                     objGear.MaxRating = intMaxRating;
 					objGearNode.Text = objGear.DisplayName;

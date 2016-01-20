@@ -665,7 +665,7 @@ namespace Chummer
                 if (objSkill.ExoticSkill)
                 {
                     i++;
-                    SkillControl objSkillControl = new SkillControl();
+                    SkillControl objSkillControl = new SkillControl(_objCharacter);
                     objSkillControl.SkillObject = objSkill;
 
                     // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -773,7 +773,7 @@ namespace Chummer
                 if (objSkill.KnowledgeSkill)
                 {
                     i++;
-                    SkillControl objSkillControl = new SkillControl();
+                    SkillControl objSkillControl = new SkillControl(_objCharacter);
                     objSkillControl.SkillObject = objSkill;
 
                     // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
@@ -14523,7 +14523,7 @@ namespace Chummer
 
         private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboTradition.SelectedValue.ToString() == string.Empty)
+            if (cboTradition.IsInitalized(_blnLoading))
                 return;
 
             XmlDocument objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -14594,7 +14594,7 @@ namespace Chummer
 
         private void cboDrain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboDrain.SelectedValue.ToString() == string.Empty)
+            if (cboDrain.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.TraditionDrain = cboDrain.Text;
@@ -14624,7 +14624,7 @@ namespace Chummer
 
         private void cboSpiritCombat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboSpiritCombat.SelectedValue.ToString() == string.Empty)
+            if (cboSpiritCombat.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.SpiritCombat = cboSpiritCombat.Text;
@@ -14638,7 +14638,7 @@ namespace Chummer
 
         private void cboSpiritDetection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboSpiritDetection.SelectedValue.ToString() == string.Empty)
+            if (cboSpiritDetection.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.SpiritDetection = cboSpiritDetection.Text;
@@ -14652,7 +14652,7 @@ namespace Chummer
 
         private void cboSpiritHealth_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboSpiritHealth.SelectedValue.ToString() == string.Empty)
+            if (cboSpiritHealth.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.SpiritHealth = cboSpiritHealth.Text;
@@ -14666,7 +14666,7 @@ namespace Chummer
 
         private void cboSpiritIllusion_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboSpiritIllusion.SelectedValue.ToString() == string.Empty)
+            if (cboSpiritIllusion.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.SpiritIllusion = cboSpiritIllusion.Text;
@@ -14680,7 +14680,7 @@ namespace Chummer
 
         private void cboSpiritManipulation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || cboSpiritManipulation.SelectedValue.ToString() == string.Empty)
+            if (cboSpiritManipulation.IsInitalized(_blnLoading))
                 return;
 
             _objCharacter.SpiritManipulation = cboSpiritManipulation.Text;
