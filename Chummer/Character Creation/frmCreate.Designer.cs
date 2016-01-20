@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chummer.helpers;
+using System;
 
 namespace Chummer
 {
@@ -426,17 +427,17 @@ namespace Chummer
 			this.treMartialArts = new System.Windows.Forms.TreeView();
 			this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
 			this.tabMagician = new System.Windows.Forms.TabPage();
-			this.cboSpiritManipulation = new System.Windows.Forms.ComboBox();
+			this.cboSpiritManipulation = new ComboBox();
 			this.lblSpiritManipulation = new System.Windows.Forms.Label();
-			this.cboSpiritIllusion = new System.Windows.Forms.ComboBox();
+			this.cboSpiritIllusion = new ComboBox();
 			this.lblSpiritIllusion = new System.Windows.Forms.Label();
-			this.cboSpiritHealth = new System.Windows.Forms.ComboBox();
+			this.cboSpiritHealth = new ComboBox();
 			this.lblSpiritHealth = new System.Windows.Forms.Label();
-			this.cboSpiritDetection = new System.Windows.Forms.ComboBox();
+			this.cboSpiritDetection = new ComboBox();
 			this.lblSpiritDetection = new System.Windows.Forms.Label();
-			this.cboSpiritCombat = new System.Windows.Forms.ComboBox();
+			this.cboSpiritCombat = new ComboBox();
 			this.lblSpiritCombat = new System.Windows.Forms.Label();
-			this.cboDrain = new System.Windows.Forms.ComboBox();
+			this.cboDrain = new ComboBox();
 			this.txtTraditionName = new System.Windows.Forms.TextBox();
 			this.lblTraditionName = new System.Windows.Forms.Label();
 			this.lblSpellDicePool = new System.Windows.Forms.Label();
@@ -447,7 +448,7 @@ namespace Chummer
 			this.lblDrainAttributesValue = new System.Windows.Forms.Label();
 			this.lblDrainAttributes = new System.Windows.Forms.Label();
 			this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
-			this.cboTradition = new System.Windows.Forms.ComboBox();
+			this.cboTradition = new ComboBox();
 			this.lblTraditionLabel = new System.Windows.Forms.Label();
 			this.lblSpellSource = new System.Windows.Forms.Label();
 			this.lblSpellSourceLabel = new System.Windows.Forms.Label();
@@ -11656,7 +11657,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDrainAttributesValue;
         private System.Windows.Forms.Label lblDrainAttributes;
         private System.Windows.Forms.Label lblDrainAttributesLabel;
-        private System.Windows.Forms.ComboBox cboTradition;
+        private ComboBox cboTradition;
         private System.Windows.Forms.Label lblTraditionLabel;
         private System.Windows.Forms.Label lblSpellSource;
         private System.Windows.Forms.Label lblSpellSourceLabel;
@@ -11735,18 +11736,18 @@ namespace Chummer
         private System.Windows.Forms.Label lblArmorDeviceRatingLabel;
         private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.Label lblAstral;
-        private System.Windows.Forms.ComboBox cboDrain;
+        private ComboBox cboDrain;
         private System.Windows.Forms.TextBox txtTraditionName;
         private System.Windows.Forms.Label lblTraditionName;
-        private System.Windows.Forms.ComboBox cboSpiritCombat;
+        private ComboBox cboSpiritCombat;
         private System.Windows.Forms.Label lblSpiritCombat;
-        private System.Windows.Forms.ComboBox cboSpiritManipulation;
+        private ComboBox cboSpiritManipulation;
         private System.Windows.Forms.Label lblSpiritManipulation;
-        private System.Windows.Forms.ComboBox cboSpiritIllusion;
+        private ComboBox cboSpiritIllusion;
         private System.Windows.Forms.Label lblSpiritIllusion;
-        private System.Windows.Forms.ComboBox cboSpiritHealth;
+        private ComboBox cboSpiritHealth;
         private System.Windows.Forms.Label lblSpiritHealth;
-        private System.Windows.Forms.ComboBox cboSpiritDetection;
+        private ComboBox cboSpiritDetection;
         private System.Windows.Forms.Label lblSpiritDetection;
         private System.Windows.Forms.Label label7;
         internal System.Windows.Forms.NumericUpDown nudKRES;

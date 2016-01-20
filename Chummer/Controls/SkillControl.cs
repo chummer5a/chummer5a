@@ -1134,7 +1134,7 @@ namespace Chummer
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objSkill.CharacterObject.Improvements)
 			{
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _objSkill.Name && objImprovement.Enabled)
 				{
