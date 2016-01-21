@@ -5480,13 +5480,7 @@
 			<rating>18</rating>
 			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 4500</cost>
-			<bonus>
-				<skillattribute>
-					<name precedence="0">MAG</name>
-					<bonus>Rating</bonus>
-					<exclude>Counterspelling</exclude>
-				</skillattribute>
-			</bonus>
+			<bonus />
 			<source>SR5</source>
 			<page>319</page>
 		</gear>

@@ -71,6 +71,7 @@ Data Change:
 - Removed a couple of redundant lifestyle qualities. 
 - Altered the bonus for toolkits, facilities and workshops to be selectskill instead of selecttext. No real effect, just sets the extra value to the skill in question.
 - Fixed some stat issues for the Hanuman metavariant. Fixes #537.
+- Removed the skill bonus from the Combat Focus formula again. Mixup with a previous merge.
 
 New Strings:
 - Message_DeleteCalendarWeek
