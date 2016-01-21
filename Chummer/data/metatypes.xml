@@ -895,7 +895,6 @@
 				<metavariant>
 					<name>Oni</name>
 					<karma>50</karma>
-					
 					<category>Metavariant</category>
 					<bodmin>3</bodmin>
 					<bodmax>8</bodmax>
@@ -942,7 +941,6 @@
 					<qualities>
 						<positive>
 							<quality>Low-Light Vision</quality>
-							<quality>Fangs</quality>
 						</positive>
 						<negative>
 							<quality>Striking Skin Pigmentation</quality>
