@@ -15815,7 +15815,7 @@ namespace Chummer
                             else
                             {
                                 // Each Attribute point costs 1 SP (the first point is free).
-                                intBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss : ADAM: I removed the intUseEssenceLoss var from the equation to resolve what looks like an error in how MAG is calculated with cyberware. I could be wrong.
+                                // intBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss : ADAM: I removed the intUseEssenceLoss var from the equation to resolve what looks like an error in how MAG is calculated with cyberware. I could be wrong.
                                 intThisBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss
                             }
                         }
@@ -15845,86 +15845,14 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-            {
-                _objCharacter.Special = _objCharacter.TotalSpecial - intBP;
-                //if (_objCharacter.Special < 0)
-                //    lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.TotalSpecial.ToString());
-                //else
-                //lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
-
-                // If the character overspent on primary attributes, the excess must be charged to Karma.
-                if (_objCharacter.Special < 0)
-                {
-                    // Figure out the lowest costing attributes in turn to account for the extra primary attribute points. Charge these to Karma.
-                    int intEDG = _objCharacter.EDG.Value;
-                    int intMAG = _objCharacter.MAG.Value;
-                    int intRES = _objCharacter.RES.Value;
-					int intDEP = _objCharacter.DEP.Value;
-					int intKarma = 0;
-
-                    // Do this loop once for each point overspent
-                    for (int i = _objCharacter.Special; i < 0; i++)
-                    {
-                        // For each attribute, check if points were spent (value > minimum) and if the current score is lower than the current lowest score which had points spent on it.
-                        string strLowest = "";
-                        int intLowest = 99;
-                        if (intEDG < intLowest && intEDG > _objCharacter.EDG.TotalMinimum)
-                        {
-                            strLowest = "EDG";
-                            intLowest = intEDG;
-                        }
-                        if (intMAG < intLowest && intMAG > _objCharacter.MAG.TotalMinimum)
-                        {
-                            strLowest = "MAG";
-                            intLowest = intMAG;
-                        }
-                        if (intRES < intLowest && intRES > _objCharacter.RES.TotalMinimum)
-                        {
-                            strLowest = "RES";
-                            intLowest = intRES;
-						}
-						if (intDEP < intLowest && intDEP > _objCharacter.DEP.TotalMinimum)
-						{
-							strLowest = "DEP";
-							intLowest = intDEP;
-						}
-
-						// Calculate the Karma cost of this attribute point and add it to the running total. Decrement the attribute so it won't be counted on the next pass (if any).
-						switch (strLowest)
-                        {
-                            case "EDG":
-                                intKarma += intEDG * _objOptions.KarmaAttribute;
-                                intEDG -= 1;
-                                break;
-                            case "MAG":
-                                intKarma += intMAG * _objOptions.KarmaAttribute;
-                                intMAG -= 1;
-                                break;
-                            case "RES":
-                                intKarma += intRES * _objOptions.KarmaAttribute;
-                                intRES -= 1;
-                                break;
-							case "DEP":
-								intKarma += intDEP * _objOptions.KarmaAttribute;
-								intDEP -= 1;
-								break;
-						}
-                    }
-					lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
-					return intKarma;
-				}
-                else
-				{
-					lblPBuildSpecial.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.Special).ToString(), _objCharacter.TotalSpecial.ToString());
-					return 0;
-                }
-
+			{
+				lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
 			}
 			else
 			{
 				lblSpecialAttributesBP.Text = intBP.ToString();
-				return intBP;
-            }
+			}
+			return intBP;
 
 		}
 

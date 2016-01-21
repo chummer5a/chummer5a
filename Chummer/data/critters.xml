@@ -29,7 +29,7 @@
       <id>47428a29-890f-4b3a-9d18-d8c2e581f1b4</id>
       <name>Dog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -92,7 +92,7 @@
       <id>7983859b-5c38-47b7-b127-2649f0c8c1b0</id>
       <name>Great Cat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -155,7 +155,7 @@
       <id>d4a66987-de45-4bd1-a1f3-c8573ba6d8cf</id>
       <name>Horse</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -211,7 +211,7 @@
       <id>a38329e9-cdfb-441f-9594-1ecf5fcdd787</id>
       <name>Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -272,7 +272,7 @@
       <id>d6da129f-65b2-4fb4-aae3-a73e6937a2a6</id>
       <name>Wolf</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -335,7 +335,7 @@
       <id>bee84e0e-069c-4f02-bffd-11e757229506</id>
       <name>Octopus</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -399,7 +399,7 @@
       <id>dda86d60-2d40-4e1a-bb9f-b58e834330f6</id>
       <name>Squid</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -463,7 +463,7 @@
       <id>e5b5e5b4-534a-49a0-ab18-3390fdc73371</id>
       <name>Giant Squid</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -527,7 +527,7 @@
       <id>b09327ea-f715-48a1-947f-61e952103bf8</id>
       <name>Cuttlefish</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -591,7 +591,7 @@
       <id>8abcb6c5-7e88-419a-b98b-185c375fed73</id>
       <name>Box Jellyfish</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -651,7 +651,7 @@
       <id>05f96cc2-0de5-4349-8571-0ff631801677</id>
       <name>Portuguese Man O' War</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -711,7 +711,7 @@
       <id>1f7ea859-8fa3-42cc-8252-bab7da65f87f</id>
       <name>Bottlenose Dolphin</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -774,7 +774,7 @@
       <id>594663d1-dc12-4a91-a619-9772162f06a5</id>
       <name>Pilot Whale</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -837,7 +837,7 @@
       <id>a3784dc2-ff5d-4ffd-a612-2cb69707c66f</id>
       <name>Porpoise</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -900,7 +900,7 @@
       <id>5d85a9ef-0001-410c-ad21-abc6c685dcc6</id>
       <name>River Dolphin</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -963,7 +963,7 @@
       <id>36b49d08-4dfe-4b1c-b326-d9b209ca4633</id>
       <name>Orca</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -1027,7 +1027,7 @@
       <id>c16de4c2-cf73-47df-bbef-7d8c638e3f13</id>
       <name>Blue Whale</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>24</bodmin>
       <bodmax>24</bodmax>
       <bodaug>24</bodaug>
@@ -1091,7 +1091,7 @@
       <id>f2f88fb1-20cb-4581-8d8b-effa84cf3f92</id>
       <name>Humpback Whale</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>20</bodmin>
       <bodmax>20</bodmax>
       <bodaug>20</bodaug>
@@ -1155,7 +1155,7 @@
       <id>7cf536c3-1ef5-4597-b3e1-3d59c52e698a</id>
       <name>Narwhal</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -1219,7 +1219,7 @@
       <id>31bbbe92-021d-4835-b119-731ed85a42aa</id>
       <name>Elephant Seal</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -1283,7 +1283,7 @@
       <id>a6a2d2b8-e594-4cd7-b1a0-61681ffe8eb1</id>
       <name>Right</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>20</bodmin>
       <bodmax>20</bodmax>
       <bodaug>20</bodaug>
@@ -1347,7 +1347,7 @@
       <id>64a6c03a-3b55-4ef3-aed6-c4347dd546f9</id>
       <name>Walrus</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -1412,7 +1412,7 @@
       <id>7a74ddc3-81b5-4aa0-925d-b2fae820f6ba</id>
       <name>Penguin</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -1472,7 +1472,7 @@
       <id>9465b7be-1488-4b29-a024-8a7048f305a1</id>
       <name>Sea Lion</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -1535,7 +1535,7 @@
       <id>5206088d-c55a-4650-8ec1-74aa3497464b</id>
       <name>Seal</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -1598,7 +1598,7 @@
       <id>2f4649ce-ad2a-4fff-80fe-f2b115a4cbbd</id>
       <name>Sea Otter</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -1662,7 +1662,7 @@
       <id>5978b13f-06df-403a-88f0-ddeeb8752194</id>
       <name>Electric Eel</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -1726,7 +1726,7 @@
       <id>3a5b5ac6-0cac-4e85-a2b6-be920e558513</id>
       <name>Piranha</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -1790,7 +1790,7 @@
       <id>0aa91adb-43bf-4ed0-8d87-4f9f1eb0fa3f</id>
       <name>Barracuda</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -1853,7 +1853,7 @@
       <id>14e32e75-f5ba-488c-a15e-400e94dff11b</id>
       <name>Morray Eel</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -1916,7 +1916,7 @@
       <id>7ad65e2e-b22c-40d4-858b-6b92e1ae744b</id>
       <name>Great White Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -1979,7 +1979,7 @@
       <id>800f1b5f-58bc-4bf2-8ce6-3755f1596a77</id>
       <name>Hammerhead Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -2042,7 +2042,7 @@
       <id>ef0654f4-1027-4302-ba98-59e5de096619</id>
       <name>Pike</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -2105,7 +2105,7 @@
       <id>24bd6487-fe90-492b-bf87-42458627a82d</id>
       <name>Manta Ray</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -2167,7 +2167,7 @@
       <id>355fb904-a87a-412c-93c0-a2925cd86f81</id>
       <name>Mega Mouth Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -2229,7 +2229,7 @@
       <id>2cdf4a25-6866-49a2-be90-e508980ad219</id>
       <name>Whale Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -2291,7 +2291,7 @@
       <id>46c8e7e9-086d-41b7-bdb2-98c2cb6df206</id>
       <name>Sturgeon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -2353,7 +2353,7 @@
       <id>e0e5dc17-8a47-4ed5-aaac-a1d70d57968c</id>
       <name>Goldfish</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -2412,7 +2412,7 @@
       <id>f113a5f7-4728-411d-8a22-f75b55e22b4f</id>
       <name>Conger</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -2471,7 +2471,7 @@
       <id>236bd087-76ba-4b7f-a231-0b3a10185239</id>
       <name>Salmon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -2530,7 +2530,7 @@
       <id>02027853-f96d-4a37-b9e7-f7babdba5ea9</id>
       <name>Alligator</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -2594,7 +2594,7 @@
       <id>dc50e70e-a428-4692-ac06-e79aac93c12f</id>
       <name>Crocodile</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -2658,7 +2658,7 @@
       <id>2c254b05-2cc3-41f4-bf74-f08c75085279</id>
       <name>Komodo Dragon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -2723,7 +2723,7 @@
       <id>09dbda8f-430b-4923-a20a-be6fb3e87717</id>
       <name>Alligator Turtle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -2787,7 +2787,7 @@
       <id>d8a9b93a-c25d-447f-b1bc-54641d39c523</id>
       <name>Monitor Lizard</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -2852,7 +2852,7 @@
       <id>76df0371-033a-4e8b-9e55-155bde09aac8</id>
       <name>Boar</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -2915,7 +2915,7 @@
       <id>5adc42b0-97c7-495e-824b-828147fd8250</id>
       <name>Feral Pig</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -2978,7 +2978,7 @@
       <id>9a513311-43bf-4934-addb-b134f84283e8</id>
       <name>Warthog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -3041,7 +3041,7 @@
       <id>7e28d917-2b6b-481c-b3d1-4c6f4e2dae61</id>
       <name>Cheetah</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -3106,7 +3106,7 @@
       <id>44e11615-3ac4-4ace-b042-25bb8cdf7172</id>
       <name>Grizzly Bear</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -3171,7 +3171,7 @@
       <id>00ac5918-f932-46a2-b541-9638eeda2d79</id>
       <name>Kodiak Bear</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -3236,7 +3236,7 @@
       <id>7804d423-3ec9-4eab-94bf-abd3ce3ba04f</id>
       <name>Black Bear</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -3301,7 +3301,7 @@
       <id>8d46c0e4-e30b-44ae-9072-2ab98450816f</id>
       <name>Panda Bear</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -3367,7 +3367,7 @@
       <id>4333cfdb-e7eb-4c4e-936d-6d802606cc5d</id>
       <name>African Wild Dog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -3430,7 +3430,7 @@
       <id>97984679-e8eb-4a52-9e0e-f0d622520d48</id>
       <name>Jackal</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -3493,7 +3493,7 @@
       <id>c1f4b939-01ea-4db6-bf3f-b8aab20ae185</id>
       <name>Coyote</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -3556,7 +3556,7 @@
       <id>2a2552d5-739f-45b1-9be6-5102b8b82b96</id>
       <name>Wolf Hybrid</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -3620,7 +3620,7 @@
       <id>25c414d8-15ff-4349-9c58-b18b55653914</id>
       <name>Hyena</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -3683,7 +3683,7 @@
       <id>21ec8308-6ffb-4a88-8880-f8f632c73c32</id>
       <name>Domestic Dog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -3746,7 +3746,7 @@
       <id>20381cce-5436-4416-9eda-4d3eca22562f</id>
       <name>Antelope</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -3807,7 +3807,7 @@
       <id>4e06d031-cfaa-4cf1-ad50-36022a3eb89f</id>
       <name>Gazelle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -3868,7 +3868,7 @@
       <id>79a6cc43-2413-4504-9f1c-90efa525b8e1</id>
       <name>White-Tailed Deer</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -3929,7 +3929,7 @@
       <id>f896301e-1770-45bb-8b0e-a5c8a5571755</id>
       <name>Moose</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -3991,7 +3991,7 @@
       <id>8cd06436-6638-478d-a001-2dcea3f4db90</id>
       <name>North American Elk</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -4053,7 +4053,7 @@
       <id>43f581e8-26eb-4f66-8ff5-ce6979af7946</id>
       <name>Zebra</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -4112,7 +4112,7 @@
       <id>248eaa13-1bcb-4adc-b9f0-dea1efe4185e</id>
       <name>Okapi</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -4171,7 +4171,7 @@
       <id>be4c5fce-f717-4f96-92d1-103de839d9a2</id>
       <name>Norwegian Rat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4235,7 +4235,7 @@
       <id>7d1395db-f082-499e-8224-add6a371436c</id>
       <name>Chinchilla</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4299,7 +4299,7 @@
       <id>acd985c6-47b6-4ff3-9022-5121bf3fb02f</id>
       <name>Giant Pouch Rat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4363,7 +4363,7 @@
       <id>df411f92-27d9-4377-bece-31319af6303f</id>
       <name>Guinea Pig</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4427,7 +4427,7 @@
       <id>312337a4-063f-4ac4-b642-58a05bb054e7</id>
       <name>Hedgehog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4491,7 +4491,7 @@
       <id>b346942c-012a-4c39-a2f1-0ca4dc307011</id>
       <name>Marmot</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4555,7 +4555,7 @@
       <id>7e5d8e8f-829e-48ce-9e76-874738fc3d93</id>
       <name>Muskrat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4619,7 +4619,7 @@
       <id>7cd8db33-e19a-404e-8687-4cca60828d12</id>
       <name>Opossum</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4684,7 +4684,7 @@
       <id>d14faaac-33f1-4f99-9451-89268e1bc1f6</id>
       <name>Hamster</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4746,7 +4746,7 @@
       <id>0bd00c0c-f854-48a1-a38a-6aa64397d94d</id>
       <name>Degas</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4808,7 +4808,7 @@
       <id>90290eb1-6187-4147-84de-f2d85c2b7db3</id>
       <name>Gerbil</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4870,7 +4870,7 @@
       <id>efd682d3-9a0b-456a-80a2-53a36f4bb400</id>
       <name>Mouse</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4932,7 +4932,7 @@
       <id>728ceef3-f2b6-43e1-8891-48ce5073ce15</id>
       <name>Naked Mole Rat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -4994,7 +4994,7 @@
       <id>cf6a019c-dcd6-44c7-9134-deece37b2087</id>
       <name>Polynesian Rat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -5056,7 +5056,7 @@
       <id>9c1bd4c8-2112-4189-897d-0211b119c7a7</id>
       <name>Chipmunk</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -5118,7 +5118,7 @@
       <id>25ffe6c8-2abd-4287-88e0-ac0bd371e6d9</id>
       <name>Mole</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -5180,7 +5180,7 @@
       <id>2e924a5a-9039-4729-b85f-74f2781ff88c</id>
       <name>Prairie Dog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -5242,7 +5242,7 @@
       <id>12497012-2176-43e2-89ef-d51cedc43ec2</id>
       <name>Elephant</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -5305,7 +5305,7 @@
       <id>3ffa4934-12e0-4ace-b314-20d1a84c4284</id>
       <name>Giraffe</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -5365,7 +5365,7 @@
       <id>7ec1f78b-4887-4e01-8626-f846407f92f7</id>
       <name>Hippopotamus</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -5428,7 +5428,7 @@
       <id>6fdc2bbc-e4f4-4456-914f-dff2d79b1132</id>
       <name>Rhinoceros</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -5491,7 +5491,7 @@
       <id>4c9dee71-eefb-41fd-92d2-cf6ad974a99a</id>
       <name>Domestic Cow</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -5550,7 +5550,7 @@
       <id>d94db38d-0168-4fff-9d1f-cf486238bf2d</id>
       <name>Bison</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -5609,7 +5609,7 @@
       <id>2ef36a55-fd91-470d-a146-53181bcb85ec</id>
       <name>Eland</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -5668,7 +5668,7 @@
       <id>7499ed55-0f30-4214-a107-fef97ad958e0</id>
       <name>Musk Ox</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -5727,7 +5727,7 @@
       <id>efa3e869-d9cb-4574-a795-fee5af46feb4</id>
       <name>Water Buffalo</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -5786,7 +5786,7 @@
       <id>acdb11cd-cd54-4882-b06c-c5ade4e9186a</id>
       <name>Yak</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -5845,7 +5845,7 @@
       <id>31c3e2ba-2ac9-43be-89a7-770d542bdac2</id>
       <name>Camel</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -5904,7 +5904,7 @@
       <id>5f53292a-4c75-4d3e-964d-0b3b5bc84260</id>
       <name>Llama</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -5963,7 +5963,7 @@
       <id>72d53538-0039-420c-ae9b-95ba5ac4e27a</id>
       <name>Burro</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -6022,7 +6022,7 @@
       <id>27cf17f8-24d6-4eb4-923a-781196928673</id>
       <name>Baboon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -6085,7 +6085,7 @@
       <id>685c98b8-241e-4a4a-9095-04227c66b804</id>
       <name>Chimpanzee</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -6148,7 +6148,7 @@
       <id>5e61ede1-b0e1-41de-b8dd-6ad3be6dfcc9</id>
       <name>Orangutan</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -6211,7 +6211,7 @@
       <id>f0af3b5e-30bc-40a8-83b0-045cd29d4cc4</id>
       <name>Gibbon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -6275,7 +6275,7 @@
       <id>e0fb1a6f-4ab8-48b1-9dac-753375cb08ce</id>
       <name>Gorilla</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -6339,7 +6339,7 @@
       <id>d4d6ad90-fc1d-46de-9dd0-3c318588683e</id>
       <name>Green Monkey</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6403,7 +6403,7 @@
       <id>0b151d20-40af-4bfe-8537-4543f3924572</id>
       <name>Lemur</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6467,7 +6467,7 @@
       <id>e8dd5116-7a3f-4f17-8000-b91ef725d808</id>
       <name>Macaque</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6531,7 +6531,7 @@
       <id>27c4eb3d-82e2-4dea-946d-8ddbd7aed93d</id>
       <name>Mangabe</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6595,7 +6595,7 @@
       <id>2477fa33-dc8b-4ab6-a377-3353042d977d</id>
       <name>Colobus</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6659,7 +6659,7 @@
       <id>a9ef7572-c4ce-4715-b5e6-cc2a42050b33</id>
       <name>Marmoset</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -6724,7 +6724,7 @@
       <id>01db6739-6026-4cfd-a926-8d1a3548ce0b</id>
       <name>Mouse Lemur</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -6783,7 +6783,7 @@
       <id>e74135e6-476e-49cd-9818-389019d7298a</id>
       <name>Pygmy Marmoset</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -6842,7 +6842,7 @@
       <id>64ceace2-7f7a-439c-9a89-f7e61c83f53d</id>
       <name>Tarsier</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -6901,7 +6901,7 @@
       <id>6b167261-866b-45e3-af95-afb367b7e26f</id>
       <name>Loris</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -6962,7 +6962,7 @@
       <id>56adf958-8f63-48fb-a2ab-6d56bbee7585</id>
       <name>Aardvark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7022,7 +7022,7 @@
       <id>aae7d223-fc66-41d3-8eda-3f758b2f21d7</id>
       <name>Echnida</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7082,7 +7082,7 @@
       <id>4474c321-ea46-4f42-84f7-81eace1cb56d</id>
       <name>Koala</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7142,7 +7142,7 @@
       <id>224ad689-4adb-4336-8fe6-0fcb339a0a02</id>
       <name>Wombat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7202,7 +7202,7 @@
       <id>94fabc4e-1e7f-4526-b72e-2844cbdeadfc</id>
       <name>Armadillo</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7263,7 +7263,7 @@
       <id>be921afd-d416-4f3b-8d09-a40ad13cf703</id>
       <name>Platypus</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7325,7 +7325,7 @@
       <id>d9e2ebd3-a16b-499c-ad20-0440542405e5</id>
       <name>Porcupine</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7386,7 +7386,7 @@
       <id>e91a623b-cd85-4d91-9c4c-e73474c941e4</id>
       <name>Rabbit</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7446,7 +7446,7 @@
       <id>e030bb1c-ef87-4133-95bb-94186c729cf5</id>
       <name>Skunk</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7507,7 +7507,7 @@
       <id>626984f5-9156-4137-882c-960efc2c8d3d</id>
       <name>Sloth</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7567,7 +7567,7 @@
       <id>96eb233c-4061-4c83-ac02-1d2cf776aec0</id>
       <name>Beaver</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7629,7 +7629,7 @@
       <id>92547239-6b4f-485b-8807-690a09bf587d</id>
       <name>Nutria</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -7691,7 +7691,7 @@
       <id>50a70e70-5b92-410f-98f1-718a58e173f9</id>
       <name>Domestic Pig</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -7752,7 +7752,7 @@
       <id>7dbe1665-57fc-462a-a870-42245d127677</id>
       <name>Potbelly Pig</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -7813,7 +7813,7 @@
       <id>46398e06-4650-4cfe-9382-37ac3439e613</id>
       <name>Kangaroo</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -7874,7 +7874,7 @@
       <id>0bce4e96-b6c9-439b-a08f-2d76610a4150</id>
       <name>Ostrich</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -7935,7 +7935,7 @@
       <id>b07764d3-cf5a-4644-baf6-d5a1850927d5</id>
       <name>Emu</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -7996,7 +7996,7 @@
       <id>f11d4881-af58-4624-8de4-f7584029131a</id>
       <name>Sheep</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -8057,7 +8057,7 @@
       <id>329dbe6a-00ee-416e-8ddc-9d12057f90a4</id>
       <name>Goat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -8118,7 +8118,7 @@
       <id>b800a23b-6c81-4e18-8f87-7fcdbefadd81</id>
       <name>Bobcat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -8181,7 +8181,7 @@
       <id>060bd61e-ecfb-4d4c-ab27-bd3d66c6731d</id>
       <name>Caracal</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -8244,7 +8244,7 @@
       <id>6da3d79c-c6d2-4e07-8f20-07d08a52663a</id>
       <name>Lynx</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -8307,7 +8307,7 @@
       <id>94731f0d-6dd4-4e95-812f-6b3170c05bf2</id>
       <name>Ocelot</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -8370,7 +8370,7 @@
       <id>928f0d01-6718-4846-9b3f-52715eac6482</id>
       <name>Domestic Cat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8433,7 +8433,7 @@
       <id>4535aa3a-02a4-4f17-8842-511b340d4f28</id>
       <name>Fox</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8496,7 +8496,7 @@
       <id>7a0947bc-4128-4c54-825b-9e7f723f9847</id>
       <name>Ferret</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8559,7 +8559,7 @@
       <id>b31a9f94-4de7-4ffc-8c90-3dced66fe2d1</id>
       <name>Meerkat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8622,7 +8622,7 @@
       <id>d87faeb4-370f-4039-93ac-41641d80b5a6</id>
       <name>Weasel</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8685,7 +8685,7 @@
       <id>f94de35c-b388-4d68-ab5b-7d310a3204b1</id>
       <name>Mongoose</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8749,7 +8749,7 @@
       <id>6a595f02-8976-4a34-a2d0-5231a9bd9ec1</id>
       <name>River Otter</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8813,7 +8813,7 @@
       <id>8e48a572-8305-4fbc-be39-d3a28622adc8</id>
       <name>Raccoon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8877,7 +8877,7 @@
       <id>dbcf8f5f-8e43-43f4-84ab-ab0ed7192824</id>
       <name>Red Panda</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -8941,7 +8941,7 @@
       <id>ec0f501f-6898-4218-a240-f5a86a7a3f33</id>
       <name>Wolverine</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -9003,7 +9003,7 @@
       <id>2420e486-976a-4e40-940e-34637d3b399b</id>
       <name>Tasmanian Devil</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -9065,7 +9065,7 @@
       <id>c572af9b-418a-41c6-b620-5d6c7f08a275</id>
       <name>Anole</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9123,7 +9123,7 @@
       <id>a80278fa-b4ea-47e1-b4b6-8d0e089fc7af</id>
       <name>Bearded Dragon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9181,7 +9181,7 @@
       <id>7fcca21c-729f-414b-95aa-ced043d851cc</id>
       <name>Grass Snake</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9239,7 +9239,7 @@
       <id>eb903b98-e5eb-4f2e-9335-0f1d9b8fe0db</id>
       <name>Skink</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9297,7 +9297,7 @@
       <id>99db12f5-dd8a-482e-bb85-4034a2d05dc7</id>
       <name>Thorny Devil</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9355,7 +9355,7 @@
       <id>3f259556-cb60-4d80-a11c-1f3f2e8b08f3</id>
       <name>Frog</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9414,7 +9414,7 @@
       <id>bbbef5d0-4138-4d57-8e7e-a5a893ed6481</id>
       <name>Chameleon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9474,7 +9474,7 @@
       <id>70151bcf-df67-4b72-9385-a0fc3ba501a9</id>
       <name>Gecko</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9534,7 +9534,7 @@
       <id>c3628275-8ebc-4e96-9c55-e54812387e4e</id>
       <name>Iguana</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -9594,7 +9594,7 @@
       <id>34fc4c1f-50d9-4a88-883f-0edb6e21b59e</id>
       <name>Cockroach</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9657,7 +9657,7 @@
       <id>168fa92d-4093-472e-980e-249e4ac79a5d</id>
       <name>Waterbug</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9720,7 +9720,7 @@
       <id>f40e3d6c-e34a-447e-b7af-d084f75c2d79</id>
       <name>Mosquito</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9784,7 +9784,7 @@
       <id>c365bbbf-2834-42f2-b434-94d7d67f8a26</id>
       <name>Grasshopper</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9849,7 +9849,7 @@
       <id>28c1c952-365e-4185-98e1-bbb27b7071f8</id>
       <name>Scarab Beetle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9913,7 +9913,7 @@
       <id>cd5adab2-d2f2-4dd8-bd4d-43322192f2bf</id>
       <name>Butterfly</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -9977,7 +9977,7 @@
       <id>e5ea90f2-73f0-4abe-8468-e4ffd5adb5e2</id>
       <name>Fire Ants</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10041,7 +10041,7 @@
       <id>2aaf065d-0dca-4ad7-bea5-c2eced242732</id>
       <name>Bee</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10106,7 +10106,7 @@
       <id>e33b710d-5b46-4e20-9870-d762423cd0ac</id>
       <name>Spider</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10169,7 +10169,7 @@
       <id>73b1606c-4838-4e60-95f4-851ba5c9e1c6</id>
       <name>Black Widow</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10233,7 +10233,7 @@
       <id>d2729bde-736e-4646-a924-64686eee5b88</id>
       <name>Scorpion</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10296,7 +10296,7 @@
       <id>88de762f-5630-4119-b62c-d3491bf30d64</id>
       <name>Orb Weaver</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10360,7 +10360,7 @@
       <id>2bcea693-cd54-49f1-b247-62ba611310a0</id>
       <name>Tarantula</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10424,7 +10424,7 @@
       <id>ce42e4c0-97b3-4d75-8165-3b86edb6267a</id>
       <name>Cobra</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -10489,7 +10489,7 @@
       <id>6f60c42b-d32b-4f98-a2a8-ffc1930507f9</id>
       <name>Coral Snake</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -10554,7 +10554,7 @@
       <id>9b9f4f99-14cc-4de1-af54-981bdf1d2805</id>
       <name>Puff Adder</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -10619,7 +10619,7 @@
       <id>44f6d06f-2d10-4c67-9379-56012377bcb5</id>
       <name>Viper</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -10684,7 +10684,7 @@
       <id>af231429-8459-41ef-9bc9-091e6e1d0ba0</id>
       <name>Python</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -10748,7 +10748,7 @@
       <id>3f0e3715-e626-4cbe-9e4b-f5b3df07f8b4</id>
       <name>Boa Constrictor</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -10812,7 +10812,7 @@
       <id>c5172915-6a90-4b5d-a999-678828a1c10f</id>
       <name>Canary</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10870,7 +10870,7 @@
       <id>2aadded2-4dbe-4ba2-88c1-71aa6e9bba2b</id>
       <name>Hummingbird</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -10928,7 +10928,7 @@
       <id>40cf4bf0-a676-47b2-8467-a5cf070a0869</id>
       <name>Crow</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -10991,7 +10991,7 @@
       <id>553deb0a-8ee0-4fdc-9782-f6c8ebf5f96f</id>
       <name>Magpie</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11054,7 +11054,7 @@
       <id>2b6f3233-d6b9-49ff-a0d6-db7e0a6f17ed</id>
       <name>Jackdaw</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11117,7 +11117,7 @@
       <id>3453d932-d32b-4fc5-b6f1-1b2b8ea7921b</id>
       <name>Raven</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11180,7 +11180,7 @@
       <id>5c1c765e-c679-4253-b680-2ead0ef87026</id>
       <name>Parrot</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11244,7 +11244,7 @@
       <id>ea9c6211-7b9a-4083-8a5a-31bb50a53f45</id>
       <name>Bat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11308,7 +11308,7 @@
       <id>533498f9-ba90-47bd-b9ff-1888a40ad1cf</id>
       <name>Quail</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11371,7 +11371,7 @@
       <id>648b92a8-611c-4ebd-bd19-00c6f63cd029</id>
       <name>Albatross</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11430,7 +11430,7 @@
       <id>45f88620-b111-44c7-9eb9-a1d4a1d8e153</id>
       <name>Condor</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11489,7 +11489,7 @@
       <id>d10c78a6-e0e7-4323-845b-98e7a294aed5</id>
       <name>Cormorant</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11548,7 +11548,7 @@
       <id>419dd476-44df-43eb-95ed-86947440a86c</id>
       <name>Frigate Bird</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11607,7 +11607,7 @@
       <id>8ac997c0-5308-41d3-80f1-50e132c52cbf</id>
       <name>Pelican</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11666,7 +11666,7 @@
       <id>dcdf75b0-39f7-436c-8e3f-1772e586f358</id>
       <name>Eagle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11728,7 +11728,7 @@
       <id>02c44024-04af-4242-8c20-f8b5a447c311</id>
       <name>Bald Eagle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11790,7 +11790,7 @@
       <id>bb8950e4-bb81-49c8-99d6-e7d934711182</id>
       <name>Harpy Eagle</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11852,7 +11852,7 @@
       <id>1f06174b-16a7-4f97-b2a8-2ca88451fa18</id>
       <name>Turky Vulture</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -11914,7 +11914,7 @@
       <id>55d042c2-2351-42ac-9f6c-9d1acc21309d</id>
       <name>Eagle Owl</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -11977,7 +11977,7 @@
       <id>6cbfc47b-2f77-4e69-bc75-aab8bc3ac619</id>
       <name>Horned Owl</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12040,7 +12040,7 @@
       <id>2c57149e-7fbe-4806-8655-e9608722d537</id>
       <name>Hawk</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12103,7 +12103,7 @@
       <id>11d4279c-6ad2-4dc1-811b-edce5a52e69f</id>
       <name>Kite</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12166,7 +12166,7 @@
       <id>46c52c10-44f6-4c20-a4d9-d686e77c40ff</id>
       <name>Vulture</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12229,7 +12229,7 @@
       <id>b6d0d1b1-3dea-46a7-a98d-cc09a7d6a921</id>
       <name>Barn Owl</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12294,7 +12294,7 @@
       <id>6e200a11-2d83-49ad-939e-2e636f59e773</id>
       <name>Falcon</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12358,7 +12358,7 @@
       <id>7f92cacf-2a74-42d4-a5b6-5f28b17c494a</id>
       <name>Kestrel</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12422,7 +12422,7 @@
       <id>96fbda1f-3748-4180-a014-0d9a920ab332</id>
       <name>Duck</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12482,7 +12482,7 @@
       <id>07194e4a-d012-432f-857a-c0f7fee6f6fd</id>
       <name>Goose</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12542,7 +12542,7 @@
       <id>6e9ba41a-786b-4c67-b227-806c33aba237</id>
       <name>Peacock</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12602,7 +12602,7 @@
       <id>9a151940-9bbb-4c39-bccd-232360e39a14</id>
       <name>Pheasant</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12662,7 +12662,7 @@
       <id>ffd0ec4f-b25d-4504-94c3-cdd473358460</id>
       <name>Seagull</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12722,7 +12722,7 @@
       <id>afa448d6-04cc-4242-8154-37ae42f45985</id>
       <name>Swan</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12782,7 +12782,7 @@
       <id>ad957aca-9766-4d65-8a53-324b243f9568</id>
       <name>Turkey</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12842,7 +12842,7 @@
       <id>8e1a05eb-bab4-411d-9c24-6417bf3b3323</id>
       <name>Chicken</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -12902,7 +12902,7 @@
       <id>f03dcf11-8a65-4452-912b-d42bc78e3e93</id>
       <name>Barghest</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -12975,7 +12975,7 @@
       <id>6fb20284-a25b-4eb7-82d5-e20f79d345e3</id>
       <name>Devil Rat</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -13048,7 +13048,7 @@
       <id>d3a7e0fe-46bc-4c30-a287-b159eb53f0f8</id>
       <name>Ghoul</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -13120,7 +13120,7 @@
       <id>2403521d-8a3b-4e73-8562-2a5978841478</id>
       <name>Hell Hound</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -13197,7 +13197,7 @@
       <id>edc96d39-459c-43df-907c-1559bff5c450</id>
       <name>Merrow</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -13269,7 +13269,7 @@
       <id>3ff9d116-3b68-4de8-8afb-962deb321525</id>
       <name>Naga</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -13344,7 +13344,7 @@
       <id>6d15c952-542a-429d-9b56-51fc21ebb138</id>
       <name>Sasquatch</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -13418,7 +13418,7 @@
       <id>c216e7b6-655e-45b8-a755-09e1de66dc81</id>
       <name>Thunderbird</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -13491,7 +13491,7 @@
       <id>c901c62b-30cb-4a55-89cc-95af3321c297</id>
       <name>Vampire</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -13572,7 +13572,7 @@
       <id>a1cfa419-e728-4a3e-ad2b-43d3ce062ef1</id>
       <name>Wendigo</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -13658,7 +13658,7 @@
       <id>83e2bba4-331f-4ef5-b078-55630c71be18</id>
       <name>Crested Barbarian</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -13730,7 +13730,7 @@
       <id>da3d5c83-d55b-4d2a-b128-74d14d9ad365</id>
       <name>Dog Asp</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -13804,7 +13804,7 @@
       <id>37e1af67-4783-4a7c-8065-db3f463d48c3</id>
       <name>Embracer</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -13878,7 +13878,7 @@
       <id>82263a3b-8c12-4d3f-a737-589e9109b933</id>
       <name>Griffin</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -13940,7 +13940,7 @@
       <id>723205b0-af56-46f1-b441-57ad90eff768</id>
       <name>Harpy</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14011,7 +14011,7 @@
       <id>1171ad5c-69bf-4572-9d89-8e808c1860fe</id>
       <name>Nimue's Salamander</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -14084,7 +14084,7 @@
       <id>5e52270b-89de-4ac9-8cea-997f707fc594</id>
       <name>Oracle Owl</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14163,7 +14163,7 @@
       <id>994561f6-1831-4d9c-8115-9376456df821</id>
       <name>Roc, Greater</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>20</bodmin>
       <bodmax>20</bodmax>
       <bodaug>20</bodaug>
@@ -14240,7 +14240,7 @@
       <id>a038143f-ab23-4cbf-9b7b-477645e9b352</id>
       <name>Sabre-Tooth Cat</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -14304,7 +14304,7 @@
       <id>056272e2-046a-4e4f-8fd6-0a71321521a0</id>
       <name>Siren</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14378,7 +14378,7 @@
       <id>1460da67-783b-4a5e-93f9-9df96a63ac80</id>
       <name>Stonebinder</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14451,7 +14451,7 @@
       <id>9baca3eb-faa5-4eda-993a-d863d3fb30d4</id>
       <name>Thunderbird, Greater</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -14525,7 +14525,7 @@
       <id>faf2978f-9c5c-42c1-b0b0-86352be5fd65</id>
       <name>Wild Satyr</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14598,7 +14598,7 @@
       <id>b5a1eb79-0616-4981-be4d-4311c72d5018</id>
       <name>Boobrie</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -14668,7 +14668,7 @@
       <id>7c939322-cc69-415d-a26a-9b6b3bca1806</id>
       <name>Each Uisge</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -14743,7 +14743,7 @@
       <id>32e8b687-1470-463e-834a-040c7b06ddee</id>
       <name>Night Manta</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -14822,7 +14822,7 @@
       <id>1865812d-b29d-4887-b628-c57a18f38b5c</id>
       <name>Roc, Lesser</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -14891,7 +14891,7 @@
       <id>cee50594-144e-499f-b029-578d33ce9e53</id>
       <name>Armadillo, Greater</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -14964,7 +14964,7 @@
       <id>954ee768-2d28-4cfe-a5e0-6516424b90c6</id>
       <name>Black Wasp</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -15039,7 +15039,7 @@
       <id>a1b0dde2-b648-4c8e-89c8-3c6cd3e68d93</id>
       <name>Death Rattle</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -15113,7 +15113,7 @@
       <id>4b6d8625-9b62-473a-abec-0259cd2452fb</id>
       <name>Gila Demon</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -15180,7 +15180,7 @@
       <id>d1d59ed4-6382-4b1a-a77f-0aaaa5082db0</id>
       <name>Nova Scorpion</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -15252,7 +15252,7 @@
       <id>46903aff-a031-4885-8217-48799ab481f3</id>
       <name>Aardwolf</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -15322,7 +15322,7 @@
       <id>e3120205-cc05-4359-8222-83d08132ca9c</id>
       <name>Artnwerre</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -15396,7 +15396,7 @@
       <id>d07ef783-4595-4ffd-9124-94309f02d871</id>
       <name>Eyekiller</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -15470,7 +15470,7 @@
       <id>3e0bf4c6-d67d-4910-8032-ed907c00192b</id>
       <name>Metaroo</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -15540,7 +15540,7 @@
       <id>62ff7ac5-2953-4024-8fe0-bf2c07dec171</id>
       <name>Sand Chameleon</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -15613,7 +15613,7 @@
       <id>563a6352-c842-4e8d-aa1d-a9e2d9d987e0</id>
       <name>Shadow Crawler</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -15691,7 +15691,7 @@
       <id>94e5a122-53e3-4d49-8fec-1e96e1cdee47</id>
       <name>Wombrick</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -15753,7 +15753,7 @@
       <id>e66f6874-af52-45f1-95ac-f45e44e6699b</id>
       <name>Devil Jack Diamond</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -15823,7 +15823,7 @@
       <id>b2a9d10c-f34d-41b9-9a41-aa4a03b7d80a</id>
       <name>Fideal</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -15899,7 +15899,7 @@
       <id>0ba771aa-40b7-42b0-9ac5-2ea934a30b19</id>
       <name>Hellbender</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -15973,7 +15973,7 @@
       <id>5bb427eb-ad62-4049-94cc-9bac74d38677</id>
       <name>Lambton Lizard</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -16041,7 +16041,7 @@
       <id>867ce26f-15eb-4380-a5f0-0a86021bdb1c</id>
       <name>Spitting Pike</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -16115,7 +16115,7 @@
       <id>192896b9-1806-431f-91f6-e6f49d491c6f</id>
       <name>Centaur</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -16190,7 +16190,7 @@
       <id>f023c6db-03f3-4dba-b7ee-7e64f71f7d5b</id>
       <name>Cockatrice</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -16262,7 +16262,7 @@
       <id>9030debc-e820-4c9d-89f2-472703308423</id>
       <name>Juggernaut</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>17</bodmin>
       <bodmax>17</bodmax>
       <bodaug>17</bodaug>
@@ -16337,7 +16337,7 @@
       <id>d4ec0e18-8b55-452f-99bb-ca05cac73af8</id>
       <name>Pegasus</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -16407,7 +16407,7 @@
       <id>801c78f7-aad7-4051-b6fe-f75c3881dd2d</id>
       <name>Unicorn</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -16479,7 +16479,7 @@
       <id>0ad727a5-43ad-40e5-bcdb-a20e224e40a1</id>
       <name>White Buffalo</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -16546,7 +16546,7 @@
       <id>4bb50978-dfb0-4b19-9484-4e9d7a214946</id>
       <name>Devil Fish</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -16616,7 +16616,7 @@
       <id>3cd8cbcd-6174-40f1-9a14-29b8ac48687b</id>
       <name>Kraken</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>13</bodmin>
       <bodmax>13</bodmax>
       <bodaug>13</bodaug>
@@ -16691,7 +16691,7 @@
       <id>773f3258-7074-46af-9bf5-ecab12247fd5</id>
       <name>Megalodon</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>15</bodmin>
       <bodmax>15</bodmax>
       <bodaug>15</bodaug>
@@ -16766,7 +16766,7 @@
       <id>ea8cd8a8-48eb-4bdd-a6e5-1c4de1293e16</id>
       <name>Meistersinger</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>20</bodmin>
       <bodmax>20</bodmax>
       <bodaug>20</bodaug>
@@ -16849,7 +16849,7 @@
       <id>a83d0697-da9a-4858-b15e-25c443d75507</id>
       <name>Mermaid</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -16914,7 +16914,7 @@
       <id>f3d64692-273c-4d1a-b5be-ed4d9a31a825</id>
       <name>New Leatherback</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -16990,7 +16990,7 @@
       <id>e3cf2f5b-5e1f-4670-8938-03eed37ea710</id>
       <name>Storm Dolphin</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -17069,7 +17069,7 @@
       <id>e4b6db05-8e54-41d9-b088-4be4bd30ca40</id>
       <name>Torpedo Shark</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -17135,7 +17135,7 @@
       <id>924a9e47-d1d9-49ef-b415-3a916e34234c</id>
       <name>Unicorn Fish</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -17207,7 +17207,7 @@
       <id>03632440-194b-4b69-852b-85f419640aea</id>
       <name>Alufye</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -17279,7 +17279,7 @@
       <id>1ca72f96-8ee3-4b19-b412-1aa7c3f42961</id>
       <name>Anwuma Bavole</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -17354,7 +17354,7 @@
       <id>4df1fc6b-a833-4a6d-ab66-de557ac85764</id>
       <name>Bonzo</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -17422,7 +17422,7 @@
       <id>904a6af3-9828-4d70-b3f2-ce18e34211c2</id>
       <name>Gomatia</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -17497,7 +17497,7 @@
       <id>b3c3df86-17d8-4199-8ad6-478f0aafc39e</id>
       <name>Kiwig</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -17560,7 +17560,7 @@
       <id>d2c36d32-ec87-4bc7-9fe6-6282d52c6fa3</id>
       <name>Spider-Beast</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -17627,7 +17627,7 @@
       <id>11612870-3791-452a-a793-74d0083c090d</id>
       <name>Temu</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -17698,7 +17698,7 @@
       <id>39d7acc4-8834-4c05-acf0-6b248e1e2c56</id>
       <name>Asonwu</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -17772,7 +17772,7 @@
       <id>93da2b65-5c6e-489a-bf60-043343c6e141</id>
       <name>Ekyelebenle</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -17846,7 +17846,7 @@
       <id>e19f5d9f-5ae0-43f5-86dc-df36ad640c13</id>
       <name>Quicksilver Mongoose</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -17923,7 +17923,7 @@
       <id>e95a2fa1-3fef-45ae-8db4-b87be6b56883</id>
       <name>Tasmanian Tiger</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -17996,7 +17996,7 @@
       <id>c55aee64-1f9b-4000-89ba-1a39565ddf56</id>
       <name>Dour</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -18071,7 +18071,7 @@
       <id>5bfa5371-d3e6-450b-9187-5b081896f05c</id>
       <name>Rockworm</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -18143,7 +18143,7 @@
       <id>cff940c5-2814-4dbf-8b30-ae604ef275a5</id>
       <name>Troglodyte</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -18216,7 +18216,7 @@
       <id>84245cb3-99e0-40e0-b6bf-d93c82662bc7</id>
       <name>Wild Minotaur</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -18289,7 +18289,7 @@
       <id>0ca8e879-c38c-47e1-bf31-eb4e9105e5b8</id>
       <name>Cerberus Hound</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -18368,7 +18368,7 @@
       <id>612b5631-21d0-4bcb-8f73-78425a1950eb</id>
       <name>Gloaming Owl</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -18442,7 +18442,7 @@
       <id>f06c8b4b-2b48-467e-b1b1-d926a7fa3f43</id>
       <name>Grandfather Elk</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -18518,7 +18518,7 @@
       <id>85ad6a93-bf27-4447-859d-e266ccb4b8b7</id>
       <name>Horned Bear</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>13</bodmin>
       <bodmax>13</bodmax>
       <bodaug>13</bodaug>
@@ -18596,7 +18596,7 @@
       <id>93b8a9b5-efd4-40a3-8bdb-7d803dbf9fd2</id>
       <name>Humped Horse</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -18670,7 +18670,7 @@
       <id>28550e5a-14f3-427c-8315-96c4e8410e6b</id>
       <name>Mist Lynx</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -18741,7 +18741,7 @@
       <id>cf3256af-b806-4a08-979a-e11819b1df51</id>
       <name>Munchkin</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -18808,7 +18808,7 @@
       <id>026fe3d7-9994-4f26-8701-d411f09f5f45</id>
       <name>Snow Snake</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -18881,7 +18881,7 @@
       <id>cbb3ef3f-1857-4c6f-9383-80fe675d341f</id>
       <name>Wolly Mammoth</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -18954,7 +18954,7 @@
       <id>20f2969a-7f2c-49a2-95c7-80eb1f2b74b4</id>
       <name>Agropelter</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -19020,7 +19020,7 @@
       <id>49434a88-ced1-46e3-b650-b0bd12ddd480</id>
       <name>Basilisk</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -19093,7 +19093,7 @@
       <id>a545e6f7-1737-4561-8ec1-67c595b8b368</id>
       <name>Birdman</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -19167,7 +19167,7 @@
       <id>5bdb6ca9-ec9c-4c42-9270-a13599e298c1</id>
       <name>Black Annis</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -19243,7 +19243,7 @@
       <id>cfec804f-d0e2-4310-880c-c22deaae68a3</id>
       <name>Bogie</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -19321,7 +19321,7 @@
       <id>0ae37ee9-9660-4c16-9d4c-18158ca0354a</id>
       <name>Emperor Eagle</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -19398,7 +19398,7 @@
       <id>f518fb2c-a9f4-490d-aa91-28d053a28978</id>
       <name>Fenrir Wolf</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -19474,7 +19474,7 @@
       <id>7693ea54-f333-47c1-bf19-88b1bd00320f</id>
       <name>Firebird</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -19545,7 +19545,7 @@
       <id>26e2e9ac-dbef-42e3-8ddf-b3c59fbe6a49</id>
       <name>Golden Boar</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -19612,7 +19612,7 @@
       <id>d0832c47-48b4-4331-9bd9-12cad84c57c1</id>
       <name>Hoop Snake</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -19675,7 +19675,7 @@
       <id>d742226c-08dd-4153-aa48-e6f613f8c99a</id>
       <name>Leshy</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -19747,7 +19747,7 @@
       <id>74d7b139-f72f-46a1-9444-82ec38b67475</id>
       <name>Martichoras</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -19815,7 +19815,7 @@
       <id>85b76ff5-a35d-47e1-a7c0-faf28d24e792</id>
       <name>Merlin Hawk</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -19890,7 +19890,7 @@
       <id>4bb719e9-a290-4211-af9b-75b011d9421e</id>
       <name>Mimic Snake</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -19959,7 +19959,7 @@
       <id>017f48af-821b-4e99-a3be-f556899a4553</id>
       <name>Novopossum</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -20033,7 +20033,7 @@
       <id>32deb02a-893f-45ae-9f9e-57e1d6e816fc</id>
       <name>Phoenix</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -20102,7 +20102,7 @@
       <id>dec64aa9-d4c0-4c19-9c3c-0cb51f2e5d1e</id>
       <name>Piasma</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -20172,7 +20172,7 @@
       <id>fccb31e0-9c58-4434-bdac-57323ce51d2f</id>
       <name>Pixie</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -20245,7 +20245,7 @@
       <id>08f005cc-152f-4a10-acaa-da4e89683a04</id>
       <name>Pricuricu</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -20317,7 +20317,7 @@
       <id>4259cc46-6874-49de-a2bb-f9cee42002e9</id>
       <name>Tarantella</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -20392,7 +20392,7 @@
       <id>48fca22d-2c03-4a35-9412-a7531f910f82</id>
       <name>Volleying Porcupine</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -20465,7 +20465,7 @@
       <id>2ae8f1a0-a801-4bff-91b1-be7cfda4ad75</id>
       <name>Wodewose</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -20538,7 +20538,7 @@
       <id>8ee15416-29c5-43f3-a2ef-ab8db2b7622d</id>
       <name>Wolverine, Greater</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -20606,7 +20606,7 @@
       <id>dcc973b7-db4f-4f48-8170-61bdb104a3f9</id>
       <name>Wyrd Mantis</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -20685,7 +20685,7 @@
       <id>bcae204e-e162-42d1-8cf0-6a4aec5c5c42</id>
       <name>Bandit</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -20747,7 +20747,7 @@
       <id>169c2d6b-32dd-47a5-bdee-070539edafb4</id>
       <name>Blackberry Cat</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -20830,7 +20830,7 @@
       <id>003d0b2f-4fa5-4506-98c3-49235aaba6f9</id>
       <name>Demon Rat</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -20908,7 +20908,7 @@
       <id>ee0f69b3-318e-4427-8f81-185266edba1f</id>
       <name>Gabriel Hound</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -20987,7 +20987,7 @@
       <id>754ee2e6-e802-4acf-9660-d28c82483b53</id>
       <name>Gargoyle</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -21064,7 +21064,7 @@
       <id>f6d96f90-9d7d-4d56-9c5e-b943ea387192</id>
       <name>Incubus</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -21141,7 +21141,7 @@
       <id>fb7e5556-fb98-4ef2-986a-cf618cf4bf95</id>
       <name>Jauchekafer</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -21215,7 +21215,7 @@
       <id>ed42f4da-4cf5-4f8d-9d6e-8b497d472b6e</id>
       <name>Scorpyrine</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -21287,7 +21287,7 @@
       <id>5d8606b7-e4f8-47ab-b09b-fd4685e8ee21</id>
       <name>Shadow Hound</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -21361,7 +21361,7 @@
       <id>a09566c6-be24-492e-a39d-52621965124a</id>
       <name>Stormcrow</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -21433,7 +21433,7 @@
       <id>3e068d07-a730-43e6-939b-f83997362fa2</id>
       <name>Afanc</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -21507,7 +21507,7 @@
       <id>e99da2ee-d25b-4406-991d-bd66a061d101</id>
       <name>Behemoth</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -21570,7 +21570,7 @@
       <id>72fe10fb-83e8-413a-95b0-60fa6a00375f</id>
       <name>Ghede Fly</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -21648,7 +21648,7 @@
       <id>501f5634-890a-4d9c-bcd9-4b66682262b7</id>
       <name>Shambler</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -21723,7 +21723,7 @@
       <id>6330cd0c-d0aa-4942-b269-d14a765e097d</id>
       <name>Stymphalian</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -21800,7 +21800,7 @@
       <name>Ally Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -21876,7 +21876,7 @@
       <name>Spirit of Air</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-2</bodmin>
       <bodmax>F-2</bodmax>
       <bodaug>F-2</bodaug>
@@ -21965,7 +21965,7 @@
       <name>Spirit of Air, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-2</bodmin>
       <bodmax>F-2</bodmax>
       <bodaug>F-2</bodaug>
@@ -22056,7 +22056,7 @@
       <name>Spirit of Beasts</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -22142,7 +22142,7 @@
       <name>Spirit of Beasts, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -22230,7 +22230,7 @@
       <name>Spirit of Earth</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+4</bodmin>
       <bodmax>F+4</bodmax>
       <bodaug>F+4</bodaug>
@@ -22315,7 +22315,7 @@
       <name>Spirit of Earth, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+4</bodmin>
       <bodmax>F+4</bodmax>
       <bodaug>F+4</bodaug>
@@ -22402,7 +22402,7 @@
       <name>Spirit of Fire</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -22489,7 +22489,7 @@
       <name>Spirit of Fire, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -22578,7 +22578,7 @@
       <name>Spirit of Man</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -22665,7 +22665,7 @@
       <name>Spirit of Man, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -22754,7 +22754,7 @@
       <name>Spirit of Water</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -22842,7 +22842,7 @@
       <name>Spirit of Water, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -22932,7 +22932,7 @@
       <name>Watcher Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -23003,7 +23003,7 @@
       <name>Guardian Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -23092,7 +23092,7 @@
       <name>Guardian Spirit, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -23182,7 +23182,7 @@
       <name>Guidance Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -23272,7 +23272,7 @@
       <name>Guidance Spirit, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -23364,7 +23364,7 @@
       <name>Plant Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -23452,7 +23452,7 @@
       <name>Plant Spirit, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -23541,7 +23541,7 @@
       <name>Task Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -23630,7 +23630,7 @@
       <name>Task Spirit, Greater Form</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -23719,7 +23719,7 @@
       <name>Abomination Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -23807,7 +23807,7 @@
       <name>Acid Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -23893,7 +23893,7 @@
       <id>bce587d2-812e-43d6-855d-3b93cd0b4b4a</id>
       <name>Blood Dog</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -23966,7 +23966,7 @@
       <id>f5cc6626-9ba0-4377-9218-6845f6b4f36c</id>
       <name>Chalico</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -24034,7 +24034,7 @@
       <id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
       <name>Hellcow</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -24104,7 +24104,7 @@
       <id>48051ad0-a30d-4182-9d4b-32d5ee52c384</id>
       <name>Lab Rat</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -24174,7 +24174,7 @@
       <id>90629c6b-15d9-4aea-ae7e-6da8da86ca73</id>
       <name>Neogargoyle</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -24244,7 +24244,7 @@
       <id>ec7a37f2-1c72-427a-bf0a-c5aab657287c</id>
       <name>Borax Burro</name>
       <category>Toxic Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>6</bodmin>
       <bodmax>6</bodmax>
       <bodaug>6</bodaug>
@@ -24309,7 +24309,7 @@
       <id>d6fbf222-f243-475c-a23e-f95808c37d41</id>
       <name>Dakkaryne</name>
       <category>Toxic Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -24386,7 +24386,7 @@
       <id>8a7e205c-caa9-457c-9f36-24f63c521741</id>
       <name>Gamma Spider</name>
       <category>Toxic Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -24460,7 +24460,7 @@
       <id>d1a9f1a1-d526-432d-a705-bf74a0b54bea</id>
       <name>Sea Leech</name>
       <category>Toxic Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -24537,7 +24537,7 @@
       <id>835a9968-abfc-4b57-84dd-b5201f4f2541</id>
       <name>Twisted Stymphalian</name>
       <category>Toxic Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -24617,7 +24617,7 @@
       <name>Cicak</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -24697,7 +24697,7 @@
       <name>Crone</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -24786,7 +24786,7 @@
       <name>Domovoi</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -24873,7 +24873,7 @@
       <name>Frost</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -24958,7 +24958,7 @@
       <name>Kappa</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+5</bodmin>
       <bodmax>F+5</bodmax>
       <bodaug>F+5</bodaug>
@@ -25046,7 +25046,7 @@
       <name>Knocker</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+4</bodmin>
       <bodmax>F+4</bodmax>
       <bodaug>F+4</bodaug>
@@ -25131,7 +25131,7 @@
       <name>Kokopelli</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -25212,7 +25212,7 @@
       <name>Leprechaun</name>
       <category>Fey</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -25298,7 +25298,7 @@
       <id>070ffbc4-6c0f-4da5-857b-b327c09dd7e4</id>
       <name>Wild Hunt, Hound</name>
       <category>Fey</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -25386,7 +25386,7 @@
       <id>5b47e7fc-b843-429f-8043-c46daae136d0</id>
       <name>Wild Hunt, Steed</name>
       <category>Fey</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -25474,7 +25474,7 @@
       <id>d1621125-9f26-4847-bcff-003dda3b6f12</id>
       <name>Wild Hunt, Huntsman</name>
       <category>Fey</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -25564,7 +25564,7 @@
       <id>3ed2f9bd-eb9f-4ce4-b640-3dc2f0d73b3a</id>
       <name>Wild Hunt, The Great Huntsman</name>
       <category>Fey</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -25658,7 +25658,7 @@
       <name>Apparition</name>
       <category>Ghosts and Haunts</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -25732,7 +25732,7 @@
       <name>Phantom</name>
       <category>Ghosts and Haunts</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -25820,7 +25820,7 @@
       <name>Spectre</name>
       <category>Ghosts and Haunts</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -25910,7 +25910,7 @@
       <name>Grim Reaper</name>
       <category>Ghosts and Haunts</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -25999,7 +25999,7 @@
       <name>Harbinger Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -26093,7 +26093,7 @@
       <name>Harrow Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -26181,7 +26181,7 @@
       <name>Nuclear Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -26268,7 +26268,7 @@
       <name>Sludge Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -26357,7 +26357,7 @@
       <name>Carnage Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -26447,7 +26447,7 @@
       <name>Contagion Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -26535,7 +26535,7 @@
       <name>Smog Spirit</name>
       <category>Toxic Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-2</bodmin>
       <bodmax>F-2</bodmax>
       <bodaug>F-2</bodaug>
@@ -26625,7 +26625,7 @@
       <name>Caretaker Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -26710,7 +26710,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -26733,7 +26733,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -26755,7 +26755,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -26777,7 +26777,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -26799,7 +26799,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -26821,7 +26821,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -26843,7 +26843,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -26865,7 +26865,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -26888,7 +26888,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -26910,7 +26910,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -26935,7 +26935,7 @@
       <name>Nymph Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -27016,7 +27016,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -27039,7 +27039,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -27061,7 +27061,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27083,7 +27083,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -27105,7 +27105,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27127,7 +27127,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -27149,7 +27149,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -27171,7 +27171,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -27194,7 +27194,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -27216,7 +27216,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -27241,7 +27241,7 @@
       <name>Scout Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -27328,7 +27328,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -27351,7 +27351,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -27373,7 +27373,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27395,7 +27395,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -27417,7 +27417,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27439,7 +27439,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -27461,7 +27461,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -27483,7 +27483,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -27506,7 +27506,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -27528,7 +27528,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -27553,7 +27553,7 @@
       <name>Soldier Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -27639,7 +27639,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -27662,7 +27662,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -27684,7 +27684,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27706,7 +27706,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -27728,7 +27728,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -27750,7 +27750,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -27772,7 +27772,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -27794,7 +27794,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -27817,7 +27817,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -27839,7 +27839,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -27864,7 +27864,7 @@
       <name>Worker Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -27949,7 +27949,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -27972,7 +27972,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -27994,7 +27994,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -28016,7 +28016,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -28038,7 +28038,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -28060,7 +28060,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -28082,7 +28082,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -28104,7 +28104,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -28127,7 +28127,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -28149,7 +28149,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -28174,7 +28174,7 @@
       <name>Queen/Mother Spirit</name>
       <category>Insect Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+5</bodmin>
       <bodmax>F+5</bodmax>
       <bodaug>F+5</bodaug>
@@ -28266,7 +28266,7 @@
       <metavariants>
         <metavariant>
           <name>Ant</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power select="Acid">Elemental Attack</power>
             <power>Hive Mind</power>
@@ -28289,7 +28289,7 @@
         </metavariant>
         <metavariant>
           <name>Locust</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Devouring</power>
           </powers>
@@ -28311,7 +28311,7 @@
         </metavariant>
         <metavariant>
           <name>Termite</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -28333,7 +28333,7 @@
         </metavariant>
         <metavariant>
           <name>Wasp</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Venom</power>
           </powers>
@@ -28355,7 +28355,7 @@
         </metavariant>
         <metavariant>
           <name>Beetle</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Reinforcement</power>
           </powers>
@@ -28377,7 +28377,7 @@
         </metavariant>
         <metavariant>
           <name>Cicada</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Sonic Projection</power>
           </powers>
@@ -28399,7 +28399,7 @@
         </metavariant>
         <metavariant>
           <name>Firefly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Confusion</power>
           </powers>
@@ -28421,7 +28421,7 @@
         </metavariant>
         <metavariant>
           <name>Fly</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Pestilence</power>
             <power select="Disease">Immunity</power>
@@ -28444,7 +28444,7 @@
         </metavariant>
         <metavariant>
           <name>Mantid</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <powers>
             <power>Energy Drain</power>
           </powers>
@@ -28466,7 +28466,7 @@
         </metavariant>
         <metavariant>
           <name>Roach</name>
-          <bp>0</bp>
+          <karma>0</karma>
           <bonus>
             <addattribute>
               <name>MAG</name>
@@ -28491,7 +28491,7 @@
       <name>Shedim</name>
       <category>Shedim</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -28580,7 +28580,7 @@
       <name>Master Shedim</name>
       <category>Shedim</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -28675,7 +28675,7 @@
       <name>Bean Shidhe</name>
       <category>Harbingers</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -28762,7 +28762,7 @@
       <name>Brocken Bow</name>
       <category>Harbingers</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -28846,7 +28846,7 @@
       <name>Nomad</name>
       <category>Harbingers</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -28931,7 +28931,7 @@
       <name>Snatcher</name>
       <category>Harbingers</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -29010,7 +29010,7 @@
       <name>Tungak</name>
       <category>Harbingers</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -29092,7 +29092,7 @@
       <name>Imp</name>
       <category>Imps</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -29188,7 +29188,7 @@
       <name>Arboreals Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -29272,7 +29272,7 @@
       <name>Gan Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -29357,7 +29357,7 @@
       <name>Man-of-the-Woods Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -29446,7 +29446,7 @@
       <name>Silap Inua Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -29535,7 +29535,7 @@
       <name>Storm Wraith Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F-2</bodmin>
       <bodmax>F-2</bodmax>
       <bodaug>F-2</bodaug>
@@ -29625,7 +29625,7 @@
       <name>Tanglewebs Spirit</name>
       <category>Primordial Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -29712,7 +29712,7 @@
       <id>805e79e4-4a6c-4877-b764-b07566414180</id>
       <name>Eastern Dragon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>14</bodmin>
       <bodmax>14</bodmax>
       <bodaug>14</bodaug>
@@ -29805,7 +29805,7 @@
       <id>b6997b8d-b524-4d7d-a35c-8502e71fc9b6</id>
       <name>Feathered Serpent</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -29898,7 +29898,7 @@
       <id>32e18f07-76be-4832-97a1-0a03025a1bf5</id>
       <name>Leviathan</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>13</bodmin>
       <bodmax>13</bodmax>
       <bodaug>13</bodaug>
@@ -29991,7 +29991,7 @@
       <id>26781a84-eab5-4617-962b-3c1ea14e8f7c</id>
       <name>Western Dragon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>15</bodmin>
       <bodmax>15</bodmax>
       <bodaug>15</bodaug>
@@ -30084,7 +30084,7 @@
       <id>ffce461b-4cbc-47d9-afa6-370d5fa56194</id>
       <name>Great Eastern Dragon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>24</bodmin>
       <bodmax>24</bodmax>
       <bodaug>24</bodaug>
@@ -30179,7 +30179,7 @@
       <id>ef53328f-3880-4635-9c40-248901d6f985</id>
       <name>Great Feathered Serpent</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>22</bodmin>
       <bodmax>22</bodmax>
       <bodaug>22</bodaug>
@@ -30274,7 +30274,7 @@
       <id>d25b8b65-d2fa-4123-af18-b9b27372747d</id>
       <name>Great Leviathan</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>23</bodmin>
       <bodmax>23</bodmax>
       <bodaug>23</bodaug>
@@ -30369,7 +30369,7 @@
       <id>4d6b5910-3a77-4f5a-87a1-78d3350d3a4e</id>
       <name>Great Western Dragon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>25</bodmin>
       <bodmax>25</bodmax>
       <bodaug>25</bodaug>
@@ -30464,7 +30464,7 @@
       <id>61700341-49e5-43c1-8069-d98f12deee83</id>
       <name>Chimera</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -30546,7 +30546,7 @@
       <id>893b3f09-ad0f-4f87-9f0c-2a9754a0c0d1</id>
       <name>Firedrakon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -30625,7 +30625,7 @@
       <id>6bf2af6d-10d5-4851-9d52-dda40805b0cb</id>
       <name>Gorgon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -30714,7 +30714,7 @@
       <id>0990bfd7-809c-47cd-b73e-7d27c8a8598d</id>
       <name>Hydra</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -30797,7 +30797,7 @@
       <id>9a560863-3efa-4ed7-a8c1-fd80348ac50a</id>
       <name>Icedrakon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -30875,7 +30875,7 @@
       <id>69b2299e-e0f5-4879-85bb-077275b9705a</id>
       <name>Lindworm</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -30962,7 +30962,7 @@
       <id>f9c19bf8-814a-4dcb-83b1-1cabaca6c2de</id>
       <name>Elder Lindworm</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>14</bodmin>
       <bodmax>14</bodmax>
       <bodaug>14</bodaug>
@@ -31046,7 +31046,7 @@
       <id>da33c756-b759-4062-8ca5-aa8f93c8f3ea</id>
       <name>Seadrakon</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -31124,7 +31124,7 @@
       <id>156e3bb6-fd48-4e78-9599-41e8090205bc</id>
       <name>Sea Serpent</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -31209,7 +31209,7 @@
       <id>556ac176-2863-4677-a42f-4d76c615dcb7</id>
       <name>Wyvern</name>
       <category>Dracoforms</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -31295,7 +31295,7 @@
       <id>77c9b816-af11-4aa7-bc94-4c373fd147a6</id>
       <name>Abrams Lobster</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -31361,7 +31361,7 @@
       <id>4d7d75e9-85be-482e-920e-74ae64474034</id>
       <name>Alicanto</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -31438,7 +31438,7 @@
       <id>79d9abad-ea07-4391-88b5-ef8aa422d2ec</id>
       <name>Bayard</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -31511,7 +31511,7 @@
       <id>df7bf0b2-38b8-4a6e-ac1c-adadf4855f8f</id>
       <name>Blood Kite</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -31584,7 +31584,7 @@
       <id>cb44259a-8557-4314-b7a8-88dda13657ad</id>
       <name>Bulldog Stoat</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -31658,7 +31658,7 @@
       <id>b2499fdd-693a-4f94-a990-9597d8aace38</id>
       <name>Bunyip</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -31737,7 +31737,7 @@
       <id>f3e8ab81-4c1e-46b7-a77b-fecc1d96229d</id>
       <name>Burrowing Beaver</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -31810,7 +31810,7 @@
       <id>965c9634-afbf-4f6f-a25b-71bc105c597f</id>
       <name>Century Ferret</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -31879,7 +31879,7 @@
       <id>17dd1e2c-1ec0-421d-8c03-3c7f60583811</id>
       <name>Electric Marten</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -31952,7 +31952,7 @@
       <id>4298b872-2405-4afa-9535-310506fd78b2</id>
       <name>Putrimart</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -32023,7 +32023,7 @@
       <id>1730e3dc-8f3e-4d79-9f85-6669dd1bc909</id>
       <name>Ghazu Horses</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -32096,7 +32096,7 @@
       <id>d9d76ec3-eb89-414f-867f-1ea1d0774cc5</id>
       <name>Ghost Dolphin</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -32171,7 +32171,7 @@
       <id>92f2f075-b906-4af2-98cc-0a8a6c0ae22c</id>
       <name>Gyre</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -32246,7 +32246,7 @@
       <id>f2541440-ad0f-4c75-9563-69cfd75a3a8f</id>
       <name>Moon Dolphin</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -32318,7 +32318,7 @@
       <id>452b1781-be57-4aa5-b4ec-74c8c5e0a9e4</id>
       <name>Rock Lizard</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -32394,7 +32394,7 @@
       <id>7b39c4f2-8f06-49ac-a5a6-2fff4e038067</id>
       <name>Sabgarifya</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -32467,7 +32467,7 @@
       <id>073daa03-aa25-419b-af74-81621c17baad</id>
       <name>Scintillant Albatross</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -32538,7 +32538,7 @@
       <id>2eedec07-828b-437a-a3d7-e385407486e3</id>
       <name>Snow Moose</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>11</bodmin>
       <bodmax>11</bodmax>
       <bodaug>11</bodaug>
@@ -32610,7 +32610,7 @@
       <id>216eb365-e7cb-476f-9d0b-79f27f341ab9</id>
       <name>Stone Toad</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -32678,7 +32678,7 @@
       <id>132d39c8-d96a-4622-9e19-d96f2faa55ad</id>
       <name>Tachypus</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -32749,7 +32749,7 @@
       <id>443863e4-5982-48c1-9be8-1a170c6e61e0</id>
       <name>Amikuk</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -32830,7 +32830,7 @@
       <id>4b2e8640-841a-4057-8e8a-58014f313f87</id>
       <name>Echeneis</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -32903,7 +32903,7 @@
       <id>9c68b1ad-153a-4b12-a857-4b02cba19d7a</id>
       <name>Heliodromus</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -32974,7 +32974,7 @@
       <id>d502abaf-9bd7-490e-8c54-ff08b9c0497b</id>
       <name>Mongolian Death Worm</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -33049,7 +33049,7 @@
       <id>96196b25-470e-4789-81af-59a6325f30db</id>
       <name>Sea Wolf</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -33126,7 +33126,7 @@
       <id>c6815a46-d825-4707-a16a-38d9c126335f</id>
       <name>Cactus Cat</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -33201,7 +33201,7 @@
       <id>ee0ba870-2cea-48d6-b65a-ffb2c6a84922</id>
       <name>Squiddoth</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>12</bodmin>
       <bodmax>12</bodmax>
       <bodaug>12</bodaug>
@@ -33269,7 +33269,7 @@
       <id>36fcce78-3cf3-441b-9fd4-d2c401cb6b96</id>
       <name>Jackalope</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -33337,7 +33337,7 @@
       <id>40d1d78b-985e-4bc0-bcf1-2d7083a4e67c</id>
       <name>Vorpal Beaver</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -33406,7 +33406,7 @@
       <id>6a18d97e-4d31-4fd1-889a-81dbae966323</id>
       <name>Shadow Crab</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -33476,7 +33476,7 @@
       <name>Metasapient A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33553,7 +33553,7 @@
       <name>Artifaun A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33626,7 +33626,7 @@
       <name>Poltergeist A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33702,7 +33702,7 @@
       <name>Predator A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33777,7 +33777,7 @@
       <name>Archivist A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33853,7 +33853,7 @@
       <name>Assembler A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -33929,7 +33929,7 @@
       <name>Sculptor A.I.</name>
       <category>A.I.s</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34004,7 +34004,7 @@
       <name>Blight Sprite</name>
       <category>Entropic Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34083,7 +34083,7 @@
       <name>Chaos Sprite</name>
       <category>Entropic Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34162,7 +34162,7 @@
       <name>Code Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34238,7 +34238,7 @@
       <name>Contagion Sprite</name>
       <category>Entropic Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34316,7 +34316,7 @@
       <name>Courier Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34394,7 +34394,7 @@
       <name>Crack Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34469,7 +34469,7 @@
       <name>Data Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34546,7 +34546,7 @@
       <name>Fault Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34621,7 +34621,7 @@
       <name>Machine Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34696,7 +34696,7 @@
       <name>Meltdown Sprite</name>
       <category>Entropic Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34771,7 +34771,7 @@
       <name>Paladin Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34847,7 +34847,7 @@
       <name>Sleuth Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -34926,7 +34926,7 @@
       <name>Spike Sprite</name>
       <category>Entropic Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -35003,7 +35003,7 @@
       <name>Tank Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -35077,7 +35077,7 @@
       <name>Tutor Sprite</name>
       <category>Sprites</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -35152,7 +35152,7 @@
       <id>a8611e90-7ec2-4e04-bdea-2d52081fead7</id>
       <name>Bandersnatch</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -35230,7 +35230,7 @@
       <id>2c184db2-1225-4b7b-b251-fec7271de71c</id>
       <name>Banshee</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -35313,7 +35313,7 @@
       <id>9fd7dff2-53f3-4af7-b4d1-27329d9b7365</id>
       <name>Chupacabras</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -35389,7 +35389,7 @@
       <id>7a55d167-0942-4853-a63b-d2c01dbdfdf9</id>
       <name>Drop Bear</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -35454,7 +35454,7 @@
       <id>afbbdf07-5b26-4970-b968-f4f7ded991f5</id>
       <name>Dzoo-Noo-Qua</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -35537,7 +35537,7 @@
       <id>c9415a08-1766-40c4-a28b-11417a5b73a6</id>
       <name>Fomóraig</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
       <bodaug>10</bodaug>
@@ -35616,7 +35616,7 @@
       <id>73eb68ca-ff19-40fa-b6ab-c43c13ca24db</id>
       <name>Gnawer</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -35685,7 +35685,7 @@
       <id>3188a684-0680-44dc-adce-ec8481098f76</id>
       <name>Goblin</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -35765,7 +35765,7 @@
       <id>5c6b3c79-0997-44c3-b29c-c909ca4b8a26</id>
       <name>Grendel</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -35831,7 +35831,7 @@
       <id>d5940767-cdb7-44d7-a41c-733d17d60936</id>
       <name>Harvester</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -35909,7 +35909,7 @@
       <id>83b6559c-1783-4589-aa1a-50ecddec131b</id>
       <name>Loup-Garou</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -35986,7 +35986,7 @@
       <id>46079d32-9f76-4807-9268-d2d758513bb2</id>
       <name>Mutaqua</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -36075,7 +36075,7 @@
       <id>98d79172-0782-4c2d-916f-5c7c56144ee3</id>
       <name>Nosferatu</name>
       <category>Infected</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -36165,7 +36165,7 @@
       <id>f13e87d4-cd6a-4159-9e45-35cd806a99fa</id>
       <name>Meta-Badger</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -36234,7 +36234,7 @@
       <id>117dda87-c142-4a2c-a5bd-193067727276</id>
       <name>Crack-Rock</name>
       <category>Mutant Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -36303,7 +36303,7 @@
       <name>Ahi</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -36386,7 +36386,7 @@
       <name>Bastet</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -36469,7 +36469,7 @@
       <name>Digit</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -36554,7 +36554,7 @@
       <name>Flipper</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -36638,7 +36638,7 @@
       <name>Libertine</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -36720,7 +36720,7 @@
       <name>Mongrel</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -36803,7 +36803,7 @@
       <name>Nezumi</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -36886,7 +36886,7 @@
       <name>Rapscallion</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -36967,7 +36967,7 @@
       <name>Rook</name>
       <category>Technocritters</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
       <bodaug>1</bodaug>
@@ -37049,7 +37049,7 @@
       <name>Daemon</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37131,7 +37131,7 @@
       <name>Frobnitz</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37211,7 +37211,7 @@
       <name>Grue</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37293,7 +37293,7 @@
       <name>Blob</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37373,7 +37373,7 @@
       <name>Gimp</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37449,7 +37449,7 @@
       <name>Prowler</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37526,7 +37526,7 @@
       <name>SINtax</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37605,7 +37605,7 @@
       <name>Tentacle</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37686,7 +37686,7 @@
       <name>Cyberwerewolf</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37767,7 +37767,7 @@
       <name>Heap Frog</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37840,7 +37840,7 @@
       <name>Heavyweight</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37918,7 +37918,7 @@
       <name>Rogue</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -37999,7 +37999,7 @@
       <name>Cryppie</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38074,7 +38074,7 @@
       <name>Heisenbug</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38152,7 +38152,7 @@
       <name>Kitteh</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38227,7 +38227,7 @@
       <name>Netmare</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38307,7 +38307,7 @@
       <name>Yantra</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38388,7 +38388,7 @@
       <name>Green Man</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38469,7 +38469,7 @@
       <name>Money Trie</name>
       <category>Protosapients</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>0</bodmin>
       <bodmax>0</bodmax>
       <bodaug>0</bodaug>
@@ -38543,7 +38543,7 @@
       <name>Free Spirit</name>
       <category>Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -38621,7 +38621,7 @@
       <id>8958c476-e37e-4783-b6d9-54a0acfd846a</id>
       <name>Arctic Fox</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -38684,7 +38684,7 @@
       <id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
       <name>Polar Bear</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -38748,7 +38748,7 @@
       <id>10c99d1f-6125-43d0-95db-13ac9293459a</id>
       <name>Lemming</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -38811,7 +38811,7 @@
       <id>9668d1a4-880a-406b-8b51-961a32eaeb2c</id>
       <name>Snowy Owl</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -38874,7 +38874,7 @@
       <id>3bb8e8c1-74f6-486e-b0cc-d4cfd45eea2e</id>
       <name>Reindeer</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -38930,7 +38930,7 @@
       <id>871835fa-d1d3-42e8-b257-00c0113a081b</id>
       <name>Arctic Wolverine</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -38992,7 +38992,7 @@
       <id>723e21b6-fb59-452c-8a84-58927fb4d1ed</id>
       <name>Sleeper Shark</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -39053,7 +39053,7 @@
       <id>14ccfb1c-342d-4fce-b637-397308f03d03</id>
       <name>Musk Ox</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -39113,7 +39113,7 @@
       <id>dbac181d-5782-40cf-8db9-65f0bc771b2c</id>
       <name>Antarctic Hound</name>
       <category>Mundane Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -39177,7 +39177,7 @@
       <id>f8240798-3ed5-4884-8188-ba6afcc39e29</id>
       <name>Ross Seal</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>9</bodmin>
       <bodmax>9</bodmax>
       <bodaug>9</bodaug>
@@ -39244,7 +39244,7 @@
       <id>fde9e842-9a09-437d-bde9-61eaf4ccfd68</id>
       <name>Ross Seal</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -39317,7 +39317,7 @@
       <id>1598214f-42a0-472d-82bf-d9e3c3043067</id>
       <name>North Pole Reindeer</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -39381,7 +39381,7 @@
       <id>850b345e-a436-4c16-b076-2054eae852d5</id>
       <name>Ice Snake</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -39451,7 +39451,7 @@
       <id>933d85aa-783c-44c0-b3b5-12bc691be93c</id>
       <name>White Lemming</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>2</bodaug>
@@ -39522,7 +39522,7 @@
       <id>5709d57e-0ccf-4196-8ced-3fbee3a54a30</id>
       <name>Giant Snowy Owl</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>5</bodaug>
@@ -39593,7 +39593,7 @@
       <id>ea637589-585a-4554-8c72-dfe3d0b3186d</id>
       <name>Giant Wolverine</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>7</bodmin>
       <bodmax>7</bodmax>
       <bodaug>7</bodaug>
@@ -39662,7 +39662,7 @@
       <id>04da18fa-480c-4e4a-a39e-c0245b226ed2</id>
       <name>Pole Shark</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>4</bodaug>
@@ -39730,7 +39730,7 @@
       <id>b0e3790c-944f-4cc0-b257-9ec00ade4c28</id>
       <name>Pale Musk Ox</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>8</bodmin>
       <bodmax>8</bodmax>
       <bodaug>8</bodaug>
@@ -39799,7 +39799,7 @@
       <id>e7e74444-b397-4cf0-a0ce-49442aa802c2</id>
       <name>Volt Hound</name>
       <category>Paranormal Critters</category>
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>3</bodmin>
       <bodmax>3</bodmax>
       <bodaug>3</bodaug>
@@ -39872,7 +39872,7 @@
       <name>Muse</name>
       <category>Shadow Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -39956,7 +39956,7 @@
       <name>Nightmare</name>
       <category>Shadow Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -40041,7 +40041,7 @@
       <name>Shade</name>
       <category>Shadow Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -40125,7 +40125,7 @@
       <name>Succubus</name>
       <category>Shadow Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -40210,7 +40210,7 @@
       <name>Wraith</name>
       <category>Shadow Spirits</category>
       <forcecreature />
-      <bp>0</bp>
+      <karma>0</karma>
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
