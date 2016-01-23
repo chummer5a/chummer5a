@@ -16801,14 +16801,8 @@ namespace Chummer
                     strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblCMStun, strCM);
 
-				// Update the Spell Defence labels.
-				string strSpellTooltip = "";
-				lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
-				strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": AGI (" + _objCharacter.AGI.TotalValue.ToString() + " + REA (" + _objCharacter.REA.TotalValue.ToString() + ")";
-				tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
-				lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
-				strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": "+ LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.TotalArmorRating.ToString() + " + BOD (" + _objCharacter.BOD.TotalValue.ToString() + ")";
-				tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
+				UpdateSpellDefence();
+				
 				// Armor Ratings.
 				lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
                 string strArmorToolTip = "";
@@ -18356,6 +18350,140 @@ namespace Chummer
                 chkArmorBlackMarketDiscount.Checked = false;
             }
         }
+
+		private void UpdateSpellDefence()
+		{
+			// Update the Spell Defence labels.
+			string strSpellTooltip = "";
+			//Indirect Dodge
+			lblSpellDefenceIndirectDodge.Text = (_objCharacter.AGI.TotalValue + _objCharacter.REA.TotalValue).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ") + " +
+			                  LanguageManager.Instance.GetString("String_AttributeREAShort") + "(" + _objCharacter.REA.TotalValue.ToString() + ")";
+			tipTooltip.SetToolTip(lblSpellDefenceIndirectDodge, strSpellTooltip);
+			//Indirect Soak
+			lblSpellDefenceIndirectSoak.Text = (_objCharacter.TotalArmorRating + _objCharacter.BOD.TotalValue).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": "+ 
+							  LanguageManager.Instance.GetString("Tip_Armor") + " ("+ _objCharacter.TotalArmorRating.ToString()+ ") + "+ 
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " ("+ _objCharacter.BOD.TotalValue.ToString()+ ")";
+			tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
+			//Direct Soak - Mana
+			lblSpellDefenceDirectSoakMana.Text = (_objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " + 
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+			                  " + Counterspelling ("+ nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
+			//Direct Soak - Physical
+			lblSpellDefenceDirectSoakPhysical.Text = (_objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
+			//Detection Spells
+			lblSpellDefenceDetection.Text =
+				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
+			//Decrease Attribute - BOD
+			lblSpellDefenceDecAttBOD.Text =
+				(_objCharacter.BOD.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
+			//Decrease Attribute - AGI
+			lblSpellDefenceDecAttAGI.Text =
+				(_objCharacter.AGI.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeAGIShort") + " (" + _objCharacter.AGI.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
+			//Decrease Attribute - REA
+			lblSpellDefenceDecAttREA.Text =
+				(_objCharacter.REA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeREAShort") + " (" + _objCharacter.REA.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
+			//Decrease Attribute - STR
+			lblSpellDefenceDecAttSTR.Text =
+				(_objCharacter.STR.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
+			//Decrease Attribute - CHA
+			lblSpellDefenceDecAttCHA.Text =
+				(_objCharacter.CHA.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeCHAShort") + " (" + _objCharacter.CHA.TotalValue.ToString() + ")" +
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
+			//Decrease Attribute - INT
+			lblSpellDefenceDecAttINT.Text =
+				(_objCharacter.INT.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
+			//Decrease Attribute - LOG
+			lblSpellDefenceDecAttLOG.Text =
+				(_objCharacter.LOG.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
+			//Decrease Attribute - WIL
+			lblSpellDefenceDecAttWIL.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
+			//Illusion - Mana
+			lblSpellDefenceIllusionMana.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() + ")" +
+							  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceIllusionMana, strSpellTooltip);
+			//Illusion - Physical
+			lblSpellDefenceIllusionPhysical.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.WIL.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
+			                  LanguageManager.Instance.GetString("String_AttributeINTShort") + " (" + _objCharacter.INT.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceIllusionPhysical, strSpellTooltip);
+			//Manipulation - Mental
+			lblSpellDefenceManipMental.Text =
+				(_objCharacter.WIL.TotalValue + _objCharacter.LOG.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeLOGShort") + " (" + _objCharacter.LOG.TotalValue.ToString() +
+			                  LanguageManager.Instance.GetString("String_AttributeWILShort") + " (" + _objCharacter.WIL.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lblSpellDefenceManipMental, strSpellTooltip);
+			//Manipulation - Physical
+			lbllSpellDefenceManipPhysical.Text =
+				(_objCharacter.STR.TotalValue + _objCharacter.BOD.TotalValue + nudCounterspellingDice.Value).ToString();
+			strSpellTooltip = LanguageManager.Instance.GetString("Tip_Modifiers") + ": " +
+			                  LanguageManager.Instance.GetString("String_AttributeSTRShort") + " (" + _objCharacter.STR.TotalValue.ToString() + ")" + 
+							  LanguageManager.Instance.GetString("String_AttributeBODShort") + " (" + _objCharacter.BOD.TotalValue.ToString() + ")" +
+							  " + Counterspelling (" + nudCounterspellingDice.Value + ") + Spell Resistance (Not calculated currently)";
+			tipTooltip.SetToolTip(lbllSpellDefenceManipPhysical, strSpellTooltip);
+		}
 
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
@@ -26113,6 +26241,11 @@ namespace Chummer
 		{
 			if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(_objCharacter);
 			txtBackground.Text = _objStoryBuilder.GetStory();
+		}
+
+		private void nudCounterspellingDice_Changed(object sender, EventArgs e)
+		{
+			UpdateSpellDefence();
 		}
 	}
 }

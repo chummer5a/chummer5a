@@ -42,6 +42,7 @@ Application Change:
 - Fixed some calculation issues for priority metatypes not showing the correct karma value when changing from a metavariant to a base metatype. Fixes #537.
 - Fixed a crash with metavariants in Priority/Sum to Ten. Fixes #647.
 - Fixed a crash caused by weapon accessories that have a cost based on rating. Fixes #650.
+- Added spell defence calculations in a tab on the right side of the career and creation windows. Closes #573.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

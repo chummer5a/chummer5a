@@ -608,6 +608,32 @@
 			this.cmsAmmoFullBurst = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsAmmoSuppressiveFire = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabGear = new System.Windows.Forms.TabPage();
+			this.tabGearMatrixCM = new System.Windows.Forms.TabControl();
+			this.tabMatrixCM = new System.Windows.Forms.TabPage();
+			this.chkGearMatrixCM1 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM2 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM3 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM4 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM5 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM6 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM7 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM8 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM9 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM10 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM11 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM12 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM13 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM14 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM15 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM16 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM17 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM18 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM19 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM20 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM21 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM22 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM23 = new System.Windows.Forms.CheckBox();
+			this.chkGearMatrixCM24 = new System.Windows.Forms.CheckBox();
 			this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
 			this.cboGearFirewall = new System.Windows.Forms.ComboBox();
 			this.cboGearSleaze = new System.Windows.Forms.ComboBox();
@@ -1102,32 +1128,43 @@
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabMatrixCM = new System.Windows.Forms.TabPage();
-			this.chkGearMatrixCM24 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM23 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM22 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM21 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM20 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM19 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM18 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM17 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM16 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM15 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM14 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM13 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM12 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM11 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM10 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM9 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM8 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM7 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM6 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM5 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM4 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM3 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM2 = new System.Windows.Forms.CheckBox();
-			this.chkGearMatrixCM1 = new System.Windows.Forms.CheckBox();
-			this.tabGearMatrixCM = new System.Windows.Forms.TabControl();
+			this.tabDefences = new System.Windows.Forms.TabPage();
+			this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
+			this.nudCounterspellingDice = new System.Windows.Forms.NumericUpDown();
+			this.lbllSpellDefenceManipPhysical = new System.Windows.Forms.Label();
+			this.lbllSpellDefenceManipPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceManipMental = new System.Windows.Forms.Label();
+			this.lblSpellDefenceManipMentalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionPhysical = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionMana = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttWIL = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttLOG = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttINT = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttCHA = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttSTR = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttWILLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttLOGLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttINTLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttCHALabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttSTRLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttREALabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttAGILabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttREA = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttAGI = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttBOD = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDecAttBODLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDetection = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDetectionLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakPhysical = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakPhysicalLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakMana = new System.Windows.Forms.Label();
+			this.lblSpellDefenceDirectSoakManaLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectSoak = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectDodge = new System.Windows.Forms.Label();
+			this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1169,6 +1206,8 @@
 			this.cmsDeleteWeapon.SuspendLayout();
 			this.cmsAmmoExpense.SuspendLayout();
 			this.tabGear.SuspendLayout();
+			this.tabGearMatrixCM.SuspendLayout();
+			this.tabMatrixCM.SuspendLayout();
 			this.cmsGearButton.SuspendLayout();
 			this.cmsDeleteGear.SuspendLayout();
 			this.tabPets.SuspendLayout();
@@ -1238,8 +1277,8 @@
 			this.cmsLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
-			this.tabMatrixCM.SuspendLayout();
-			this.tabGearMatrixCM.SuspendLayout();
+			this.tabDefences.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -7715,6 +7754,339 @@
 			this.tabGear.Tag = "Tab_Gear";
 			this.tabGear.Text = "Gear";
 			// 
+			// tabGearMatrixCM
+			// 
+			this.tabGearMatrixCM.Controls.Add(this.tabMatrixCM);
+			this.tabGearMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
+			this.tabGearMatrixCM.Location = new System.Drawing.Point(520, 205);
+			this.tabGearMatrixCM.Name = "tabGearMatrixCM";
+			this.tabGearMatrixCM.SelectedIndex = 0;
+			this.tabGearMatrixCM.Size = new System.Drawing.Size(213, 113);
+			this.tabGearMatrixCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabGearMatrixCM.TabIndex = 203;
+			this.tabGearMatrixCM.Visible = false;
+			// 
+			// tabMatrixCM
+			// 
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM1);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM2);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM3);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM4);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM5);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM6);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM7);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM8);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM9);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM10);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM11);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM12);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM13);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM14);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM15);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM16);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM17);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM18);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM19);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM20);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM21);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM22);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM23);
+			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM24);
+			this.tabMatrixCM.Location = new System.Drawing.Point(4, 22);
+			this.tabMatrixCM.Name = "tabMatrixCM";
+			this.tabMatrixCM.Padding = new System.Windows.Forms.Padding(3);
+			this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
+			this.tabMatrixCM.TabIndex = 1;
+			this.tabMatrixCM.Text = "Matrix Condition Monitor";
+			this.tabMatrixCM.UseVisualStyleBackColor = true;
+			// 
+			// chkGearMatrixCM1
+			// 
+			this.chkGearMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM1.Location = new System.Drawing.Point(5, 6);
+			this.chkGearMatrixCM1.Name = "chkGearMatrixCM1";
+			this.chkGearMatrixCM1.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM1.TabIndex = 49;
+			this.chkGearMatrixCM1.Tag = "1";
+			this.chkGearMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM1.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM2
+			// 
+			this.chkGearMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM2.Location = new System.Drawing.Point(29, 6);
+			this.chkGearMatrixCM2.Name = "chkGearMatrixCM2";
+			this.chkGearMatrixCM2.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM2.TabIndex = 50;
+			this.chkGearMatrixCM2.Tag = "2";
+			this.chkGearMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM2.UseVisualStyleBackColor = true;
+			// 
+			// chkGearMatrixCM3
+			// 
+			this.chkGearMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM3.Location = new System.Drawing.Point(53, 6);
+			this.chkGearMatrixCM3.Name = "chkGearMatrixCM3";
+			this.chkGearMatrixCM3.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM3.TabIndex = 51;
+			this.chkGearMatrixCM3.Tag = "3";
+			this.chkGearMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM3.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM3.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM4
+			// 
+			this.chkGearMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM4.Location = new System.Drawing.Point(77, 6);
+			this.chkGearMatrixCM4.Name = "chkGearMatrixCM4";
+			this.chkGearMatrixCM4.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM4.TabIndex = 52;
+			this.chkGearMatrixCM4.Tag = "4";
+			this.chkGearMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM4.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM4.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM5
+			// 
+			this.chkGearMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM5.Location = new System.Drawing.Point(101, 6);
+			this.chkGearMatrixCM5.Name = "chkGearMatrixCM5";
+			this.chkGearMatrixCM5.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM5.TabIndex = 53;
+			this.chkGearMatrixCM5.Tag = "5";
+			this.chkGearMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM5.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM5.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM6
+			// 
+			this.chkGearMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM6.Location = new System.Drawing.Point(125, 6);
+			this.chkGearMatrixCM6.Name = "chkGearMatrixCM6";
+			this.chkGearMatrixCM6.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM6.TabIndex = 54;
+			this.chkGearMatrixCM6.Tag = "6";
+			this.chkGearMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM6.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM6.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM7
+			// 
+			this.chkGearMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM7.Location = new System.Drawing.Point(149, 6);
+			this.chkGearMatrixCM7.Name = "chkGearMatrixCM7";
+			this.chkGearMatrixCM7.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM7.TabIndex = 55;
+			this.chkGearMatrixCM7.Tag = "7";
+			this.chkGearMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM7.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM7.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM8
+			// 
+			this.chkGearMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM8.Location = new System.Drawing.Point(173, 6);
+			this.chkGearMatrixCM8.Name = "chkGearMatrixCM8";
+			this.chkGearMatrixCM8.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM8.TabIndex = 56;
+			this.chkGearMatrixCM8.Tag = "8";
+			this.chkGearMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM8.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM8.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM9
+			// 
+			this.chkGearMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM9.Location = new System.Drawing.Point(5, 31);
+			this.chkGearMatrixCM9.Name = "chkGearMatrixCM9";
+			this.chkGearMatrixCM9.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM9.TabIndex = 57;
+			this.chkGearMatrixCM9.Tag = "9";
+			this.chkGearMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM9.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM9.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM10
+			// 
+			this.chkGearMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM10.Location = new System.Drawing.Point(29, 31);
+			this.chkGearMatrixCM10.Name = "chkGearMatrixCM10";
+			this.chkGearMatrixCM10.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM10.TabIndex = 58;
+			this.chkGearMatrixCM10.Tag = "10";
+			this.chkGearMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM10.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM10.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM11
+			// 
+			this.chkGearMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM11.Location = new System.Drawing.Point(53, 31);
+			this.chkGearMatrixCM11.Name = "chkGearMatrixCM11";
+			this.chkGearMatrixCM11.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM11.TabIndex = 59;
+			this.chkGearMatrixCM11.Tag = "11";
+			this.chkGearMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM11.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM11.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM12
+			// 
+			this.chkGearMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM12.Location = new System.Drawing.Point(77, 31);
+			this.chkGearMatrixCM12.Name = "chkGearMatrixCM12";
+			this.chkGearMatrixCM12.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM12.TabIndex = 60;
+			this.chkGearMatrixCM12.Tag = "12";
+			this.chkGearMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM12.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM12.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM13
+			// 
+			this.chkGearMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM13.Location = new System.Drawing.Point(101, 31);
+			this.chkGearMatrixCM13.Name = "chkGearMatrixCM13";
+			this.chkGearMatrixCM13.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM13.TabIndex = 63;
+			this.chkGearMatrixCM13.Tag = "13";
+			this.chkGearMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM13.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM13.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM14
+			// 
+			this.chkGearMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM14.Location = new System.Drawing.Point(125, 31);
+			this.chkGearMatrixCM14.Name = "chkGearMatrixCM14";
+			this.chkGearMatrixCM14.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM14.TabIndex = 64;
+			this.chkGearMatrixCM14.Tag = "14";
+			this.chkGearMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM14.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM14.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM15
+			// 
+			this.chkGearMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM15.Location = new System.Drawing.Point(149, 31);
+			this.chkGearMatrixCM15.Name = "chkGearMatrixCM15";
+			this.chkGearMatrixCM15.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM15.TabIndex = 65;
+			this.chkGearMatrixCM15.Tag = "15";
+			this.chkGearMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM15.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM15.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM16
+			// 
+			this.chkGearMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM16.Location = new System.Drawing.Point(173, 31);
+			this.chkGearMatrixCM16.Name = "chkGearMatrixCM16";
+			this.chkGearMatrixCM16.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM16.TabIndex = 66;
+			this.chkGearMatrixCM16.Tag = "16";
+			this.chkGearMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM16.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM16.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM17
+			// 
+			this.chkGearMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM17.Location = new System.Drawing.Point(5, 57);
+			this.chkGearMatrixCM17.Name = "chkGearMatrixCM17";
+			this.chkGearMatrixCM17.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM17.TabIndex = 67;
+			this.chkGearMatrixCM17.Tag = "17";
+			this.chkGearMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM17.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM17.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM18
+			// 
+			this.chkGearMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM18.Location = new System.Drawing.Point(29, 57);
+			this.chkGearMatrixCM18.Name = "chkGearMatrixCM18";
+			this.chkGearMatrixCM18.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM18.TabIndex = 68;
+			this.chkGearMatrixCM18.Tag = "18";
+			this.chkGearMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM18.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM18.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM19
+			// 
+			this.chkGearMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM19.Location = new System.Drawing.Point(53, 57);
+			this.chkGearMatrixCM19.Name = "chkGearMatrixCM19";
+			this.chkGearMatrixCM19.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM19.TabIndex = 69;
+			this.chkGearMatrixCM19.Tag = "19";
+			this.chkGearMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM19.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM19.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM20
+			// 
+			this.chkGearMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM20.Location = new System.Drawing.Point(77, 57);
+			this.chkGearMatrixCM20.Name = "chkGearMatrixCM20";
+			this.chkGearMatrixCM20.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM20.TabIndex = 70;
+			this.chkGearMatrixCM20.Tag = "20";
+			this.chkGearMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM20.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM20.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM21
+			// 
+			this.chkGearMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM21.Location = new System.Drawing.Point(101, 57);
+			this.chkGearMatrixCM21.Name = "chkGearMatrixCM21";
+			this.chkGearMatrixCM21.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM21.TabIndex = 71;
+			this.chkGearMatrixCM21.Tag = "21";
+			this.chkGearMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM21.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM21.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM22
+			// 
+			this.chkGearMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM22.Location = new System.Drawing.Point(125, 57);
+			this.chkGearMatrixCM22.Name = "chkGearMatrixCM22";
+			this.chkGearMatrixCM22.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM22.TabIndex = 72;
+			this.chkGearMatrixCM22.Tag = "22";
+			this.chkGearMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM22.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM22.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM23
+			// 
+			this.chkGearMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM23.Location = new System.Drawing.Point(149, 57);
+			this.chkGearMatrixCM23.Name = "chkGearMatrixCM23";
+			this.chkGearMatrixCM23.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM23.TabIndex = 73;
+			this.chkGearMatrixCM23.Tag = "23";
+			this.chkGearMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM23.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM23.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
+			// chkGearMatrixCM24
+			// 
+			this.chkGearMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+			this.chkGearMatrixCM24.Location = new System.Drawing.Point(173, 57);
+			this.chkGearMatrixCM24.Name = "chkGearMatrixCM24";
+			this.chkGearMatrixCM24.Size = new System.Drawing.Size(24, 24);
+			this.chkGearMatrixCM24.TabIndex = 74;
+			this.chkGearMatrixCM24.Tag = "24";
+			this.chkGearMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.chkGearMatrixCM24.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM24.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			// 
 			// cboGearDataProcessing
 			// 
 			this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -11841,6 +12213,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabInfo.Controls.Add(this.tabOtherInfo);
 			this.tabInfo.Controls.Add(this.tabConditionMonitor);
+			this.tabInfo.Controls.Add(this.tabDefences);
 			this.tabInfo.Location = new System.Drawing.Point(0, 0);
 			this.tabInfo.Name = "tabInfo";
 			this.tabInfo.SelectedIndex = 0;
@@ -13184,339 +13557,411 @@
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// tabMatrixCM
+			// tabDefences
 			// 
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM1);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM2);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM3);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM4);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM5);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM6);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM7);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM8);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM9);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM10);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM11);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM12);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM13);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM14);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM15);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM16);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM17);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM18);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM19);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM20);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM21);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM22);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM23);
-			this.tabMatrixCM.Controls.Add(this.chkGearMatrixCM24);
-			this.tabMatrixCM.Location = new System.Drawing.Point(4, 22);
-			this.tabMatrixCM.Name = "tabMatrixCM";
-			this.tabMatrixCM.Padding = new System.Windows.Forms.Padding(3);
-			this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
-			this.tabMatrixCM.TabIndex = 1;
-			this.tabMatrixCM.Text = "Matrix Condition Monitor";
-			this.tabMatrixCM.UseVisualStyleBackColor = true;
+			this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
+			this.tabDefences.Controls.Add(this.lblCounterspellingDiceLabel);
+			this.tabDefences.Controls.Add(this.nudCounterspellingDice);
+			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysical);
+			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMental);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMentalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysical);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionMana);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionManaLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWIL);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOG);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINT);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHA);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTR);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWILLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOGLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINTLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHALabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTRLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREALabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGILabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREA);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGI);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBOD);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBODLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDetection);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDetectionLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysical);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakMana);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoak);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoakLabel);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodge);
+			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel);
+			this.tabDefences.Location = new System.Drawing.Point(4, 22);
+			this.tabDefences.Name = "tabDefences";
+			this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
+			this.tabDefences.Size = new System.Drawing.Size(179, 611);
+			this.tabDefences.TabIndex = 4;
+			this.tabDefences.Text = "Spell Defence";
 			// 
-			// chkGearMatrixCM24
+			// lblCounterspellingDiceLabel
 			// 
-			this.chkGearMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM24.Location = new System.Drawing.Point(173, 57);
-			this.chkGearMatrixCM24.Name = "chkGearMatrixCM24";
-			this.chkGearMatrixCM24.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM24.TabIndex = 74;
-			this.chkGearMatrixCM24.Tag = "24";
-			this.chkGearMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM24.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM24.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblCounterspellingDiceLabel.AutoSize = true;
+			this.lblCounterspellingDiceLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCounterspellingDiceLabel.Location = new System.Drawing.Point(3, 11);
+			this.lblCounterspellingDiceLabel.Name = "lblCounterspellingDiceLabel";
+			this.lblCounterspellingDiceLabel.Size = new System.Drawing.Size(124, 13);
+			this.lblCounterspellingDiceLabel.TabIndex = 62;
+			this.lblCounterspellingDiceLabel.Tag = "Label_CounterspellingDice";
+			this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
+			this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM23
+			// nudCounterspellingDice
 			// 
-			this.chkGearMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM23.Location = new System.Drawing.Point(149, 57);
-			this.chkGearMatrixCM23.Name = "chkGearMatrixCM23";
-			this.chkGearMatrixCM23.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM23.TabIndex = 73;
-			this.chkGearMatrixCM23.Tag = "23";
-			this.chkGearMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM23.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM23.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.nudCounterspellingDice.Location = new System.Drawing.Point(133, 9);
+			this.nudCounterspellingDice.Name = "nudCounterspellingDice";
+			this.nudCounterspellingDice.Size = new System.Drawing.Size(40, 20);
+			this.nudCounterspellingDice.TabIndex = 61;
+			this.nudCounterspellingDice.ValueChanged += new System.EventHandler(this.nudCounterspellingDice_Changed);
 			// 
-			// chkGearMatrixCM22
+			// lbllSpellDefenceManipPhysical
 			// 
-			this.chkGearMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM22.Location = new System.Drawing.Point(125, 57);
-			this.chkGearMatrixCM22.Name = "chkGearMatrixCM22";
-			this.chkGearMatrixCM22.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM22.TabIndex = 72;
-			this.chkGearMatrixCM22.Tag = "22";
-			this.chkGearMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM22.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM22.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lbllSpellDefenceManipPhysical.AutoSize = true;
+			this.lbllSpellDefenceManipPhysical.Location = new System.Drawing.Point(160, 352);
+			this.lbllSpellDefenceManipPhysical.Name = "lbllSpellDefenceManipPhysical";
+			this.lbllSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lbllSpellDefenceManipPhysical.TabIndex = 60;
+			this.lbllSpellDefenceManipPhysical.Text = "0";
 			// 
-			// chkGearMatrixCM21
+			// lbllSpellDefenceManipPhysicalLabel
 			// 
-			this.chkGearMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM21.Location = new System.Drawing.Point(101, 57);
-			this.chkGearMatrixCM21.Name = "chkGearMatrixCM21";
-			this.chkGearMatrixCM21.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM21.TabIndex = 71;
-			this.chkGearMatrixCM21.Tag = "21";
-			this.chkGearMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM21.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM21.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lbllSpellDefenceManipPhysicalLabel.AutoSize = true;
+			this.lbllSpellDefenceManipPhysicalLabel.Location = new System.Drawing.Point(3, 351);
+			this.lbllSpellDefenceManipPhysicalLabel.Name = "lbllSpellDefenceManipPhysicalLabel";
+			this.lbllSpellDefenceManipPhysicalLabel.Size = new System.Drawing.Size(115, 13);
+			this.lbllSpellDefenceManipPhysicalLabel.TabIndex = 59;
+			this.lbllSpellDefenceManipPhysicalLabel.Tag = "Label_SpellDefenceManipPhysical";
+			this.lbllSpellDefenceManipPhysicalLabel.Text = "Manipulation - Physical";
+			this.tipTooltip.SetToolTip(this.lbllSpellDefenceManipPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM20
+			// lblSpellDefenceManipMental
 			// 
-			this.chkGearMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM20.Location = new System.Drawing.Point(77, 57);
-			this.chkGearMatrixCM20.Name = "chkGearMatrixCM20";
-			this.chkGearMatrixCM20.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM20.TabIndex = 70;
-			this.chkGearMatrixCM20.Tag = "20";
-			this.chkGearMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM20.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM20.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceManipMental.AutoSize = true;
+			this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(160, 332);
+			this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
+			this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceManipMental.TabIndex = 58;
+			this.lblSpellDefenceManipMental.Text = "0";
 			// 
-			// chkGearMatrixCM19
+			// lblSpellDefenceManipMentalLabel
 			// 
-			this.chkGearMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM19.Location = new System.Drawing.Point(53, 57);
-			this.chkGearMatrixCM19.Name = "chkGearMatrixCM19";
-			this.chkGearMatrixCM19.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM19.TabIndex = 69;
-			this.chkGearMatrixCM19.Tag = "19";
-			this.chkGearMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM19.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM19.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceManipMentalLabel.AutoSize = true;
+			this.lblSpellDefenceManipMentalLabel.Location = new System.Drawing.Point(3, 331);
+			this.lblSpellDefenceManipMentalLabel.Name = "lblSpellDefenceManipMentalLabel";
+			this.lblSpellDefenceManipMentalLabel.Size = new System.Drawing.Size(108, 13);
+			this.lblSpellDefenceManipMentalLabel.TabIndex = 57;
+			this.lblSpellDefenceManipMentalLabel.Tag = "Label_SpellDefenceManipMental";
+			this.lblSpellDefenceManipMentalLabel.Text = "Manipulation - Mental";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceManipMentalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM18
+			// lblSpellDefenceIllusionPhysical
 			// 
-			this.chkGearMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM18.Location = new System.Drawing.Point(29, 57);
-			this.chkGearMatrixCM18.Name = "chkGearMatrixCM18";
-			this.chkGearMatrixCM18.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM18.TabIndex = 68;
-			this.chkGearMatrixCM18.Tag = "18";
-			this.chkGearMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM18.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM18.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceIllusionPhysical.AutoSize = true;
+			this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(160, 312);
+			this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
+			this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
+			this.lblSpellDefenceIllusionPhysical.Text = "0";
 			// 
-			// chkGearMatrixCM17
+			// lblSpellDefenceIllusionPhysicalLabel
 			// 
-			this.chkGearMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM17.Location = new System.Drawing.Point(5, 57);
-			this.chkGearMatrixCM17.Name = "chkGearMatrixCM17";
-			this.chkGearMatrixCM17.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM17.TabIndex = 67;
-			this.chkGearMatrixCM17.Tag = "17";
-			this.chkGearMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM17.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM17.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceIllusionPhysicalLabel.AutoSize = true;
+			this.lblSpellDefenceIllusionPhysicalLabel.Location = new System.Drawing.Point(3, 311);
+			this.lblSpellDefenceIllusionPhysicalLabel.Name = "lblSpellDefenceIllusionPhysicalLabel";
+			this.lblSpellDefenceIllusionPhysicalLabel.Size = new System.Drawing.Size(87, 13);
+			this.lblSpellDefenceIllusionPhysicalLabel.TabIndex = 55;
+			this.lblSpellDefenceIllusionPhysicalLabel.Tag = "Label_SpellDefenceIllusionPhysical";
+			this.lblSpellDefenceIllusionPhysicalLabel.Text = "Illusion - Physical";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM16
+			// lblSpellDefenceIllusionMana
 			// 
-			this.chkGearMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM16.Location = new System.Drawing.Point(173, 31);
-			this.chkGearMatrixCM16.Name = "chkGearMatrixCM16";
-			this.chkGearMatrixCM16.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM16.TabIndex = 66;
-			this.chkGearMatrixCM16.Tag = "16";
-			this.chkGearMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM16.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM16.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceIllusionMana.AutoSize = true;
+			this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(160, 292);
+			this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
+			this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIllusionMana.TabIndex = 54;
+			this.lblSpellDefenceIllusionMana.Text = "0";
 			// 
-			// chkGearMatrixCM15
+			// lblSpellDefenceIllusionManaLabel
 			// 
-			this.chkGearMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM15.Location = new System.Drawing.Point(149, 31);
-			this.chkGearMatrixCM15.Name = "chkGearMatrixCM15";
-			this.chkGearMatrixCM15.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM15.TabIndex = 65;
-			this.chkGearMatrixCM15.Tag = "15";
-			this.chkGearMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM15.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM15.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceIllusionManaLabel.AutoSize = true;
+			this.lblSpellDefenceIllusionManaLabel.Location = new System.Drawing.Point(3, 291);
+			this.lblSpellDefenceIllusionManaLabel.Name = "lblSpellDefenceIllusionManaLabel";
+			this.lblSpellDefenceIllusionManaLabel.Size = new System.Drawing.Size(75, 13);
+			this.lblSpellDefenceIllusionManaLabel.TabIndex = 53;
+			this.lblSpellDefenceIllusionManaLabel.Tag = "Label_SpellDefenceIllusionMana";
+			this.lblSpellDefenceIllusionManaLabel.Text = "Illusion - Mana";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIllusionManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM14
+			// lblSpellDefenceDecAttWIL
 			// 
-			this.chkGearMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM14.Location = new System.Drawing.Point(125, 31);
-			this.chkGearMatrixCM14.Name = "chkGearMatrixCM14";
-			this.chkGearMatrixCM14.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM14.TabIndex = 64;
-			this.chkGearMatrixCM14.Tag = "14";
-			this.chkGearMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM14.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM14.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttWIL.AutoSize = true;
+			this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(160, 272);
+			this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
+			this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttWIL.TabIndex = 52;
+			this.lblSpellDefenceDecAttWIL.Text = "0";
 			// 
-			// chkGearMatrixCM13
+			// lblSpellDefenceDecAttLOG
 			// 
-			this.chkGearMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM13.Location = new System.Drawing.Point(101, 31);
-			this.chkGearMatrixCM13.Name = "chkGearMatrixCM13";
-			this.chkGearMatrixCM13.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM13.TabIndex = 63;
-			this.chkGearMatrixCM13.Tag = "13";
-			this.chkGearMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM13.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM13.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttLOG.AutoSize = true;
+			this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(160, 252);
+			this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
+			this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttLOG.TabIndex = 51;
+			this.lblSpellDefenceDecAttLOG.Text = "0";
 			// 
-			// chkGearMatrixCM12
+			// lblSpellDefenceDecAttINT
 			// 
-			this.chkGearMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM12.Location = new System.Drawing.Point(77, 31);
-			this.chkGearMatrixCM12.Name = "chkGearMatrixCM12";
-			this.chkGearMatrixCM12.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM12.TabIndex = 60;
-			this.chkGearMatrixCM12.Tag = "12";
-			this.chkGearMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM12.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM12.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttINT.AutoSize = true;
+			this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(160, 232);
+			this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
+			this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttINT.TabIndex = 50;
+			this.lblSpellDefenceDecAttINT.Text = "0";
 			// 
-			// chkGearMatrixCM11
+			// lblSpellDefenceDecAttCHA
 			// 
-			this.chkGearMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM11.Location = new System.Drawing.Point(53, 31);
-			this.chkGearMatrixCM11.Name = "chkGearMatrixCM11";
-			this.chkGearMatrixCM11.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM11.TabIndex = 59;
-			this.chkGearMatrixCM11.Tag = "11";
-			this.chkGearMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM11.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM11.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttCHA.AutoSize = true;
+			this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(160, 212);
+			this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
+			this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttCHA.TabIndex = 49;
+			this.lblSpellDefenceDecAttCHA.Text = "0";
 			// 
-			// chkGearMatrixCM10
+			// lblSpellDefenceDecAttSTR
 			// 
-			this.chkGearMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM10.Location = new System.Drawing.Point(29, 31);
-			this.chkGearMatrixCM10.Name = "chkGearMatrixCM10";
-			this.chkGearMatrixCM10.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM10.TabIndex = 58;
-			this.chkGearMatrixCM10.Tag = "10";
-			this.chkGearMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM10.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM10.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttSTR.AutoSize = true;
+			this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(160, 192);
+			this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
+			this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttSTR.TabIndex = 48;
+			this.lblSpellDefenceDecAttSTR.Text = "0";
 			// 
-			// chkGearMatrixCM9
+			// lblSpellDefenceDecAttWILLabel
 			// 
-			this.chkGearMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM9.Location = new System.Drawing.Point(5, 31);
-			this.chkGearMatrixCM9.Name = "chkGearMatrixCM9";
-			this.chkGearMatrixCM9.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM9.TabIndex = 57;
-			this.chkGearMatrixCM9.Tag = "9";
-			this.chkGearMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM9.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM9.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttWILLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttWILLabel.Location = new System.Drawing.Point(3, 272);
+			this.lblSpellDefenceDecAttWILLabel.Name = "lblSpellDefenceDecAttWILLabel";
+			this.lblSpellDefenceDecAttWILLabel.Size = new System.Drawing.Size(124, 13);
+			this.lblSpellDefenceDecAttWILLabel.TabIndex = 47;
+			this.lblSpellDefenceDecAttWILLabel.Tag = "Label_SpellDefenceDecAttWIL";
+			this.lblSpellDefenceDecAttWILLabel.Text = "Decrease Attribute (WIL)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttWILLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM8
+			// lblSpellDefenceDecAttLOGLabel
 			// 
-			this.chkGearMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM8.Location = new System.Drawing.Point(173, 6);
-			this.chkGearMatrixCM8.Name = "chkGearMatrixCM8";
-			this.chkGearMatrixCM8.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM8.TabIndex = 56;
-			this.chkGearMatrixCM8.Tag = "8";
-			this.chkGearMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM8.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM8.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttLOGLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttLOGLabel.Location = new System.Drawing.Point(3, 252);
+			this.lblSpellDefenceDecAttLOGLabel.Name = "lblSpellDefenceDecAttLOGLabel";
+			this.lblSpellDefenceDecAttLOGLabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttLOGLabel.TabIndex = 46;
+			this.lblSpellDefenceDecAttLOGLabel.Tag = "Label_SpellDefenceDecAttLOG";
+			this.lblSpellDefenceDecAttLOGLabel.Text = "Decrease Attribute (LOG)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttLOGLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM7
+			// lblSpellDefenceDecAttINTLabel
 			// 
-			this.chkGearMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM7.Location = new System.Drawing.Point(149, 6);
-			this.chkGearMatrixCM7.Name = "chkGearMatrixCM7";
-			this.chkGearMatrixCM7.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM7.TabIndex = 55;
-			this.chkGearMatrixCM7.Tag = "7";
-			this.chkGearMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM7.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM7.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttINTLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttINTLabel.Location = new System.Drawing.Point(3, 232);
+			this.lblSpellDefenceDecAttINTLabel.Name = "lblSpellDefenceDecAttINTLabel";
+			this.lblSpellDefenceDecAttINTLabel.Size = new System.Drawing.Size(122, 13);
+			this.lblSpellDefenceDecAttINTLabel.TabIndex = 45;
+			this.lblSpellDefenceDecAttINTLabel.Tag = "Label_SpellDefenceDecAttINT";
+			this.lblSpellDefenceDecAttINTLabel.Text = "Decrease Attribute (INT)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttINTLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM6
+			// lblSpellDefenceDecAttCHALabel
 			// 
-			this.chkGearMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM6.Location = new System.Drawing.Point(125, 6);
-			this.chkGearMatrixCM6.Name = "chkGearMatrixCM6";
-			this.chkGearMatrixCM6.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM6.TabIndex = 54;
-			this.chkGearMatrixCM6.Tag = "6";
-			this.chkGearMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM6.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM6.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttCHALabel.AutoSize = true;
+			this.lblSpellDefenceDecAttCHALabel.Location = new System.Drawing.Point(3, 212);
+			this.lblSpellDefenceDecAttCHALabel.Name = "lblSpellDefenceDecAttCHALabel";
+			this.lblSpellDefenceDecAttCHALabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttCHALabel.TabIndex = 44;
+			this.lblSpellDefenceDecAttCHALabel.Tag = "Label_SpellDefenceDecAttCHA";
+			this.lblSpellDefenceDecAttCHALabel.Text = "Decrease Attribute (CHA)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttCHALabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM5
+			// lblSpellDefenceDecAttSTRLabel
 			// 
-			this.chkGearMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM5.Location = new System.Drawing.Point(101, 6);
-			this.chkGearMatrixCM5.Name = "chkGearMatrixCM5";
-			this.chkGearMatrixCM5.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM5.TabIndex = 53;
-			this.chkGearMatrixCM5.Tag = "5";
-			this.chkGearMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM5.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM5.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttSTRLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttSTRLabel.Location = new System.Drawing.Point(3, 192);
+			this.lblSpellDefenceDecAttSTRLabel.Name = "lblSpellDefenceDecAttSTRLabel";
+			this.lblSpellDefenceDecAttSTRLabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttSTRLabel.TabIndex = 43;
+			this.lblSpellDefenceDecAttSTRLabel.Tag = "Label_SpellDefenceDecAttSTR";
+			this.lblSpellDefenceDecAttSTRLabel.Text = "Decrease Attribute (STR)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttSTRLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM4
+			// lblSpellDefenceDecAttREALabel
 			// 
-			this.chkGearMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM4.Location = new System.Drawing.Point(77, 6);
-			this.chkGearMatrixCM4.Name = "chkGearMatrixCM4";
-			this.chkGearMatrixCM4.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM4.TabIndex = 52;
-			this.chkGearMatrixCM4.Tag = "4";
-			this.chkGearMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM4.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM4.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttREALabel.AutoSize = true;
+			this.lblSpellDefenceDecAttREALabel.Location = new System.Drawing.Point(3, 172);
+			this.lblSpellDefenceDecAttREALabel.Name = "lblSpellDefenceDecAttREALabel";
+			this.lblSpellDefenceDecAttREALabel.Size = new System.Drawing.Size(126, 13);
+			this.lblSpellDefenceDecAttREALabel.TabIndex = 42;
+			this.lblSpellDefenceDecAttREALabel.Tag = "Label_SpellDefenceDecAttREA";
+			this.lblSpellDefenceDecAttREALabel.Text = "Decrease Attribute (REA)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttREALabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM3
+			// lblSpellDefenceDecAttAGILabel
 			// 
-			this.chkGearMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM3.Location = new System.Drawing.Point(53, 6);
-			this.chkGearMatrixCM3.Name = "chkGearMatrixCM3";
-			this.chkGearMatrixCM3.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM3.TabIndex = 51;
-			this.chkGearMatrixCM3.Tag = "3";
-			this.chkGearMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM3.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM3.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttAGILabel.AutoSize = true;
+			this.lblSpellDefenceDecAttAGILabel.Location = new System.Drawing.Point(3, 152);
+			this.lblSpellDefenceDecAttAGILabel.Name = "lblSpellDefenceDecAttAGILabel";
+			this.lblSpellDefenceDecAttAGILabel.Size = new System.Drawing.Size(122, 13);
+			this.lblSpellDefenceDecAttAGILabel.TabIndex = 41;
+			this.lblSpellDefenceDecAttAGILabel.Tag = "Label_SpellDefenceDecAttAGI";
+			this.lblSpellDefenceDecAttAGILabel.Text = "Decrease Attribute (AGI)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttAGILabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
-			// chkGearMatrixCM2
+			// lblSpellDefenceDecAttREA
 			// 
-			this.chkGearMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM2.Location = new System.Drawing.Point(29, 6);
-			this.chkGearMatrixCM2.Name = "chkGearMatrixCM2";
-			this.chkGearMatrixCM2.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM2.TabIndex = 50;
-			this.chkGearMatrixCM2.Tag = "2";
-			this.chkGearMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM2.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttREA.AutoSize = true;
+			this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(160, 172);
+			this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
+			this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttREA.TabIndex = 40;
+			this.lblSpellDefenceDecAttREA.Text = "0";
 			// 
-			// chkGearMatrixCM1
+			// lblSpellDefenceDecAttAGI
 			// 
-			this.chkGearMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
-			this.chkGearMatrixCM1.Location = new System.Drawing.Point(5, 6);
-			this.chkGearMatrixCM1.Name = "chkGearMatrixCM1";
-			this.chkGearMatrixCM1.Size = new System.Drawing.Size(24, 24);
-			this.chkGearMatrixCM1.TabIndex = 49;
-			this.chkGearMatrixCM1.Tag = "1";
-			this.chkGearMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.chkGearMatrixCM1.UseVisualStyleBackColor = true;
-			this.chkGearMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+			this.lblSpellDefenceDecAttAGI.AutoSize = true;
+			this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(160, 152);
+			this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
+			this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttAGI.TabIndex = 38;
+			this.lblSpellDefenceDecAttAGI.Text = "0";
 			// 
-			// tabGearMatrixCM
+			// lblSpellDefenceDecAttBOD
 			// 
-			this.tabGearMatrixCM.Controls.Add(this.tabMatrixCM);
-			this.tabGearMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
-			this.tabGearMatrixCM.Location = new System.Drawing.Point(520, 205);
-			this.tabGearMatrixCM.Name = "tabGearMatrixCM";
-			this.tabGearMatrixCM.SelectedIndex = 0;
-			this.tabGearMatrixCM.Size = new System.Drawing.Size(213, 113);
-			this.tabGearMatrixCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabGearMatrixCM.TabIndex = 203;
-			this.tabGearMatrixCM.Visible = false;
+			this.lblSpellDefenceDecAttBOD.AutoSize = true;
+			this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(160, 132);
+			this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
+			this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDecAttBOD.TabIndex = 36;
+			this.lblSpellDefenceDecAttBOD.Text = "0";
+			// 
+			// lblSpellDefenceDecAttBODLabel
+			// 
+			this.lblSpellDefenceDecAttBODLabel.AutoSize = true;
+			this.lblSpellDefenceDecAttBODLabel.Location = new System.Drawing.Point(3, 132);
+			this.lblSpellDefenceDecAttBODLabel.Name = "lblSpellDefenceDecAttBODLabel";
+			this.lblSpellDefenceDecAttBODLabel.Size = new System.Drawing.Size(127, 13);
+			this.lblSpellDefenceDecAttBODLabel.TabIndex = 35;
+			this.lblSpellDefenceDecAttBODLabel.Tag = "Label_SpellDefenceDecAttBOD";
+			this.lblSpellDefenceDecAttBODLabel.Text = "Decrease Attribute (BOD)";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDecAttBODLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDetection
+			// 
+			this.lblSpellDefenceDetection.AutoSize = true;
+			this.lblSpellDefenceDetection.Location = new System.Drawing.Point(160, 112);
+			this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
+			this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDetection.TabIndex = 34;
+			this.lblSpellDefenceDetection.Text = "0";
+			// 
+			// lblSpellDefenceDetectionLabel
+			// 
+			this.lblSpellDefenceDetectionLabel.AutoSize = true;
+			this.lblSpellDefenceDetectionLabel.Location = new System.Drawing.Point(3, 112);
+			this.lblSpellDefenceDetectionLabel.Name = "lblSpellDefenceDetectionLabel";
+			this.lblSpellDefenceDetectionLabel.Size = new System.Drawing.Size(84, 13);
+			this.lblSpellDefenceDetectionLabel.TabIndex = 33;
+			this.lblSpellDefenceDetectionLabel.Tag = "Label_SpellDefenceDetection";
+			this.lblSpellDefenceDetectionLabel.Text = "Detection Spells";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDetectionLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDirectSoakPhysical
+			// 
+			this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
+			this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(160, 92);
+			this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
+			this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
+			this.lblSpellDefenceDirectSoakPhysical.Text = "0";
+			// 
+			// lblSpellDefenceDirectSoakPhysicalLabel
+			// 
+			this.lblSpellDefenceDirectSoakPhysicalLabel.AutoSize = true;
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Location = new System.Drawing.Point(3, 92);
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Name = "lblSpellDefenceDirectSoakPhysicalLabel";
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Size = new System.Drawing.Size(111, 13);
+			this.lblSpellDefenceDirectSoakPhysicalLabel.TabIndex = 31;
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Tag = "Label_SpellDefenceDirectSoakPhysical";
+			this.lblSpellDefenceDirectSoakPhysicalLabel.Text = "Direct Soak - Physical";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakPhysicalLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceDirectSoakMana
+			// 
+			this.lblSpellDefenceDirectSoakMana.AutoSize = true;
+			this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(160, 72);
+			this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
+			this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
+			this.lblSpellDefenceDirectSoakMana.Text = "0";
+			// 
+			// lblSpellDefenceDirectSoakManaLabel
+			// 
+			this.lblSpellDefenceDirectSoakManaLabel.AutoSize = true;
+			this.lblSpellDefenceDirectSoakManaLabel.Location = new System.Drawing.Point(3, 72);
+			this.lblSpellDefenceDirectSoakManaLabel.Name = "lblSpellDefenceDirectSoakManaLabel";
+			this.lblSpellDefenceDirectSoakManaLabel.Size = new System.Drawing.Size(99, 13);
+			this.lblSpellDefenceDirectSoakManaLabel.TabIndex = 29;
+			this.lblSpellDefenceDirectSoakManaLabel.Tag = "Label_SpellDefenceDirectSoakMana";
+			this.lblSpellDefenceDirectSoakManaLabel.Text = "Direct Soak - Mana";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceDirectSoakManaLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceIndirectSoak
+			// 
+			this.lblSpellDefenceIndirectSoak.AutoSize = true;
+			this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(160, 52);
+			this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
+			this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIndirectSoak.TabIndex = 28;
+			this.lblSpellDefenceIndirectSoak.Text = "0";
+			// 
+			// lblSpellDefenceIndirectSoakLabel
+			// 
+			this.lblSpellDefenceIndirectSoakLabel.AutoSize = true;
+			this.lblSpellDefenceIndirectSoakLabel.Location = new System.Drawing.Point(3, 52);
+			this.lblSpellDefenceIndirectSoakLabel.Name = "lblSpellDefenceIndirectSoakLabel";
+			this.lblSpellDefenceIndirectSoakLabel.Size = new System.Drawing.Size(70, 13);
+			this.lblSpellDefenceIndirectSoakLabel.TabIndex = 27;
+			this.lblSpellDefenceIndirectSoakLabel.Tag = "Label_SpellDefenceIndirect";
+			this.lblSpellDefenceIndirectSoakLabel.Text = "Indirect Soak";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectSoakLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// 
+			// lblSpellDefenceIndirectDodge
+			// 
+			this.lblSpellDefenceIndirectDodge.AutoSize = true;
+			this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(160, 32);
+			this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
+			this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
+			this.lblSpellDefenceIndirectDodge.TabIndex = 26;
+			this.lblSpellDefenceIndirectDodge.Text = "0";
+			// 
+			// lblSpellDefenceIndirectDodgeLabel
+			// 
+			this.lblSpellDefenceIndirectDodgeLabel.AutoSize = true;
+			this.lblSpellDefenceIndirectDodgeLabel.Location = new System.Drawing.Point(3, 32);
+			this.lblSpellDefenceIndirectDodgeLabel.Name = "lblSpellDefenceIndirectDodgeLabel";
+			this.lblSpellDefenceIndirectDodgeLabel.Size = new System.Drawing.Size(77, 13);
+			this.lblSpellDefenceIndirectDodgeLabel.TabIndex = 25;
+			this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
+			this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
+			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
 			// frmCareer
 			// 
@@ -13597,6 +14042,8 @@
 			this.cmsAmmoExpense.ResumeLayout(false);
 			this.tabGear.ResumeLayout(false);
 			this.tabGear.PerformLayout();
+			this.tabGearMatrixCM.ResumeLayout(false);
+			this.tabMatrixCM.ResumeLayout(false);
 			this.cmsGearButton.ResumeLayout(false);
 			this.cmsDeleteGear.ResumeLayout(false);
 			this.tabPets.ResumeLayout(false);
@@ -13680,8 +14127,9 @@
 			this.cmsLimitModifier.ResumeLayout(false);
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
-			this.tabMatrixCM.ResumeLayout(false);
-			this.tabGearMatrixCM.ResumeLayout(false);
+			this.tabDefences.ResumeLayout(false);
+			this.tabDefences.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -14760,6 +15208,43 @@
 		private System.Windows.Forms.CheckBox chkGearMatrixCM22;
 		private System.Windows.Forms.CheckBox chkGearMatrixCM23;
 		private System.Windows.Forms.CheckBox chkGearMatrixCM24;
+		private System.Windows.Forms.TabPage tabDefences;
+		private System.Windows.Forms.Label lblCounterspellingDiceLabel;
+		internal System.Windows.Forms.NumericUpDown nudCounterspellingDice;
+		private System.Windows.Forms.Label lbllSpellDefenceManipPhysical;
+		private System.Windows.Forms.Label lbllSpellDefenceManipPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceManipMental;
+		private System.Windows.Forms.Label lblSpellDefenceManipMentalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionPhysical;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionMana;
+		private System.Windows.Forms.Label lblSpellDefenceIllusionManaLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttWIL;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttLOG;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttINT;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttCHA;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttSTR;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttWILLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttLOGLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttINTLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttCHALabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttSTRLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttREALabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttAGILabel;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttREA;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttAGI;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttBOD;
+		private System.Windows.Forms.Label lblSpellDefenceDecAttBODLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDetection;
+		private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysical;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysicalLabel;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakMana;
+		private System.Windows.Forms.Label lblSpellDefenceDirectSoakManaLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectSoak;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectDodge;
+		private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
 	}
 }
 
