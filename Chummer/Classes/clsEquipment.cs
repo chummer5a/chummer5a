@@ -8636,7 +8636,7 @@ namespace Chummer
 			{
 				int intReturn = 0;
 
-				if (_strCost.Contains("Rating"))
+				if (_strCost.Contains("Rating") || _strCost.Contains("Weapon Cost"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -8646,26 +8646,8 @@ namespace Chummer
 					string strCostExpression = _strCost;
 
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-					XPathExpression xprCost = nav.Compile(strCost);
-					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
-					intReturn = Convert.ToInt32(dblCost);
-				}
-				else if (_strCost.Contains("Weapon Cost"))
-				{
-
-					XmlDocument objXmlDocument = new XmlDocument();
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-					string strCostExpression = _strCost;
-					string strCost = "0";
-
 					strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
-					if (strCost.Contains("Rating"))
-					{
-						strCost = strCost.Replace("Rating", _objParent.Cost.ToString());
-					}
 					XPathExpression xprCost = nav.Compile(strCost);
-					// This is first converted to a double and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
 					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
 				}
