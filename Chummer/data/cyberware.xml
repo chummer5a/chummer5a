@@ -1112,7 +1112,7 @@
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+1</avail>
+			<avail>+(Rating - 3)</avail>
 			<cost>(Rating - 3) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
@@ -1126,7 +1126,7 @@
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+1</avail>
+			<avail>+(Rating - 3)</avail>
 			<cost>(Rating - 3) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
