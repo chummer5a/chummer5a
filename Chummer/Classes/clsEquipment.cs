@@ -8646,7 +8646,7 @@ namespace Chummer
 					string strCostExpression = _strCost;
 
 					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-					strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
+					strCost = strCost.Replace("Weapon Cost", _objParent.Cost.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					double dblCost = Math.Ceiling(Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
 					intReturn = Convert.ToInt32(dblCost);
