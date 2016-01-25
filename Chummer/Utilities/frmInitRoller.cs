@@ -23,7 +23,7 @@ namespace Chummer
 
         private void frmInitRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text += " " + dice.ToString() + "D6: ";
+            lblDice.Text = $"Result of {dice} D6 :";
             nudDiceResult.Maximum = dice * 6;
             nudDiceResult.Minimum = dice;
             MoveControls();

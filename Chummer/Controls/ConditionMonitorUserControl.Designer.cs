@@ -36,6 +36,7 @@
             this._lblStun = new System.Windows.Forms.Label();
             this._nudPhysical = new System.Windows.Forms.NumericUpDown();
             this.nudStun = new System.Windows.Forms.NumericUpDown();
+            this._lblModifier = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStun)).BeginInit();
             this.SuspendLayout();
@@ -118,10 +119,21 @@
             this.nudStun.Size = new System.Drawing.Size(104, 20);
             this.nudStun.TabIndex = 15;
             // 
+            // _lblModifier
+            // 
+            this._lblModifier.AutoSize = true;
+            this._lblModifier.Location = new System.Drawing.Point(174, 4);
+            this._lblModifier.Name = "_lblModifier";
+            this._lblModifier.Size = new System.Drawing.Size(81, 13);
+            this._lblModifier.TabIndex = 16;
+            this._lblModifier.Tag = "Label_CMModifier";
+            this._lblModifier.Text = "{Modifier:value}";
+            // 
             // ConditionMonitorUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this._lblModifier);
             this.Controls.Add(this.nudStun);
             this.Controls.Add(this._nudPhysical);
             this.Controls.Add(this._lblStun);
@@ -149,7 +161,6 @@
         private System.Windows.Forms.Label _lblStun;
         private System.Windows.Forms.NumericUpDown _nudPhysical;
         private System.Windows.Forms.NumericUpDown nudStun;
-
-
+        private System.Windows.Forms.Label _lblModifier;
     }
 }
