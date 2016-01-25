@@ -8123,8 +8123,14 @@ namespace Chummer
         /// </summary>
         public int InitialInit { get; set; }
 
-		//Can't be at improvementmanager due reasons
-	    private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
+        /// <summary>
+        /// The Current Damage Modifier for the Character
+        /// <note>Dashboard</note>
+        /// </summary>
+        public int DamageInitModifier { get; set; }
+
+        //Can't be at improvementmanager due reasons
+        private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
 
 		/// <summary>
 		/// Push a value that will be used instad of dialog instead in next <selecttext />

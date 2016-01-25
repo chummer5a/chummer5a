@@ -35,8 +35,9 @@
             // 
             this.ucInit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ucInit.Location = new System.Drawing.Point(0, 0);
+            this.ucInit.MinimumSize = new System.Drawing.Size(428, 346);
             this.ucInit.Name = "ucInit";
-            this.ucInit.Size = new System.Drawing.Size(427, 318);
+            this.ucInit.Size = new System.Drawing.Size(428, 346);
             this.ucInit.TabIndex = 0;
             this.ucInit.Tag = "";
             // 
@@ -44,8 +45,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(427, 318);
+            this.ClientSize = new System.Drawing.Size(419, 345);
             this.Controls.Add(this.ucInit);
+            this.MinimumSize = new System.Drawing.Size(435, 384);
             this.Name = "frmInitiative";
             this.Tag = "String_AttributeINILong";
             this.Text = "[Initiative]";

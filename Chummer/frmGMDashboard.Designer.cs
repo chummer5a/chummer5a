@@ -92,14 +92,14 @@
             // initativeToolStripMenuItem
             // 
             this.initativeToolStripMenuItem.Name = "initativeToolStripMenuItem";
-            this.initativeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.initativeToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.initativeToolStripMenuItem.Text = "{Initiative}";
             this.initativeToolStripMenuItem.Click += new System.EventHandler(this.initativeToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.openToolStripMenuItem.Tag = "Label_Open";
             this.openToolStripMenuItem.Text = "{Open}";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
@@ -107,7 +107,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.exitToolStripMenuItem.Tag = "Label_Exit";
             this.exitToolStripMenuItem.Text = "{Exit}";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -139,7 +139,6 @@
             this.Name = "frmGMDashboard";
             this.Tag = "String_Dashboard";
             this.Text = "{Dashboard}";
-            this.TopMost = true;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
