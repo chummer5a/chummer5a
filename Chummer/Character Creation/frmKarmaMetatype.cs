@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -826,6 +828,31 @@ namespace Chummer
 						objPower.CountTowardsLimit = false;
 						_objCharacter.CritterPowers.Add(objPower);
 					}
+				}
+
+				// Add any Natural Weapons the Metavariant should have.
+				if (cboMetavariant.SelectedValue.ToString() != "None")
+				{
+						foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
+						{
+							Weapon objWeapon = new Weapon(_objCharacter);
+							objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+							objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+							objWeapon.WeaponType = "Melee";
+							objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
+							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+							objWeapon.Mode = "0";
+							objWeapon.RC = "0";
+							objWeapon.Concealability = 0;
+							objWeapon.Avail = "0";
+							objWeapon.Cost = 0;
+							objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+							objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+							objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+
+							_objCharacter.Weapons.Add(objWeapon);
+						}
 				}
 
 				// If this is a Blood Spirit, add their free Critter Powers.
