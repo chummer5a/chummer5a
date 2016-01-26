@@ -852,14 +852,12 @@ namespace Chummer
         private void SetToolTips()
         {
             const int width = 50;
-            var functions = new CommonFunctions();
-
-            tipTooltip.SetToolTip(chkKnucks, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
-            tipTooltip.SetToolTip(chkIgnoreArt, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
-            tipTooltip.SetToolTip(chkCyberlegMovement, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
-            tipTooltip.SetToolTip(chkDontDoubleQualities, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
-            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
-            tipTooltip.SetToolTip(chkAllowInitiation, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
+            tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
+            tipTooltip.SetToolTip(chkIgnoreArt, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
+            tipTooltip.SetToolTip(chkCyberlegMovement, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
+            tipTooltip.SetToolTip(chkDontDoubleQualities, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
+            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
+            tipTooltip.SetToolTip(chkAllowInitiation, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
         }
 
         private void PopulateSettingsList()

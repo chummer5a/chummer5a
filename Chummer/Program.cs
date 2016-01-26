@@ -54,7 +54,7 @@ namespace Chummer
 	        }
 #endif
 
-            GlobalOptions.Instance.Language = "de";
+            //GlobalOptions.Instance.Language = "de";
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
             // Make sure the default language has been loaded before attempting to open the Main Form.
             if (LanguageManager.Instance.Loaded)

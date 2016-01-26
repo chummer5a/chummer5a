@@ -163,7 +163,7 @@ namespace Chummer
 			strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
 			if (_objContact.Notes != string.Empty)
 				strTooltip += "\n\n" + _objContact.Notes;
-			tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
+			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}
 
 		private void cmsContact_Opening(object sender, CancelEventArgs e)

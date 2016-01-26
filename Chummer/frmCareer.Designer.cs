@@ -1,4 +1,6 @@
-﻿namespace Chummer
+﻿using Chummer.helpers;
+
+namespace Chummer
 {
     partial class frmCareer
     {
@@ -230,7 +232,7 @@
 			this.lblQualitySourceLabel = new System.Windows.Forms.Label();
 			this.cmdDeleteQuality = new System.Windows.Forms.Button();
 			this.cmdAddQuality = new System.Windows.Forms.Button();
-			this.treQualities = new System.Windows.Forms.TreeView();
+			this.treQualities = new TreeView();
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
 			this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
 			this.tabSkills = new System.Windows.Forms.TabPage();
@@ -247,7 +249,7 @@
 			this.lblMental = new System.Windows.Forms.Label();
 			this.lblPhysical = new System.Windows.Forms.Label();
 			this.cmdAddLimitModifier = new System.Windows.Forms.Button();
-			this.treLimit = new System.Windows.Forms.TreeView();
+			this.treLimit = new TreeView();
 			this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
 			this.tabMartialArts = new System.Windows.Forms.TabPage();
 			this.cmdAddMartialArt = new SplitButton();
@@ -256,7 +258,7 @@
 			this.tsMartialArtsNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.lblMartialArtSource = new System.Windows.Forms.Label();
 			this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
-			this.treMartialArts = new System.Windows.Forms.TreeView();
+			this.treMartialArts = new TreeView();
 			this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
 			this.tabMagician = new System.Windows.Forms.TabPage();
 			this.cboSpiritManipulation = new System.Windows.Forms.ComboBox();
@@ -299,7 +301,7 @@
 			this.lblSpellCategoryLabel = new System.Windows.Forms.Label();
 			this.lblSpellDescriptors = new System.Windows.Forms.Label();
 			this.lblSpellDescriptorsLabel = new System.Windows.Forms.Label();
-			this.treSpells = new System.Windows.Forms.TreeView();
+			this.treSpells = new TreeView();
 			this.cmdDeleteSpell = new System.Windows.Forms.Button();
 			this.cmdAddSpirit = new System.Windows.Forms.Button();
 			this.panSpirits = new System.Windows.Forms.Panel();
@@ -339,7 +341,7 @@
 			this.lblFadingAttributes = new System.Windows.Forms.Label();
 			this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
 			this.lblStreamLabel = new System.Windows.Forms.Label();
-			this.treComplexForms = new System.Windows.Forms.TreeView();
+			this.treComplexForms = new TreeView();
 			this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
 			this.cmdAddSprite = new System.Windows.Forms.Button();
 			this.panSprites = new System.Windows.Forms.Panel();
@@ -369,7 +371,7 @@
 			this.lblCritterPowerCategoryLabel = new System.Windows.Forms.Label();
 			this.lblCritterPowerName = new System.Windows.Forms.Label();
 			this.lblCritterPowerNameLabel = new System.Windows.Forms.Label();
-			this.treCritterPowers = new System.Windows.Forms.TreeView();
+			this.treCritterPowers = new TreeView();
 			this.tabInitiation = new System.Windows.Forms.TabPage();
 			this.chkInitiationSchooling = new System.Windows.Forms.CheckBox();
 			this.chkInitiationOrdeal = new System.Windows.Forms.CheckBox();
@@ -462,7 +464,7 @@
 			this.lblCyberwareCategoryLabel = new System.Windows.Forms.Label();
 			this.lblCyberwareName = new System.Windows.Forms.Label();
 			this.lblCyberwareNameLabel = new System.Windows.Forms.Label();
-			this.treCyberware = new System.Windows.Forms.TreeView();
+			this.treCyberware = new TreeView();
 			this.cmdAddCyberware = new SplitButton();
 			this.cmsCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsCyberwareAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
@@ -485,7 +487,7 @@
 			this.lblLifestyleSource = new System.Windows.Forms.Label();
 			this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
 			this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
-			this.treLifestyles = new System.Windows.Forms.TreeView();
+			this.treLifestyles = new TreeView();
 			this.lblLifestyleCost = new System.Windows.Forms.Label();
 			this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
 			this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
@@ -517,7 +519,7 @@
 			this.lblArmorCost = new System.Windows.Forms.Label();
 			this.lblArmorCostLabel = new System.Windows.Forms.Label();
 			this.lblArmorAvail = new System.Windows.Forms.Label();
-			this.treArmor = new System.Windows.Forms.TreeView();
+			this.treArmor = new TreeView();
 			this.lblArmorAvailLabel = new System.Windows.Forms.Label();
 			this.cmdAddArmor = new SplitButton();
 			this.cmsArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -569,7 +571,7 @@
 			this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
 			this.lblWeaponAmmo = new System.Windows.Forms.Label();
 			this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
-			this.treWeapons = new System.Windows.Forms.TreeView();
+			this.treWeapons = new TreeView();
 			this.lblWeaponMode = new System.Windows.Forms.Label();
 			this.lblWeaponModeLabel = new System.Windows.Forms.Label();
 			this.lblWeaponNameLabel = new System.Windows.Forms.Label();
@@ -644,7 +646,7 @@
 			this.lblGearName = new System.Windows.Forms.Label();
 			this.lblGearNameLabel = new System.Windows.Forms.Label();
 			this.lblGearRatingLabel = new System.Windows.Forms.Label();
-			this.treGear = new System.Windows.Forms.TreeView();
+			this.treGear = new TreeView();
 			this.cmdAddGear = new SplitButton();
 			this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
@@ -810,7 +812,7 @@
 			this.lblVehicleAccelLabel = new System.Windows.Forms.Label();
 			this.lblVehicleHandling = new System.Windows.Forms.Label();
 			this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
-			this.treVehicles = new System.Windows.Forms.TreeView();
+			this.treVehicles = new TreeView();
 			this.cmdRollVehicleWeapon = new System.Windows.Forms.Button();
 			this.cmdAddVehicle = new SplitButton();
 			this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -911,7 +913,7 @@
 			this.lblImprovementValue = new System.Windows.Forms.Label();
 			this.lblImprovementType = new System.Windows.Forms.Label();
 			this.lblImprovementTypeLabel = new System.Windows.Forms.Label();
-			this.treImprovements = new System.Windows.Forms.TreeView();
+			this.treImprovements = new TreeView();
 			this.cmdAddImprovement = new System.Windows.Forms.Button();
 			this.tsBoltHole = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsSafehouse = new System.Windows.Forms.ToolStripMenuItem();
@@ -13751,7 +13753,7 @@
 		private System.Windows.Forms.Label lblCyberwareCategoryLabel;
 		private System.Windows.Forms.Label lblCyberwareName;
 		private System.Windows.Forms.Label lblCyberwareNameLabel;
-		private System.Windows.Forms.TreeView treCyberware;
+		private TreeView treCyberware;
 		private System.Windows.Forms.Button cmdAddBioware;
 		private System.Windows.Forms.TabPage tabSkills;
 		private System.Windows.Forms.Panel panSkillGroups;
@@ -13770,7 +13772,7 @@
         private System.Windows.Forms.Label lblCMPhysical;
 		private System.Windows.Forms.Label lblCMStunLabel;
 		private System.Windows.Forms.Label lblCMPhysicalLabel;
-		private System.Windows.Forms.TreeView treWeapons;
+		private TreeView treWeapons;
 		private System.Windows.Forms.Label lblWeaponAP;
 		private System.Windows.Forms.Label lblWeaponAPLabel;
 		private System.Windows.Forms.Label lblWeaponCost;
@@ -13789,13 +13791,13 @@
 		private System.Windows.Forms.Label lblWeaponReachLabel;
 		private System.Windows.Forms.Label lblWeaponAmmo;
 		private System.Windows.Forms.Label lblWeaponAmmoLabel;
-		private System.Windows.Forms.TreeView treArmor;
+		private TreeView treArmor;
 		private System.Windows.Forms.Label lblArmorCost;
 		private System.Windows.Forms.Label lblArmorCostLabel;
 		private System.Windows.Forms.Label lblArmorAvail;
 		private System.Windows.Forms.Label lblArmorAvailLabel;
 		private System.Windows.Forms.Button cmdDeleteSpell;
-		private System.Windows.Forms.TreeView treSpells;
+		private TreeView treSpells;
 		private System.Windows.Forms.Label lblSpellDV;
 		private System.Windows.Forms.Label lblSpellDVLabel;
 		private System.Windows.Forms.Label lblSpellDuration;
@@ -13821,7 +13823,7 @@
 		private System.Windows.Forms.ContextMenuStrip cmsCyberware;
 		private System.Windows.Forms.ToolStripMenuItem tsCyberwareAddAsPlugin;
 		private System.Windows.Forms.Button cmdDeleteLifestyle;
-		private System.Windows.Forms.TreeView treLifestyles;
+		private TreeView treLifestyles;
 		private System.Windows.Forms.Label lblLifestyleCostLabel;
 		private System.Windows.Forms.Label lblLifestyleCost;
 		private System.Windows.Forms.Label lblLifestyleMonthsLabel;
@@ -13830,7 +13832,7 @@
 		private System.Windows.Forms.TabPage tabArmor;
 		private System.Windows.Forms.TabPage tabWeapons;
 		private System.Windows.Forms.TabPage tabGear;
-		private System.Windows.Forms.TreeView treGear;
+		private TreeView treGear;
         private System.Windows.Forms.Label lblGearRatingLabel;
 		private System.Windows.Forms.ContextMenuStrip cmsWeapon;
 		private System.Windows.Forms.ToolStripMenuItem tsWeaponAddAccessory;
@@ -13852,7 +13854,7 @@
 		private System.Windows.Forms.Label lblGearName;
 		private System.Windows.Forms.Label lblGearNameLabel;
 		private System.Windows.Forms.Label lblGearQtyLabel;
-		private System.Windows.Forms.TreeView treVehicles;
+		private TreeView treVehicles;
 		private System.Windows.Forms.Label lblVehicleNameLabel;
 		private System.Windows.Forms.Label lblVehicleName;
 		private System.Windows.Forms.Label lblVehicleCategoryLabel;
@@ -13887,7 +13889,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsVehicleAddWeaponAccessoryAlt;
 		private System.Windows.Forms.CheckBox chkArmorEquipped;
 		private System.Windows.Forms.TabPage tabMartialArts;
-		private System.Windows.Forms.TreeView treMartialArts;
+		private TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
 		private System.Windows.Forms.ContextMenuStrip cmsMartialArts;
 		private System.Windows.Forms.ToolStripMenuItem tsMartialArtsAddAdvantage;
@@ -14157,7 +14159,7 @@
 		private System.Windows.Forms.Label lblCritterPowerCategoryLabel;
 		private System.Windows.Forms.Label lblCritterPowerName;
 		private System.Windows.Forms.Label lblCritterPowerNameLabel;
-		private System.Windows.Forms.TreeView treCritterPowers;
+		private TreeView treCritterPowers;
 		private System.Windows.Forms.Button cmdDeleteCritterPower;
 		private System.Windows.Forms.Button cmdAddCritterPower;
 		private System.Windows.Forms.Label lblGearRating;
@@ -14169,7 +14171,7 @@
 		private System.Windows.Forms.NumericUpDown nudStreetCred;
 		private System.Windows.Forms.Label lblStreetCred;
         private System.Windows.Forms.ToolStripMenuItem tsWeaponAddUnderbarrel;
-		private System.Windows.Forms.TreeView treComplexForms;
+		private TreeView treComplexForms;
         private System.Windows.Forms.Button cmdDeleteComplexForm;
 		private System.Windows.Forms.Label lblFadingAttributesValue;
 		private System.Windows.Forms.Label lblFadingAttributes;
@@ -14196,7 +14198,7 @@
 		private System.Windows.Forms.Button cmdVehicleGearReduceQty;
 		private System.Windows.Forms.Button cmdDeleteQuality;
 		private System.Windows.Forms.Button cmdAddQuality;
-		private System.Windows.Forms.TreeView treQualities;
+		private TreeView treQualities;
 		private System.Windows.Forms.Label lblQualitySource;
 		private System.Windows.Forms.Label lblQualitySourceLabel;
 		private System.Windows.Forms.Label lblQualityBP;
@@ -14383,7 +14385,7 @@
 		private System.Windows.Forms.Label lblSpellDicePoolLabel;
 		private System.Windows.Forms.ToolStripMenuItem tsBoltHole;
 		private System.Windows.Forms.ToolStripMenuItem tsSafehouse;
-		private System.Windows.Forms.TreeView treImprovements;
+		private TreeView treImprovements;
 		private System.Windows.Forms.CheckBox chkImprovementActive;
 		private System.Windows.Forms.Label lblImprovementValue;
 		private System.Windows.Forms.Label lblImprovementType;
@@ -14469,7 +14471,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblPhysical;
         private System.Windows.Forms.Button cmdAddLimitModifier;
-        private System.Windows.Forms.TreeView treLimit;
+        private TreeView treLimit;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;

@@ -105,7 +105,7 @@ namespace Chummer
 			string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
 			if (_objPower.Notes != string.Empty)
 				strTooltip += "\n\n" + _objPower.Notes;
-			tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
+			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}
 		#endregion
 
@@ -126,7 +126,7 @@ namespace Chummer
 				string strTooltip = LanguageManager.Instance.GetString("Tip_Power_EditNotes");
 				if (_objPower.Notes != string.Empty)
 					strTooltip += "\n\n" + _objPower.Notes;
-				tipTooltip.SetToolTip(imgNotes, functions.WordWrap(strTooltip, 100));
+				tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 			}
 		}
 
