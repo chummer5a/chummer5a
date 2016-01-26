@@ -211,6 +211,9 @@
     <Compile Include="helpers\ComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="helpers\TreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
       <SubType>Form</SubType>
     </Compile>
