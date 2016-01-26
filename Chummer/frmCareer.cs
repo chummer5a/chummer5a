@@ -23924,7 +23924,7 @@ namespace Chummer
             foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
             {
                 TreeNode objLimitModifierNode = new TreeNode();
-                objLimitModifierNode.Text = objLimitModifier.DisplayName;
+                objLimitModifierNode.Text = objLimitModifierNode.Name = objLimitModifier.DisplayName;
                 objLimitModifierNode.Tag = objLimitModifier.InternalId;
                 objLimitModifierNode.ContextMenuStrip = cmsMartialArts;
                 if (objLimitModifier.Notes != string.Empty)
@@ -23935,16 +23935,27 @@ namespace Chummer
                 switch (objLimitModifier.Limit)
                 {
                     case "Physical":
-                        treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
-                        treLimit.Nodes[0].Expand();
+                        if (!treLimit.Nodes[0].Nodes.ContainsKey(objLimitModifierNode.Text))
+                        {
+                            treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
+                            treLimit.Nodes[0].Expand();
+                        }
                         break;
                     case "Mental":
-                        treLimit.Nodes[1].Nodes.Add(objLimitModifierNode);
-                        treLimit.Nodes[1].Expand();
+                        if (!treLimit.Nodes[1].Nodes.ContainsKey(objLimitModifierNode.Text))
+                        {
+                            treLimit.Nodes[1].Nodes.Add(objLimitModifierNode);
+                            treLimit.Nodes[1].Expand();
+                        }
                         break;
                     case "Social":
-                        treLimit.Nodes[2].Nodes.Add(objLimitModifierNode);
-                        treLimit.Nodes[2].Expand();
+                        if (!treLimit.Nodes[2].Nodes.ContainsKey(objLimitModifierNode.Text))
+                        {
+                            treLimit.Nodes[2].Nodes.Add(objLimitModifierNode);
+                            treLimit.Nodes[2].Expand();
+                        }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -23962,7 +23973,7 @@ namespace Chummer
                         strName += " [" + objImprovement.Value.ToString() + "]";
                     if (objImprovement.Exclude != "")
                         strName += " (" + objImprovement.Exclude + ")";
-                    objLimitModifierNode.Text = strName;
+                    objLimitModifierNode.Text = objLimitModifierNode.Name = strName;
                     objLimitModifierNode.Tag = objImprovement.SourceName;
                     objLimitModifierNode.ContextMenuStrip = cmsMartialArts;
                     if (objImprovement.Notes != string.Empty)
@@ -23973,16 +23984,27 @@ namespace Chummer
                     switch (objImprovement.ImprovedName)
                     {
                         case "Physical":
-                            treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
-                            treLimit.Nodes[0].Expand();
+                            if (!treLimit.Nodes[0].Nodes.ContainsKey(objLimitModifierNode.Text))
+                            {
+                                treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
+                                treLimit.Nodes[0].Expand();
+                            }
                             break;
                         case "Mental":
-                            treLimit.Nodes[1].Nodes.Add(objLimitModifierNode);
-                            treLimit.Nodes[1].Expand();
+                            if (!treLimit.Nodes[1].Nodes.ContainsKey(objLimitModifierNode.Text))
+                            {
+                                treLimit.Nodes[1].Nodes.Add(objLimitModifierNode);
+                                treLimit.Nodes[1].Expand();
+                            }
                             break;
                         case "Social":
-                            treLimit.Nodes[2].Nodes.Add(objLimitModifierNode);
-                            treLimit.Nodes[2].Expand();
+                            if (!treLimit.Nodes[2].Nodes.ContainsKey(objLimitModifierNode.Text))
+                            {
+                                treLimit.Nodes[2].Nodes.Add(objLimitModifierNode);
+                                treLimit.Nodes[2].Expand();
+                            }
+                            break;
+                        default:
                             break;
                     }
                 }
