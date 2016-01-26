@@ -45,7 +45,7 @@ namespace Chummer
             this.frmInitative.FormClosing += frmInitative_FormClosing;
             this.FormClosing += frmGMDashboard_FormClosing;
             this.CenterToParent();
-            this.Location = new Point(this.Location.X - Width, Location.Y);
+            this.Location = new Point(this.Location.X - Width/2, Location.Y);
             this.frmInitative.Location = new Point(this.Location.X + Width, Location.Y);
                      
 
