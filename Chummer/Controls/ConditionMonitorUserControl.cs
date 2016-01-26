@@ -111,7 +111,6 @@ namespace Chummer
                 //    ? this._progressBarPhysical.Maximum
                 //    : val;
                 this._progressBarPhysical.Value += val;
-                this._progressBarStun.ResetForeColor();
             }
             OnDamage(EventArgs.Empty);
         }

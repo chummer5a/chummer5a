@@ -179,8 +179,17 @@ namespace Chummer
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            if (finishedCombatTurn || _characters.Count == 0)
+            if (finishedCombatTurn)
+            {
+                this.btnNext.Enabled = false;
+                MessageBox.Show("Combatturn finished, press Reset Initiave!");
+                return;
+            }
+            if(_characters.Count == 0) {
+                this.btnNext.Enabled = false;
+                MessageBox.Show("no combatants, please add some");
                 return; // cannot go to "next"
+            }
             if (index == _characters.Count - totalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
@@ -200,8 +209,15 @@ namespace Chummer
                 SortCharacterList();
                 if (_index == -1)
                     finishedCombatTurn = true;
-
-                index = 0;
+                if (_characters.Exists(c => c.Item1.InitRoll > 0))
+                {
+                    index = 0;
+                }
+                else
+                {
+                    this.btnNext.Enabled = false;
+                    finishedCombatTurn = true;
+                }
             }
             else
             {
@@ -216,9 +232,10 @@ namespace Chummer
                     index = 0;
                     return; // we are finished
                 }
-
+               
                 chkBoxChummer.SelectedIndex = index;
-                index = index + 1;
+                index++;
+
             }
         }
 
@@ -287,6 +304,12 @@ namespace Chummer
 
         private void btnReset_Click(object sender, EventArgs e)
         {
+            if (!_characters.Any())
+            {
+                MessageBox.Show("No Combatants found, please add some");
+                return;
+            }
+            btnNext.Enabled = true;
             // for every checked character, we re-roll init
             Random random = new Random();
             for (int i = 0; i < _characters.Count; i++)
