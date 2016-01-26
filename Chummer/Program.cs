@@ -40,7 +40,7 @@ namespace Chummer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 
-			
+
 
 #if LEGACY
 	        DialogResult result =
@@ -54,10 +54,10 @@ namespace Chummer
 	        }
 #endif
 
-
+            GlobalOptions.Instance.Language = "de";
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-			// Make sure the default language has been loaded before attempting to open the Main Form.
-			if (LanguageManager.Instance.Loaded)
+            // Make sure the default language has been loaded before attempting to open the Main Form.
+            if (LanguageManager.Instance.Loaded)
 				Application.Run(new frmMain());
 			else
 				Application.Exit();
