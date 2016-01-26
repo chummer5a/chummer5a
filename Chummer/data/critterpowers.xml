@@ -48,40 +48,6 @@
 			<page>208</page>
 		</power>
 		<power>
-			<id>ad605d14-fb27-4b55-ae42-6f9764d0acfd</id>
-			<name>Armor (Ballistic)</name>
-			<category>Mundane</category>
-			<rating>yes</rating>
-			<type>P</type>
-			<action>Auto</action>
-			<range>Self</range>
-			<duration>Always</duration>
-			<bonus>
-				<armor>
-					<b>Rating</b>
-				</armor>
-			</bonus>
-			<source>RF</source>
-			<page>204</page>
-		</power>
-		<power>
-			<id>59702715-1689-4520-b481-11d7e2264bfe</id>
-			<name>Armor (Impact)</name>
-			<category>Mundane</category>
-			<rating>yes</rating>
-			<type>P</type>
-			<action>Auto</action>
-			<range>Self</range>
-			<duration>Always</duration>
-			<bonus>
-				<armor>
-					<i>Rating</i>
-				</armor>
-			</bonus>
-			<source>RF</source>
-			<page>204</page>
-		</power>
-		<power>
 			<id>0ea84be4-a293-44bf-bc60-52314495cc9a</id>
 			<name>Astral Form</name>
 			<category>Paranormal</category>
@@ -2262,8 +2228,6 @@
 			<source>SR5</source>
 			<page>395</page>
 		</power>
-
-
 		<power>
 			<id>d6729bdf-9300-40fe-97a8-9966d295af33</id>
 			<name>Armor</name>
@@ -2271,10 +2235,10 @@
 			<type>P</type>
 			<action>Auto</action>
 			<range>Self</range>
-			<duration>Always</duration>
 			<bonus>
-				<selecttext/>
+				<armor>Rating</armor>
 			</bonus>
+			<duration>Always</duration>
 			<source>SR5</source>
 			<page>394</page>
 		</power>	

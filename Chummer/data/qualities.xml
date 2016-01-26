@@ -6828,26 +6828,26 @@
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
@@ -6917,42 +6917,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
-			<bonus>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-				</selectattributes>
-			</bonus>
 			<required>
 				<allof>
 					<metatype>Elf</metatype>

@@ -1362,13 +1362,13 @@ namespace Chummer
 
 					// Extract the modifiers.
 					if (objXmlAttribute.InnerXml.Contains("min"))
-						intMin = ValueToInt(objXmlAttribute["min"].InnerXml, intRating);
+						intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("val"))
-						intAug = ValueToInt(objXmlAttribute["val"].InnerXml, intRating);
-					if (objXmlAttribute.InnerXml.Contains("max"))
-						intMax = ValueToInt(objXmlAttribute["max"].InnerXml, intRating);
+						intAug = Convert.ToInt32(objXmlAttribute["val"].InnerText);
+                    if (objXmlAttribute.InnerXml.Contains("max"))
+						intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("aug"))
-						intAugMax = ValueToInt(objXmlAttribute["aug"].InnerXml, intRating);
+						intAugMax = Convert.ToInt32(objXmlAttribute["aug"].InnerText);
 
 					string strAttribute = frmPickAttribute.SelectedAttribute;
 
