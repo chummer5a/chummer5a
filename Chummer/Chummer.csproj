@@ -154,6 +154,12 @@
     <Compile Include="Controls\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SmallSpellControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SmallSpellControl.Designer.cs">
+      <DependentUpon>SmallSpellControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -732,6 +738,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SmallSpellControl.resx">
+      <DependentUpon>SmallSpellControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddToken.resx">
       <DependentUpon>frmAddToken.cs</DependentUpon>

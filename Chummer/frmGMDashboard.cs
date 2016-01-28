@@ -2,24 +2,31 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.XPath;
+using Chummer.Controls;
 
 namespace Chummer
 {
     public partial class frmGMDashboard : Form
     {
         private frmInitiative frmInitative;
-        private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
+        private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus, Spells }
 
         private ConditionMonitorUserControl _conditionMonitorUserControl;
+        private List<KeyValuePair<DashBoardPages, TabPage>> _tabpageList;
+        private ImprovementManager _objImprovementManager;
 
         #region Singleton
 
         private static frmGMDashboard _instance;
+
         /// <summary>
         /// The singleton instance of this object.
         /// </summary>
@@ -31,6 +38,7 @@ namespace Chummer
                     frmGMDashboard._instance = new frmGMDashboard();
                 return frmGMDashboard._instance;
             }
+            set { }
         }
 
         protected frmGMDashboard()
@@ -131,7 +139,7 @@ namespace Chummer
         void InitUC_CurrentCharacterChanged(object sender, EventArgs e)
         {
             this.CurrentNPC = this.frmInitative.InitUC.SelectedCharacter;
-
+            _objImprovementManager = new ImprovementManager(CurrentNPC);
             this.UpdateControls();
         }
 
@@ -148,27 +156,32 @@ namespace Chummer
 
         #region Private helper methods
 
+        private void InitTabpages()
+        {
+            foreach (var name in Enum.GetNames(typeof(DashBoardPages)))
+            {
+                tabControl.TabPages.Add(name);
+            }
+        }
+
+
         /*
          * Updates the tabs 
          */
         private void UpdateTabs()
         {
-            this.tabControl.TabPages.Add(DashBoardPages.CM.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Skills.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.Vassels.ToString()); //todo: find out what Vassels are...
-            this.tabControl.TabPages.Add(DashBoardPages.Vehicles.ToString()); //todo implement vehicles
-            this.tabControl.TabPages.Add(DashBoardPages.Dice.ToString());
-            this.tabControl.TabPages.Add(DashBoardPages.TempBonus.ToString()); //todo implement temp boni
-
-            // setup the controls for each tab
+            InitTabpages();
+            
+            // setup the controls for fixed tabs
             _conditionMonitorUserControl = new ConditionMonitorUserControl();
             _conditionMonitorUserControl.CurrentCharacterDamageApplied += _conditionMonitorUserControl_CurrentCharacterDamageApplied; ;
             this.tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(_conditionMonitorUserControl);
             this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
-            this.tabControl.TabPages[(int) DashBoardPages.Vassels].Enabled = false;
-            this.tabControl.TabPages[(int)DashBoardPages.Vehicles].Enabled = false;
-            this.tabControl.TabPages[(int)DashBoardPages.TempBonus].Enabled = false;
-
+            //this.tabControl.TabPages[(int) DashBoardPages.Vassels].Enabled = false;
+            //this.tabControl.TabPages[(int)DashBoardPages.Vehicles].Enabled = false;
+            //this.tabControl.TabPages[(int)DashBoardPages.TempBonus].Enabled = false;
+            //this.tabControl.TabPages[(int)DashBoardPages.Spells].Enabled = false;
+            
         }
 
         private void _conditionMonitorUserControl_CurrentCharacterDamageApplied(object sender, EventArgs e)
@@ -212,23 +225,27 @@ namespace Chummer
         {
             if (CurrentNPC == null) return;
             // tosses the character information relevant to each character
-        #region Condition Monitor
-            ConditionMonitorUserControl uc = 
-                this.tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
+
+            #region Condition Monitor
+
+            ConditionMonitorUserControl uc =
+                this.tabControl.TabPages[(int) DashBoardPages.CM].Controls[0] as ConditionMonitorUserControl;
             uc.MaxPhysical = this.CurrentNPC.PhysicalCM;
             uc.MaxStun = this.CurrentNPC.StunCM;
             uc.Physical = CurrentNPC.PhysicalCMFilled;
             uc.Stun = CurrentNPC.StunCMFilled;
             uc.Modifier = CurrentNPC.DamageInitModifier;
+
             #endregion
 
-        #region Skill tab
-            this.tabControl.TabPages[(int)DashBoardPages.Skills].Controls.Clear();
+            #region Skill tab
+
+            this.tabControl.TabPages[(int) DashBoardPages.Skills].Controls.Clear();
             FlowLayoutPanel panel = new FlowLayoutPanel();
-            foreach (Skill skill in this.CurrentNPC.Skills.Where(s=>s.Rating>0))
+            foreach (Skill skill in this.CurrentNPC.Skills.Where(s => s.Rating > 0))
             {
                 if (skill.KnowledgeSkill)
-                    continue;   // improvement for knowledge skills goes here
+                    continue; // improvement for knowledge skills goes here
                 // insert new skill control
                 SmallSkillControl ucSkill = new SmallSkillControl(this);
                 ucSkill.Skill = skill;
@@ -239,22 +256,98 @@ namespace Chummer
             panel.Dock = DockStyle.Fill;
             panel.AutoScroll = true;
             panel.MouseEnter += (object sender, EventArgs e) => { panel.Focus(); };
-            this.tabControl.TabPages[(int)DashBoardPages.Skills].Controls.Add(panel);
-        #endregion
+            this.tabControl.TabPages[(int) DashBoardPages.Skills].Controls.Add(panel);
 
-        #region Dice Roller
-            DiceRollerControl dice = 
-                this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
-            //dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
-        #endregion
-        
-            //todo other possible tabs
+            #endregion
+
+            #region Dice Roller
+            // todo figure out number of edge dice
+            #endregion
+
+            #region Spelltab
+            this.tabControl.TabPages[(int)DashBoardPages.Spells].Controls.Clear();
+            FlowLayoutPanel spellPanel = new FlowLayoutPanel();
+           
+            foreach (Spell spell in this.CurrentNPC.Spells.OrderBy(s=>s.Category))
+            {
+                //get a new spellcontroll
+                var ucSpell = GetSmallSpellControl(spell);
+                // add the skill to the collection of skills to show
+                spellPanel.Controls.Add(ucSpell);
+            }
+            spellPanel.Dock = DockStyle.Fill;
+            spellPanel.AutoScroll = true;
+            spellPanel.MouseEnter += (object sender, EventArgs e) => { panel.Focus(); };
+            this.tabControl.TabPages[(int)DashBoardPages.Spells].Controls.Add(spellPanel);
+
+            #endregion
+        }
+        /// <summary>
+        /// Creates a new SmallSpellControl and returns it. 
+        /// </summary>
+        /// <param name="spell"></param>
+        /// <returns></returns>
+        private SmallSpellControl GetSmallSpellControl(Spell spell)
+        {
+            SmallSpellControl ucSpell = new SmallSpellControl(this);
+            ucSpell.Spell = spell;
+            ucSpell.DiceClick += DiceClick_Clicked;
+            ucSpell.DrainResist = GetSpellDrainResist();
+            return ucSpell;
         }
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TODO
+        }
+        /// <summary>
+        /// Calculate the number of Dice for Spellresist
+        /// <remarks>Dashboard</remarks>
+        /// </summary>
+        /// <returns></returns>
+        private int GetSpellDrainResist()
+        {
+            if (CurrentNPC.SpellDrainResist != 0)
+            {
+                // dont calculate again, if it is already calculated
+                return CurrentNPC.SpellDrainResist;
+            }
+            try
+            {
+                var objXmlDocument = XmlManager.Instance.Load("traditions.xml");
+                XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + CurrentNPC.MagicTradition + "\"]");
+                string  strDrain = CurrentNPC.TraditionDrain = objXmlTradition["drain"].InnerText;
+
+                var nav = objXmlDocument.CreateNavigator();
+                strDrain = strDrain.Replace(
+                    LanguageManager.Instance.GetString("String_AttributeBODShort"), CurrentNPC.BOD.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeAGIShort"),
+                   CurrentNPC.AGI.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeREAShort"),
+                   CurrentNPC.REA.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeSTRShort"),
+                   CurrentNPC.STR.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeCHAShort"),
+                   CurrentNPC.CHA.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeINTShort"),
+                   CurrentNPC.INT.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeLOGShort"),
+                   CurrentNPC.LOG.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeWILShort"),
+                   CurrentNPC.WIL.TotalValue.ToString());
+                strDrain = strDrain.Replace(LanguageManager.Instance.GetString("String_AttributeMAGShort"),
+                   CurrentNPC.MAG.TotalValue.ToString());
+                XPathExpression xprDrain = nav.Compile(strDrain);
+                int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain).ToString());
+                intDrain += _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
+                return intDrain;
+            }
+            catch (Exception e)
+            {
+                Debug.Print(e.Message);
+                return 0;
+            }
         }
     }
 }

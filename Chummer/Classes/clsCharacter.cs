@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -8129,6 +8130,12 @@ namespace Chummer
         /// </summary>
         public int DamageInitModifier { get; set; }
 
+        /// <summary>
+        /// The Current Drain Resist for the Character
+        /// <note>Dashboard</note>
+        /// </summary>
+        public int SpellDrainResist { get; set; }
+
         //Can't be at improvementmanager due reasons
         private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
 
@@ -8233,5 +8240,7 @@ namespace Chummer
 			}
 		}
 		#endregion
-	}
+
+ 
+    }
 }

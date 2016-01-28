@@ -224,5 +224,20 @@ namespace Chummer
             this.Limit = Convert.ToInt32(this.nudLimit.Value);
         }
         #endregion
+
+        /// <summary>
+        /// Resets all Values
+        /// </summary>
+        public void Clear()
+        {
+            Limit = 0;
+            EdgeUse = 0;
+            Gremlins = 0;
+            NumberOfDice = 0;
+            Threshold = 0;
+            UseEdge = false;
+            txtResults.Text = string.Empty;
+            lblResults.Text = "Results:";
+        }
     }
 }
