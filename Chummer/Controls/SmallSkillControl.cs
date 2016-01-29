@@ -12,7 +12,7 @@ namespace Chummer
     public partial class SmallSkillControl : UserControl
     {
         private Skill _objSkill;
-        private Form _objParent;
+        private readonly Form _objParent;
         
         /// <summary>
         /// Fired when the user decides to roll the dice

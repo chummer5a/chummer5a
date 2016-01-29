@@ -12,13 +12,16 @@ namespace Chummer
     public partial class ConditionMonitorUserControl : UserControl
     {
         private int _modifier;
+        private int currentOverflow;
 
         #region Properties
 
         public delegate void DamagedEventHandler(object sender, EventArgs e);
 
         public event DamagedEventHandler CurrentCharacterDamageApplied;
-        
+
+        // the maximum physical overflow damage of the current character //BODY
+        private int maxOverflow;
 
         public virtual void OnDamage(EventArgs e)
         {
@@ -74,6 +77,7 @@ namespace Chummer
             {
                 this._progressBarStun.Value = value;
                 _lblStun.Text = $"Stun: {Stun}/{MaxStun}";
+                lblKnockOut.Visible = Stun >= MaxStun;
             }
 
         }
@@ -88,15 +92,78 @@ namespace Chummer
                 _lblModifier.Text =Modifier!=0? $"Pool: {Modifier}":string.Empty;
             }
         }
+       
+        // the overflow damage of the current Character
+        public int CurrentOverflow
+        {
+            get
+            {
+                return currentOverflow;
+            }
+
+            set
+            {
+                currentOverflow = value;
+                this.lblOverflowValue.Text = $"Overflow Damage : {value}";
+                ApplyOverflow(currentOverflow);
+                SetOverflowVisible(value > 0);
+                lblDead.Visible = currentOverflow >= maxOverflow;
+            }
+        }
+
+        private void ApplyOverflow(int overflow)
+        {
+            if (overflow > 0)
+            {
+                _pbOverflow.Value = overflow >= maxOverflow ? maxOverflow : overflow;
+            }
+        }
+
+        public int MaxOverflow
+        {
+            get
+            {
+                return maxOverflow;
+            }
+
+            set
+            {
+                maxOverflow = value;
+                _pbOverflow.Maximum = value;
+                lblMaxOverflow.Text = $"Dead at {maxOverflow}";
+            }
+        }
+
+        private void SetOverflowVisible(bool show)
+        {
+            this.lblOverflowValue.Visible = show;
+            this.lblMaxOverflow.Visible = show;
+            this._pbOverflow.Visible = show;
+        }
 
         public ConditionMonitorUserControl()
         {
             InitializeComponent();
+            _lblModifier.Text = Modifier != 0 ? $"Pool: {Modifier}" : string.Empty;
         }
 
-        private void _btnPhysical_Click(object sender, EventArgs e)
+        private void ApplyPhysicalDamage(int val)
         {
-            int val = Convert.ToInt32(this._nudPhysical.Value);
+            if (val == 0) return;
+            var wayToDeath = (val + _progressBarPhysical.Value - _progressBarPhysical.Maximum);
+            if (CurrentOverflow > 0 )
+            {
+                CurrentOverflow += wayToDeath;
+                if (CurrentOverflow < 0)
+                {
+                    var heal = CurrentOverflow;
+                    CurrentOverflow = 0;
+                    ApplyPhysicalDamage(heal);
+                    
+                }
+                val = 0;
+                wayToDeath = 0;
+            }
             if (val + this._progressBarPhysical.Value < 0)
             {
                 this._progressBarPhysical.Value = 0;
@@ -104,6 +171,7 @@ namespace Chummer
             else if (val + this._progressBarPhysical.Value > this._progressBarPhysical.Maximum)
             {
                 this._progressBarPhysical.Value = this._progressBarPhysical.Maximum;
+
             }
             else
             {
@@ -112,19 +180,26 @@ namespace Chummer
                 //    : val;
                 this._progressBarPhysical.Value += val;
             }
-            OnDamage(EventArgs.Empty);
+            if (_progressBarPhysical.Value >= _progressBarPhysical.Maximum)
+            {
+                CurrentOverflow += wayToDeath;
+            }
         }
 
-        private void _btnApplyStun_Click(object sender, EventArgs e)
+        private void ApplyStunDamage(int val)
         {
-            int val = Convert.ToInt32(this.nudStun.Value);
+            if (val == 0) return;
+            var stunoverflow = (val + _progressBarStun.Value - _progressBarStun.Maximum)/2;
             if (val + this._progressBarStun.Value < 0)
             {
                 this._progressBarStun.Value = 0;
             }
             else if (val + this._progressBarStun.Value > this._progressBarStun.Maximum)
             {
+
                 this._progressBarStun.Value = this._progressBarStun.Maximum;
+                //stun overflow becomes physical Damage
+                ApplyPhysicalDamage(stunoverflow);
             }
 
             else
@@ -133,8 +208,38 @@ namespace Chummer
                     ? this._progressBarStun.Maximum
                     : val;
             }
-            OnDamage(EventArgs.Empty);
         }
 
+        private void _btnApplyStun_Click(object sender, EventArgs e)
+        {
+            int val = Convert.ToInt32(this.nudStun.Value);
+            ApplyStunDamage(val);
+            OnDamage(EventArgs.Empty);
+            nudStun.Value = 0;
+        }
+
+        private void _btnHealStun_Click(object sender, EventArgs e)
+        {
+            int val = Convert.ToInt32(this.nudRecoverStun.Value);
+            ApplyStunDamage(-val);
+            OnDamage(EventArgs.Empty);
+            nudRecoverStun.Value = 0;
+        }
+
+        private void _btnHealPhysical_Click(object sender, EventArgs e)
+        {
+            int val = Convert.ToInt32(this.nudHeal.Value);
+            ApplyPhysicalDamage(-val);
+            OnDamage(EventArgs.Empty);
+            nudHeal.Value = 0;
+        }
+
+        private void _btnPhysical_Click(object sender, EventArgs e)
+        {
+            int val = Convert.ToInt32(this._nudPhysical.Value);
+            ApplyPhysicalDamage(val);
+            OnDamage(EventArgs.Empty);
+            _nudPhysical.Value = 0;
+        }
     }
 }

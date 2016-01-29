@@ -30,15 +30,26 @@
         {
             this._progressBarPhysical = new System.Windows.Forms.ProgressBar();
             this._progressBarStun = new System.Windows.Forms.ProgressBar();
-            this._btnPhysical = new System.Windows.Forms.Button();
-            this._btnApplyStun = new System.Windows.Forms.Button();
+            this._btnApplyPhysicalDamage = new System.Windows.Forms.Button();
+            this._btnApplyStunDamage = new System.Windows.Forms.Button();
             this._lblPhysical = new System.Windows.Forms.Label();
             this._lblStun = new System.Windows.Forms.Label();
-            this._nudPhysical = new System.Windows.Forms.NumericUpDown();
             this.nudStun = new System.Windows.Forms.NumericUpDown();
             this._lblModifier = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).BeginInit();
+            this._pbOverflow = new System.Windows.Forms.ProgressBar();
+            this.lblDead = new System.Windows.Forms.Label();
+            this.lblOverflowValue = new System.Windows.Forms.Label();
+            this._btnHealPhysical = new System.Windows.Forms.Button();
+            this._btnHealStun = new System.Windows.Forms.Button();
+            this.nudRecoverStun = new System.Windows.Forms.NumericUpDown();
+            this.nudHeal = new System.Windows.Forms.NumericUpDown();
+            this._nudPhysical = new System.Windows.Forms.NumericUpDown();
+            this.lblKnockOut = new System.Windows.Forms.Label();
+            this.lblMaxOverflow = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudStun)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRecoverStun)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHeal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).BeginInit();
             this.SuspendLayout();
             // 
             // _progressBarPhysical
@@ -55,25 +66,25 @@
             this._progressBarStun.Size = new System.Drawing.Size(200, 41);
             this._progressBarStun.TabIndex = 10;
             // 
-            // _btnPhysical
+            // _btnApplyPhysicalDamage
             // 
-            this._btnPhysical.Location = new System.Drawing.Point(117, 75);
-            this._btnPhysical.Name = "_btnPhysical";
-            this._btnPhysical.Size = new System.Drawing.Size(90, 23);
-            this._btnPhysical.TabIndex = 7;
-            this._btnPhysical.Text = "Apply Physical";
-            this._btnPhysical.UseVisualStyleBackColor = true;
-            this._btnPhysical.Click += new System.EventHandler(this._btnPhysical_Click);
+            this._btnApplyPhysicalDamage.Location = new System.Drawing.Point(117, 75);
+            this._btnApplyPhysicalDamage.Name = "_btnApplyPhysicalDamage";
+            this._btnApplyPhysicalDamage.Size = new System.Drawing.Size(90, 23);
+            this._btnApplyPhysicalDamage.TabIndex = 7;
+            this._btnApplyPhysicalDamage.Text = "Apply Physical";
+            this._btnApplyPhysicalDamage.UseVisualStyleBackColor = true;
+            this._btnApplyPhysicalDamage.Click += new System.EventHandler(this._btnPhysical_Click);
             // 
-            // _btnApplyStun
+            // _btnApplyStunDamage
             // 
-            this._btnApplyStun.Location = new System.Drawing.Point(327, 75);
-            this._btnApplyStun.Name = "_btnApplyStun";
-            this._btnApplyStun.Size = new System.Drawing.Size(90, 23);
-            this._btnApplyStun.TabIndex = 11;
-            this._btnApplyStun.Text = "Apply Stun";
-            this._btnApplyStun.UseVisualStyleBackColor = true;
-            this._btnApplyStun.Click += new System.EventHandler(this._btnApplyStun_Click);
+            this._btnApplyStunDamage.Location = new System.Drawing.Point(327, 75);
+            this._btnApplyStunDamage.Name = "_btnApplyStunDamage";
+            this._btnApplyStunDamage.Size = new System.Drawing.Size(90, 23);
+            this._btnApplyStunDamage.TabIndex = 11;
+            this._btnApplyStunDamage.Text = "Apply Stun";
+            this._btnApplyStunDamage.UseVisualStyleBackColor = true;
+            this._btnApplyStunDamage.Click += new System.EventHandler(this._btnApplyStun_Click);
             // 
             // _lblPhysical
             // 
@@ -95,26 +106,9 @@
             this._lblStun.Tag = "Label_CMStun";
             this._lblStun.Text = "{Stun:HP}";
             // 
-            // _nudPhysical
-            // 
-            this._nudPhysical.Location = new System.Drawing.Point(3, 78);
-            this._nudPhysical.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this._nudPhysical.Name = "_nudPhysical";
-            this._nudPhysical.Size = new System.Drawing.Size(108, 20);
-            this._nudPhysical.TabIndex = 14;
-            // 
             // nudStun
             // 
             this.nudStun.Location = new System.Drawing.Point(217, 78);
-            this.nudStun.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
             this.nudStun.Name = "nudStun";
             this.nudStun.Size = new System.Drawing.Size(104, 20);
             this.nudStun.TabIndex = 15;
@@ -129,10 +123,116 @@
             this._lblModifier.Tag = "Label_CMModifier";
             this._lblModifier.Text = "{Modifier:value}";
             // 
+            // _pbOverflow
+            // 
+            this._pbOverflow.Location = new System.Drawing.Point(117, 156);
+            this._pbOverflow.Name = "_pbOverflow";
+            this._pbOverflow.Size = new System.Drawing.Size(204, 41);
+            this._pbOverflow.TabIndex = 17;
+            this._pbOverflow.Visible = false;
+            // 
+            // lblDead
+            // 
+            this.lblDead.AutoSize = true;
+            this.lblDead.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDead.Location = new System.Drawing.Point(75, 41);
+            this.lblDead.Name = "lblDead";
+            this.lblDead.Size = new System.Drawing.Size(68, 13);
+            this.lblDead.TabIndex = 18;
+            this.lblDead.Tag = "Label_CMStun";
+            this.lblDead.Text = "Drop Dead";
+            this.lblDead.Visible = false;
+            // 
+            // lblOverflowValue
+            // 
+            this.lblOverflowValue.AutoSize = true;
+            this.lblOverflowValue.Location = new System.Drawing.Point(114, 140);
+            this.lblOverflowValue.Name = "lblOverflowValue";
+            this.lblOverflowValue.Size = new System.Drawing.Size(13, 13);
+            this.lblOverflowValue.TabIndex = 19;
+            this.lblOverflowValue.Tag = "";
+            this.lblOverflowValue.Text = "0";
+            this.lblOverflowValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblOverflowValue.Visible = false;
+            // 
+            // _btnHealPhysical
+            // 
+            this._btnHealPhysical.Location = new System.Drawing.Point(117, 104);
+            this._btnHealPhysical.Name = "_btnHealPhysical";
+            this._btnHealPhysical.Size = new System.Drawing.Size(90, 23);
+            this._btnHealPhysical.TabIndex = 20;
+            this._btnHealPhysical.Text = "Heal Physical";
+            this._btnHealPhysical.UseVisualStyleBackColor = true;
+            this._btnHealPhysical.Click += new System.EventHandler(this._btnHealPhysical_Click);
+            // 
+            // _btnHealStun
+            // 
+            this._btnHealStun.Location = new System.Drawing.Point(327, 104);
+            this._btnHealStun.Name = "_btnHealStun";
+            this._btnHealStun.Size = new System.Drawing.Size(90, 23);
+            this._btnHealStun.TabIndex = 21;
+            this._btnHealStun.Text = "Heal Stun";
+            this._btnHealStun.UseVisualStyleBackColor = true;
+            this._btnHealStun.Click += new System.EventHandler(this._btnHealStun_Click);
+            // 
+            // nudRecoverStun
+            // 
+            this.nudRecoverStun.Location = new System.Drawing.Point(217, 107);
+            this.nudRecoverStun.Name = "nudRecoverStun";
+            this.nudRecoverStun.Size = new System.Drawing.Size(104, 20);
+            this.nudRecoverStun.TabIndex = 23;
+            // 
+            // nudHeal
+            // 
+            this.nudHeal.Location = new System.Drawing.Point(3, 107);
+            this.nudHeal.Name = "nudHeal";
+            this.nudHeal.Size = new System.Drawing.Size(108, 20);
+            this.nudHeal.TabIndex = 22;
+            // 
+            // _nudPhysical
+            // 
+            this._nudPhysical.Location = new System.Drawing.Point(3, 78);
+            this._nudPhysical.Name = "_nudPhysical";
+            this._nudPhysical.Size = new System.Drawing.Size(108, 20);
+            this._nudPhysical.TabIndex = 14;
+            // 
+            // lblKnockOut
+            // 
+            this.lblKnockOut.AutoSize = true;
+            this.lblKnockOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblKnockOut.Location = new System.Drawing.Point(285, 41);
+            this.lblKnockOut.Name = "lblKnockOut";
+            this.lblKnockOut.Size = new System.Drawing.Size(81, 13);
+            this.lblKnockOut.TabIndex = 24;
+            this.lblKnockOut.Tag = "";
+            this.lblKnockOut.Text = "Knocked Out";
+            this.lblKnockOut.Visible = false;
+            // 
+            // lblMaxOverflow
+            // 
+            this.lblMaxOverflow.AutoSize = true;
+            this.lblMaxOverflow.Location = new System.Drawing.Point(308, 140);
+            this.lblMaxOverflow.Name = "lblMaxOverflow";
+            this.lblMaxOverflow.Size = new System.Drawing.Size(13, 13);
+            this.lblMaxOverflow.TabIndex = 25;
+            this.lblMaxOverflow.Tag = "";
+            this.lblMaxOverflow.Text = "0";
+            this.lblMaxOverflow.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblMaxOverflow.Visible = false;
+            // 
             // ConditionMonitorUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lblMaxOverflow);
+            this.Controls.Add(this.lblKnockOut);
+            this.Controls.Add(this.nudRecoverStun);
+            this.Controls.Add(this.nudHeal);
+            this.Controls.Add(this._btnHealPhysical);
+            this.Controls.Add(this._btnHealStun);
+            this.Controls.Add(this.lblOverflowValue);
+            this.Controls.Add(this.lblDead);
+            this.Controls.Add(this._pbOverflow);
             this.Controls.Add(this._lblModifier);
             this.Controls.Add(this.nudStun);
             this.Controls.Add(this._nudPhysical);
@@ -140,12 +240,14 @@
             this.Controls.Add(this._lblPhysical);
             this.Controls.Add(this._progressBarPhysical);
             this.Controls.Add(this._progressBarStun);
-            this.Controls.Add(this._btnPhysical);
-            this.Controls.Add(this._btnApplyStun);
+            this.Controls.Add(this._btnApplyPhysicalDamage);
+            this.Controls.Add(this._btnApplyStunDamage);
             this.Name = "ConditionMonitorUserControl";
-            this.Size = new System.Drawing.Size(420, 420);
-            ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).EndInit();
+            this.Size = new System.Drawing.Size(420, 224);
             ((System.ComponentModel.ISupportInitialize)(this.nudStun)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRecoverStun)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudHeal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._nudPhysical)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,12 +257,21 @@
 
         private System.Windows.Forms.ProgressBar _progressBarPhysical;
         private System.Windows.Forms.ProgressBar _progressBarStun;
-        private System.Windows.Forms.Button _btnPhysical;
-        private System.Windows.Forms.Button _btnApplyStun;
+        private System.Windows.Forms.Button _btnApplyPhysicalDamage;
+        private System.Windows.Forms.Button _btnApplyStunDamage;
         private System.Windows.Forms.Label _lblPhysical;
         private System.Windows.Forms.Label _lblStun;
-        private System.Windows.Forms.NumericUpDown _nudPhysical;
         private System.Windows.Forms.NumericUpDown nudStun;
         private System.Windows.Forms.Label _lblModifier;
+        private System.Windows.Forms.ProgressBar _pbOverflow;
+        private System.Windows.Forms.Label lblDead;
+        private System.Windows.Forms.Label lblOverflowValue;
+        private System.Windows.Forms.Button _btnHealPhysical;
+        private System.Windows.Forms.Button _btnHealStun;
+        private System.Windows.Forms.NumericUpDown _nudPhysical;
+        private System.Windows.Forms.NumericUpDown nudHeal;
+        private System.Windows.Forms.NumericUpDown nudRecoverStun;
+        private System.Windows.Forms.Label lblKnockOut;
+        private System.Windows.Forms.Label lblMaxOverflow;
     }
 }

@@ -5177,8 +5177,6 @@ namespace Chummer
 
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				XPathExpression xprDV;
-
 				try
 				{
 					for (int i = 1; i <= intMAG * 2; i++)
