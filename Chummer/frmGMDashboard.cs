@@ -20,7 +20,6 @@ namespace Chummer
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus, Spells }
 
         private ConditionMonitorUserControl _conditionMonitorUserControl;
-        private List<KeyValuePair<DashBoardPages, TabPage>> _tabpageList;
         private ImprovementManager _objImprovementManager;
 
         #region Singleton
@@ -78,8 +77,9 @@ namespace Chummer
         /// </summary>
         public DiceRollerControl DiceRoller
         {
-            get { return this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
+            get { return this.tabControl.TabPages[(int) DashBoardPages.Dice].Controls[0] as DiceRollerControl; }
         }
+
         #endregion
 
         #region Events
@@ -177,11 +177,6 @@ namespace Chummer
             _conditionMonitorUserControl.CurrentCharacterDamageApplied += _conditionMonitorUserControl_CurrentCharacterDamageApplied; ;
             this.tabControl.TabPages[(int)DashBoardPages.CM].Controls.Add(_conditionMonitorUserControl);
             this.tabControl.TabPages[(int)DashBoardPages.Dice].Controls.Add(new DiceRollerControl());
-            //this.tabControl.TabPages[(int) DashBoardPages.Vassels].Enabled = false;
-            //this.tabControl.TabPages[(int)DashBoardPages.Vehicles].Enabled = false;
-            //this.tabControl.TabPages[(int)DashBoardPages.TempBonus].Enabled = false;
-            //this.tabControl.TabPages[(int)DashBoardPages.Spells].Enabled = false;
-            
         }
 
         private void _conditionMonitorUserControl_CurrentCharacterDamageApplied(object sender, EventArgs e)
@@ -195,6 +190,7 @@ namespace Chummer
             // apply the damagevalues to the current selected char
             CurrentNPC.PhysicalCMFilled = _conditionMonitorUserControl.Physical;
             CurrentNPC.StunCMFilled = _conditionMonitorUserControl.Stun;
+            
             // safe old damagemodifier for applying init changes
             var oldModifier= CurrentNPC.DamageInitModifier;
             // set new Damagemodifier for current selected char
@@ -202,6 +198,10 @@ namespace Chummer
             _conditionMonitorUserControl.Modifier = CurrentNPC.DamageInitModifier;
             // apply initchanges 
             frmInitative.InitUC.ApplyDamage(CurrentNPC,oldModifier);
+            if (_conditionMonitorUserControl.CurrentOverflow > CurrentNPC.CMOverflow)
+            {
+                MessageBox.Show("Be Happy, you should be Dead now !");
+            }
 
         }
 
@@ -235,6 +235,7 @@ namespace Chummer
             uc.Physical = CurrentNPC.PhysicalCMFilled;
             uc.Stun = CurrentNPC.StunCMFilled;
             uc.Modifier = CurrentNPC.DamageInitModifier;
+            uc.MaxOverflow = CurrentNPC.CMOverflow;
 
             #endregion
 
