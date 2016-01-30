@@ -12,7 +12,7 @@ Don't think translate is called. Somehow visual studio crashed if i had it earli
 
 UI is missing stuff. Labels and old tooltips. Skillgroups should be straight forward, nfi about how skills currently works, but salvaging is probably best bet.
 
-Wounds. NFI if this uses improvementmanager (should work) or something else (haven't implemented it then)
+Wounds needs to subtract Improvement.ImprovementType.ConditionMonitor
 
 Linguistic and friends
 
@@ -25,3 +25,5 @@ Remove old skill forms. Keept as shitloads of code calls it, eventually that cod
 Clean frmCreate/Career to not have old skillcode.
 
 Not possible to spend skill points on knoskill (Stupid but explictily allowed)
+
+Skillsofts is not working...

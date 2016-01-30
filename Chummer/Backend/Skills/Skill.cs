@@ -186,8 +186,6 @@ namespace Chummer.Skills
 			}
 		}
 
-
-		
 		protected static Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();  //TODO CACHE INVALIDATE
 
 		/// <summary>
@@ -327,7 +325,11 @@ namespace Chummer.Skills
 			get { return AttributeObject.Abbrev; }
 		}
 
-		//TODO OVERRIDE IN CHILD CLASS
+		public bool Enabled  //TODO this should cause PropertyChanged Events but not sure how to do it best. Rare (burnout) so low priority
+		{
+			get { return RatingMaximum != 0; }
+		}
+
 		public virtual bool AllowDelete
 		{
 			get

@@ -117,7 +117,6 @@
     <Compile Include="Backend\Skills\Skill.cs" />
     <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
-    <None Include="Backend\Skills\SkillList.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +142,7 @@
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
+    <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -242,12 +242,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="UI\frmSkillTest.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\frmSkillTest.Designer.cs">
-      <DependentUpon>frmSkillTest.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Shared\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
@@ -811,9 +805,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\frmSkillTest.resx">
-      <DependentUpon>frmSkillTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>

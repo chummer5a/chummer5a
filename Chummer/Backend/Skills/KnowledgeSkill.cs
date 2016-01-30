@@ -6,8 +6,6 @@ namespace Chummer.Skills
 {
 	public class KnowledgeSkill : Skill
 	{
-		
-
 		private static readonly Dictionary<string, string> CategoriesSkillMap;  //Categories to their attribtue
 		private static readonly Dictionary<string, string> NameCategoryMap;  //names to their category
 
@@ -42,9 +40,15 @@ namespace Chummer.Skills
 			}
 		}
 
+		public override bool AllowDelete
+		{
+			get { return _allowDelete; }
+		}
+
 		private List<ListItem> _knowledgeSkillCatagories;
 		private string _type;
-		
+		private bool _allowDelete;
+
 		public KnowledgeSkill(Character character) : base(character, (string)null)
 		{
 			AttributeObject = character.GetAttribute("LOG");

@@ -20,6 +20,8 @@ namespace Chummer.UI.Shared
 			this.skill = skill;
 			InitializeComponent();
 
+			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
+
 			//Display
 			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 			lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));

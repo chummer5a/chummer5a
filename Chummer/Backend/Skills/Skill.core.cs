@@ -155,8 +155,15 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				int otherbonus = 0; //TODO READ FROM IMPMANAGER
-									//TODO: Disallow street sams magic skills, etc (ASPECTED!!)
+				//TODO Check if working with burnout
+				if (AttributeObject.Value == 0)
+					return 0;
+
+				int otherbonus = _character.Improvements.Where(x =>
+					x.Enabled &&
+					x.ImproveType == Improvement.ImprovementType.Skill &&
+					x.ImprovedName == Name).Sum(x => x.Maximum);
+									
 				return (_character.Created 
 					? 12
 					: (KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
