@@ -32,7 +32,7 @@ namespace Chummer
             set
             {
                 this._objSkill = value;
-                this.lblSkillName.Text = this.Skill.Name + " : " + this.Skill.TotalRating.ToString();
+                this.lblSkillName.Text = this.Skill.DisplayName + " : " + this.Skill.TotalRating.ToString();
             }
         }
 
