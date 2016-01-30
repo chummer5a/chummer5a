@@ -52,6 +52,7 @@ namespace Chummer
 			Adapsin,
 			FreePositiveQualities,
 			FreeNegativeQualities,
+			FreeKnowledgeSkills, 
 			NuyenMaxBP,
 			CMOverflow,
 			FreeSpiritPowerPoints,
@@ -135,6 +136,7 @@ namespace Chummer
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
 			SkillGroupBase //group
+			
 
 		}
 
@@ -1973,6 +1975,12 @@ namespace Chummer
 
 
 				}
+			}
+
+			if (bonusNode.LocalName == "knowldgeskillpoints")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "",
+					ValueToInt(bonusNode.InnerText));
 			}
 
 			if (bonusNode.LocalName == ("skillgrouplevel"))

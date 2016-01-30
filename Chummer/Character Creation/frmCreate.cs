@@ -16476,11 +16476,7 @@ namespace Chummer
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
-                // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * _objOptions.FreeKnowledgeMultiplier;
-                else
-                    _objCharacter.KnowledgeSkillPoints = 0;
+                
 
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -16488,19 +16484,10 @@ namespace Chummer
                 else
                     _objCharacter.ContactPoints = 0;
 
-                int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Name == "Aged (Rating 1)")
-                        intKnowledgeSkillPoints += 5;
-                    if (objQuality.Name == "Aged (Rating 2)")
-                        intKnowledgeSkillPoints += 10;
-                    if (objQuality.Name == "Aged (Rating 3)")
-                        intKnowledgeSkillPoints += 15;
-                }
+               
 
                 //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
+                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
 
 				//TODO: Change order of this and kno, Wastefull but possible to use SP for KNO
                 // Update the character's Skill information.
@@ -16515,18 +16502,7 @@ namespace Chummer
                     objSkillControl.RefreshControl();
                 }
 
-                intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Name == "Aged (Rating 1)")
-                        intKnowledgeSkillPoints += 5;
-                    if (objQuality.Name == "Aged (Rating 2)")
-                        intKnowledgeSkillPoints += 10;
-                    if (objQuality.Name == "Aged (Rating 3)")
-                        intKnowledgeSkillPoints += 15;
-                }
-
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intSkills).ToString(), intKnowledgeSkillPoints.ToString());
+                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
 
                 // Update the character's skill group information.
                 lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);

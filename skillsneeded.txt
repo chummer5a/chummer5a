@@ -1,7 +1,5 @@
 Career mode not working compleetly. (Buttons is not hooked up to anything, UI is looking a little streched. A few writes to .X if Career mode in Controls?)
 
-Aged probably not working (But i haven't checked)
-
 Had a crash when incrementing karma? (Ork, Karma Agi first place) Have not been able to reproduce later so assume fixed. Leaving it here because.
 
 Specs localization not implemented. A dictionary of things it knows how to translate and reverse on load might be all it needs
@@ -22,8 +20,8 @@ Artisian
 
 Autoscale. UI elements have fixed size in width. We might want to try and scale with chummer width. OnResizeXXX event.
 
-
 Remove old skill forms. Keept as shitloads of code calls it, eventually that code have to be stripped out too.
 
 Clean frmCreate/Career to not have old skillcode.
 
+Not possible to spend skill points on knoskill (Stupid but explictily allowed)

@@ -6121,11 +6121,18 @@ namespace Chummer
         {
             get
             {
-                return _intKnowledgeSkillPoints;
-            }
-            set
-            {
-                _intKnowledgeSkillPoints = value;
+	            int fromAttributes;
+
+				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
+	            fromAttributes = BuildMethod == CharacterBuildMethod.Priority ||
+	                             (BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) ||
+	                             BuildMethod == CharacterBuildMethod.SumtoTen
+		            ? (INT.Value + LOG.Value)*_objOptions.FreeKnowledgeMultiplier
+		            : 0;
+
+
+	            int val = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
+	            return fromAttributes + val;
             }
         }
 
@@ -6136,7 +6143,18 @@ namespace Chummer
 	    {
 		    get
 		    {
-			    return KnowledgeSkillPoints - KnowledgeSkills.Sum(x => x.CurrentSpCost());
+			    return KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
+			}
+	    }
+
+		/// <summary>
+		/// Number of knowledge skill points the character have used.
+		/// </summary>
+	    public int KnowledgeSkillPointsUsed
+	    {
+		    get
+		    {
+			    return KnowledgeSkills.Sum(x => x.CurrentSpCost());
 			}
 	    }
 
