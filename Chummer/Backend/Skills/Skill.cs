@@ -325,9 +325,13 @@ namespace Chummer.Skills
 			get { return AttributeObject.Abbrev; }
 		}
 
-		public bool Enabled  //TODO this should cause PropertyChanged Events but not sure how to do it best. Rare (burnout) so low priority
+
+		private bool _oldEnable = true; //For OnPropertyChanged 
+		
+		//TODO handle aspected/adepts who cannot (always) get magic skills
+		public bool Enabled  
 		{
-			get { return RatingMaximum != 0; }
+			get { return AttributeObject.Value != 0; }
 		}
 
 		public virtual bool AllowDelete
@@ -525,6 +529,12 @@ namespace Chummer.Skills
 		private void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
 			OnPropertyChanged(nameof(AttributeModifiers));
+			if (Enabled != _oldEnable)
+			{
+				OnPropertyChanged(nameof(Enabled));
+				_oldEnable = Enabled;
+			}
+
 		}
 
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]

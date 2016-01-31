@@ -65,34 +65,33 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (SkillGroupObject == null || SkillGroupObject.Base == 0)
+				if (SkillGroupObject != null && SkillGroupObject.Base != 0) return;
+
+				int max = 0;
+				int old = _base; // old value, don't fire too many events...
+
+				//Calculate how far above maximum we are. 
+				int overMax = (-1) * (RatingMaximum - (value + Ikarma));
+
+				if (overMax > 0) //Too much
 				{
-					int max = 0;
-					int old = _base; // old value, not needed, don't fire too many events...
+					//Get the smaller value, how far above, how much we can reduce
+					max = Math.Min(overMax, _karma);
 
-					//Calculate how far above maximum we are. 
-					int overMax = (-1) * (RatingMaximum - (value + Ikarma));
+					Karma -= max; //reduce both by that amount
+					overMax -= max;
 
-					if (overMax > 0) //Too much
-					{
-						//Get the smaller value, how far above, how much we can reduce
-						max = Math.Min(overMax, _karma);
-
-						Karma -= max; //reduce both by that amount
-						overMax -= max;
-
-						value -= overMax; //reduce value by leftovers, later prevents it going belov 0
-					}
-					
-					_base = Math.Max(0, value - FreeBase());
-
-					//if old != base, base changed
-					if (old != _base) OnPropertyChanged();
-
-					//if max is changed, karma was too
-					if(max != 0) OnPropertyChanged(nameof(Karma));
-					KarmaSpecForcedMightChange();
+					value -= overMax; //reduce value by leftovers, later prevents it going belov 0
 				}
+					
+				_base = Math.Max(0, value - FreeBase());
+
+				//if old != base, base changed
+				if (old != _base) OnPropertyChanged();
+
+				//if max is changed, karma was too
+				if(max != 0) OnPropertyChanged(nameof(Karma));
+				KarmaSpecForcedMightChange();
 			}
 		}
 
@@ -155,10 +154,6 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				//TODO Check if working with burnout
-				if (AttributeObject.Value == 0)
-					return 0;
-
 				int otherbonus = _character.Improvements.Where(x =>
 					x.Enabled &&
 					x.ImproveType == Improvement.ImprovementType.Skill &&
@@ -173,13 +168,16 @@ namespace Chummer.Skills
 		/// <summary>
 		/// Things that modify the dicepool of the skill
 		/// </summary>
-		public int PoolModifiers
+		public virtual int PoolModifiers
 		{
 			get
 			{
+				ImprovementManager manager = new ImprovementManager(_character);
+				
 				int intModifier = 0;
-				//Code copied from old skill. It seems to do something, but don't want to touch it with a 10 foot pole
-				#region Smelly
+				int condition = manager.ValueOf(Improvement.ImprovementType.ConditionMonitor); 
+				
+				//Dump loop looking at all improvements
 				foreach (Improvement objImprovement in CharacterObject.Improvements)
 				{
 					if (objImprovement.AddToRating && objImprovement.Enabled)
@@ -215,9 +213,10 @@ namespace Chummer.Skills
 								intModifier += objImprovement.Value;
 						}
 					}
+					
 				}
-				#endregion
-				return intModifier;
+				
+				return intModifier + Math.Min(0, condition);
 			}
 		}
 
@@ -247,6 +246,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public virtual int CurrentSpCost()
 		{
+
 			return _base + 
 				((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
 		}
@@ -278,6 +278,9 @@ namespace Chummer.Skills
 
 				cost = RangeCost(lower, Rating);
 			}
+
+			cost /= 2;
+			cost *= CharacterObject.Options.KarmaImproveActiveSkill;
 
 			//Don't think this is going to happen, but if it happens i want to know
 			if (cost < 0 && Debugger.IsAttached)
@@ -318,19 +321,26 @@ namespace Chummer.Skills
 		/// <returns>Price in karma</returns>
 		public virtual int UpgradeKarmaCost()
 		{
+			int masterAdjustment = 0;
+			if (CharacterObject.JackOfAllTrades && CharacterObject.Created)
+			{
+				masterAdjustment = Rating > 5 ? 2 : -1;
+			}
+
 			if (Rating <= RatingMaximum)
 			{
 				return -1;
 			}
 			else if (Rating == 0)
 			{
-				return _character.Options.KarmaNewActiveSkill;
+				return _character.Options.KarmaNewActiveSkill + masterAdjustment;
 			}
 			else
 			{
-				return Rating == 0
+				return (Rating == 0
 					? _character.Options.KarmaNewActiveSkill
-					: (Rating + 1)*_character.Options.KarmaImproveActiveSkill;
+					: (Rating + 1)*_character.Options.KarmaImproveActiveSkill)
+				       + masterAdjustment;
 			}
 		}
 
