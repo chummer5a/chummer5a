@@ -8564,6 +8564,16 @@ namespace Chummer
 	}
 
     /// <summary>
+	/// Type of Contact.
+	/// </summary>
+	public enum LimitType
+    {
+        Physical = 0,
+        Mental = 1,
+        Social = 2
+    }
+
+    /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
     public class LimitModifier

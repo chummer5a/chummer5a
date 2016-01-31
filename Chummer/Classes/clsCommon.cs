@@ -1012,36 +1012,7 @@ namespace Chummer
 		#endregion
 
 		#region Tree Functions
-		/// <summary>
-		/// Clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
-		/// </summary>
-		/// <param name="treTree">TreeView to check.</param>
-		/// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
-		public void ClearNodeBackground(TreeView treTree, TreeNode objHighlighted)
-		{
-			foreach (TreeNode objNode in treTree.Nodes)
-			{
-				if (objNode != objHighlighted)
-					objNode.BackColor = SystemColors.Window;
-				ClearNodeBackground(objNode, objHighlighted);
-			}
-		}
 
-		/// <summary>
-		/// Recursive method to clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
-		/// </summary>
-		/// <param name="objNode">Parent TreeNode to check.</param>
-		/// <param name="objHighlighted">TreeNode that is currently being hovered over.</param>
-		private void ClearNodeBackground(TreeNode objNode, TreeNode objHighlighted)
-		{
-			foreach (TreeNode objChild in objNode.Nodes)
-			{
-				if (objChild != objHighlighted)
-					objChild.BackColor = SystemColors.Window;
-				if (objChild.Nodes.Count > 0)
-					ClearNodeBackground(objChild, objHighlighted);
-			}
-		}
 
 		/// <summary>
 		/// Build up the Tree for the current piece of Gear and all of its children.
@@ -1112,33 +1083,6 @@ namespace Chummer
 
 		}
 
-		/// <summary>
-		/// Sort the contents of a TreeView alphabetically within each group Node.
-		/// </summary>
-		/// <param name="treTree">TreeView to sort.</param>
-		public void SortTree(TreeView treTree)
-		{
-			for (int i = 0; i <= treTree.Nodes.Count - 1; i++)
-			{
-				List<TreeNode> lstNodes = new List<TreeNode>();
-				foreach (TreeNode objNode in treTree.Nodes[i].Nodes)
-					lstNodes.Add(objNode);
-				treTree.Nodes[i].Nodes.Clear();
-				try
-				{
-					SortByName objSort = new SortByName();
-					lstNodes.Sort(objSort.Compare);
-				}
-				catch
-				{
-				}
-
-				foreach (TreeNode objNode in lstNodes)
-					treTree.Nodes[i].Nodes.Add(objNode);
-
-				treTree.Nodes[i].Expand();
-			}
-		}
 		#endregion
 
 		#region TreeNode Creation Methods
@@ -1515,7 +1459,7 @@ namespace Chummer
         /// <param name="width">Width, in characters, to which the text
         /// should be word wrapped</param>
         /// <returns>The modified text</returns>
-        public string WordWrap(string text, int width)
+        public static string WordWrap(string text, int width)
         {
             int pos, next;
             StringBuilder sb = new StringBuilder();

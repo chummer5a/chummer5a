@@ -346,8 +346,7 @@ namespace Chummer
 		{
 			if (_lockKnowledge) return;
 
-			string strSkillName = cboSkillName.Text.Split('(')[0];
-			strSkillName = strSkillName.Substring(0, (strSkillName.Length - 1));
+			string strSkillName = cboSkillName.Text.Split('(')[0].Trim();
 
 			_objSkill.Name = strSkillName;
 			cboSkillName.Text = strSkillName;
