@@ -5137,9 +5137,11 @@
 			<category>Foci</category>
 			<rating>18</rating>
 			<bonus>
-				<selectpower>
-					<val>Rating</val>
-				</selectpower>
+				<selectpowers>
+					<selectpower>
+						<val>Rating</val>
+					</selectpower>
+				</selectpowers>
 			</bonus>
 			<avail>(Rating * 3)R</avail>
 			<cost>Rating * 3000</cost>
