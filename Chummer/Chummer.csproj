@@ -163,12 +163,6 @@
     <Compile Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
