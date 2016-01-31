@@ -4380,7 +4380,7 @@
 			<rating>6</rating>
 			<armorcapacity>[1]</armorcapacity>
 			<avail>8R</avail>
-			<cost>Rating * 250</cost>
+			<cost>Rating * 500</cost>
 			<source>SR5</source>
 			<page>447</page>
 		</gear>
