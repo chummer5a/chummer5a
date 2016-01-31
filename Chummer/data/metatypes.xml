@@ -3070,6 +3070,16 @@
 			<depmin>1</depmin>
 			<depmax>6</depmax>
 			<depaug>6</depaug>
+			<qualities>
+				<positive>
+					<quality>Codeslinger</quality>
+					<quality>Photographic Memory</quality>
+					<quality>Speed Reading</quality>
+				</positive>
+				<negative>
+					<quality>Real World Naiveté</quality>
+				</negative>
+			</qualities>
 			<qualityrestriction>
 				<positive>
 					<quality>Animal Empathy</quality>

@@ -1577,6 +1577,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Expand.png" />
+    <Content Include="data\Priorities.AI.xml" />
     <Content Include="export\Squad Manager.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
