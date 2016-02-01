@@ -254,6 +254,7 @@ namespace Chummer.Skills
 			_character = character;
 			_group = group;
 			
+			_character.PropertyChanged += OnCharacterChanged;
 			SkillGroupObject = Skills.SkillGroup.Get(this);
 			if (SkillGroupObject != null)
 			{
@@ -262,6 +263,8 @@ namespace Chummer.Skills
 
 			ImprovementEvent += OnImprovementEvent;
 		}
+
+		
 
 		[Obsolete]
 		public Skill(Character character)
@@ -332,6 +335,12 @@ namespace Chummer.Skills
 		public bool Enabled  
 		{
 			get { return AttributeObject.Value != 0; }
+		}
+
+		private bool _oldUpgrade = false;
+		public bool CanUpgradeCareer
+		{
+			get { return CharacterObject.Karma >= UpgradeKarmaCost(); }
 		}
 
 		public virtual bool AllowDelete
@@ -523,6 +532,19 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
 				KarmaSpecForcedMightChange();
+			}
+		}
+
+		private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			if (propertyChangedEventArgs.PropertyName == nameof(Character.Karma))
+			{
+				if (_oldUpgrade != CanUpgradeCareer)
+				{
+					_oldUpgrade = CanUpgradeCareer;
+					OnPropertyChanged(nameof(CanUpgradeCareer));
+				}
+
 			}
 		}
 

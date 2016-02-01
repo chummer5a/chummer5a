@@ -16,6 +16,7 @@ UI is missing stuff. Labels and old tooltips. Skillgroups should be straight for
 
 Artisian
 
+Undo expense not working
 
 
 Remove old skill forms. Keept as shitloads of code calls it, eventually that code have to be stripped out too.

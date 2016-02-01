@@ -141,6 +141,7 @@
 			this.btnCareerIncrease.TabIndex = 21;
 			this.btnCareerIncrease.UseVisualStyleBackColor = true;
 			this.btnCareerIncrease.Visible = false;
+			this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
 			// 
 			// SkillControl2
 			// 

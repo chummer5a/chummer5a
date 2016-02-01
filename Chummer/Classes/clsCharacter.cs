@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 using Chummer.Skills;
 
 // MAGEnabledChanged Event Handler
@@ -71,7 +73,7 @@ namespace Chummer
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
-    public class Character
+    public class Character : INotifyPropertyChanged
     {
 	    private XmlNode oldSkillsBackup;
 	    private XmlNode oldSKillGroupBackup;
@@ -3771,7 +3773,7 @@ namespace Chummer
             }
             set
             {
-                _intKarma = value;
+				OnPropertyChanged(ref _intKarma, value);
             }
         }
 
@@ -7668,5 +7670,17 @@ namespace Chummer
 			}
 		}
 	    #endregion
-	}
+
+	    public event PropertyChangedEventHandler PropertyChanged;
+
+	    [NotifyPropertyChangedInvocator]
+	    protected virtual void OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)
+	    {
+		    if ((old == null && value != null) || value == null || !old.Equals(value))
+		    {
+			    old = value;
+			    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		    }
+	    }
+    }
 }

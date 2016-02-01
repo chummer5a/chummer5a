@@ -35,7 +35,8 @@ namespace Chummer.UI.Shared
 				lblCareerRating.Visible = true;
 
 				btnCareerIncrease.Visible = true;
-
+				btnCareerIncrease.DataBindings.Add("Enabled", skill, nameof(Skill.CanUpgradeCareer), false,
+					DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.Visible = false;
 				nudKarma.Visible = false;
 				chkKarma.Visible = false;
@@ -89,6 +90,21 @@ namespace Chummer.UI.Shared
 		private void SkillControl2_Load(object sender, EventArgs e)
 		{
 			
+		}
+
+		private void btnCareerIncrease_Click(object sender, EventArgs e)
+		{
+			frmCareer parrent = ParentForm as frmCareer;
+			if (parrent != null)
+			{
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+					skill.DisplayName, skill.Rating + 1, skill.UpgradeKarmaCost());
+					
+				if (!parrent.ConfirmKarmaExpense(confirmstring))
+					return;
+			}
+
+			skill.Upgrade();
 		}
 	}
 }

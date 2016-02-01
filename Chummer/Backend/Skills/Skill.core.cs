@@ -327,7 +327,7 @@ namespace Chummer.Skills
 				masterAdjustment = Rating > 5 ? 2 : -1;
 			}
 
-			if (Rating <= RatingMaximum)
+			if (Rating >= RatingMaximum)
 			{
 				return -1;
 			}
@@ -337,11 +337,28 @@ namespace Chummer.Skills
 			}
 			else
 			{
-				return (Rating == 0
-					? _character.Options.KarmaNewActiveSkill
-					: (Rating + 1)*_character.Options.KarmaImproveActiveSkill)
-				       + masterAdjustment;
+				return  (Rating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
 			}
+		}
+
+		public void Upgrade()
+		{
+			if (!CanUpgradeCareer) return;
+
+			int price = UpgradeKarmaCost();
+
+			//If data file contains {4} this crashes but...
+			string upgradetext =
+				$"{LanguageManager.Instance.GetString("String_ExpenseActiveSkill")} {DisplayName} {Rating} -> {(Rating + 1)}";
+
+			ExpenseLogEntry entry = new	ExpenseLogEntry();
+			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+			entry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
+			
+			CharacterObject.ExpenseEntries.Add(entry);
+
+			Karma =+ 1;
+			CharacterObject.Karma -= price;
 		}
 
 		/// <summary>

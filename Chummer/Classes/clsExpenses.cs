@@ -194,10 +194,12 @@ namespace Chummer
 		/// </summary>
 		/// <param name="objExpenseType">Karma expense type.</param>
 		/// <param name="strObjectId">Object identifier.</param>
-		public void CreateKarma(KarmaExpenseType objExpenseType, string strObjectId)
+		public ExpenseUndo CreateKarma(KarmaExpenseType objExpenseType, string strObjectId)
 		{
 			_objKarmaExpenseType = objExpenseType;
 			_strObjectId = strObjectId;
+
+			return this;
 		}
 
 		/// <summary>
@@ -206,11 +208,13 @@ namespace Chummer
 		/// <param name="objExpenseType">Nuyen expense type.</param>
 		/// <param name="strObjectId">Object identifier.</param>
 		/// <param name="intQty">Amount of Nuyen.</param>
-		public void CreateNuyen(NuyenExpenseType objExpenseType, string strObjectId, int intQty = 0)
+		public ExpenseUndo CreateNuyen(NuyenExpenseType objExpenseType, string strObjectId, int intQty = 0)
 		{
 			_objNuyenExpenseType = objExpenseType;
 			_strObjectId = strObjectId;
 			_intQty = intQty;
+
+			return this;
 		}
 
 		/// <summary>
