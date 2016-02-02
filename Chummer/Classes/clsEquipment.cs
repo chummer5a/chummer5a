@@ -7855,10 +7855,9 @@ namespace Chummer
 			catch
 			{
 			}
-			if (objNode.InnerXml.Contains("ammoslots"))
-			{
-				_intAmmoSlots = Convert.ToInt32(objNode["ammoslots"].InnerText);
-			}
+
+			objNode.TryGetField("ammoslots", out _intAmmoSlots);
+			
 
 			if (objNode.InnerXml.Contains("<gears>"))
 			{

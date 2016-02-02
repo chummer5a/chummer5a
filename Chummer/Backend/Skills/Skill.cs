@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Json;
+using System.Windows.Input;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Datastructures;
@@ -180,7 +182,17 @@ namespace Chummer.Skills
 
 				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
 
-				//TODO Specs
+				var v = from XmlNode node
+					in n.SelectNodes("skillspecializations/skillspecialization")
+					select SkillSpecialization.Load(node);
+				var q = v.ToList();
+				if (q.Count != 0)
+				{
+					
+				}
+
+				skill.Specializations.AddRange(q);
+				
 
 				return skill;
 			}
@@ -340,7 +352,7 @@ namespace Chummer.Skills
 		private bool _oldUpgrade = false;
 		public bool CanUpgradeCareer
 		{
-			get { return CharacterObject.Karma >= UpgradeKarmaCost(); }
+			get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > Rating; }
 		}
 
 		public virtual bool AllowDelete
@@ -411,37 +423,7 @@ namespace Chummer.Skills
 				{
 					return Specializations[0].Name;
 				}
-				return null;
-			}
-			set
-			{
-				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
-				
-				if (Specializations.Count >= 1 && Specializations[0].Free)
-				{
-					if (string.IsNullOrWhiteSpace(value))
-					{
-						Specializations.RemoveAt(0);
-						OnPropertyChanged();
-						KarmaSpecForcedMightChange();
-					}
-					else if (Specializations[0].Name != value)
-					{
-						Specializations[0] = new SkillSpecialization(value, true);
-						OnPropertyChanged();
-						KarmaSpecForcedMightChange();
-					}
-				}
-				else
-				{
-					if (!String.IsNullOrWhiteSpace(value))
-					{
-						Specializations.Add(new SkillSpecialization(value, true));
-						OnPropertyChanged();
-						KarmaSpecForcedMightChange();
-					}
-				}
-
+				return "";
 			}
 		}
 
@@ -478,10 +460,53 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					return $"{Pool} ({Pool + 2})"; //TODO: Artisian handle
+					return $"{Pool} ({Pool + 2})"; //TODO: Artisian handle/Exotic
 				}
 			}
 
+		}
+
+		/// <summary>
+		/// The rating this skill have from Skillwires + Skilljack or Active Hardwires
+		/// </summary>
+		/// <returns>Artificial skill rating</returns>
+		public int WireRating()
+		{
+			//TODO: this needs impl
+			//TODO: method is here, but not used in any form, needs testing (worried about child items...)
+			//this might do hardwires if i understand how they works correctly
+			int hardwire = CharacterObject.Improvements.Where(
+				improvement =>
+					improvement.ImproveType == Improvement.ImprovementType.HardWire && improvement.ImprovedName == Name &&
+					improvement.Enabled).Max(x => x.Value);
+
+			if (hardwire > 0) return hardwire;
+
+			ImprovementManager manager = new ImprovementManager(CharacterObject);
+
+			//I don't think || CharacterObject.SkillSoftAccess is acctually correct. Reads to me as if skilljack alone can give skills
+			if (manager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || CharacterObject.SkillsoftAccess)
+			{
+				Func<Gear, int> recusivestuff = null; recusivestuff = (gear) =>
+				{
+					//TODO this works with translate?
+					if (gear.Equipped && gear.Category == "Skillsofts" &&
+					    (gear.Extra == Name ||
+					     gear.Extra == Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+					{
+						return gear.Name == "Activesoft"
+							? Math.Min(gear.Rating, manager.ValueOf(Improvement.ImprovementType.Skillwire))
+							: gear.Rating;
+
+					}
+					return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
+				};
+
+				return CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+
+			}
+
+			return 0;
 		}
 
 		#endregion

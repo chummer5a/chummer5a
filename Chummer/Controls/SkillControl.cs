@@ -917,7 +917,7 @@ namespace Chummer
 			set
 			{
 				cboSpec.Text = value;
-				_objSkill.Specialization = value;
+				//_objSkill.Specialization = value;
 			}
         }
 

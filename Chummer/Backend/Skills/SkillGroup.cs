@@ -112,10 +112,6 @@ namespace Chummer.Skills
 				}
 
 				return _affectedSkills.Max(x => x.Rating) < RatingMaximum;
-
-
-
-
 			}
 		}
 
@@ -146,6 +142,26 @@ namespace Chummer.Skills
 			{
 				return (_character.Created ? 12 : 6);
 			}
+		}
+
+		public void Upgrade()
+		{
+			if (!CareerIncrease) return;
+
+			int price = UpgradeKarmaCost();
+
+			//If data file contains {4} this crashes but...
+			string upgradetext =
+				$"{LanguageManager.Instance.GetString("String_ExpenseActiveSkill")} {DisplayName} {Rating} -> {(Rating + 1)}";
+
+			ExpenseLogEntry entry = new ExpenseLogEntry();
+			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+			entry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
+
+			Character.ExpenseEntries.Add(entry);
+
+			Karma = +1;
+			Character.Karma -= price;
 		}
 
 		#endregion
@@ -215,14 +231,21 @@ namespace Chummer.Skills
 }
 				_karmaBrokenOldValue = KarmaUnbroken;
 			}
+
+			if (_careerIncreaseOldValue != CareerIncrease)
+			{
+				_careerIncreaseOldValue = CareerIncrease;
+				OnPropertyChanged(nameof(CareerIncrease));
+			}
 		}
 
 		private bool _baseBrokenOldValue;
 		private bool _karmaBrokenOldValue;
+		private bool _careerIncreaseOldValue;
 		private readonly List<Skill> _affectedSkills = new List<Skill>(); 
 		private readonly string _groupName;
 		private readonly Character _character;
-
+		
 		private SkillGroup(Character character, string groupName)
 		{
 			_character = character;
@@ -247,6 +270,10 @@ namespace Chummer.Skills
 			get { return Name; } //TODO TRANSLATE
 		}
 
+		public Guid Id { get; } = Guid.NewGuid();
+
+
+		#region HasWhateverSkills
 		public bool HasCombatSkills
 		{
 			get { return _affectedSkills.Any(x => x.SkillCategory == "Combat Active"); }
@@ -281,6 +308,7 @@ namespace Chummer.Skills
 		{
 			get { return _affectedSkills.Any(x => x.SkillCategory == "Resonance Active"); }
 		}
+		#endregion
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -331,7 +359,23 @@ namespace Chummer.Skills
 			cost -= lower*(lower - 1);
 			cost /= 2; //We get sqre, need triangle
 			
-			return cost * _character.Options.KarmaImproveSkillGroup; 
+			return cost * _character.Options.KarmaImproveSkillGroup; //todo handle KarmaNewSkillGrup 
+		}
+
+		public int UpgradeKarmaCost()
+		{
+			if (Rating == 0)
+			{
+				return Character.Options.KarmaNewSkillGroup;
+			}
+			else if (RatingMaximum > Rating)
+			{
+				return (Rating + 1)*Character.Options.KarmaImproveSkillGroup;
+			}
+			else
+			{
+				return -1;
+			}
 		}
 
 		

@@ -15,6 +15,7 @@ namespace Chummer.UI.Shared
 	{
 		private static double total = 0;
 		private Skill skill;
+
 		public SkillControl2(Skill skill)
 		{
 			this.skill = skill;
@@ -40,6 +41,14 @@ namespace Chummer.UI.Shared
 				nudSkill.Visible = false;
 				nudKarma.Visible = false;
 				chkKarma.Visible = false;
+
+				cboSpec.Visible = false;
+				lblCareerSpec.Text = string.Join(", ", 
+					(from specialization in skill.Specializations
+					 select specialization.Name));
+				lblCareerSpec.Visible = true;
+				btnAddSpec.Visible = skill.Leveled;
+				skill.PropertyChanged += VisibleDatabindingBrokenWorkaround;
 			}
 			else
 			{
@@ -87,6 +96,14 @@ namespace Chummer.UI.Shared
 
 		}
 
+		private void VisibleDatabindingBrokenWorkaround(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(Skill.Leveled))
+			{
+				btnAddSpec.Visible = skill.Leveled;
+			}
+		}
+
 		private void SkillControl2_Load(object sender, EventArgs e)
 		{
 			
@@ -105,6 +122,21 @@ namespace Chummer.UI.Shared
 			}
 
 			skill.Upgrade();
+		}
+
+		private void btnAddSpec_Click(object sender, EventArgs e)
+		{
+			frmCareer parrent = ParentForm as frmCareer;
+			if (parrent != null)
+			{
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
+						skill.CharacterObject.Options.KarmaSpecialization);
+
+				if (!parrent.ConfirmKarmaExpense(confirmstring))
+					return;
+			}
+
+			
 		}
 	}
 }

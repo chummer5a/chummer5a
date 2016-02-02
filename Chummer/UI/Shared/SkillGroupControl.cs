@@ -53,5 +53,20 @@ namespace Chummer.UI.Shared
 				}
 			}
 		}
+
+		private void btnCareerIncrease_Click(object sender, EventArgs e)
+		{
+			frmCareer parrent = ParentForm as frmCareer;
+			if (parrent != null)
+			{
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+					_skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
+
+				if (!parrent.ConfirmKarmaExpense(confirmstring))
+					return;
+			}
+
+			_skillGroup.Upgrade();
+		}
 	}
 }

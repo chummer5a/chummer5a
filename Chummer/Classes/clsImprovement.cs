@@ -63,6 +63,7 @@ namespace Chummer
 			Submersion,
 			Infirm,
 			Skillwire,
+			HardWire,
 			DamageResistance,
 			RestrictedItemCount,
 			AdeptLinguistics,

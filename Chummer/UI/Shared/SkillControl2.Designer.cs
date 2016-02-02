@@ -38,6 +38,8 @@
 			this.cmdDelete = new System.Windows.Forms.Button();
 			this.lblCareerRating = new System.Windows.Forms.Label();
 			this.btnCareerIncrease = new System.Windows.Forms.Button();
+			this.lblCareerSpec = new System.Windows.Forms.Label();
+			this.btnAddSpec = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -96,9 +98,9 @@
 			// cboSpec
 			// 
 			this.cboSpec.FormattingEnabled = true;
-			this.cboSpec.Location = new System.Drawing.Point(275, 1);
+			this.cboSpec.Location = new System.Drawing.Point(280, 1);
 			this.cboSpec.Name = "cboSpec";
-			this.cboSpec.Size = new System.Drawing.Size(177, 21);
+			this.cboSpec.Size = new System.Drawing.Size(172, 21);
 			this.cboSpec.Sorted = true;
 			this.cboSpec.TabIndex = 17;
 			// 
@@ -143,10 +145,33 @@
 			this.btnCareerIncrease.Visible = false;
 			this.btnCareerIncrease.Click += new System.EventHandler(this.btnCareerIncrease_Click);
 			// 
+			// lblCareerSpec
+			// 
+			this.lblCareerSpec.AutoSize = true;
+			this.lblCareerSpec.Location = new System.Drawing.Point(280, 4);
+			this.lblCareerSpec.Name = "lblCareerSpec";
+			this.lblCareerSpec.Size = new System.Drawing.Size(35, 13);
+			this.lblCareerSpec.TabIndex = 22;
+			this.lblCareerSpec.Text = "label1";
+			this.lblCareerSpec.Visible = false;
+			// 
+			// btnAddSpec
+			// 
+			this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
+			this.btnAddSpec.Location = new System.Drawing.Point(452, -2);
+			this.btnAddSpec.Name = "btnAddSpec";
+			this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
+			this.btnAddSpec.TabIndex = 23;
+			this.btnAddSpec.UseVisualStyleBackColor = true;
+			this.btnAddSpec.Visible = false;
+			this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
+			// 
 			// SkillControl2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.btnAddSpec);
+			this.Controls.Add(this.lblCareerSpec);
 			this.Controls.Add(this.btnCareerIncrease);
 			this.Controls.Add(this.lblCareerRating);
 			this.Controls.Add(this.cmdDelete);
@@ -180,5 +205,7 @@
 		private System.Windows.Forms.Button cmdDelete;
 		private System.Windows.Forms.Label lblCareerRating;
 		private System.Windows.Forms.Button btnCareerIncrease;
+		private System.Windows.Forms.Label lblCareerSpec;
+		private System.Windows.Forms.Button btnAddSpec;
 	}
 }

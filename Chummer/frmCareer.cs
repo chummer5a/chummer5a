@@ -514,57 +514,57 @@ namespace Chummer
 			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/skills/skill[" + _objCharacter.Options.BookXPath() + "]");
 			// Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
 			int i = -1;
-			foreach (Skill objSkill in _objCharacter.Skills)
-			{
-				if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
-				{
-					i++;
-					SkillControl objSkillControl = new SkillControl();
-					objSkillControl.SkillObject = objSkill;
+			//foreach (Skill objSkill in _objCharacter.Skills)
+			//{
+			//	if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
+			//	{
+			//		//i++;
+			//		//SkillControl objSkillControl = new SkillControl();
+			//		//objSkillControl.SkillObject = objSkill;
 
-					// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-					objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
-					objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-					objSkillControl.SpecializationLeave += objSkill_SpecializationLeave;
-					objSkillControl.SkillKarmaClicked += objSkill_KarmaClicked;
-					objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
+			//		//// Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+			//		//objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
+			//		//objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+			//		//objSkillControl.SpecializationLeave += objSkill_SpecializationLeave;
+			//		//objSkillControl.SkillKarmaClicked += objSkill_KarmaClicked;
+			//		//objSkillControl.DiceRollerClicked += objSkill_DiceRollerClicked;
 
-					objSkillControl.SkillName = objSkill.Name;
-					objSkillControl.SkillCategory = objSkill.SkillCategory;
-					objSkillControl.SkillGroup = objSkill.SkillGroup;
-					objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
-					objSkillControl.SkillRating = objSkill.Rating;
-					objSkillControl.SkillSpec = objSkill.Specialization;
+			//		//objSkillControl.SkillName = objSkill.Name;
+			//		//objSkillControl.SkillCategory = objSkill.SkillCategory;
+			//		//objSkillControl.SkillGroup = objSkill.SkillGroup;
+			//		//objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
+			//		//objSkillControl.SkillRating = objSkill.Rating;
+			//		//objSkillControl.SkillSpec = objSkill.Specialization;
 
-					XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
-					// Populate the Skill's Specializations (if any).
-					foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
-					{
-						if (objXmlSpecialization.Attributes["translate"] != null)
-							objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-						else
-							objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-					}
+			//		//XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
+			//		//// Populate the Skill's Specializations (if any).
+			//		//foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
+			//		//{
+			//		//	if (objXmlSpecialization.Attributes["translate"] != null)
+			//		//		objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
+			//		//	else
+			//		//		objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+			//		//}
 
-					// Set the control's vertical position and add it to the Skills Panel.
-					objSkillControl.Width = 510;
-					objSkillControl.AutoScroll = false;
-					panActiveSkills.Controls.Add(objSkillControl);
+			//		//// Set the control's vertical position and add it to the Skills Panel.
+			//		//objSkillControl.Width = 510;
+			//		//objSkillControl.AutoScroll = false;
+			//		//panActiveSkills.Controls.Add(objSkillControl);
 
-					// Determine if this Skill should be added to the list of Skills for Comlex Form Tests.
-					bool blnAddSkill = true;
-					if (objSkill.Attribute == "MAG" || objSkill.SkillCategory == "Magical Active")
-						blnAddSkill = false;
+			//		//// Determine if this Skill should be added to the list of Skills for Comlex Form Tests.
+			//		//bool blnAddSkill = true;
+			//		//if (objSkill.Attribute == "MAG" || objSkill.SkillCategory == "Magical Active")
+			//		//	blnAddSkill = false;
 
-					if (blnAddSkill)
-					{
-						ListItem objItem = new ListItem();
-						objItem.Value = objSkill.Name;
-						objItem.Name = objSkill.GetDisplayName();
-						lstComplexFormSkills.Add(objItem);
-					}
-				}
-			}
+			//		//if (blnAddSkill)
+			//		//{
+			//		//	ListItem objItem = new ListItem();
+			//		//	objItem.Value = objSkill.Name;
+			//		//	objItem.Name = objSkill.GetDisplayName();
+			//		//	lstComplexFormSkills.Add(objItem);
+			//		//}
+			//	}
+			//}
 
 			// Exotic Skills.
 			foreach (Skill objSkill in _objCharacter.Skills)
@@ -13509,68 +13509,19 @@ namespace Chummer
 					break;
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.
-					foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-					{
-						if (objSkillGroupControl.GroupName == objEntry.Undo.ObjectId)
-						{
-							objSkillGroupControl.GroupRating--;
-							break;
-						}
-					}
+					SkillGroup group = _objCharacter.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
+					if (group != null) group.Karma--; //TODO test this and below, todo handle skill added later, spec and decrease
+
+					//TODO: ImproveSkil[Group] AddSkill[Group] both exist but usage?
 					break;
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
-					string strSkillGroup = "";
-					int intRating = 0;
-					foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-					{
-						if (objSkillControl.SkillName == objEntry.Undo.ObjectId)
-						{
-							objSkillControl.SkillRating--;
-							intRating = objSkillControl.SkillRating;
-							strSkillGroup = objSkillControl.SkillGroup;
-							break;
-						}
-					}
-					foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-					{
-						if (objSkillControl.SkillName == objEntry.Undo.ObjectId)
-						{
-							objSkillControl.SkillRating--;
-							break;
-						}
-					}
+					Skill skill = _objCharacter.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+					if (skill == null)
+						skill = _objCharacter.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 
-					// Look at the Skill Group the Skill is associated with. If the option to allow Skill Groups to be re-created is enabled and all Skills have the same Rating, or if all of the Skills
-					// have Rating 0, then re-enable the Group.
-					if (strSkillGroup != string.Empty)
-					{
-						bool blnAllRatingsMatch = true;
-						foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-						{
-							if (objSkillControl.SkillGroup == strSkillGroup)
-							{
-								if (objSkillControl.SkillRating != intRating)
-									blnAllRatingsMatch = false;
-							}
-						}
+					if(skill != null) skill.Karma--;
 
-						if (blnAllRatingsMatch && (intRating == 0 || _objOptions.AllowSkillRegrouping))
-						{
-							// All of the Ratings match and we're allow to re-create the Skill Group, so re-enable the Skill Group's Improve button.
-							foreach (SkillGroupControl objGroupControl in panSkillGroups.Controls)
-							{
-								if (objGroupControl.GroupName == strSkillGroup)
-								{
-									objGroupControl.Broken = false;
-									objGroupControl.Enabled = true;
-									objGroupControl.IsEnabled = true;
-									objGroupControl.GroupRating = intRating;
-									break;
-								}
-							}
-						}
-					}
 					break;
 				case KarmaExpenseType.AddMetamagic:
 					// Locate the Metamagic that was affected.
