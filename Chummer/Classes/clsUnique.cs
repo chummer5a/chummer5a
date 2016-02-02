@@ -3014,45 +3014,49 @@ namespace Chummer
 				{
 					if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _strName && objImprovement.Enabled)
 					{
-						if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > _intRating)
+						if (objImprovement.Rating > _intRating)
 						{
-							intRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
+							intRating = objImprovement.Value;
 							break;
 						}
                     }
-				}
-				if (objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || _objCharacter.SkillsoftAccess)
-				{
-					foreach (Gear objGear in _objCharacter.Gear)
+					else if (objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || _objCharacter.SkillsoftAccess)
 					{
-						// Look for any Skillsoft that would conflict with the Skill's Rating.
-						if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _strName || objGear.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+						foreach (Gear objGear in _objCharacter.Gear)
 						{
-							if (objGear.Rating > _intRating)
+							// Look for any Skillsoft that would conflict with the Skill's Rating.
+							if (objGear.Equipped && objGear.Category == "Skillsofts" &&
+							    (objGear.Extra == _strName ||
+							     objGear.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
 							{
-								// Use the Skillsoft's Rating or Skilwire Rating, whichever is lower.
-								// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-								if (objGear.Name == "Activesoft")
-									intRating = Math.Min(objGear.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
-								else
-									intRating = objGear.Rating;
-								break;
-							}
-						}
-
-						foreach (Gear objChild in objGear.Children)
-						{
-							if (objChild.Equipped && objChild.Category == "Skillsofts" && (objChild.Extra == _strName || objChild.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
-							{
-								if (objChild.Rating > _intRating)
+								if (objGear.Rating > _intRating)
 								{
-									// Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
+									// Use the Skillsoft's Rating or Skilwire Rating, whichever is lower.
 									// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-									if (objChild.Name == "Activesoft")
-										intRating = Math.Min(objChild.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
+									if (objGear.Name == "Activesoft")
+										intRating = Math.Min(objGear.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
 									else
-										intRating = objChild.Rating;
+										intRating = objGear.Rating;
 									break;
+								}
+							}
+
+							foreach (Gear objChild in objGear.Children)
+							{
+								if (objChild.Equipped && objChild.Category == "Skillsofts" &&
+								    (objChild.Extra == _strName ||
+								     objChild.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+								{
+									if (objChild.Rating > _intRating)
+									{
+										// Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
+										// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
+										if (objChild.Name == "Activesoft")
+											intRating = Math.Min(objChild.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
+										else
+											intRating = objChild.Rating;
+										break;
+									}
 								}
 							}
 						}
