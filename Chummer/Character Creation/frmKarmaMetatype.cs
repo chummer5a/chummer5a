@@ -892,6 +892,8 @@ namespace Chummer
 				// Add any Natural Weapons the Metavariant should have.
 				if (cboMetavariant.SelectedValue.ToString() != "None")
 				{
+					if (objXmlMetavariant["naturalweapons"] != null)
+					{
 						foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
 						{
 							Weapon objWeapon = new Weapon(_objCharacter);
@@ -899,8 +901,10 @@ namespace Chummer
 							objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
 							objWeapon.WeaponType = "Melee";
 							objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
-							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
+							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
+							;
+							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
+							;
 							objWeapon.Mode = "0";
 							objWeapon.RC = "0";
 							objWeapon.Concealability = 0;
@@ -912,6 +916,7 @@ namespace Chummer
 
 							_objCharacter.Weapons.Add(objWeapon);
 						}
+					}
 				}
 
 				// If this is a Blood Spirit, add their free Critter Powers.

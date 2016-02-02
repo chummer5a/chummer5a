@@ -17708,7 +17708,7 @@
 				<id>1f011f9a-42bb-401d-938d-592a4759a502</id>
 				<name>Chrysler-Nissan Journey (Car)</name>
 				<translate>Chrysler-Nissan Journey (Car)</translate>
-				<page>1f011f9a-42bb-401d-938d-592a4759a502</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>d7695e8c-1eab-4fe3-8b37-406cc73ca1d6</id>
@@ -17720,13 +17720,13 @@
 				<id>7eb50773-4291-42af-af27-1ac469f8470c</id>
 				<name>Honda Artemis (Car)</name>
 				<translate>Honda Artemis (Car)</translate>
-				<page>7eb50773-4291-42af-af27-1ac469f8470c</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle>
 				<id>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</id>
 				<name>Saeder-Krupp LT-21 (Delivery Van)</name>
 				<translate>Saeder-Krupp LT-21 (Delivery Van)</translate>
-				<page>62a93c90-fcfe-49bd-85ba-4730f4b6ebd7</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>72a204fc-e4f7-4e00-9d14-7f338fb86817</id>
@@ -17738,19 +17738,19 @@
 				<id>9f6115e6-b52b-40d8-94d5-c4874de4858b</id>
 				<name>Dodge Ram Industrial (Large) (Garbage Truck)</name>
 				<translate>Dodge Ram Industrial (Large) (Garbage Truck)</translate>
-				<page>9f6115e6-b52b-40d8-94d5-c4874de4858b</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle>
 				<id>53afa8ff-2903-4167-8ed4-ae6d833d1547</id>
 				<name>Dodge Ram Industrial (Narrow) (Garbage Truck)</name>
 				<translate>Dodge Ram Industrial (Narrow) (Garbage Truck)</translate>
-				<page>53afa8ff-2903-4167-8ed4-ae6d833d1547</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle>
 				<id>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</id>
 				<name>Esprit Industries Watcher (SUV)</name>
 				<translate>Esprit Industries Watcher (SUV)</translate>
-				<page>f43a6579-cc23-4bae-b154-5f9adf6cb7f2</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>71600577-7cce-4f6b-9854-531460d9400a</id>
@@ -17768,13 +17768,13 @@
 				<id>f73f5dbf-f812-4a04-a441-98a3cc37d23a</id>
 				<name>GMC Endurance (Van)</name>
 				<translate>GMC Endurance (Van)</translate>
-				<page>f73f5dbf-f812-4a04-a441-98a3cc37d23a</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle>
 				<id>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</id>
 				<name>GMC Sidewinder (SUV)</name>
 				<translate>GMC Sidewinder (SUV)</translate>
-				<page>e04c0dce-b45a-4f0d-8d48-bea1c4a305f1</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>0ed17686-7ac3-48de-88d2-bc8738a00afa</id>
@@ -17786,13 +17786,13 @@
 				<id>81505035-7043-4841-a952-3763e9e7ddc5</id>
 				<name>Conestoga Trailblazer (Moving Truck)</name>
 				<translate>Conestoga Trailblazer (Moving Truck)</translate>
-				<page>81505035-7043-4841-a952-3763e9e7ddc5</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle>
 				<id>f4b1800d-7542-477c-b007-094e6a989ece</id>
 				<name>Conestoga Trailblazer w/Trailer (Moving Truck)</name>
 				<translate>Conestoga Trailblazer w/Trailer (Moving Truck)</translate>
-				<page>f4b1800d-7542-477c-b007-094e6a989ece</page>
+				<page>186</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>7e5d30f4-ef09-4a95-8bb5-a9128557e1b0</id>
@@ -17834,7 +17834,7 @@
 				<id>10a55a19-7f86-4942-830f-212b9975280e</id>
 				<name>Cyberspace Designs Dragonfly (Small)</name>
 				<translate>Cyberspace Designs Dragonfly (Small)</translate>
-				<page>10a55a19-7f86-4942-830f-212b9975280e</page>
+				<page>179</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>c8f7e6c0-85e6-4feb-9ef0-0aeca5fba76b</id>
@@ -17846,13 +17846,13 @@
 				<id>3fc823bd-bff7-4838-8f94-11c1e55c380a</id>
 				<name>Bust-A-Move (2nd Generation) (Medium)</name>
 				<translate>Bust-A-Move (2nd Generation) (Medium)</translate>
-				<page>3fc823bd-bff7-4838-8f94-11c1e55c380a</page>
+				<page>179</page>
 			</vehicle>
 			<vehicle>
 				<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
 				<name>Transys Office Maid (Medium)</name>
 				<translate>Transys Office Maid (Medium)</translate>
-				<page>1264a59a-2fdd-4d41-a674-2082db4f199b</page>
+				<page>179</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>6c6893fd-a69f-4346-885b-c6ae85679d35</id>
@@ -17864,19 +17864,19 @@
 				<id>b627c28f-e67e-4a34-9808-af81fad2acf9</id>
 				<name>GMC Snatch'n'Grab (Large)</name>
 				<translate>GMC Snatch'n'Grab (Large)</translate>
-				<page>b627c28f-e67e-4a34-9808-af81fad2acf9</page>
+				<page>179</page>
 			</vehicle>
 			<vehicle>
 				<id>50e6572c-ea59-4756-83e4-7c51f8f614c9</id>
 				<name>Modified Dassault Janatorial Drone (Large)</name>
 				<translate>Modified Dassault Janatorial Drone (Large)</translate>
-				<page>50e6572c-ea59-4756-83e4-7c51f8f614c9</page>
+				<page>179</page>
 			</vehicle>
 			<vehicle>
 				<id>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</id>
 				<name>Modified Renraku Manservant-3 (Large)</name>
 				<translate>Modified Renraku Manservant-3 (Large)</translate>
-				<page>0e8d9c3c-83c0-4c1d-96f0-1f2a2e0bf354</page>
+				<page>180</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>a8c39fd9-d219-4772-9f8e-49b1d0975733</id>
@@ -17888,13 +17888,13 @@
 				<id>8ac6c14d-22c2-4f5f-be53-774af78179ad</id>
 				<name>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</name>
 				<translate>Aeroquip M.E.D.-1 'Dustoff' Medical Evacuation Drone (Large)</translate>
-				<page>8ac6c14d-22c2-4f5f-be53-774af78179ad</page>
+				<page>23</page>
 			</vehicle>
 			<vehicle>
 				<id>d186dbc2-52e6-4804-94ca-7db96c2afdde</id>
 				<name>Shiawase Caduceus 'CAD' 7 (Medium)</name>
 				<translate>Shiawase Caduceus 'CAD' 7 (Medium)</translate>
-				<page>d186dbc2-52e6-4804-94ca-7db96c2afdde</page>
+				<page>23</page>
 			</vehicle>
 			<vehicle translated="True">
 				<id>4261d97f-2a4f-4ed3-91a4-64a69a549e37</id>
@@ -17956,37 +17956,37 @@
 				<id>984d5035-6edd-4b57-9454-d368cb455c2a</id>
 				<name>Dash Light Bar</name>
 				<translate>Dash Light Bar</translate>
-				<page>984d5035-6edd-4b57-9454-d368cb455c2a</page>
+				<page>176</page>
 			</mod>
 			<mod>
 				<id>281bedc2-c73b-427b-9dec-c54edf764cdd</id>
 				<name>Emergency Light Bar</name>
 				<translate>Emergency Light Bar</translate>
-				<page>281bedc2-c73b-427b-9dec-c54edf764cdd</page>
+				<page>176</page>
 			</mod>
 			<mod>
 				<id>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</id>
 				<name>Siren</name>
 				<translate>Siren</translate>
-				<page>d8eb6a6e-3da1-4e22-96d7-4f634ad77301</page>
+				<page>176</page>
 			</mod>
 			<mod>
 				<id>80b43bd8-ce5b-4cd3-a413-7d32b342f43e</id>
 				<name>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</name>
 				<translate>Smuggling Compartment (Dwarf, Human, Elf, or Ork)</translate>
-				<page>80b43bd8-ce5b-4cd3-a413-7d32b342f43e</page>
+				<page>177</page>
 			</mod>
 			<mod>
 				<id>f0307b24-6e2e-48c0-a80a-bb35cebb34ea</id>
 				<name>Smuggling Compartment (Troll)</name>
 				<translate>Smuggling Compartment (Troll)</translate>
-				<page>f0307b24-6e2e-48c0-a80a-bb35cebb34ea</page>
+				<page>177</page>
 			</mod>
 			<mod>
 				<id>bd513bdc-38bb-4386-a936-d585669822fd</id>
 				<name>Spoof Chips</name>
 				<translate>Spoof Chips</translate>
-				<page>bd513bdc-38bb-4386-a936-d585669822fd</page>
+				<page>152</page>
 			</mod>
 		</mods>
 	</chummer>
@@ -18843,7 +18843,7 @@
 				<id>4a4810ca-4d11-49ee-8705-0411edc4d523</id>
 				<name>Krime Bomb</name>
 				<translate>Krime Bomb</translate>
-				<page>4a4810ca-4d11-49ee-8705-0411edc4d523</page>
+				<page>35</page>
 			</weapon>
 			<weapon>
 				<id>b59116dd-eeba-4091-ad87-a1216e7e52fe</id>
@@ -18855,13 +18855,13 @@
 				<id>6d99b7b6-7610-4ba0-833b-ecda09d83366</id>
 				<name>Colt Inception</name>
 				<translate>Colt Inception</translate>
-				<page>6d99b7b6-7610-4ba0-833b-ecda09d83366</page>
+				<page>14</page>
 			</weapon>
 			<weapon>
 				<id>2abf6c76-fe19-4678-b6a3-f0b8750ee61c</id>
 				<name>Krupp Arms Kriegfaust</name>
 				<translate>Krupp Arms Kriegfaust</translate>
-				<page>2abf6c76-fe19-4678-b6a3-f0b8750ee61c</page>
+				<page>15</page>
 			</weapon>
 			<weapon>
 				<id>fd7f400f-c8d5-4e8c-94aa-001109635f19</id>
@@ -18873,13 +18873,13 @@
 				<id>89396ad6-c605-4577-ad5b-6a18cf58d167</id>
 				<name>SBd-44</name>
 				<translate>SBd-44</translate>
-				<page>89396ad6-c605-4577-ad5b-6a18cf58d167</page>
+				<page>16</page>
 			</weapon>
 			<weapon>
 				<id>23141cfc-e7c9-4af9-b4e0-a7f0443f1170</id>
 				<name>Shiawase Arms Monsoon</name>
 				<translate>Shiawase Arms Monsoon</translate>
-				<page>23141cfc-e7c9-4af9-b4e0-a7f0443f1170</page>
+				<page>13</page>
 			</weapon>
 			<weapon translated="True">
 				<id>01e0eee7-452b-4fd5-abe1-29145da4a5e6</id>
@@ -19065,7 +19065,7 @@
 				<id>dd4a69d9-6861-41de-9557-83617a3fa904</id>
 				<name>Shiawase Arms Incinerator</name>
 				<translate>Shiawase Arms Incinerator</translate>
-				<page>dd4a69d9-6861-41de-9557-83617a3fa904</page>
+				<page>36</page>
 			</weapon>
 			<weapon>
 				<id>011493be-12eb-47ba-a445-f0c8cf139d4f</id>
@@ -19119,7 +19119,7 @@
 				<id>36957626-3c6f-4e15-a3ee-dce8c82e2c94</id>
 				<name>Colt Future Frontier</name>
 				<translate>Colt Future Frontier</translate>
-				<page>36957626-3c6f-4e15-a3ee-dce8c82e2c94</page>
+				<page>6</page>
 			</weapon>
 			<weapon translated="True">
 				<id>158224db-e409-407f-b2f0-4617886ad80f</id>
@@ -19191,7 +19191,7 @@
 				<id>ba34be4c-2dff-439a-8b7e-942f71bb4942</id>
 				<name>Krime Wave</name>
 				<translate>Krime Wave</translate>
-				<page>ba34be4c-2dff-439a-8b7e-942f71bb4942</page>
+				<page>34</page>
 			</weapon>
 			<weapon translated="True">
 				<id>b2b51722-5c37-43ce-9b08-646b8f1a51eb</id>
@@ -19215,13 +19215,13 @@
 				<id>21ddd00b-0e30-4fc0-97c0-14db61af24ad</id>
 				<name>Colt Agent Special</name>
 				<translate>Colt Agent Special</translate>
-				<page>21ddd00b-0e30-4fc0-97c0-14db61af24ad</page>
+				<page>5</page>
 			</weapon>
 			<weapon>
 				<id>305a23ec-098f-47c9-898f-ca28016846d1</id>
 				<name>Colt New Model Revolver</name>
 				<translate>Colt New Model Revolver</translate>
-				<page>305a23ec-098f-47c9-898f-ca28016846d1</page>
+				<page>4</page>
 			</weapon>
 			<weapon>
 				<id>261165ce-6111-4a51-9519-46c41edac9b0</id>
@@ -19251,7 +19251,7 @@
 				<id>a68fe409-bebb-4c72-941c-0fce94048fec</id>
 				<name>Cavalier Evanator</name>
 				<translate>Cavalier Evanator</translate>
-				<page>a68fe409-bebb-4c72-941c-0fce94048fec</page>
+				<page>8</page>
 			</weapon>
 			<weapon>
 				<id>496e4b81-8437-41fb-adf5-2e4709df656e</id>
@@ -19263,7 +19263,7 @@
 				<id>5563a612-bf02-4fd9-b942-2400bbd1eb70</id>
 				<name>Fianchetti Military 100</name>
 				<translate>Fianchetti Military 100</translate>
-				<page>5563a612-bf02-4fd9-b942-2400bbd1eb70</page>
+				<page>7</page>
 			</weapon>
 			<weapon translated="True">
 				<id>404c20aa-8c02-4fcd-a37e-ba63b3e3553f</id>
@@ -19275,7 +19275,7 @@
 				<id>6596b05e-d51b-4388-b57a-950d9b5a96ac</id>
 				<name>Remington Suppressor</name>
 				<translate>Remington Suppressor</translate>
-				<page>6596b05e-d51b-4388-b57a-950d9b5a96ac</page>
+				<page>9</page>
 			</weapon>
 			<weapon translated="True">
 				<id>060cbbd5-3413-4e57-8c7a-5ee3d2e94945</id>
@@ -19299,7 +19299,7 @@
 				<id>31269939-24bb-405a-aa5e-a1b77458a1df</id>
 				<name>Cavalier Falchion</name>
 				<translate>Cavalier Falchion</translate>
-				<page>31269939-24bb-405a-aa5e-a1b77458a1df</page>
+				<page>22</page>
 			</weapon>
 			<weapon>
 				<id>97cab27f-620b-45d7-8da4-3136c1e69f2b</id>
@@ -19317,7 +19317,7 @@
 				<id>8818b584-e084-4fcb-94b8-632728015c6f</id>
 				<name>Krime Boss</name>
 				<translate>Krime Boss</translate>
-				<page>8818b584-e084-4fcb-94b8-632728015c6f</page>
+				<page>17</page>
 			</weapon>
 			<weapon translated="True">
 				<id>62221199-7958-4a76-a538-0c8e0a516608</id>
@@ -19329,25 +19329,25 @@
 				<id>3af9c1f7-8582-4849-8b1e-b49dd14c207f</id>
 				<name>Shiawase Arms Rain</name>
 				<translate>Shiawase Arms Rain</translate>
-				<page>3af9c1f7-8582-4849-8b1e-b49dd14c207f</page>
+				<page>21</page>
 			</weapon>
 			<weapon>
 				<id>eaef40ea-c1ff-4f64-a4fe-31720b250860</id>
 				<name>Winchester Model 201</name>
 				<translate>Winchester Model 201</translate>
-				<page>eaef40ea-c1ff-4f64-a4fe-31720b250860</page>
+				<page>18</page>
 			</weapon>
 			<weapon>
 				<id>93869598-2945-412f-8b42-90764ddc1e59</id>
 				<name>Winchester Model 2054</name>
 				<translate>Winchester Model 2054</translate>
-				<page>93869598-2945-412f-8b42-90764ddc1e59</page>
+				<page>20</page>
 			</weapon>
 			<weapon>
 				<id>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</id>
 				<name>Winchester Model 2066</name>
 				<translate>Winchester Model 2066</translate>
-				<page>afee8d53-f1da-4500-ab6c-8e22b9c57c3e</page>
+				<page>19</page>
 			</weapon>
 			<weapon>
 				<id>ffc2ae2b-fbaa-4d65-9456-c6433f3d53e8</id>
@@ -19389,7 +19389,7 @@
 				<id>e238d380-5e5f-499c-9d33-548d02b50076</id>
 				<name>SVD</name>
 				<translate>SVD</translate>
-				<page>e238d380-5e5f-499c-9d33-548d02b50076</page>
+				<page>11</page>
 			</weapon>
 			<weapon translated="True">
 				<id>07200c8e-d3f3-4ec1-8911-11be322c6d5f</id>
@@ -19437,61 +19437,61 @@
 				<id>b312c6dd-56db-4569-b96d-32a9e290e78b</id>
 				<name>M1 Garand</name>
 				<translate>M1 Garand</translate>
-				<page>b312c6dd-56db-4569-b96d-32a9e290e78b</page>
+				<page>27</page>
 			</weapon>
 			<weapon>
 				<id>1a1a3b5f-064a-4626-8ddb-efc015187236</id>
 				<name>Marlin 3041 BL</name>
 				<translate>Marlin 3041 BL</translate>
-				<page>1a1a3b5f-064a-4626-8ddb-efc015187236</page>
+				<page>29</page>
 			</weapon>
 			<weapon>
 				<id>afbb08e1-9362-46c6-b890-9dbd3cd26d2d</id>
 				<name>Marlin 3468SS</name>
 				<translate>Marlin 3468SS</translate>
-				<page>afbb08e1-9362-46c6-b890-9dbd3cd26d2d</page>
+				<page>25</page>
 			</weapon>
 			<weapon>
 				<id>c4cb38e3-3748-41ad-82e9-56abc111fafe</id>
 				<name>Marlin 79S</name>
 				<translate>Marlin 79S</translate>
-				<page>c4cb38e3-3748-41ad-82e9-56abc111fafe</page>
+				<page>31</page>
 			</weapon>
 			<weapon>
 				<id>2082a58b-e94d-4911-a486-1ad33ac8e3b8</id>
 				<name>Marlin X71</name>
 				<translate>Marlin X71</translate>
-				<page>2082a58b-e94d-4911-a486-1ad33ac8e3b8</page>
+				<page>30</page>
 			</weapon>
 			<weapon>
 				<id>c571ea1e-dfd8-4c4e-84d8-9355f24874b0</id>
 				<name>Springfield 2003</name>
 				<translate>Springfield 2003</translate>
-				<page>c571ea1e-dfd8-4c4e-84d8-9355f24874b0</page>
+				<page>23</page>
 			</weapon>
 			<weapon>
 				<id>72659b65-56ab-4629-be63-d82549edb0b4</id>
 				<name>Springfield M1A</name>
 				<translate>Springfield M1A</translate>
-				<page>72659b65-56ab-4629-be63-d82549edb0b4</page>
+				<page>26</page>
 			</weapon>
 			<weapon>
 				<id>c154d964-599f-41bd-9b20-3b63dcbb213d</id>
 				<name>Springfield Model 1855 Reproduction</name>
 				<translate>Springfield Model 1855 Reproduction</translate>
-				<page>c154d964-599f-41bd-9b20-3b63dcbb213d</page>
+				<page>28</page>
 			</weapon>
 			<weapon>
 				<id>a6afb306-df84-4d99-8f62-1b9a988bea07</id>
 				<name>Winchester Model 2024</name>
 				<translate>Winchester Model 2024</translate>
-				<page>a6afb306-df84-4d99-8f62-1b9a988bea07</page>
+				<page>24</page>
 			</weapon>
 			<weapon>
 				<id>7aa7ed5d-b094-45c9-9275-974e8aeb4de8</id>
 				<name>Winchester Model 2067</name>
 				<translate>Winchester Model 2067</translate>
-				<page>7aa7ed5d-b094-45c9-9275-974e8aeb4de8</page>
+				<page>33</page>
 			</weapon>
 			<weapon translated="True">
 				<id>c9ae9813-cf66-4435-82c5-a5f28c441d5d</id>
@@ -19503,13 +19503,13 @@
 				<id>53393829-2f6d-445d-b3d4-325aabec7cba</id>
 				<name>Ares SIGMA 3</name>
 				<translate>Ares SIGMA 3</translate>
-				<page>53393829-2f6d-445d-b3d4-325aabec7cba</page>
+				<page>11</page>
 			</weapon>
 			<weapon>
 				<id>1603b758-f59c-4288-937a-8d7467b9ed33</id>
 				<name>Cavalier Arms Gladius</name>
 				<translate>Cavalier Arms Gladius</translate>
-				<page>1603b758-f59c-4288-937a-8d7467b9ed33</page>
+				<page>12</page>
 			</weapon>
 			<weapon translated="True">
 				<id>b2eefb04-0e33-4faa-8e92-5c4bcbfc3f16</id>
@@ -19569,7 +19569,7 @@
 				<id>3a91672e-0588-45a6-b225-149624e813ac</id>
 				<name>Ares Predator III</name>
 				<translate>Ares Predator III</translate>
-				<page>3a91672e-0588-45a6-b225-149624e813ac</page>
+				<page>31</page>
 			</weapon>
 			<weapon>
 				<id>40bf3eed-b239-4521-ac1d-80a4e472451e</id>
@@ -19961,13 +19961,13 @@
 				<id>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</id>
 				<name>Vintage</name>
 				<translate>Vintage</translate>
-				<page>4821b29d-55cd-4cb1-a6e2-c51e9d3a95a1</page>
+				<page>53</page>
 			</accessory>
 			<accessory>
 				<id>85b01b5c-c788-4b43-8190-9e0c18391436</id>
 				<name>Personalized Grip</name>
 				<translate>Personalized Grip</translate>
-				<page>85b01b5c-c788-4b43-8190-9e0c18391436</page>
+				<page>182</page>
 			</accessory>
 		</accessories>
 		<mods>

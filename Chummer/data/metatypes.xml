@@ -1196,6 +1196,7 @@
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
+							<reach>0</reach>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
 							<page>137</page>
@@ -1601,6 +1602,7 @@
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
+							<reach>0</reach>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
 							<page>137</page>
@@ -2227,6 +2229,7 @@
 						<naturalweapon>
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
+							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
