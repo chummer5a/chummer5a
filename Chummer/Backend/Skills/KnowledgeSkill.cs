@@ -132,14 +132,14 @@ namespace Chummer.Skills
 			{
 				int lower = Base + FreeKarma();
 
-				for (int i = lower; i < Rating; i += 2) //TODO: this is probably fucked
+				for (int i = lower; i < LearnedRating; i += 2) //TODO: this is probably fucked
 				{
 					cost += (i+1)*CharacterObject.Options.KarmaImproveKnowledgeSkill;
 				}
 			}
 			else
 			{
-				cost = Rating * (Rating + 1);
+				cost = LearnedRating * (LearnedRating + 1);
 				int lower = Base + FreeKarma();
 				cost -= lower * (lower + 1);
 
@@ -168,27 +168,27 @@ namespace Chummer.Skills
 			int adjustment = 0;
 			if (CharacterObject.JackOfAllTrades && CharacterObject.Created)
 			{
-				adjustment = Rating > 5 ? 2 : -1;
+				adjustment = LearnedRating > 5 ? 2 : -1;
 			}
 
-			if (HasRelatedBoost() && CharacterObject.Created && Rating >= 3)
+			if (HasRelatedBoost() && CharacterObject.Created && LearnedRating >= 3)
 			{
 				adjustment -= 1;
 			}
 
-			if (Rating <= RatingMaximum)
+			if (LearnedRating <= RatingMaximum)
 			{
 				return -1;
 			}
-			else if (Rating == 0)
+			else if (LearnedRating == 0)
 			{
 				return CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment;
 			}
 			else
 			{
-				return (Rating == 0
+				return (LearnedRating == 0
 					? CharacterObject.Options.KarmaNewActiveSkill
-					: (Rating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill)
+					: (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill)
 					   + adjustment;
 			}
 		}

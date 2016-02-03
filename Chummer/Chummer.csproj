@@ -236,6 +236,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Selection Forms\frmSelectSkillSpec.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
+      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Shared\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
@@ -799,6 +805,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
+      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Shared\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>

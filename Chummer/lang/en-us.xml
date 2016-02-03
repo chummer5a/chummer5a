@@ -6626,6 +6626,15 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectExoticSkill_Description</key>
 			<text>Select an Exotic Active Skill to add to your character.</text>
 		</string>
+    <!-- Select Skill Specialisation Window -->
+ 		<string>
+			<key>Title_SelectSkillSpecialization</key>
+ 			<text>Select a Skill Specialization</text>
+		</string>
+		<string>
+			<key>Label_SelectSkillSpecialization_Description</key>
+			<text>Select a Skill Specialization to add to your character.</text>
+		</string>
 		<!-- Select Gear Window -->
 		<string>
 			<key>Title_SelectGear</key>

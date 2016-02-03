@@ -1596,7 +1596,7 @@ namespace Chummer
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 					// Attempt to retrieve the CharacterAttribute name.
 					try
-					{
+					{  //TODO Getstring dictionary check instead of clusterfuck used
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
 							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
 						else

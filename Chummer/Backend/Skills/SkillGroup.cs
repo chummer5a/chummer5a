@@ -101,7 +101,7 @@ namespace Chummer.Skills
 			{
 				if (_affectedSkills.Count == 0) return false;
 
-				if (_affectedSkills.Any(x => x.Rating != _affectedSkills[0].Rating))
+				if (_affectedSkills.Any(x => x.LearnedRating != _affectedSkills[0].LearnedRating))
 				{
 					return false;
 				}
@@ -111,7 +111,7 @@ namespace Chummer.Skills
 					return false;
 				}
 
-				return _affectedSkills.Max(x => x.Rating) < RatingMaximum;
+				return _affectedSkills.Max(x => x.LearnedRating) < RatingMaximum;
 			}
 		}
 
@@ -352,7 +352,7 @@ namespace Chummer.Skills
 		{
 			if (_skillFromKarma == 0) return 0;
 
-			int upper = _affectedSkills.Min(x => x.Rating);
+			int upper = _affectedSkills.Min(x => x.LearnedRating);
 			int lower = upper - _skillFromKarma;
 
 			int cost = upper*(upper + 1);
@@ -377,7 +377,6 @@ namespace Chummer.Skills
 				return -1;
 			}
 		}
-
 		
 		public IEnumerable<Skill> GetEnumerable() //Databinding shits itself if this implements IEnumerable
 		{

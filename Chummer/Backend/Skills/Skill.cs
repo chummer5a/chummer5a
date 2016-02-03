@@ -352,7 +352,7 @@ namespace Chummer.Skills
 		private bool _oldUpgrade = false;
 		public bool CanUpgradeCareer
 		{
-			get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > Rating; }
+			get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > LearnedRating; }
 		}
 
 		public virtual bool AllowDelete
@@ -416,7 +416,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (Rating == 0) return ""; //Unleveled skills cannot have a specialization;
+				if (LearnedRating == 0) return ""; //Unleveled skills cannot have a specialization;
 
 				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
 				if (Specializations.Count > 0)
@@ -475,12 +475,16 @@ namespace Chummer.Skills
 			//TODO: this needs impl
 			//TODO: method is here, but not used in any form, needs testing (worried about child items...)
 			//this might do hardwires if i understand how they works correctly
-			int hardwire = CharacterObject.Improvements.Where(
+			var hardwire = CharacterObject.Improvements.Where(
 				improvement =>
 					improvement.ImproveType == Improvement.ImprovementType.HardWire && improvement.ImprovedName == Name &&
-					improvement.Enabled).Max(x => x.Value);
+					improvement.Enabled);
 
-			if (hardwire > 0) return hardwire;
+			if (hardwire.Any())
+			{
+				return hardwire.Max(x => x.Value);
+			}
+			
 
 			ImprovementManager manager = new ImprovementManager(CharacterObject);
 

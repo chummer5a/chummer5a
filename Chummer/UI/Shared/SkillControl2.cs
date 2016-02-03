@@ -47,8 +47,12 @@ namespace Chummer.UI.Shared
 					(from specialization in skill.Specializations
 					 select specialization.Name));
 				lblCareerSpec.Visible = true;
+
 				btnAddSpec.Visible = skill.Leveled;
 				skill.PropertyChanged += VisibleDatabindingBrokenWorkaround;
+
+				btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
+					DataSourceUpdateMode.OnPropertyChanged);
 			}
 			else
 			{
@@ -136,7 +140,19 @@ namespace Chummer.UI.Shared
 					return;
 			}
 
-			
+			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			selectForm.ShowDialog();
+
+			if (selectForm.DialogResult != DialogResult.OK) return;
+
+			skill.AddSpecialization(selectForm.SelectedItem);
+
+			//TODO turn this into a databinding, but i don't care enough right now
+			lblCareerSpec.Text = string.Join(", ",
+					(from specialization in skill.Specializations
+					 select specialization.Name));
+
+			parrent?.UpdateCharacterInfo();
 		}
 	}
 }

@@ -1,8 +1,6 @@
-Career mode not working compleetly. (addspec is not hooked up to anything, UI is looking a little streched. A few writes to .X if Career mode in Controls?)
+Career mode stronger indication of skills rating > 0.
 
-Autoscale. UI elements have fixed size in width. We might want to try and scale with chummer width. OnResizeXXX event. 
-
-Had a crash when incrementing karma? (Ork, Karma Agi first place) Have not been able to reproduce later so assume fixed. Leaving it here because.
+Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. We might want to try and scale with chummer width. OnResizeXXX event. 
 
 Specs localization not implemented. A dictionary of things it knows how to translate and reverse on load might be all it needs
 

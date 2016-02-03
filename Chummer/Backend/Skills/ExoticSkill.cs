@@ -41,7 +41,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		public override int CurrentKarmaCost()
 		{
-			return RangeCost(Base + FreeKarma(), Rating);
+			return RangeCost(Base + FreeKarma(), LearnedRating);
 		}
 	}
 }

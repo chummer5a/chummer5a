@@ -89,7 +89,7 @@
 			// lblModifiedRating
 			// 
 			this.lblModifiedRating.AutoSize = true;
-			this.lblModifiedRating.Location = new System.Drawing.Point(256, 4);
+			this.lblModifiedRating.Location = new System.Drawing.Point(246, 4);
 			this.lblModifiedRating.Name = "lblModifiedRating";
 			this.lblModifiedRating.Size = new System.Drawing.Size(13, 13);
 			this.lblModifiedRating.TabIndex = 16;

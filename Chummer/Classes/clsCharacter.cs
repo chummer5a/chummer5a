@@ -3773,9 +3773,19 @@ namespace Chummer
             }
             set
             {
+	            bool oldCanAffordSpec = CanAffordSpecialization;
+
 				OnPropertyChanged(ref _intKarma, value);
+
+				if(oldCanAffordSpec != CanAffordSpecialization)
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordSpecialization)));
             }
         }
+
+	    public bool CanAffordSpecialization
+	    {
+		    get { return Karma >= Options.KarmaSpecialization; }
+	    }
 
         /// <summary>
         /// Special.

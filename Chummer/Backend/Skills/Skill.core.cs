@@ -128,6 +128,21 @@ namespace Chummer.Skills
 		/// </summary>
 		public int Rating
 		{
+			get
+			{
+				int skillWire = WireRating();
+
+				return skillWire > 0 ? skillWire : LearnedRating;
+			}
+		}
+
+		/// <summary>
+		/// The rating the character have acctually paid for, not including skillwires
+		/// or other overrides for skill Rating. Read only, you probably want to 
+		/// increase Karma instead.
+		/// </summary>
+		public int LearnedRating
+		{
 			get { return Karma + Base; }
 		}
 
@@ -259,7 +274,7 @@ namespace Chummer.Skills
 		{
 			//No rating can obv not cost anything
 			//Makes debugging easier as we often only care about value calculation
-			if (Rating == 0) return 0; 
+			if (LearnedRating == 0) return 0; 
 			
 
 			int cost = 0;
@@ -270,13 +285,13 @@ namespace Chummer.Skills
 
 				int lower = Base + FreeKarma(); //Might be an error here
 
-				cost = RangeCost(lower, groupLower) + RangeCost(groupUpper, Rating);
+				cost = RangeCost(lower, groupLower) + RangeCost(groupUpper, LearnedRating);
 			}
 			else
 			{
 				int lower = Base + FreeKarma();
 
-				cost = RangeCost(lower, Rating);
+				cost = RangeCost(lower, LearnedRating);
 			}
 
 			cost /= 2;
@@ -324,20 +339,20 @@ namespace Chummer.Skills
 			int masterAdjustment = 0;
 			if (CharacterObject.JackOfAllTrades && CharacterObject.Created)
 			{
-				masterAdjustment = Rating > 5 ? 2 : -1;
+				masterAdjustment = LearnedRating > 5 ? 2 : -1;
 			}
 
-			if (Rating >= RatingMaximum)
+			if (LearnedRating >= RatingMaximum)
 			{
 				return -1;
 			}
-			else if (Rating == 0)
+			else if (LearnedRating == 0)
 			{
 				return _character.Options.KarmaNewActiveSkill + masterAdjustment;
 			}
 			else
 			{
-				return  (Rating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
+				return  (LearnedRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
 			}
 		}
 
@@ -349,15 +364,40 @@ namespace Chummer.Skills
 
 			//If data file contains {4} this crashes but...
 			string upgradetext =
-				$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
+				$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
 
 			ExpenseLogEntry entry = new	ExpenseLogEntry();
 			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-			entry.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
+			entry.Undo = new ExpenseUndo().CreateKarma(LearnedRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Id.ToString());
 			
 			CharacterObject.ExpenseEntries.Add(entry);
 
 			Karma =+ 1;
+			CharacterObject.Karma -= price;
+		}
+
+
+		public void AddSpecialization(string name)
+		{
+			if (!CharacterObject.CanAffordSpecialization) return;
+
+
+
+			int price = CharacterObject.Options.KarmaSpecialization;
+
+			//If data file contains {4} this crashes but...
+			string upgradetext = //TODO WRONG
+				$"{LanguageManager.Instance.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
+
+			SkillSpecialization nspec = new SkillSpecialization(name, false);
+
+			ExpenseLogEntry entry = new ExpenseLogEntry();
+			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+			entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
+
+			CharacterObject.ExpenseEntries.Add(entry);
+
+			Specializations.Add(nspec);
 			CharacterObject.Karma -= price;
 		}
 
@@ -400,7 +440,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		private bool UnForceBuyWithKarma()
 		{
-			return Rating == 0;
+			return LearnedRating == 0;
 		}
 
 		/// <summary>

@@ -28,6 +28,7 @@ namespace Chummer.UI.Shared
 		{
 			_contents = list;
 			_createFunc = createFunc;
+			DoubleBuffered = true;
 			InitializeComponent();
 		}
 
