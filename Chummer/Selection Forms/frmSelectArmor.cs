@@ -66,7 +66,7 @@ namespace Chummer
 			cboCategory.ValueMember = "Value";
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
-
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			// Select the first Category in the list.
 			if (_strSelectCategory == "")
 				cboCategory.SelectedIndex = 0;
@@ -221,6 +221,11 @@ namespace Chummer
 		}
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateArmorInfo();
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateArmorInfo();
 		}

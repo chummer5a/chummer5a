@@ -21,6 +21,7 @@ namespace Chummer
 		private readonly Character _objCharacter;
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
+		private bool _blnBlackMarketDiscount;
 
 		#region Control Events
 		public frmSelectVehicle(Character objCharacter, bool blnCareer = false)
@@ -75,6 +76,8 @@ namespace Chummer
 
 			if (cboCategory.SelectedIndex == -1)
 				cboCategory.SelectedIndex = 0;
+
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 		}
 
 		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,6 +192,11 @@ namespace Chummer
 			UpdateSelectedVehicle();
 		}
 
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateSelectedVehicle();
+		}
+
 		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Down)
@@ -267,6 +275,17 @@ namespace Chummer
 			get
 			{
 				return _blnUsedVehicle;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
 			}
 		}
 
@@ -368,6 +387,12 @@ namespace Chummer
             else
             {
                 int intCost = Convert.ToInt32(objXmlVehicle["cost"].InnerText);
+
+				if (chkBlackMarketDiscount.Checked)
+	            {
+					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+				}
+
                 intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * dblCostModifier));
 
                 // Apply the markup if applicable.
@@ -410,6 +435,7 @@ namespace Chummer
 				_intUsedCost = intCost;
 			}
 
+			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 			_strSelectCategory = objXmlVehicle["category"].InnerText;
 			_strSelectedVehicle = objXmlVehicle["name"].InnerText;
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);

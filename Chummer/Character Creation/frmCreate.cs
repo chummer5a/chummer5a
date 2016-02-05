@@ -52,7 +52,7 @@ namespace Chummer
             _objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-            _objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
+            _objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
             _objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
             _objCharacter.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
@@ -221,15 +221,6 @@ namespace Chummer
             // Set the visibility of the Bioware Suites menu options.
             mnuSpecialAddBiowareSuite.Visible = _objCharacter.Options.AllowBiowareSuites;
             mnuSpecialCreateBiowareSuite.Visible = _objCharacter.Options.AllowBiowareSuites;
-
-            if (_objCharacter.BlackMarket)
-            {
-                chkCyberwareBlackMarketDiscount.Visible = true;
-                chkArmorBlackMarketDiscount.Visible = true;
-                chkWeaponBlackMarketDiscount.Visible = true;
-                chkGearBlackMarketDiscount.Visible = true;
-                chkVehicleBlackMarketDiscount.Visible = true;
-            }
 
             // Remove the Improvements Tab.
             tabCharacterTabs.TabPages.Remove(tabImprovements);
@@ -1461,7 +1452,7 @@ namespace Chummer
                 _objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
                 _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-                _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
+                _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
                 _objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
                 _objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
@@ -1966,16 +1957,12 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_BlackMarketChanged(object sender)
+        private void objCharacter_BlackMarketDiscountChanged(object sender)
         {
             if (_blnReapplyImprovements)
                 return;
 
-            // Change the status of Black Market being enabled.
-            if (_objCharacter.BlackMarket)
-            {
-            }
-        }
+		}
 
         private void objCharacter_UneducatedChanged(object sender)
         {
@@ -6496,6 +6483,8 @@ namespace Chummer
                 objVehicle.Avail = frmPickVehicle.UsedAvail;
                 objVehicle.Cost = frmPickVehicle.UsedCost.ToString();
             }
+	        objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
+
             _objCharacter.Vehicles.Add(objVehicle);
 
             objNode.ContextMenuStrip = cmsVehicle;
@@ -12552,33 +12541,6 @@ namespace Chummer
             }
             UpdateCharacterInfo();
         }
-
-        private void chkCyberwareBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            // Locate the selected Cyberware.
-            try
-            {
-                Cyberware objCyberware = _objFunctions.FindCyberware(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
-                if (objCyberware != null)
-                    objCyberware.DiscountCost = chkCyberwareBlackMarketDiscount.Checked;
-
-                Gear objGear = _objFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware, out objCyberware);
-                if (objGear != null)
-                    objGear.DiscountCost = chkCyberwareBlackMarketDiscount.Checked;
-
-                RefreshSelectedCyberware();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
-        }
         #endregion
 
         #region Additional Street Gear Tab Control Events
@@ -13289,95 +13251,6 @@ namespace Chummer
             UpdateWindowTitle();
         }
 
-        private void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            // Locate the selected Armor or Armor Mod.
-            try
-            {
-                Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                if (objArmor != null)
-                    objArmor.DiscountCost = chkArmorBlackMarketDiscount.Checked;
-
-                ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
-                if (objMod != null)
-                    objMod.DiscountCost = chkArmorBlackMarketDiscount.Checked;
-
-                Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objArmor);
-                if (objGear != null)
-                    objGear.DiscountCost = chkArmorBlackMarketDiscount.Checked;
-
-                RefreshSelectedArmor();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
-        }
-
-        private void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            // Located the selected Gear.
-            try
-            {
-                Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-                if (objGear != null)
-                    objGear.DiscountCost = chkGearBlackMarketDiscount.Checked;
-
-                RefreshSelectedGear();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
-        }
-
-        private void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            // Locate the selected Weapon, Weapon Accessory, Weapon Mod, or Gear.
-            try
-            {
-                Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                if (objWeapon != null)
-                    objWeapon.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
-
-                WeaponAccessory objAccessory = _objFunctions.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                if (objAccessory != null)
-                    objAccessory.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
-
-                WeaponMod objMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-                if (objMod != null)
-                    objMod.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
-
-                Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
-                if (objGear != null)
-                    objGear.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
-
-                RefreshSelectedWeapon();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
-        }
-
         private void chkIncludedInArmor_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -14029,53 +13902,6 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
-        }
-
-        private void chkVehicleBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnSkipRefresh)
-                return;
-
-            // Locate the selected Vehicle piece.
-            try
-            {
-                Vehicle objVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objVehicle != null)
-                    objVehicle.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                VehicleMod objVehicleMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                if (objVehicleMod != null)
-                    objVehicleMod.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                Gear objVehicleGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                if (objVehicleGear != null)
-                    objVehicleGear.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                Weapon objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objVehicle);
-                if (objWeapon != null)
-                    objWeapon.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                WeaponAccessory objWeaponAccessory = _objFunctions.FindVehicleWeaponAccessory(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objWeaponAccessory != null)
-                    objWeaponAccessory.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                WeaponMod objWeaponMod = _objFunctions.FindVehicleWeaponMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objWeaponMod != null)
-                    objWeaponMod.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                Cyberware objCyberware = _objFunctions.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-                if (objCyberware != null)
-                    objCyberware.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-
-                RefreshSelectedVehicle();
-                UpdateCharacterInfo();
-
-                _blnIsDirty = true;
-                UpdateWindowTitle();
-            }
-            catch
-            {
-            }
         }
         #endregion
 
@@ -17410,8 +17236,6 @@ namespace Chummer
 
                 cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
 
-                chkCyberwareBlackMarketDiscount.Checked = objCyberware.DiscountCost;
-
                 // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
                 if (!blnChild)
                     if (!objCyberware.Suite)
@@ -17447,7 +17271,6 @@ namespace Chummer
                 lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 lblCyberwareEssence.Text = "0";
                 cboCyberwareGrade.Enabled = false;
-                chkCyberwareBlackMarketDiscount.Checked = objGear.DiscountCost;
                 string strBook = _objOptions.LanguageBookShort(objGear.Source);
                 string strPage = objGear.Page;
                 lblCyberwareSource.Text = strBook + " " + strPage;
@@ -17737,7 +17560,6 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
-                chkWeaponBlackMarketDiscount.Checked = objWeapon.DiscountCost;
 
                 // Show the Weapon Ranges.
                 lblWeaponRangeShort.Text = objWeapon.RangeShort;
@@ -17788,7 +17610,6 @@ namespace Chummer
                     chkWeaponAccessoryInstalled.Checked = objWeapon.Installed;
                     chkIncludedInWeapon.Enabled = false;
                     chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
-                    chkWeaponBlackMarketDiscount.Checked = objWeapon.DiscountCost;
 
                     // Show the Weapon Ranges.
                     lblWeaponRangeShort.Text = objWeapon.RangeShort;
@@ -17861,7 +17682,6 @@ namespace Chummer
                         chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                         chkIncludedInWeapon.Enabled = _objOptions.AllowEditPartOfBaseWeapon;
                         chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
-                        chkWeaponBlackMarketDiscount.Checked = objSelectedAccessory.DiscountCost;
                         UpdateCharacterInfo();
                     }
                     else
@@ -17898,7 +17718,6 @@ namespace Chummer
                             chkWeaponAccessoryInstalled.Checked = objSelectedMod.Installed;
                             chkIncludedInWeapon.Enabled = _objOptions.AllowEditPartOfBaseWeapon;
                             chkIncludedInWeapon.Checked = objSelectedMod.IncludedInWeapon;
-                            chkWeaponBlackMarketDiscount.Checked = objSelectedMod.DiscountCost;
                             UpdateCharacterInfo();
                         }
                         else
@@ -17929,7 +17748,6 @@ namespace Chummer
                             chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                             chkIncludedInWeapon.Enabled = false;
                             chkIncludedInWeapon.Checked = false;
-                            chkWeaponBlackMarketDiscount.Checked = objGear.DiscountCost;
                             _blnSkipRefresh = false;
 
                             if (objGear.GetType() == typeof(Commlink))
@@ -18006,7 +17824,6 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objArmor.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objArmor.Page);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
-                chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
 				if (objArmor.MaxRating == 0)
 				{
 					nudArmorRating.Enabled = false;
@@ -18054,7 +17871,6 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedMod.Page);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedMod.Equipped;
-                    chkArmorBlackMarketDiscount.Checked = objSelectedMod.DiscountCost;
                     if (objSelectedMod.MaximumRating > 1)
                     {
                         _blnSkipRefresh = true;
@@ -18108,7 +17924,6 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedGear.Page);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                    chkArmorBlackMarketDiscount.Checked = objSelectedGear.DiscountCost;
                     if (objSelectedGear.MaxRating > 1)
                     {
                         _blnSkipRefresh = true;
@@ -18164,7 +17979,6 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblArmorSource, _objOptions.LanguageBookLong(objSelectedGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedGear.Page);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                chkArmorBlackMarketDiscount.Checked = objSelectedGear.DiscountCost;
                 if (objSelectedGear.MaxRating > 1)
                 {
                     _blnSkipRefresh = true;
@@ -18201,7 +18015,6 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblArmorSource, null);
                 chkArmorEquipped.Enabled = false;
                 nudArmorRating.Enabled = false;
-                chkArmorBlackMarketDiscount.Checked = false;
             }
         }
 
@@ -18486,7 +18299,6 @@ namespace Chummer
                 try
                 {
                     _blnSkipRefresh = true;
-                    chkGearBlackMarketDiscount.Checked = objGear.DiscountCost;
                     //nudGearQty.Minimum = objGear.CostFor;
                     nudGearQty.Increment = objGear.CostFor;
                     nudGearQty.Value = objGear.Quantity;
@@ -19724,7 +19536,6 @@ namespace Chummer
                 nudVehicleRating.Maximum = 0;
                 nudVehicleRating.Enabled = false;
 				nudVehicleRating.Visible = false;
-				chkVehicleBlackMarketDiscount.Checked = objVehicle.DiscountCost;
                 _blnSkipRefresh = false;
 
                 lblVehicleName.Text = objVehicle.DisplayNameShort;
@@ -19825,7 +19636,6 @@ namespace Chummer
                             nudVehicleRating.Value = objMod.Rating;
                             nudVehicleRating.Increment = 1;
                             nudVehicleRating.Enabled = !objMod.IncludedInVehicle;
-                            chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                             _blnSkipRefresh = false;
                         }
                         else
@@ -19838,7 +19648,6 @@ namespace Chummer
                             nudVehicleRating.Maximum = 0;
                             nudVehicleRating.Enabled = false;
 							nudVehicleRating.Visible = false;
-                            chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                             _blnSkipRefresh = false;
                         }
                     }
@@ -19853,7 +19662,6 @@ namespace Chummer
                         nudVehicleRating.Value = objMod.Rating;
                         nudVehicleRating.Increment = 1;
                         nudVehicleRating.Enabled = !objMod.IncludedInVehicle;
-                        chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                         _blnSkipRefresh = false;
                     }
 					DisplayVehicleStats(false);
@@ -19897,8 +19705,6 @@ namespace Chummer
                         nudVehicleGearQty.Increment = objGear.CostFor;
 						nudVehicleGearQty.Visible = true;
 						lblVehicleGearQtyLabel.Visible = true;
-
-						chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
 
                         if (objGear.MaxRating > 0)
                         {
@@ -20000,7 +19806,6 @@ namespace Chummer
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
                         _blnSkipRefresh = true;
-                        chkVehicleBlackMarketDiscount.Checked = objWeapon.DiscountCost;
                         _blnSkipRefresh = false;
                         tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
                     }
@@ -20032,7 +19837,6 @@ namespace Chummer
                         nudVehicleRating.Maximum = objGear.MaxRating;
                         nudVehicleRating.Value = objGear.Rating;
                         nudVehicleRating.Enabled = true;
-                        chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
                         _blnSkipRefresh = false;
                     }
                     else
@@ -20042,7 +19846,6 @@ namespace Chummer
                         nudVehicleRating.Minimum = 0;
                         nudVehicleRating.Maximum = 0;
                         nudVehicleRating.Enabled = false;
-                        chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
                         _blnSkipRefresh = false;
                     }
 
@@ -20145,7 +19948,6 @@ namespace Chummer
                         string strPage = objWeapon.Page;
                         lblVehicleSource.Text = strBook + " " + strPage;
                         _blnSkipRefresh = true;
-                        chkVehicleBlackMarketDiscount.Checked = objWeapon.DiscountCost;
                         _blnSkipRefresh = false;
                         tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objWeapon.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objWeapon.Page);
                     }
@@ -20165,7 +19967,6 @@ namespace Chummer
                             nudVehicleRating.Minimum = objCyberware.MinRating;
                             nudVehicleRating.Maximum = objCyberware.MaxRating;
                             nudVehicleRating.Value = objCyberware.Rating;
-                            chkVehicleBlackMarketDiscount.Checked = objCyberware.DiscountCost;
                             _blnSkipRefresh = false;
 
                             lblVehicleName.Text = objCyberware.DisplayNameShort;
@@ -20218,7 +20019,6 @@ namespace Chummer
                         nudVehicleRating.Maximum = objGear.MaxRating;
                         nudVehicleRating.Value = objGear.Rating;
                         nudVehicleRating.Enabled = true;
-                        chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
                         _blnSkipRefresh = false;
                     }
                     else
@@ -20228,7 +20028,6 @@ namespace Chummer
                         nudVehicleRating.Minimum = 0;
                         nudVehicleRating.Maximum = 0;
                         nudVehicleRating.Enabled = false;
-                        chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
                         _blnSkipRefresh = false;
                     }
 
@@ -20312,7 +20111,6 @@ namespace Chummer
                         lblVehicleArmor.Text = "";
                         lblVehicleSensor.Text = "";
                         _blnSkipRefresh = true;
-                        chkVehicleBlackMarketDiscount.Checked = objAccessory.DiscountCost;
                         _blnSkipRefresh = false;
 
                         string[] strMounts = objAccessory.Mount.Split('/');
@@ -20369,7 +20167,6 @@ namespace Chummer
                             chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
                             chkVehicleIncludedInWeapon.Checked = objMod.IncludedInWeapon;
                             _blnSkipRefresh = true;
-                            chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
                             _blnSkipRefresh = false;
                         }
                         else
@@ -20395,7 +20192,6 @@ namespace Chummer
                             string strPage = objWeapon.Page;
                             lblVehicleSource.Text = strBook + " " + strPage;
                             _blnSkipRefresh = true;
-                            chkVehicleBlackMarketDiscount.Checked = objWeapon.DiscountCost;
                             chkVehicleWeaponAccessoryInstalled.Enabled = true;
                             chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
                             _blnSkipRefresh = false;
@@ -20452,7 +20248,6 @@ namespace Chummer
 					chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
 					chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
 					_blnSkipRefresh = true;
-					chkVehicleBlackMarketDiscount.Checked = objAccessory.DiscountCost;
 					_blnSkipRefresh = false;
 				}
 				else
@@ -20488,7 +20283,6 @@ namespace Chummer
 						chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
 						chkVehicleIncludedInWeapon.Checked = objMod.IncludedInWeapon;
 						_blnSkipRefresh = true;
-						chkVehicleBlackMarketDiscount.Checked = objMod.DiscountCost;
 						_blnSkipRefresh = false;
 					}
 					else
@@ -20504,7 +20298,6 @@ namespace Chummer
 							nudVehicleRating.Maximum = objGear.MaxRating;
 							nudVehicleRating.Value = objGear.Rating;
 							nudVehicleRating.Enabled = true;
-							chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
 							_blnSkipRefresh = false;
 						}
 						else
@@ -20514,7 +20307,6 @@ namespace Chummer
 							nudVehicleRating.Minimum = 0;
 							nudVehicleRating.Maximum = 0;
 							nudVehicleRating.Enabled = false;
-							chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
 							_blnSkipRefresh = false;
 						}
 
@@ -20614,7 +20406,6 @@ namespace Chummer
                 string strPage = objGear.Page;
                 lblVehicleSource.Text = strBook + " " + strPage;
                 _blnSkipRefresh = true;
-                chkVehicleBlackMarketDiscount.Checked = objGear.DiscountCost;
                 _blnSkipRefresh = false;
                 tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objGear.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objGear.Page);
 
@@ -24089,7 +23880,6 @@ namespace Chummer
             lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
             lblCyberwareCostLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
             lblCyberwareCost.Left = lblCyberwareCostLabel.Left + intWidth + 6;
-            chkCyberwareBlackMarketDiscount.Left = lblCyberwareCostLabel.Left;
 
             // Street Gear tab.
             // Lifestyles tab.
@@ -24120,7 +23910,6 @@ namespace Chummer
 
             lblArmorCostLabel.Left = lblArmorAvail.Left + lblArmorAvail.Width + 6;
             lblArmorCost.Left = lblArmorCostLabel.Left + lblArmorCostLabel.Width + 6;
-            chkArmorBlackMarketDiscount.Left = lblArmorCostLabel.Left;
 
             lblArmorAttackLabel.Left = lblArmorDeviceRating.Left + lblArmorDeviceRating.Width + 20;
             lblArmorAttack.Left = lblArmorAttackLabel.Left + lblArmorAttackLabel.Width + 6;
@@ -24160,7 +23949,6 @@ namespace Chummer
             lblWeaponCostLabel.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
             chkIncludedInWeapon.Left = lblWeaponDamageLabel.Left + 176;
-            chkWeaponBlackMarketDiscount.Left = chkIncludedInWeapon.Left;
             lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + lblWeaponAccuracyLabel.Width + 6;
 
             intWidth = Math.Max(lblWeaponAPLabel.Width, lblWeaponAmmoLabel.Width);
@@ -24203,7 +23991,6 @@ namespace Chummer
             lblGearAvail.Left = lblGearAvailLabel.Left + lblGearAvailLabel.Width + 6;
             lblGearCostLabel.Left = lblGearAvail.Left + 75;
             lblGearCost.Left = lblGearCostLabel.Left + lblGearCostLabel.Width + 6;
-            chkGearBlackMarketDiscount.Left = lblGearCostLabel.Left;
 
             intWidth = Math.Max(lblGearDeviceRatingLabel.Width, lblGearDamageLabel.Width);
             lblGearDeviceRating.Left = lblGearDeviceRatingLabel.Left + intWidth + 6;
@@ -24250,7 +24037,6 @@ namespace Chummer
 
             chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
             chkVehicleHomeNode.Left = lblVehicleAccel.Left;
-            chkVehicleBlackMarketDiscount.Left = lblVehicleAccel.Left;
 
             intWidth = Math.Max(lblVehicleSpeedLabel.Width, lblVehicleArmorLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleDataProcessingLabel.Width);

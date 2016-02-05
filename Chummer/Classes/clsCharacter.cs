@@ -42,8 +42,8 @@ public delegate void UncouthChangedHandler(Object sender);
 public delegate void FriendsInHighPlacesChangedHandler(Object sender);
 // CharacterNameChanged Event Handler
 public delegate void CharacterNameChangedHandler(Object sender);
-// BlackMarketEnabledChanged Event Handler
-public delegate void BlackMarketEnabledChangedHandler(Object sender);
+// BlackMarketDiscountEnabledChanged Event Handler
+public delegate void BlackMarketDiscountEnabledChangedHandler(Object sender);
 public delegate void ExConChangedHandler(Object sender);
 public delegate void TrustFundChangedHandler(Object sender);
 public delegate void TechSchoolChangedHandler(Object sender);
@@ -165,7 +165,7 @@ namespace Chummer
         private bool _blnSchoolOfHardKnocks = false;
         private bool _blnIsCritter = false;
         private bool _blnPossessed = false;
-        private bool _blnBlackMarket = false;
+        private bool _blnBlackMarketDiscount = false;
         private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
@@ -288,7 +288,7 @@ namespace Chummer
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
 		public event MAGEnabledChangedHandler MAGEnabledChanged;
-		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
+		public event BlackMarketDiscountEnabledChangedHandler BlackMarketEnabledChanged;
 		public event BornRichChangedHandler BornRichChanged;
 		public event CharacterNameChangedHandler CharacterNameChanged;
 		public event ErasedChangedHandler ErasedChanged;
@@ -547,7 +547,7 @@ namespace Chummer
 			// <jackofalltrades />
 			objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
             // <blackmarket />
-            objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
+            objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
 
             objWriter.WriteElementString("excon", _blnExCon.ToString());
 
@@ -1535,7 +1535,7 @@ namespace Chummer
             }
             try
             {
-                _blnBlackMarket = Convert.ToBoolean(objXmlCharacter["blackmarket"].InnerText);
+				_blnBlackMarketDiscount = Convert.ToBoolean(objXmlCharacter["blackmarketdiscount"].InnerText);
             }
             catch
             {
@@ -7257,19 +7257,19 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Whether or not Black Market is enabled.
-        /// </summary>
-        public bool BlackMarket
-        {
+		/// <summary>
+		/// Whether or not Black Market Discount is enabled.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
             get
             {
-                return _blnBlackMarket;
+                return _blnBlackMarketDiscount;
             }
             set
             {
-                bool blnOldValue = _blnBlackMarket;
-                _blnBlackMarket = value;
+                bool blnOldValue = _blnBlackMarketDiscount;
+				_blnBlackMarketDiscount = value;
                 try
                 {
                     if (blnOldValue != value)

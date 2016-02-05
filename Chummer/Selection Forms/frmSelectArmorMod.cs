@@ -71,6 +71,7 @@ namespace Chummer
                     lstMods.Add(objItem);
                 }
 			}
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
 			lstMod.ValueMember = "Value";
@@ -217,6 +218,10 @@ namespace Chummer
 		#endregion
 
 		#region Methods
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateSelectedArmor();
+		}
 		/// <summary>
 		/// Update the information for the selected Armor Mod.
 		/// </summary>

@@ -62,6 +62,7 @@
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.lblCyberwareNotes = new System.Windows.Forms.Label();
 			this.lblCyberwareNotesLabel = new System.Windows.Forms.Label();
+			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
 			this.SuspendLayout();
@@ -361,7 +362,7 @@
 			// chkTransgenic
 			// 
 			this.chkTransgenic.AutoSize = true;
-			this.chkTransgenic.Location = new System.Drawing.Point(384, 176);
+			this.chkTransgenic.Location = new System.Drawing.Point(382, 150);
 			this.chkTransgenic.Name = "chkTransgenic";
 			this.chkTransgenic.Size = new System.Drawing.Size(115, 17);
 			this.chkTransgenic.TabIndex = 18;
@@ -400,6 +401,19 @@
 			this.lblCyberwareNotesLabel.Text = "Notes:";
 			this.lblCyberwareNotesLabel.Visible = false;
 			// 
+			// chkBlackMarketDiscount
+			// 
+			this.chkBlackMarketDiscount.AutoSize = true;
+			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(338, 176);
+			this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+			this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+			this.chkBlackMarketDiscount.TabIndex = 39;
+			this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+			this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+			this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+			this.chkBlackMarketDiscount.Visible = false;
+			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+			// 
 			// frmSelectCyberware
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -407,6 +421,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(549, 417);
+			this.Controls.Add(this.chkBlackMarketDiscount);
 			this.Controls.Add(this.lblCyberwareNotes);
 			this.Controls.Add(this.lblCyberwareNotesLabel);
 			this.Controls.Add(this.chkTransgenic);
@@ -490,5 +505,6 @@
 		private System.Windows.Forms.ToolTip tipTooltip;
 		private System.Windows.Forms.Label lblCyberwareNotes;
 		private System.Windows.Forms.Label lblCyberwareNotesLabel;
+		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
 	}
 }

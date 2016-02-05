@@ -643,10 +643,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -1878,10 +1875,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -3562,10 +3556,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -5705,10 +5696,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -7741,6 +7729,7 @@ namespace Chummer
 		private int _intRCGroup = 0;
 		private int _intAmmoSlots = 0;
 		private bool _blnDiscountCost = false;
+		private bool _blnBlackMarketDiscount = false;
 		private bool _blnIncludedInWeapon = false;
 		private bool _blnInstalled = true;
 
@@ -8570,10 +8559,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -8722,6 +8708,7 @@ namespace Chummer
 		private string _strAltPage = "";
 		private string _strExtra = "";
 		private bool _blnDiscountCost = false;
+		private bool _blnBlackMarketDiscount = false;
 		private Weapon _objParent;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -9444,10 +9431,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -11989,10 +11973,7 @@ namespace Chummer
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -14535,16 +14516,13 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+		/// Whether or not the Vehicle Mod's cost should be discounted by 10% through the Black Market Pipeline Quality.
 		/// </summary>
 		public bool DiscountCost
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnDiscountCost;
 			}
 			set
 			{
@@ -14823,7 +14801,8 @@ namespace Chummer
 		private string _strAltCategory = "";
 		private string _strAltPage = "";
 		private List<string> _lstLocations = new List<string>();
-		private bool _blnDiscountCost = false;
+		private bool _blnDealerConnectionDiscount = false;
+		private bool _blnBlackMarketDiscount = false;
 
 		private readonly Character _objCharacter;
 
@@ -15005,7 +14984,7 @@ namespace Chummer
 					List<Weapon> objWeapons = new List<Weapon>();
 					List<TreeNode> objWeaponNodes = new List<TreeNode>();
 					objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
-					//objGear.Cost = "0";
+					objGear.Cost = "0";
 					objGear.Quantity = intQty;
                     objGear.MaxRating = intMaxRating;
 					objGearNode.Text = objGear.DisplayName;
@@ -15181,7 +15160,7 @@ namespace Chummer
 				objWeapon.Save(objWriter);
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+			objWriter.WriteElementString("discountedcost", DealerConnectionDiscount.ToString());
 			if (_lstLocations.Count > 0)
 			{
 				// <locations>
@@ -15220,68 +15199,22 @@ namespace Chummer
 				}
 			}
 			_strAccel = objNode["accel"].InnerText;
-            try
-            {
-                _intSeats = Convert.ToInt32(objNode["seats"].InnerText);
-            }
-            catch { }
+			objNode.TryGetField("seats", out _intSeats);
             _intSpeed = Convert.ToInt32(objNode["speed"].InnerText);
 			_intPilot = Convert.ToInt32(objNode["pilot"].InnerText);
 			_intBody = Convert.ToInt32(objNode["body"].InnerText);
 			_intArmor = Convert.ToInt32(objNode["armor"].InnerText);
 			_intSensor = Convert.ToInt32(objNode["sensor"].InnerText);
-			try
-			{
-				_intDeviceRating = Convert.ToInt32(objNode["devicerating"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("devicerating", out _intDeviceRating);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
-			try
-			{
-				_intAddSlots = Convert.ToInt32(objNode["addslots"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("addslots", out _intAddSlots);
 			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intMatrixCMFilled = Convert.ToInt32(objNode["matrixcmfilled"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intPhysicalCMFilled = Convert.ToInt32(objNode["physicalcmfilled"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strVehicleName = objNode["vehiclename"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnHomeNode = Convert.ToBoolean(objNode["homenode"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
+			objNode.TryGetField("physicalcmfilled", out _intPhysicalCMFilled);
+			objNode.TryGetField("vehiclename", out _strVehicleName);
+			objNode.TryGetField("homenode", out _blnHomeNode);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -15355,21 +15288,8 @@ namespace Chummer
 				}
 			}
 
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("dealerconnection", out _blnDealerConnectionDiscount);
 
 			if (objNode["locations"] != null)
 			{
@@ -16062,20 +15982,59 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+		/// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
 		/// </summary>
-		public bool DiscountCost
+		public bool BlackMarketDiscount
 		{
 			get
 			{
-				if (_objCharacter.Created)
-					return false;
-				else
-					return _blnDiscountCost;
+				return _blnBlackMarketDiscount;
 			}
 			set
 			{
-				_blnDiscountCost = value;
+				_blnBlackMarketDiscount = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
+		/// </summary>
+		public bool DealerConnectionDiscount
+		{
+			get
+			{
+				foreach (Improvement objImprovement in _objCharacter.Improvements)
+				{
+					if (objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection)
+					{
+						if (
+							(objImprovement.ImprovedName == "Drones" && (
+								_strCategory.StartsWith("Drones"))) ||
+							(objImprovement.ImprovedName == "Aircraft" && (
+								_strCategory == "Fixed - Wing Aircraft" ||
+								_strCategory == "LTAV" ||
+								_strCategory == "Rotorcraft" ||
+								_strCategory == "VTOL / VSTOL")) ||
+							(objImprovement.ImprovedName == "Watercraft" && (
+								_strCategory == "Boats" ||
+								_strCategory == "Submarines")) ||
+							(objImprovement.ImprovedName == "Groundcraft" && (
+								_strCategory == "Bikes" ||
+								_strCategory == "Cars" ||
+								_strCategory == "Trucks" ||
+								_strCategory == "Municipal/Construction" ||
+								_strCategory == "Corpsec/Police/Military"))
+							)
+						{
+							_blnDealerConnectionDiscount = true;
+						}
+					}
+				}
+				return _blnDealerConnectionDiscount;
+			}
+			set
+			{
+				_blnDealerConnectionDiscount = value;
 			}
 		}
 		#endregion
@@ -16108,8 +16067,7 @@ namespace Chummer
 			get
 			{
 				int intCost = Convert.ToInt32(_strCost);
-
-				if (DiscountCost)
+				if (DealerConnectionDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
@@ -16152,7 +16110,7 @@ namespace Chummer
 			{
 				int intCost = Convert.ToInt32(_strCost);
 
-				if (DiscountCost)
+				if (DealerConnectionDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
 				return intCost;

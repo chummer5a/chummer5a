@@ -2360,7 +2360,7 @@
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus>
-				<blackmarket />
+				<blackmarketdiscount />
 				<selecttext />
 				<selectcontact />
 			</bonus>
@@ -10155,7 +10155,12 @@
 			<limit>4</limit>
 			<category>Positive</category>
 			<bonus>
-				<selecttext />
+				<dealerconnection>
+					<category>Drones</category>
+					<category>Groundcraft</category>
+					<category>Watercraft</category>
+					<category>Aircraft</category>
+				</dealerconnection>
 			</bonus>
 			<source>R5</source>
 			<page>33</page>

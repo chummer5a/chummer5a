@@ -54,6 +54,8 @@ namespace Chummer
 		{
 			BuildModList();
 
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
 			if (_strInputFile == "weapons")
 				this.Text = LanguageManager.Instance.GetString("Title_SelectVehicleMod_Weapon");
 		}
@@ -72,6 +74,11 @@ namespace Chummer
 		{
 			if (lstMod.Text != "")
 				AcceptForm();
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateGearInfo();
 		}
 
 		private void cmdCancel_Click(object sender, EventArgs e)
