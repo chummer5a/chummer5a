@@ -88,6 +88,7 @@ namespace Chummer.UI.Shared
 			//this.PerformLayout();
 			parts.TaskEnd("visible");
 			Panel1_Resize(null, null);
+			Panel2_Resize(null, null);
 			parts.TaskEnd("resize");
 			sw.Stop();
 			Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -143,8 +144,6 @@ namespace Chummer.UI.Shared
 			_groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
-				Size = new Size(255, splitSkills.Panel1.Height - 15)
-				
 			};
 			sw.TaskEnd("_groups");
 
@@ -155,9 +154,8 @@ namespace Chummer.UI.Shared
 			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
 				Location = new Point(265, 39),
-				Size = new Size(565, splitSkills.Panel1.Height - 39)
 			};
-
+			
 			sw.TaskEnd("_skills");
 
 			splitSkills.Panel1.Controls.Add(_skills);
@@ -168,7 +166,6 @@ namespace Chummer.UI.Shared
 				knoSkill => new KnowledgeSkillControl(knoSkill))
 			{
 				Location = new Point(3, 50),
-				Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height -  50)
 			};
 
 			splitSkills.Panel2.Controls.Add(_knoSkills);
@@ -180,8 +177,26 @@ namespace Chummer.UI.Shared
 		{
 			int height = splitSkills.Panel1.Height;
 
-			if( _skills != null) _skills.Height = height - _skills.Top;
-			if( _groups != null) _groups.Height = height - _groups.Top;
+			if (_skills != null)
+			{
+				_skills.Height = height - _skills.Top;
+				_skills.Size = new Size(splitSkills.Panel1.Width - 265, splitSkills.Panel1.Height - 39);
+
+			}
+			if (_groups != null)
+			{
+				_groups.Height = height - _groups.Top;
+				_groups.Size = new Size(255, splitSkills.Panel1.Height - 15);
+			}
+		}
+
+		private void Panel2_Resize(object sender, EventArgs e)
+		{
+			if (_knoSkills != null)
+			{
+				_knoSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 50);
+				_knoSkills.Height = splitSkills.Panel2.Height - 53;
+			}
 		}
 
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -210,5 +225,7 @@ namespace Chummer.UI.Shared
 		{
 			ObjCharacter.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
+
+		
 	}
 }

@@ -44,6 +44,8 @@
 			this.splitSkills.BackColor = System.Drawing.SystemColors.InactiveCaption;
 			this.splitSkills.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitSkills.Location = new System.Drawing.Point(0, 0);
+			this.splitSkills.Margin = new System.Windows.Forms.Padding(0);
+			this.splitSkills.MinimumSize = new System.Drawing.Size(830, 0);
 			this.splitSkills.Name = "splitSkills";
 			this.splitSkills.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
@@ -59,13 +61,15 @@
 			// 
 			this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
 			this.splitSkills.Panel2.Controls.Add(this.btnKnowledge);
-			this.splitSkills.Size = new System.Drawing.Size(836, 611);
-			this.splitSkills.SplitterDistance = 435;
+			this.splitSkills.Panel2.Resize += new System.EventHandler(this.Panel2_Resize);
+			this.splitSkills.Size = new System.Drawing.Size(830, 611);
+			this.splitSkills.SplitterDistance = 450;
 			this.splitSkills.TabIndex = 0;
 			// 
 			// btnExotic
 			// 
-			this.btnExotic.Location = new System.Drawing.Point(744, 3);
+			this.btnExotic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnExotic.Location = new System.Drawing.Point(738, 3);
 			this.btnExotic.Name = "btnExotic";
 			this.btnExotic.Size = new System.Drawing.Size(89, 23);
 			this.btnExotic.TabIndex = 2;
@@ -75,10 +79,11 @@
 			// 
 			// cboDisplayFilter
 			// 
+			this.cboDisplayFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboDisplayFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboDisplayFilter.FormattingEnabled = true;
 			this.cboDisplayFilter.IntegralHeight = false;
-			this.cboDisplayFilter.Location = new System.Drawing.Point(537, 3);
+			this.cboDisplayFilter.Location = new System.Drawing.Point(531, 3);
 			this.cboDisplayFilter.Name = "cboDisplayFilter";
 			this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
 			this.cboDisplayFilter.TabIndex = 1;
@@ -109,7 +114,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.splitSkills);
 			this.Name = "SkillsTabUserControl";
-			this.Size = new System.Drawing.Size(836, 611);
+			this.Size = new System.Drawing.Size(830, 611);
 			this.Load += new System.EventHandler(this.SkillsTabUserControl_Load);
 			this.splitSkills.Panel1.ResumeLayout(false);
 			this.splitSkills.Panel1.PerformLayout();
