@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Skills;
 
 // RatingChanged Event Handler.
 public delegate void RatingChangedHandler(Object sender);
@@ -203,10 +204,10 @@ namespace Chummer
 				lblSkillRating.Visible = true;
 				cmdImproveSkill.Visible = true;
 
-                if (_objSkill.FreeLevels > 0)
-                    nudSkill.Minimum = _objSkill.FreeLevels;
-                else
-                    nudSkill.Minimum = 0;
+                //if (_objSkill.FreeLevels > 0)
+                //    nudSkill.Minimum = _objSkill.FreeLevels;
+                //else
+                //    nudSkill.Minimum = 0;
 
 				// Show the Dice Rolling button if the option is enabled.
 				if (_objSkill.CharacterObject.Options.AllowSkillDiceRolling)
@@ -220,21 +221,21 @@ namespace Chummer
 					cmdDelete.Left += 30;
 					tipTooltip.SetToolTip(cmdRoll, LanguageManager.Instance.GetString("Tip_DiceRoller"));
 				}
-
+				
 				lblSpec.Text = _objSkill.Specialization;
-				cboSpec.Visible = false;
-                lblSpec.Visible = true;
-				cboSpec.Enabled = false;
+                    cboSpec.Visible = false;
+                    lblSpec.Visible = true;
+					cboSpec.Enabled = false;
 				cmdChangeSpec.Visible = true;
 				if (_objSkill.ExoticSkill && (_objSkill.Rating == 0))
 				{
 					cmdChangeSpec.Image = global::Chummer.Properties.Resources.delete;
 				}
-				else
-				{
-					string strTip = LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization").Replace("{0}", _objSkill.CharacterObject.Options.KarmaSpecialization.ToString());
-					tipTooltip.SetToolTip(cmdChangeSpec, strTip);
-				}
+                else
+                {
+                string strTip = LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization").Replace("{0}", _objSkill.CharacterObject.Options.KarmaSpecialization.ToString());
+				tipTooltip.SetToolTip(cmdChangeSpec, strTip);
+			}
 			}
 	        if (KnowledgeSkill)
 	        {
@@ -243,17 +244,17 @@ namespace Chummer
 	        else
 		        this.Width = cmdChangeSpec.Left + cmdChangeSpec.Width;
 
-	        if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
-            {
-                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                    nudSkill.Enabled = false;
-                cmdBreakGroup.Visible = false;
-            }
+	        //if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject != null && _objSkill.SkillGroupObject.Broken)
+         //   {
+         //       if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+         //           nudSkill.Enabled = false;
+         //       cmdBreakGroup.Visible = false;
+         //   }
 
             this.Height = lblSpec.Height + 10;
 
             chkKarma.Checked = _objSkill.BuyWithKarma;
-			lblAttribute.Text = _objSkill.DisplayAttribute;
+			lblAttribute.Text = _objSkill.GetDisplayAttribute();
 
 			RefreshControl();
 			_blnSkipRefresh = false;
@@ -269,7 +270,7 @@ namespace Chummer
             }
             _intBaseRating = Convert.ToInt32(nudSkill.Value);
             _objSkill.Base = Convert.ToInt32(nudSkill.Value);
-            _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
+            //_objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
 
             RefreshControl();
 			RatingChanged(this);
@@ -283,7 +284,7 @@ namespace Chummer
             }
             _intKarmaRating = Convert.ToInt32(nudKarma.Value);
             _objSkill.Karma = Convert.ToInt32(nudKarma.Value);
-            _objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
+            //_objSkill.Rating = Convert.ToInt32(nudSkill.Value) + (Convert.ToInt32(nudKarma.Value));
             RefreshControl();
             RatingChanged(this);
         }
@@ -307,11 +308,11 @@ namespace Chummer
                 if (!blnFound)
                 {
                     _objSkill.Specializations.Clear();
-                    if (cboSpec.Text != string.Empty)
-                    {
-                        SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
-                        _objSkill.Specializations.Add(objSpec);
-                    }
+                    //if (cboSpec.Text != string.Empty)
+                    //{
+                    //    SkillSpecialization objSpec = new SkillSpecialization(cboSpec.Text);
+                    //    _objSkill.Specializations.Add(objSpec);
+                    //}
                     SpecializationChanged(this);
                 }
             }
@@ -346,10 +347,10 @@ namespace Chummer
 		{
 			if (_lockKnowledge) return;
 
-			string strSkillName = cboSkillName.Text.Split('(')[0].Trim();
+			//_objSkill.Name = cboSkillName.Text;
 
-			_objSkill.Name = strSkillName;
-			cboSkillName.Text = strSkillName;
+			//_objSkill.Name = strSkillName;
+			//cboSkillName.Text = strSkillName;
 			RefreshControl();
 			XmlDocument objXmlDocument = new XmlDocument();
 			objXmlDocument = XmlManager.Instance.Load("skills.xml");
@@ -376,7 +377,7 @@ namespace Chummer
 		
 		private void cboSkillName_TextChanged(object sender, EventArgs e)
 		{
-			_objSkill.Name = cboSkillName.Text;
+			//_objSkill.Name = cboSkillName.Text;
 			
 			RefreshControl();
 			
@@ -448,9 +449,9 @@ namespace Chummer
 		private void cmdChangeSpec_Click(object sender, EventArgs e)
 		{
 			if (_objSkill.ExoticSkill)
-			{
+            {
 				DeleteSkill(this);
-			}
+            }
 			else
 			{ 
             XmlDocument objXmlDocument = new XmlDocument();
@@ -494,9 +495,9 @@ namespace Chummer
 							{
 								objItem.Name = objXmlSpecialization.Attributes["translate"].InnerText;
 							}
-							else
+                        else
 							{
-								objItem.Name = objXmlSpecialization.InnerText;
+                            objItem.Name = objXmlSpecialization.InnerText;
 							}
                         objItem.Value = objXmlSpecialization.InnerText;
                         lstSpecializations.Add(objItem);
@@ -519,8 +520,8 @@ namespace Chummer
             string strSelectedValue = frmPickItem.SelectedItem;
 
             // charge the karma and add the spec
-            SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
-            _objSkill.Specializations.Add(objSpec);
+            //SkillSpecialization objSpec = new SkillSpecialization(strSelectedValue);
+            //_objSkill.Specializations.Add(objSpec);
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry();
@@ -529,7 +530,7 @@ namespace Chummer
             _objSkill.CharacterObject.Karma -= _objSkill.CharacterObject.Options.KarmaSpecialization;
 
             ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
+            //objUndo.CreateKarma(KarmaExpenseType.AddSpecialization, objSpec.InternalId);
             objEntry.Undo = objUndo;
 
             lblSpec.Text = _objSkill.Specialization;
@@ -537,7 +538,7 @@ namespace Chummer
             this.Height = lblSpec.Height + 10;
 
             RatingChanged(this);
-			}
+		}
 		}
 
 		private void cboSpec_Leave(object sender, EventArgs e)
@@ -639,11 +640,11 @@ namespace Chummer
             }
             set
             {
-				_objSkill.Name = value;
-				lblSkillName.Text = _objSkill.DisplayName;
+				//_objSkill.Name = value;
+				lblSkillName.Text = _objSkill.GetDisplayName();
 
 				if (!KnowledgeSkill)
-					tipTooltip.SetToolTip(lblSkillName, _objSkill.DisplayCategory + "\n" + _objSkill.CharacterObject.Options.LanguageBookLong(_objSkill.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objSkill.Page);
+					tipTooltip.SetToolTip(lblSkillName, _objSkill.GetDisplayCategory() + "\n" + _objSkill.CharacterObject.Options.LanguageBookLong(_objSkill.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + _objSkill.Page);
             }
         }
 
@@ -706,15 +707,15 @@ namespace Chummer
                 {
                     value = _objSkill.RatingMaximum;
                 }
-                if (value < _objSkill.FreeLevels)
-                {
-                    value = _objSkill.FreeLevels;
-                }
+                //if (value < _objSkill.FreeLevels)
+                //{
+                //    value = _objSkill.FreeLevels;
+                //}
 				//nudSkill.Value = value;
 
 				
                 lblSkillRating.Text = value.ToString();
-                _objSkill.Rating = value;
+                //_objSkill.Rating = value;
 
 				if (value < _objSkill.RatingMaximum)
 				{
@@ -811,7 +812,7 @@ namespace Chummer
         {
             get
             {
-                return _objSkill.FreeLevels;
+	            return 0;// _objSkill.FreeLevels;
             }
         }
 
@@ -892,14 +893,14 @@ namespace Chummer
 					
 
 					cboSkillName.Items.Clear();
-					cboSkillName.Items.AddRange(_objSkill.KnowledgeSkillCatagories.ToArray());
+					//cboSkillName.Items.AddRange(_objSkill.KnowledgeSkillCatagories.ToArray());
 					
 					_blnSkipRefresh = false;
 
-					if (_objSkill.SkillCategory != "")
-						cboKnowledgeSkillCategory.SelectedValue = _objSkill.SkillCategory;
-					else
-						_objSkill.Attribute = "LOG";
+					//if (_objSkill.SkillCategory != "")
+					//	cboKnowledgeSkillCategory.SelectedValue = _objSkill.SkillCategory;
+					//else
+					//	//_objSkill.Attribute = "LOG";
                 }
                 else
                 {
@@ -920,7 +921,7 @@ namespace Chummer
 			set
 			{
 				cboSpec.Text = value;
-				_objSkill.Specialization = value;
+				//_objSkill.Specialization = value;
 			}
         }
 
@@ -940,7 +941,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.SkillGroup = value;
+				//_objSkill.SkillGroup = value;
             }
         }
 
@@ -971,11 +972,11 @@ namespace Chummer
 		{
 			get
 			{
-				return _objSkill.IsGrouped;
+				return false; // _objSkill.IsGrouped;
 			}
 			set
 			{
-				_objSkill.IsGrouped = value;
+				//_objSkill.IsGrouped = value;
 
 				// When Grouped in Career Mode, everything but the Improve button is disabled.
 				if (value)
@@ -992,16 +993,16 @@ namespace Chummer
 					cboSpec.Enabled = true;
 
 				// If we're in Create Mode, show the Break Group button if the Skill is Grouped.
-				if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
-					cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
-                else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
-                {
-                    if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
-                        nudSkill.Enabled = false;
-                    cmdBreakGroup.Visible = false;
-                }
-				else
-					cmdBreakGroup.Visible = false;
+				//if (!_objSkill.CharacterObject.Created && _objSkill.IsGrouped)
+				//	cmdBreakGroup.Visible = _objSkill.CharacterObject.Options.BreakSkillGroupsInCreateMode;
+    //            else if (!_objSkill.CharacterObject.Created && _objSkill.SkillGroupObject.Broken)
+    //            {
+    //                if (!_objSkill.CharacterObject.Options.UsePointsOnBrokenGroups)
+    //                    nudSkill.Enabled = false;
+    //                cmdBreakGroup.Visible = false;
+    //            }
+				//else
+				//	cmdBreakGroup.Visible = false;
 			}
 		}
 
@@ -1026,7 +1027,7 @@ namespace Chummer
 					if (value == "")
 					{
 						cboKnowledgeSkillCategory.SelectedIndex = 0;
-						_objSkill.Attribute = "LOG";
+						//_objSkill.Attribute = "LOG";
 						_objSkill.SkillCategory = "Academic";
 					}
 					else
@@ -1037,7 +1038,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Attribute the Skill is linked to.
+		/// CharacterAttribute the Skill is linked to.
 		/// </summary>
 		public string Attribute
 		{
@@ -1058,7 +1059,7 @@ namespace Chummer
             }
             set
             {
-				_objSkill.AllowDelete = value;
+				//_objSkill.AllowDelete = value;
                 if (value)
                 {
                     cmdDelete.Visible = true;
@@ -1129,7 +1130,7 @@ namespace Chummer
             bool blnSkillsoft = false;
             ImprovementManager objImprovementManager = new ImprovementManager(_objSkill.CharacterObject);
 
-            int intRating = _objSkill.TotalRating;
+            int intRating = _objSkill.Pool;
             lblModifiedRating.Text = intRating.ToString();
 
             int intSkillRating = _objSkill.Rating;
@@ -1148,7 +1149,7 @@ namespace Chummer
 					}
 				}
 			}
-			foreach (Gear objGear in _objSkill.CharacterObject.Gear)
+	        foreach (Gear objGear in _objSkill.CharacterObject.Gear)
             {
                 // Look for any Skillsoft that would conflict with the Skill's Rating.
                 if (objGear.Equipped && objGear.Category == "Skillsofts" && (objGear.Extra == _objSkill.Name || objGear.Extra == _objSkill.Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
@@ -1182,16 +1183,16 @@ namespace Chummer
                             break;
                         }
                     }
-                }
             }
-            if (_objSkill.FreeLevels > 0)
-            {
-                nudSkill.Minimum = _objSkill.FreeLevels;
             }
-            else
-            {
-                nudSkill.Minimum = 0;
-            }
+            //if (_objSkill.FreeLevels > 0)
+            //{
+            //    nudSkill.Minimum = _objSkill.FreeLevels;
+            //}
+            //else
+            //{
+            //    nudSkill.Minimum = 0;
+            //}
 
             if (cboSpec.Text != "" && !_objSkill.ExoticSkill)
             {
@@ -1214,7 +1215,7 @@ namespace Chummer
                     lblModifiedRating.Text += " (" + (intRating + 3).ToString() + ")";
                 }
             }
-            lblAttribute.Text = _objSkill.DisplayAttribute;
+            lblAttribute.Text = _objSkill.GetDisplayAttribute();
 
             // Build the Tooltip.
             string strTooltip = "";
@@ -1233,11 +1234,11 @@ namespace Chummer
             // Modifiers only apply when not Defaulting.
             if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
 			{
-				if (_objSkill.RatingModifiers != 0)
+				if (_objSkill.PoolModifiers != 0)
 				{
 					if (_objSkill.CharacterObject.Options.EnforceMaximumSkillRatingModifier)
 					{
-						int intModifier = _objSkill.RatingModifiers;
+						int intModifier = _objSkill.PoolModifiers;
 						if (intModifier > Convert.ToInt32(Math.Floor(Convert.ToDouble(intSkillRating, GlobalOptions.Instance.CultureInfo) * 0.5)))
 						{
 							int intMax = intModifier;
@@ -1248,10 +1249,10 @@ namespace Chummer
 								strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (0 " + LanguageManager.Instance.GetString("String_Of") + " " + intMax.ToString() + ")";
 						}
 						else
-							strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.RatingModifiers.ToString() + ")";
+							strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.PoolModifiers.ToString() + ")";
 					}
 					else
-						strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.RatingModifiers.ToString() + ")";
+						strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.PoolModifiers.ToString() + ")";
 				}
 				// Dice Pool Modifiers.
 				strTooltip += _objSkill.DicePoolModifiersTooltip;
@@ -1285,13 +1286,13 @@ namespace Chummer
 			// Specializations should not be enabled for Active Skills in Create Mode if their Rating is 0.
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && !_objSkill.CharacterObject.Created)
 			{
-				if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
-					cboSpec.Enabled = true;
-				else
-				{
-					cboSpec.Enabled = false;
-					cboSpec.Text = "";
-				}
+				//if (_objSkill.Rating > 0 && !_objSkill.IsGrouped)
+				//	cboSpec.Enabled = true;
+				//else
+				//{
+				//	cboSpec.Enabled = false;
+				//	cboSpec.Text = "";
+				//}
 			}
 			if (!_objSkill.KnowledgeSkill && !_objSkill.ExoticSkill && _objSkill.CharacterObject.Created)
 			{
@@ -1319,30 +1320,30 @@ namespace Chummer
 					cmdImproveSkill.Enabled = false;
 			}
 
-			if (KnowledgeSkill && _objCharacter != null && SkillRating < SkillRatingMaximum && !_objCharacter.Created)
+			//if (KnowledgeSkill && _objCharacter != null && SkillRating < SkillRatingMaximum && !_objCharacter.Created)
 			{
-				List<Skill> joinList =
-					objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
+				//List<Skill> joinList =
+				//	objCharacter.Skills.FindAll(s => s.KnowledgeSkill && s.Name == _objSkill.Name && s != _objSkill);
 
-				type = _objSkill.Fold.Count == 0;
+				//type = _objSkill.Fold.Count == 0;
 
-				if (type)
-				{
+				//if (type)
+				//{
 
-					if (joinList.Count > 0)
-					{
-						cmdExpand.Visible = true;
-					}
-					else
-					{
-						cmdExpand.Visible = false;
-					}
-				}
-				else
-				{
+				//	//if (joinList.Count > 0)
+				//	//{
+				//	//	cmdExpand.Visible = true;
+				//	//}
+				//	//else
+				//	//{
+				//	//	cmdExpand.Visible = false;
+				//	//}
+				//}
+				//else
+				//{
 
-					cmdExpand.Visible = true;
-				}
+				//	cmdExpand.Visible = true;
+				//}
 
 				//If 2 knowledgeskills have same name, offer to join them
 			}

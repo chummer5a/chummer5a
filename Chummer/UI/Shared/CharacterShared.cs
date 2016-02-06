@@ -86,7 +86,7 @@ namespace Chummer
 
 			foreach (string attribute in attributes)
 			{
-				manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
+				manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality, //CharacterAttribute name AGI, BOD etc
 					$"__SEEKER__{attribute}",  //Sourcename, as we cannot track dependent improvements, we have to hack it this way
 					Improvement.ImprovementType.Attribute,
 					Guid.NewGuid().ToString(), (attribute == "BOX" ? count * -3 : 1), 1, 0, 0, count * (attribute == "BOX" ? 0 : 1)); //count is argumented value

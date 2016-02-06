@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chummer.Skills;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -762,7 +763,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "attribute")
 						{
 							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{
@@ -1067,7 +1068,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "attribute")
 						{
 							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{

@@ -1167,6 +1167,8 @@ namespace Chummer
 			this.lblSpellDefenceIndirectSoakLabel = new System.Windows.Forms.Label();
 			this.lblSpellDefenceIndirectDodge = new System.Windows.Forms.Label();
 			this.lblSpellDefenceIndirectDodgeLabel = new System.Windows.Forms.Label();
+			this.tapNewSkills = new System.Windows.Forms.TabPage();
+			this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1281,6 +1283,7 @@ namespace Chummer
 			this.cmsTechnique.SuspendLayout();
 			this.tabDefences.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
+			this.tapNewSkills.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -2164,7 +2167,7 @@ namespace Chummer
 			this.lblAttributesBase.TabIndex = 54;
 			this.lblAttributesBase.Tag = "Label_Base";
 			this.lblAttributesBase.Text = "Base";
-			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base CharacterAttribute value.");
 			// 
 			// lblAttributesAug
 			// 
@@ -2175,7 +2178,7 @@ namespace Chummer
 			this.lblAttributesAug.TabIndex = 55;
 			this.lblAttributesAug.Tag = "Label_Augmented";
 			this.lblAttributesAug.Text = "(Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented CharacterAttribute value.");
 			// 
 			// lblFoci
 			// 
@@ -2864,6 +2867,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabCharacterTabs.Controls.Add(this.tabCommon);
 			this.tabCharacterTabs.Controls.Add(this.tabSkills);
+			this.tabCharacterTabs.Controls.Add(this.tapNewSkills);
 			this.tabCharacterTabs.Controls.Add(this.tabLimits);
 			this.tabCharacterTabs.Controls.Add(this.tabMartialArts);
 			this.tabCharacterTabs.Controls.Add(this.tabMagician);
@@ -12720,7 +12724,7 @@ namespace Chummer
 			this.mnuSpecialReduceAttribute.Name = "mnuSpecialReduceAttribute";
 			this.mnuSpecialReduceAttribute.Size = new System.Drawing.Size(246, 22);
 			this.mnuSpecialReduceAttribute.Tag = "Menu_SpecialReduceAttribute";
-			this.mnuSpecialReduceAttribute.Text = "Reduce Attribute";
+			this.mnuSpecialReduceAttribute.Text = "Reduce CharacterAttribute";
 			this.mnuSpecialReduceAttribute.Click += new System.EventHandler(this.mnuSpecialReduceAttribute_Click);
 			// 
 			// mnuSpecialPossess
@@ -13964,6 +13968,24 @@ namespace Chummer
 			this.lblSpellDefenceIndirectDodgeLabel.Tag = "Label_SpellDefenceIndirectDodge";
 			this.lblSpellDefenceIndirectDodgeLabel.Text = "Indirect Dodge";
 			this.tipTooltip.SetToolTip(this.lblSpellDefenceIndirectDodgeLabel, "Physical CM is calculated as 8 + (BOD / 2).");
+			// tapNewSkills
+			// 
+			this.tapNewSkills.Controls.Add(this.tabSkillsUc);
+			this.tapNewSkills.Location = new System.Drawing.Point(4, 22);
+			this.tapNewSkills.Name = "tapNewSkills";
+			this.tapNewSkills.Size = new System.Drawing.Size(838, 611);
+			this.tapNewSkills.TabIndex = 17;
+			this.tapNewSkills.Text = "tabNewSkills";
+			this.tapNewSkills.UseVisualStyleBackColor = true;
+			// 
+			// tabSkillsUc
+			// 
+			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
+			this.tabSkillsUc.Name = "tabSkillsUc";
+			this.tabSkillsUc.ObjCharacter = null;
+			this.tabSkillsUc.Size = new System.Drawing.Size(838, 611);
+			this.tabSkillsUc.TabIndex = 1;
 			// 
 			// frmCareer
 			// 
@@ -14132,6 +14154,7 @@ namespace Chummer
 			this.tabDefences.ResumeLayout(false);
 			this.tabDefences.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).EndInit();
+			this.tapNewSkills.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -15247,6 +15270,8 @@ namespace Chummer
 		private System.Windows.Forms.Label lblSpellDefenceIndirectSoakLabel;
 		private System.Windows.Forms.Label lblSpellDefenceIndirectDodge;
 		private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
+		private System.Windows.Forms.TabPage tapNewSkills;
+		private UI.Shared.SkillsTabUserControl tabSkillsUc;
 	}
 }
 

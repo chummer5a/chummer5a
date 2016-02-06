@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -12,161 +13,169 @@ namespace Chummer
     {
         public enum ImprovementType
         {
-            Skill = 0,
-            Attribute = 1,
-            Text = 2,
-			Armor = 3,
-			Reach = 5,
-			Nuyen = 6,
-			Essence = 7,
-			Reaction = 8,
-			PhysicalCM = 9,
-			StunCM = 10,
-			UnarmedDV = 11,
-			SkillGroup = 12,
-			SkillCategory = 13,
-			SkillAttribute = 14,
-			InitiativePass = 15,
-			MatrixInitiative = 16,
-			MatrixInitiativePass = 17,
-			LifestyleCost = 18,
-			CMThreshold = 19,
-			EnhancedArticulation = 20,
-			WeaponCategoryDV = 21,
-			CyberwareEssCost = 22,
-			SpecialTab = 23,
-			Initiative = 24,
-			Uneducated = 25,
-			LivingPersonaResponse = 26,
-			LivingPersonaSignal = 27,
-			LivingPersonaFirewall = 28,
-			LivingPersonaSystem = 29,
-			LivingPersonaBiofeedback = 30,
-			Smartlink = 31,
-			BiowareEssCost = 32,
-			GenetechCostMultiplier = 33,
-			BasicBiowareEssCost = 34,
-			TransgenicsBiowareCost = 35,
-			SoftWeave = 36,
-			SensitiveSystem = 37,
-			ConditionMonitor = 38,
-			UnarmedDVPhysical = 39,
-			MovementPercent = 40,
-			Adapsin = 41,
-			FreePositiveQualities = 42,
-			FreeNegativeQualities = 43,
-			NuyenMaxBP = 44,
-			CMOverflow = 45,
-			FreeSpiritPowerPoints = 46,
-			AdeptPowerPoints = 47,
-			ArmorEncumbrancePenalty = 48,
-			Uncouth = 49,
-			Initiation = 50,
-			Submersion = 51,
-			Infirm = 52,
-			Skillwire = 53,
-			DamageResistance = 54,
-			RestrictedItemCount = 55,
-			AdeptLinguistics = 56,
-			SwimPercent = 57,
-			FlyPercent = 58,
-			FlySpeed = 59,
-			JudgeIntentions = 60,
-			LiftAndCarry = 61,
-			Memory = 62,
-			Concealability = 63,
-			SwapSkillAttribute = 64,
-			DrainResistance = 65,
-			FadingResistance = 66,
-			MatrixInitiativePassAdd = 67,
-			InitiativePassAdd = 68,
-			Composure = 69,
-			UnarmedAP = 70,
-			CMThresholdOffset = 71,
-			Restricted = 72,
-			Notoriety = 73,
-			SpellCategory = 74,
-			ThrowRange = 75,
-			SkillsoftAccess = 76,
-			AddSprite = 77,
-			BlackMarketDiscount = 78,
-			SelectWeapon = 79,
-			ComplexFormLimit = 80,
-			SpellLimit = 81,
-			QuickeningMetamagic = 82,
-			BasicLifestyleCost = 83,
-			ThrowSTR = 84,
-			IgnoreCMPenaltyStun = 85,
-			IgnoreCMPenaltyPhysical = 86,
-			CyborgEssence = 87,
-			EssenceMax = 88,
-            AdeptPower = 89,
-            SpecificQuality = 90,
-            MartialArt = 91,
-            LimitModifier = 92,
-            PhysicalLimit = 93,
-            MentalLimit = 94,
-            SocialLimit = 95,
-            SchoolOfHardKnocks = 96,
-            FriendsInHighPlaces = 97,
-            JackOfAllTrades = 98,
-            CollegeEducation = 99,
-            Erased = 100,
-            BornRich = 101,
-            Fame = 102,
-            LightningReflexes = 103,
-            Linguist = 104,
-            MadeMan = 105,
-            Overclocker = 106,
-            RestrictedGear = 107,
-            TechSchool = 108,
-            TrustFund = 109,
-            ExCon = 110,
-            ContactMadeMan = 111,
-			SelectArmor = 112,
-			Attributelevel = 113,
-			SkillLevel = 114,
-			SkillGroupLevel = 115,
-			AddContact = 116,
-			Seeker = 117,
-			PublicAwareness = 118,
-			PrototypeTranshuman = 119,
-			Hardwire = 120,
-			DealerConnection = 121
+            Attribute,
+            Text,
+			Armor,
+			Reach,
+			Nuyen,
+			Essence,
+			Reaction,
+			PhysicalCM,
+			StunCM,
+			UnarmedDV,
+			InitiativePass,
+			MatrixInitiative,
+			MatrixInitiativePass,
+			LifestyleCost,
+			CMThreshold,
+			EnhancedArticulation,
+			WeaponCategoryDV,
+			CyberwareEssCost,
+			SpecialTab,
+			Initiative,
+			Uneducated,
+			LivingPersonaResponse,
+			LivingPersonaSignal,
+			LivingPersonaFirewall,
+			LivingPersonaSystem,
+			LivingPersonaBiofeedback,
+			Smartlink,
+			BiowareEssCost,
+			GenetechCostMultiplier,
+			BasicBiowareEssCost,
+			TransgenicsBiowareCost,
+			SoftWeave,
+			SensitiveSystem,
+			ConditionMonitor,
+			UnarmedDVPhysical,
+			MovementPercent,
+			Adapsin,
+			FreePositiveQualities,
+			FreeNegativeQualities,
+			FreeKnowledgeSkills, 
+			NuyenMaxBP,
+			CMOverflow,
+			FreeSpiritPowerPoints,
+			AdeptPowerPoints,
+			ArmorEncumbrancePenalty,
+			Uncouth,
+			Initiation,
+			Submersion,
+			Infirm,
+			Skillwire,
+			HardWire,
+			DamageResistance,
+			RestrictedItemCount,
+			AdeptLinguistics,
+			SwimPercent,
+			FlyPercent,
+			FlySpeed,
+			JudgeIntentions,
+			LiftAndCarry,
+			Memory,
+			Concealability,
+			SwapSkillAttribute,
+			DrainResistance,
+			FadingResistance,
+			MatrixInitiativePassAdd,
+			InitiativePassAdd,
+			Composure,
+			UnarmedAP,
+			CMThresholdOffset,
+			Restricted,
+			Notoriety,
+			SpellCategory,
+			ThrowRange,
+			SkillsoftAccess, 
+			AddSprite,
+			BlackMarketDiscount,
+			SelectWeapon,
+			ComplexFormLimit,
+			SpellLimit,
+			QuickeningMetamagic,
+			BasicLifestyleCost,
+			ThrowSTR,
+			IgnoreCMPenaltyStun,
+			IgnoreCMPenaltyPhysical,
+			CyborgEssence,
+			EssenceMax,
+            AdeptPower,
+            SpecificQuality,
+            MartialArt,
+            LimitModifier,
+            PhysicalLimit,
+            MentalLimit,
+            SocialLimit,
+            SchoolOfHardKnocks,
+            FriendsInHighPlaces,
+            JackOfAllTrades,
+            CollegeEducation,
+            Erased,
+            BornRich,
+            Fame,
+            LightningReflexes,
+            Linguist,
+            MadeMan,
+            Overclocker,
+            RestrictedGear,
+            TechSchool,
+            TrustFund,
+            ExCon,
+            BlackMarket,
+            ContactMadeMan,
+			SelectArmor,
+			Attributelevel,
+			AddContact,
+			Seeker,
+			PublicAwareness,
+			PrototypeTranshuman,
+			Hardwire,
+            DealerConnection,
+            Skill,  //Improve pool of skill based on name
+			SkillGroup,  //Group
+			SkillCategory, //category
+			SkillAttribute, //attribute
+			SkillLevel,  //Karma points in skill
+			SkillGroupLevel, //group
+			SkillBase,  //base points in skill
+			SkillGroupBase //group
+
+
 		}
 
         public enum ImprovementSource
         {
-            Quality = 0,
-            Power = 1,
-			Metatype = 2,
-			Cyberware = 3,
-			Metavariant = 4,
-			Bioware = 5,
-			Nanotech = 6,
-			Genetech = 7,
-			ArmorEncumbrance = 8,
-			Gear = 9,
-			Spell = 10,
-			MartialArtAdvantage = 11,
-			Initiation = 12,
-			Submersion = 13,
-			Metamagic = 14,
-			Echo = 15,
-			Armor = 16, 
-			ArmorMod = 17,
-			EssenceLoss = 18,
-			ConditionMonitor = 19,
-			CritterPower = 20,
-			ComplexForm = 21,
-			EdgeUse = 22,
-			MutantCritter = 23,
-			Cyberzombie = 24,
-			StackedFocus = 25,
-			AttributeLoss = 26,
-            Art = 27,
-            Enhancement = 28,
-			Custom = 999,
+            Quality,
+            Power,
+			Metatype,
+			Cyberware,
+			Metavariant,
+			Bioware,
+			Nanotech,
+			Genetech,
+			ArmorEncumbrance,
+			Gear,
+			Spell,
+			MartialArtAdvantage,
+			Initiation,
+			Submersion,
+			Metamagic,
+			Echo,
+			Armor, 
+			ArmorMod,
+			EssenceLoss,
+			ConditionMonitor,
+			CritterPower,
+			ComplexForm,
+			EdgeUse,
+			MutantCritter,
+			Cyberzombie,
+			StackedFocus,
+			AttributeLoss,
+            Art,
+            Enhancement,
+			Custom,
+	        Heritage
         }
 
 		private string _strImprovedName = "";
@@ -252,7 +261,7 @@ namespace Chummer
         }
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -381,7 +390,7 @@ namespace Chummer
 			}
 
         /// <summary>
-        /// Name of the Skill or Attribute that the Improvement is improving.
+        /// Name of the Skill or CharacterAttribute that the Improvement is improving.
         /// </summary>
         public string ImprovedName
         {
@@ -541,7 +550,7 @@ namespace Chummer
 
 		/// <summary>
 		/// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-		/// Attribute selection for Qualities like Metagenetic Improvement.
+		/// CharacterAttribute selection for Qualities like Metagenetic Improvement.
 		/// </summary>
 		public string LimitSelection
 		{
@@ -578,14 +587,14 @@ namespace Chummer
 		public int ValueOf(Improvement.ImprovementType objImprovementType, bool blnAddToRating = false,
 			string strImprovedName = null)
 		{
-			Log.Enter("ValueOf");
-			Log.Info("objImprovementType = " + objImprovementType.ToString());
-			Log.Info("blnAddToRating = " + blnAddToRating.ToString());
-			Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+			//Log.Enter("ValueOf");
+			//Log.Info("objImprovementType = " + objImprovementType.ToString());
+			//Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+			//Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
 
             if (_objCharacter == null)
             {
-                Log.Exit("ValueOf");
+                //Log.Exit("ValueOf");
                 return 0;
             }
 
@@ -747,7 +756,7 @@ namespace Chummer
 				intCustomValue += intHighest;
 			}
 
-            Log.Exit("ValueOf");
+            //Log.Exit("ValueOf");
 
 			return intValue + intCustomValue;
 		}
@@ -759,15 +768,15 @@ namespace Chummer
 		/// <param name="intRating">Integer value to replace "Rating" with.</param>
 		private int ValueToInt(string strValue, int intRating)
 		{
-            Log.Enter("ValueToInt");
-            Log.Info("strValue = " + strValue);
-			Log.Info("intRating = " + intRating.ToString());
+   //         Log.Enter("ValueToInt");
+   //         Log.Info("strValue = " + strValue);
+			//Log.Info("intRating = " + intRating.ToString());
             
 			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
 			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
 			{
-				// If the value contain an Attribute name, replace it with the character's Attribute.
+				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
 				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
 				strValue = strValue.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
 				strValue = strValue.Replace("REA", _objCharacter.REA.TotalValue.ToString());
@@ -783,8 +792,8 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				string strReturn = strValue.Replace("Rating", intRating.ToString());
-                Log.Info("strValue = " + strValue);
-                Log.Info("strReturn = " + strReturn);
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
                 XPathExpression xprValue = nav.Compile(strReturn);
 
 				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
@@ -792,12 +801,12 @@ namespace Chummer
 				decValue = Math.Floor(decValue);
 				int intValue = Convert.ToInt32(decValue);
 
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
 				return Convert.ToInt32(intValue);
 			}
 			else
 			{
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
                 if (strValue.Contains("FixedValues"))
 				{
 					string[] strValues = strValue.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
@@ -815,9 +824,9 @@ namespace Chummer
 		/// <param name="strName">Name of the XmlNode to look for.</param>
 		private bool NodeExists(XmlNode objXmlNode, string strName)
 		{
-            Log.Enter("NodeExists");
-			Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-            Log.Info("strName = " + strName);
+   //         Log.Enter("NodeExists");
+			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
+   //         Log.Info("strName = " + strName);
 
             bool blnReturn = false;
 			try
@@ -1365,7 +1374,7 @@ namespace Chummer
 						intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("val"))
 						intAug = Convert.ToInt32(objXmlAttribute["val"].InnerText);
-                    if (objXmlAttribute.InnerXml.Contains("max"))
+					if (objXmlAttribute.InnerXml.Contains("max"))
 						intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("aug"))
 						intAugMax = Convert.ToInt32(objXmlAttribute["aug"].InnerText);
@@ -1382,7 +1391,7 @@ namespace Chummer
 				}
 			}
 
-			// Select an Attribute.
+			// Select an CharacterAttribute.
 			if (bonusNode.LocalName == ("selectattribute"))
 			{
 				Log.Info("selectattribute");
@@ -1588,7 +1597,7 @@ namespace Chummer
 					intAug, intAugMax);
 			}
 
-			// Select an Attribute to use instead of the default on a skill.
+			// Select an CharacterAttribute to use instead of the default on a skill.
 			if (bonusNode.LocalName == ("swapskillattribute"))
 			{
 				Log.Info("swapskillattribute");
@@ -1805,14 +1814,14 @@ namespace Chummer
 							Improvement.ImprovementType.AddContact, contact.GUID);
 			}
 
-			// Affect a Specific Attribute.
+			// Affect a Specific CharacterAttribute.
 			if (bonusNode.LocalName == ("specificattribute"))
 			{
 				Log.Info("specificattribute");
 
 				if (bonusNode["name"].InnerText != "ESS")
 				{
-					// Display the Select Attribute window and record which Attribute was selected.
+					// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 					// Record the improvement.
 					int intMin = 0;
 					int intAug = 0;
@@ -1904,7 +1913,7 @@ namespace Chummer
 				}
 			}
 
-			if (bonusNode.LocalName == "knowledgeskilllevel")
+			if (bonusNode.LocalName == "knowledgeskilllevel" && false) //TODO PUT IN AGAIN AND FIX
 			{
 				Log.Info(new object[] {"knowledgeskilllevel", bonusNode.OuterXml});
 				int value;
@@ -1936,20 +1945,20 @@ namespace Chummer
 					if (!blnFound)
 					{
 						Skill objNSkill = new Skill(_objCharacter);
-						objNSkill.Id = id;
+						//objNSkill.Id = id;
 						objNSkill.IdImprovement = true;
-						objNSkill.AllowDelete = false;
+						//objNSkill.AllowDelete = false;
 						objNSkill.KnowledgeSkill = true;
 						objNSkill.LockKnowledge = true;
 						objNSkill.SkillCategory = group;
 						int max;
 						bonusNode.TryGetField("max", out max, 9);
-						objNSkill.RatingMaximum = max;
+						//objNSkill.RatingMaximum = max;
 
 						String name;
 						if (bonusNode.TryGetField("name", out name))
 						{
-							objNSkill.Name = name;
+							//objNSkill.Name = name;
 						}
 						if (bonusNode["options"] != null)
 						{
@@ -1958,7 +1967,7 @@ namespace Chummer
 							{
 								Options.Add(node.InnerText);
 							}
-							objNSkill.KnowledgeSkillCatagories = Options;
+							//objNSkill.KnowledgeSkillCatagories = Options;  //TODO: WTHISTHIS?
 						}
 
 						_objCharacter.Skills.Add(objNSkill);
@@ -1969,6 +1978,12 @@ namespace Chummer
 
 
 				}
+			}
+
+			if (bonusNode.LocalName == "knowldgeskillpoints")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "",
+					ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
 
 			if (bonusNode.LocalName == ("skillgrouplevel"))
@@ -2277,7 +2292,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement adjust Skills with the given Attribute.
+			// The Improvement adjust Skills with the given CharacterAttribute.
 			if (bonusNode.LocalName == ("skillattribute"))
 			{
 				Log.Info("skillattribute");
@@ -2309,7 +2324,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical Attribute).
+			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical CharacterAttribute).
 			if (bonusNode.LocalName == ("skillarticulation"))
 			{
 				Log.Info("skillarticulation");
@@ -3312,7 +3327,7 @@ namespace Chummer
 						if (_strForcedValue.StartsWith("Adept"))
 							_strForcedValue = "";
 
-						// Display the Select Attribute window and record which Attribute was selected.
+						// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 						frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 						if (strFriendlyName != "")
 							frmPickAttribute.Description =
@@ -3477,473 +3492,473 @@ namespace Chummer
 				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
 				foreach (XmlNode objNode in objXmlPowerList)
 				{
-					Log.Info("selectpower");
-					Log.Info("_strSelectedValue = " + _strSelectedValue);
-					Log.Info("_strForcedValue = " + _strForcedValue);
+				Log.Info("selectpower");
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("_strForcedValue = " + _strForcedValue);
 
-					bool blnExistingPower = false;
-					foreach (Power objExistingPower in _objCharacter.Powers)
+				bool blnExistingPower = false;				
+				foreach (Power objExistingPower in _objCharacter.Powers)
+				{
+					if (objExistingPower.BonusSource == strSourceName)
 					{
-						if (objExistingPower.BonusSource == strSourceName)
-						{
-								if (objExistingPower.Name.StartsWith("Improved Reflexes"))
+							if (objExistingPower.Name.StartsWith("Improved Reflexes"))
+							{
+								if (objExistingPower.Name.EndsWith("1"))
 								{
-									if (objExistingPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objExistingPower.FreePoints = 1.5M;
-										else
-											objExistingPower.FreePoints = 0;
-									}
-									else if (objExistingPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objExistingPower.FreePoints = 2.5M;
-										else if (intRating >= 4)
-											objExistingPower.FreePoints = 1.0M;
-										else
-											objExistingPower.FreePoints = 0;
-									}
+									if (intRating >= 6)
+										objExistingPower.FreePoints = 1.5M;
 									else
-									{
-										if (intRating >= 14)
-											objExistingPower.FreePoints = 3.5M;
-										else if (intRating >= 8)
-											objExistingPower.FreePoints = 2.0M;
-										else if (intRating >= 4)
-											objExistingPower.FreePoints = 1.0M;
-										else
-											objExistingPower.FreePoints = 0;
-									}
+										objExistingPower.FreePoints = 0;
+								}
+								else if (objExistingPower.Name.EndsWith("2"))
+								{
+									if (intRating >= 10)
+										objExistingPower.FreePoints = 2.5M;
+									else if (intRating >= 4)
+										objExistingPower.FreePoints = 1.0M;
+									else
+										objExistingPower.FreePoints = 0;
 								}
 								else
 								{
-									// we have to adjust the number of free levels.
-									decimal decLevels = Convert.ToDecimal(intRating)/4;
-									decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
-									objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
-									if (objExistingPower.Rating < intRating)
-										objExistingPower.Rating = objExistingPower.FreeLevels;
-									break;
+									if (intRating >= 14)
+										objExistingPower.FreePoints = 3.5M;
+									else if (intRating >= 8)
+										objExistingPower.FreePoints = 2.0M;
+									else if (intRating >= 4)
+										objExistingPower.FreePoints = 1.0M;
+									else
+										objExistingPower.FreePoints = 0;
 								}
 							}
+							else
+							{
+								// we have to adjust the number of free levels.
+								decimal decLevels = Convert.ToDecimal(intRating)/4;
+								decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
+								objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
+								if (objExistingPower.Rating < intRating)
+									objExistingPower.Rating = objExistingPower.FreeLevels;
+								break;
+							}
+						}
 					}
 
-					if (!blnExistingPower)
-					{
-						// Display the Select Skill window and record which Skill was selected.
-						frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
+				if (!blnExistingPower)
+				{
+					// Display the Select Skill window and record which Skill was selected.
+					frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
 						Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
 						if (objNode.OuterXml.Contains("limittopowers"))
 							frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
-						frmPickPower.ShowDialog();
+					frmPickPower.ShowDialog();
 
-						// Make sure the dialogue window was not canceled.
-						if (frmPickPower.DialogResult == DialogResult.Cancel)
-						{
-							Rollback();
-							_strForcedValue = "";
-							_strLimitSelection = "";
-							return false;
-						}
+					// Make sure the dialogue window was not canceled.
+					if (frmPickPower.DialogResult == DialogResult.Cancel)
+					{
+						Rollback();
+						_strForcedValue = "";
+						_strLimitSelection = "";
+						return false;
+					}
 
-						_strSelectedValue = frmPickPower.SelectedPower;
-						if (blnConcatSelectedValue)
-							strSourceName += " (" + _strSelectedValue + ")";
+					_strSelectedValue = frmPickPower.SelectedPower;
+					if (blnConcatSelectedValue)
+						strSourceName += " (" + _strSelectedValue + ")";
 
-						XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 						XmlNode objXmlPower =
 							objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
-						string strSelection = "";
+					string strSelection = "";
 
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
+					Log.Info("_strSelectedValue = " + _strSelectedValue);
+					Log.Info("strSourceName = " + strSourceName);
 
-						XmlNode objBonus = objXmlPower["bonus"];
+					XmlNode objBonus = objXmlPower["bonus"];
 
-						string strPowerNameLimit = _strSelectedValue;
-						if (objBonus != null)
+					string strPowerNameLimit = _strSelectedValue;
+					if (objBonus != null)
+					{
+						if (objBonus["selectlimit"] != null)
 						{
-							if (objBonus["selectlimit"] != null)
-							{
-								Log.Info("selectlimit = " + objBonus["selectlimit"].OuterXml.ToString());
-								_strForcedValue = "";
-								// Display the Select Limit window and record which Limit was selected.
-								frmSelectLimit frmPickLimit = new frmSelectLimit();
-								if (strFriendlyName != "")
-									frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
-										.Replace("{0}", strFriendlyName);
-								else
-									frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
-
-								if (objBonus["selectlimit"].InnerXml.Contains("<limit>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("limit"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickLimit.LimitToList(strValue);
-								}
-
-								if (objBonus["selectlimit"].InnerXml.Contains("<excludelimit>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("excludelimit"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickLimit.RemoveFromList(strValue);
-								}
-
-								// Check to see if there is only one possible selection because of _strLimitSelection.
-								if (_strForcedValue != "")
-									_strLimitSelection = _strForcedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickLimit.SingleLimit(_strLimitSelection);
-									frmPickLimit.Opacity = 0;
-								}
-
-								frmPickLimit.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickLimit.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickLimit.SelectedLimit;
-								strSelection = _strSelectedValue;
-								_strForcedValue = _strSelectedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-							}
-
-							if (objBonus["selectskill"] != null)
-							{
-								Log.Info("selectskill = " + objBonus["selectskill"].OuterXml.ToString());
-								XmlNode nodSkill = objBonus;
-								// Display the Select Skill window and record which Skill was selected.
-								frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
-								if (strFriendlyName != "")
-									frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
-										.Replace("{0}", strFriendlyName);
-								else
-									frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
-
-								if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
-									frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
-									frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
-									frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
-								else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
-									frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
-
-								if (_strForcedValue.StartsWith("Adept:") || _strForcedValue.StartsWith("Magician:"))
-									_strForcedValue = "";
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strForcedValue != "")
-								{
-									frmPickSkill.OnlySkill = _strForcedValue;
-									frmPickSkill.Opacity = 0;
-								}
-								frmPickSkill.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickSkill.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickSkill.SelectedSkill;
-								_strForcedValue = _strSelectedValue;
-								strSelection = _strSelectedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strSelectedValue = " + _strSelectedValue);
-								Log.Info("strSelection = " + strSelection);
-							}
-
-							if (objBonus["selecttext"] != null)
-							{
-								Log.Info("selecttext = " + objBonus["selecttext"].OuterXml.ToString());
-								frmSelectText frmPickText = new frmSelectText();
-								frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+							Log.Info("selectlimit = " + objBonus["selectlimit"].OuterXml.ToString());
+							_strForcedValue = "";
+							// Display the Select Limit window and record which Limit was selected.
+							frmSelectLimit frmPickLimit = new frmSelectLimit();
+							if (strFriendlyName != "")
+								frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimitNamed")
 									.Replace("{0}", strFriendlyName);
+							else
+								frmPickLimit.Description = LanguageManager.Instance.GetString("String_Improvement_SelectLimit");
 
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickText.SelectedValue = _strLimitSelection;
-									frmPickText.Opacity = 0;
-								}
-
-								frmPickText.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickText.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								strSelection = frmPickText.SelectedValue;
-								_strLimitSelection = strSelection;
-
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-								Log.Info("strSelection = " + strSelection);
-							}
-
-							if (objBonus["specificattribute"] != null)
+							if (objBonus["selectlimit"].InnerXml.Contains("<limit>"))
 							{
-								Log.Info("specificattribute = " + objBonus["specificattribute"].OuterXml.ToString());
-								strSelection = objBonus["specificattribute"]["name"].InnerText.ToString();
-								Log.Info("strSelection = " + strSelection);
+								List<string> strValue = new List<string>();
+								foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("limit"))
+									strValue.Add(objXmlAttribute.InnerText);
+								frmPickLimit.LimitToList(strValue);
 							}
 
-							if (objBonus["selectattribute"] != null)
+							if (objBonus["selectlimit"].InnerXml.Contains("<excludelimit>"))
 							{
-								Log.Info("selectattribute = " + objBonus["selectattribute"].OuterXml.ToString());
-								XmlNode nodSkill = objBonus;
-								if (_strForcedValue.StartsWith("Adept"))
-									_strForcedValue = "";
-
-								// Display the Select Attribute window and record which Attribute was selected.
-								frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-								if (strFriendlyName != "")
-									frmPickAttribute.Description =
-										LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
-								else
-									frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
-
-								// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-								if (_objCharacter.MAGEnabled)
-									frmPickAttribute.AddMAG();
-								if (_objCharacter.RESEnabled)
-									frmPickAttribute.AddRES();
-
-								if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickAttribute.LimitToList(strValue);
-								}
-
-								if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
-								{
-									List<string> strValue = new List<string>();
-									foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
-										strValue.Add(objXmlAttribute.InnerText);
-									frmPickAttribute.RemoveFromList(strValue);
-								}
-
-								// Check to see if there is only one possible selection because of _strLimitSelection.
-								if (_strForcedValue != "")
-									_strLimitSelection = _strForcedValue;
-
-								Log.Info("_strForcedValue = " + _strForcedValue);
-								Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-								if (_strLimitSelection != "")
-								{
-									frmPickAttribute.SingleAttribute(_strLimitSelection);
-									frmPickAttribute.Opacity = 0;
-								}
-
-								frmPickAttribute.ShowDialog();
-
-								// Make sure the dialogue window was not canceled.
-								if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-								{
-									Rollback();
-									_strForcedValue = "";
-									_strLimitSelection = "";
-									return false;
-								}
-
-								_strSelectedValue = frmPickAttribute.SelectedAttribute;
-								if (blnConcatSelectedValue)
-									strSourceName += " (" + _strSelectedValue + ")";
-								strSelection = _strSelectedValue;
-								_strForcedValue = _strSelectedValue;
-
-								Log.Info("_strSelectedValue = " + _strSelectedValue);
-								Log.Info("strSourceName = " + strSourceName);
-								Log.Info("_strForcedValue = " + _strForcedValue);
+								List<string> strValue = new List<string>();
+								foreach (XmlNode objXmlAttribute in objBonus["selectlimit"].SelectNodes("excludelimit"))
+									strValue.Add(objXmlAttribute.InnerText);
+								frmPickLimit.RemoveFromList(strValue);
 							}
+
+							// Check to see if there is only one possible selection because of _strLimitSelection.
+							if (_strForcedValue != "")
+								_strLimitSelection = _strForcedValue;
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
+
+							if (_strLimitSelection != "")
+							{
+								frmPickLimit.SingleLimit(_strLimitSelection);
+								frmPickLimit.Opacity = 0;
+							}
+
+							frmPickLimit.ShowDialog();
+
+							// Make sure the dialogue window was not canceled.
+							if (frmPickLimit.DialogResult == DialogResult.Cancel)
+							{
+								Rollback();
+								_strForcedValue = "";
+								_strLimitSelection = "";
+								return false;
+							}
+
+							_strSelectedValue = frmPickLimit.SelectedLimit;
+							strSelection = _strSelectedValue;
+							_strForcedValue = _strSelectedValue;
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
 						}
 
-						// If no, add the power and mark it free or give it free levels
-						Power objPower = new Power(_objCharacter);
-						bool blnHasPower = false;
-
-						foreach (Power power in _objCharacter.Powers)
+						if (objBonus["selectskill"] != null)
 						{
-							if (power.Name == objXmlPower["name"].InnerText)
+							Log.Info("selectskill = " + objBonus["selectskill"].OuterXml.ToString());
+							XmlNode nodSkill = objBonus;
+							// Display the Select Skill window and record which Skill was selected.
+							frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+							if (strFriendlyName != "")
+								frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
+									.Replace("{0}", strFriendlyName);
+							else
+								frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
+
+							if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillgroup"))
+								frmPickSkill.OnlySkillGroup = nodSkill.SelectSingleNode("selectskill").Attributes["skillgroup"].InnerText;
+							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("skillcategory"))
+								frmPickSkill.OnlyCategory = nodSkill.SelectSingleNode("selectskill").Attributes["skillcategory"].InnerText;
+							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("excludecategory"))
+								frmPickSkill.ExcludeCategory = nodSkill.SelectSingleNode("selectskill").Attributes["excludecategory"].InnerText;
+							else if (nodSkill.SelectSingleNode("selectskill").OuterXml.Contains("limittoskill"))
+								frmPickSkill.LimitToSkill = nodSkill.SelectSingleNode("selectskill").Attributes["limittoskill"].InnerText;
+
+							if (_strForcedValue.StartsWith("Adept:") || _strForcedValue.StartsWith("Magician:"))
+								_strForcedValue = "";
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
+
+							if (_strForcedValue != "")
 							{
-								if (power.Extra != "" && power.Extra == strSelection)
-								{
-									blnHasPower = true;
-									objPower = power;
-								}
-								else if (power.Extra == "")
-								{
-									blnHasPower = true;
-									objPower = power;
-								}
+								frmPickSkill.OnlySkill = _strForcedValue;
+								frmPickSkill.Opacity = 0;
 							}
+							frmPickSkill.ShowDialog();
+
+							// Make sure the dialogue window was not canceled.
+							if (frmPickSkill.DialogResult == DialogResult.Cancel)
+							{
+								Rollback();
+								_strForcedValue = "";
+								_strLimitSelection = "";
+								return false;
+							}
+
+							_strSelectedValue = frmPickSkill.SelectedSkill;
+							_strForcedValue = _strSelectedValue;
+							strSelection = _strSelectedValue;
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strSelectedValue = " + _strSelectedValue);
+							Log.Info("strSelection = " + strSelection);
 						}
 
-						Log.Info("blnHasPower = " + blnHasPower);
-
-						if (blnHasPower)
+						if (objBonus["selecttext"] != null)
 						{
-							// If yes, mark it free or give it free levels
-							if (objXmlPower["levels"].InnerText == "no")
+							Log.Info("selecttext = " + objBonus["selecttext"].OuterXml.ToString());
+							frmSelectText frmPickText = new frmSelectText();
+							frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+								.Replace("{0}", strFriendlyName);
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
+
+							if (_strLimitSelection != "")
 							{
-								if (objPower.Name.StartsWith("Improved Reflexes"))
+								frmPickText.SelectedValue = _strLimitSelection;
+								frmPickText.Opacity = 0;
+							}
+
+							frmPickText.ShowDialog();
+
+							// Make sure the dialogue window was not canceled.
+							if (frmPickText.DialogResult == DialogResult.Cancel)
+							{
+								Rollback();
+								_strForcedValue = "";
+								_strLimitSelection = "";
+								return false;
+							}
+
+							strSelection = frmPickText.SelectedValue;
+							_strLimitSelection = strSelection;
+
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
+							Log.Info("strSelection = " + strSelection);
+						}
+
+						if (objBonus["specificattribute"] != null)
+						{
+							Log.Info("specificattribute = " + objBonus["specificattribute"].OuterXml.ToString());
+							strSelection = objBonus["specificattribute"]["name"].InnerText.ToString();
+							Log.Info("strSelection = " + strSelection);
+						}
+
+						if (objBonus["selectattribute"] != null)
+						{
+							Log.Info("selectattribute = " + objBonus["selectattribute"].OuterXml.ToString());
+							XmlNode nodSkill = objBonus;
+							if (_strForcedValue.StartsWith("Adept"))
+								_strForcedValue = "";
+
+							// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
+							frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+							if (strFriendlyName != "")
+								frmPickAttribute.Description =
+									LanguageManager.Instance.GetString("String_Improvement_SelectAttributeNamed").Replace("{0}", strFriendlyName);
+							else
+								frmPickAttribute.Description = LanguageManager.Instance.GetString("String_Improvement_SelectAttribute");
+
+							// Add MAG and/or RES to the list of Attributes if they are enabled on the form.
+							if (_objCharacter.MAGEnabled)
+								frmPickAttribute.AddMAG();
+							if (_objCharacter.RESEnabled)
+								frmPickAttribute.AddRES();
+
+							if (nodSkill["selectattribute"].InnerXml.Contains("<attribute>"))
+							{
+								List<string> strValue = new List<string>();
+								foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("attribute"))
+									strValue.Add(objXmlAttribute.InnerText);
+								frmPickAttribute.LimitToList(strValue);
+							}
+
+							if (nodSkill["selectattribute"].InnerXml.Contains("<excludeattribute>"))
+							{
+								List<string> strValue = new List<string>();
+								foreach (XmlNode objXmlAttribute in nodSkill["selectattribute"].SelectNodes("excludeattribute"))
+									strValue.Add(objXmlAttribute.InnerText);
+								frmPickAttribute.RemoveFromList(strValue);
+							}
+
+							// Check to see if there is only one possible selection because of _strLimitSelection.
+							if (_strForcedValue != "")
+								_strLimitSelection = _strForcedValue;
+
+							Log.Info("_strForcedValue = " + _strForcedValue);
+							Log.Info("_strLimitSelection = " + _strLimitSelection);
+
+							if (_strLimitSelection != "")
+							{
+								frmPickAttribute.SingleAttribute(_strLimitSelection);
+								frmPickAttribute.Opacity = 0;
+							}
+
+							frmPickAttribute.ShowDialog();
+
+							// Make sure the dialogue window was not canceled.
+							if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+							{
+								Rollback();
+								_strForcedValue = "";
+								_strLimitSelection = "";
+								return false;
+							}
+
+							_strSelectedValue = frmPickAttribute.SelectedAttribute;
+							if (blnConcatSelectedValue)
+								strSourceName += " (" + _strSelectedValue + ")";
+							strSelection = _strSelectedValue;
+							_strForcedValue = _strSelectedValue;
+
+							Log.Info("_strSelectedValue = " + _strSelectedValue);
+							Log.Info("strSourceName = " + strSourceName);
+							Log.Info("_strForcedValue = " + _strForcedValue);
+						}
+					}
+
+					// If no, add the power and mark it free or give it free levels
+					Power objPower = new Power(_objCharacter);
+					bool blnHasPower = false;
+
+					foreach (Power power in _objCharacter.Powers)
+					{
+						if (power.Name == objXmlPower["name"].InnerText)
+						{
+							if (power.Extra != "" && power.Extra == strSelection)
+							{
+								blnHasPower = true;
+								objPower = power;
+							}
+							else if (power.Extra == "")
+							{
+								blnHasPower = true;
+								objPower = power;
+							}
+						}
+					}
+
+					Log.Info("blnHasPower = " + blnHasPower);
+
+					if (blnHasPower)
+					{
+						// If yes, mark it free or give it free levels
+						if (objXmlPower["levels"].InnerText == "no")
+						{
+							if (objPower.Name.StartsWith("Improved Reflexes"))
+							{
+								if (objPower.Name.EndsWith("1"))
 								{
-									if (objPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objPower.FreePoints = 1.5M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else if (objPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objPower.FreePoints = 2.5M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
+									if (intRating >= 6)
+										objPower.FreePoints = 1.5M;
 									else
-									{
-										if (intRating >= 14)
-											objPower.FreePoints = 3.5M;
-										else if (intRating >= 8)
-											objPower.FreePoints = 2.0M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
+										objPower.FreePoints = 0;
+								}
+								else if (objPower.Name.EndsWith("2"))
+								{
+									if (intRating >= 10)
+										objPower.FreePoints = 2.5M;
+									else if (intRating >= 4)
+										objPower.FreePoints = 1.0M;
+									else
+										objPower.FreePoints = 0;
 								}
 								else
 								{
-									objPower.Free = true;
+									if (intRating >= 14)
+										objPower.FreePoints = 3.5M;
+									else if (intRating >= 8)
+										objPower.FreePoints = 2.0M;
+									else if (intRating >= 4)
+										objPower.FreePoints = 1.0M;
+									else
+										objPower.FreePoints = 0;
 								}
 							}
 							else
 							{
-								decimal decLevels = Convert.ToDecimal(intRating)/4;
-								decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
-								objPower.FreeLevels += Convert.ToInt32(decLevels);
-								objPower.Rating += Convert.ToInt32(decLevels);
+								objPower.Free = true;
 							}
-							objPower.BonusSource = strSourceName;
 						}
 						else
 						{
-							Log.Info("Adding Power " + _strSelectedValue);
-							// Get the Power information
-							_objCharacter.Powers.Add(objPower);
-							Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
+							decimal decLevels = Convert.ToDecimal(intRating)/4;
+							decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
+							objPower.FreeLevels += Convert.ToInt32(decLevels);
+							objPower.Rating += Convert.ToInt32(decLevels);
+						}
+						objPower.BonusSource = strSourceName;
+					}
+					else
+					{
+						Log.Info("Adding Power " + _strSelectedValue);
+						// Get the Power information
+						_objCharacter.Powers.Add(objPower);
+						Log.Info("objXmlPower = " + objXmlPower.OuterXml.ToString());
 
-							bool blnLevels = false;
-							if (objXmlPower["levels"] != null)
-								blnLevels = (objXmlPower["levels"].InnerText == "yes");
-							objPower.LevelsEnabled = blnLevels;
-							objPower.Name = objXmlPower["name"].InnerText;
-							objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-							objPower.Source = objXmlPower["source"].InnerText;
-							objPower.Page = objXmlPower["page"].InnerText;
-							objPower.BonusSource = strSourceName;
-							if (strSelection != string.Empty)
-								objPower.Extra = strSelection;
-							if (objXmlPower["doublecost"] != null)
-								objPower.DoubleCost = false;
+						bool blnLevels = false;
+						if (objXmlPower["levels"] != null)
+							blnLevels = (objXmlPower["levels"].InnerText == "yes");
+						objPower.LevelsEnabled = blnLevels;
+						objPower.Name = objXmlPower["name"].InnerText;
+						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
+						objPower.Source = objXmlPower["source"].InnerText;
+						objPower.Page = objXmlPower["page"].InnerText;
+						objPower.BonusSource = strSourceName;
+						if (strSelection != string.Empty)
+							objPower.Extra = strSelection;
+						if (objXmlPower["doublecost"] != null)
+							objPower.DoubleCost = false;
 
-							if (objXmlPower["levels"].InnerText == "no")
+						if (objXmlPower["levels"].InnerText == "no")
+						{
+							if (objPower.Name.StartsWith("Improved Reflexes"))
 							{
-								if (objPower.Name.StartsWith("Improved Reflexes"))
+								if (objPower.Name.EndsWith("1"))
 								{
-									if (objPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objPower.FreePoints = 1.5M;
-										else
-											objPower.FreePoints = 0;
-									}
-									else if (objPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objPower.FreePoints = 2.5M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
+									if (intRating >= 6)
+										objPower.FreePoints = 1.5M;
 									else
-									{
-										if (intRating >= 14)
-											objPower.FreePoints = 3.5M;
-										else if (intRating >= 8)
-											objPower.FreePoints = 2.0M;
-										else if (intRating >= 4)
-											objPower.FreePoints = 1.0M;
-										else
-											objPower.FreePoints = 0;
-									}
+										objPower.FreePoints = 0;
+								}
+								else if (objPower.Name.EndsWith("2"))
+								{
+									if (intRating >= 10)
+										objPower.FreePoints = 2.5M;
+									else if (intRating >= 4)
+										objPower.FreePoints = 1.0M;
+									else
+										objPower.FreePoints = 0;
 								}
 								else
 								{
-									objPower.Free = true;
+									if (intRating >= 14)
+										objPower.FreePoints = 3.5M;
+									else if (intRating >= 8)
+										objPower.FreePoints = 2.0M;
+									else if (intRating >= 4)
+										objPower.FreePoints = 1.0M;
+									else
+										objPower.FreePoints = 0;
 								}
 							}
 							else
 							{
-								decimal decLevels = Convert.ToDecimal(intRating)/4;
-								decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
-								objPower.FreeLevels += Convert.ToInt32(decLevels);
-								if (objPower.Rating < intRating)
-									objPower.Rating = objPower.FreeLevels;
+								objPower.Free = true;
 							}
+						}
+						else
+						{
+							decimal decLevels = Convert.ToDecimal(intRating)/4;
+							decLevels = Math.Floor(decLevels/objPower.PointsPerLevel);
+							objPower.FreeLevels += Convert.ToInt32(decLevels);
+							if (objPower.Rating < intRating)
+								objPower.Rating = objPower.FreeLevels;
+						}
 
-							if (objXmlPower.InnerXml.Contains("bonus"))
+						if (objXmlPower.InnerXml.Contains("bonus"))
+						{
+							objPower.Bonus = objXmlPower["bonus"];
+							Log.Info("Calling CreateImprovements");
+							if (
+								!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
+									Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
 							{
-								objPower.Bonus = objXmlPower["bonus"];
-								Log.Info("Calling CreateImprovements");
-								if (
-									!CreateImprovements(Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, false,
-										Convert.ToInt32(objPower.Rating), objPower.DisplayNameShort))
-								{
-									_objCharacter.Powers.Remove(objPower);
-								}
+								_objCharacter.Powers.Remove(objPower);
 							}
 						}
 					}
 				}
+			}
 			}
 
 			// Check for Armor Encumbrance Penalty.
@@ -5335,7 +5350,7 @@ namespace Chummer
                         }
                     }
 
-	                if (!blnFound)
+                    if (!blnFound)
 	                {
 		                _objCharacter.BlackMarketDiscount = false;
 	                }
@@ -5396,17 +5411,17 @@ namespace Chummer
 		/// <summary>
 		/// Create a new Improvement and add it to the Character.
 		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an Attribute being improved.</param>
+		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
 		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
 		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
 		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
 		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
 		/// <param name="intValue">Set a Value for the Improvement.</param>
 		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an Attribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an Attribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an Attribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an Attribute by the given amount.</param>
+		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
 		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
 		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
 		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
@@ -5476,6 +5491,9 @@ namespace Chummer
 		{
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
+
+			Skill.ImprovementHook(_lstTransaction, this);
+			SkillGroup.ImprovementHook(_lstTransaction, this);
 			_lstTransaction.Clear();
             Log.Exit("Commit");
         }
@@ -5495,5 +5513,13 @@ namespace Chummer
         }
 
 		#endregion
+	}
+
+	public static class ImprovementExtensions
+	{
+		public static bool HaveSkillPoints(this CharacterBuildMethod method)
+		{
+			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;
+		}
 	}
 }

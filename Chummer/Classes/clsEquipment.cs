@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -183,7 +184,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -643,7 +644,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -954,7 +955,7 @@ namespace Chummer
 			_intRating = intRating;
 			if (objXmlArmorNode["rating"] != null)
 				_intMaxRating = Convert.ToInt32(objXmlArmorNode["rating"].InnerText);
-			_strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
+            _strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
 			_strAvail = objXmlArmorNode["avail"].InnerText;
 			_strSource = objXmlArmorNode["source"].InnerText;
 			_strPage = objXmlArmorNode["page"].InnerText;
@@ -1171,7 +1172,7 @@ namespace Chummer
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rating", _intMaxRating.ToString());
 			objWriter.WriteStartElement("armormods");
-            foreach (ArmorMod objMod in _lstArmorMods)
+			foreach (ArmorMod objMod in _lstArmorMods)
 			{
 				objMod.Save(objWriter);
 			}
@@ -1206,7 +1207,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -1230,7 +1231,7 @@ namespace Chummer
 			objNode.TryGetField("location", out _strLocation);
 			objNode.TryGetField("notes", out _strNotes);
 			objNode.TryGetField("discountedcost", out _blnDiscountCost);
-            try
+			try
 			{
 				_nodBonus = objNode["bonus"];
 			}
@@ -1267,7 +1268,7 @@ namespace Chummer
 							_lstGear.Add(objGear);
 							break;
 					}
-				}
+			}
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -1550,8 +1551,8 @@ namespace Chummer
 				}
 				else
 				{
-					return _strArmorCapacity;
-				}
+				return _strArmorCapacity;
+			}
 			}
 			set
 			{
@@ -1603,7 +1604,7 @@ namespace Chummer
 				else
 				{
 					return Convert.ToInt32(_strCost);
-				}
+			}
 			}
 			set
 			{
@@ -1875,7 +1876,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -2018,9 +2019,9 @@ namespace Chummer
 					strReturn = _strArmorCapacity;
 				}
 
-				foreach (ArmorMod am in this.ArmorMods)
-				{
-					if (am.Name == "YNT Softweave Armor")
+                foreach (ArmorMod am in this.ArmorMods)
+                {
+                    if (am.Name == "YNT Softweave Armor")
 					{ 
 						if (_strArmorCapacity.Contains("Rating"))
 						{
@@ -2043,8 +2044,8 @@ namespace Chummer
 						}
 						else
 						{
-							strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
-						}
+                        strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
+                }
 					}
                 }
 
@@ -2797,7 +2798,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -3169,7 +3170,7 @@ namespace Chummer
 				if (_strLocation != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strLocation + "Short") != "")
@@ -3556,7 +3557,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -4768,7 +4769,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -5696,7 +5697,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -7466,7 +7467,7 @@ namespace Chummer
 					}
 				}
 
-				int intRating = objSkill.TotalRating + intSmartlinkBonus + intDicePoolModifier;
+				int intRating = objSkill.Pool + intSmartlinkBonus + intDicePoolModifier;
 				strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
@@ -7574,7 +7575,7 @@ namespace Chummer
 					}
 				}
 
-				strReturn = strSkill + " (" + objSkill.TotalRating + ")";
+				strReturn = strSkill + " (" + objSkill.Pool + ")";
 
 				if (objSkill.Specialization != "" && !objSkill.ExoticSkill)
 				{
@@ -7862,7 +7863,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -7931,16 +7932,9 @@ namespace Chummer
 			catch
 			{
 			}
-			if (objNode.InnerXml.Contains("ammoslots"))
-			{
-				try
-				{
-					_intAmmoSlots = Convert.ToInt32(objNode["ammoslots"].InnerText);
-				}
-				catch
-				{
-				}
-			}
+
+			objNode.TryGetField("ammoslots", out _intAmmoSlots);
+			
 
 			if (objNode.InnerXml.Contains("<gears>"))
 			{
@@ -8559,7 +8553,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -8877,7 +8871,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -9431,7 +9425,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -9721,7 +9715,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -11973,7 +11967,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -13197,7 +13191,7 @@ namespace Chummer
             objWriter.WriteElementString("attack", _intAttack.ToString());
             objWriter.WriteElementString("sleaze", _intSleaze.ToString());
             objWriter.WriteElementString("dataprocessing", _intDataProcessing.ToString());
-			objWriter.WriteElementString("firewall", _intFirewall.ToString());
+            objWriter.WriteElementString("firewall", _intFirewall.ToString());
             objWriter.WriteElementString("gearname", _strGearName);
 			objWriter.WriteStartElement("children");
 			foreach (Gear objGear in _objChildren)
@@ -14522,7 +14516,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -14553,7 +14547,7 @@ namespace Chummer
 					_strAvail = strValues[Convert.ToInt32(_intRating) - 1];
 				}
 
-                if (_strAvail.Contains("Rating"))
+				if (_strAvail.Contains("Rating"))
 				{
 					// If the availability is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -16590,7 +16584,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -16701,7 +16695,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -16836,7 +16830,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")

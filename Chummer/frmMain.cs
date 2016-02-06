@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -12,7 +13,7 @@ namespace Chummer
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
 		private frmUpdate _frmUpdate;
-		private Character _objCharacter;
+        private Character _objCharacter;
 
         #region Control Events
         public frmMain()
@@ -36,7 +37,7 @@ namespace Chummer
 			// If Automatic Updates are enabled, check for updates immediately.
 			if (GlobalOptions.Instance.AutomaticUpdate)
 			{
-				frmUpdate frmAutoUpdate = new frmUpdate();
+                frmUpdate frmAutoUpdate = new frmUpdate();
                 frmAutoUpdate.SilentMode = true;
                 frmAutoUpdate.Visible = false;
                 frmAutoUpdate.ShowDialog(this);
@@ -50,7 +51,7 @@ namespace Chummer
 				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
 
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
-				if (result != 0)
+				if (result < 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
 #endif
 			}
@@ -164,7 +165,7 @@ namespace Chummer
 				frmUpdate frmUpdate = new frmUpdate();
 				_frmUpdate = frmUpdate;
 				_frmUpdate.Show();
-			}
+		}
 			else
 			{
 				_frmUpdate.Focus();
@@ -876,20 +877,20 @@ namespace Chummer
 			{
 				if (_frmRoller == null)
 				{
-					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
 					_frmRoller = frmRoller;
 					frmRoller.Show();
 				}
 				else
 				{
-					_frmRoller.Dice = objControl.SkillObject.TotalRating;
+					_frmRoller.Dice = objControl.SkillObject.Pool;
 					_frmRoller.Qualities = objControl.SkillObject.CharacterObject.Qualities;
 					_frmRoller.Focus();
 				}
 			}
 			else
 			{
-				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
 				frmRoller.Show();
 			}
 		}

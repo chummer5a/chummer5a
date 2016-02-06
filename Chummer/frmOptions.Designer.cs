@@ -695,7 +695,7 @@
 			this.lblKarmaAttribute.Size = new System.Drawing.Size(110, 13);
 			this.lblKarmaAttribute.TabIndex = 17;
 			this.lblKarmaAttribute.Tag = "Label_Options_ImproveAttribute";
-			this.lblKarmaAttribute.Text = "Improve Attribute by 1";
+			this.lblKarmaAttribute.Text = "Improve CharacterAttribute by 1";
 			// 
 			// lblKarmaImproveSkillGroupExtra
 			// 
@@ -2383,7 +2383,7 @@
 			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
 			this.chkAlternateMatrixAttribute.TabIndex = 12;
 			this.chkAlternateMatrixAttribute.Tag = "Checkbox_Options_AlternateMatrixAttribute";
-			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix Attribute (UN 39)";
+			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix CharacterAttribute (UN 39)";
 			this.chkAlternateMatrixAttribute.UseVisualStyleBackColor = true;
 			this.chkAlternateMatrixAttribute.Visible = false;
 			// 
@@ -2532,7 +2532,7 @@
 			this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
 			this.chkCapSkillRating.TabIndex = 2;
 			this.chkCapSkillRating.Tag = "Checkbox_Options_LimitSkills";
-			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is h" +
+			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural CharacterAttribute + Skill Rating), whichever is h" +
     "igher";
 			this.chkCapSkillRating.UseVisualStyleBackColor = true;
 			this.chkCapSkillRating.Visible = false;

@@ -928,6 +928,8 @@ namespace Chummer
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1044,6 +1046,7 @@ namespace Chummer
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsMetamagic.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
+			this.tabPage1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -1210,7 +1213,7 @@ namespace Chummer
 			this.lblAttributesAug.TabIndex = 55;
 			this.lblAttributesAug.Tag = "Label_ValAugmented";
 			this.lblAttributesAug.Text = "Val (Aug)";
-			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented CharacterAttribute value.");
 			// 
 			// lblAttributesBase
 			// 
@@ -1221,7 +1224,7 @@ namespace Chummer
 			this.lblAttributesBase.TabIndex = 54;
 			this.lblAttributesBase.Tag = "Label_Base";
 			this.lblAttributesBase.Text = "Base";
-			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base CharacterAttribute value.");
 			// 
 			// lblAttributesMetatype
 			// 
@@ -1934,7 +1937,7 @@ namespace Chummer
 			this.label7.TabIndex = 92;
 			this.label7.Tag = "String_Karma";
 			this.label7.Text = "Karma";
-			this.tipTooltip.SetToolTip(this.label7, "Base Attribute value.");
+			this.tipTooltip.SetToolTip(this.label7, "Base CharacterAttribute value.");
 			// 
 			// lblSpellDefenceIndirectDodgeLabel
 			// 
@@ -3502,6 +3505,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabCharacterTabs.Controls.Add(this.tabCommon);
+			this.tabCharacterTabs.Controls.Add(this.tabPage1);
 			this.tabCharacterTabs.Controls.Add(this.tabSkills);
 			this.tabCharacterTabs.Controls.Add(this.tabLimits);
 			this.tabCharacterTabs.Controls.Add(this.tabMartialArts);
@@ -10734,6 +10738,27 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// tabPage1
+			// 
+			this.tabPage1.Controls.Add(this.tabSkillsUc);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(838, 611);
+			this.tabPage1.TabIndex = 14;
+			this.tabPage1.Tag = "Tab_Skills";
+			this.tabPage1.Text = "NewTab";
+			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// tabSkillsUc
+			// 
+			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillsUc.Location = new System.Drawing.Point(3, 3);
+			this.tabSkillsUc.Name = "tabSkillsUc";
+			this.tabSkillsUc.ObjCharacter = null;
+			this.tabSkillsUc.Size = new System.Drawing.Size(832, 605);
+			this.tabSkillsUc.TabIndex = 0;
+			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -10897,6 +10922,7 @@ namespace Chummer
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsMetamagic.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -11774,6 +11800,8 @@ namespace Chummer
 		private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
 		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysical;
 		private TreeView treMetamagic;
+		private System.Windows.Forms.TabPage tabPage1;
+		private UI.Shared.SkillsTabUserControl tabSkillsUc;
 	}
 }
 

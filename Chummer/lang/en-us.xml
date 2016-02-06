@@ -6768,6 +6768,17 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Gear Window -->
+    <!-- Select Skill Specialisation Window -->
+ 		<string>
+			<key>Title_SelectSkillSpecialization</key>
+ 			<text>Select a Skill Specialization</text>
+		</string>
+		<string>
+			<key>Label_SelectSkillSpecialization_Description</key>
+			<text>Select a Skill Specialization to add to your character.</text>
+		</string>
+		<!-- End Region-->
+		<!-- Region Select Gear Window -->
 		<string>
 			<key>Title_SelectGear</key>
 			<text>Select Gear</text>

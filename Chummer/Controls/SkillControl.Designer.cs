@@ -119,7 +119,7 @@
 			this.cboKnowledgeSkillCategory.TabIndex = 8;
 			this.cboKnowledgeSkillCategory.Visible = false;
 			this.cboKnowledgeSkillCategory.SelectedIndexChanged += new System.EventHandler(this.cboKnowledgeSkillCategory_SelectedIndexChanged);
-			// 
+            // 
 			// cboSkillName
 			// 
 			this.cboSkillName.DropDownWidth = 250;

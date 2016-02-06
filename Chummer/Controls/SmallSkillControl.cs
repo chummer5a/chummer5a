@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -32,7 +33,7 @@ namespace Chummer
             set
             {
                 this._objSkill = value;
-                this.lblSkillName.Text = this.Skill.Name + " : " + this.Skill.TotalRating.ToString();
+                this.lblSkillName.Text = this.Skill.Name + " : " + this.Skill.Pool.ToString();
             }
         }
 
@@ -85,16 +86,16 @@ namespace Chummer
             if (this._objParent is frmGMDashboard)
             {
                 frmGMDashboard dash = this._objParent as frmGMDashboard;
-                dash.DiceRoller.NumberOfDice = this.chkUseSpecial.Checked ? Skill.TotalRating + 2 : Skill.TotalRating;
+                dash.DiceRoller.NumberOfDice = this.chkUseSpecial.Checked ? Skill.Pool + 2 : Skill.Pool;
                 // apply appropriate limit here
                 dash.DiceRoller.EdgeUse = DiceRollerControl.EdgeUses.None;
-                dash.DiceRoller.NumberOfEdge = Convert.ToInt32(((Attribute)dash.CurrentNPC.EDG).TotalValue);
+                dash.DiceRoller.NumberOfEdge = Convert.ToInt32(((CharacterAttrib)dash.CurrentNPC.EDG).TotalValue);
             }
             else
             {
                 // we have the individual player's skill's
                 frmPlayerDashboard dash = this._objParent as frmPlayerDashboard;
-                dash.DiceRoller.NumberOfDice = this.chkUseSpecial.Checked ? Skill.TotalRating + 2 : Skill.TotalRating;
+                dash.DiceRoller.NumberOfDice = this.chkUseSpecial.Checked ? Skill.Pool + 2 : Skill.Pool;
                 dash.DiceRoller.EdgeUse = DiceRollerControl.EdgeUses.None;
                 dash.DiceRoller.NumberOfEdge = Convert.ToInt32(dash.CurrentNPC.EDG);
             }

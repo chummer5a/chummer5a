@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -69,6 +70,8 @@ namespace Chummer
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
             _objCharacter.ErasedChanged += objCharacter_ErasedChanged;
 
+	        tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
+
             GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -85,6 +88,8 @@ namespace Chummer
             SetTooltips();
             MoveControls();
         }
+
+		
 
         /// <summary>
         /// Set the form to Loading mode so that certain events do not fire while data is being populated.
@@ -112,6 +117,9 @@ namespace Chummer
 	        Timekeeper.Finish("load_free");
 			Timekeeper.Start("load_frm_create");
             _blnLoading = true;
+			
+	        tabCharacterTabs.TabPages.Remove(tabSkills);
+
             if (!_objCharacter.IsCritter && (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objCharacter.BuildKarma == 0) || (_objCharacter.BuildMethod == CharacterBuildMethod.Priority && _objCharacter.BuildKarma == 0))
             {
                 _blnFreestyle = true;
@@ -370,7 +378,7 @@ namespace Chummer
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 treQualities.Add(objQuality, cmsQuality);
-            }
+				}
 
             // Populate the Magician Traditions list.
             objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -579,190 +587,196 @@ namespace Chummer
                 label8.Visible = false;
                 label14.Visible = false;
             }
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
-                {
-                    i++;
-                    SkillControl objSkillControl = new SkillControl(_objCharacter);
-                    objSkillControl.SkillObject = objSkill;
 
-                    // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
-                    objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
-                    objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
 
-                    objSkillControl.SkillName = objSkill.Name;
-                    objSkillControl.SkillCategory = objSkill.SkillCategory;
-                    objSkillControl.SkillGroup = objSkill.SkillGroup;
-                    objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
-                    objSkillControl.SkillRating = objSkill.Rating;
-                    objSkillControl.SkillBase = objSkill.Base;
-                    objSkillControl.SkillKarma = objSkill.Karma;
-                    objSkillControl.SkillSpec = objSkill.Specialization;
+			//foreach (Skill objSkill in _objCharacter.Skills)
+   //         {
+   //             if (!objSkill.KnowledgeSkill && !objSkill.ExoticSkill)
+   //             {
+   //                 i++;
+   //                 SkillControl objSkillControl = new SkillControl(_objCharacter);
+   //                 objSkillControl.SkillObject = objSkill;
 
-                    XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
-                    // Populate the Skill's Specializations (if any).
-                    foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
-                    {
-                        if (objXmlSpecialization.Attributes["translate"] != null)
-                            objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-                        else
-                            objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-                    }
+   //                 // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+   //                 objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
+   //                 objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
+   //                 objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+   //                 objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
 
-                    // Set the control's vertical position and add it to the Skills Panel.
-                    objSkillControl.Top = i * objSkillControl.Height;
-                    objSkillControl.Width = 510;
-                    objSkillControl.AutoScroll = false;
-                    panActiveSkills.Controls.Add(objSkillControl);
-                }
-            }
+   //                 objSkillControl.SkillName = objSkill.Name;
+   //                 objSkillControl.SkillCategory = objSkill.SkillCategory;
+   //                 objSkillControl.SkillGroup = objSkill.SkillGroup;
+   //                 objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
+   //                 objSkillControl.SkillRating = objSkill.Rating;
+   //                 objSkillControl.SkillBase = objSkill.Base;
+   //                 objSkillControl.SkillKarma = objSkill.Karma;
+   //                 objSkillControl.SkillSpec = objSkill.Specialization;
 
-            // Exotic Skills.
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                if (objSkill.ExoticSkill)
-                {
-                    i++;
-                    SkillControl objSkillControl = new SkillControl(_objCharacter);
-                    objSkillControl.SkillObject = objSkill;
+   //                 XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
+   //                 // Populate the Skill's Specializations (if any).
+   //                 foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
+   //                 {
+   //                     if (objXmlSpecialization.Attributes["translate"] != null)
+   //                         objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
+   //                     else
+   //                         objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+   //                 }
 
-                    // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
-                    objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
-                    objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
+   //                 // Set the control's vertical position and add it to the Skills Panel.
+   //                 objSkillControl.Top = i * objSkillControl.Height;
+   //                 objSkillControl.Width = 510;
+   //                 objSkillControl.AutoScroll = false;
+   //                 panActiveSkills.Controls.Add(objSkillControl);
+   //             }
+   //         }
 
-                    objSkillControl.SkillName = objSkill.Name;
-                    objSkillControl.SkillCategory = objSkill.SkillCategory;
-                    objSkillControl.SkillGroup = objSkill.SkillGroup;
-                    objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
-                    objSkillControl.SkillBase = objSkill.Base;
-                    objSkillControl.SkillKarma = objSkill.Karma;
-                    objSkillControl.SkillRating = objSkill.Rating;
-                    objSkillControl.SkillSpec = objSkill.Specialization;
+   //         // Exotic Skills.
+   //         foreach (Skill objSkill in _objCharacter.Skills)
+            //{
+            //    if (objSkill.ExoticSkill)
+            //    {
+            //        i++;
+            //        SkillControl objSkillControl = new SkillControl();
+            //        objSkillControl.SkillObject = objSkill;
 
-                    XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
-                    // Populate the Skill's Specializations (if any).
-                    foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
-                    {
-                        if (objXmlSpecialization.Attributes["translate"] != null)
-                            objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-                        else
-                            objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-                    }
+            //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+            //        objSkillControl.RatingChanged += objActiveSkill_RatingChanged;
+            //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+            //        objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
+            //        objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
 
-                    // Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-                    XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-                    XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + objSkill.Name + "s\" or useskill = \"" + objSkill.Name + "\"]");
-                    foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-                    {
-                        if (objXmlWeapon["translate"] != null)
-                            objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
-                        else
-                            objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
-                    }
+            //        objSkillControl.SkillName = objSkill.Name;
+            //        objSkillControl.SkillCategory = objSkill.SkillCategory;
+            //        objSkillControl.SkillGroup = objSkill.SkillGroup;
+            //        objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
+            //        objSkillControl.SkillBase = objSkill.Base;
+            //        objSkillControl.SkillKarma = objSkill.Karma;
+            //        objSkillControl.SkillRating = objSkill.Rating;
+            //        objSkillControl.SkillSpec = objSkill.Specialization;
 
-                    // Set the control's vertical position and add it to the Skills Panel.
-                    objSkillControl.Top = i * objSkillControl.Height;
-                    objSkillControl.Width = 510;
-                    objSkillControl.AutoScroll = false;
-                    panActiveSkills.Controls.Add(objSkillControl);
-                }
-            }
+            //        XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objSkill.Name + "\"]");
+            //        // Populate the Skill's Specializations (if any).
+            //        foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
+            //        {
+            //            if (objXmlSpecialization.Attributes["translate"] != null)
+            //                objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
+            //            else
+            //                objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+            //        }
 
-            // Populate the Skill Groups list.
-            i = -1;
-            foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-            {
-                i++;
-                SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
-                objGroupControl.SkillGroupObject = objGroup;
+            //        // Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
+            //        XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+            //        XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + objSkill.Name + "s\" or useskill = \"" + objSkill.Name + "\"]");
+            //        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+            //        {
+            //            if (objXmlWeapon["translate"] != null)
+            //                objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
+            //            else
+            //                objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
+            //        }
 
-				if (_objCharacter.IgnoreRules)
-				{
-					objGroup.RatingMaximum = 12;
-                }
+            //        // Set the control's vertical position and add it to the Skills Panel.
+            //        objSkillControl.Top = i * objSkillControl.Height;
+            //        objSkillControl.Width = 510;
+            //        objSkillControl.AutoScroll = false;
+            //        panActiveSkills.Controls.Add(objSkillControl);
+            //    }
+            //}
 
-                // Attach an EventHandler for the GetRatingChanged Event.
-                objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
+			//TODO remove if nothing is needed from here
+    //        // Populate the Skill Groups list.
+    //        i = -1;
+    //        foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+    //        {
+    //            i++;
+    //            SkillGroupControl objGroupControl = new SkillGroupControl(_objCharacter.Options, _objCharacter);
+    //            objGroupControl.SkillGroupObject = objGroup;
 
-                // Populate the control, set its vertical position and add it to the Skill Groups Panel. A Skill Group cannot start with a Rating higher than 4.
-                objGroupControl.GroupName = objGroup.Name;
-                if (objGroup.Rating > objGroup.RatingMaximum)
-                    objGroup.RatingMaximum = objGroup.Rating;
-                objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
-                // objGroupControl.GroupRating = objGroup.Rating;
-                objGroupControl.BaseRating = objGroup.Base;
-                objGroupControl.KarmaRating = objGroup.Karma;
-                objGroupControl.Top = i * objGroupControl.Height;
-                objGroupControl.Width = 250;
+				//if (_objCharacter.IgnoreRules)
+				//{
+				//	objGroup.RatingMaximum = 12;
+    //            }
 
-                // Loop through all of the Active Skills the character has and set their maximums if needed.
-                if (objGroup.RatingMaximum > 6)
-                {
-                    foreach (SkillControl objSkill in panActiveSkills.Controls)
-                    {
-                        if (objSkill.IsGrouped && objSkill.SkillGroup == objGroup.Name)
-                        {
-                            objSkill.SkillRatingMaximum = objGroup.RatingMaximum;
-                            objSkill.SkillObject.RatingMaximum = objGroup.RatingMaximum;
-                            objSkill.SkillRating = objGroup.Rating;
-                        }
-                    }
-                }
+    //            // Attach an EventHandler for the GetRatingChanged Event.
+    //            objGroupControl.GroupRatingChanged += objGroup_RatingChanged;
 
-                /*if (_objCharacter.Uneducated)
-                {
-                    objGroupControl.IsEnabled = !objGroup.HasTechnicalSkills;
-                }*/
+    //            // Populate the control, set its vertical position and add it to the Skill Groups Panel. A Skill Group cannot start with a Rating higher than 4.
+    //            objGroupControl.GroupName = objGroup.Name;
+    //            if (objGroup.Rating > objGroup.RatingMaximum)
+    //                objGroup.RatingMaximum = objGroup.Rating;
+    //            objGroupControl.GroupRatingMaximum = objGroup.RatingMaximum;
+    //            // objGroupControl.GroupRating = objGroup.Rating;
+    //            objGroupControl.BaseRating = objGroup.Base;
+    //            objGroupControl.KarmaRating = objGroup.Karma;
+    //            objGroupControl.Top = i * objGroupControl.Height;
+    //            objGroupControl.Width = 250;
 
-                if (_objCharacter.Uncouth)
-                {
-                    objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
-                }
 
-                panSkillGroups.Controls.Add(objGroupControl);
-            }
+				////TODO REMOVE BEFORE FINAL DONE
+				//////Cant see a place where this code would get executed
+    ////            // Loop through all of the Active Skills the character has and set their maximums if needed.
+    ////            if (objGroup.RatingMaximum > 6)
+    ////            {
+    ////                foreach (SkillControl objSkill in panActiveSkills.Controls)
+    ////                {
+    ////                    if (objSkill.IsGrouped && objSkill.SkillGroup == objGroup.Name)
+    ////                    {
+    ////                        objSkill.SkillRatingMaximum = objGroup.RatingMaximum;
+    ////                        objSkill.SkillObject.RatingMaximum = objGroup.RatingMaximum;
+    ////                        objSkill.SkillRating = objGroup.Rating;
+    ////                    }
+    ////                }
+    ////            }
 
-            // Populate Knowledge Skills.
-            i = -1;
-            foreach (Skill objSkill in _objCharacter.Skills)
-            {
-                if (objSkill.KnowledgeSkill)
-                {
-                    i++;
-                    SkillControl objSkillControl = new SkillControl(_objCharacter);
-                    objSkillControl.SkillObject = objSkill;
+    //            /*if (_objCharacter.Uneducated)
+    //            {
+    //                objGroupControl.IsEnabled = !objGroup.HasTechnicalSkills;
+    //            }*/
 
-                    // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                    objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
-                    objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
-                    objSkillControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
-	                objSkillControl.MergeClicked += knoSkill_MergeClick;
-                    objSkillControl.KnowledgeSkill = true;
-                    objSkillControl.SkillCategory = objSkill.SkillCategory;
-                    objSkillControl.AllowDelete = true;
-                    objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
-                    objSkillControl.SkillBase = objSkill.Base;
-                    objSkillControl.SkillKarma = objSkill.Karma;
-                    objSkillControl.SkillRating = objSkill.Rating;
-                    objSkillControl.SkillName = objSkill.Name;
-                    objSkillControl.SkillSpec = objSkill.Specialization;
-                    objSkillControl.Top = i * objSkillControl.Height;
-                    objSkillControl.AutoScroll = false;
-                    panKnowledgeSkills.Controls.Add(objSkillControl);
-                    ////Handler for pre-5.163 Point Buy characters that had skill points in their knowledge skills
-                    //if (objSkill.Base != 0 && !objSkill.CharacterObject.Options.FreeKarmaKnowledge && _objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
-                    //{  //lets no keep this code here!
-                    //    objSkill.Base = 0;
+    //            if (_objCharacter.Uncouth)
+    //            {
+    //                objGroupControl.IsEnabled = !objGroup.HasSocialSkills;
+    //            }
+
+    //            panSkillGroups.Controls.Add(objGroupControl);
+    //        }
+
+    //        // Populate Knowledge Skills.
+    //        i = -1;
+    //        foreach (Skill objSkill in _objCharacter.Skills)
+            //{
+            //    if (objSkill.KnowledgeSkill)
+            //    {
+            //        i++;
+            //        SkillControl objSkillControl = new SkillControl();
+            //        objSkillControl.SkillObject = objSkill;
+
+            //        // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+            //        objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
+            //        objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+            //        objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
+            //        objSkillControl.BreakGroupClicked += objSkill_BreakGroupClicked;
+            //        objSkillControl.BuyWithKarmaChanged += objKnowledgeSkill_BuyWithKarmaChanged;
+	           //     objSkillControl.MergeClicked += knoSkill_MergeClick;
+            //        objSkillControl.KnowledgeSkill = true;
+            //        objSkillControl.SkillCategory = objSkill.SkillCategory;
+            //        objSkillControl.AllowDelete = true;
+            //        objSkillControl.SkillRatingMaximum = objSkill.RatingMaximum;
+            //        objSkillControl.SkillBase = objSkill.Base;
+            //        objSkillControl.SkillKarma = objSkill.Karma;
+            //        objSkillControl.SkillRating = objSkill.Rating;
+            //        objSkillControl.SkillName = objSkill.Name;
+            //        objSkillControl.SkillSpec = objSkill.Specialization;
+            //        objSkillControl.Top = i * objSkillControl.Height;
+            //        objSkillControl.AutoScroll = false;
+            //        panKnowledgeSkills.Controls.Add(objSkillControl);
+            //        ////Handler for pre-5.163 Point Buy characters that had skill points in their knowledge skills
+            //        //if (objSkill.Base != 0 && !objSkill.CharacterObject.Options.FreeKarmaKnowledge && _objCharacter.BuildMethod == CharacterBuildMethod.Karma) 
+            //        //{  //lets no keep this code here!
+            //        //    objSkill.Base = 0;
+            //        //}
+            //    }
                     //}
-                }
-            }
 
             // Populate Contacts and Enemies.
             int intContact = -1;
@@ -790,7 +804,7 @@ namespace Chummer
                     objContactControl.IsGroup = objContact.IsGroup;
 					objContactControl.MouseDown += panContactControl_MouseDown;
 
-					objContactControl.Top = intContact * objContactControl.Height;
+                    objContactControl.Top = intContact * objContactControl.Height;
 
                     panContacts.Controls.Add(objContactControl);
                 }
@@ -871,7 +885,7 @@ namespace Chummer
             foreach (Spell objSpell in _objCharacter.Spells)
             {
                 treSpells.Add(objSpell, cmsSpell, _objCharacter);
-            }
+                }
 
             // Populate Adept Powers.
             i = -1;
@@ -890,24 +904,24 @@ namespace Chummer
                 objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
                 objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
                 objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-				if (objPower.MaxLevels > 0)
+                if (objPower.MaxLevels > 0)
 				{
 					if (objPower.Name == "Improved Ability (skill)")
 					{
-						foreach (Skill objSkill in _objCharacter.Skills)
+                    foreach (Skill objSkill in _objCharacter.Skills)
 							if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
-							{
-								int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-								if (intImprovedAbilityMaximum == 0)
-								{
-									intImprovedAbilityMaximum = 1;
-								}
-								objPower.MaxLevels = intImprovedAbilityMaximum;
-							}
-							else
-							{
-								objPowerControl.MaxLevels = objPower.MaxLevels;
-							}
+                        {
+                            int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                            if (intImprovedAbilityMaximum == 0)
+                            {
+                                intImprovedAbilityMaximum = 1;
+                            }
+                            objPower.MaxLevels = intImprovedAbilityMaximum;
+                        }
+                        else
+                        {
+                            objPowerControl.MaxLevels = objPower.MaxLevels;
+                        }
 					}
 					else
 					{
@@ -1220,7 +1234,7 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            // If this is a Sprite, re-label the Mental Attribute Labels.
+            // If this is a Sprite, re-label the Mental CharacterAttribute Labels.
             if (_objCharacter.Metatype.EndsWith("Sprite"))
             {
                 lblBODLabel.Enabled = false;
@@ -1254,7 +1268,7 @@ namespace Chummer
                 nudSignal.Enabled = true;
                 nudSignal.Value = _objCharacter.Signal;
 
-                // Disable the Physical Attribute controls.
+                // Disable the Physical CharacterAttribute controls.
                 lblBODLabel.Enabled = false;
                 lblAGILabel.Enabled = false;
                 lblREALabel.Enabled = false;
@@ -1276,118 +1290,118 @@ namespace Chummer
                     objSkillControl.Enabled = _objCharacter.RESEnabled;
             }
             // Run through all of the Skill Groups and Disable them if all of their Skills are currently inaccessible.
-            foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-            {
-                bool blnEnabled = false;
-                foreach (Skill objSkill in _objCharacter.Skills)
-                {
-                    if (objSkill.SkillGroup == objSkillGroupControl.GroupName)
-                    {
-                        if (objSkill.Attribute == "MAG" || objSkill.Attribute == "RES")
-                        {
-                            if (objSkill.Attribute == "MAG" && _objCharacter.MAGEnabled)
-                                blnEnabled = true;
-                            if (objSkill.Attribute == "RES" && _objCharacter.RESEnabled)
-                                blnEnabled = true;
-                        }
-                        else
-                            blnEnabled = true;
-                    }
-                }
-                objSkillGroupControl.IsEnabled = blnEnabled;
-                if (!blnEnabled)
-                    objSkillGroupControl.GroupRating = 0;
-            }
+            //foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+            //{
+            //    bool blnEnabled = false;
+            //    foreach (Skill objSkill in _objCharacter.Skills)
+            //    {
+            //        if (objSkill.SkillGroup == objSkillGroupControl.GroupName)
+            //        {
+            //            if (objSkill.Attribute == "MAG" || objSkill.Attribute == "RES")
+            //            {
+            //                if (objSkill.Attribute == "MAG" && _objCharacter.MAGEnabled)
+            //                    blnEnabled = true;
+            //                if (objSkill.Attribute == "RES" && _objCharacter.RESEnabled)
+            //                    blnEnabled = true;
+            //            }
+            //            else
+            //                blnEnabled = true;
+            //        }
+            //    }
+            //    objSkillGroupControl.IsEnabled = blnEnabled;
+            //    if (!blnEnabled)
+            //        objSkillGroupControl.GroupRating = 0;
+            //}
 
             // Populate the Skill Filter DropDown.
-            List<ListItem> lstFilter = new List<ListItem>();
-            ListItem itmAll = new ListItem();
-            itmAll.Value = "0";
-            itmAll.Name = LanguageManager.Instance.GetString("String_SkillFilterAll");
-            ListItem itmRatingAboveZero = new ListItem();
-            itmRatingAboveZero.Value = "1";
-            itmRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero");
-            ListItem itmTotalRatingAboveZero = new ListItem();
-            itmTotalRatingAboveZero.Value = "2";
-            itmTotalRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero");
-            ListItem itmRatingEqualZero = new ListItem();
-            itmRatingEqualZero.Value = "3";
-            itmRatingEqualZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingZero");
-            lstFilter.Add(itmAll);
-            lstFilter.Add(itmRatingAboveZero);
-            lstFilter.Add(itmTotalRatingAboveZero);
-            lstFilter.Add(itmRatingEqualZero);
+            //List<ListItem> lstFilter = new List<ListItem>();
+            //ListItem itmAll = new ListItem();
+            //itmAll.Value = "0";
+            //itmAll.Name = LanguageManager.Instance.GetString("String_SkillFilterAll");
+            //ListItem itmRatingAboveZero = new ListItem();
+            //itmRatingAboveZero.Value = "1";
+            //itmRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero");
+            //ListItem itmTotalRatingAboveZero = new ListItem();
+            //itmTotalRatingAboveZero.Value = "2";
+            //itmTotalRatingAboveZero.Name = LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero");
+            //ListItem itmRatingEqualZero = new ListItem();
+            //itmRatingEqualZero.Value = "3";
+            //itmRatingEqualZero.Name = LanguageManager.Instance.GetString("String_SkillFilterRatingZero");
+            //lstFilter.Add(itmAll);
+            //lstFilter.Add(itmRatingAboveZero);
+            //lstFilter.Add(itmTotalRatingAboveZero);
+            //lstFilter.Add(itmRatingEqualZero);
 
-            objXmlDocument = XmlManager.Instance.Load("skills.xml");
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
-            foreach (XmlNode objNode in objXmlNodeList)
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objNode.InnerText;
-                if (objNode.Attributes["translate"] != null)
-                    objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.Attributes["translate"].InnerText;
-                else
-                    objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.InnerText;
-                lstFilter.Add(objItem);
-            }
+            //objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            //objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
+            //foreach (XmlNode objNode in objXmlNodeList)
+            //{
+            //    ListItem objItem = new ListItem();
+            //    objItem.Value = objNode.InnerText;
+            //    if (objNode.Attributes["translate"] != null)
+            //        objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.Attributes["translate"].InnerText;
+            //    else
+            //        objItem.Name = LanguageManager.Instance.GetString("Label_Category") + " " + objNode.InnerText;
+            //    lstFilter.Add(objItem);
+            //}
 
-            // Add items for Attributes.
-            ListItem itmBOD = new ListItem();
-            itmBOD.Value = "BOD";
-            itmBOD.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeBODShort");
-            ListItem itmAGI = new ListItem();
-            itmAGI.Value = "AGI";
-            itmAGI.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeAGIShort");
-            ListItem itmREA = new ListItem();
-            itmREA.Value = "REA";
-            itmREA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeREAShort");
-            ListItem itmSTR = new ListItem();
-            itmSTR.Value = "STR";
-            itmSTR.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeSTRShort");
-            ListItem itmCHA = new ListItem();
-            itmCHA.Value = "CHA";
-            itmCHA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeCHAShort");
-            ListItem itmINT = new ListItem();
-            itmINT.Value = "INT";
-            itmINT.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeINTShort");
-            ListItem itmLOG = new ListItem();
-            itmLOG.Value = "LOG";
-            itmLOG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeLOGShort");
-            ListItem itmWIL = new ListItem();
-            itmWIL.Value = "WIL";
-            itmWIL.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeWILShort");
-            ListItem itmMAG = new ListItem();
-            itmMAG.Value = "MAG";
-            itmMAG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeMAGShort");
-            ListItem itmRES = new ListItem();
-            itmRES.Value = "RES";
-            itmRES.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeRESShort");
-            lstFilter.Add(itmBOD);
-            lstFilter.Add(itmAGI);
-            lstFilter.Add(itmREA);
-            lstFilter.Add(itmSTR);
-            lstFilter.Add(itmCHA);
-            lstFilter.Add(itmINT);
-            lstFilter.Add(itmLOG);
-            lstFilter.Add(itmWIL);
-            lstFilter.Add(itmMAG);
-            lstFilter.Add(itmRES);
+            //// Add items for Attributes.
+            //ListItem itmBOD = new ListItem();
+            //itmBOD.Value = "BOD";
+            //itmBOD.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeBODShort");
+            //ListItem itmAGI = new ListItem();
+            //itmAGI.Value = "AGI";
+            //itmAGI.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeAGIShort");
+            //ListItem itmREA = new ListItem();
+            //itmREA.Value = "REA";
+            //itmREA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeREAShort");
+            //ListItem itmSTR = new ListItem();
+            //itmSTR.Value = "STR";
+            //itmSTR.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeSTRShort");
+            //ListItem itmCHA = new ListItem();
+            //itmCHA.Value = "CHA";
+            //itmCHA.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeCHAShort");
+            //ListItem itmINT = new ListItem();
+            //itmINT.Value = "INT";
+            //itmINT.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeINTShort");
+            //ListItem itmLOG = new ListItem();
+            //itmLOG.Value = "LOG";
+            //itmLOG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeLOGShort");
+            //ListItem itmWIL = new ListItem();
+            //itmWIL.Value = "WIL";
+            //itmWIL.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeWILShort");
+            //ListItem itmMAG = new ListItem();
+            //itmMAG.Value = "MAG";
+            //itmMAG.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeMAGShort");
+            //ListItem itmRES = new ListItem();
+            //itmRES.Value = "RES";
+            //itmRES.Name = LanguageManager.Instance.GetString("String_ExpenseAttribute") + ": " + LanguageManager.Instance.GetString("String_AttributeRESShort");
+            //lstFilter.Add(itmBOD);
+            //lstFilter.Add(itmAGI);
+            //lstFilter.Add(itmREA);
+            //lstFilter.Add(itmSTR);
+            //lstFilter.Add(itmCHA);
+            //lstFilter.Add(itmINT);
+            //lstFilter.Add(itmLOG);
+            //lstFilter.Add(itmWIL);
+            //lstFilter.Add(itmMAG);
+            //lstFilter.Add(itmRES);
 
-            // Add Skill Groups to the filter.
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
-            foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-            {
-                ListItem itmGroup = new ListItem();
-                itmGroup.Value = "GROUP:" + objGroup.Name;
-                itmGroup.Name = LanguageManager.Instance.GetString("String_ExpenseSkillGroup") + ": " + objGroup.DisplayName;
-                lstFilter.Add(itmGroup);
-            }
+            //// Add Skill Groups to the filter.
+            //objXmlNodeList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"active\"]");
+            //foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+            //{
+            //    ListItem itmGroup = new ListItem();
+            //    itmGroup.Value = "GROUP:" + objGroup.Name;
+            //    itmGroup.Name = LanguageManager.Instance.GetString("String_ExpenseSkillGroup") + ": " + objGroup.DisplayName;
+            //    lstFilter.Add(itmGroup);
+            //}
 
-            cboSkillFilter.DataSource = lstFilter;
-            cboSkillFilter.ValueMember = "Value";
-            cboSkillFilter.DisplayMember = "Name";
-            cboSkillFilter.SelectedIndex = 0;
-            cboSkillFilter_SelectedIndexChanged(null, null);
+            //cboSkillFilter.DataSource = lstFilter;
+            //cboSkillFilter.ValueMember = "Value";
+            //cboSkillFilter.DisplayMember = "Name";
+            //cboSkillFilter.SelectedIndex = 0;
+            //cboSkillFilter_SelectedIndexChanged(null, null);
 
             if (_objCharacter.MetatypeCategory == "Mundane Critters")
                 mnuSpecialMutantCritter.Visible = true;
@@ -1405,6 +1419,8 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateInitiationGradeTree();
             UpdateCharacterInfo();
+
+	        tabSkillsUc.ObjCharacter = _objCharacter;
 
             _blnIsDirty = false;
             UpdateWindowTitle(false);
@@ -1962,7 +1978,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-		}
+        }
 
         private void objCharacter_UneducatedChanged(object sender)
         {
@@ -2230,6 +2246,14 @@ namespace Chummer
 
             }
         }
+
+		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{  //TODO: This fires an ABOSURD amount of times, put acctual code on a n ms delay, or not return early if last call was within n ms?
+			_blnIsDirty = true;
+			CalculateBP();
+			UpdateWindowTitle();
+			UpdateCharacterInfo();
+		}
         #endregion
 
         #region Menu Events
@@ -2284,7 +2308,7 @@ namespace Chummer
             mnuSpecialMutantCritter.Visible = false;
             mnuSpecialToxicCritter.Visible = true;
 
-            // Update the Critter's Attribute maximums to 1.5X their current value (or 1, whichever is higher).
+            // Update the Critter's CharacterAttribute maximums to 1.5X their current value (or 1, whichever is higher).
             _objCharacter.BOD.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.BOD.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.AGI.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.AGI.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
             _objCharacter.REA.MetatypeMaximum = Math.Max(1, Convert.ToInt32(Math.Ceiling(Convert.ToDouble(_objCharacter.REA.Value, GlobalOptions.Instance.CultureInfo) * 1.5)));
@@ -3983,14 +4007,14 @@ namespace Chummer
         }
         #endregion
 
-        #region Attribute Events
+        #region CharacterAttribute Events
         private void nudBOD_ValueChanged(object sender, EventArgs e)
         {
             // Don't attempt to do anything while the data is still being populated.
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4029,7 +4053,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4096,7 +4120,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4135,7 +4159,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4174,7 +4198,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4215,7 +4239,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4254,7 +4278,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4293,7 +4317,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -4597,91 +4621,93 @@ namespace Chummer
 
         private void objSkill_BreakGroupClicked(Object sender)
         {
-            SkillControl objSkillControl = (SkillControl)sender;
+			//TODO REMOVESOMEDAY
+            //SkillControl objSkillControl = (SkillControl)sender;
 
-            SkillGroup objSkillGroup = new SkillGroup();
-            foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-            {
-                if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
-                {
-                    objSkillGroup = objSkillGroupControl.SkillGroupObject;
-                    break;
-                }
-            }
+            //SkillGroup objSkillGroup = new SkillGroup();
+            //foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+            //{
+            //    if (objSkillGroupControl.GroupName == objSkillControl.SkillGroup)
+            //    {
+            //        objSkillGroup = objSkillGroupControl.SkillGroupObject;
+            //        break;
+            //    }
+            //}
 
-            // Verify that the user wants to break the Skill Group.
-            if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillGroup.DisplayName), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-            else
-            {
-                string strSkillGroup = objSkillControl.SkillGroup;
-                int intRating = 0;
+            //// Verify that the user wants to break the Skill Group.
+            //if (MessageBox.Show(LanguageManager.Instance.GetString("Message_BreakSkillGroup").Replace("{0}", objSkillGroup.DisplayName), LanguageManager.Instance.GetString("MessageTitle_BreakSkillGroup"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            //    return;
+            //else
+            //{
+            //    string strSkillGroup = objSkillControl.SkillGroup;
+            //    int intRating = 0;
 
-                // Break the Skill Group itself.
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    if (objSkillGroupControl.GroupName == strSkillGroup)
-                    {
-                        intRating = objSkillGroupControl.GroupRating;
-                        objSkillGroupControl.Broken = true;
-                        break;
+            //    // Break the Skill Group itself.
+            //    foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
+            //    {
+            //        if (objSkillGroupControl.GroupName == strSkillGroup)
+            //        {
+            //            intRating = objSkillGroupControl.GroupRating;
+            //            objSkillGroupControl.Broken = true;
+            //            break;
+            //        }
+            //    }
+
+            //    // Remove all of the Active Skills from the Skill Group being broken.
+            //    string strGroup = objSkillControl.SkillGroup;
+            //    foreach (SkillControl objActiveSkill in panActiveSkills.Controls)
+            //    {
+            //        if (objActiveSkill.SkillGroup == strGroup)
+            //        {
+            //            objActiveSkill.IsGrouped = false;
+            //            objActiveSkill.SkillRating = intRating;
+            //            objActiveSkill.SkillObject.FreeLevels = intRating;
+            //            if (objSkillGroup.FreeLevels > 0)
+            //                objActiveSkill.SkillObject.FreeLevels = intRating;
+            //        }
+            //    }
+            //}
                     }
-                }
-
-                // Remove all of the Active Skills from the Skill Group being broken.
-                string strGroup = objSkillControl.SkillGroup;
-                foreach (SkillControl objActiveSkill in panActiveSkills.Controls)
-                {
-                    if (objActiveSkill.SkillGroup == strGroup)
-                    {
-                        objActiveSkill.IsGrouped = false;
-                        objActiveSkill.SkillRating = intRating;
-                        objActiveSkill.SkillObject.FreeLevels = intRating;
-                        if (objSkillGroup.FreeLevels > 0)
-                            objActiveSkill.SkillObject.FreeLevels = intRating;
-                    }
-                }
-            }
-        }
 
         private void objGroup_RatingChanged(Object sender)
         {
+			//TODO REMOVE
             // Handle the GroupRatingChanged event for the SkillGroupControl object.
-            SkillGroupControl objGroupControl = (SkillGroupControl)sender;
-            XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+            //SkillGroupControl objGroupControl = (SkillGroupControl)sender;
+            //XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
-            // Retrieve the list of Skills that are associated with the Skill Group.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + objGroupControl.GroupName + "\"]");
+            //// Retrieve the list of Skills that are associated with the Skill Group.
+            //XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + objGroupControl.GroupName + "\"]");
 
-            foreach (XmlNode objXmlSkill in objXmlSkillList)
-            {
-                // Run through all of the Skills in the Active Skill Panel and update the ones that match the Skills in the Skill Group.
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    if (objSkillControl.SkillName == objXmlSkill["name"].InnerText)
-                    {
-                        if (objGroupControl.GroupRating > 0 && !objGroupControl.SkillGroupObject.Broken)
-                        {
-                            // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
-                            if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
-                                objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
-                            objSkillControl.SkillBase = objGroupControl.GroupRating;
-                            objSkillControl.IsGrouped = true;
-                        }
-                        else if (!objGroupControl.SkillGroupObject.Broken)
-                        {
-                            // Returning a Group's Rating back to 0 should release the Skill from the Group and re-enable the SkillControl.
-                            objSkillControl.SkillBase = 0;
-                            objSkillControl.IsGrouped = false;
-                        }
-                    }
-                }
-            }
+            //foreach (XmlNode objXmlSkill in objXmlSkillList)
+            //{
+            //    // Run through all of the Skills in the Active Skill Panel and update the ones that match the Skills in the Skill Group.
+            //    foreach (SkillControl objSkillControl in panActiveSkills.Controls)
+            //    {
+            //        if (objSkillControl.SkillName == objXmlSkill["name"].InnerText)
+            //        {
+            //            if (objGroupControl.GroupRating > 0 && !objGroupControl.SkillGroupObject.Broken)
+            //            {
+            //                // Setting a Group's Rating above 0 should place the Skill in the Group and disable the SkillControl.
+            //                if (objGroupControl.GroupRating > objSkillControl.SkillRatingMaximum)
+            //                    objSkillControl.SkillRatingMaximum = objGroupControl.GroupRating;
+            //                objSkillControl.SkillBase = objGroupControl.GroupRating;
+            //                objSkillControl.IsGrouped = true;
+            //            }
+            //            else if (!objGroupControl.SkillGroupObject.Broken)
+            //            {
+            //                // Returning a Group's Rating back to 0 should release the Skill from the Group and re-enable the SkillControl.
+            //                objSkillControl.SkillBase = 0;
+            //                objSkillControl.IsGrouped = false;
+            //            }
+            //        }
+            //    }
+            //}
 
-            UpdateCharacterInfo();
+            //UpdateCharacterInfo();
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
+            //_blnIsDirty = true;
+            //UpdateWindowTitle();
         }
         #endregion
 
@@ -5089,17 +5115,17 @@ namespace Chummer
 
 			if (objPowerControl.PowerName == "Improved Ability (skill)")
 			{
-				foreach (Skill objSkill in _objCharacter.Skills)
-				{
-					foreach (Power objPower in _objCharacter.Powers)
+            foreach (Skill objSkill in _objCharacter.Skills)
+            {
+                foreach (Power objPower in _objCharacter.Powers)
 						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
-						{
-							double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-							intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-							objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-							objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-						}
-				}
+                    {
+                        double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                        objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+                    }
+            }
 			}
             if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
             {
@@ -5151,7 +5177,7 @@ namespace Chummer
             // Remove the Power.
             _objCharacter.Powers.Remove(objSender.PowerObject);
 
-            // Update the Attribute label.
+            // Update the CharacterAttribute label.
             UpdateCharacterInfo();
 
             // Remove the PowerControl that raised the Event.
@@ -5224,11 +5250,11 @@ namespace Chummer
         private void cmdAddKnowledgeSkill_Click(object sender, EventArgs e)
         {
             int i = panKnowledgeSkills.Controls.Count;
-            Skill objSkill = new Skill(_objCharacter);
-            objSkill.Attribute = "LOG";
+            Skill objSkill = new KnowledgeSkill(_objCharacter);  //TODO KNOSKILLS NEED THIS SHIT (PROBABLY)
+            //objSkill.Attribute = "LOG";
             objSkill.SkillCategory = "Academic";
-            if (_objCharacter.MaxSkillRating > 0)
-                objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+            //if (_objCharacter.MaxSkillRating > 0)
+            //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
             SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
@@ -5266,7 +5292,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (nudAdeptWayDiscount.Value > _objCharacter.Foci.Count)
             {
                 try
@@ -5312,7 +5338,7 @@ namespace Chummer
             objContactControl.FreeRatingChanged += objContact_OtherCostChanged;
 			objContactControl.MouseDown += panContactControl_MouseDown;
 
-			panContacts.Controls.Add(objContactControl);
+            panContacts.Controls.Add(objContactControl);
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -5617,29 +5643,29 @@ namespace Chummer
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
             objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
 
-			if (frmPickPower.MaxLevels() > 0)
+            if (frmPickPower.MaxLevels() > 0)
 				if (objPower.Name == "Improved Ability (skill)")
 				{
-					foreach (Skill objSkill in _objCharacter.Skills)
+                foreach (Skill objSkill in _objCharacter.Skills)
 					{
 						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
-						{
-							int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-							if (intImprovedAbilityMaximum == 0)
-							{
-								intImprovedAbilityMaximum = 1;
-							}
-							objPower.MaxLevels = intImprovedAbilityMaximum;
-						}
+                    {
+                        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+                        if (intImprovedAbilityMaximum == 0)
+                        {
+                            intImprovedAbilityMaximum = 1;
+                        }
+                        objPower.MaxLevels = intImprovedAbilityMaximum;
+                    }
 					}
 				}
-				else
-				{
-					objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-				}
+                    else
+                    {
+                        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+                    }
 
-			// Open the Cyberware XML file and locate the selected piece.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
+            // Open the Cyberware XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
             XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
 
@@ -7119,7 +7145,7 @@ namespace Chummer
         {
             if (_objCharacter.MAGEnabled)
             {
-                // Make sure that the Initiate Grade is not attempting to go above the character's MAG Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
                 if (_objCharacter.InitiateGrade + 1 > _objCharacter.MAG.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7179,7 +7205,7 @@ namespace Chummer
                 tsMetamagicAddRitual.Visible = false;
                 tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
 
-                // Make sure that the Initiate Grade is not attempting to go above the character's RES Attribute.
+                // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                 if (_objCharacter.SubmersionGrade + 1 > _objCharacter.RES.TotalValue)
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7497,11 +7523,10 @@ namespace Chummer
             XmlNode nodSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
             int i = panActiveSkills.Controls.Count;
-            Skill objSkill = new Skill(_objCharacter);
-            objSkill.Attribute = nodSkill["attribute"].InnerText;
-			objSkill.Specialization = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
-            if (_objCharacter.MaxSkillRating > 0)
-                objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
+            Skill objSkill = new ExoticSkill(_objCharacter, nodSkill);
+            //objSkill.Attribute = nodSkill["CharacterAttribute"].InnerText;
+            //if (_objCharacter.MaxSkillRating > 0)
+            //    objSkill.RatingMaximum = _objCharacter.MaxSkillRating;
 
             SkillControl objSkillControl = new SkillControl(_objCharacter);
             objSkillControl.SkillObject = objSkill;
@@ -7512,35 +7537,35 @@ namespace Chummer
             objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
             objSkillControl.SkillName = frmPickExoticSkill.SelectedExoticSkill;
             objSkillControl.BuyWithKarmaChanged += objActiveSkill_BuyWithKarmaChanged;
-			objSkillControl.SkillSpec = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
-            objSkillControl.SkillCategory = nodSkill["category"].InnerText;
-            if (nodSkill["default"].InnerText == "Yes")
-                objSkill.Default = true;
-            else
-                objSkill.Default = false;
 
-            objSkill.ExoticSkill = true;
-            _objCharacter.Skills.Add(objSkill);
+            //objSkillControl.SkillCategory = nodSkill["category"].InnerText;
+            //if (nodSkill["default"].InnerText == "Yes")
+            //    objSkill.Default = true;
+            //else
+            //    objSkill.Default = false;
 
-			// Populate the Skill's Specializations (if any).
-			foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
-			{
-				if (objXmlSpecialization.Attributes["translate"] != null)
-					objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
-				else
-					objSkillControl.AddSpec(objXmlSpecialization.InnerText);
-			}
+            //objSkill.ExoticSkill = true;
+            //_objCharacter.Skills.Add(objSkill);
 
-			// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-			XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\" or useskill = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
-			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-			{
-				if (objXmlWeapon["translate"] != null)
-					objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
-				else
-					objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
-			}
+            // Populate the Skill's Specializations (if any).
+            foreach (XmlNode objXmlSpecialization in nodSkill.SelectNodes("specs/spec"))
+            {
+                if (objXmlSpecialization.Attributes["translate"] != null)
+                    objSkillControl.AddSpec(objXmlSpecialization.Attributes["translate"].InnerText);
+                else
+                    objSkillControl.AddSpec(objXmlSpecialization.InnerText);
+            }
+
+            // Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
+            XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+            XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[category = \"" + frmPickExoticSkill.SelectedExoticSkill + "s\" or useskill = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
+            foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+            {
+                if (objXmlWeapon["translate"] != null)
+                    objSkillControl.AddSpec(objXmlWeapon["translate"].InnerText);
+                else
+                    objSkillControl.AddSpec(objXmlWeapon["name"].InnerText);
+            }
 
 			if (_objCharacter.IgnoreRules)
 			{
@@ -13934,7 +13959,7 @@ namespace Chummer
                 // Build the DV tooltip.
                 tipTooltip.SetToolTip(lblSpellDV, objSpell.DVTooltip);
 
-                // Update the Drain Attribute Value.
+                // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
                     try
@@ -14244,27 +14269,27 @@ namespace Chummer
             }
 			// Locate the selected Gear.
 			bool blnIsGear = false;
-			Armor objSelectedArmor = new Armor(_objCharacter);
-			Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
+                Armor objSelectedArmor = new Armor(_objCharacter);
+                Gear objGear = _objFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor, out objSelectedArmor);
 			if (objGear != null)
 				blnIsGear = true;
 
 			if (blnIsGear)
 			{
-				objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
-				treArmor.SelectedNode.Text = objGear.DisplayName;
+                objGear.Rating = Convert.ToInt32(nudArmorRating.Value);
+                treArmor.SelectedNode.Text = objGear.DisplayName;
 
-				// See if a Bonus node exists.
-				if (objGear.Bonus != null)
-				{
-					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-					if (objGear.Bonus.InnerXml.Contains("Rating"))
-					{
-						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
-						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-					}
-				}
-			}
+                // See if a Bonus node exists.
+                if (objGear.Bonus != null)
+                {
+                    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+                    if (objGear.Bonus.InnerXml.Contains("Rating"))
+                    {
+                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
+                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                    }
+                }
+            }
 			else
 			{
 				Armor objArmor = _objFunctions.FindArmor(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
@@ -14896,7 +14921,7 @@ namespace Chummer
                 case "2":
                     foreach (SkillControl objSkillControl in panActiveSkills.Controls)
                     {
-                        if (objSkillControl.SkillObject.TotalRating > 0)
+                        if (objSkillControl.SkillObject.Pool > 0)
                             objSkillControl.Visible = true;
                         else
                             objSkillControl.Visible = false;
@@ -15188,7 +15213,7 @@ namespace Chummer
 
         #region Custom Methods
         /// <summary>
-        /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
+        /// Show the dialogue that notifies the user that characters cannot have more than 1 CharacterAttribute at its maximum value during character creation.
         /// </summary>
         public void ShowAttributeRule()
         {
@@ -15213,7 +15238,7 @@ namespace Chummer
         /// </summary>
         public void MetatypeSelected()
         {
-            // Set the Minimum and Maximum values for each Attribute based on the selected MetaType.
+            // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
             // Also update the Maximum and Augmented Maximum values displayed.
             _blnSkipUpdate = true;
 
@@ -15298,7 +15323,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Check if any other Attribute is already at its Metatype Maximum.
+        /// Check if any other CharacterAttribute is already at its Metatype Maximum.
         /// </summary>
         /// <param name="strAttribute">NumericUpDown Control that is calling this function.</param>
         private bool CanImproveAttribute(string strAttribute)
@@ -15419,7 +15444,7 @@ namespace Chummer
 
                 _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
 		    }
-                // For each attribute, figure out the actual karma cost of attributes raised with karma
+                // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
                 for (int i = 1; i <= nudKBOD.Value; i++)
                 {
 			    intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
@@ -15488,7 +15513,7 @@ namespace Chummer
 
             _objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
             
-            // For each attribute, figure out the actual karma cost of attributes raised with karma
+            // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
             for (int i = 1; i <= nudKEDG.Value; i++)
             {
                 intBP += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
@@ -15515,7 +15540,7 @@ namespace Chummer
 				}
 			}
 
-			// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 			int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
             {
@@ -15604,13 +15629,13 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-			{
-				lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
-			}
-			else
-			{
+            {
+					lblPBuildSpecial.Text = String.Format(LanguageManager.Instance.GetString("String_OverPriorityPoints"), (_objCharacter.TotalSpecial - intAtt).ToString(), _objCharacter.TotalSpecial.ToString(), intBP.ToString());
+				}
+                else
+				{
 				lblSpecialAttributesBP.Text = intBP.ToString();
-			}
+            }
 			return intBP;
 
 		}
@@ -15753,7 +15778,7 @@ namespace Chummer
 			int intPositiveQualities = intGroupContacts; // group contacts are positive qualities
             int intNegativeQualities = intEnemyPoints;   // enemies are negative qualities
 			int intLifeModuleQualities = 0;
-			int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
+	
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP)
@@ -15768,19 +15793,6 @@ namespace Chummer
 				{
 					intLifeModuleQualities += (objQuality.BP);
 				}
-
-				if (objQuality.Name == "Aged (Rating 1)")
-				{
-					intKnowledgeSkillPoints += 5;
-				}
-				else if (objQuality.Name == "Aged (Rating 2)")
-            {
-					intKnowledgeSkillPoints += 10;
-				}
-				else if (objQuality.Name == "Aged (Rating 3)")
-                {
-					intKnowledgeSkillPoints += 15;
-                }
             }
 
             // Deduct the amounts for free Qualities.
@@ -15849,301 +15861,25 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                // Get the total point value
-                foreach (SkillGroupControl objGroupControl in panSkillGroups.Controls)
-                {
-                    if (objGroupControl.GroupRating > objGroupControl.GroupRatingMinimum)
-                    {
-                        intSkillGroupsPoints += objGroupControl.BaseRating - objGroupControl.GroupRatingMinimum;
-                    }
-                    for (int i = 1; i <= objGroupControl.KarmaRating; i++)
-                    {
-                        intKarmaPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= ((Convert.ToInt32(objGroupControl.BaseRating) + i) * _objOptions.KarmaImproveSkillGroup);
-						}
-                    }
-                }
-            }
-            else
-            {
-                foreach (SkillGroupControl objGroupControl in panSkillGroups.Controls)
-                {
-                    if (objGroupControl.GroupRating > objGroupControl.GroupRatingMinimum)
-                    {
-                        // The first point in a Skill Group costs KaramNewSkillGroup.
-                        // Each additional beyond 1 costs i x KarmaImproveSkillGroup.
-                        intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-                        intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-							intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						}
-                        for (int i = objGroupControl.GroupRatingMinimum + 2; i <= objGroupControl.GroupRating; i++)
-                        {
-							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-							{
-								intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-								intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-							}
-                            intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-                            intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-                        }
-                    }
+            int intSkillGroupsPoints = _objCharacter.SkillGroups.TotalCostKarma();
 
-                    // If the Skill Group has been broken, get the Rating value for the lowest Skill in the Group.
-                    if (objGroupControl.Broken && _objOptions.BreakSkillGroupsInCreateMode)
-                    {
-                        int intMin = 999;
-                        foreach (Skill objSkill in _objCharacter.Skills)
-                        {
-                            if (objSkill.SkillGroup == objGroupControl.GroupName)
-                            {
-                                if (objSkill.Rating < intMin)
-                                    intMin = objSkill.Rating;
-                            }
-                        }
-						if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-						{
-							intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-							intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-						}
-						intKarmaPointsRemain -= _objOptions.KarmaNewSkillGroup;
-                        intSkillGroupsPoints += _objOptions.KarmaNewSkillGroup;
-                        for (int i = 2; i <= intMin; i++)
-                        {
-							if (_objCharacter.Uneducated && objGroupControl.HasTechnicalSkills)
-							{
-								intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-								intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-							}
-                            intKarmaPointsRemain -= i * _objOptions.KarmaImproveSkillGroup;
-                            intSkillGroupsPoints += i * _objOptions.KarmaImproveSkillGroup;
-                        }
-                    }
-                }
                 lblSkillGroupsBP.Text = String.Format("{0} " + strPoints, intSkillGroupsPoints.ToString());
-                intFreestyleBP += intSkillGroupsPoints;
-            }
-
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
-            int intActivePointsUsed = 0;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-            {
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    for (int i = 1; i <= objSkillControl.SkillKarma; i++)
-                    {
-                        intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill);
-	                    if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") ||
-	                        (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-	                    {
-                            intActivePointsUsed += ((Convert.ToInt32(objSkillControl.SkillBase) + i) * _objOptions.KarmaImproveActiveSkill); 
-	                    }
-                    }
-                    if (objSkillControl.SkillSpec != "" && objSkillControl.BuyWithKarma && !objSkillControl.SkillObject.ExoticSkill)
-                        intKarmaPointsRemain -= _objCharacter.Options.KarmaSpecialization;
-                }
-                intFreestyleBP += intActivePointsUsed;
-                intKarmaPointsRemain -= intActivePointsUsed;
-            }
-            else
-            {
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    if (objSkillControl.SkillRating > objSkillControl.SkillRatingMinimum && !objSkillControl.IsGrouped)
-                    {
-                        // The first point in a Skill costs KarmaNewActiveSkill.
-                        // Each additional beyond 1 costs i x KarmaImproveActiveSkill.
+			intKarmaPointsRemain -= _objCharacter.Skills.TotalCostKarma();
 
-                        //Uneducated, Uncouth character handler.
-                        //First level of skill
-                        if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-                        {
-                            intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill * 2;
-                            intActivePointsUsed += _objOptions.KarmaNewActiveSkill * 2;
-                        }
-                        else
-                        {
-                            intKarmaPointsRemain -= _objOptions.KarmaNewActiveSkill;
-                            intActivePointsUsed += _objOptions.KarmaNewActiveSkill;
-                        }
-	                    if (_objCharacter.JackOfAllTrades && (_objOptions.KarmaNewActiveSkill > 1))
-	                    {
-                            intKarmaPointsRemain += 1;
-                            intActivePointsUsed -= 1;
-						}
-                        //Subsequent levels of skills
-                        for (int i = objSkillControl.SkillRatingMinimum + 2; i <= objSkillControl.SkillRating; i++)
-                        {
-                            if ((_objCharacter.Uneducated && objSkillControl.SkillCategory == "Technical Active") || (_objCharacter.Uncouth && objSkillControl.SkillCategory == "Social Active"))
-                            {
-                                intKarmaPointsRemain -= (i * _objOptions.KarmaImproveActiveSkill) * 2;
-                                intActivePointsUsed += (i * _objOptions.KarmaImproveActiveSkill * 2);
-                            }
-                            else
-                            {
-                                intKarmaPointsRemain -= i * _objOptions.KarmaImproveActiveSkill;
-                                intActivePointsUsed += i * _objOptions.KarmaImproveActiveSkill;
-                            }
-
-							if (_objCharacter.JackOfAllTrades)
-							{
-								if (objSkillControl.SkillRating <= 5)
-								{
-                                    intKarmaPointsRemain += 1;
-                                    intActivePointsUsed -= 1;
-								}
-								else
-								{
-                                    intKarmaPointsRemain -= 2;
-                                    intActivePointsUsed += 2;
-								}
-							}
-						}
-
-                        // If the ability to break Skill Groups is enabled, refund the cost of the first X points of the Skill, where X is the minimum Rating for all Skill that used to a part of the Group.
-                        if (_objOptions.BreakSkillGroupsInCreateMode)
-                        {
-                            int intMin = 999;
-                            bool blnApplyModifier = false;
-
-                            // Find the matching Skill Group.
-                            foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-                            {
-                                if (objGroup.Broken && objGroup.Name == objSkillControl.SkillGroup)
-                                {
-                                    // Determine the lowest Rating amongst the Skills in the Groups.
-                                    foreach (Skill objSkill in _objCharacter.Skills)
-                                    {
-                                        if (objSkill.SkillGroup == objGroup.Name)
-                                        {
-                                            if (objSkill.Rating < intMin)
-                                            {
-                                                intMin = objSkill.Rating;
-                                                blnApplyModifier = true;
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-
-                            if (blnApplyModifier)
-                            {
-                                // Refund the first X points of Karma cost for the Skill.
-                                if (intMin >= 1)
-                                {
-                                    intKarmaPointsRemain += _objOptions.KarmaNewActiveSkill;
-                                    intActivePointsUsed -= _objOptions.KarmaNewActiveSkill;
-                                }
-                                if (intMin > 1)
-                                {
-                                    for (int i = 2; i <= intMin; i++)
-                                    {
-                                        intKarmaPointsRemain += i * _objOptions.KarmaImproveActiveSkill;
-                                        intActivePointsUsed -= i * _objOptions.KarmaImproveActiveSkill;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Specialization Cost (Exotic skills do not count since their "Spec" is actually what the Skill is being used for and cannot be Specialized).
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
-                    {
-                        if (objSkillControl.BuyWithKarma)
-                        {
-                            // Each Specialization costs KarmaSpecialization.
-                            intKarmaPointsRemain -= _objOptions.KarmaSpecialization;
-                            intActivePointsUsed += _objOptions.KarmaSpecialization;
-                        }
-                    }
-                }
-
-                lblActiveSkillsBP.Text = String.Format("{0} " + strPoints, intActivePointsUsed.ToString());
-                intFreestyleBP += intActivePointsUsed;
-            }
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeFreePointsUsed = 0;
-            int knowledgeKarmaUsed = 0;
-			foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
-            {
-                // start at 1, look at each point in the skill in turn and determine its cost
-                int ii = 1;
-                if (objSkillControl.SkillRating > 0) 
-                { 
-                    // points that came from skill points
-                    while (ii <= objSkillControl.SkillBase)
-                    {
-                        int cost = 1;
-                        // check for free double levels from qualities (make every other point free)
-                        if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") ||
-                                (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") ||
-                                (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") ||
-                                (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                        {
-                            if (ii%2 ==0) cost = 0;
-                        }
-                        knowledgeFreePointsUsed += cost;
-                        ii++;
-                    }
-
-                    // points that came from karma
-                    while (ii <= objSkillControl.SkillRating)
-                    {
-                        int costThisLevel = ii * _objOptions.KarmaImproveKnowledgeSkill;
-                        // was the first point bought with Karma
-                        if (ii == 1) 
-                            costThisLevel = _objOptions.KarmaNewKnowledgeSkill;
-                    
-                        // check for qualities that raise/lower cost for later ranks
-                        if (_objCharacter.Uneducated && (objSkillControl.SkillCategory == "Academic" || objSkillControl.SkillCategory == "Professional"))
-						{
-                            costThisLevel *= 2;
-						}
-
-                        if (ii >= 3) {
-                            if ((_objCharacter.SchoolOfHardKnocks && objSkillControl.SkillCategory == "Street") ||
-                                (_objCharacter.Linguist && objSkillControl.SkillCategory == "Language") ||
-                                (_objCharacter.TechSchool && objSkillControl.SkillCategory == "Professional") ||
-                                (_objCharacter.CollegeEducation && objSkillControl.SkillCategory == "Academic"))
-                            {
-                                costThisLevel--;
-                            }
-                        }
-                        // note: don't check for Jack of all Trades during creation mode
-
-                        knowledgeKarmaUsed += costThisLevel;
-                        ii++;
-                    }
-
-                    // did we buy a specialization?
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty)
-                    {
-                        if (!objSkillControl.BuyWithKarma)
-                            knowledgeFreePointsUsed++;
-                        else
-                            knowledgeKarmaUsed += _objCharacter.Options.KarmaSpecialization;
-                    }
-                }
-            }
-
-            _objCharacter.KnowledgeSkillPointsUsed = intKnowledgeSkillPoints - knowledgeFreePointsUsed;
+            int knowledgeKarmaUsed = _objCharacter.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
+			//TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
-            lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - knowledgeFreePointsUsed).ToString(), intKnowledgeSkillPoints.ToString());
-            lblPBuildKnowledgeSkills.Text = lblKnowledgeSkillPoints.Text;
-            lblKnowledgeSkillsBP.Text = String.Format("{0} " + strPoints, knowledgeKarmaUsed.ToString());
+            lblPBuildKnowledgeSkills.Text =
+		        $"{(_objCharacter.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.KnowledgeSkillPoints}";
+
+			lblKnowledgeSkillsBP.Text = String.Format("{0} " + strPoints, knowledgeKarmaUsed);
             intFreestyleBP += knowledgeKarmaUsed;
 
             // ------------------------------------------------------------------------------
@@ -16455,11 +16191,7 @@ namespace Chummer
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
-                // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * _objOptions.FreeKnowledgeMultiplier;
-                else
-                    _objCharacter.KnowledgeSkillPoints = 0;
+                
 
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
                 if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -16467,52 +16199,17 @@ namespace Chummer
                 else
                     _objCharacter.ContactPoints = 0;
 
-                int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Name == "Aged (Rating 1)")
-                        intKnowledgeSkillPoints += 5;
-                    if (objQuality.Name == "Aged (Rating 2)")
-                        intKnowledgeSkillPoints += 10;
-                    if (objQuality.Name == "Aged (Rating 3)")
-                        intKnowledgeSkillPoints += 15;
-                }
+               
 
                 //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
+                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
 
+				//TODO: Change order of this and kno, Wastefull but possible to use SP for KNO
                 // Update the character's Skill information.
-                int intSkills = 0;
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
-                {
-                    objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
-	                objSkillControl.SkillBase = objSkillControl.SkillObject.Base;
-                    objSkillControl.RefreshControl();
-                    if (!objSkillControl.IsGrouped)
-                        intSkills += objSkillControl.SkillBase - objSkillControl.SkillObject.FreeLevels;
-                    if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
-                    {
-                        bool blnFound = false;
-                        if (objSkillControl.SkillName == "Artisan")
-                        {
-                            // Look for the Inspired quality to see if we get a free specialization
-                            foreach (Quality objQuality in _objCharacter.Qualities)
-                            {
-                                if (objQuality.Name == "Inspired")
-                                    blnFound = true;
-                            }
-                        }
-                        if (!blnFound && !objSkillControl.BuyWithKarma)
-                        {
-                            intSkills++;
-                        }
-                    }
-                }
-                _objCharacter.SkillPoints = _objCharacter.SkillPointsMaximum - intSkills;
-                lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints.ToString(), _objCharacter.SkillPointsMaximum.ToString());
+               lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints, _objCharacter.SkillPointsMaximum);
 
                 // Update the character's Knowledge Skill information.
-                intSkills = 0;
+                int intSkills = 0;
                 foreach (SkillControl objSkillControl in panKnowledgeSkills.Controls)
                 {
                     intSkills += objSkillControl.SkillBase;
@@ -16520,27 +16217,10 @@ namespace Chummer
                     objSkillControl.RefreshControl();
                 }
 
-                intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Name == "Aged (Rating 1)")
-                        intKnowledgeSkillPoints += 5;
-                    if (objQuality.Name == "Aged (Rating 2)")
-                        intKnowledgeSkillPoints += 10;
-                    if (objQuality.Name == "Aged (Rating 3)")
-                        intKnowledgeSkillPoints += 15;
-                }
-
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (intKnowledgeSkillPoints - intSkills).ToString(), intKnowledgeSkillPoints.ToString());
+                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
 
                 // Update the character's skill group information.
-                int intSkillGroups = 0;
-                foreach (SkillGroupControl objSkillGroupControl in panSkillGroups.Controls)
-                {
-                    intSkillGroups += objSkillGroupControl.BaseRating - objSkillGroupControl.GroupRatingMinimum;
-                }
-                lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints.ToString(), _objCharacter.SkillGroupPointsMaximum.ToString());
-                _objCharacter.SkillGroupPoints = _objCharacter.SkillGroupPointsMaximum - intSkillGroups;
+                lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);
 
                 // Condition Monitor.
                 double dblBOD = _objCharacter.BOD.TotalValue;
@@ -16562,8 +16242,8 @@ namespace Chummer
 
 				UpdateSpellDefence();
 				
-				// Armor Ratings.
-				lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
+                // Armor Ratings.
+                lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
                 string strArmorToolTip = "";
                 strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
                 if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
@@ -16633,7 +16313,7 @@ namespace Chummer
                     _objImprovementManager.CreateImprovement("WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, "", 0, 1, 0, intESSModifier);
                 }
 
-                // Update the Attribute information.
+                // Update the CharacterAttribute information.
                 UpdateAttribute(_objCharacter.BOD, nudBOD, lblBODAug, lblBODMetatype);
 				UpdateAttribute(_objCharacter.AGI, nudAGI, lblAGIAug, lblAGIMetatype);
 				UpdateAttribute(_objCharacter.STR, nudSTR, lblSTRAug, lblSTRMetatype);
@@ -16645,7 +16325,7 @@ namespace Chummer
 				UpdateAttribute(_objCharacter.EDG, nudEDG, lblEDGAug, lblEDGMetatype);
 				UpdateAttribute(_objCharacter.DEP, nudDEP, lblDEPAug, lblDEPMetatype);
 
-				// Attribute: Magic.
+                // CharacterAttribute: Magic.
 				if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
                 {
                     lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0), _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
@@ -16668,7 +16348,7 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblMAGAug, _objCharacter.MAG.ToolTip());
                 }
 
-                // Attribute: Resonance.
+                // CharacterAttribute: Resonance.
                 lblRESMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.RES.TotalMinimum, _objCharacter.RES.TotalMaximum, _objCharacter.RES.TotalAugmentedMaximum);
                 nudRES.Minimum = _objCharacter.RES.TotalMinimum;
                 nudRES.Maximum = _objCharacter.RES.TotalMaximum;
@@ -16734,7 +16414,7 @@ namespace Chummer
                     }
                 }
 
-                // Update the Drain Attribute Value.
+                // Update the Drain CharacterAttribute Value.
                 if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")
                 {
                     try
@@ -16760,7 +16440,7 @@ namespace Chummer
                     }
                 }
 
-                // Update the Fading Attribute Value.
+                // Update the Fading CharacterAttribute Value.
                 if (_objCharacter.RESEnabled)
                 {
                     try
@@ -16959,8 +16639,8 @@ namespace Chummer
 				strTip = _objCharacter.CalculatedMovement;
 				tipTooltip.SetToolTip(lblMovement, strTip);
 
-				// Special Attribute-Only Test.
-				lblComposure.Text = _objCharacter.Composure.ToString();
+                // Special CharacterAttribute-Only Test.
+                lblComposure.Text = _objCharacter.Composure.ToString();
                 strTip = "WIL (" + _objCharacter.WIL.TotalValue.ToString() + ") + CHA (" + _objCharacter.CHA.TotalValue.ToString() + ")";
                 tipTooltip.SetToolTip(lblComposure, strTip);
                 lblJudgeIntentions.Text = _objCharacter.JudgeIntentions.ToString();
@@ -17082,7 +16762,7 @@ namespace Chummer
             UpdateReputation();
         }
 
-	    private void UpdateAttribute(Attribute attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
+	    private void UpdateAttribute(CharacterAttrib attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
 	    {
 			metatype.Text = string.Format("{0} / {1} ({2})", attribute.TotalMinimum, attribute.TotalMaximum,
 			    attribute.TotalAugmentedMaximum);
@@ -17448,8 +17128,8 @@ namespace Chummer
             foreach (MartialArt objMartialArt in _objCharacter.MartialArts)
             {
                 treMartialArts.Add(objMartialArt, cmsMartialArts);
-            }
-        }
+                }
+                }
 
         public void RefreshLimitModifiers()
         {
@@ -17461,7 +17141,7 @@ namespace Chummer
             foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
             {
                 treLimit.Add(objLimitModifier, cmsLimitModifier);
-            }
+                }
 
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _objCharacter.Improvements)
@@ -17826,7 +17506,7 @@ namespace Chummer
                 chkArmorEquipped.Checked = objArmor.Equipped;
 				if (objArmor.MaxRating == 0)
 				{
-					nudArmorRating.Enabled = false;
+                nudArmorRating.Enabled = false;
 				}
 				else
 				{
@@ -18501,21 +18181,21 @@ namespace Chummer
                     }
                 }
 
-                if (_objCharacter.Created)
-                {
-                    foreach (Skill objSkill in _objCharacter.Skills)
-                    {
-                        if (objSkill.RatingMaximum == 6)
-                            objSkill.RatingMaximum = 12;
-                        else if (objSkill.RatingMaximum == 7)
-                            objSkill.RatingMaximum = 13;
-                    }
-                    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-                    {
-                        if (objSkillGroup.RatingMaximum == 6)
-                            objSkillGroup.RatingMaximum = 12;
-                    }
-                }
+                //if (_objCharacter.Created)
+                //{
+                //    foreach (Skill objSkill in _objCharacter.Skills)
+                //    {
+                //        if (objSkill.RatingMaximum == 6)
+                //            objSkill.RatingMaximum = 12;
+                //        else if (objSkill.RatingMaximum == 7)
+                //            objSkill.RatingMaximum = 13;
+                //    }
+                //    foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+                //    {
+                //        if (objSkillGroup.RatingMaximum == 6)
+                //            objSkillGroup.RatingMaximum = 12;
+                //    }
+                //}
 
                 _objCharacter.Save();
                 _blnIsDirty = false;
@@ -19383,8 +19063,8 @@ namespace Chummer
 								if (objNode["translate"] != null)
 									strQualities +=  " [" + strCost + "¥]";
 							}
+							}
 						}
-					}
 
 					foreach (Improvement objImprovement in _objCharacter.Improvements)
                     {
@@ -20738,10 +20418,10 @@ namespace Chummer
             }
 
             // Check if the character has gone over on Knowledge Skills
-            if (_objCharacter.KnowledgeSkillPointsUsed < 0)
+            if (_objCharacter.KnowledgeSkillPointsRemain < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.KnowledgeSkillPointsUsed) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.KnowledgeSkillPointsRemain) * -1).ToString());
             }
 
             // Check if the character has gone over the Nuyen limit.
@@ -21854,7 +21534,7 @@ namespace Chummer
                     {
                         if (objSkill.Rating != objGroup.Rating && objSkill.SkillGroup == objGroup.Name)
                         {
-                            objGroup.Broken = true;
+                            //objGroup.Broken = true;
                             break;
                         }
                     }
@@ -22046,7 +21726,7 @@ namespace Chummer
                 nudRES.Value = nudRES.Minimum;
                 foreach (XmlNode objXmlAttribute in objXmlKit["attributes"])
                 {
-                    // The Attribute is calculated as given value - (6 - Metatype Maximum) so that each Metatype has the values from the file adjusted correctly.
+                    // The CharacterAttribute is calculated as given value - (6 - Metatype Maximum) so that each Metatype has the values from the file adjusted correctly.
                     switch (objXmlAttribute.Name)
                     {
                         case "bod":
@@ -22106,20 +21786,20 @@ namespace Chummer
                         objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
                         objSkillControl.SkillName = objXmlSkill["name"].InnerText;
 
-                        switch (objXmlSkill["name"].InnerText)
-                        {
-                            case "Exotic Ranged Weapon":
-                            case "Exotic Melee Weapon":
-                                objSkill.Attribute = "AGI";
-                                objSkillControl.SkillCategory = "Combat Active";
-                                objSkill.Default = true;
-                                break;
-                            default:
-                                objSkill.Attribute = "REA";
-                                objSkillControl.SkillCategory = "Vehicle Active";
-                                objSkill.Default = false;
-                                break;
-                        }
+                        //switch (objXmlSkill["name"].InnerText)
+                        //{
+                        //    case "Exotic Ranged Weapon":
+                        //    case "Exotic Melee Weapon":
+                        //        objSkill.Attribute = "AGI";
+                        //        objSkillControl.SkillCategory = "Combat Active";
+                        //        objSkill.Default = true;
+                        //        break;
+                        //    default:
+                        //        objSkill.Attribute = "REA";
+                        //        objSkillControl.SkillCategory = "Vehicle Active";
+                        //        objSkill.Default = false;
+                        //        break;
+                        //}
                         objSkill.ExoticSkill = true;
                         _objCharacter.Skills.Add(objSkill);
 
@@ -22212,50 +21892,50 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlSkill in objXmlKit.SelectNodes("knowledgeskills/skill"))
                 {
-                    int i = panKnowledgeSkills.Controls.Count;
-                    Skill objSkill = new Skill(_objCharacter);
-                    objSkill.Name = objXmlSkill["name"].InnerText;
+     //               int i = panKnowledgeSkills.Controls.Count;
+     //               Skill objSkill = new Skill(_objCharacter);
+     //               objSkill.Name = objXmlSkill["name"].InnerText;
 
-                    SkillControl objSkillControl = new SkillControl(_objCharacter);
-                    objSkillControl.SkillObject = objSkill;
+     //               SkillControl objSkillControl = new SkillControl();
+     //               objSkillControl.SkillObject = objSkill;
 
-                    // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
-                    objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
-                    objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
-                    objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
+     //               // Attach an EventHandler for the RatingChanged and SpecializationChanged Events.
+     //               objSkillControl.RatingChanged += objKnowledgeSkill_RatingChanged;
+     //               objSkillControl.SpecializationChanged += objSkill_SpecializationChanged;
+     //               objSkillControl.DeleteSkill += objKnowledgeSkill_DeleteSkill;
 
-                    objSkillControl.KnowledgeSkill = true;
-                    objSkillControl.AllowDelete = true;
+     //               objSkillControl.KnowledgeSkill = true;
+     //               objSkillControl.AllowDelete = true;
 
-					if (_objCharacter.IgnoreRules)
-					{
-						objSkillControl.SkillRatingMaximum = 12;
-					}
-					else
-					{
-						objSkillControl.SkillRatingMaximum = 6;
-					}
-					// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
-					objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
-                    panKnowledgeSkills.Controls.Add(objSkillControl);
+					//if (_objCharacter.IgnoreRules)
+					//{
+					//	objSkillControl.SkillRatingMaximum = 12;
+					//}
+					//else
+					//{
+					//	objSkillControl.SkillRatingMaximum = 6;
+					//}
+					//// Set the SkillControl's Location since scrolling the Panel causes it to actually change the child Controls' Locations.
+					//objSkillControl.Location = new Point(0, objSkillControl.Height * i + panKnowledgeSkills.AutoScrollPosition.Y);
+     //               panKnowledgeSkills.Controls.Add(objSkillControl);
 
-                    objSkillControl.SkillName = objXmlSkill["name"].InnerText;
+     //               objSkillControl.SkillName = objXmlSkill["name"].InnerText;
 
-                    // Make sure it's not going above the maximum number.
-                    if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
-                        objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
-                    else
-                        objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
+     //               // Make sure it's not going above the maximum number.
+     //               if (Convert.ToInt32(objXmlSkill["rating"].InnerText) > objSkillControl.SkillRatingMaximum)
+     //                   objSkillControl.SkillRating = objSkillControl.SkillRatingMaximum;
+     //               else
+     //                   objSkillControl.SkillRating = Convert.ToInt32(objXmlSkill["rating"].InnerText);
 
-                    if (objXmlSkill["spec"] != null)
-                        objSkillControl.SkillSpec = objXmlSkill["spec"].InnerText;
-                    else
-                        objSkillControl.SkillSpec = "";
+     //               if (objXmlSkill["spec"] != null)
+     //                   objSkillControl.SkillSpec = objXmlSkill["spec"].InnerText;
+     //               else
+     //                   objSkillControl.SkillSpec = "";
 
-                    if (objXmlSkill["category"] != null)
-                        objSkillControl.SkillCategory = objXmlSkill["category"].InnerText;
+     //               if (objXmlSkill["category"] != null)
+     //                   objSkillControl.SkillCategory = objXmlSkill["category"].InnerText;
 
-                    _objCharacter.Skills.Add(objSkill);
+     //               _objCharacter.Skills.Add(objSkill);
                 }
             }
 
@@ -23660,7 +23340,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblLiftCarryLabel, LanguageManager.Instance.GetString("Tip_OtherLiftAndCarry"));
             tipTooltip.SetToolTip(lblMemoryLabel, LanguageManager.Instance.GetString("Tip_OtherMemory"));
 
-            // Attribute Labels.
+            // CharacterAttribute Labels.
             lblBODLabel.Text = LanguageManager.Instance.GetString("String_AttributeBODLong") + " (" + LanguageManager.Instance.GetString("String_AttributeBODShort") + ")";
             lblAGILabel.Text = LanguageManager.Instance.GetString("String_AttributeAGILong") + " (" + LanguageManager.Instance.GetString("String_AttributeAGIShort") + ")";
             lblREALabel.Text = LanguageManager.Instance.GetString("String_AttributeREALong") + " (" + LanguageManager.Instance.GetString("String_AttributeREAShort") + ")";
@@ -24889,7 +24569,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudBOD") && (nudBOD.Value + nudKBOD.Value) >= nudBOD.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24929,7 +24609,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudAGI") && (nudAGI.Value + nudKAGI.Value) >= nudAGI.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -24969,7 +24649,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudREA") && (nudREA.Value + nudKREA.Value) >= nudREA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25009,7 +24689,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudSTR") && (nudSTR.Value + nudKSTR.Value) >= nudSTR.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25049,7 +24729,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudCHA") && (nudCHA.Value + nudKCHA.Value) >= nudCHA.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25090,7 +24770,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudINT") && (nudINT.Value + nudKINT.Value) >= nudINT.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25130,7 +24810,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudLOG") && (nudLOG.Value + nudKLOG.Value) >= nudLOG.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25170,7 +24850,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if (!CanImproveAttribute("nudWIL") && (nudWIL.Value + nudKWIL.Value) >= nudWIL.Maximum && !_objCharacter.IgnoreRules)
             {
                 try
@@ -25210,7 +24890,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudEDG.Value + nudKEDG.Value) > nudEDG.Maximum)
             {
                 try
@@ -25238,7 +24918,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudMAG.Value + nudKMAG.Value) > nudMAG.Maximum)
             {
                 try
@@ -25267,7 +24947,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            // Verify that the Attribute can be improved within the rules.
+            // Verify that the CharacterAttribute can be improved within the rules.
             if ((nudRES.Value + nudKRES.Value) > nudRES.Maximum)
             {
                 try
@@ -25819,7 +25499,7 @@ namespace Chummer
 			source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
 		}
 
-		private void panEnemies_Click(object sender, System.EventArgs e)
+        private void panEnemies_Click(object sender, System.EventArgs e)
         {
             panEnemies.Focus();
         }
