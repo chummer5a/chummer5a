@@ -5426,7 +5426,7 @@
 			<rating>2</rating>
 			<slots>FixedValues(4,8)</slots>
 			<avail>6</avail>
-			<cost>FixedValues(Accel * 10000,Accel * 2500)</cost>
+			<cost>FixedValues(Accel * 10000,Accel * 25000)</cost>
 			<source>R5</source>
 			<page>154</page>
 		</mod>

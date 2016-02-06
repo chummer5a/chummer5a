@@ -14703,7 +14703,7 @@ namespace Chummer
 			{
 				if (_strSlots.StartsWith("FixedValues"))
 				{
-					string[] strValues = _strCost.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					string[] strValues = _strSlots.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
 					return Convert.ToInt32(strValues[Convert.ToInt32(_intRating) - 1]);
 				}
 				else
