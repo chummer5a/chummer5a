@@ -16011,10 +16011,10 @@ namespace Chummer
 							(objImprovement.ImprovedName == "Drones" && (
 								_strCategory.StartsWith("Drones"))) ||
 							(objImprovement.ImprovedName == "Aircraft" && (
-								_strCategory == "Fixed - Wing Aircraft" ||
+								_strCategory == "Fixed-Wing Aircraft" ||
 								_strCategory == "LTAV" ||
 								_strCategory == "Rotorcraft" ||
-								_strCategory == "VTOL / VSTOL")) ||
+								_strCategory == "VTOL/VSTOL")) ||
 							(objImprovement.ImprovedName == "Watercraft" && (
 								_strCategory == "Boats" ||
 								_strCategory == "Submarines")) ||
