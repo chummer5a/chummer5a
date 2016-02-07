@@ -45,6 +45,11 @@
             this.btnMinus10Init = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.btnAdd10Init = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnDecreaseBattleInit = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnIncreaseBattleInit = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.btnRemoveInitPass = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -55,15 +60,14 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnSort = new System.Windows.Forms.Button();
             this.btnDelay = new System.Windows.Forms.Button();
+            this.chkFastMode = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRound = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
+            this.lblTurn = new System.Windows.Forms.Label();
+            this.btnResetBattle = new System.Windows.Forms.Button();
             this.chkBoxChummer = new System.Windows.Forms.CheckedListBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnDecreaseBattleInit = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.btnIncreaseBattleInit = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -84,8 +88,8 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(428, 346);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 64F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(441, 375);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // flowLayoutPanel1
@@ -117,9 +121,9 @@
             this.flowLayoutPanel1.Controls.Add(this.cboManeuvers);
             this.flowLayoutPanel1.Controls.Add(this.btnApplyInterrupt);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(255, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(268, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(170, 310);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(170, 305);
             this.flowLayoutPanel1.TabIndex = 1;
             // 
             // btnAdd
@@ -300,6 +304,65 @@
             this.btnAdd10Init.UseVisualStyleBackColor = true;
             this.btnAdd10Init.Click += new System.EventHandler(this.btnAdd10Init_Click);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(3, 156);
+            this.label9.MinimumSize = new System.Drawing.Size(170, 13);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(170, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Tag = "Label_InitiativeManeuvers";
+            this.label9.Text = "Battle Initiative Modifier";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 184);
+            this.label10.Margin = new System.Windows.Forms.Padding(10, 15, 0, 10);
+            this.label10.MinimumSize = new System.Drawing.Size(40, 13);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(40, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "-1";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnDecreaseBattleInit
+            // 
+            this.btnDecreaseBattleInit.BackgroundImage = global::Chummer.Properties.Resources.delete;
+            this.btnDecreaseBattleInit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnDecreaseBattleInit.Location = new System.Drawing.Point(50, 179);
+            this.btnDecreaseBattleInit.Margin = new System.Windows.Forms.Padding(0, 10, 3, 3);
+            this.btnDecreaseBattleInit.Name = "btnDecreaseBattleInit";
+            this.btnDecreaseBattleInit.Size = new System.Drawing.Size(24, 24);
+            this.btnDecreaseBattleInit.TabIndex = 23;
+            this.btnDecreaseBattleInit.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(87, 184);
+            this.label11.Margin = new System.Windows.Forms.Padding(10, 15, 0, 10);
+            this.label11.MinimumSize = new System.Drawing.Size(40, 13);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(40, 13);
+            this.label11.TabIndex = 24;
+            this.label11.Text = "+1 ";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnIncreaseBattleInit
+            // 
+            this.btnIncreaseBattleInit.BackgroundImage = global::Chummer.Properties.Resources.add;
+            this.btnIncreaseBattleInit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnIncreaseBattleInit.Location = new System.Drawing.Point(127, 179);
+            this.btnIncreaseBattleInit.Margin = new System.Windows.Forms.Padding(0, 10, 3, 3);
+            this.btnIncreaseBattleInit.Name = "btnIncreaseBattleInit";
+            this.btnIncreaseBattleInit.Size = new System.Drawing.Size(24, 24);
+            this.btnIncreaseBattleInit.TabIndex = 25;
+            this.btnIncreaseBattleInit.UseVisualStyleBackColor = true;
+            this.btnIncreaseBattleInit.Click += new System.EventHandler(this.btnIncreaseBattleInit_Click);
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -376,11 +439,13 @@
             this.flowLayoutPanel2.Controls.Add(this.btnNext);
             this.flowLayoutPanel2.Controls.Add(this.btnSort);
             this.flowLayoutPanel2.Controls.Add(this.btnDelay);
+            this.flowLayoutPanel2.Controls.Add(this.btnClear);
+            this.flowLayoutPanel2.Controls.Add(this.chkFastMode);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 316);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 311);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(252, 30);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(265, 64);
             this.flowLayoutPanel2.TabIndex = 2;
             // 
             // btnNext
@@ -416,15 +481,29 @@
             this.btnDelay.UseVisualStyleBackColor = true;
             this.btnDelay.Click += new System.EventHandler(this.btnDelay_Click);
             // 
+            // chkFastMode
+            // 
+            this.chkFastMode.AutoSize = true;
+            this.chkFastMode.Checked = true;
+            this.chkFastMode.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFastMode.Location = new System.Drawing.Point(84, 32);
+            this.chkFastMode.Name = "chkFastMode";
+            this.chkFastMode.Size = new System.Drawing.Size(72, 17);
+            this.chkFastMode.TabIndex = 3;
+            this.chkFastMode.Text = "Fastmode";
+            this.chkFastMode.UseVisualStyleBackColor = true;
+            // 
             // flowLayoutPanel3
             // 
             this.flowLayoutPanel3.Controls.Add(this.lblRound);
             this.flowLayoutPanel3.Controls.Add(this.btnReset);
+            this.flowLayoutPanel3.Controls.Add(this.lblTurn);
+            this.flowLayoutPanel3.Controls.Add(this.btnResetBattle);
             this.flowLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(252, 316);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(265, 311);
             this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(176, 30);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(176, 64);
             this.flowLayoutPanel3.TabIndex = 5;
             // 
             // lblRound
@@ -452,6 +531,31 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // lblTurn
+            // 
+            this.lblTurn.AutoSize = true;
+            this.lblTurn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTurn.Location = new System.Drawing.Point(3, 29);
+            this.lblTurn.MinimumSize = new System.Drawing.Size(75, 29);
+            this.lblTurn.Name = "lblTurn";
+            this.lblTurn.Size = new System.Drawing.Size(75, 29);
+            this.lblTurn.TabIndex = 2;
+            this.lblTurn.Tag = "Label_Round";
+            this.lblTurn.Text = "{Turn#}";
+            this.lblTurn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnResetBattle
+            // 
+            this.btnResetBattle.Location = new System.Drawing.Point(87, 32);
+            this.btnResetBattle.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+            this.btnResetBattle.Name = "btnResetBattle";
+            this.btnResetBattle.Size = new System.Drawing.Size(75, 23);
+            this.btnResetBattle.TabIndex = 3;
+            this.btnResetBattle.Tag = "Button_Reset";
+            this.btnResetBattle.Text = "{Reset Battle}";
+            this.btnResetBattle.UseVisualStyleBackColor = true;
+            this.btnResetBattle.Click += new System.EventHandler(this.btnResetBattle_Click);
+            // 
             // chkBoxChummer
             // 
             this.chkBoxChummer.BackColor = System.Drawing.SystemColors.Info;
@@ -459,69 +563,21 @@
             this.chkBoxChummer.FormattingEnabled = true;
             this.chkBoxChummer.Location = new System.Drawing.Point(3, 3);
             this.chkBoxChummer.Name = "chkBoxChummer";
-            this.chkBoxChummer.Size = new System.Drawing.Size(246, 310);
+            this.chkBoxChummer.Size = new System.Drawing.Size(259, 305);
             this.chkBoxChummer.TabIndex = 6;
             this.chkBoxChummer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chkBoxChummer_MouseClick);
             this.chkBoxChummer.SelectedIndexChanged += new System.EventHandler(this.listBoxChummers_SelectedIndexChanged);
             // 
-            // label9
+            // btnClear
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(3, 156);
-            this.label9.MinimumSize = new System.Drawing.Size(170, 13);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(170, 13);
-            this.label9.TabIndex = 21;
-            this.label9.Tag = "Label_InitiativeManeuvers";
-            this.label9.Text = "Battle Initiative Modifier";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(10, 184);
-            this.label10.Margin = new System.Windows.Forms.Padding(10, 15, 0, 10);
-            this.label10.MinimumSize = new System.Drawing.Size(40, 13);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(40, 13);
-            this.label10.TabIndex = 22;
-            this.label10.Text = "-1";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnDecreaseBattleInit
-            // 
-            this.btnDecreaseBattleInit.BackgroundImage = global::Chummer.Properties.Resources.delete;
-            this.btnDecreaseBattleInit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnDecreaseBattleInit.Location = new System.Drawing.Point(50, 179);
-            this.btnDecreaseBattleInit.Margin = new System.Windows.Forms.Padding(0, 10, 3, 3);
-            this.btnDecreaseBattleInit.Name = "btnDecreaseBattleInit";
-            this.btnDecreaseBattleInit.Size = new System.Drawing.Size(24, 24);
-            this.btnDecreaseBattleInit.TabIndex = 23;
-            this.btnDecreaseBattleInit.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(87, 184);
-            this.label11.Margin = new System.Windows.Forms.Padding(10, 15, 0, 10);
-            this.label11.MinimumSize = new System.Drawing.Size(40, 13);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(40, 13);
-            this.label11.TabIndex = 24;
-            this.label11.Text = "+1 ";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnIncreaseBattleInit
-            // 
-            this.btnIncreaseBattleInit.BackgroundImage = global::Chummer.Properties.Resources.add;
-            this.btnIncreaseBattleInit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnIncreaseBattleInit.Location = new System.Drawing.Point(127, 179);
-            this.btnIncreaseBattleInit.Margin = new System.Windows.Forms.Padding(0, 10, 3, 3);
-            this.btnIncreaseBattleInit.Name = "btnIncreaseBattleInit";
-            this.btnIncreaseBattleInit.Size = new System.Drawing.Size(24, 24);
-            this.btnIncreaseBattleInit.TabIndex = 25;
-            this.btnIncreaseBattleInit.UseVisualStyleBackColor = true;
-            this.btnIncreaseBattleInit.Click += new System.EventHandler(this.btnIncreaseBattleInit_Click);
+            this.btnClear.Location = new System.Drawing.Point(3, 32);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 4;
+            this.btnClear.Tag = "";
+            this.btnClear.Text = "{Clear}";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // InitiativeUserControl
             // 
@@ -530,12 +586,13 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimumSize = new System.Drawing.Size(428, 346);
             this.Name = "InitiativeUserControl";
-            this.Size = new System.Drawing.Size(428, 346);
+            this.Size = new System.Drawing.Size(441, 375);
             this.Tag = "";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
             this.flowLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
@@ -580,5 +637,9 @@
         private System.Windows.Forms.Button btnDecreaseBattleInit;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btnIncreaseBattleInit;
+        private System.Windows.Forms.CheckBox chkFastMode;
+        private System.Windows.Forms.Label lblTurn;
+        private System.Windows.Forms.Button btnResetBattle;
+        private System.Windows.Forms.Button btnClear;
     }
 }
