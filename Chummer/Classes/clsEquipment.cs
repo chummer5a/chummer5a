@@ -16130,9 +16130,20 @@ namespace Chummer
 				{
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
-						// Multiply the Vehicle's base Speed by the Modification's Speed multiplier.
 						if (objMod.Bonus.InnerXml.Contains("<speed>"))
-							decSpeed += (Convert.ToDecimal(_intSpeed, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["speed"].InnerText, GlobalOptions.Instance.CultureInfo));
+						{
+							//Increase the vehicles base Speed by the Modification's value.
+							if (objMod.Bonus["speed"].InnerText.Contains("+"))
+							{
+								string strSpeed = objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								decSpeed += Convert.ToDecimal(strSpeed, GlobalOptions.Instance.CultureInfo);
+							}
+							// Multiply the Vehicle's base Speed by the Modification's Speed multiplier.
+							else
+							{
+								decSpeed += (Convert.ToDecimal(Speed, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["speed"].InnerText, GlobalOptions.Instance.CultureInfo));
+							}
+						}
 					}
 				}
 

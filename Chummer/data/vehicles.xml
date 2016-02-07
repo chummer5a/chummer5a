@@ -5495,7 +5495,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<handling>Rating</handling>
+				<handling>+Rating</handling>
 			</bonus>
 			<slots>FixedValues(4,10,18)</slots>
 			<avail>FixedValues(6,8,10)</avail>
@@ -5667,7 +5667,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<speed>Rating</speed>
+				<speed>+Rating</speed>
 			</bonus>
 			<slots>FixedValues(5,14,20)</slots>
 			<avail>FixedValues(6,8,12)</avail>

@@ -49,6 +49,7 @@ Application Change:
 - Rebuilt the functionality for Black Market Pipeline nad the Dealer Connection quality. Both should now work properly; there's a teeny tiny chance that existing characters that have the qualities might break, please raise a ticket if so.
 - Fixed a crash caused by adding Genemods to a character with the Burnout's Way. Fixes #674.
 - Fixed a UI issue that left the dropdown null when switching between genemods and bioware. Fixes #674.
+- Enabled Vehicle Modifications to gain flat increases to Speed,Handling or Acceleration based on the Rating of the mod. Partial fix for #675.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
