@@ -8332,6 +8332,7 @@ namespace Chummer
             UpdateMentorSpirits();
             UpdateCharacterInfo();
             RefreshMartialArts();
+			RefreshLimitModifiers();
             RefreshPowers();
             RefreshContacts();
 			RefreshKnowledgeSkills();
@@ -17453,9 +17454,9 @@ namespace Chummer
 
         public void RefreshLimitModifiers()
         {
-            //treLimit.Nodes[0].Nodes.Clear();
-            //treLimit.Nodes[1].Nodes.Clear();
-            //treLimit.Nodes[2].Nodes.Clear();
+            treLimit.Nodes[0].Nodes.Clear();
+            treLimit.Nodes[1].Nodes.Clear();
+            treLimit.Nodes[2].Nodes.Clear();
 
             // Populate Limit Modifiers.
             foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
