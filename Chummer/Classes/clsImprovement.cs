@@ -4639,33 +4639,42 @@ namespace Chummer
                 // Remove "free" adept powers if any.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
                 {
-                    // Load the power from XML.
-                    // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
-                    XmlDocument objXmlMentorDocument = new XmlDocument();
-                    objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-					XmlNode objXmlMentorBonus =
-						objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" + objImprovement.Notes +
-						                                      "\"]");
-                    XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
-                    foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
-                    {
-                        // Get the Power information
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					// Load the power from XML.
+					// objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
+					// TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
+	                try
+	                {
+		                XmlDocument objXmlMentorDocument = new XmlDocument();
+		                objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+		                XmlNode objXmlMentorBonus =
+			                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+			                                                      objImprovement.Notes +
+			                                                      "\"]");
+		                XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
+		                foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
+		                {
+			                // Get the Power information
+			                XmlDocument objXmlDocument = new XmlDocument();
+			                objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
-                        string strPowerName = objXmlSpecificPower["name"].InnerText;
+			                string strPowerName = objXmlSpecificPower["name"].InnerText;
 
-                        // Find the power (if it still exists)
-						foreach (Power objPower in _objCharacter.Powers)
-                        {
-                            if (objPower.Name == strPowerName)
-                            {
-                                // Disable the free property and remove any free levels.
-                                objPower.Free = false;
-                                objPower.FreeLevels = 0;
-                            }
-                        }
-                    }
+			                // Find the power (if it still exists)
+			                foreach (Power objPower in _objCharacter.Powers)
+			                {
+				                if (objPower.Name == strPowerName)
+				                {
+					                // Disable the free property and remove any free levels.
+					                objPower.Free = false;
+					                objPower.FreeLevels = 0;
+				                }
+			                }
+		                }
+	                }
+	                catch
+	                {
+
+	                }
                 }
 
 				// Determine if access to any Special Attributes have been lost.
