@@ -416,14 +416,18 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (LearnedRating == 0) return ""; //Unleveled skills cannot have a specialization;
+				string strReturn = "";
+				if (LearnedRating == 0)
+				{
+					return ""; //Unleveled skills cannot have a specialization;
+				}
 
 				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
 				if (Specializations.Count > 0)
 				{
-					return Specializations[0].Name;
+					strReturn =  Specializations[0].Name;
 				}
-				return "";
+				return strReturn;
 			}
 		}
 
@@ -526,10 +530,12 @@ namespace Chummer.Skills
 			new ReverseTree<string>(nameof(Pool),
 				new ReverseTree<string>(nameof(PoolModifiers)),
 				new ReverseTree<string>(nameof(AttributeModifiers)),
-				new ReverseTree<string>(nameof(Rating),
-					new ReverseTree<string>(nameof(Karma)),
-					new ReverseTree<string>(nameof(BaseUnlocked),
-						new ReverseTree<string>(nameof(Base))
+				new ReverseTree<string>(nameof(Leveled),
+					new ReverseTree<string>(nameof(Rating),
+						new ReverseTree<string>(nameof(Karma)),
+						new ReverseTree<string>(nameof(BaseUnlocked),
+							new ReverseTree<string>(nameof(Base))
+						)
 					)
 				)
 			)

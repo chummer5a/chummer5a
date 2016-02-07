@@ -29,6 +29,16 @@ namespace Chummer.UI.Shared
 			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
 				DataSourceUpdateMode.OnPropertyChanged);
 
+
+			base.BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+			skill.PropertyChanged += (o, e) =>
+			{
+				if (e.PropertyName == nameof(Skill.Leveled))
+				{
+					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+				}
+			};
+
 			if (skill.CharacterObject.Created)
 			{
 				lblCareerRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false,

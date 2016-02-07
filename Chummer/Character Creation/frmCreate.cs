@@ -117,8 +117,10 @@ namespace Chummer
 	        Timekeeper.Finish("load_free");
 			Timekeeper.Start("load_frm_create");
             _blnLoading = true;
-			
-	        tabCharacterTabs.TabPages.Remove(tabSkills);
+
+			tabSkillsUc.ObjCharacter = _objCharacter;
+
+			tabCharacterTabs.TabPages.Remove(tabSkills);
 
 			if (!_objCharacter.IsCritter && (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objCharacter.BuildKarma == 0) || (_objCharacter.BuildMethod == CharacterBuildMethod.Priority && _objCharacter.BuildKarma == 0))
             {
@@ -1487,7 +1489,7 @@ namespace Chummer
             UpdateInitiationGradeTree();
             UpdateCharacterInfo();
 
-	        tabSkillsUc.ObjCharacter = _objCharacter;
+	       
 
             _blnIsDirty = false;
             UpdateWindowTitle(false);
@@ -16163,6 +16165,8 @@ namespace Chummer
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblPBuildKnowledgeSkills.Text =
 		        $"{(_objCharacter.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.KnowledgeSkillPoints}";
+
+			tabSkillsUc.MissingDatabindingsWorkaround();
 
 			lblKnowledgeSkillsBP.Text = String.Format("{0} " + strPoints, knowledgeKarmaUsed);
             intFreestyleBP += knowledgeKarmaUsed;

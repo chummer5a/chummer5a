@@ -1,5 +1,3 @@
-Career mode stronger indication of skills rating > 0.
-
 Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. We might want to try and scale with chummer width. OnResizeXXX event. 
 
 Specs localization not implemented. A dictionary of things it knows how to translate and reverse on load might be all it needs

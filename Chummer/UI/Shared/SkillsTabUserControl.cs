@@ -24,7 +24,12 @@ namespace Chummer.UI.Shared
 		{
 			InitializeComponent();
 
-			//LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+		}
+
+		public void MissingDatabindingsWorkaround()
+		{
+			UpdateKnoSkillRemaining();
 		}
 
 		private bool _loadCalled = false;
@@ -67,6 +72,17 @@ namespace Chummer.UI.Shared
 			MakeSkillDisplays();
 
 			parts.TaskEnd("MakeSkillDisplay()");
+
+			if (ObjCharacter.Created)
+			{
+				lblKnowledgeSkillPoints.Visible = false;
+				lblKnowledgeSkillPointsTitle.Visible = false;
+			}
+			else
+			{
+				UpdateKnoSkillRemaining();
+			}
+
 			_dropDownList = GenerateDropdownFilter();
 
 			parts.TaskEnd("GenerateDropDown()");
@@ -78,6 +94,8 @@ namespace Chummer.UI.Shared
 			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
 
 			parts.TaskEnd("_ddl databind");
+
+			
 
 			_skills.ChildPropertyChanged += ChildPropertyChanged;
 			_groups.ChildPropertyChanged += ChildPropertyChanged;
@@ -221,11 +239,14 @@ namespace Chummer.UI.Shared
 			ObjCharacter.Skills.Add(new ExoticSkill(ObjCharacter, node));
 		}
 
+		private void UpdateKnoSkillRemaining()
+		{
+			lblKnowledgeSkillPoints.Text = $"{ObjCharacter.KnowledgeSkillPointsRemain} {LanguageManager.Instance.GetString("String_Of")} {ObjCharacter.KnowledgeSkillPoints}";
+		}
+
 		private void btnKnowledge_Click(object sender, EventArgs e)
 		{
 			ObjCharacter.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
-
-		
 	}
 }

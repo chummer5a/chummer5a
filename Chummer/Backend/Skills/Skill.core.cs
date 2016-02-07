@@ -118,6 +118,9 @@ namespace Chummer.Skills
 				_karma = Math.Max(0, value - (FreeKarma() + (SkillGroupObject?.Karma ?? 0))); 
 
 				if(old != _karma) OnPropertyChanged();
+
+
+
 				KarmaSpecForcedMightChange();
 			}
 		}
