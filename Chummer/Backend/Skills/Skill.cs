@@ -460,7 +460,19 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					return $"{Pool} ({Pool + 2})"; //TODO: Artisian handle/Exotic
+					//Handler for the Inspired Quality. 
+					if (!KnowledgeSkill && Name == "Artisan")
+					{
+						if (CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
+						{
+							return $"{Pool} ({Pool + 3})";
+						}
+					}
+					else if (ExoticSkill)
+					{
+						return $"{Pool}";
+					}
+					return $"{Pool} ({Pool + 2})";
 				}
 			}
 
