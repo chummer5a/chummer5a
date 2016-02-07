@@ -52,6 +52,7 @@
 			this.nudRating = new System.Windows.Forms.NumericUpDown();
 			this.lblRatingLabel = new System.Windows.Forms.Label();
 			this.cboMount = new System.Windows.Forms.ComboBox();
+			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			this.SuspendLayout();
@@ -293,6 +294,19 @@
 			this.cboMount.Size = new System.Drawing.Size(131, 21);
 			this.cboMount.TabIndex = 20;
 			// 
+			// chkBlackMarketDiscount
+			// 
+			this.chkBlackMarketDiscount.AutoSize = true;
+			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(318, 107);
+			this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+			this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+			this.chkBlackMarketDiscount.TabIndex = 39;
+			this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+			this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+			this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+			this.chkBlackMarketDiscount.Visible = false;
+			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+			// 
 			// frmSelectWeaponAccessory
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -300,6 +314,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(507, 394);
+			this.Controls.Add(this.chkBlackMarketDiscount);
 			this.Controls.Add(this.cboMount);
 			this.Controls.Add(this.lblTest);
 			this.Controls.Add(this.lblTestLabel);
@@ -363,5 +378,6 @@
 		private System.Windows.Forms.Label lblTestLabel;
 		private System.Windows.Forms.ToolTip tipTooltip;
 		private System.Windows.Forms.ComboBox cboMount;
+		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
 	}
 }

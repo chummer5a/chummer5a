@@ -122,17 +122,17 @@ namespace Chummer
             TechSchool = 108,
             TrustFund = 109,
             ExCon = 110,
-            BlackMarket = 111,
-            ContactMadeMan = 112,
-			SelectArmor = 113,
-			Attributelevel = 114,
-			SkillLevel = 115,
-			SkillGroupLevel = 116,
-			AddContact = 117,
-			Seeker = 118,
-			PublicAwareness = 119,
-			PrototypeTranshuman = 120,
-			Hardwire = 121
+            ContactMadeMan = 111,
+			SelectArmor = 112,
+			Attributelevel = 113,
+			SkillLevel = 114,
+			SkillGroupLevel = 115,
+			AddContact = 116,
+			Seeker = 117,
+			PublicAwareness = 118,
+			PrototypeTranshuman = 119,
+			Hardwire = 120,
+			DealerConnection = 121
 		}
 
         public enum ImprovementSource
@@ -2594,17 +2594,6 @@ namespace Chummer
 				_objCharacter.TrustFund = ValueToInt(bonusNode.InnerText, intRating);
 			}
 
-			// Check for BlackMarket modifiers.
-			if (bonusNode.LocalName == ("blackmarket"))
-			{
-				Log.Info("BlackMarket");
-				Log.Info("BlackMarket = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarket, strUnique);
-				_objCharacter.BlackMarket = true;
-			}
-
-
 			// Check for Tech School modifiers.
 			if (bonusNode.LocalName == ("techschool"))
 			{
@@ -4322,7 +4311,7 @@ namespace Chummer
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarketDiscount,
 					strUnique);
-				_objCharacter.BlackMarket = true;
+				_objCharacter.BlackMarketDiscount = true;
 			}
 			// Select Armor (Mostly used for Custom Fit (Stack)).
 			if (bonusNode.LocalName == ("selectarmor"))
@@ -4482,6 +4471,7 @@ namespace Chummer
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
 			}
+
 			// Select an Optional Power.
 			if (bonusNode.LocalName == ("optionalpowers"))
 			{
@@ -4544,6 +4534,44 @@ namespace Chummer
 			if (bonusNode.LocalName == "publicawareness")
 			{
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PublicAwareness, strUnique, ValueToInt(bonusNode.InnerText,1));
+			}
+
+			if (bonusNode.LocalName == "dealerconnection")
+			{
+				Log.Info("dealerconnection");
+				frmSelectItem frmPickItem = new frmSelectItem();
+				List<ListItem> lstItems = new List<ListItem>();
+				XmlNodeList objXmlList = bonusNode.SelectNodes("category");
+				foreach (XmlNode objNode in objXmlList)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objNode.InnerText;
+					objItem.Name = objNode.InnerText;
+					lstItems.Add(objItem);
+				}
+				frmPickItem.GeneralItems = lstItems;
+				frmPickItem.AllowAutoSelect = false;
+				frmPickItem.ShowDialog();
+				// Make sure the dialogue window was not canceled.
+				if (frmPickItem.DialogResult == DialogResult.Cancel)
+				{
+					Rollback();
+					_strForcedValue = "";
+					_strLimitSelection = "";
+					return false;
+				}
+
+				_strSelectedValue = frmPickItem.SelectedItem;
+				if (blnConcatSelectedValue)
+					strSourceName += " (" + _strSelectedValue + ")";
+
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("strSourceName = " + strSourceName);
+
+				// Create the Improvement.
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
+					Improvement.ImprovementType.DealerConnection, strUnique);
 			}
 
 			//nothing went wrong, so return true
@@ -4611,33 +4639,42 @@ namespace Chummer
                 // Remove "free" adept powers if any.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
                 {
-                    // Load the power from XML.
-                    // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
-                    XmlDocument objXmlMentorDocument = new XmlDocument();
-                    objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-					XmlNode objXmlMentorBonus =
-						objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" + objImprovement.Notes +
-						                                      "\"]");
-                    XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
-                    foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
-                    {
-                        // Get the Power information
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					// Load the power from XML.
+					// objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
+					// TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
+	                try
+	                {
+		                XmlDocument objXmlMentorDocument = new XmlDocument();
+		                objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+		                XmlNode objXmlMentorBonus =
+			                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+			                                                      objImprovement.Notes +
+			                                                      "\"]");
+		                XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
+		                foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
+		                {
+			                // Get the Power information
+			                XmlDocument objXmlDocument = new XmlDocument();
+			                objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
-                        string strPowerName = objXmlSpecificPower["name"].InnerText;
+			                string strPowerName = objXmlSpecificPower["name"].InnerText;
 
-                        // Find the power (if it still exists)
-						foreach (Power objPower in _objCharacter.Powers)
-                        {
-                            if (objPower.Name == strPowerName)
-                            {
-                                // Disable the free property and remove any free levels.
-                                objPower.Free = false;
-                                objPower.FreeLevels = 0;
-                            }
-                        }
-                    }
+			                // Find the power (if it still exists)
+			                foreach (Power objPower in _objCharacter.Powers)
+			                {
+				                if (objPower.Name == strPowerName)
+				                {
+					                // Disable the free property and remove any free levels.
+					                objPower.Free = false;
+					                objPower.FreeLevels = 0;
+				                }
+			                }
+		                }
+	                }
+	                catch
+	                {
+
+	                }
                 }
 
 				// Determine if access to any Special Attributes have been lost.
@@ -4811,7 +4848,57 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.BlackMarket = false;
+					{
+						_objCharacter.BlackMarketDiscount = false;
+						if (!_objCharacter.Created)
+						{
+							foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+							{
+								objVehicle.BlackMarketDiscount = false;
+								foreach (Weapon objWeapon in objVehicle.Weapons)
+								{
+									objWeapon.DiscountCost = false;
+									foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+									{
+										objWeaponAccessory.DiscountCost = false;
+									}
+									foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
+									{
+										objWeaponMod.DiscountCost = false;
+									}
+								}
+								foreach (Gear objGear in objVehicle.Gear)
+								{
+									objGear.DiscountCost = false;
+								}
+								foreach (VehicleMod objMod in objVehicle.Mods)
+								{
+									objMod.DiscountCost = false;
+								}
+							}
+							foreach (Weapon objWeapon in _objCharacter.Weapons)
+							{
+								objWeapon.DiscountCost = false;
+								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+								{
+									objWeaponAccessory.DiscountCost = false;
+								}
+								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
+								{
+									objWeaponMod.DiscountCost = false;
+								}
+							}
+							foreach (Gear objGear in _objCharacter.Gear)
+							{
+								objGear.DiscountCost = false;
+
+								foreach (Gear objChild in objGear.Children)
+								{
+									objGear.DiscountCost = false;
+								}
+							}
+						}
+					}
 				}
 
 				// Turn of the Uneducated flag if it is being removed.
@@ -5239,8 +5326,8 @@ namespace Chummer
                     if (!blnFound)
                         _objCharacter.ExCon = false;
                 }
-                // Turn off the BlackMarket flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+				// Turn off the BlackMarketDiscount flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
                 {
                     bool blnFound = false;
                     // See if the character has anything else that is granting them access to BlackMarket.
@@ -5249,7 +5336,7 @@ namespace Chummer
                         // Skip items from the current Improvement source.
                         if (objCharacterImprovement.SourceName != objImprovement.SourceName)
                         {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
                             {
                                 blnFound = true;
                                 break;
@@ -5257,8 +5344,10 @@ namespace Chummer
                         }
                     }
 
-                    if (!blnFound)
-                        _objCharacter.BlackMarket = false;
+	                if (!blnFound)
+	                {
+		                _objCharacter.BlackMarketDiscount = false;
+	                }
                 }
                 // If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)

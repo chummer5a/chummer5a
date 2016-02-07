@@ -334,7 +334,7 @@ namespace Chummer
 			this.cmdAddQuality = new System.Windows.Forms.Button();
 			this.nudMysticAdeptMAGMagician = new System.Windows.Forms.NumericUpDown();
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
-			this.treQualities = new TreeView();
+			this.treQualities = new Chummer.helpers.TreeView();
 			this.lblMetatype = new System.Windows.Forms.Label();
 			this.lblMetatypeLabel = new System.Windows.Forms.Label();
 			this.panAttributes = new System.Windows.Forms.Panel();
@@ -418,13 +418,13 @@ namespace Chummer
 			this.lblMental = new System.Windows.Forms.Label();
 			this.lblPhysical = new System.Windows.Forms.Label();
 			this.cmdAddLimitModifier = new System.Windows.Forms.Button();
-			this.treLimit = new TreeView();
+			this.treLimit = new Chummer.helpers.TreeView();
 			this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
 			this.tabMartialArts = new System.Windows.Forms.TabPage();
 			this.cmdAddMartialArt = new SplitButton();
 			this.lblMartialArtSource = new System.Windows.Forms.Label();
 			this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
-			this.treMartialArts = new TreeView();
+			this.treMartialArts = new Chummer.helpers.TreeView();
 			this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
 			this.tabMagician = new System.Windows.Forms.TabPage();
 			this.cboSpiritManipulation = new Chummer.helpers.ComboBox();
@@ -466,7 +466,7 @@ namespace Chummer
 			this.lblSpellCategoryLabel = new System.Windows.Forms.Label();
 			this.lblSpellDescriptors = new System.Windows.Forms.Label();
 			this.lblSpellDescriptorsLabel = new System.Windows.Forms.Label();
-			this.treSpells = new TreeView();
+			this.treSpells = new Chummer.helpers.TreeView();
 			this.cmdDeleteSpell = new System.Windows.Forms.Button();
 			this.cmdAddSpirit = new System.Windows.Forms.Button();
 			this.panSpirits = new System.Windows.Forms.Panel();
@@ -499,7 +499,7 @@ namespace Chummer
 			this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
 			this.lblComplexFormSource = new System.Windows.Forms.Label();
 			this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
-			this.treComplexForms = new TreeView();
+			this.treComplexForms = new Chummer.helpers.TreeView();
 			this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
 			this.cmdAddSprite = new System.Windows.Forms.Button();
 			this.panSprites = new System.Windows.Forms.Panel();
@@ -526,14 +526,14 @@ namespace Chummer
 			this.lblCritterPowerCategoryLabel = new System.Windows.Forms.Label();
 			this.lblCritterPowerName = new System.Windows.Forms.Label();
 			this.lblCritterPowerNameLabel = new System.Windows.Forms.Label();
-			this.treCritterPowers = new TreeView();
+			this.treCritterPowers = new Chummer.helpers.TreeView();
 			this.tabInitiation = new System.Windows.Forms.TabPage();
 			this.chkInitiationSchooling = new System.Windows.Forms.CheckBox();
 			this.lblMetamagicSource = new System.Windows.Forms.Label();
 			this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
 			this.chkInitiationOrdeal = new System.Windows.Forms.CheckBox();
 			this.chkInitiationGroup = new System.Windows.Forms.CheckBox();
-			this.treMetamagic = new TreeView();
+			this.treMetamagic = new Chummer.helpers.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
 			this.lblCyberFirewall = new System.Windows.Forms.Label();
@@ -553,7 +553,6 @@ namespace Chummer
 			this.lblCyberwareESS = new System.Windows.Forms.Label();
 			this.lblBiowareESSLabel = new System.Windows.Forms.Label();
 			this.lblCyberwareESSLabel = new System.Windows.Forms.Label();
-			this.chkCyberwareBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.lblCyberwareSource = new System.Windows.Forms.Label();
 			this.lblCyberwareSourceLabel = new System.Windows.Forms.Label();
 			this.cmdAddBioware = new System.Windows.Forms.Button();
@@ -574,7 +573,7 @@ namespace Chummer
 			this.lblCyberwareCategoryLabel = new System.Windows.Forms.Label();
 			this.lblCyberwareName = new System.Windows.Forms.Label();
 			this.lblCyberwareNameLabel = new System.Windows.Forms.Label();
-			this.treCyberware = new TreeView();
+			this.treCyberware = new Chummer.helpers.TreeView();
 			this.cmdAddCyberware = new SplitButton();
 			this.tabStreetGear = new System.Windows.Forms.TabPage();
 			this.tabStreetGearTabs = new System.Windows.Forms.TabControl();
@@ -590,7 +589,7 @@ namespace Chummer
 			this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
 			this.lblLifestyleTotalCost = new System.Windows.Forms.Label();
 			this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
-			this.treLifestyles = new TreeView();
+			this.treLifestyles = new Chummer.helpers.TreeView();
 			this.lblLifestyleCost = new System.Windows.Forms.Label();
 			this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
 			this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
@@ -609,7 +608,6 @@ namespace Chummer
 			this.lblArmorValueLabel = new System.Windows.Forms.Label();
 			this.lblArmorValue = new System.Windows.Forms.Label();
 			this.chkIncludedInArmor = new System.Windows.Forms.CheckBox();
-			this.chkArmorBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.lblArmorEquipped = new System.Windows.Forms.Label();
 			this.lblArmorEquippedLabel = new System.Windows.Forms.Label();
 			this.cmdArmorUnEquipAll = new System.Windows.Forms.Button();
@@ -625,7 +623,7 @@ namespace Chummer
 			this.lblArmorCostLabel = new System.Windows.Forms.Label();
 			this.cmdDeleteArmor = new System.Windows.Forms.Button();
 			this.lblArmorAvail = new System.Windows.Forms.Label();
-			this.treArmor = new TreeView();
+			this.treArmor = new Chummer.helpers.TreeView();
 			this.lblArmorAvailLabel = new System.Windows.Forms.Label();
 			this.cmdAddArmor = new SplitButton();
 			this.tabWeapons = new System.Windows.Forms.TabPage();
@@ -644,7 +642,6 @@ namespace Chummer
 			this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
 			this.lblWeaponAccuracy = new System.Windows.Forms.Label();
 			this.cmdAddWeaponLocation = new System.Windows.Forms.Button();
-			this.chkWeaponBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.lblWeaponDicePool = new System.Windows.Forms.Label();
 			this.lblWeaponDicePoolLabel = new System.Windows.Forms.Label();
 			this.lblWeaponConceal = new System.Windows.Forms.Label();
@@ -665,7 +662,7 @@ namespace Chummer
 			this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
 			this.lblWeaponAmmo = new System.Windows.Forms.Label();
 			this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
-			this.treWeapons = new TreeView();
+			this.treWeapons = new Chummer.helpers.TreeView();
 			this.lblWeaponMode = new System.Windows.Forms.Label();
 			this.cmdDeleteWeapon = new System.Windows.Forms.Button();
 			this.lblWeaponModeLabel = new System.Windows.Forms.Label();
@@ -699,7 +696,6 @@ namespace Chummer
 			this.label3 = new System.Windows.Forms.Label();
 			this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
 			this.chkCommlinks = new System.Windows.Forms.CheckBox();
-			this.chkGearBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
 			this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
 			this.lblGearAP = new System.Windows.Forms.Label();
@@ -727,7 +723,7 @@ namespace Chummer
 			this.lblGearNameLabel = new System.Windows.Forms.Label();
 			this.nudGearRating = new System.Windows.Forms.NumericUpDown();
 			this.lblGearRatingLabel = new System.Windows.Forms.Label();
-			this.treGear = new TreeView();
+			this.treGear = new Chummer.helpers.TreeView();
 			this.cmdDeleteGear = new System.Windows.Forms.Button();
 			this.cmdAddGear = new SplitButton();
 			this.tabPets = new System.Windows.Forms.TabPage();
@@ -763,7 +759,6 @@ namespace Chummer
 			this.lblVehicleWeaponAPLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponDamageLabel = new System.Windows.Forms.Label();
 			this.lblVehicleWeaponDamage = new System.Windows.Forms.Label();
-			this.chkVehicleBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
 			this.chkVehicleHomeNode = new System.Windows.Forms.CheckBox();
 			this.lblVehicleDevice = new System.Windows.Forms.Label();
@@ -800,7 +795,7 @@ namespace Chummer
 			this.lblVehicleHandling = new System.Windows.Forms.Label();
 			this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
 			this.cmdDeleteVehicle = new System.Windows.Forms.Button();
-			this.treVehicles = new TreeView();
+			this.treVehicles = new Chummer.helpers.TreeView();
 			this.cmdAddVehicle = new SplitButton();
 			this.tabCharacterInfo = new System.Windows.Forms.TabPage();
 			this.btnCreateBackstory = new System.Windows.Forms.Button();
@@ -6329,7 +6324,6 @@ namespace Chummer
 			this.tabCyberware.Controls.Add(this.lblCyberwareESS);
 			this.tabCyberware.Controls.Add(this.lblBiowareESSLabel);
 			this.tabCyberware.Controls.Add(this.lblCyberwareESSLabel);
-			this.tabCyberware.Controls.Add(this.chkCyberwareBlackMarketDiscount);
 			this.tabCyberware.Controls.Add(this.lblCyberwareSource);
 			this.tabCyberware.Controls.Add(this.lblCyberwareSourceLabel);
 			this.tabCyberware.Controls.Add(this.cmdAddBioware);
@@ -6530,19 +6524,6 @@ namespace Chummer
 			this.lblCyberwareESSLabel.TabIndex = 55;
 			this.lblCyberwareESSLabel.Tag = "Label_Cyberware";
 			this.lblCyberwareESSLabel.Text = "Cyberware:";
-			// 
-			// chkCyberwareBlackMarketDiscount
-			// 
-			this.chkCyberwareBlackMarketDiscount.AutoSize = true;
-			this.chkCyberwareBlackMarketDiscount.Location = new System.Drawing.Point(601, 150);
-			this.chkCyberwareBlackMarketDiscount.Name = "chkCyberwareBlackMarketDiscount";
-			this.chkCyberwareBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-			this.chkCyberwareBlackMarketDiscount.TabIndex = 54;
-			this.chkCyberwareBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-			this.chkCyberwareBlackMarketDiscount.Text = "Black Market Discount (10%)";
-			this.chkCyberwareBlackMarketDiscount.UseVisualStyleBackColor = true;
-			this.chkCyberwareBlackMarketDiscount.Visible = false;
-			this.chkCyberwareBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkCyberwareBlackMarketDiscount_CheckedChanged);
 			// 
 			// lblCyberwareSource
 			// 
@@ -7038,7 +7019,6 @@ namespace Chummer
 			this.tabArmor.Controls.Add(this.lblArmorValueLabel);
 			this.tabArmor.Controls.Add(this.lblArmorValue);
 			this.tabArmor.Controls.Add(this.chkIncludedInArmor);
-			this.tabArmor.Controls.Add(this.chkArmorBlackMarketDiscount);
 			this.tabArmor.Controls.Add(this.lblArmorEquipped);
 			this.tabArmor.Controls.Add(this.lblArmorEquippedLabel);
 			this.tabArmor.Controls.Add(this.cmdArmorUnEquipAll);
@@ -7192,19 +7172,6 @@ namespace Chummer
 			this.chkIncludedInArmor.Text = "Part of base Armor";
 			this.chkIncludedInArmor.UseVisualStyleBackColor = true;
 			this.chkIncludedInArmor.CheckedChanged += new System.EventHandler(this.chkIncludedInArmor_CheckedChanged);
-			// 
-			// chkArmorBlackMarketDiscount
-			// 
-			this.chkArmorBlackMarketDiscount.AutoSize = true;
-			this.chkArmorBlackMarketDiscount.Location = new System.Drawing.Point(503, 109);
-			this.chkArmorBlackMarketDiscount.Name = "chkArmorBlackMarketDiscount";
-			this.chkArmorBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-			this.chkArmorBlackMarketDiscount.TabIndex = 112;
-			this.chkArmorBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-			this.chkArmorBlackMarketDiscount.Text = "Black Market Discount (10%)";
-			this.chkArmorBlackMarketDiscount.UseVisualStyleBackColor = true;
-			this.chkArmorBlackMarketDiscount.Visible = false;
-			this.chkArmorBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkArmorBlackMarketDiscount_CheckedChanged);
 			// 
 			// lblArmorEquipped
 			// 
@@ -7440,7 +7407,6 @@ namespace Chummer
 			this.tabWeapons.Controls.Add(this.lblWeaponAccuracyLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponAccuracy);
 			this.tabWeapons.Controls.Add(this.cmdAddWeaponLocation);
-			this.tabWeapons.Controls.Add(this.chkWeaponBlackMarketDiscount);
 			this.tabWeapons.Controls.Add(this.lblWeaponDicePool);
 			this.tabWeapons.Controls.Add(this.lblWeaponDicePoolLabel);
 			this.tabWeapons.Controls.Add(this.lblWeaponConceal);
@@ -7634,19 +7600,6 @@ namespace Chummer
 			this.cmdAddWeaponLocation.Text = "Add Location";
 			this.cmdAddWeaponLocation.UseVisualStyleBackColor = true;
 			this.cmdAddWeaponLocation.Click += new System.EventHandler(this.cmdAddWeaponLocation_Click);
-			// 
-			// chkWeaponBlackMarketDiscount
-			// 
-			this.chkWeaponBlackMarketDiscount.AutoSize = true;
-			this.chkWeaponBlackMarketDiscount.Location = new System.Drawing.Point(448, 173);
-			this.chkWeaponBlackMarketDiscount.Name = "chkWeaponBlackMarketDiscount";
-			this.chkWeaponBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-			this.chkWeaponBlackMarketDiscount.TabIndex = 113;
-			this.chkWeaponBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-			this.chkWeaponBlackMarketDiscount.Text = "Black Market Discount (10%)";
-			this.chkWeaponBlackMarketDiscount.UseVisualStyleBackColor = true;
-			this.chkWeaponBlackMarketDiscount.Visible = false;
-			this.chkWeaponBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkWeaponBlackMarketDiscount_CheckedChanged);
 			// 
 			// lblWeaponDicePool
 			// 
@@ -8080,7 +8033,6 @@ namespace Chummer
 			this.tabGear.Controls.Add(this.label3);
 			this.tabGear.Controls.Add(this.chkActiveCommlink);
 			this.tabGear.Controls.Add(this.chkCommlinks);
-			this.tabGear.Controls.Add(this.chkGearBlackMarketDiscount);
 			this.tabGear.Controls.Add(this.cmdCreateStackedFocus);
 			this.tabGear.Controls.Add(this.chkGearHomeNode);
 			this.tabGear.Controls.Add(this.lblGearAP);
@@ -8252,19 +8204,6 @@ namespace Chummer
 			this.chkCommlinks.Text = "Only show Commlinks";
 			this.chkCommlinks.UseVisualStyleBackColor = true;
 			this.chkCommlinks.CheckedChanged += new System.EventHandler(this.chkCommlinks_CheckedChanged);
-			// 
-			// chkGearBlackMarketDiscount
-			// 
-			this.chkGearBlackMarketDiscount.AutoSize = true;
-			this.chkGearBlackMarketDiscount.Location = new System.Drawing.Point(534, 104);
-			this.chkGearBlackMarketDiscount.Name = "chkGearBlackMarketDiscount";
-			this.chkGearBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-			this.chkGearBlackMarketDiscount.TabIndex = 113;
-			this.chkGearBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-			this.chkGearBlackMarketDiscount.Text = "Black Market Discount (10%)";
-			this.chkGearBlackMarketDiscount.UseVisualStyleBackColor = true;
-			this.chkGearBlackMarketDiscount.Visible = false;
-			this.chkGearBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkGearBlackMarketDiscount_CheckedChanged);
 			// 
 			// cmdCreateStackedFocus
 			// 
@@ -8678,7 +8617,6 @@ namespace Chummer
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAPLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponDamageLabel);
 			this.tabVehicles.Controls.Add(this.lblVehicleWeaponDamage);
-			this.tabVehicles.Controls.Add(this.chkVehicleBlackMarketDiscount);
 			this.tabVehicles.Controls.Add(this.cmdAddVehicleLocation);
 			this.tabVehicles.Controls.Add(this.chkVehicleHomeNode);
 			this.tabVehicles.Controls.Add(this.lblVehicleDevice);
@@ -9013,19 +8951,6 @@ namespace Chummer
 			this.lblVehicleWeaponDamage.Size = new System.Drawing.Size(53, 13);
 			this.lblVehicleWeaponDamage.TabIndex = 135;
 			this.lblVehicleWeaponDamage.Text = "[Damage]";
-			// 
-			// chkVehicleBlackMarketDiscount
-			// 
-			this.chkVehicleBlackMarketDiscount.AutoSize = true;
-			this.chkVehicleBlackMarketDiscount.Location = new System.Drawing.Point(575, 219);
-			this.chkVehicleBlackMarketDiscount.Name = "chkVehicleBlackMarketDiscount";
-			this.chkVehicleBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-			this.chkVehicleBlackMarketDiscount.TabIndex = 129;
-			this.chkVehicleBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-			this.chkVehicleBlackMarketDiscount.Text = "Black Market Discount (10%)";
-			this.chkVehicleBlackMarketDiscount.UseVisualStyleBackColor = true;
-			this.chkVehicleBlackMarketDiscount.Visible = false;
-			this.chkVehicleBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkVehicleBlackMarketDiscount_CheckedChanged);
 			// 
 			// cmdAddVehicleLocation
 			// 
@@ -11303,7 +11228,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabPage tabInitiation;
         private System.Windows.Forms.Button cmdAddMetamagic;
-        private System.Windows.Forms.TreeView treMetamagic;
         private System.Windows.Forms.Label lblInitiationBP;
         private System.Windows.Forms.Label lblBuildInitiation;
         private System.Windows.Forms.Label lblWeaponSlots;
@@ -11537,11 +11461,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuEditCopy;
         private System.Windows.Forms.ToolStripMenuItem mnuEditPaste;
         private System.Windows.Forms.ToolStripMenuItem tsCreateNaturalWeapon;
-        private System.Windows.Forms.CheckBox chkCyberwareBlackMarketDiscount;
-        private System.Windows.Forms.CheckBox chkArmorBlackMarketDiscount;
-        private System.Windows.Forms.CheckBox chkWeaponBlackMarketDiscount;
-        private System.Windows.Forms.CheckBox chkGearBlackMarketDiscount;
-        private System.Windows.Forms.CheckBox chkVehicleBlackMarketDiscount;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessory;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponAccessoryAddGear;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponAccessoryNotes;
@@ -11854,6 +11773,7 @@ namespace Chummer
 		private System.Windows.Forms.Label lblSpellDefenceDetection;
 		private System.Windows.Forms.Label lblSpellDefenceDetectionLabel;
 		private System.Windows.Forms.Label lblSpellDefenceDirectSoakPhysical;
+		private TreeView treMetamagic;
 	}
 }
 

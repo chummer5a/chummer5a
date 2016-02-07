@@ -29,10 +29,10 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.lstArmor = new System.Windows.Forms.ListBox();
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
@@ -72,6 +72,7 @@
 			this.tmrSearch = new System.Windows.Forms.Timer(this.components);
 			this.nudRating = new System.Windows.Forms.NumericUpDown();
 			this.lblRatingLabel = new System.Windows.Forms.Label();
+			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
@@ -363,8 +364,8 @@
 			// 
 			this.dgvArmor.AllowUserToAddRows = false;
 			this.dgvArmor.AllowUserToDeleteRows = false;
-			dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-			this.dgvArmor.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+			dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.dgvArmor.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
 			this.dgvArmor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -395,8 +396,8 @@
 			// 
 			this.ArmorName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
 			this.ArmorName.DataPropertyName = "ArmorName";
-			dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.ArmorName.DefaultCellStyle = dataGridViewCellStyle6;
+			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.ArmorName.DefaultCellStyle = dataGridViewCellStyle2;
 			this.ArmorName.HeaderText = "Name";
 			this.ArmorName.Name = "ArmorName";
 			this.ArmorName.ReadOnly = true;
@@ -426,8 +427,8 @@
 			// 
 			this.Special.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
 			this.Special.DataPropertyName = "Special";
-			dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.Special.DefaultCellStyle = dataGridViewCellStyle7;
+			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+			this.Special.DefaultCellStyle = dataGridViewCellStyle3;
 			this.Special.HeaderText = "Special";
 			this.Special.Name = "Special";
 			this.Special.ReadOnly = true;
@@ -456,10 +457,10 @@
 			// 
 			this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
 			this.Cost.DataPropertyName = "Cost";
-			dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-			dataGridViewCellStyle8.Format = "#,###,##0¥";
-			dataGridViewCellStyle8.NullValue = null;
-			this.Cost.DefaultCellStyle = dataGridViewCellStyle8;
+			dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+			dataGridViewCellStyle4.Format = "#,###,##0¥";
+			dataGridViewCellStyle4.NullValue = null;
+			this.Cost.DefaultCellStyle = dataGridViewCellStyle4;
 			this.Cost.FillWeight = 60F;
 			this.Cost.HeaderText = "Cost";
 			this.Cost.Name = "Cost";
@@ -508,6 +509,19 @@
 			this.lblRatingLabel.Tag = "Label_Rating";
 			this.lblRatingLabel.Text = "Rating:";
 			// 
+			// chkBlackMarketDiscount
+			// 
+			this.chkBlackMarketDiscount.AutoSize = true;
+			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(384, 155);
+			this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+			this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+			this.chkBlackMarketDiscount.TabIndex = 41;
+			this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+			this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+			this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+			this.chkBlackMarketDiscount.Visible = false;
+			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+			// 
 			// frmSelectArmor
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -515,6 +529,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(584, 378);
+			this.Controls.Add(this.chkBlackMarketDiscount);
 			this.Controls.Add(this.nudRating);
 			this.Controls.Add(this.lblRatingLabel);
 			this.Controls.Add(this.chkBrowse);
@@ -602,5 +617,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Cost;
 		private System.Windows.Forms.NumericUpDown nudRating;
 		private System.Windows.Forms.Label lblRatingLabel;
+		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
 	}
 }

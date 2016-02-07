@@ -5424,9 +5424,12 @@
 			<name>Acceleration Enhancement</name>
 			<category>Powertrain</category>
 			<rating>2</rating>
+			<bonus>
+				<accel>+Rating</accel>
+			</bonus>
 			<slots>FixedValues(4,8)</slots>
 			<avail>6</avail>
-			<cost>FixedValues(Accel * 10000,Accel * 2500)</cost>
+			<cost>FixedValues(Accel * 10000,Accel * 25000)</cost>
 			<source>R5</source>
 			<page>154</page>
 		</mod>
@@ -5492,7 +5495,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<handling>Rating</handling>
+				<handling>+Rating</handling>
 			</bonus>
 			<slots>FixedValues(4,10,18)</slots>
 			<avail>FixedValues(6,8,10)</avail>
@@ -5664,7 +5667,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<speed>Rating</speed>
+				<speed>+Rating</speed>
 			</bonus>
 			<slots>FixedValues(5,14,20)</slots>
 			<avail>FixedValues(6,8,12)</avail>
@@ -6009,7 +6012,7 @@
 			<rating>0</rating>
 			<slots>2</slots>
 			<avail>8F</avail>
-			<cost>750</cost>
+			<cost>1500</cost>
 			<source>R5</source>
 			<page>163</page>
 		</mod>
@@ -6020,7 +6023,7 @@
 			<rating>0</rating>
 			<slots>4</slots>
 			<avail>10F</avail>
-			<cost>750</cost>
+			<cost>4000</cost>
 			<source>R5</source>
 			<page>163</page>
 		</mod>
