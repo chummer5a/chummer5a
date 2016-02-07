@@ -27,7 +27,7 @@ namespace Chummer
 
 			//crash handler that will offer to send a mail
 			AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
-
+			
 	        sw.TaskEnd("appdomain 1");
 
 			//Needs to be called before Log is setup, as it moves where log might be.
@@ -45,7 +45,7 @@ namespace Chummer
 	        sw.TaskEnd("infogen");
 
 			Log.Info( info);
-
+			
 	        sw.TaskEnd("infoprnt");
 
 			Application.EnableVisualStyles();

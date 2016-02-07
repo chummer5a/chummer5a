@@ -44,6 +44,7 @@ namespace Chummer
 			}
 			else
 			{
+#if RELEASE
 				frmUpdate frmAutoUpdate = new frmUpdate();
 				frmAutoUpdate.GetChummerVersion();
 				Version verCurrentVersion = new Version(strCurrentVersion);
@@ -52,7 +53,7 @@ namespace Chummer
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
 				if (result < 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
-				return;
+#endif
 			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
@@ -376,9 +377,14 @@ namespace Chummer
 			Character objCharacter = (Character)sender;
 			string strTitle = objCharacter.Name;
 			if (objCharacter.Alias.Trim() != string.Empty)
+			{
 				strTitle = objCharacter.Alias;
-			if (strTitle.Trim() == string.Empty)
+			}
+			else
+			{
 				strTitle = LanguageManager.Instance.GetString("String_UnnamedCharacter");
+			}
+
 			try
 			{
 				tabForms.SelectedTab.Text = strTitle;
@@ -822,7 +828,7 @@ namespace Chummer
 			}
 
 			// Hide any unused items.
-			for (int x = i + 1; x <= 10; x++)
+			for (int x = i + 1; x < 10; x++)
 			{
 				ToolStripMenuItem objItem = new ToolStripMenuItem();
 				switch (x)

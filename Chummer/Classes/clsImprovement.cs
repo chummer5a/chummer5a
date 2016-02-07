@@ -129,7 +129,9 @@ namespace Chummer
 			Seeker,
 			PublicAwareness,
 			PrototypeTranshuman,
-			Skill,  //Improve pool of skill based on name
+			Hardwire,
+            DealerConnection,
+            Skill,  //Improve pool of skill based on name
 			SkillGroup,  //Group
 			SkillCategory, //category
 			SkillAttribute, //attribute
@@ -137,7 +139,7 @@ namespace Chummer
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
 			SkillGroupBase //group
-			
+
 
 		}
 
@@ -764,7 +766,7 @@ namespace Chummer
 		/// </summary>
 		/// <param name="strValue">String value to parse.</param>
 		/// <param name="intRating">Integer value to replace "Rating" with.</param>
-		private int ValueToInt(string strValue, int intRating = 1)
+		private int ValueToInt(string strValue, int intRating)
 		{
    //         Log.Enter("ValueToInt");
    //         Log.Info("strValue = " + strValue);
@@ -1118,7 +1120,7 @@ namespace Chummer
 			// Select a Skill.
 			if (bonusNode.LocalName == ("selectskill"))
 			{
-				Log.Info("selectrestricted");
+				Log.Info("selectskill");
 				if (_strForcedValue == "+2 to a Combat Skill")
 					_strForcedValue = "";
 
@@ -1369,13 +1371,13 @@ namespace Chummer
 
 					// Extract the modifiers.
 					if (objXmlAttribute.InnerXml.Contains("min"))
-						intMin = ValueToInt(objXmlAttribute["min"].InnerXml, intRating);
+						intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("val"))
-						intAug = ValueToInt(objXmlAttribute["val"].InnerXml, intRating);
+						intAug = Convert.ToInt32(objXmlAttribute["val"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("max"))
-						intMax = ValueToInt(objXmlAttribute["max"].InnerXml, intRating);
+						intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("aug"))
-						intAugMax = ValueToInt(objXmlAttribute["aug"].InnerXml, intRating);
+						intAugMax = Convert.ToInt32(objXmlAttribute["aug"].InnerText);
 
 					string strAttribute = frmPickAttribute.SelectedAttribute;
 
@@ -1852,7 +1854,7 @@ namespace Chummer
 
 					if (bonusNode["affectbase"] != null)
 						strAttribute += "Base";
-
+					
 					CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.Attribute,
 						strUseUnique, 0, 1, intMin, intMax, intAug, intAugMax);
 				}
@@ -1981,7 +1983,7 @@ namespace Chummer
 			if (bonusNode.LocalName == "knowldgeskillpoints")
 			{
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "",
-					ValueToInt(bonusNode.InnerText));
+					ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
 
 			if (bonusNode.LocalName == ("skillgrouplevel"))
@@ -2340,7 +2342,10 @@ namespace Chummer
 				Log.Info("armor");
 				Log.Info("armor = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUnique,
+				string strUseUnique = strUnique;
+				if (bonusNode.Attributes["precedence"] != null)
+					strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUseUnique,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2603,17 +2608,6 @@ namespace Chummer
 					ValueToInt(bonusNode.InnerText, intRating));
 				_objCharacter.TrustFund = ValueToInt(bonusNode.InnerText, intRating);
 			}
-
-			// Check for BlackMarket modifiers.
-			if (bonusNode.LocalName == ("blackmarket"))
-			{
-				Log.Info("BlackMarket");
-				Log.Info("BlackMarket = " + bonusNode.OuterXml.ToString());
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarket, strUnique);
-				_objCharacter.BlackMarket = true;
-			}
-
 
 			// Check for Tech School modifiers.
 			if (bonusNode.LocalName == ("techschool"))
@@ -3493,20 +3487,20 @@ namespace Chummer
 			}
 
 			// Select a Power.
-			if (bonusNode.LocalName == ("selectpower"))
+			if (bonusNode.LocalName == ("selectpowers"))
 			{
+				XmlNodeList objXmlPowerList = bonusNode.SelectNodes("selectpower");
+				foreach (XmlNode objNode in objXmlPowerList)
+				{
 				Log.Info("selectpower");
 				Log.Info("_strSelectedValue = " + _strSelectedValue);
 				Log.Info("_strForcedValue = " + _strForcedValue);
 
-				bool blnExistingPower = false;
+				bool blnExistingPower = false;				
 				foreach (Power objExistingPower in _objCharacter.Powers)
 				{
 					if (objExistingPower.BonusSource == strSourceName)
 					{
-						blnExistingPower = true;
-						if (!objExistingPower.Free)
-						{
 							if (objExistingPower.Name.StartsWith("Improved Reflexes"))
 							{
 								if (objExistingPower.Name.EndsWith("1"))
@@ -3549,16 +3543,15 @@ namespace Chummer
 							}
 						}
 					}
-				}
 
 				if (!blnExistingPower)
 				{
 					// Display the Select Skill window and record which Skill was selected.
 					frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
-					Log.Info("selectpower = " + bonusNode.OuterXml.ToString());
+						Log.Info("selectpower = " + objNode.OuterXml.ToString());
 
-					if (bonusNode.OuterXml.Contains("limittopowers"))
-						frmPickPower.LimitToPowers = bonusNode.Attributes["limittopowers"].InnerText;
+						if (objNode.OuterXml.Contains("limittopowers"))
+							frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
 					frmPickPower.ShowDialog();
 
 					// Make sure the dialogue window was not canceled.
@@ -3575,7 +3568,8 @@ namespace Chummer
 						strSourceName += " (" + _strSelectedValue + ")";
 
 					XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
-					XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
+						XmlNode objXmlPower =
+							objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + _strSelectedValue + "\"]");
 					string strSelection = "";
 
 					Log.Info("_strSelectedValue = " + _strSelectedValue);
@@ -3965,6 +3959,7 @@ namespace Chummer
 					}
 				}
 			}
+			}
 
 			// Check for Armor Encumbrance Penalty.
 			if (bonusNode.LocalName == ("armorencumbrancepenalty"))
@@ -4005,6 +4000,71 @@ namespace Chummer
 				Log.Info("skillwire = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Skillwire, "",
+					ValueToInt(bonusNode.InnerText, intRating));
+			}
+
+			// Check for Hardwires.
+			if (bonusNode.LocalName == ("hardwires"))
+			{
+				Log.Info("hardwire");
+				Log.Info("hardwire = " + bonusNode.OuterXml.ToString());
+				Log.Info("Calling CreateImprovement");
+				Cyberware objCyberware = new Cyberware(_objCharacter);
+				CommonFunctions _objFunctions = new CommonFunctions();
+				objCyberware = _objFunctions.FindCyberware(strSourceName, _objCharacter.Cyberware);
+				if (objCyberware == null)
+				{
+					Log.Info("_strSelectedValue = " + _strSelectedValue);
+					Log.Info("_strForcedValue = " + _strForcedValue);
+
+					// Display the Select Skill window and record which Skill was selected.
+					frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+					if (strFriendlyName != "")
+						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkillNamed")
+							.Replace("{0}", strFriendlyName);
+					else
+						frmPickSkill.Description = LanguageManager.Instance.GetString("String_Improvement_SelectSkill");
+
+					Log.Info("selectskill = " + bonusNode.OuterXml.ToString());
+					if (bonusNode.OuterXml.Contains("skillgroup"))
+						frmPickSkill.OnlySkillGroup = bonusNode.Attributes["skillgroup"].InnerText;
+					else if (bonusNode.OuterXml.Contains("skillcategory"))
+						frmPickSkill.OnlyCategory = bonusNode.Attributes["skillcategory"].InnerText;
+					else if (bonusNode.OuterXml.Contains("excludecategory"))
+						frmPickSkill.ExcludeCategory = bonusNode.Attributes["excludecategory"].InnerText;
+					else if (bonusNode.OuterXml.Contains("limittoskill"))
+						frmPickSkill.LimitToSkill = bonusNode.Attributes["limittoskill"].InnerText;
+					else if (bonusNode.OuterXml.Contains("limittoattribute"))
+						frmPickSkill.LinkedAttribute = bonusNode.Attributes["limittoattribute"].InnerText;
+
+					if (_strForcedValue != "")
+					{
+						frmPickSkill.OnlySkill = _strForcedValue;
+						frmPickSkill.Opacity = 0;
+					}
+					frmPickSkill.ShowDialog();
+
+					// Make sure the dialogue window was not canceled.
+					if (frmPickSkill.DialogResult == DialogResult.Cancel)
+					{
+						Rollback();
+						_strForcedValue = "";
+						_strLimitSelection = "";
+						return false;
+					}
+
+					_strSelectedValue = frmPickSkill.SelectedSkill;
+				}
+				else
+				{
+					_strSelectedValue = objCyberware.Location;
+				}
+				if (blnConcatSelectedValue)
+					strSourceName += " (" + _strSelectedValue + ")";
+
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("strSourceName = " + strSourceName);
+				CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Hardwire, _strSelectedValue,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -4266,7 +4326,7 @@ namespace Chummer
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.BlackMarketDiscount,
 					strUnique);
-				_objCharacter.BlackMarket = true;
+				_objCharacter.BlackMarketDiscount = true;
 			}
 			// Select Armor (Mostly used for Custom Fit (Stack)).
 			if (bonusNode.LocalName == ("selectarmor"))
@@ -4426,6 +4486,7 @@ namespace Chummer
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement(strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text, strUnique);
 			}
+
 			// Select an Optional Power.
 			if (bonusNode.LocalName == ("optionalpowers"))
 			{
@@ -4487,7 +4548,45 @@ namespace Chummer
 
 			if (bonusNode.LocalName == "publicawareness")
 			{
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PublicAwareness, strUnique, ValueToInt(bonusNode.InnerText));
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PublicAwareness, strUnique, ValueToInt(bonusNode.InnerText,1));
+			}
+
+			if (bonusNode.LocalName == "dealerconnection")
+			{
+				Log.Info("dealerconnection");
+				frmSelectItem frmPickItem = new frmSelectItem();
+				List<ListItem> lstItems = new List<ListItem>();
+				XmlNodeList objXmlList = bonusNode.SelectNodes("category");
+				foreach (XmlNode objNode in objXmlList)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objNode.InnerText;
+					objItem.Name = objNode.InnerText;
+					lstItems.Add(objItem);
+				}
+				frmPickItem.GeneralItems = lstItems;
+				frmPickItem.AllowAutoSelect = false;
+				frmPickItem.ShowDialog();
+				// Make sure the dialogue window was not canceled.
+				if (frmPickItem.DialogResult == DialogResult.Cancel)
+				{
+					Rollback();
+					_strForcedValue = "";
+					_strLimitSelection = "";
+					return false;
+				}
+
+				_strSelectedValue = frmPickItem.SelectedItem;
+				if (blnConcatSelectedValue)
+					strSourceName += " (" + _strSelectedValue + ")";
+
+				Log.Info("_strSelectedValue = " + _strSelectedValue);
+				Log.Info("strSourceName = " + strSourceName);
+
+				// Create the Improvement.
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(frmPickItem.SelectedItem, objImprovementSource, strSourceName,
+					Improvement.ImprovementType.DealerConnection, strUnique);
 			}
 
 			//nothing went wrong, so return true
@@ -4755,7 +4854,57 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.BlackMarket = false;
+					{
+						_objCharacter.BlackMarketDiscount = false;
+						if (!_objCharacter.Created)
+						{
+							foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+							{
+								objVehicle.BlackMarketDiscount = false;
+								foreach (Weapon objWeapon in objVehicle.Weapons)
+								{
+									objWeapon.DiscountCost = false;
+									foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+									{
+										objWeaponAccessory.DiscountCost = false;
+									}
+									foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
+									{
+										objWeaponMod.DiscountCost = false;
+									}
+								}
+								foreach (Gear objGear in objVehicle.Gear)
+								{
+									objGear.DiscountCost = false;
+								}
+								foreach (VehicleMod objMod in objVehicle.Mods)
+								{
+									objMod.DiscountCost = false;
+								}
+							}
+							foreach (Weapon objWeapon in _objCharacter.Weapons)
+							{
+								objWeapon.DiscountCost = false;
+								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+								{
+									objWeaponAccessory.DiscountCost = false;
+								}
+								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
+								{
+									objWeaponMod.DiscountCost = false;
+								}
+							}
+							foreach (Gear objGear in _objCharacter.Gear)
+							{
+								objGear.DiscountCost = false;
+
+								foreach (Gear objChild in objGear.Children)
+								{
+									objGear.DiscountCost = false;
+								}
+							}
+						}
+					}
 				}
 
 				// Turn of the Uneducated flag if it is being removed.
@@ -5183,8 +5332,8 @@ namespace Chummer
                     if (!blnFound)
                         _objCharacter.ExCon = false;
                 }
-                // Turn off the BlackMarket flag if it is being removed.
-                if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+				// Turn off the BlackMarketDiscount flag if it is being removed.
+				if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
                 {
                     bool blnFound = false;
                     // See if the character has anything else that is granting them access to BlackMarket.
@@ -5193,7 +5342,7 @@ namespace Chummer
                         // Skip items from the current Improvement source.
                         if (objCharacterImprovement.SourceName != objImprovement.SourceName)
                         {
-                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarket)
+                            if (objCharacterImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount)
                             {
                                 blnFound = true;
                                 break;
@@ -5202,7 +5351,9 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.BlackMarket = false;
+	                {
+		                _objCharacter.BlackMarketDiscount = false;
+	                }
                 }
                 // If the last instance of Adapsin is being removed, convert all Adapsin Cyberware Grades to their non-Adapsin version.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Adapsin)

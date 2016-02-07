@@ -55,6 +55,7 @@ namespace Chummer
 				if (strAllowedMount != "")
 					strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
 			}
+			strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
 			strMount += "mount = \"\"";
 			XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
 			foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
@@ -67,6 +68,9 @@ namespace Chummer
 					objItem.Name = objXmlAccessory["name"].InnerText;
 				lstAccessories.Add(objItem);
 			}
+
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
 			SortListItem objSort = new SortListItem();
 			lstAccessories.Sort(objSort.Compare);
 			lstAccessory.ValueMember = "Value";
@@ -103,6 +107,11 @@ namespace Chummer
 		}
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateGearInfo();
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateGearInfo();
 		}

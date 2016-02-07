@@ -9,6 +9,7 @@ namespace Chummer
 	public partial class PetControl : UserControl
 	{
 		private Contact _objContact;
+		private CommonFunctions functions = new CommonFunctions();
 
 		// Events.
 		public event DeleteContactHandler DeleteContact;
@@ -162,7 +163,7 @@ namespace Chummer
 			strTooltip = LanguageManager.Instance.GetString("Tip_Contact_EditNotes");
 			if (_objContact.Notes != string.Empty)
 				strTooltip += "\n\n" + _objContact.Notes;
-			tipTooltip.SetToolTip(imgNotes, strTooltip);
+			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}
 
 		private void cmsContact_Opening(object sender, CancelEventArgs e)

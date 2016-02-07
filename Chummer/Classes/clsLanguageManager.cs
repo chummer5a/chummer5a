@@ -598,8 +598,32 @@ namespace Chummer
 					}
 				}
 
+				XmlNodeList objNodelist = objXmlDocument.SelectNodes("/chummer/skills/skill/specs/spec");
+				foreach (XmlNode objXMLNode in objNodelist)
+				{
+					if (objXMLNode.InnerText == strExtra)
+					{ 
+						if (objXMLNode.Attributes["translate"] != null)
+						{
+							strReturn = objXMLNode.Attributes["translate"].InnerText;
+							return strReturn;
+						}
+					}
+				}
 				// Look in Skill Groups.
 				objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
+				if (objNode != null)
+				{
+					if (objNode.Attributes["translate"] != null)
+					{
+						strReturn = objNode.Attributes["translate"].InnerText;
+						return strReturn;
+					}
+				}
+
+				// Look in Licences.
+				objXmlDocument = XmlManager.Instance.Load("licenses.xml");
+				objNode = objXmlDocument.SelectSingleNode("/chummer/licenses/license[. = \"" + strExtra.Replace("\"", string.Empty) + "\"]");
 				if (objNode != null)
 				{
 					if (objNode.Attributes["translate"] != null)

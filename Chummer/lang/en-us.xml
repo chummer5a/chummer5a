@@ -3,7 +3,7 @@
 	<version>-350</version>
 	<name>English (US)</name>
 	<strings>
-		<!-- Common Strings -->
+		<!-- Region Common Strings -->
 		<string>
 			<key>String_Limit</key>
 			<text>Limit:</text>
@@ -696,7 +696,8 @@
 			<key>String_StackedFocus</key>
 			<text>Stacked Focus</text>
 		</string>
-		<!-- Printout Strings -->
+		<!-- End Region-->
+		<!-- Region Printout Strings -->
 		<string>
 			<key>String_UnarmedAttack</key>
 			<text>Unarmed Attack</text>
@@ -753,7 +754,8 @@
 			<key>String_MountStock</key>
 			<text>Stock</text>
 		</string>
-		<!-- Common Message Boxes -->
+		<!-- End Region-->
+		<!-- Region Common Message Boxes -->
 		<string>
 			<key>Message_FileNotFound</key>
 			<text>The save file {0} could not be found.</text>
@@ -782,7 +784,8 @@
 			<key>MessageTitle_IncorrectGameVersion</key>
 			<text>Incorrect Game Version</text>
 		</string>
-		<!-- Attributes -->
+		<!-- End Region -->
+		<!-- Region Attributes -->
 		<string>
 			<key>String_AttributeBODLong</key>
 			<text>Body</text>
@@ -887,7 +890,8 @@
 			<key>String_AttributeINIShort</key>
 			<text>INI</text>
 		</string>
-		<!-- Main Window -->
+		<!-- End Region -->
+		<!-- Region Main Window -->
 		<string>
 			<key>Title_CreateNewCharacter</key>
 			<text>Create New Character</text>
@@ -992,7 +996,8 @@
 			<key>Menu_Main_About</key>
 			<text>&amp;About...</text>
 		</string>
-		<!-- Create/Career Window -->
+		<!-- End Region -->
+		<!-- Region Create/Career Window -->
 		<string>
 			<key>Menu_Special</key>
 			<text>&amp;Special</text>
@@ -1520,6 +1525,10 @@
 		<string>
 			<key>Message_DeleteKnowledgeSkill</key>
 			<text>Are you sure you want to delete this Knowledge Skill?</text>
+		</string>
+		<string>
+			<key>Message_DeleteExoticSkill</key>
+			<text>Are you sure you want to delete this Exotic Skill?</text>
 		</string>
 		<string>
 			<key>Message_DeletePositiveQualityCareer</key>
@@ -3221,7 +3230,8 @@
 			<key>String_ActionComplex</key>
 			<text>Complex</text>
 		</string>
-		<!-- Common Tab -->
+		<!-- End Region -->
+		<!-- Region Common Tab -->
 		<string>
 			<key>Label_CharacterName</key>
 			<text>Name:</text>
@@ -3403,7 +3413,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BurnStreetCred</key>
 			<text>Burn 2 points of Street Cred to reduce Notoriety by 1.</text>
 		</string>
-		<!-- Skills Tab -->
+		<!-- End Region -->
+		<!-- Region Skills Tab -->
 		<string>
 			<key>Label_SkillGroups</key>
 			<text>Skill Groups</text>
@@ -3452,7 +3463,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SkillsKnowledgeSkills</key>
 			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
 		</string>
-		<!-- Martial Arts Tab -->
+		<!-- End Region -->
+		<!-- Region  Martial Arts Tab -->
 		<string>
 			<key>Button_AddMartialArt</key>
 			<text>&amp;Add Martial Art</text>
@@ -3469,7 +3481,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Node_SelectedManeuvers</key>
 			<text>Selected Maneuvers</text>
 		</string>
-		<!-- Spells Tab -->
+		<!-- End Region -->
+		<!-- Region Spells Tab -->
 		<string>
 			<key>Label_SelectedSpells</key>
 			<text>Selected Spells</text>
@@ -3562,7 +3575,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SpellsSpirits</key>
 			<text>Each Service a Spirit owes costs {0} Karma.</text>
 		</string>
-		<!-- Adept Tab -->
+		<!-- End Region -->
+		<!-- Region Adept Tab -->
 		<string>
 			<key>Label_PowerPoints</key>
 			<text>Power Points:</text>
@@ -3571,7 +3585,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_AddPower</key>
 			<text>&amp;Add Power</text>
 		</string>
-		<!-- Technomancer Tab -->
+		<!-- End Region -->
+		<!-- Region Technomancer Tab -->
 		<string>
 			<key>Label_ComplexForms</key>
 			<text>Complex Forms</text>
@@ -3668,7 +3683,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_TechnomancerBiofeedbackFilter</key>
 			<text>Living Persona Biofeedback Filter is equal to CHA.</text>
 		</string>
-		<!-- Limit Tab -->
+		<!-- End Region -->
+		<!-- Region Limit Tab -->
 		<string>
 			<key>Tab_Limits</key>
 			<text>Limits</text>
@@ -3709,8 +3725,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_LimitSocialShort</key>
 			<text>Social</text>
 		</string>
-		
-		<!-- Critter Tab -->
+		<!-- End Region -->
+		<!-- Region Critter Tab -->
 		<string>
 			<key>Button_AddCritterPower</key>
 			<text>&amp;Add Power</text>
@@ -3727,7 +3743,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_CritterPowerCount</key>
 			<text>Counts towards Critter Power limit</text>
 		</string>
-		<!-- Initiation Tab -->
+		<!-- End Region-->
+		<!-- Region Initiation Tab -->
 		<string>
 			<key>Label_InitiationGrade</key>
 			<text>Initiate Grade:</text>
@@ -3792,7 +3809,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_AddEcho</key>
 			<text>Add Echo</text>
 		</string>
-		<!-- Cyberware Tab -->
+		<!-- End Region-->
+		<!-- Region Cyberware Tab -->
 		<string>
 			<key>Button_AddCyberware</key>
 			<text>&amp;Add Cyberware</text>
@@ -3825,7 +3843,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_EssenceHole</key>
 			<text>Essence Hole:</text>
 		</string>
-		<!-- Street Gear/Lifestyle Tab -->
+		<!-- End Region-->
+		<!-- Region Street Gear/Lifestyle Tab -->
 		<string>
 			<key>Label_LifestyleMonths</key>
 			<text>Months (100 for Permanent)</text>
@@ -3854,7 +3873,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_Roommates</key>
 			<text>roommates</text>
 		</string>
-		<!-- Street Gear/Armor Tab -->
+		<!-- End Region-->
+		<!-- Region Street Gear/Armor Tab -->
 		<string>
 			<key>Checkbox_Equipped</key>
 			<text>Equipped</text>
@@ -3899,7 +3919,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_ArmorDegradationMinus</key>
 			<text>Damage Armor Rating.</text>
 		</string>
-		<!-- Street Gear/Weapon Tab -->
+		<!-- End Region-->
+		<!-- Region Street Gear/Weapon Tab -->
 		<string>
 			<key>Label_Conceal</key>
 			<text>Conceal:</text>
@@ -4012,7 +4033,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_DamagePhysical</key>
 			<text>P</text>
 		</string>
-		<!-- Street Gear/Gear Tab -->
+		<!-- End Region-->
+		<!-- Region Street Gear/Gear Tab -->
 		<string>
 			<key>Button_AddGear</key>
 			<text>&amp;Add Gear</text>
@@ -4065,7 +4087,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_AdeptWayDiscount</key>
 			<text>Bonded Foci Qualifying for Adept Way Discount:</text>
 		</string>
-		<!-- Vehicles Tab -->
+		<!-- End Region-->
+		<!-- Region Vehicles Tab -->
 		<string>
 			<key>Label_GearRating</key>
 			<text>Gear Rating:</text>
@@ -4106,7 +4129,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_VehicleWeaponModification</key>
 			<text>Vehicle Weapon Modification</text>
 		</string>
-		<!-- Character Info Tab -->
+		<!-- End Region-->
+		<!-- Region Character Info Tab -->
 		<string>
 			<key>Label_Sex</key>
 			<text>Sex:</text>
@@ -4211,7 +4235,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_Notoriety</key>
 			<text>Notoriety</text>
 		</string>
-		<!-- Karma and Nuyen Tab -->
+		<!-- End Region-->
+		<!-- Region Karma and Nuyen Tab -->
 		<string>
 			<key>String_Date</key>
 			<text>Date</text>
@@ -4244,7 +4269,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_EditExpense</key>
 			<text>Edit Expense</text>
 		</string>
-		<!-- Calendar Tab -->
+		<!-- End Region-->
+		<!-- Region Calendar Tab -->
 		<string>
 			<key>Button_AddWeek</key>
 			<text>Add Week</text>
@@ -4265,7 +4291,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_WeekDisplay</key>
 			<text>{0}: Month {1}, Week {2}</text>
 		</string>
-		<!-- Improvements Tab -->
+		<!-- End Region-->
+		<!-- Region Improvements Tab -->
 		<string>
 			<key>Button_AddImproevment</key>
 			<text>&amp;Add Improvement</text>
@@ -4290,12 +4317,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Node_SelectedImprovements</key>
 			<text>Selected Improvements</text>
 		</string>
-		<!-- Improvements Control -->
+		<!-- End Region-->
+		<!-- Region Improvements Control -->
 		<string>
 			<key>Tip_Improvement_EditNotes</key>
 			<text>Edit Improvement Notes.</text>
 		</string>
-		<!-- Build Point Summery Tab -->
+		<!-- End Region-->
+		<!-- Region Build Point Summery Tab -->
 		<string>
 			<key>Label_SummaryMetatype</key>
 			<text>Metatype</text>
@@ -4408,7 +4437,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BuildManeuvers</key>
 			<text>Each Martial Art Maneuver costs {0} Karma.</text>
 		</string>
-		<!-- Other Info Tab -->
+		<!-- End Region-->
+		<!-- Region Other Info Tab -->
+		<string>
+			<key>Tip_CalculatedMovement</key>
+			<text>Walking: AGI X 2 ({0} MPCT) / ({1} KPH)\nRunning: AGI X 4 ({2} MPCT) / ({3} KPH)</text>
+		</string>
 		<string>
 			<key>Label_OtherPhysicalCM</key>
 			<text>Physical Condition Track:</text>
@@ -4577,7 +4611,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_OtherCareerKarma</key>
 			<text>The amount of Karma the character has accumulated over their career.</text>
 		</string>
-		<!-- Condition Monitor Tab -->
+		<!-- End Region-->
+		<!-- Region Condition Monitor Tab -->
 		<string>
 			<key>Label_CMCMPenalty</key>
 			<text>CM Penalty:</text>
@@ -4618,7 +4653,82 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_CMSpendEdge</key>
 			<text>Spend a point of Edge</text>
 		</string>
-		<!-- ToolTips -->
+		<!-- End Region-->
+		<!-- Region Spell Defence Tab-->
+		<string>
+			<key>Label_CounterspellingDice</key>
+			<text>Counterspelling Dice</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIndirectDodge</key>
+			<text>Indirect Dodge</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIndirect</key>
+			<text>Indirect Soak</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDirectSoakMana</key>
+			<text>Direct Soak - Mana</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDirectSoakPhysical</key>
+			<text>Direct Soak - Physical</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDetection</key>
+			<text>Detection Spells</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttBOD</key>
+			<text>Decrease Attribute (BOD)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttSTR</key>
+			<text>Decrease Attribute (STR)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttAGI</key>
+			<text>Decrease Attribute (AGI)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttREA</key>
+			<text>Decrease Attribute (REA)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttLOG</key>
+			<text>Decrease Attribute (LOG)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttWIL</key>
+			<text>Decrease Attribute (WIL)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttINT</key>
+			<text>Decrease Attribute (INT)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceDecAttCHA</key>
+			<text>Decrease Attribute (CHA)</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIllusionMana</key>
+			<text>Illusion - Mana</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceIllusionPhysical</key>
+			<text>Illusion - Physical</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceManipMental</key>
+			<text>Manipulation - Mental</text>
+		</string>
+		<string>
+			<key>Label_SpellDefenceManipPhysical</key>
+			<text>Manipulation - Physical</text>
+		</string>
+		<!-- End Region -->
+		<!-- Region ToolTips -->
 		<string>
 			<key>Tip_SpellDrainBase</key>
 			<text>Base Drain for</text>
@@ -4659,8 +4769,9 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_DiceRoller</key>
 			<text>Open Dice Roller</text>
 		</string>
-		<!-- Individual Form- and UserControl-specific strings below this point -->
-		<!-- Contacts/Enemies -->
+		<!-- End Region-->
+		<!-- Region Individual Form- and UserControl-specific strings below this point -->
+		<!-- Region Contacts/Enemies -->
 		<string>
 			<key>Label_Contact_Connection</key>
 			<text>Connection:</text>
@@ -4737,7 +4848,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MenuItem_CreateCritter</key>
 			<text>Create Critter</text>
 		</string>
-		<!-- Omae -->
+		<!-- End Region-->
+		<!-- Region Omae -->
 		<string>
 			<key>Omae_NoDescription</key>
 			<text>No description.</text>
@@ -4758,7 +4870,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Omae_PostUpdate</key>
 			<text>Post Update</text>
 		</string>
-		<!-- Adept Powers -->
+		<!-- End Region-->
+		<!-- Region Adept Powers -->
 		<string>
 			<key>Label_Power_PowerRating</key>
 			<text>Power Rating:</text>
@@ -4787,7 +4900,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_Power_DoublePoints</key>
 			<text>The Power Point cost for this Power has been increased because it has caused the Attribute to exceed your Metatype Maximum value by {0}. This cost increase only applies to the {0} points that have exceeded the Metatype Maximum.</text>
 		</string>
-		<!-- Skills -->
+		<!-- End Region-->
+		<!-- Region Skills -->
 		<string>
 			<key>Tip_Skill_ChangeSpecialization</key>
 			<text>Change Specialization for {0} Karma</text>
@@ -4832,7 +4946,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SkillGroup_Skills</key>
 			<text>Skills in this Group:</text>
 		</string>
-		<!-- Spirits/Sprites -->
+		<!-- End Region-->
+		<!-- Region Spirits/Sprites -->
 		<string>
 			<key>Label_Spirit_Force</key>
 			<text>Force:</text>
@@ -4889,7 +5004,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_SelectCritterType</key>
 			<text>Cannot Create Critter</text>
 		</string>
-		<!-- Create Cyberware Suite Window -->
+		<!-- End Region-->
+		<!-- Region Create Cyberware Suite Window -->
 		<string>
 			<key>Title_CreateCyberwareSuite</key>
 			<text>Create Cyberware Suite</text>
@@ -4942,7 +5058,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_CyberwareSuite_SuiteCreated</key>
 			<text>Suite Created</text>
 		</string>
-		<!-- Create PACKS Kit Window -->
+		<!-- End Region-->
+		<!-- Region Create PACKS Kit Window -->
 		<string>
 			<key>Title_CreatePACKSKit</key>
 			<text>Create PACKS Kit</text>
@@ -5047,7 +5164,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_CreatePACKSKit_SuiteCreated</key>
 			<text>PACKS Kit Created</text>
 		</string>
-		<!-- Dice Hits Window -->
+		<!-- End Region-->
+		<!-- Region Dice Hits Window -->
 		<string>
 			<key>Title_DiceHits</key>
 			<text>Dice Hits</text>
@@ -5056,7 +5174,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_DiceHits_HitsOn</key>
 			<text>Hits on</text>
 		</string>
-		<!-- Dice Roller Window -->
+		<!-- End Region-->
+		<!-- Region Dice Roller Window -->
 		<string>
 			<key>Title_DiceRoller</key>
 			<text>Dice Roller</text>
@@ -5129,7 +5248,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_DiceRoller_Failure</key>
 			<text>Failure</text>
 		</string>
-		<!-- Expense Window -->
+		<!-- End Region-->
+		<!-- Region Expense Window -->
 		<string>
 			<key>Title_Expense_Karma</key>
 			<text>Karmic Change</text>
@@ -5166,7 +5286,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Expense_RefundNuyen</key>
 			<text>Refund (does not count towards Total Career Nuyen)</text>
 		</string>
-		<!-- History Window -->
+		<!-- End Region-->
+		<!-- Region History Window -->
 		<string>
 			<key>Title_History</key>
 			<text>Chummer Revision History</text>
@@ -5175,7 +5296,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Message_History_FileNotFound</key>
 			<text>The revision history file could not be found.</text>
 		</string>
-		<!-- Starting Nuyen Window -->
+		<!-- End Region-->
+		<!-- Region Starting Nuyen Window -->
 		<string>
 			<key>Title_LifestyleNuyen</key>
 			<text>Starting Nuyen</text>
@@ -5188,7 +5310,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_LifestyleNuyen_ResultOf</key>
 			<text>Result of</text>
 		</string>
-		<!-- Select Metatype Window -->
+		<!-- End Region-->
+		<!-- Region Select Metatype Window -->
 		<string>
 			<key>Title_Metatype</key>
 			<text>Select a Metatype</text>
@@ -5233,12 +5356,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_Metatype_BloodSpirit</key>
 			<text>Blood Spirit variants are summoned with the Invoking Blood Spirits Metamagic and gain additional Critter Powers.</text>
 		</string>
-		<!-- Notes Window -->
+		<!-- End Region-->
+		<!-- Region Notes Window -->
 		<string>
 			<key>Title_Notes</key>
 			<text>Notes</text>
 		</string>
-		<!-- Omae Window -->
+		<!-- End Region-->
+		<!-- Region Omae Window -->
 		<string>
 			<key>Title_Omae</key>
 			<text>Chummer: Omae Character Exchange</text>
@@ -5519,7 +5644,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Omae_SortedBy</key>
 			<text>sorted by</text>
 		</string>
-		<!-- Omae Account Window -->
+		<!--End Region-->
+		<!-- Region Omae Account Window -->
 		<string>
 			<key>Title_OmaeAccount</key>
 			<text>My Omae Account</text>
@@ -5528,7 +5654,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_OmaeAccount_EmailAddress</key>
 			<text>Email Address:</text>
 		</string>
-		<!-- Omae Upload Window -->
+		<!--End Region-->
+		<!-- Region Omae Upload Window -->
 		<string>
 			<key>Title_OmaeUpload</key>
 			<text>Upload Character to Omae</text>
@@ -5661,7 +5788,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Message_OmaeUpload_SheetSelectFiles</key>
 			<text>You must include at least 1 file in your character sheet upload.</text>
 		</string>
-		<!-- Options Window -->
+		<!-- End Region-->
+		<!-- Region Options Window -->
 		<string>
 			<key>Title_Options</key>
 			<text>Options</text>
@@ -6350,7 +6478,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_OpenPDFsAsURLs</key>
 			<text>Open PDFs as URLs (For use in browsers)</text>
 		</string>
-		<!-- Print Multiple Window -->
+		<!-- End Region-->
+		<!-- Region Print Multiple Window -->
 		<string>
 			<key>Title_PrintMultiple</key>
 			<text>Select Characters to Print</text>
@@ -6367,12 +6496,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_PrintMultiple_PrintCharacter</key>
 			<text>&amp;Print Characters</text>
 		</string>
-		<!-- Reload Window -->
+		<!-- End Region-->
+		<!-- Region Reload Window -->
 		<string>
 			<key>Title_Reload</key>
 			<text>Reload Weapon</text>
 		</string>
-		<!-- Advanced Lifestyle Window -->
+		<!-- End Region-->
+		<!-- Region Advanced Lifestyle Window -->
 		<string>
 			<key>Title_SelectAdvancedLifestyle</key>
 			<text>Build Lifestyle</text>
@@ -6441,17 +6572,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_SelectAdvancedLifestyle_LifestyleName</key>
 			<text>Lifestyle Name</text>
 		</string>
-		<!-- Select Armor Window -->
+		<!-- End Region-->
+		<!-- Region Select Armor Window -->
 		<string>
 			<key>Title_SelectArmor</key>
 			<text>Select Armor</text>
 		</string>
-		<!-- Select Armor Mod Window -->
+		<!-- End Region-->
+		<!-- Region Select Armor Mod Window -->
 		<string>
 			<key>Title_SelectArmorMod</key>
 			<text>Select an Armor Mod</text>
 		</string>
-		<!-- Select Attribute Window -->
+		<!-- End Region-->
+		<!-- Region Select Attribute Window -->
 		<string>
 			<key>Title_SelectAttribute</key>
 			<text>Choose an Attribute</text>
@@ -6460,7 +6594,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_DoNotAffectMaximum</key>
 			<text>Do not affect Metatype Maximum</text>
 		</string>
-		<!-- Select BP Window -->
+		<!-- End Region-->
+		<!-- Region Select BP Window -->
 		<string>
 			<key>Title_SelectBP</key>
 			<text>Select Build Method</text>
@@ -6497,7 +6632,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SelectKarma_IgnoreRules</key>
 			<text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
 		</string>
-		<!-- Advanced Contact Options Window -->
+		<!-- End Region-->
+		<!-- Region Advanced Contact Options Window -->
 		<string>
 			<key>Title_SelectContactConnection</key>
 			<text>Advanced Contact Options</text>
@@ -6578,12 +6714,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_SelectContactConnection_MatrixPervasive</key>
 			<text>Pervasive Matrix integration</text>
 		</string>
-		<!-- Select Critter Power Window -->
+		<!-- End Region-->
+		<!-- Region Select Critter Power Window -->
 		<string>
 			<key>Title_SelectCritterPower</key>
 			<text>Select a Critter Power</text>
 		</string>
-		<!-- Select Cyberware Window -->
+		<!-- End Region-->
+		<!-- Region Select Cyberware Window -->
 		<string>
 			<key>Title_SelectCyberware</key>
 			<text>Select Cyberware</text>
@@ -6600,7 +6738,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Transgenic</key>
 			<text>Add as Transgenic</text>
 		</string>
-		<!-- Select Cyberware Suite Window -->
+		<!-- End Region-->
+		<!-- Region Select Cyberware Suite Window -->
 		<string>
 			<key>Title_SelectCyberwareSuite</key>
 			<text>Select a Cyberware Suite</text>
@@ -6617,7 +6756,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectBiowareSuite_PartsInSuite</key>
 			<text>Parts in this Bioware Suite:</text>
 		</string>
-		<!-- Select Exotic Skill Window -->
+		<!-- End Region-->
+		<!-- Region Select Exotic Skill Window -->
 		<string>
 			<key>Title_SelectExoticSkill</key>
 			<text>Select an Exotic Active Skill</text>
@@ -6626,6 +6766,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectExoticSkill_Description</key>
 			<text>Select an Exotic Active Skill to add to your character.</text>
 		</string>
+		<!-- End Region-->
+		<!-- Region Select Gear Window -->
     <!-- Select Skill Specialisation Window -->
  		<string>
 			<key>Title_SelectSkillSpecialization</key>
@@ -6635,7 +6777,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectSkillSpecialization_Description</key>
 			<text>Select a Skill Specialization to add to your character.</text>
 		</string>
-		<!-- Select Gear Window -->
+		<!-- End Region-->
+		<!-- Region Select Gear Window -->
 		<string>
 			<key>Title_SelectGear</key>
 			<text>Select Gear</text>
@@ -6664,7 +6807,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Aerodynamic</key>
 			<text>Aerodynamic</text>
 		</string>
-		<!-- Select Item Window -->
+		<!-- End Region-->
+		<!-- Region Select Item Window -->
 		<string>
 			<key>Title_SelectItem</key>
 			<text>Select an Item</text>
@@ -6673,7 +6817,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_SelectItemFocus</key>
 			<text>Select a Focus to add to the Stacked Focus. Click Cancel if you are done adding Foci to the Stacked Focus.</text>
 		</string>
-		<!-- Select Lifestyle Window -->
+		<!-- End Region-->
+		<!-- Region Select Lifestyle Window -->
 		<string>
 			<key>Title_SelectLifestyle</key>
 			<text>Select a Lifestyle</text>
@@ -6698,22 +6843,26 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectLifestyle_Roommates</key>
 			<text>Roommates:</text>
 		</string>
-		<!-- Select Martial Art Window -->
+		<!-- End Region-->
+		<!-- Region Select Martial Art Window -->
 		<string>
 			<key>Title_SelectMartialArt</key>
 			<text>Select a Martial Art</text>
 		</string>
-		<!-- Select Martial Art Advantage Window -->
+		<!-- End Region-->
+		<!-- Region Select Martial Art Advantage Window -->
 		<string>
 			<key>Title_SelectMartialArtAdvantage</key>
 			<text>Select an Advantage</text>
 		</string>
-		<!-- Select Martial Art Maneuver Window -->
+		<!-- End Region-->
+		<!-- Region Select Martial Art Maneuver Window -->
 		<string>
 			<key>Title_SelectMartialArtManeuver</key>
 			<text>Select a Maneuver</text>
 		</string>
-		<!-- Select Mentor Spirit Window -->
+		<!-- End Region-->
+		<!-- Region Select Mentor Spirit Window -->
 		<string>
 			<key>Title_SelectMentorSpirit</key>
 			<text>Select a Mentor Spirit</text>
@@ -6734,7 +6883,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectMentor_ChooseOne</key>
 			<text>Choose One:</text>
 		</string>
-		<!-- Select Metamagic Window -->
+		<!-- End Region-->
+		<!-- Region Select Metamagic Window -->
 		<string>
 			<key>Title_SelectMetamagic</key>
 			<text>Select a Metamagic</text>
@@ -6831,7 +6981,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_SelectRitual_LimitList</key>
 			<text>Show only Rituals I can take</text>
 		</string>
-		<!-- Select Nexus Window -->
+		<!-- End Region-->
+		<!-- Region Select Nexus Window -->
 		<string>
 			<key>Title_SelectNexus</key>
 			<text>Build Nexus</text>
@@ -6856,12 +7007,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_SelectNexus_PersonaLimit</key>
 			<text>Persona Limit</text>
 		</string>
-		<!-- Select Number Window -->
+		<!-- End Region-->
+		<!-- Region Select Number Window -->
 		<string>
 			<key>Title_SelectNumber</key>
 			<text>Select a Number</text>
 		</string>
-		<!-- Select PACKS Kit Window -->
+		<!-- End Region-->
+		<!-- Region Select PACKS Kit Window -->
 		<string>
 			<key>Title_SelectPACKSKit</key>
 			<text>Select a PACKS Kit</text>
@@ -6958,7 +7111,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Message_DeletePACKSKit</key>
 			<text>Are you sure you want to delete the custom PACKS Kit {0}?</text>
 		</string>
-		<!-- Select Power Window -->
+		<!-- End Region-->
+		<!-- Region Select Power Window -->
 		<string>
 			<key>Title_SelectPower</key>
 			<text>Select a Power</text>
@@ -6979,7 +7133,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_SelectPower_PowerRequirement</key>
 			<text>Power Requirement</text>
 		</string>
-		<!-- Select Program Window -->
+		<!-- End Region-->
+		<!-- Region Select Program Window -->
 		<string>
 			<key>Title_SelectProgram</key>
 			<text>Select a Program</text>
@@ -6996,12 +7151,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectProgram_FV</key>
 			<text>FV:</text>
 		</string>
-		<!-- Select Program Option Window -->
+		<!-- End Region-->
+		<!-- Region Select Program Option Window -->
 		<string>
 			<key>Title_SelectProgramOption</key>
 			<text>Select a Program Option</text>
 		</string>
-		<!-- Select Quality Window -->
+		<!-- End Region-->
+		<!-- Region Select Quality Window -->
 		<string>
 			<key>Title_SelectQuality</key>
 			<text>Select a Quality</text>
@@ -7054,7 +7211,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_SelectQuality_QualityRequirement</key>
 			<text>Quality Requirement</text>
 		</string>
-		<!-- Select Setting Window -->
+		<!-- End Region-->
+		<!-- Region Select Setting Window -->
 		<string>
 			<key>Title_SelectSetting</key>
 			<text>Select Setting</text>
@@ -7063,7 +7221,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectSetting_SettingsDescription</key>
 			<text>Select a Settings file to use. Settings determine the default build method, number of build points, maximum Availability, and optional and house rules that will be used when building your character.</text>
 		</string>
-		<!-- Select Side Window -->
+		<!-- End Region-->
+		<!-- Region Select Side Window -->
 		<string>
 			<key>Title_SelectSide</key>
 			<text>Select a Side</text>
@@ -7072,17 +7231,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectSide</key>
 			<text>Select a side to install {0} on.</text>
 		</string>
-		<!-- Select Skill Window -->
+		<!-- End Region-->
+		<!-- Region Select Skill Window -->
 		<string>
 			<key>Title_SelectSkill</key>
 			<text>Choose a Skill</text>
 		</string>
-		<!-- Select Skill Group Window -->
+		<!-- End Region-->
+		<!-- Region Select Skill Group Window -->
 		<string>
 			<key>Title_SelectSkillGroup</key>
 			<text>Choose a Skill Group</text>
 		</string>
-		<!-- Select Spell Window -->
+		<!-- End Region-->
+		<!-- Region Select Spell Window -->
 		<string>
 			<key>Title_SelectSpell</key>
 			<text>Select a Spell</text>
@@ -7107,12 +7269,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SelectSpell_ExtendedSpell</key>
 			<text>Extended range Spells have a range of (Force x MAG x 10) meters but have their DV increased by +2.</text>
 		</string>
-		<!-- Select Text Window -->
+		<!-- End Region-->
+		<!-- Region Select Text Window -->
 		<string>
 			<key>Title_SelectText</key>
 			<text>Select a Value</text>
 		</string>
-		<!-- Select Vehicle Widow -->
+		<!-- End Region-->
+		<!-- Region Select Vehicle Widow -->
 		<string>
 			<key>Title_SelectVehicle</key>
 			<text>Select a Vehicle</text>
@@ -7125,7 +7289,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectVehicle_Discount</key>
 			<text>Discount:</text>
 		</string>
-		<!-- Select Vehicle Mod Window -->
+		<!-- End Region-->
+		<!-- Region Select Vehicle Mod Window -->
 		<string>
 			<key>Title_SelectVehicleMod</key>
 			<text>Select a Vehicle Modification</text>
@@ -7134,7 +7299,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Title_SelectVehicleMod_Weapon</key>
 			<text>Select Weapon Modification</text>
 		</string>
-		<!-- Select Weapon Window -->
+		<!-- End Region-->
+		<!-- Region Select Weapon Window -->
 		<string>
 			<key>Title_SelectWeapon</key>
 			<text>Select Weapon</text>
@@ -7143,27 +7309,32 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SelectWeapon_IncludedItems</key>
 			<text>Included Accessories and Modifications:</text>
 		</string>
-		<!-- Select Weapon Accessory Window -->
+		<!-- End Region-->
+		<!-- Region Select Weapon Accessory Window -->
 		<string>
 			<key>Title_SelectWeaponAccessory</key>
 			<text>Select a Weapon Accessory</text>
 		</string>
-		<!-- Select Weapon Category Window -->
+		<!-- End Region-->
+		<!-- Region Select Weapon Category Window -->
 		<string>
 			<key>Title_SelectWeaponCategory</key>
 			<text>Select a Weapon Category</text>
 		</string>
-		<!-- Select Spell Category Window -->
+		<!-- End Region-->
+		<!-- Region Select Spell Category Window -->
 		<string>
 			<key>Title_SelectSpellCategory</key>
 			<text>Select a Spell Category</text>
 		</string>
-		<!-- Select Skill Category Window -->
+		<!-- End Region-->
+		<!-- Region Select Skill Category Window -->
 		<string>
 			<key>Title_SelectSkillCategory</key>
 			<text>Select a Skill Category</text>
 		</string>
-		<!-- Sell Item Window -->
+		<!-- End Region-->
+		<!-- Region Sell Item Window -->
 		<string>
 			<key>Title_SellItem</key>
 			<text>Sell Item</text>
@@ -7172,7 +7343,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SellItem_SellItemFor</key>
 			<text>Sell Item for</text>
 		</string>
-		<!-- Calendar Window -->
+		<!-- End Region-->
+		<!-- Region Calendar Window -->
 		<string>
 			<key>Title_CalendarStart</key>
 			<text>Calendar</text>
@@ -7193,7 +7365,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Week</key>
 			<text>Week:</text>
 		</string>
-		<!-- Update Window -->
+		<!-- End Region-->
+		<!-- Region Update Window -->
 		<string>
 			<key>Title_Update</key>
 			<text>Chummer Update</text>
@@ -7238,7 +7411,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Message_Update_MultipleInstances</key>
 			<text>Chummer cannot be updated while there is more than 1 instance of the application running. Please close the other instances of Chummer then run the update again.</text>
 		</string>
-		<!-- Character Viewer Window -->
+		<!-- End Region-->
+		<!-- Region Character Viewer Window -->
 		<string>
 			<key>Title_CharacterViewer</key>
 			<text>Character Viewer</text>
@@ -7259,7 +7433,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Viewer_CharacterSheet</key>
 			<text>Character Sheet:</text>
 		</string>
-		<!-- Create Improvement Window -->
+		<!-- End Region-->
+		<!-- Region Create Improvement Window -->
 		<string>
 			<key>Title_CreateImprovement</key>
 			<text>Create Improvement</text>
@@ -7312,12 +7487,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageTitle_ImprovementName</key>
 			<text>Improvement Name</text>
 		</string>
-		<!-- Improvement Control Strings -->
+		<!-- End Region-->
+		<!-- Region Improvement Control Strings -->
 		<string>
 			<key>Checkbox_Active</key>
 			<text>Active</text>
 		</string>
-		<!-- Export Window -->
+		<!-- End Region-->
+		<!-- Region Export Window -->
 		<string>
 			<key>Title_ExportCharacter</key>
 			<text>Export Character</text>
@@ -7326,7 +7503,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_ExportTo</key>
 			<text>Export to:</text>
 		</string>
-		<!-- Create Spell Window -->
+		<!-- End Region-->
+		<!-- Region Create Spell Window -->
 		<string>
 			<key>Title_CreateSpell</key>
 			<text>Create Spell</text>
@@ -7523,12 +7701,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Message_ManipulationSpellRequirement2</key>
 			<text>You must select either Minor Change or Major Change from the Spell Options.</text>
 		</string>
-		<!-- Create Natural Weapon Window -->
+		<!-- End Region-->
+		<!-- Region Create Natural Weapon Window -->
 		<string>
 			<key>Title_CreateNaturalWeapon</key>
 			<text>Create Natural Weapon</text>
 		</string>
-		<!-- ImprovementManager Strings -->
+		<!-- End Region-->
+		<!-- Region ImprovementManager Strings -->
 		<string>
 			<key>String_Improvement_SelectSkillNamed</key>
 			<text>Choose an Active Skill for {0} to affect.</text>
@@ -7581,7 +7761,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_CustomItem_SelectText</key>
 			<text>Enter a name for this custom item.</text>
 		</string>
-		<!-- CharacterOptions Messages -->
+		<!-- End Region-->
+		<!-- Region CharacterOptions Messages -->
 		<string>
 			<key>Message_CharacterOptions_OpenOptions</key>
 			<text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
@@ -7606,7 +7787,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>MessageText_CharacterOptions_CannotLoadCharacter</key>
 			<text>Cannot Load Character</text>
 		</string>
-		<!-- Special Strings -->
+		<!-- End Region-->
+		<!-- Region Special Strings -->
 		<string>
 			<key>String_SkillCommand</key>
 			<text>Command</text>

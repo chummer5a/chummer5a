@@ -16,7 +16,37 @@ Application Change:
 - Fixed a string formatting issue that prevented Accuracy modifications from adept powers from working properly for translated Chummer.
 - Fixed an issue that prevented priority/sum-to-ten from using the gameplay options for their nuyen limit.
 - Sum to Ten and Priority now use the same form for character generation. Doesn't mean anything particularly interesting for you guys, but may reduce or introduce some interesting new bugs. 
-- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tiday as I'd like.
+- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tidy as I'd like.
+- Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
+- Armor can now have a Rating; currently this is used exclusively for the cloaks from Hard Targets.
+- Fixed the percentage discount for basic lifestyles.
+- Fixed a translation issue for licences.
+- Fixed a translation issue for basic lifestyles. Fixes #608.
+- Armor improvements can now use Precedence attributes; this means that we can prevent a group of armour improvements from stacking with each other. Currently this is used for a small selection of skin-related qualities and biowares. See the Data Changes for more details. Fixes #602.
+- Fixed an issue with advanced lifestyles that created zombie qualities. Fun for the vodoun and shedim, everyone else not so much. Fixes #583.
+- Fixed an issue that prevented infected from moving to career mode.
+- Added a tooltip for the Movement label in the Other Info tab to show the calculated movement speed in meters per combat turn or Kilometres per Hour. Implements #574.
+- Note tooltips now have a maximum with of 100 pixels. Prevents the tooltips for contact descriptions and such from running across the whole screen. There's a good chance I missed one or two, so let me know if you see any. Fixes #581.
+- Fixed an issue relating to the Improved Ability power causing other powers to revert to 0 ranks. Fixes #488, fixes #436, fixes #378.
+- Fixed an issue with Improved Ability and exotic weapon skills not working together. Fixes #492.
+- Fixed adept powers to stack properly with free levels from qi foci and mentor spirits. May break in interesting ways. Should fix #615.
+- Matrix initiative can now benefit from the MatrixIniaitivePass improvement. Fixes #618.
+- Added support for FixedValues for vehicle mods. Fixes #622.
+- Exotic Weapon skills without any karma spent on them can now be removed once you've entered career mode. 
+- Exotic Weapon skills can now properly have their karma costs refunded in career mode.
+- Exotic Weapon skills can't change their specialisation dynamically anymore once you're in career mode, because it breaks the karma refund. This is intentional and is unlikely to be changed unless you can present me with better-implemented code or a reason it shouldn't be like it is.
+- Skill specializations will now save their value as the English string if possible rather than whatever the user enters; this should fix #595. Note that this fix is PROBABLY not retroactive.
+- Fixed some issues with lifestyle qualities not saving properly if they contained an extra value. Fixes #623.
+- Active Hardwires now implemented according to the rules, fixes #617. They're effectively similar to skillwires, but you select the affected skill at the time of purchase. They're currently mutually exclusive, so you can't have skillwires and hardwires affecting the same skill. As with skillwires, the character's actual rating and their hardwire rating don't stack.
+- Fixed an issue that prevented accessories that came with a weapon from being flagged as Internal.
+- Fixed some calculation issues for priority metatypes not showing the correct karma value when changing from a metavariant to a base metatype. Fixes #537.
+- Fixed a crash with metavariants in Priority/Sum to Ten. Fixes #647.
+- Fixed a crash caused by weapon accessories that have a cost based on rating. Fixes #650, fixes #656.
+- Added spell defence calculations in a tab on the right side of the career and creation windows. Closes #573.
+- Changed the Improved Potential powers to use the limit modifier bonus instead of selectlimit; makes it a bit neater.
+- Did some stuff to enable selecting multiple powers through the selectpower bonus node. This shouldn't affect any existing characters, but if you're using the Chaos Mentor Spirit I'd recommend deleting it and removing it. This miiiiight also break existing characters with Qi Foci. Probably not though. Like 70/30 at most.
+- Did various shenanigans with the karma selection form to make it show qualities and karma costs properly. 
+- Rebuilt the functionality for Black Market Pipeline nad the Dealer Connection quality. Both should now work properly; there's a teeny tiny chance that existing characters that have the qualities might break, please raise a ticket if so.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -30,10 +60,34 @@ Data Change:
 - Minimum MAG/RES/DEP levels have been set to 0 for the appropriate metatypes.
 - Removed the quality "Natural Weapon: Claws" for the Sasquatch.
 - Added ammoslots entries for Speed Loader, Spare Clip, Explosive Magazine and Extended Clip.
+- Fixed a stupid error with the toxin/pathogen resistance qualities, dwarves and translation files. Fixes #590.
+- Cloaks now have Ratings and calculated values instead of the initial implementation. 
+- Fixed a formatting issue for the German version of the Shadowrun 5 Base character sheet.
+- The following armour improvements can no longer stack with each other: 
+	* Dermal Deposit changeling qualities
+	* Troll metatype dermal plating
+	* Orthoskin bioware
+	* Dermal Plating cyberware
+- Fixed a crash for the Mutaqua infected qualities.
+- Fixed an incorrect limit modifier value for the Audio Analyser and Balance Tail cyberware that made some weird stuff happen. Fixes #616.
+- Did some boring admin stuff with armour and bioware.
+- Removed extraneous quality requirements from the Flexible Signature, Masking, Flux and Efficient Ritual metamagics.
+- Added <matrixinitiativepass>1</matrixinitiativepass> to the Multidimensional Coprocessor.
+- Fixed crashes for the Festo pidgeon and Shiawase i-Doll.
+- Renamed the Chameleon Coating from Stolen Souls to prevent conflicts with the Rigger 5.0 version.
+- Removed a couple of redundant lifestyle qualities. 
+- Altered the bonus for toolkits, facilities and workshops to be selectskill instead of selecttext. No real effect, just sets the extra value to the skill in question.
+- Fixed some stat issues for the Hanuman metavariant. Fixes #537.
+- Removed the skill bonus from the Combat Focus formula again. Mixup with a previous merge.
+- Removed Fangs from Oni. 
+- Customised Agility and Strength for cyberlimbs now increase based on the rating. Fixes #654.
+- Added the necessary qualities for the Metasapient A.I. Fixes #668.
 
 New Strings:
 - Message_DeleteCalendarWeek
 - Button_DeleteWeek
+- Tip_CalculatedMovement
+- Message_ConfirmExoticSkillRemove
 
 Build 178: 
 Application Change: 

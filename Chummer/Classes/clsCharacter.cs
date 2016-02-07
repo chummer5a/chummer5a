@@ -46,8 +46,8 @@ public delegate void UncouthChangedHandler(Object sender);
 public delegate void FriendsInHighPlacesChangedHandler(Object sender);
 // CharacterNameChanged Event Handler
 public delegate void CharacterNameChangedHandler(Object sender);
-// BlackMarketEnabledChanged Event Handler
-public delegate void BlackMarketEnabledChangedHandler(Object sender);
+// BlackMarketDiscountEnabledChanged Event Handler
+public delegate void BlackMarketDiscountEnabledChangedHandler(Object sender);
 public delegate void ExConChangedHandler(Object sender);
 public delegate void TrustFundChangedHandler(Object sender);
 public delegate void TechSchoolChangedHandler(Object sender);
@@ -78,7 +78,7 @@ namespace Chummer
 	    private XmlNode oldSkillsBackup;
 	    private XmlNode oldSKillGroupBackup;
 
-		private readonly ImprovementManager _objImprovementManager;
+        private readonly ImprovementManager _objImprovementManager;
         private readonly CharacterOptions _objOptions = new CharacterOptions();
 
         private string _strFileName = "";
@@ -130,8 +130,8 @@ namespace Chummer
 		private int _intHomeNodeSensor = 0;
 		private int _intHomeNodeDataProcessing = 3;
 
-        // If true, the Character creation has been finalized and is maintained through Karma.
-        private bool _blnCreated = false;
+		// If true, the Character creation has been finalized and is maintained through Karma.
+		private bool _blnCreated = false;
 
         // Build Points
 	    private int _intSumtoTen = 10;
@@ -160,9 +160,9 @@ namespace Chummer
         private int _intMetatypeBP = 0;
         private int _intMutantCritterBaseSkills = 0;
 
-        // Special Flags.
+		// Special Flags.
 		
-        private bool _blnAdeptEnabled = false;
+		private bool _blnAdeptEnabled = false;
         private bool _blnMagicianEnabled = false;
         private bool _blnTechnomancerEnabled = false;
         private bool _blnInitiationEnabled = false;
@@ -172,7 +172,7 @@ namespace Chummer
         private bool _blnSchoolOfHardKnocks = false;
         private bool _blnIsCritter = false;
         private bool _blnPossessed = false;
-        private bool _blnBlackMarket = false;
+        private bool _blnBlackMarketDiscount = false;
         private bool _blnCollegeEducation = false;
         private bool _blnFriendsInHighPlaces = false;
         private bool _blnJackOfAllTrades = false;
@@ -295,7 +295,7 @@ namespace Chummer
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event CritterTabEnabledChangedHandler CritterTabEnabledChanged;
 		public event MAGEnabledChangedHandler MAGEnabledChanged;
-		public event BlackMarketEnabledChangedHandler BlackMarketEnabledChanged;
+		public event BlackMarketDiscountEnabledChangedHandler BlackMarketEnabledChanged;
 		public event BornRichChangedHandler BornRichChanged;
 		public event CharacterNameChangedHandler CharacterNameChanged;
 		public event ErasedChangedHandler ErasedChanged;
@@ -341,7 +341,7 @@ namespace Chummer
             _attRES._objCharacter = this;
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
-            _objImprovementManager = new ImprovementManager(this);
+			_objImprovementManager = new ImprovementManager(this);
 			Skills = GetSkillList(this);
         }
 
@@ -555,7 +555,7 @@ namespace Chummer
 			// <jackofalltrades />
 			objWriter.WriteElementString("jackofalltrades", _blnJackOfAllTrades.ToString());
             // <blackmarket />
-            objWriter.WriteElementString("blackmarket", _blnBlackMarket.ToString());
+            objWriter.WriteElementString("blackmarketdiscount", _blnBlackMarketDiscount.ToString());
 
             objWriter.WriteElementString("excon", _blnExCon.ToString());
 
@@ -594,11 +594,11 @@ namespace Chummer
             _attMAG.Save(objWriter);
             _attRES.Save(objWriter);
             _attESS.Save(objWriter);
-            // Include any special A.I. Attributes if applicable.
-            if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-            {
+			// Include any special A.I. Attributes if applicable.
+			if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
+			{
 				_attDEP.Save(objWriter);
-                objWriter.WriteElementString("response", _intResponse.ToString());
+				objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("signal", _intSignal.ToString());
             }
             if (_intMaxSkillRating > 0)
@@ -653,21 +653,21 @@ namespace Chummer
             objWriter.WriteElementString("stuncmfilled", _intStunCMFilled.ToString());
 
 			//TODO: FIX BEFORE FINISH
-			// <skillgroups>
+            // <skillgroups>
 
 			objWriter.WriteStartElement("newskills");
 			objWriter.WriteStartElement("skills");
 	        foreach (Skill skill in Skills)
-	        {
+            {
 		        skill.WriteTo(objWriter);
-	        }
-			objWriter.WriteEndElement();
+            }
+            objWriter.WriteEndElement();
 	        objWriter.WriteStartElement("knoskills");
 	        foreach (KnowledgeSkill knowledgeSkill in KnowledgeSkills)
-	        {
+            {
 		        knowledgeSkill.WriteTo(objWriter);
-	        }
-			objWriter.WriteEndElement();
+            }
+            objWriter.WriteEndElement();
 
 
 
@@ -958,86 +958,86 @@ namespace Chummer
             objStream.Close();
         }
 
-	    /// <summary>
-	    /// Load the Character from an XML file.
-	    /// </summary>
-	    public bool Load()
-	    {
-		    Timekeeper.Start("load_xml");
-		    XmlDocument objXmlDocument = new XmlDocument();
-		    objXmlDocument.Load(_strFileName);
-		    Timekeeper.Finish("load_xml");
-		    Timekeeper.Start("load_char_misc");
-		    XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
-		    XmlNodeList objXmlNodeList;
+        /// <summary>
+        /// Load the Character from an XML file.
+        /// </summary>
+        public bool Load()
+        {
+			Timekeeper.Start("load_xml");
+            XmlDocument objXmlDocument = new XmlDocument();
+            objXmlDocument.Load(_strFileName);
+	        Timekeeper.Finish("load_xml");
+			Timekeeper.Start("load_char_misc");
+            XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+            XmlNodeList objXmlNodeList;
 
-		    try
-		    {
-			    _blnIgnoreRules = Convert.ToBoolean(objXmlCharacter["ignorerules"].InnerText);
-		    }
-		    catch
-		    {
-			    _blnIgnoreRules = false;
-		    }
+            try
+            {
+                _blnIgnoreRules = Convert.ToBoolean(objXmlCharacter["ignorerules"].InnerText);
+            }
+            catch
+            {
+                _blnIgnoreRules = false;
+            }
 		    objXmlCharacter.TryGetField("created", out _blnCreated);
 
-		    ResetCharacter();
+            ResetCharacter();
 
-		    // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
-		    try
-		    {
-			    if (objXmlCharacter["gameedition"].InnerText != string.Empty && objXmlCharacter["gameedition"].InnerText != "SR5")
-			    {
+            // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
+            try
+            {
+                if (objXmlCharacter["gameedition"].InnerText != string.Empty && objXmlCharacter["gameedition"].InnerText != "SR5")
+                {
 				    MessageBox.Show(LanguageManager.Instance.GetString("Message_IncorrectGameVersion_SR4"),
 					    LanguageManager.Instance.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.OK,
 					    MessageBoxIcon.Error);
-				    return false;
-			    }
-		    }
-		    catch
-		    {
-		    }
+                    return false;
+                }
+            }
+            catch
+            {
+            }
 
-		    // Get the name of the settings file in use if possible.
+            // Get the name of the settings file in use if possible.
 		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
 		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
 
-		    // Load the character's settings file.
-		    if (!_objOptions.Load(_strSettingsFileName))
-			    return false;
+            // Load the character's settings file.
+            if (!_objOptions.Load(_strSettingsFileName))
+                return false;
 
-		    try
-		    {
+            try
+            {
 			    _decEssenceAtSpecialStart = Convert.ToDecimal(objXmlCharacter["essenceatspecialstart"].InnerText,
 				    GlobalOptions.Instance.CultureInfo);
-			    // fix to work around a mistake made when saving decimal values in previous versions.
-			    if (_decEssenceAtSpecialStart > EssenceMaximum)
-				    _decEssenceAtSpecialStart /= 10;
-		    }
-		    catch
-		    {
-		    }
+                // fix to work around a mistake made when saving decimal values in previous versions.
+                if (_decEssenceAtSpecialStart > EssenceMaximum)
+                    _decEssenceAtSpecialStart /= 10;
+            }
+            catch
+            {
+            }
 
 		    objXmlCharacter.TryGetField("createdversion", out _strVersionCreated);
 
-		    // Metatype information.
-		    _strMetatype = objXmlCharacter["metatype"].InnerText;
-		    try
-		    {
-			    _strWalk = objXmlCharacter["walk"].InnerText;
-			    _strRun = objXmlCharacter["run"].InnerText;
-			    _strSprint = objXmlCharacter["sprint"].InnerText;
-		    }
-		    catch
-		    {
-		    }
-		    _intMetatypeBP = Convert.ToInt32(objXmlCharacter["metatypebp"].InnerText);
-		    _strMetavariant = objXmlCharacter["metavariant"].InnerText;
+            // Metatype information.
+            _strMetatype = objXmlCharacter["metatype"].InnerText;
+            try
+            {
+                _strWalk = objXmlCharacter["walk"].InnerText;
+                _strRun = objXmlCharacter["run"].InnerText;
+                _strSprint = objXmlCharacter["sprint"].InnerText;
+            }
+            catch
+            {
+            }
+            _intMetatypeBP = Convert.ToInt32(objXmlCharacter["metatypebp"].InnerText);
+            _strMetavariant = objXmlCharacter["metavariant"].InnerText;
 		    objXmlCharacter.TryGetField("metatypecategory", out _strMetatypeCategory);
 		    objXmlCharacter.TryGetField("mutantcritterbaseskills", out _intMutantCritterBaseSkills);
 
-		    // General character information.
-		    _strName = objXmlCharacter["name"].InnerText;
+            // General character information.
+            _strName = objXmlCharacter["name"].InnerText;
 		    objXmlCharacter.TryGetField("mugshot", out _strMugshot);
 		    objXmlCharacter.TryGetField("sex", out _strSex);
 		    objXmlCharacter.TryGetField("age", out _strAge);
@@ -1097,42 +1097,42 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("startingnuyen", out _intStartingNuyen);
 		    objXmlCharacter.TryGetField("adeptwaydiscount", out _intAdeptWayDiscount);
 
-		    // Sum to X point value.
+			// Sum to X point value.
 		    objXmlCharacter.TryGetField("sumtoten", out _intSumtoTen);
-		    // Build Points/Karma.
-		    _intBuildPoints = Convert.ToInt32(objXmlCharacter["bp"].InnerText);
-		    try
-		    {
-			    _intBuildKarma = Convert.ToInt32(objXmlCharacter["buildkarma"].InnerText);
-			    if (_intMaxKarma == 0)
-				    _intMaxKarma = _intBuildKarma;
-			    if (_intBuildKarma == 35 && _strGameplayOption == "")
-			    {
-				    _strGameplayOption = "Prime Runner";
-			    }
-			    if (_intBuildKarma == 35 && _intMaxNuyen == 0)
-			    {
-				    _intMaxNuyen = 25;
-			    }
-		    }
-		    catch
-		    {
-		    }
-		    //Maximum number of Karma that can be spent/gained on Qualities.
+			// Build Points/Karma.
+			_intBuildPoints = Convert.ToInt32(objXmlCharacter["bp"].InnerText);
+            try
+            {
+                _intBuildKarma = Convert.ToInt32(objXmlCharacter["buildkarma"].InnerText);
+                if (_intMaxKarma == 0)
+                    _intMaxKarma = _intBuildKarma;
+                if (_intBuildKarma == 35 && _strGameplayOption == "")
+                {
+                    _strGameplayOption = "Prime Runner";
+                }
+                if (_intBuildKarma == 35 && _intMaxNuyen == 0)
+                {
+                    _intMaxNuyen = 25;
+                }
+            }
+            catch
+            {
+            }
+			//Maximum number of Karma that can be spent/gained on Qualities.
 		    objXmlCharacter.TryGetField("gameplayoptionqualitylimit", out _intGameplayOptionQualityLimit);
 
 		    objXmlCharacter.TryGetField("buildmethod", CharacterBuildMethod.TryParse, out _objBuildMethod);
 		    objXmlCharacter.TryGetField("knowskillpts", out _intKnowledgeSkills);
-		    _intKnowledgeSkillPoints = Convert.ToInt32(objXmlCharacter["knowpts"].InnerText);
-		    _intSkillPoints = Convert.ToInt32(objXmlCharacter["skillpts"].InnerText);
-		    _intSkillPointsMaximum = Convert.ToInt32(objXmlCharacter["skillptsmax"].InnerText);
-		    _intSkillGroups = Convert.ToInt32(objXmlCharacter["skillgrps"].InnerText);
-		    _intSkillGroupsMaximum = Convert.ToInt32(objXmlCharacter["skillgrpsmax"].InnerText);
-		    _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.Instance.CultureInfo);
-		    _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.Instance.CultureInfo);
-		    _blnAdeptEnabled = Convert.ToBoolean(objXmlCharacter["adept"].InnerText);
-		    _blnMagicianEnabled = Convert.ToBoolean(objXmlCharacter["magician"].InnerText);
-		    _blnTechnomancerEnabled = Convert.ToBoolean(objXmlCharacter["technomancer"].InnerText);
+            _intKnowledgeSkillPoints = Convert.ToInt32(objXmlCharacter["knowpts"].InnerText);
+            _intSkillPoints = Convert.ToInt32(objXmlCharacter["skillpts"].InnerText);
+            _intSkillPointsMaximum = Convert.ToInt32(objXmlCharacter["skillptsmax"].InnerText);
+            _intSkillGroups = Convert.ToInt32(objXmlCharacter["skillgrps"].InnerText);
+            _intSkillGroupsMaximum = Convert.ToInt32(objXmlCharacter["skillgrpsmax"].InnerText);
+            _decNuyenBP = Convert.ToDecimal(objXmlCharacter["nuyenbp"].InnerText, GlobalOptions.Instance.CultureInfo);
+            _decNuyenMaximumBP = Convert.ToDecimal(objXmlCharacter["nuyenmaxbp"].InnerText, GlobalOptions.Instance.CultureInfo);
+            _blnAdeptEnabled = Convert.ToBoolean(objXmlCharacter["adept"].InnerText);
+            _blnMagicianEnabled = Convert.ToBoolean(objXmlCharacter["magician"].InnerText);
+            _blnTechnomancerEnabled = Convert.ToBoolean(objXmlCharacter["technomancer"].InnerText);
 		    objXmlCharacter.TryGetField("initiationoverride", out _blnInitiationEnabled);
 		    objXmlCharacter.TryGetField("critter", out _blnCritterEnabled);
 		    objXmlCharacter.TryGetField("uneducated", out _blnUneducated);
@@ -1142,7 +1142,7 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("collegeeducation", out _blnCollegeEducation);
 		    objXmlCharacter.TryGetField("prototypetranshuman", out _decPrototypeTranshuman);
 		    objXmlCharacter.TryGetField("jackofalltrades", out _blnJackOfAllTrades);
-		    objXmlCharacter.TryGetField("blackmarket", out _blnBlackMarket);
+		    objXmlCharacter.TryGetField("blackmarket", out _blnBlackMarketDiscount);
 		    objXmlCharacter.TryGetField("excon", out _blnExCon);
 		    objXmlCharacter.TryGetField("trustfund", out _intTrustFund);
 		    objXmlCharacter.TryGetField("techschool", out _blnTechSchool);
@@ -1154,150 +1154,150 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("fame", out _blnFame);
 		    objXmlCharacter.TryGetField("bornrich", out _blnBornRich);
 		    objXmlCharacter.TryGetField("erased", out _blnErased);
-		    _blnMAGEnabled = Convert.ToBoolean(objXmlCharacter["magenabled"].InnerText);
+            _blnMAGEnabled = Convert.ToBoolean(objXmlCharacter["magenabled"].InnerText);
 		    objXmlCharacter.TryGetField("initiategrade", out _intInitiateGrade);
-		    _blnRESEnabled = Convert.ToBoolean(objXmlCharacter["resenabled"].InnerText);
+            _blnRESEnabled = Convert.ToBoolean(objXmlCharacter["resenabled"].InnerText);
 		    objXmlCharacter.TryGetField("submersiongrade", out _intSubmersionGrade);
 		    objXmlCharacter.TryGetField("groupmember", out _blnGroupMember);
-		    try
-		    {
-			    _strGroupName = objXmlCharacter["groupname"].InnerText;
-			    _strGroupNotes = objXmlCharacter["groupnotes"].InnerText;
-		    }
-		    catch
-		    {
-		    }
-		    Timekeeper.Finish("load_char_misc");
-		    Timekeeper.Start("load_char_imp");
-		    // Improvements.
-		    XmlNodeList objXmlImprovementList = objXmlDocument.SelectNodes("/character/improvements/improvement");
-		    foreach (XmlNode objXmlImprovement in objXmlImprovementList)
-		    {
-			    Improvement objImprovement = new Improvement();
-			    objImprovement.Load(objXmlImprovement);
-			    _lstImprovements.Add(objImprovement);
-		    }
-		    Timekeeper.Finish("load_char_imp");
-		    Timekeeper.Start("load_char_quality");
-		    // Qualities
-		    objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
-		    bool blnHasOldQualities = false;
-		    foreach (XmlNode objXmlQuality in objXmlNodeList)
-		    {
-			    if (objXmlQuality["name"] != null)
-			    {
-				    Quality objQuality = new Quality(this);
-				    objQuality.Load(objXmlQuality);
-				    _lstQualities.Add(objQuality);
-			    }
-			    else
-			    {
-				    // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
-				    blnHasOldQualities = true;
-			    }
-		    }
-		    // If old Qualities are in use, they need to be converted before we can continue.
-		    if (blnHasOldQualities)
-			    ConvertOldQualities(objXmlNodeList);
-		    Timekeeper.Finish("load_char_quality");
-		    Timekeeper.Start("load_char_attrib");
-		    // Attributes.
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
-		    _attBOD.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
-		    _attAGI.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
-		    _attREA.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
-		    _attSTR.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
-		    _attCHA.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
-		    _attINT.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
-		    _attLOG.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
-		    _attWIL.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
-		    _attINI.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
-		    _attEDG.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
-		    _attMAG.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
-		    _attRES.Load(objXmlCharacter);
-		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
-		    _attESS.Load(objXmlCharacter);
+            try
+            {
+                _strGroupName = objXmlCharacter["groupname"].InnerText;
+                _strGroupNotes = objXmlCharacter["groupnotes"].InnerText;
+            }
+            catch
+            {
+            }
+	        Timekeeper.Finish("load_char_misc");
+			Timekeeper.Start("load_char_imp");
+            // Improvements.
+            XmlNodeList objXmlImprovementList = objXmlDocument.SelectNodes("/character/improvements/improvement");
+            foreach (XmlNode objXmlImprovement in objXmlImprovementList)
+            {
+                Improvement objImprovement = new Improvement();
+                objImprovement.Load(objXmlImprovement);
+                _lstImprovements.Add(objImprovement);
+            }
+	        Timekeeper.Finish("load_char_imp");
+			Timekeeper.Start("load_char_quality");
+            // Qualities
+            objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
+            bool blnHasOldQualities = false;
+            foreach (XmlNode objXmlQuality in objXmlNodeList)
+            {
+                if (objXmlQuality["name"] != null)
+                {
+                    Quality objQuality = new Quality(this);
+                    objQuality.Load(objXmlQuality);
+                    _lstQualities.Add(objQuality);
+                }
+                else
+                {
+                    // If the Quality does not have a name tag, it is in the old format. Set the flag to show that old Qualities are in use.
+                    blnHasOldQualities = true;
+                }
+            }
+            // If old Qualities are in use, they need to be converted before we can continue.
+            if (blnHasOldQualities)
+                ConvertOldQualities(objXmlNodeList);
+	        Timekeeper.Finish("load_char_quality");
+			Timekeeper.Start("load_char_attrib");
+            // Attributes.
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"BOD\"]");
+            _attBOD.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"AGI\"]");
+            _attAGI.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"REA\"]");
+            _attREA.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"STR\"]");
+            _attSTR.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"CHA\"]");
+            _attCHA.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INT\"]");
+            _attINT.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"LOG\"]");
+            _attLOG.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"WIL\"]");
+            _attWIL.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"INI\"]");
+            _attINI.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"EDG\"]");
+            _attEDG.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"MAG\"]");
+            _attMAG.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"RES\"]");
+            _attRES.Load(objXmlCharacter);
+            objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"ESS\"]");
+            _attESS.Load(objXmlCharacter);
 
-		    // A.I. Attributes.
-		    try
-		    {
-			    objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
-			    _attDEP.Load(objXmlCharacter);
-			    _intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
-			    _intResponse = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/response").InnerText);
-		    }
-		    catch
-		    {
-		    }
+            // A.I. Attributes.
+            try
+			{
+				objXmlCharacter = objXmlDocument.SelectSingleNode("/character/attributes/attribute[name = \"DEP\"]");
+				_attDEP.Load(objXmlCharacter);
+				_intSignal = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/signal").InnerText);
+                _intResponse = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/response").InnerText);
+            }
+            catch
+            {
+            }
 
-		    Timekeeper.Finish("load_char_attrib");
-		    Timekeeper.Start("load_char_misc2");
+	        Timekeeper.Finish("load_char_attrib");
+			Timekeeper.Start("load_char_misc2");
 
-		    // Force.
-		    try
-		    {
+            // Force.
+            try
+            {
 			    _intMaxSkillRating =
 				    Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/attributes/maxskillrating").InnerText);
-		    }
-		    catch
-		    {
-		    }
+            }
+            catch
+            {
+            }
 
 		    // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
-		    if (_blnAdeptEnabled && _blnMagicianEnabled)
-		    {
-			    try
-			    {
-				    _intMAGAdept = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/magsplitadept").InnerText);
-				    _intMAGMagician = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/magsplitmagician").InnerText);
-			    }
-			    catch
-			    {
-			    }
-		    }
+            if (_blnAdeptEnabled && _blnMagicianEnabled)
+            {
+                try
+                {
+                    _intMAGAdept = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/magsplitadept").InnerText);
+                    _intMAGMagician = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/magsplitmagician").InnerText);
+                }
+                catch
+                {
+                }
+            }
 
 		    objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
 
-		    // Attempt to load the Magic Tradition.
+            // Attempt to load the Magic Tradition.
 		    objXmlCharacter.TryGetField("tradition", out _strMagicTradition);
-		    // Attempt to load the Magic Tradition Drain Attributes.
+            // Attempt to load the Magic Tradition Drain Attributes.
 		    objXmlCharacter.TryGetField("traditiondrain", out _strTraditionDrain);
-		    // Attempt to load the Magic Tradition Name.
+            // Attempt to load the Magic Tradition Name.
 		    objXmlCharacter.TryGetField("raditionname", out _strTraditionName);
-		    // Attempt to load the Spirit Combat Name.
+            // Attempt to load the Spirit Combat Name.
 		    objXmlCharacter.TryGetField("spiritcombat", out _strSpiritCombat);
-		    // Attempt to load the Spirit Detection Name.
+            // Attempt to load the Spirit Detection Name.
 		    objXmlCharacter.TryGetField("spiritdetection", out _strSpiritDetection);
-		    // Attempt to load the Spirit Health Name.
+            // Attempt to load the Spirit Health Name.
 		    objXmlCharacter.TryGetField("spirithealth", out _strSpiritHealth);
-		    // Attempt to load the Spirit Illusion Name.
+            // Attempt to load the Spirit Illusion Name.
 		    objXmlCharacter.TryGetField("spiritillusion", out _strSpiritIllusion);
-		    // Attempt to load the Spirit Manipulation Name.
+            // Attempt to load the Spirit Manipulation Name.
 		    objXmlCharacter.TryGetField("spiritmanipulation", out _strSpiritManipulation);
-		    // Attempt to load the Technomancer Stream.
+            // Attempt to load the Technomancer Stream.
 		    objXmlCharacter.TryGetField("stream", out _strTechnomancerStream);
 
-		    // Attempt to load Condition Monitor Progress.
-		    try
-		    {
-			    _intPhysicalCMFilled = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/physicalcmfilled").InnerText);
-			    _intStunCMFilled = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/stuncmfilled").InnerText);
-		    }
-		    catch
-		    {
-		    }
-		    Timekeeper.Finish("load_char_misc2");
+            // Attempt to load Condition Monitor Progress.
+            try
+            {
+                _intPhysicalCMFilled = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/physicalcmfilled").InnerText);
+                _intStunCMFilled = Convert.ToInt32(objXmlDocument.SelectSingleNode("/character/stuncmfilled").InnerText);
+            }
+            catch
+            {
+            }
+	        Timekeeper.Finish("load_char_misc2");
 		    Timekeeper.Start("load_char_skills");  //slightly messy
 
 			Skills.Clear();
@@ -1309,7 +1309,7 @@ namespace Chummer
 
 			if (objXmlDocument.SelectSingleNode("/character/newskills") != null)
 		    {
-				Timekeeper.Start("load_char_skills_normal");
+			Timekeeper.Start("load_char_skills_normal");
 			    {
 					
 					//Load skills. Because sorting a BindingList is complicated we use a temporery normal list
@@ -1323,14 +1323,14 @@ namespace Chummer
 
 				    loadingSkills.Sort(CompareSkills);
 
-				    
-				    foreach (Skill skill in loadingSkills)
-				    {
-					    Skills.Add(skill);
-				    }
-			    }
 
-			    Timekeeper.Finish("load_char_skills_normal");
+				    foreach (Skill skill in loadingSkills)
+                {
+					    Skills.Add(skill);
+                }
+            }
+
+			Timekeeper.Finish("load_char_skills_normal");
 			    Timekeeper.Start("load_char_skills_kno");
 			    {
 				    List<KnowledgeSkill> knoSkills =
@@ -1340,14 +1340,14 @@ namespace Chummer
 						    where skill != null
 						    select skill).ToList();
 
-				    
+
 				    foreach (KnowledgeSkill skill in knoSkills)
-				    {
+            {
 					    KnowledgeSkills.Add(skill);
-				    }
-			    }
+            }
+                }
 			    Timekeeper.Finish("load_char_skills_kno");
-		    }
+            }
 		    else
 			{
 				XmlNodeList oldskills = objXmlDocument.SelectNodes("/character/skills/skill");
@@ -1358,28 +1358,28 @@ namespace Chummer
 					where skill != null
 					select skill).ToList();
 
-				
+
 
 				List<Skill> skills = new List<Skill>();
 
 				foreach (Skill skill in v)
-				{
+                {
 					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
 					if(knoSkill != null)
-					{
+                    {
 						KnowledgeSkills.Add(knoSkill);
-					}
+            }
 					else
-					{
+            {
 						skills.Add(skill);
 					}
-				}
+            }
 
 				skills.Sort(CompareSkills);
 				foreach (Skill skill in skills) Skills.Add(skill); 
 
-			}
-		    Timekeeper.Finish("load_char_skills");
+            }
+			Timekeeper.Finish("load_char_skills");
 			Timekeeper.Start("load_char_contacts");
 
 
@@ -1808,12 +1808,12 @@ namespace Chummer
 	  //      if (blnHasOldQualities)
 	  //      {
 			//	Timekeeper.Start("load_char_resav");  //Lets not silently save file on load?
-				
 
+				
 			//	Save();
 			//	Timekeeper.Finish("load_char_resav");
-				
 
+				
 			//}
 	        return true;
         }
@@ -1838,10 +1838,10 @@ namespace Chummer
 		    else
 		    {
 			    return rhs.DisplayName.CompareTo(lhs.DisplayName);
-		    }
-	    }
+			}
+        }
 
-	    /// <summary>
+        /// <summary>
         /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
         /// This can be used to write multiple characters to a single XmlDocument.
         /// </summary>
@@ -2093,7 +2093,7 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("MAG", _attMAG.TotalValue.ToString());
-                XPathExpression xprDrain = nav.Compile(strDrain);
+				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Drain Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.DrainResistance);
@@ -2151,7 +2151,7 @@ namespace Chummer
                 strDrain = strDrain.Replace("LOG", _attLOG.TotalValue.ToString());
                 strDrain = strDrain.Replace("WIL", _attWIL.TotalValue.ToString());
                 strDrain = strDrain.Replace("RES", _attRES.TotalValue.ToString());
-                XPathExpression xprDrain = nav.Compile(strDrain);
+				XPathExpression xprDrain = nav.Compile(strDrain);
 
                 // Add any Improvements for Fading Resistance.
                 int intDrain = Convert.ToInt32(nav.Evaluate(xprDrain)) + _objImprovementManager.ValueOf(Improvement.ImprovementType.FadingResistance);
@@ -2174,9 +2174,9 @@ namespace Chummer
             _attMAG.Print(objWriter);
             _attRES.Print(objWriter);
             if (_strMetatype.EndsWith("A.I.") || _strMetatypeCategory == "Technocritters" || _strMetatypeCategory == "Protosapients")
-            {
+			{
 				_attDEP.Print(objWriter);
-                objWriter.WriteElementString("signal", _intSignal.ToString());
+				objWriter.WriteElementString("signal", _intSignal.ToString());
                 objWriter.WriteElementString("response", _intResponse.ToString());
                 objWriter.WriteElementString("system", System.ToString());
                 objWriter.WriteElementString("firewall", Firewall.ToString());
@@ -2739,7 +2739,7 @@ namespace Chummer
             _attESS._objCharacter = this;
 			_attDEP = new CharacterAttrib("DEP");
 			_attDEP._objCharacter = this;
-            _blnMAGEnabled = false;
+			_blnMAGEnabled = false;
             _blnRESEnabled = false;
             _blnGroupMember = false;
             _strGroupName = "";
@@ -3780,12 +3780,12 @@ namespace Chummer
 				if(oldCanAffordSpec != CanAffordSpecialization)
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordSpecialization)));
             }
-        }
+            }
 
 	    public bool CanAffordSpecialization
 	    {
 		    get { return Karma >= Options.KarmaSpecialization; }
-	    }
+        }
 
         /// <summary>
         /// Special.
@@ -4011,7 +4011,7 @@ namespace Chummer
 				case "DEP":
 				case "DEPBase":
 					return _attDEP;
-                case "ESS":
+				case "ESS":
                     return _attESS;
                 default:
                     return _attBOD;
@@ -4148,9 +4148,9 @@ namespace Chummer
             {
                 return _attRES;
             }
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		/// Depth (DEP) Attribute.
 		/// </summary>
 		public CharacterAttrib DEP
@@ -4163,7 +4163,7 @@ namespace Chummer
 
 		/// <summary>
 		/// Essence (ESS) Attribute.
-        /// </summary>
+		/// </summary>
         public CharacterAttrib ESS
         {
             get
@@ -4803,7 +4803,7 @@ namespace Chummer
 					intExtraIP = 4 + _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass); ;
 				}
 
-                strReturn += " + " + intExtraIP.ToString() + "d6";
+				strReturn += " + " + intExtraIP.ToString() + "d6";
 
                 return strReturn;
             }
@@ -4857,10 +4857,12 @@ namespace Chummer
                     intINI = 0;
 
                 int intExtraIP = 3;
+				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
 
 				if (_strMetatype == "A.I.")
 				{
 					intExtraIP = 4;
+					intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
                     if (_blnHasHomeNode)
 					{
 						if (_intHomeNodeDataProcessing > _intHomeNodePilot)
@@ -4878,10 +4880,10 @@ namespace Chummer
 				else
 				{
 					strReturn = intINI.ToString();
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
 				}
 
-                return strReturn;
+				return strReturn;
             }
         }
 
@@ -4892,13 +4894,14 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
+				string strReturn = "";
 
-                int intINI = (_attINT.TotalValue) + WoundModifiers;
-                if (intINI < 0)
-                    intINI = 0;
+				int intINI = (_attINT.TotalValue) + WoundModifiers;
+				if (intINI < 0)
+					intINI = 0;
 
-                int intExtraIP = 4;
+				int intExtraIP = 4;
+				intExtraIP += _objImprovementManager.ValueOf(Improvement.ImprovementType.MatrixInitiativePass);
 
 				if (_strMetatype == "A.I.")
 				{
@@ -4919,11 +4922,11 @@ namespace Chummer
 				else
 				{
 					strReturn = intINI.ToString();
-                strReturn += " + DP + " + intExtraIP.ToString() + "d6";
+					strReturn += " + DP + " + intExtraIP.ToString() + "d6";
 				}
 
-                return strReturn;
-            }
+				return strReturn;
+			}
         }
 
         /// <summary>
@@ -5251,9 +5254,9 @@ namespace Chummer
             }
         }
 
-		/// <summary>
+        /// <summary>
 		/// Active Skills
-		/// </summary>
+        /// </summary>
 		public BindingList<Skill> Skills { get; set; } 
 
 		public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
@@ -5767,11 +5770,11 @@ namespace Chummer
             {
 				int intCMPhysical = 0;
 				if (_strMetatype == "A.I.")
-                {
-                    // A.I.s add 1/2 their System to Physical CM since they do not have BOD.
+				{
+					// A.I.s add 1/2 their System to Physical CM since they do not have BOD.
 					double dblDEP = _attDEP.TotalValue;
 					intCMPhysical = (int)Math.Ceiling(dblDEP / 2) + 8;
-                }
+				}
 				else
 				{
 					double dblBOD = _attBOD.TotalValue;
@@ -6052,10 +6055,10 @@ namespace Chummer
 				{
 					intLimit = (Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attSTR.TotalValue) * 2) + Convert.ToDecimal(_attBOD.TotalValue) + Convert.ToDecimal(_attREA.TotalValue)) / 3)));
 				}
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
+				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalLimit);
 				strReturn = Convert.ToString(intLimit);
                 return strReturn;
-            }
+			}
         }
 
         /// <summary>
@@ -6093,8 +6096,8 @@ namespace Chummer
 				{
 					intLimit = Convert.ToInt32(Math.Ceiling(((Convert.ToDecimal(_attLOG.TotalValue) * 2) + Convert.ToDecimal(_attINT.TotalValue) + Convert.ToDecimal(_attWIL.TotalValue)) / 3));
 				}
-                intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
-                return intLimit;
+				intLimit += _objImprovementManager.ValueOf(Improvement.ImprovementType.MentalLimit);
+				return intLimit;
             }
         }
 
@@ -6146,7 +6149,7 @@ namespace Chummer
 	            int val = _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
 	            return fromAttributes + val;
             }
-        }
+            }
 
         /// <summary>
 		/// Number of free Knowledge skill points the character have remaining
@@ -6154,21 +6157,21 @@ namespace Chummer
 	    public int KnowledgeSkillPointsRemain
 	    {
 		    get
-		    {
+            {
 			    return KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
-			}
-	    }
+            }
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Number of knowledge skill points the character have used.
-		/// </summary>
-	    public int KnowledgeSkillPointsUsed
-	    {
-		    get
-		    {
+        /// </summary>
+        public int KnowledgeSkillPointsUsed
+        {
+            get
+            {
 			    return KnowledgeSkills.Sum(x => x.CurrentSpCost());
-			}
-	    }
+            }
+        }
 
         /// <summary>
         /// Number of free Skill Points the character has.
@@ -6378,7 +6381,35 @@ namespace Chummer
                 _strMovement = value;
             }
         }
+		/// <summary>
+		/// Character's Movement rate in Metres per Combat Turn or Kilometres Per Hour.
+		/// </summary>
+		public string CalculatedMovement
+		{
+           get
+			{
+				string strReturn = "";
+				if (!Movement.Contains("/"))
+				{
+					return Movement;
+        }
+				else
+				{
+					string[] strMovement = Movement.Split('/');
+					int intWalking = Convert.ToInt32(strMovement[0]);
+					int intRunning = Convert.ToInt32(strMovement[1]);
 
+					int walkratekph = Convert.ToInt32(.001 * (60 * (20 * (intWalking))));
+					int runratekph = Convert.ToInt32(.001 * (60 * (20 * (intRunning))));
+					int walkratemph = Convert.ToInt32(0.62 * (.001 * (60 * (20 * (intWalking)))));
+					int runratemph = Convert.ToInt32(0.62 * (.001 * (60 * (20 * (intRunning)))));
+
+					strReturn = String.Format(LanguageManager.Instance.GetString("Tip_CalculatedMovement").Replace("{0}",intWalking.ToString()).Replace("{1}",walkratekph.ToString()).Replace("{2}",intRunning.ToString()).Replace("{3}",runratekph.ToString()));
+				}
+				
+				return strReturn;
+			}
+		}
         /// <summary>
         /// Character's walking Movement rate.
         /// </summary>
@@ -6586,14 +6617,14 @@ namespace Chummer
                     return false;
             }
         }
-        #endregion
+		#endregion
 
-        #region Special Functions and Enabled Check Properties
+		#region Special Functions and Enabled Check Properties
 
-        /// <summary>
-        /// Whether or not Adept options are enabled.
-        /// </summary>
-        public bool AdeptEnabled
+		/// <summary>
+		/// Whether or not Adept options are enabled.
+		/// </summary>
+		public bool AdeptEnabled
         {
             get
             {
@@ -6711,18 +6742,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Black Market is enabled.
+		/// Whether or not Black Market Discount is enabled.
         /// </summary>
-        public bool BlackMarket
+		public bool BlackMarketDiscount
         {
             get
             {
-                return _blnBlackMarket;
+                return _blnBlackMarketDiscount;
             }
             set
             {
-                bool blnOldValue = _blnBlackMarket;
-                _blnBlackMarket = value;
+                bool blnOldValue = _blnBlackMarketDiscount;
+				_blnBlackMarketDiscount = value;
                 try
                 {
                     if (blnOldValue != value)
@@ -7679,7 +7710,7 @@ namespace Chummer
 				_blnHasHomeNode = value;
 			}
 		}
-	    #endregion
+		#endregion
 
 	    public event PropertyChangedEventHandler PropertyChanged;
 
@@ -7692,5 +7723,5 @@ namespace Chummer
 			    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		    }
 	    }
-    }
+	}
 }

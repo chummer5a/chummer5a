@@ -591,7 +591,7 @@
 			<avail>(Rating * 4)R</avail>
 			<cost>Rating * 3000</cost>
 			<bonus>
-				<armor>Rating</armor>
+				<armor precedence="0">Rating</armor>
 			</bonus>
 			<source>SR5</source>
 			<page>454</page>
@@ -1112,7 +1112,7 @@
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+1</avail>
+			<avail>+(Rating - 3)</avail>
 			<cost>(Rating - 3) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
@@ -1126,7 +1126,7 @@
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+1</avail>
+			<avail>+(Rating - 3)</avail>
 			<cost>(Rating - 3) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
@@ -1677,7 +1677,7 @@
 			<bonus>
 				<limitmodifier>
 					<limit>Social</limit>
-					<value>+1</value>
+					<value>1</value>
 					<condition>For musical performances</condition>
 				</limitmodifier>
 			</bonus>
@@ -1730,7 +1730,7 @@
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
-					<value>+1</value>
+					<value>1</value>
 					<condition>For climbing, jumping, running, or knockdown resist.</condition>
 				</limitmodifier>
 			</bonus>
@@ -1909,6 +1909,9 @@
 			<name>Active Hardwires</name>
 			<category>Bodyware</category>
 			<rating>6</rating>
+			<bonus>
+				<hardwires excludecategory="Magical Active,Resonance Active">Rating</hardwires>
+			</bonus>
 			<ess>Rating * 0.05</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 2)</avail>

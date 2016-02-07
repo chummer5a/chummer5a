@@ -65,6 +65,8 @@ namespace Chummer
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
 			// Select the first Category in the list.
 			if (_strSelectCategory == "")
 				cboCategory.SelectedIndex = 0;
@@ -309,6 +311,11 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Up)
 				txtSearch.Select(txtSearch.Text.Length, 0);
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+			lstWeapon_SelectedIndexChanged(sender, e);
 		}
 		#endregion
 
@@ -705,7 +712,9 @@ namespace Chummer
                 AcceptForm();
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
+
+
+		private void lblSource_Click(object sender, EventArgs e)
         {
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             objCommon.OpenPDF(lblSource.Text);

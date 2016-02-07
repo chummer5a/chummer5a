@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Skills;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -280,7 +282,7 @@ namespace Chummer
 
 				// Select the None item.
 				cboMetavariant.SelectedIndex = 0;
-				lblMetavariantBP.Text = "0";
+				lblBP.Text = objXmlMetatype["karma"].InnerText;
 
 				// If the Metatype has Force enabled, show the Force NUD.
 				if (objXmlMetatype["forcecreature"] != null || objXmlMetatype["essmax"].InnerText.Contains("D6"))
@@ -305,9 +307,6 @@ namespace Chummer
 					lblForceLabel.Visible = false;
 					nudForce.Visible = false;
 				}
-
-                if (cboCategory.Text == "Metasapient")
-                {
                     string strQualities = "";
                     // Build a list of the Metavariant's Positive Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
@@ -365,9 +364,8 @@ namespace Chummer
                         }
                         strQualities += "\n";
                     }
-                    lblMetavariantQualities.Text = strQualities;
+                    lblQualities.Text = strQualities;
                 }
-			}
 			else
 			{
 				// Clear the Metavariant list if nothing is currently selected.
@@ -401,7 +399,7 @@ namespace Chummer
 			if (cboMetavariant.SelectedValue.ToString() != "None")
 			{
 				XmlNode objXmlMetavariant = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue + "\"]");
-				lblMetavariantBP.Text = objXmlMetavariant["karma"].InnerText;
+				lblBP.Text = objXmlMetavariant["karma"].InnerText;
 
                 lblBOD.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["bodmin"].InnerText, objXmlMetavariant["bodmax"].InnerText, objXmlMetavariant["bodaug"].InnerText);
                 lblAGI.Text = string.Format("{0}/{1} ({2})", objXmlMetavariant["agimin"].InnerText, objXmlMetavariant["agimax"].InnerText, objXmlMetavariant["agiaug"].InnerText);
@@ -470,12 +468,75 @@ namespace Chummer
 					}
 					strQualities += "\n";
 				}
-				lblMetavariantQualities.Text = strQualities;
+				lblQualities.Text = strQualities;
+			}
+			else if (lstMetatypes.SelectedValue != null)
+			{
+				XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
+				string strQualities = "";
+				// Build a list of the Metavariant's Positive Qualities.
+				foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
+				{
+					try
+					{
+						if (GlobalOptions.Instance.Language != "en-us")
+						{
+							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+							if (objQuality["translate"] != null)
+								strQualities += objQuality["translate"].InnerText;
+							else
+								strQualities += objXmlQuality.InnerText;
+
+							if (objXmlQuality.Attributes["select"].InnerText != "")
+								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+						}
+						else
+						{
+							strQualities += objXmlQuality.InnerText;
+							if (objXmlQuality.Attributes["select"].InnerText != "")
+								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+						}
+					}
+					catch
+					{
+					}
+					strQualities += "\n";
+				}
+				// Build a list of the Metavariant's Negative Qualities.
+				foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
+				{
+					try
+					{
+						if (GlobalOptions.Instance.Language != "en-us")
+						{
+							XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+							if (objQuality["translate"] != null)
+								strQualities += objQuality["translate"].InnerText;
+							else
+								strQualities += objXmlQuality.InnerText;
+
+							if (objXmlQuality.Attributes["select"].InnerText != "")
+								strQualities += " (" + LanguageManager.Instance.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+						}
+						else
+						{
+							strQualities += objXmlQuality.InnerText;
+							if (objXmlQuality.Attributes["select"].InnerText != "")
+								strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+						}
+					}
+					catch
+					{
+					}
+					strQualities += "\n";
+				}
+				lblQualities.Text = strQualities;
+				lblBP.Text = objXmlMetatype["karma"].InnerText;
 			}
 			else
 			{
-				lblMetavariantBP.Text = "0";
-				lblMetavariantQualities.Text = "None";
+				lblBP.Text = "0";
+				lblQualities.Text = "None";
 			}
 		}
 
@@ -627,7 +688,7 @@ namespace Chummer
 				else
 				{
 					_objCharacter.Metavariant = cboMetavariant.SelectedValue.ToString();
-					_objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantBP.Text);
+					_objCharacter.MetatypeBP = Convert.ToInt32(lblBP.Text);
 				}
 
 				if (objXmlMetatype["movement"] != null)
@@ -826,6 +887,36 @@ namespace Chummer
 						objPower.Create(objXmlCritterPower, _objCharacter, objNode, intRating, strForcedValue);
 						objPower.CountTowardsLimit = false;
 						_objCharacter.CritterPowers.Add(objPower);
+					}
+				}
+
+				// Add any Natural Weapons the Metavariant should have.
+				if (cboMetavariant.SelectedValue.ToString() != "None")
+				{
+					if (objXmlMetavariant["naturalweapons"] != null)
+					{
+						foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
+						{
+							Weapon objWeapon = new Weapon(_objCharacter);
+							objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+							objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+							objWeapon.WeaponType = "Melee";
+							objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
+							;
+							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
+							;
+							objWeapon.Mode = "0";
+							objWeapon.RC = "0";
+							objWeapon.Concealability = 0;
+							objWeapon.Avail = "0";
+							objWeapon.Cost = 0;
+							objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+							objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+							objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+
+							_objCharacter.Weapons.Add(objWeapon);
+						}
 					}
 				}
 
@@ -1065,7 +1156,7 @@ namespace Chummer
                 if (cboMetavariant.Text != "None")
                 {
                     int x = 0;
-                       int.TryParse(lblMetavariantBP.Text, out x);
+                       int.TryParse(lblBP.Text, out x);
                     //_objCharacter.BuildKarma = _objCharacter.BuildKarma - x;
                 }
                 else

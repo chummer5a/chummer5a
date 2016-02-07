@@ -64,6 +64,11 @@
 					<value>8</value>
 					<metavariants>
 						<metavariant>
+							<name>Banshee</name>
+							<value>8</value>
+							<karma>0</karma>
+						</metavariant>
+						<metavariant>
 							<name>Dryad</name>
 							<value>8</value>
 							<karma>0</karma>

@@ -251,7 +251,7 @@
 		</quality>
 		<quality>
 			<id>af5b1436-abc9-4f3d-9521-64cf58724e0a</id>
-			<name>Cleaning Entertainment - Service (Standard)</name>
+			<name>Cleaning Service (Standard)</name>
 			<category>Entertainment - Service</category>
 			<lp>1</lp>
 			<allowed>High,Luxury</allowed>
@@ -261,7 +261,7 @@
 		</quality>
 		<quality>
 			<id>6f638af3-39c0-4d29-8a5d-1e0bc67ea922</id>
-			<name>Cleaning Entertainment - Service (Mage Sensitive)</name>
+			<name>Cleaning Service (Mage Sensitive)</name>
 			<category>Entertainment - Service</category>
 			<lp>1</lp>
 			<allowed>High,Luxury</allowed>
@@ -271,7 +271,7 @@
 		</quality>
 		<quality>
 			<id>1fd70570-e89d-4c85-bfe7-6b56aac7c7df</id>
-			<name>Cleaning Entertainment - Service (Pollution Sensitive)</name>
+			<name>Cleaning Service (Pollution Sensitive)</name>
 			<category>Entertainment - Service</category>
 			<lp>1</lp>
 			<allowed>High,Luxury</allowed>
@@ -681,8 +681,24 @@
 			<category>Entertainment - Asset</category>
 			<lp>2</lp>
 			<allowed>Medium,Commercial</allowed>
+			<bonus>
+				<selectskill />
+			</bonus>
 			<source>RF</source>
 			<cost>2500</cost>
+			<page>224</page>
+		</quality>
+		<quality>
+			<id>af8ac67a-7603-48b2-8ee4-940e5dcd5f29</id>
+			<name>Cramped Workshop/Facility</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<bonus>
+				<selectskill />
+			</bonus>
+			<allowed>Medium,Commercial</allowed>
+			<source>RF</source>
+			<cost>2250</cost>
 			<page>224</page>
 		</quality>
 		<quality>
@@ -738,20 +754,6 @@
 				<oneof>
 					<characterquality>SINner (Corporate)</characterquality>
 					<characterquality>SINner (Corporate Limited)</characterquality>
-				</oneof>
-			</required>
-			<source>RF</source>
-			<page>225</page>
-		</quality>
-		<quality>
-			<id>812ac8df-42e6-4086-b640-f6145a98c82c</id>
-			<name>Cramped (Workshop/Facility)</name>
-			<category>Negative</category>
-			<lp>3</lp>
-			<required>
-				<oneof>
-					<quality>Garage</quality>
-					<quality>Workshop/Facility</quality>
 				</oneof>
 			</required>
 			<source>RF</source>

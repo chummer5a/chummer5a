@@ -1997,9 +1997,9 @@ namespace Chummer
 
 		#endregion
 
-	}
+		}
 
-	/// <summary>
+		/// <summary>
 	/// Type of Spirit.
 	/// </summary>
 	public enum SpiritType
@@ -6394,6 +6394,16 @@ namespace Chummer
 		}
 		#endregion
 	}
+
+    /// <summary>
+	/// Type of Contact.
+	/// </summary>
+	public enum LimitType
+    {
+        Physical = 0,
+        Mental = 1,
+        Social = 2
+    }
 
     /// <summary>
     /// A Skill Limit Modifier.

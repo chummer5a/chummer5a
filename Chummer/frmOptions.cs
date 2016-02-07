@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Octokit;
+using System.Collections.Specialized;
+using System.Net;
 
 namespace Chummer
 {
@@ -11,9 +14,8 @@ namespace Chummer
 	{
 		private readonly CharacterOptions _characterOptions = new CharacterOptions();
 		private bool _skipRefresh;
-
-        #region Form Events
-        public frmOptions()
+		#region Form Events
+		public frmOptions()
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
@@ -717,7 +719,7 @@ namespace Chummer
 
         private void CloseCreateForm()
         {
-            Form fc = Application.OpenForms["frmCreate"];
+            Form fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
 
             if (fc == null)
                 return;
@@ -728,7 +730,7 @@ namespace Chummer
             if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            fc = Application.OpenForms["frmCreate"];
+            fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
 
             if (fc != null)
                 fc.Close();
@@ -850,14 +852,12 @@ namespace Chummer
         private void SetToolTips()
         {
             const int width = 50;
-            var functions = new CommonFunctions();
-
-            tipTooltip.SetToolTip(chkKnucks, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
-            tipTooltip.SetToolTip(chkIgnoreArt, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
-            tipTooltip.SetToolTip(chkCyberlegMovement, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
-            tipTooltip.SetToolTip(chkDontDoubleQualities, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
-            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
-            tipTooltip.SetToolTip(chkAllowInitiation, functions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
+            tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
+            tipTooltip.SetToolTip(chkIgnoreArt, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
+            tipTooltip.SetToolTip(chkCyberlegMovement, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
+            tipTooltip.SetToolTip(chkDontDoubleQualities, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
+            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
+            tipTooltip.SetToolTip(chkAllowInitiation, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
         }
 
         private void PopulateSettingsList()
@@ -1100,11 +1100,35 @@ namespace Chummer
                 GlobalOptions.Instance.SourcebookInfo.Add(newSource);
             }
         }
-		#endregion
 
-		private void cgkESSLossReducesMaximumOnly_CheckedChanged(object sender, EventArgs e)
+		private void cmdUploadPastebin_Click(object sender, EventArgs e)
 		{
+			#if DEBUG
+			string strFilePath = "Insert local file here";
+			System.Collections.Specialized.NameValueCollection Data	= new System.Collections.Specialized.NameValueCollection();
+			XmlDocument objDoc = new XmlDocument();
+			String line = "";
+            using (StreamReader sr = new StreamReader(strFilePath))
+			{
+				line = sr.ReadToEnd();
+			}
+			Data["api_paste_name"] = "Chummer";
+			Data["api_paste_expire_date"] = "N";
+			Data["api_paste_format"] = "xml";
+			Data["api_paste_code"] = line;
+			Data["api_dev_key"] = "7845fd372a1050899f522f2d6bab9666";
+			Data["api_option"] = "paste";
 
+			WebClient wb = new WebClient();
+				byte[] bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", Data);
+
+				string response;
+				using (MemoryStream ms = new MemoryStream(bytes))
+				using (StreamReader reader = new StreamReader(ms))
+					response = reader.ReadToEnd();
+			Clipboard.SetText(response);
+			#endif
 		}
+		#endregion
 	}
 }

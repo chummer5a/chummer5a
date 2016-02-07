@@ -658,7 +658,6 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Resistance to Toxins</quality>
 					<quality>Resistance to Pathogens and Toxins</quality>
 				</oneof>
 			</forbidden>
@@ -673,7 +672,6 @@
 			<bonus />
 			<forbidden>
 				<oneof>
-					<quality>Resistance to Pathogens</quality>
 					<quality>Resistance to Pathogens and Toxins</quality>
 				</oneof>
 			</forbidden>
@@ -681,22 +679,17 @@
 			<page>77</page>
 		</quality>
 		<quality>
+			<id>139ca69c-e9d3-4540-a4c6-b8c778e70185</id>
 			<name>Resistance to Pathogens/Toxins</name>
 			<karma>8</karma>
+			<hide>yes</hide>
 			<category>Positive</category>
 			<bonus />
-			<forbidden>
-				<oneof>
-					<quality>Resistance to Pathogens</quality>
-					<quality>Resistance to Toxins</quality>
-				</oneof>
-			</forbidden>
 			<source>SR5</source>
 			<page>77</page>
 		</quality>
 		<quality>
 			<name>Resistance to Pathogens and Toxins</name>
-			<hide>yes</hide>
 			<karma>8</karma>
 			<category>Positive</category>
 			<bonus />
@@ -2367,7 +2360,7 @@
 			<karma>10</karma>
 			<category>Positive</category>
 			<bonus>
-				<blackmarket />
+				<blackmarketdiscount />
 				<selecttext />
 				<selectcontact />
 			</bonus>
@@ -5160,7 +5153,7 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor>2</armor>
+				<armor precedence="0">2</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5234,7 +5227,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor>4</armor>
+				<armor precedence="0">4</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5260,7 +5253,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor>3</armor>
+				<armor precedence="0">3</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -6835,26 +6828,26 @@
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<val>1</val>
+						<min>1</min>
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
@@ -6881,7 +6874,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -6922,42 +6917,6 @@
 			<contributetolimit>no</contributetolimit>
 			<karma>32</karma>
 			<category>Positive</category>
-			<bonus>
-				<enabletab>
-					<name>critter</name>
-				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
-				<optionalpowers>
-					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
-					<optionalpower select="Smell">Enhanced Senses</optionalpower>
-					<optionalpower select="Pathogens">Immunity</optionalpower>
-					<optionalpower select="Toxins">Immunity</optionalpower>
-				</optionalpowers>
-				<selectattributes>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-					<selectattribute>
-						<attribute>BOD</attribute>
-						<attribute>REA</attribute>
-						<attribute>STR</attribute>
-						<val>1</val>
-						<affectbase />
-					</selectattribute>
-				</selectattributes>
-			</bonus>
 			<required>
 				<allof>
 					<metatype>Elf</metatype>
@@ -7067,7 +7026,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7172,7 +7133,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7274,7 +7237,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7376,7 +7341,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7494,7 +7461,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7603,7 +7572,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7715,7 +7686,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7825,7 +7798,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -7959,7 +7934,8 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8076,7 +8052,8 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8095,7 +8072,7 @@
 				<power>Dual Natured</power>
 				<power select="Fire">Vulnerability</power>
 				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Severe</power>
+				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 			</powers>
 			<source>RF</source>
@@ -8196,7 +8173,8 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8293,7 +8271,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8419,7 +8399,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8527,7 +8509,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8637,7 +8621,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8736,7 +8722,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8862,7 +8850,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -8987,7 +8977,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -9103,7 +9095,9 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua</quality>
+					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Adept)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire</quality>
 					<quality>Infected: Wendigo</quality>
@@ -10005,9 +9999,19 @@
 		<quality>
 			<id>bd64ccab-5138-475d-8eb1-400ae4a11ac2</id>
 			<name>Quasimodo</name>
-			<karma>-2</karma>
+			<karma>-5</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<specificskill>
+					<name>Intimidation</name>
+					<bonus>2</bonus>
+				</specificskill>
+				<skillcategory>
+					<name>Social Active</name>
+					<exclude>Intimidation</exclude>
+					<bonus>-3</bonus>
+				</skillcategory>
+			</bonus>
 			<source>CF</source>
 			<page>59</page>
 		</quality>
@@ -10151,7 +10155,12 @@
 			<limit>4</limit>
 			<category>Positive</category>
 			<bonus>
-				<selecttext />
+				<dealerconnection>
+					<category>Drones</category>
+					<category>Groundcraft</category>
+					<category>Watercraft</category>
+					<category>Aircraft</category>
+				</dealerconnection>
 			</bonus>
 			<source>R5</source>
 			<page>33</page>

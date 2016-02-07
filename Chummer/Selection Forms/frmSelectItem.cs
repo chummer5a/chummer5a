@@ -102,7 +102,10 @@ namespace Chummer
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = objNode.InnerText;
-                        objItem.Name = objNode.InnerText;
+						if (objNode.Attributes["translate"] != null)
+						{ objItem.Name = objNode.Attributes["translate"].InnerText; }
+						else
+						{ objItem.Name = objNode.InnerText; }
                         lstItems.Add(objItem);
                     }
                 }

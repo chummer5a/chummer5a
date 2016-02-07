@@ -82,9 +82,9 @@
       <category>Armor</category>
       <armor>15</armor>
       <armorcapacity>15</armorcapacity>
-      <addmodcategory>Full Body Mods</addmodcategory>
-      <avail>14R</avail>
-      <cost>2000</cost>
+			<avail>14R</avail>
+			<cost>2000</cost>
+			<addmodcategory>Full Body Mods</addmodcategory>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -116,11 +116,11 @@
       <category>Armor</category>
       <armor>9</armor>
       <armorcapacity>9</armorcapacity>
-      <gears>
-        <usegear>Biomonitor</usegear>
-      </gears>
       <avail>8</avail>
       <cost>650</cost>
+			<gears>
+				<usegear>Biomonitor</usegear>
+			</gears>
       <source>SR5</source>
       <page>437</page>
     </armor>
@@ -151,9 +151,9 @@
 			<name>Ballistic Shield</name>
 			<category>Armor</category>
 			<armor>+6</armor>
-			<addweapon>Ballistic Shield</addweapon>
 			<armorcapacity>6</armorcapacity>
-			<physicallimt>-1</physicallimt>
+			<addweapon>Ballistic Shield</addweapon>
+			<physicallimit>-1</physicallimit>
 			<avail>12R</avail>
 			<cost>1200</cost>
 			<source>SR5</source>
@@ -164,9 +164,9 @@
 			<name>Riot Shield</name>
 			<category>Armor</category>
 			<armor>+6</armor>
-			<addweapon>Riot Shield</addweapon>
 			<armorcapacity>6</armorcapacity>
-			<physicallimt>-1</physicallimt>
+			<addweapon>Riot Shield</addweapon>
+			<physicallimit>-1</physicallimit>
 			<avail>10R</avail>
 			<cost>1500</cost>
 			<source>SR5</source>
@@ -218,9 +218,6 @@
       <armorcapacity>5</armorcapacity>
       <avail>9</avail>
       <cost>2600</cost>
-      <mods>
-        <name>Custom Fit</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -228,6 +225,9 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -239,10 +239,6 @@
       <armorcapacity>4</armorcapacity>
       <avail>8</avail>
       <cost>2300</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Concealability</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -250,6 +246,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -261,10 +261,6 @@
       <armorcapacity>5</armorcapacity>
       <avail>6</avail>
       <cost>2400</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Concealability</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -272,6 +268,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -283,10 +283,6 @@
       <armorcapacity>6</armorcapacity>
       <avail>7</avail>
       <cost>2500</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Concealability</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -294,6 +290,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -305,17 +305,17 @@
       <armorcapacity>5</armorcapacity>
       <avail>7</avail>
       <cost>2200</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Concealability</name>
-      </mods>
-      <bonus>
-        <limitmodifier>
-          <limit>Social</limit>
-          <value>1</value>
-          <condition>Must be visible</condition>
-        </limitmodifier>
-      </bonus>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Must be visible</condition>
+				</limitmodifier>
+			</bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -328,17 +328,17 @@
       <armorcapacity>10</armorcapacity>
       <avail>8</avail>
       <cost>3000</cost>
-      <mods>
-        <name>Custom Fit (Stack)</name>
-        <name>Concealability</name>
-      </mods>
-      <bonus>
-        <limitmodifier>
-          <limit>Social</limit>
-          <value>1</value>
-          <condition>Must be visible</condition>
-        </limitmodifier>
-      </bonus>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Must be visible</condition>
+				</limitmodifier>
+			</bonus>
+			<mods>
+				<name>Custom Fit (Stack)</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -351,17 +351,17 @@
       <armorcapacity>12</armorcapacity>
       <avail>8</avail>
       <cost>3100</cost>
-      <mods>
-        <name>Custom Fit (Stack)</name>
-        <name>Concealability</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-        </limitmodifier>
-        <condition>Must be visible</condition>
+					<condition>Must be visible</condition>
+				</limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit (Stack)</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -374,10 +374,6 @@
       <armorcapacity>14</armorcapacity>
       <avail>10</avail>
       <cost>3600</cost>
-      <mods>
-        <name>Custom Fit (Stack)</name>
-        <name>Concealability</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -385,6 +381,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit (Stack)</name>
+				<name>Concealability</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -516,16 +516,16 @@
       <armorcapacity>14</armorcapacity>
       <avail>7</avail>
       <cost>2250</cost>
-      <mods>
-        <name>Custom Fit</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
           <condition>Must be visible</condition>
         </limitmodifier>
-      </bonus>
+			</bonus>
+			<mods>
+				<name>Custom Fit</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -537,12 +537,6 @@
       <armorcapacity>5</armorcapacity>
       <avail>8</avail>
       <cost>1500</cost>
-      <mods>
-        <name>Custom Fit</name>
-      </mods>
-      <gears>
-        <usegear>Concealable Holster</usegear>
-      </gears>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -550,6 +544,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <mods>
+        <name>Custom Fit</name>
+      </mods>
+      <gears>
+        <usegear>Concealable Holster</usegear>
+      </gears>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -562,12 +562,6 @@
       <armorcapacity>6</armorcapacity>
       <avail>8</avail>
       <cost>2300</cost>
-      <mods>
-        <name>Custom Fit (Stack)</name>
-      </mods>
-      <gears>
-        <usegear>Holster</usegear>
-      </gears>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -575,6 +569,12 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit (Stack)</name>
+			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -586,11 +586,6 @@
       <armorcapacity>10</armorcapacity>
       <avail>10</avail>
       <cost>13500</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-        <name rating="3">Ruthenium Polymer Coating</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -598,6 +593,11 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+				<name rating="3">Ruthenium Polymer Coating</name>
+			</mods>
       <source>RG</source>
       <page>58</page>
     </armor>
@@ -609,10 +609,6 @@
       <armorcapacity>4</armorcapacity>
       <avail>12</avail>
       <cost>2000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -620,6 +616,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+			</mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -631,10 +631,6 @@
       <armorcapacity>2</armorcapacity>
       <avail>16</avail>
       <cost>4000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -642,6 +638,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <mods>
+        <name>Custom Fit</name>
+        <name>Newest Model</name>
+      </mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -653,10 +653,6 @@
       <armorcapacity>3</armorcapacity>
       <avail>16</avail>
       <cost>5000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -664,6 +660,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+			</mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -675,10 +675,6 @@
       <armorcapacity>4</armorcapacity>
       <avail>16</avail>
       <cost>6000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -686,6 +682,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+			</mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -697,10 +697,6 @@
       <armorcapacity>5</armorcapacity>
       <avail>16</avail>
       <cost>7000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -708,6 +704,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+			</mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -719,17 +719,17 @@
       <armorcapacity>6</armorcapacity>
       <avail>16</avail>
       <cost>8000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Newest Model</name>
-      </mods>
-      <bonus>
-        <limitmodifier>
-          <limit>Social</limit>
-          <value>2</value>
-          <condition>Must be visible</condition>
-        </limitmodifier>
-      </bonus>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>2</value>
+					<condition>Must be visible</condition>
+				</limitmodifier>
+			</bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Newest Model</name>
+			</mods>
       <source>RG</source>
       <page>61</page>
     </armor>
@@ -741,9 +741,6 @@
       <armorcapacity>2</armorcapacity>
       <avail>10</avail>
       <cost>8500</cost>
-      <mods>
-        <name>Custom Fit</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -751,7 +748,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
-      <addmodcategory>Nightshade IR</addmodcategory>
+			<addmodcategory>Nightshade IR</addmodcategory>
+			<mods>
+				<name>Custom Fit</name>
+			</mods>
       <source>RG</source>
       <page>62</page>
     </armor>
@@ -837,9 +837,6 @@
       <armorcapacity>6</armorcapacity>
       <avail>6</avail>
       <cost>1100</cost>
-      <mods>
-        <name>Gear Access</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -847,6 +844,9 @@
           <condition>Only with appropriate corp, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Gear Access</name>
+			</mods>
       <source>RG</source>
       <page>64</page>
     </armor>
@@ -904,11 +904,6 @@
       <armorcapacity>15</armorcapacity>
       <avail>16F</avail>
       <cost>15000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -916,6 +911,11 @@
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Gear Access</name>
+				<name>Restrictive</name>
+			</mods>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -927,11 +927,6 @@
       <armorcapacity>18</armorcapacity>
       <avail>18F</avail>
       <cost>20000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -939,6 +934,11 @@
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
+      <mods>
+        <name>Custom Fit</name>
+        <name>Gear Access</name>
+        <name>Restrictive</name>
+      </mods>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -950,11 +950,6 @@
       <armorcapacity>20</armorcapacity>
       <avail>22F</avail>
       <cost>25000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -962,6 +957,11 @@
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Gear Access</name>
+				<name>Restrictive</name>
+			</mods>
       <source>RG</source>
       <page>66</page>
     </armor>
@@ -984,21 +984,21 @@
       <armorcapacity>12</armorcapacity>
       <avail>14R</avail>
       <cost>8000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
-      <gears>
-        <usegear>Holster</usegear>
-      </gears>
-      <bonus>
-        <limitmodifier>
-          <limit>Social</limit>
-          <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
-        </limitmodifier>
-      </bonus>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Only for intimidation, Must be visible</condition>
+				</limitmodifier>
+			</bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Gear Access</name>
+				<name>Restrictive</name>
+			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
       <source>RG</source>
       <page>67</page>
     </armor>
@@ -1010,21 +1010,21 @@
       <armorcapacity>14</armorcapacity>
       <avail>16R</avail>
       <cost>14000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
-      <gears>
-        <usegear>Holster</usegear>
-      </gears>
-      <bonus>
-        <limitmodifier>
-          <limit>Social</limit>
-          <value>1</value>
-          <condition>Only for intimidation, Must be visible</condition>
-        </limitmodifier>
-      </bonus>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Only for intimidation, Must be visible</condition>
+				</limitmodifier>
+			</bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Gear Access</name>
+				<name>Restrictive</name>
+			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
       <source>RG</source>
       <page>67</page>
     </armor>
@@ -1036,14 +1036,6 @@
       <armorcapacity>16</armorcapacity>
       <avail>18R</avail>
       <cost>20000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Gear Access</name>
-        <name>Restrictive</name>
-      </mods>
-      <gears>
-        <usegear>Holster</usegear>
-      </gears>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1051,6 +1043,14 @@
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Gear Access</name>
+				<name>Restrictive</name>
+			</mods>
+			<gears>
+				<usegear>Holster</usegear>
+			</gears>
       <source>RG</source>
       <page>67</page>
     </armor>
@@ -1095,10 +1095,6 @@
       <armorcapacity>6</armorcapacity>
       <avail>6</avail>
       <cost>3000</cost>
-      <mods>
-        <name rating="8">Fire Resistance</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1106,6 +1102,10 @@
           <condition>Only in emergency situations, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name rating="8">Fire Resistance</name>
+				<name>Restrictive</name>
+			</mods>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1128,10 +1128,6 @@
       <armorcapacity>8</armorcapacity>
       <avail>10R</avail>
       <cost>5000</cost>
-      <mods>
-        <name>Padded</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1139,6 +1135,10 @@
           <condition>Only for intimidation, Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Padded</name>
+				<name>Restrictive</name>
+			</mods>
       <source>RG</source>
       <page>69</page>
     </armor>
@@ -1161,9 +1161,6 @@
       <armorcapacity>15</armorcapacity>
       <avail>16R</avail>
       <cost>8000</cost>
-      <mods>
-        <name>Gear Access</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1171,6 +1168,9 @@
           <condition>Only for intimidation, Must be visible; reduce by 1 in all other tests</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Gear Access</name>
+			</mods>
       <source>RG</source>
       <page>70</page>
     </armor>
@@ -1247,10 +1247,6 @@
       <armorcapacity>4</armorcapacity>
       <avail>8</avail>
       <cost>750</cost>
-      <mods>
-        <name>Concealability</name>
-        <name>Restrictive</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1258,6 +1254,10 @@
           <condition>Must be visible</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Concealability</name>
+				<name>Restrictive</name>
+			</mods>
       <source>RG</source>
       <page>70</page>
     </armor>
@@ -1287,10 +1287,6 @@
       <armorcapacity>2</armorcapacity>
       <avail>8</avail>
       <cost>600</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name>Padded</name>
-      </mods>
       <bonus>
         <limitmodifier>
           <limit>Social</limit>
@@ -1298,6 +1294,10 @@
           <condition>Must be visible, general public only; increase by 1 with gang members</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name>Padded</name>
+			</mods>
       <source>RG</source>
       <page>72</page>
     </armor>
@@ -1486,16 +1486,6 @@
       <armorcapacity>14</armorcapacity>
       <avail>16R</avail>
       <cost>11000</cost>
-      <mods>
-        <name>Custom Fit</name>
-        <name rating="5">Insulation</name>
-        <name rating="4">Thermal Damping</name>
-        <name>Gear Access</name>
-      </mods>
-      <gears>
-        <usegear>Gas Mask</usegear>
-        <usegear>Flare Compensation</usegear>
-      </gears>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -1503,6 +1493,16 @@
           <condition>Only for climbing tests</condition>
         </limitmodifier>
       </bonus>
+			<mods>
+				<name>Custom Fit</name>
+				<name rating="5">Insulation</name>
+				<name rating="4">Thermal Damping</name>
+				<name>Gear Access</name>
+			</mods>
+			<gears>
+				<usegear>Gas Mask</usegear>
+				<usegear>Flare Compensation</usegear>
+			</gears>
       <source>RG</source>
       <page>77</page>
     </armor>
@@ -1814,216 +1814,46 @@
 		<!-- Region Hard Targets -->
 		<armor>
 			<id>6a50c63e-f6a9-4023-9ee9-d4b13ded6a9e</id>
-			<name>Cloak (1)</name>
+			<name>Cloak</name>
 			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>1</armor>
+			<rating>6</rating>
+			<armor>0</armor>
+			<armorcapacity>Rating</armorcapacity>
 			<avail>0</avail>
+      <cost>100 * Rating</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Social</limit>
 					<value>-1</value>
 				</limitmodifier>
 			</bonus>
-      <cost>100</cost>
 			<source>HT</source>
 			<page>184</page>
     </armor>
-    <armor>
-			<id>559b8760-ccb0-4b36-8884-cda6709c0023</id>
-			<name>Cloak (2)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>2</armor>
-			<avail>0</avail>
-			<cost>200</cost>
-			<source>HT</source>
-			<page>184</page>
-    </armor>
-    <armor>
-			<id>3cd66ce5-c23a-486a-b1fd-dbd74e8398ad</id>
-			<name>Cloak (3)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>3</armor>
-			<avail>0</avail>
-			<cost>300</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>bc3bb822-6f96-46ff-9c71-c6acd67f2910</id>
-			<name>Cloak (4)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>4</armor>
-			<avail>0</avail>
-			<cost>400</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>08b97650-7256-4d52-ba3f-f56185cb93ee</id>
-			<name>Cloak (5)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>5</armor>
-			<avail>0</avail>
-			<cost>500</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>8ff09885-44e0-4492-9a17-44259ec2bf57</id>
-			<name>Cloak (6)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>-1</value>
-				</limitmodifier>
-			</bonus>
-			<armor>6</armor>
-			<avail>0</avail>
-			<cost>600</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
 		<armor>
 			<id>fc4074b5-b48a-43d4-8d9c-25a11da2a6a8</id>
-			<name>Designer Cloak (1)</name>
+			<name>Designer Cloak</name>
 			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>1</armor>
+			<rating>6</rating>
+			<armor>0</armor>
+			<armorcapacity>Rating</armorcapacity>
 			<avail>0</avail>
-			<cost>400</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>08324d51-c222-44bc-8ac7-b0dff9834689</id>
-			<name>Designer Cloak (2)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>2</armor>
-			<avail>0</avail>
-			<cost>500</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>19485abe-3680-4ddd-9807-8dfe530304a6</id>
-			<name>Designer Cloak (3)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>3</armor>
-			<avail>0</avail>
-			<cost>600</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>01280630-3f87-4216-93b0-3926cadac4c5</id>
-			<name>Designer Cloak (4)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>4</armor>
-			<avail>0</avail>
-			<cost>700</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>e9189459-ff56-469c-8f3e-9c9f333b95bb</id>
-			<name>Designer Cloak (5)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>5</armor>
-			<avail>0</avail>
-			<cost>800</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>676b9a17-3e90-43f7-9da5-d01bebe0c760</id>
-			<name>Designer Cloak (6)</name>
-			<category>Cloaks</category>
-			<armorcapacity>0</armorcapacity>
-			<armor>6</armor>
-			<avail>0</avail>
-			<cost>900</cost>
+			<cost>(100 * Rating) + 300</cost>
 			<source>HT</source>
 			<page>184</page>
 		</armor>
 		<armor>
 			<id>678353a1-b697-442a-aa3a-6e34b9178c4b</id>
-			<name>Ruthenium Polymer Cloak (1)</name>
+			<name>Ruthenium Polymer Cloak</name>
 			<category>Cloaks</category>
+			<rating>4</rating>
 			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
+			<armorcapacity>Rating</armorcapacity>
 			<avail>14F</avail>
-			<cost>4000</cost>
+			<cost>4000 * Rating</cost>
 			<source>HT</source>
 			<page>184</page>
 		</armor>
-		<armor>
-			<id>d465cc08-0aa3-4943-91a4-224ce17df6e1</id>
-			<name>Ruthenium Polymer Cloak (2)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>8000</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>dd69fdeb-5305-49bb-ba86-54b70422e239</id>
-			<name>Ruthenium Polymer Cloak (3)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>12000</cost>
-			<source>HT</source>
-			<page>184</page>
-		</armor>
-		<armor>
-			<id>4aea6d5a-5cdf-45d3-ae62-c5f1348c553d</id>
-			<name>Ruthenium Polymer Cloak (4)</name>
-			<category>Cloaks</category>
-			<armor>0</armor>
-			<armorcapacity>0</armorcapacity>
-			<avail>14F</avail>
-			<cost>16000</cost>
-			<source>HT</source>
-			<page>184</page>
-    </armor>
 	<armor>
 			<id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
 			<name>One-Use Shoes</name>
@@ -2796,13 +2626,13 @@
 			<category>General</category>
 			<armor>0</armor>
 			<hide>yes</hide>
-			<bonus>
-				<selectarmor />
-			</bonus>
 			<maxrating>0</maxrating>
 			<armorcapacity>[0]</armorcapacity>
 			<avail>0</avail>
 			<cost>0</cost>
+			<bonus>
+				<selectarmor />
+			</bonus>
 			<source>RG</source>
 			<page>59</page>
 		</mod>
@@ -2810,8 +2640,8 @@
 			<id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
 			<name>Gear Access</name>
 			<category>General</category>
-			<hide>yes</hide>
 			<armor>0</armor>
+			<hide>yes</hide>
 			<maxrating>0</maxrating>
 			<armorcapacity>[0]</armorcapacity>
 			<avail>0</avail>

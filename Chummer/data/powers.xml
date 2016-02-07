@@ -157,10 +157,10 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<selectlimit>
+				<limitmodifier>
 					<limit>Social</limit>
-					<val>1</val>
-				</selectlimit>
+					<value>1</value>
+				</limitmodifier>
 			</bonus>
 			<source>SR5</source>
 			<page>309</page>
@@ -173,10 +173,10 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<selectlimit>
+				<limitmodifier>
 					<limit>Mental</limit>
-					<val>1</val>
-				</selectlimit>
+					<value>1</value>
+				</limitmodifier>
 			</bonus>
 			<source>SR5</source>
 			<page>309</page>
@@ -189,10 +189,10 @@
       <levels>no</levels>
       <limit>1</limit>
       <bonus>
-        <selectlimit>
-          <limit>Physical</limit>
-          <val>1</val>
-        </selectlimit>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+				</limitmodifier>
       </bonus>
       <source>SR5</source>
       <page>309</page>

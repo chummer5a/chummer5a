@@ -729,23 +729,13 @@
 					</bonus>
 				</choice>
 				<choice>
-					<name>Adept: 2 free levels of Improved Potential (limit)</name>
+					<name>Adept: 2 free levels of Improved Potential</name>
 					<bonus>
-						<specificpower>
-							<name>Improved Potential (limit)</name>
-							<val>1</val>
-							<selectlimit>
-								<val>Rating</val>
-							</selectlimit>
-						</specificpower>
-						<specificpower>
-							<name>Improved Potential (limit)</name>
-							<val>1</val>
-							<selectlimit>
-								<val>Rating</val>
-							</selectlimit>
-						</specificpower>
-					</bonus>
+						<selectpowers>
+							<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+							<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+						</selectpowers>
+				</bonus>
 				</choice>
 			</choices>
 			<source>SG</source>
@@ -1203,7 +1193,9 @@
 				<choice>
 					<name>Adept: 1 free level of Improved Potential.</name>
 					<bonus>
-						<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+						<selectpowers>
+							<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+						</selectpowers>
 					</bonus>
 				</choice>
 			</choices>

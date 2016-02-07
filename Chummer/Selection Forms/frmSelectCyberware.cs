@@ -115,7 +115,9 @@ namespace Chummer
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
-            // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
+			// Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
 			PopulateGrades();
 
 			if (_strSetGrade == "")
@@ -418,7 +420,10 @@ namespace Chummer
 		{
 			UpdateCyberwareInfo();
 		}
-
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateCyberwareInfo();
+		}
 		private void txtSearch_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Down)

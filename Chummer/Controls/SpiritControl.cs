@@ -21,6 +21,7 @@ namespace Chummer
     public partial class SpiritControl : UserControl
     {
 		private Spirit _objSpirit;
+		private CommonFunctions functions = new CommonFunctions();
 		private readonly bool _blnCareer = false;
 
         // Events.
@@ -217,7 +218,7 @@ namespace Chummer
 				strTooltip = LanguageManager.Instance.GetString("Tip_Sprite_EditNotes");
 			if (_objSpirit.Notes != string.Empty)
 				strTooltip += "\n\n" + _objSpirit.Notes;
-			tipTooltip.SetToolTip(imgNotes, strTooltip);
+			tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 		}
 
 		private void ContextMenu_Opening(object sender, CancelEventArgs e)
@@ -304,7 +305,7 @@ namespace Chummer
 					string strTooltip = LanguageManager.Instance.GetString("Tip_Spirit_EditNotes");
 					if (_objSpirit.Notes != string.Empty)
 						strTooltip += "\n\n" + _objSpirit.Notes;
-					tipTooltip.SetToolTip(imgNotes, strTooltip);
+					tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 				}
 				else
 				{
@@ -318,7 +319,7 @@ namespace Chummer
 					string strTooltip = LanguageManager.Instance.GetString("Tip_Sprite_EditNotes");
 					if (_objSpirit.Notes != string.Empty)
 						strTooltip += "\n\n" + _objSpirit.Notes;
-					tipTooltip.SetToolTip(imgNotes, strTooltip);
+					tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
 				}
             }
         }

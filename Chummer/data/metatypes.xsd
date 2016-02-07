@@ -275,7 +275,8 @@
     <xs:complexType>
 	  <xs:sequence>
 	    <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-		<xs:element name="bp" type="xs:string" minOccurs="1" maxOccurs="1" />
+		<xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
+		<xs:element name="karma" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="powers" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -355,10 +356,12 @@
               <xs:element name="metatype" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="0" />
                     <xs:element name="category" type="xs:string" minOccurs="0" />
                     <xs:element name="forcecreature" type="xs:string" minOccurs="0" />
-                    <xs:element name="bp" type="xs:string" minOccurs="0" />
+                    <xs:element name="karma" type="xs:string" minOccurs="0" />
+                    <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="bodmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="bodmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="bodaug" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -371,24 +374,24 @@
                     <xs:element name="strmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="strmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="straug" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="chamin" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="chamax" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="chaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="intmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="intmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="intaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="logmin" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="logmax" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="logaug" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="wilmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="wilmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="wilaug" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="inimin" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="inimax" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="iniaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="logmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="logmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="logaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="intmin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="intmax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="intaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="chamin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="chamax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="chaaug" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="edgmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="edgmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="edgaug" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="inimin" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="inimax" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="iniaug" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="magmin" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="magmax" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="magaug" type="xs:string" minOccurs="1" maxOccurs="1" />
