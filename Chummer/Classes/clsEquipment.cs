@@ -16158,7 +16158,7 @@ namespace Chummer
 		{
 			get
 			{
-				decimal decAccelWalking = Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo);
+				decimal decAccel = Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo);
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -16169,19 +16169,12 @@ namespace Chummer
 						{
 							if (objMod.Bonus["accel"].InnerText.Contains("+"))
 							{
-								string[] strAccel = objMod.Bonus["accel"].InnerText.Split('/');
-
-								XmlDocument objXmlDocument = new XmlDocument();
-								XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-								XPathExpression xprWalking = nav.Compile(strAccel[0].Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty));
-								XPathExpression xprRunning = nav.Compile(strAccel[1].Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty));
-
-								decAccelWalking += Convert.ToDecimal(nav.Evaluate(xprWalking), GlobalOptions.Instance.CultureInfo);
+								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								decAccel += Convert.ToDecimal(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 							else
 							{
-								decAccelWalking += (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["accel"].InnerText, GlobalOptions.Instance.CultureInfo));
+								decAccel += (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["accel"].InnerText, GlobalOptions.Instance.CultureInfo));
 							}
 						}
 					}
@@ -16191,14 +16184,14 @@ namespace Chummer
 				// The value must also exceed the Armor Rating that the Vehicles comes equipped with by default.
 				if (TotalArmor > TotalBody && TotalArmor > _intArmor)
 				{
-					decAccelWalking -= (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * 0.2m);
+					decAccel -= (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * 0.2m);
 				}
 
 				// Make sure Acceleration doesn't go below 0.
-				if (decAccelWalking < 0.0m)
-					decAccelWalking = 0.0m;
+				if (decAccel < 0.0m)
+					decAccel = 0.0m;
 
-				return Convert.ToInt32(Math.Ceiling(decAccelWalking)).ToString();
+				return Convert.ToInt32(Math.Ceiling(decAccel)).ToString();
 			}
 		}
 

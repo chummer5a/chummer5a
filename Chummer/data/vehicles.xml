@@ -5424,6 +5424,9 @@
 			<name>Acceleration Enhancement</name>
 			<category>Powertrain</category>
 			<rating>2</rating>
+			<bonus>
+				<accel>+Rating</accel>
+			</bonus>
 			<slots>FixedValues(4,8)</slots>
 			<avail>6</avail>
 			<cost>FixedValues(Accel * 10000,Accel * 25000)</cost>
