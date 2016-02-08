@@ -1120,6 +1120,7 @@ namespace Chummer
 			// Select a Skill.
 			if (bonusNode.LocalName == ("selectskill"))
 			{
+				//TODO this don't work
 				Log.Info("selectskill");
 				if (_strForcedValue == "+2 to a Combat Skill")
 					_strForcedValue = "";
