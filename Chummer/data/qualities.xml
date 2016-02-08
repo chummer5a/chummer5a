@@ -10127,14 +10127,14 @@
 			<source>HT</source>
 			<page>191</page>
 			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
-			<quality>
-				<name>Faceless</name>
-				<karma>-6</karma>
-				<category>Negative</category>
-				<source>HT</source>
-				<page>191</page>
-				<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
-			</quality>
+		</quality>
+		<quality>
+			<name>Faceless</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<source>HT</source>
+			<page>191</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
 		</quality>
 		<!-- End Region -->
 		<!-- End Region -->

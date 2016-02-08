@@ -86,6 +86,7 @@ Data Change:
 - Removed Fangs from Oni. 
 - Customised Agility and Strength for cyberlimbs now increase based on the rating. Fixes #654.
 - Added the necessary qualities for the Metasapient A.I. Fixes #668.
+- Fixed an issue with the Faceless quality not being visible. 
 
 New Strings:
 - Message_DeleteCalendarWeek
