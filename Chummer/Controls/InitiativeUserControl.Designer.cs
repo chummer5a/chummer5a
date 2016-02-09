@@ -60,14 +60,15 @@
             this.btnNext = new System.Windows.Forms.Button();
             this.btnSort = new System.Windows.Forms.Button();
             this.btnDelay = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.chkFastMode = new System.Windows.Forms.CheckBox();
+            this.chkStaticMode = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRound = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
             this.lblTurn = new System.Windows.Forms.Label();
             this.btnResetBattle = new System.Windows.Forms.Button();
             this.chkBoxChummer = new System.Windows.Forms.CheckedListBox();
-            this.btnClear = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
@@ -338,6 +339,7 @@
             this.btnDecreaseBattleInit.Size = new System.Drawing.Size(24, 24);
             this.btnDecreaseBattleInit.TabIndex = 23;
             this.btnDecreaseBattleInit.UseVisualStyleBackColor = true;
+            this.btnDecreaseBattleInit.Click += new System.EventHandler(this.btnDecreaseBattleInit_Click);
             // 
             // label11
             // 
@@ -441,6 +443,7 @@
             this.flowLayoutPanel2.Controls.Add(this.btnDelay);
             this.flowLayoutPanel2.Controls.Add(this.btnClear);
             this.flowLayoutPanel2.Controls.Add(this.chkFastMode);
+            this.flowLayoutPanel2.Controls.Add(this.chkStaticMode);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 311);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
@@ -481,6 +484,17 @@
             this.btnDelay.UseVisualStyleBackColor = true;
             this.btnDelay.Click += new System.EventHandler(this.btnDelay_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(3, 32);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(75, 23);
+            this.btnClear.TabIndex = 4;
+            this.btnClear.Tag = "";
+            this.btnClear.Text = "{Clear}";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // chkFastMode
             // 
             this.chkFastMode.AutoSize = true;
@@ -492,6 +506,19 @@
             this.chkFastMode.TabIndex = 3;
             this.chkFastMode.Text = "Fastmode";
             this.chkFastMode.UseVisualStyleBackColor = true;
+            // 
+            // chkStaticMode
+            // 
+            this.chkStaticMode.AutoSize = true;
+            this.chkStaticMode.Checked = true;
+            this.chkStaticMode.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkStaticMode.Location = new System.Drawing.Point(162, 32);
+            this.chkStaticMode.Name = "chkStaticMode";
+            this.chkStaticMode.Size = new System.Drawing.Size(72, 17);
+            this.chkStaticMode.TabIndex = 5;
+            this.chkStaticMode.Text = "NO Reroll";
+            this.chkStaticMode.UseVisualStyleBackColor = true;
+            this.chkStaticMode.CheckedChanged += new System.EventHandler(this.chkStaticMode_CheckedChanged);
             // 
             // flowLayoutPanel3
             // 
@@ -524,10 +551,10 @@
             this.btnReset.Location = new System.Drawing.Point(87, 3);
             this.btnReset.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.Size = new System.Drawing.Size(85, 23);
             this.btnReset.TabIndex = 1;
             this.btnReset.Tag = "Button_Reset";
-            this.btnReset.Text = "{Reset}";
+            this.btnReset.Text = "{Reset Turn}";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
@@ -549,7 +576,7 @@
             this.btnResetBattle.Location = new System.Drawing.Point(87, 32);
             this.btnResetBattle.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.btnResetBattle.Name = "btnResetBattle";
-            this.btnResetBattle.Size = new System.Drawing.Size(75, 23);
+            this.btnResetBattle.Size = new System.Drawing.Size(85, 23);
             this.btnResetBattle.TabIndex = 3;
             this.btnResetBattle.Tag = "Button_Reset";
             this.btnResetBattle.Text = "{Reset Battle}";
@@ -567,17 +594,6 @@
             this.chkBoxChummer.TabIndex = 6;
             this.chkBoxChummer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chkBoxChummer_MouseClick);
             this.chkBoxChummer.SelectedIndexChanged += new System.EventHandler(this.listBoxChummers_SelectedIndexChanged);
-            // 
-            // btnClear
-            // 
-            this.btnClear.Location = new System.Drawing.Point(3, 32);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(75, 23);
-            this.btnClear.TabIndex = 4;
-            this.btnClear.Tag = "";
-            this.btnClear.Text = "{Clear}";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // InitiativeUserControl
             // 
@@ -641,5 +657,6 @@
         private System.Windows.Forms.Label lblTurn;
         private System.Windows.Forms.Button btnResetBattle;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.CheckBox chkStaticMode;
     }
 }

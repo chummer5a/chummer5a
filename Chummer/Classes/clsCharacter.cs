@@ -8125,6 +8125,18 @@ namespace Chummer
         public int InitialInit { get; set; }
 
         /// <summary>
+        /// The InitRoll of a Character in StaticBattleMode (no initiative reroll)
+        /// <not>Dashboard</not>
+        /// </summary>
+        public int StaticInit
+        {
+            get { return _staticInit; }
+            set { _staticInit = value; }
+        }
+
+        private int _staticInit = int.MinValue;
+
+        /// <summary>
         /// The Current Damage Modifier for the Character
         /// <note>Dashboard</note>
         /// </summary>
@@ -8138,8 +8150,9 @@ namespace Chummer
 
         //Can't be at improvementmanager due reasons
         private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
+        
 
-		/// <summary>
+        /// <summary>
 		/// Push a value that will be used instad of dialog instead in next <selecttext />
 		/// </summary>
 	    public Stack<String> Pushtext
@@ -8239,7 +8252,10 @@ namespace Chummer
 				_blnHasHomeNode = value;
 			}
 		}
-		#endregion
+
+
+
+        #endregion
 
  
     }
