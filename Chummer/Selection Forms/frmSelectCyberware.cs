@@ -186,7 +186,7 @@ namespace Chummer
 					PopulateGrades(blnCultured);
 					cboGrade.SelectedValue = strSelectedValue;
 				}
-				if (cboGrade.SelectedIndex == -1)
+				if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
 					cboGrade.SelectedIndex = 0;
 			}
 

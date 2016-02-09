@@ -87,6 +87,7 @@ Data Change:
 - Customised Agility and Strength for cyberlimbs now increase based on the rating. Fixes #654.
 - Added the necessary qualities for the Metasapient A.I. Fixes #668.
 - Fixed an issue with the Faceless quality not being visible. 
+-Restricted initiative improvements to the highest value. Will probably be broken in some way I haven't considered. Fixes #194.
 
 New Strings:
 - Message_DeleteCalendarWeek

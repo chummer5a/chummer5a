@@ -246,7 +246,7 @@
       <cost>Rating * 32000</cost>
       <bonus>
         <specificattribute>
-          <name>AGI</name>
+          <name precedence="0">AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
