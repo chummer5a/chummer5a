@@ -171,14 +171,20 @@ namespace Chummer
 			// Populate the Priority Category list.
 			_blnInitializing = true;
             XmlNodeList objXmlPriorityCategoryList = objXmlDocumentPriority.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
-            {
-                string strXPath = "";
-                if (objXmlPriorityCategory.InnerText == "Resources")
-                    strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
-                else
-                    strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText + "\"]";
-                XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+	        foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
+	        {
+		        string strXPath = "";
+		        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+		                   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+		        XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+
+				if (objItems.Count == 0)
+		        {
+			        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+						   "\" and not (gameplayoption)]";
+					objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+				}
+	        
                 if (objItems.Count > 0)
                 {
                     List<ListItem> lstItems = new List<ListItem>();
