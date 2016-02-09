@@ -2606,8 +2606,8 @@
 			<category>Positive</category>
 			<bonus>
 				<lightningreflexes />
-				<initiative>1</initiative>
-				<initiativepass>1</initiativepass>
+				<initiative precedence="1">1</initiative>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>RF</source>
 			<page>148</page>
