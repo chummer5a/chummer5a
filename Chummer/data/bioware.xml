@@ -246,7 +246,7 @@
       <cost>Rating * 32000</cost>
       <bonus>
         <specificattribute>
-          <name>AGI</name>
+          <name precedence="0">AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -393,7 +393,7 @@
       <avail>(Rating * 6)R</avail>
       <cost>Rating * 95000</cost>
       <bonus>
-        <initiativepass>Rating</initiativepass>
+        <initiativepass precedence="1">Rating</initiativepass>
         <specificattribute>
           <name precedence="1">REA</name>
           <val>Rating</val>
@@ -1326,7 +1326,7 @@
 			<avail>8R</avail>
 			<cost>10000</cost>
 			<bonus>
-				<initiativepass>1</initiativepass>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>118</page>
@@ -1797,8 +1797,8 @@
 			<avail>8</avail>
 			<cost>78000</cost>
 			<bonus>
-				<initiative>1</initiative>
-				<initiativepass>1</initiativepass>
+				<initiative precedence="1">1</initiative>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>162</page>

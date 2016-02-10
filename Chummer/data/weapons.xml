@@ -4099,8 +4099,12 @@
 			<cost>830</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Smartgun System, Internal</name></accessory>
@@ -4129,8 +4133,12 @@
 			<cost>775</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4157,8 +4165,12 @@
 			<cost>270</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Stock</name></accessory>
@@ -4210,8 +4222,12 @@
 			<cost>850</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4239,8 +4255,12 @@
 			<cost>750</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4265,7 +4285,14 @@
 			<ammo>30(c)</ammo>
 			<avail>17F</avail>
 			<cost>2800</cost>
-			<accessorymounts/>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
 			<accessories>
 				<accessory>
 					<name>Collapsed Frame</name>
@@ -4294,8 +4321,12 @@
 			<cost>700</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4323,8 +4354,12 @@
 			<cost>350</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Laser Sight</name></accessory>
@@ -4350,8 +4385,12 @@
 			<cost>800</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Laser Sight</name></accessory>

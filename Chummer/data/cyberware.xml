@@ -642,11 +642,11 @@
 			<cost>Rating * 25000</cost>
 			<bonus>
 				<specificattribute>
-					<name>AGI</name>
+					<name precedence="1">AGI</name>
 					<val>Rating</val>
 				</specificattribute>
 				<specificattribute>
-					<name>STR</name>
+					<name precedence="1">STR</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -708,7 +708,7 @@
 			<avail>FixedValues(8R,12R,20R)</avail>
 			<cost>FixedValues(39000,149000,217000)</cost>
 			<bonus>
-				<initiativepass>Rating</initiativepass>
+				<initiativepass precedence="1">Rating</initiativepass>
 				<specificattribute>
 					<name precedence="1">REA</name>
 					<val>Rating</val>
@@ -1891,14 +1891,11 @@
 			<avail>FixedValues(12F,18F,24F)</avail>
 			<cost>FixedValues(43000,97000,208000)</cost>
 			<bonus>
-				<initiativepass>FixedValues(0,1,1)</initiativepass>
+				<initiativepass precedence="1">FixedValues(0,1,1)</initiativepass>
+				<initiative precedence="1">FixedValues(3,6,9)</initiative> 
 				<specificattribute>
 					<name precedence="1">REA</name>
 					<val>Rating</val>
-				</specificattribute>
-				<specificattribute>
-					<name precedence="1">INI</name>
-					<val>FixedValues(3,6,9)</val>
 				</specificattribute>
 			</bonus>
 			<source>CF</source>
@@ -1910,7 +1907,7 @@
 			<category>Bodyware</category>
 			<rating>6</rating>
 			<bonus>
-				<hardwires>Rating</hardwires>
+				<hardwires excludecategory="Magical Active,Resonance Active">Rating</hardwires>
 			</bonus>
 			<ess>Rating * 0.05</ess>
 			<capacity>0</capacity>

@@ -46,6 +46,12 @@ Application Change:
 - Changed the Improved Potential powers to use the limit modifier bonus instead of selectlimit; makes it a bit neater.
 - Did some stuff to enable selecting multiple powers through the selectpower bonus node. This shouldn't affect any existing characters, but if you're using the Chaos Mentor Spirit I'd recommend deleting it and removing it. This miiiiight also break existing characters with Qi Foci. Probably not though. Like 70/30 at most.
 - Did various shenanigans with the karma selection form to make it show qualities and karma costs properly. 
+- Rebuilt the functionality for Black Market Pipeline nad the Dealer Connection quality. Both should now work properly; there's a teeny tiny chance that existing characters that have the qualities might break, please raise a ticket if so.
+- Fixed a crash caused by adding Genemods to a character with the Burnout's Way. Fixes #674.
+- Fixed a UI issue that left the dropdown null when switching between genemods and bioware. Fixes #674.
+- Enabled Vehicle Modifications to gain flat increases to Speed,Handling or Acceleration based on the Rating of the mod. Partial fix for #675.
+- Fixed a visual bug with Limit Modifiers in creation mode. Fixes #665.
+- Expanded the category selection mechanism to support falling back to default values. The general idea is that for each priority category loaded, it will attempt to load nodes that have a gameplayoptions node. If it can't do that, it'll load the Standard settings instead. This is intended to support alternate gameplay options as requested by #357. The actual data will need to be added for the appropriate categories, which I really can't be bothered transcribing.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -81,6 +87,9 @@ Data Change:
 - Removed Fangs from Oni. 
 - Customised Agility and Strength for cyberlimbs now increase based on the rating. Fixes #654.
 - Added the necessary qualities for the Metasapient A.I. Fixes #668.
+- Fixed an issue with the Faceless quality not being visible. 
+- Restricted initiative improvements to the highest value. Will probably be broken in some way I haven't considered. Fixes #194.
+- Removed gameplayoptions from the priorities file. 
 
 New Strings:
 - Message_DeleteCalendarWeek

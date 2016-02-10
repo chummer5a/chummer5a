@@ -27,6 +27,7 @@ namespace Chummer
 		private bool _blnShowPositiveCapacityOnly = false;
 		private bool _blnShowNegativeCapacityOnly = false;
 		private bool _blnShowArmorCapacityOnly = false;
+		private bool _blnBlackMarketDiscount;
 		private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
@@ -171,6 +172,8 @@ namespace Chummer
 			cboCategory.DisplayMember = "Name";
 			cboCategory.DataSource = _lstCategory;
 
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
 			// Select the first Category in the list.
 			if (_strSelectCategory == "")
 				cboCategory.SelectedIndex = 0;
@@ -287,6 +290,11 @@ namespace Chummer
 		}
 
 		private void nudRating_ValueChanged(object sender, EventArgs e)
+		{
+			UpdateGearInfo();
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateGearInfo();
 		}
@@ -700,6 +708,17 @@ namespace Chummer
 				return chkAerodynamic.Checked;
 			}
 		}
+
+		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
+			}
+		}
 		#endregion
 
 		#region Methods
@@ -1109,6 +1128,7 @@ namespace Chummer
 				_strSelectCategory = objNode["category"].InnerText;
 			}
 
+			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 			_intSelectedRating = Convert.ToInt32(nudRating.Value);
 			_intSelectedQty = Convert.ToInt32(nudGearQty.Value);
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);

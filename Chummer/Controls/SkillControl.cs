@@ -1135,13 +1135,16 @@ namespace Chummer
             int intSkillRating = _objSkill.Rating;
 			foreach (Improvement objImprovement in _objSkill.CharacterObject.Improvements)
 			{
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _objSkill.Name && objImprovement.Enabled)
+				if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire)
 				{
-					if (objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire) > intSkillRating)
+					if (objImprovement.ImprovedName == _objSkill.Name && objImprovement.Enabled)
 					{
-						intSkillRating = objImprovementManager.ValueOf(Improvement.ImprovementType.Hardwire);
-						blnSkillsoft = true;
-						break;
+						if (objImprovement.Rating > intSkillRating)
+						{
+							intSkillRating = objImprovement.Value;
+							blnSkillsoft = true;
+							break;
+						}
 					}
 				}
 			}

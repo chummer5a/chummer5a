@@ -68,6 +68,9 @@ namespace Chummer
 					objItem.Name = objXmlAccessory["name"].InnerText;
 				lstAccessories.Add(objItem);
 			}
+
+			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
 			SortListItem objSort = new SortListItem();
 			lstAccessories.Sort(objSort.Compare);
 			lstAccessory.ValueMember = "Value";
@@ -104,6 +107,11 @@ namespace Chummer
 		}
 
 		private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateGearInfo();
+		}
+
+		private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateGearInfo();
 		}

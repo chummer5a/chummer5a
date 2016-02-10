@@ -56,7 +56,6 @@ namespace Chummer
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-			_objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketChanged;
 			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
 			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
 			_objCharacter.FameChanged += objCharacter_FameChanged;
@@ -1498,7 +1497,6 @@ namespace Chummer
 				_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 				_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
 				_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-				_objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketChanged;
 				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
 				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
@@ -1952,10 +1950,6 @@ namespace Chummer
 				ClearCritterTab();
 				tabCharacterTabs.TabPages.Remove(tabCritter);
 			}
-		}
-
-		private void objCharacter_BlackMarketChanged(object sender)
-		{
 		}
 
 		private void objCharacter_UneducatedChanged(object sender)

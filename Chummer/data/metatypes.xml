@@ -1196,6 +1196,7 @@
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
+							<reach>0</reach>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
 							<page>137</page>
@@ -1601,6 +1602,7 @@
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
+							<reach>0</reach>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
 							<page>137</page>
@@ -2227,6 +2229,7 @@
 						<naturalweapon>
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
+							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed</useskill>
 							<source>RF</source>
@@ -2382,110 +2385,6 @@
 					<bonus>
 						<reach>1</reach>
 						<lifestylecost>100</lifestylecost>
-					</bonus>
-					<source>RF</source>
-					<page>104</page>
-				</metavariant>
-				<metavariant>
-					<name>Bandersnatch</name>
-					<category>Metavariant</category>
-					<karma>22</karma>
-					<bodmin>6</bodmin>
-					<bodmax>12</bodmax>
-					<bodaug>16</bodaug>
-					<agimin>1</agimin>
-					<agimax>6</agimax>
-					<agiaug>10</agiaug>
-					<reamin>2</reamin>
-					<reamax>7</reamax>
-					<reaaug>11</reaaug>
-					<strmin>5</strmin>
-					<strmax>12</strmax>
-					<straug>16</straug>
-					<chamin>1</chamin>
-					<chamax>4</chamax>
-					<chaaug>8</chaaug>
-					<intmin>1</intmin>
-					<intmax>8</intmax>
-					<intaug>12</intaug>
-					<logmin>1</logmin>
-					<logmax>5</logmax>
-					<logaug>9</logaug>
-					<wilmin>1</wilmin>
-					<wilmax>8</wilmax>
-					<wilaug>12</wilaug>
-					<inimin>2</inimin>
-					<inimax>12</inimax>
-					<iniaug>20</iniaug>
-					<edgmin>1</edgmin>
-					<edgmax>6</edgmax>
-					<edgaug>6</edgaug>
-					<magmin>0</magmin>
-					<magmax>6</magmax>
-					<magaug>6</magaug>
-					<resmin>0</resmin>
-					<resmax>6</resmax>
-					<resaug>6</resaug>
-					<essmin>0</essmin>
-					<essmax>6</essmax>
-					<essaug>6</essaug>
-					<walk>AGI*2</walk>
-					<run>AGI*4</run>
-					<sprint>+2m/hit</sprint>
-					<powers>
-						<power>Adaptive Coloration</power>
-						<power select="Sunlight, Mild">Allergy</power>
-						<power select="Sasquatch Flesh">Dietary Requirement</power>
-					</powers>
-					<naturalweapons>
-						<naturalweapon>
-							<name>Infected Claws</name>
-							<reach>0</reach>
-							<damage>(STR+2)P</damage>
-							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
-							<source>RF</source>
-							<page>137</page>
-						</naturalweapon>
-						<naturalweapon>
-							<name>Infected Bite</name>
-							<reach>-1</reach>
-							<damage>(STR+1)P</damage>
-							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
-							<source>RF</source>
-							<page>137</page>
-						</naturalweapon>
-					</naturalweapons>
-					<bonus>
-						<enabletab>
-							<name>critter</name>
-						</enabletab>
-						<reach>1</reach>
-						<selectattributes>
-							<selectattribute>
-								<attribute>BOD</attribute>
-								<attribute>REA</attribute>
-								<attribute>STR</attribute>
-								<min>1</min>
-							</selectattribute>
-							<selectattribute>
-								<attribute>BOD</attribute>
-								<attribute>REA</attribute>
-								<attribute>STR</attribute>
-								<min>1</min>
-							</selectattribute>
-							<selectattribute>
-								<attribute>WIL</attribute>
-								<attribute>INT</attribute>
-								<min>1</min>
-							</selectattribute>
-							<selectattribute>
-								<attribute>WIL</attribute>
-								<attribute>INT</attribute>
-								<min>1</min>
-							</selectattribute>
-						</selectattributes>
 					</bonus>
 					<source>RF</source>
 					<page>104</page>
@@ -3021,6 +2920,218 @@
 				<power select="Claws: DV (STR + 1)P, AP -, +1 Reach">Natural Weapon</power>
 			</powers>
 			<addweapon>Claws (Sasquatch)</addweapon>
+			<metavariants>
+				<metavariant>
+					<name>Ghoul</name>
+					<category>Metavariant</category>
+					<karma>29</karma>
+					<bodmin>6</bodmin>
+					<bodmax>15</bodmax>
+					<bodaug>19</bodaug>
+					<agimin>1</agimin>
+					<agimax>6</agimax>
+					<agiaug>10</agiaug>
+					<reamin>1</reamin>
+					<reamax>9</reamax>
+					<reaaug>13</reaaug>
+					<strmin>5</strmin>
+					<strmax>13</strmax>
+					<straug>17</straug>
+					<chamin>1</chamin>
+					<chamax>4</chamax>
+					<chaaug>8</chaaug>
+					<intmin>1</intmin>
+					<intmax>7</intmax>
+					<intaug>11</intaug>
+					<logmin>1</logmin>
+					<logmax>5</logmax>
+					<logaug>9</logaug>
+					<wilmin>1</wilmin>
+					<wilmax>8</wilmax>
+					<wilaug>12</wilaug>
+					<inimin>2</inimin>
+					<inimax>12</inimax>
+					<iniaug>20</iniaug>
+					<edgmin>1</edgmin>
+					<edgmax>6</edgmax>
+					<edgaug>6</edgaug>
+					<magmin>0</magmin>
+					<magmax>6</magmax>
+					<magaug>6</magaug>
+					<resmin>0</resmin>
+					<resmax>6</resmax>
+					<resaug>6</resaug>
+					<essmin>0</essmin>
+					<essmax>6</essmax>
+					<essaug>6</essaug>
+					<walk>AGI*2</walk>
+					<run>AGI*4</run>
+					<sprint>+2m/hit</sprint>
+					<powers>
+						<power>Dual Natured</power>
+						<power select="Hearing,Smell">Enhanced Senses</power>
+						<power select="Sunlight, Moderate">Allergy</power>
+						<power select="Metahuman Blood">Dietary Requirement</power>
+						<power select="Blind">Reduced Senses</power>
+						<power>Sapience</power>
+					</powers>
+					<naturalweapons>
+						<naturalweapon>
+							<name>Infected Bite</name>
+							<reach>-1</reach>
+							<damage>(STR+1)P</damage>
+							<ap>-1</ap>
+							<useskill>Unarmed</useskill>
+							<source>RF</source>
+							<page>137</page>
+						</naturalweapon>
+						<naturalweapon>
+							<name>Infected Claws</name>
+							<damage>(STR+1)P</damage>
+							<ap>-1</ap>
+							<useskill>Unarmed</useskill>
+							<source>RF</source>
+							<page>137</page>
+						</naturalweapon>
+					</naturalweapons>
+					<bonus>
+						<armor>1</armor>
+						<enabletab>
+							<name>critter</name>
+						</enabletab>
+						<selectattributes>
+							<selectattribute>
+								<attribute>BOD</attribute>
+								<attribute>REA</attribute>
+								<attribute>STR</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>BOD</attribute>
+								<attribute>REA</attribute>
+								<attribute>STR</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>WIL</attribute>
+								<attribute>INT</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>WIL</attribute>
+								<attribute>INT</attribute>
+								<min>1</min>
+							</selectattribute>
+						</selectattributes>
+					</bonus>
+					<source>RF</source>
+					<page>104</page>
+				</metavariant>
+				<metavariant>
+					<name>Bandersnatch</name>
+					<category>Metavariant</category>
+					<karma>22</karma>
+					<bodmin>6</bodmin>
+					<bodmax>12</bodmax>
+					<bodaug>16</bodaug>
+					<agimin>1</agimin>
+					<agimax>6</agimax>
+					<agiaug>10</agiaug>
+					<reamin>2</reamin>
+					<reamax>7</reamax>
+					<reaaug>11</reaaug>
+					<strmin>5</strmin>
+					<strmax>12</strmax>
+					<straug>16</straug>
+					<chamin>1</chamin>
+					<chamax>4</chamax>
+					<chaaug>8</chaaug>
+					<intmin>1</intmin>
+					<intmax>8</intmax>
+					<intaug>12</intaug>
+					<logmin>1</logmin>
+					<logmax>5</logmax>
+					<logaug>9</logaug>
+					<wilmin>1</wilmin>
+					<wilmax>8</wilmax>
+					<wilaug>12</wilaug>
+					<inimin>2</inimin>
+					<inimax>12</inimax>
+					<iniaug>20</iniaug>
+					<edgmin>1</edgmin>
+					<edgmax>6</edgmax>
+					<edgaug>6</edgaug>
+					<magmin>0</magmin>
+					<magmax>6</magmax>
+					<magaug>6</magaug>
+					<resmin>0</resmin>
+					<resmax>6</resmax>
+					<resaug>6</resaug>
+					<essmin>0</essmin>
+					<essmax>6</essmax>
+					<essaug>6</essaug>
+					<walk>AGI*2</walk>
+					<run>AGI*4</run>
+					<sprint>+2m/hit</sprint>
+					<powers>
+						<power>Adaptive Coloration</power>
+						<power select="Sunlight, Mild">Allergy</power>
+						<power select="Sasquatch Flesh">Dietary Requirement</power>
+					</powers>
+					<naturalweapons>
+						<naturalweapon>
+							<name>Infected Claws</name>
+							<reach>0</reach>
+							<damage>(STR+2)P</damage>
+							<ap>-1</ap>
+							<useskill>Unarmed</useskill>
+							<source>RF</source>
+							<page>137</page>
+						</naturalweapon>
+						<naturalweapon>
+							<name>Infected Bite</name>
+							<reach>-1</reach>
+							<damage>(STR+1)P</damage>
+							<ap>-1</ap>
+							<useskill>Unarmed</useskill>
+							<source>RF</source>
+							<page>137</page>
+						</naturalweapon>
+					</naturalweapons>
+					<bonus>
+						<enabletab>
+							<name>critter</name>
+						</enabletab>
+						<reach>1</reach>
+						<selectattributes>
+							<selectattribute>
+								<attribute>BOD</attribute>
+								<attribute>REA</attribute>
+								<attribute>STR</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>BOD</attribute>
+								<attribute>REA</attribute>
+								<attribute>STR</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>WIL</attribute>
+								<attribute>INT</attribute>
+								<min>1</min>
+							</selectattribute>
+							<selectattribute>
+								<attribute>WIL</attribute>
+								<attribute>INT</attribute>
+								<min>1</min>
+							</selectattribute>
+						</selectattributes>
+					</bonus>
+					<source>RF</source>
+					<page>104</page>
+				</metavariant>
+			</metavariants>
 			<source>RF</source>
 			<page>99</page>
 		</metatype>

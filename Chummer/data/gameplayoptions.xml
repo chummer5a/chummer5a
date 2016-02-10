@@ -27,5 +27,13 @@
 			<maxnuyen>5</maxnuyen>
 			<contactmultiplier>3</contactmultiplier>
 		</gameplayoption>
+		<gameplayoption>
+			<id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
+			<name>Street Scum</name>
+			<karma>13</karma>
+			<maxavailability>10</maxavailability>
+			<maxnuyen>5</maxnuyen>
+			<contactmultiplier>3</contactmultiplier>
+		</gameplayoption>
 	</gameplayoptions>
 </chummer>

@@ -171,14 +171,20 @@ namespace Chummer
 			// Populate the Priority Category list.
 			_blnInitializing = true;
             XmlNodeList objXmlPriorityCategoryList = objXmlDocumentPriority.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
-            {
-                string strXPath = "";
-                if (objXmlPriorityCategory.InnerText == "Resources")
-                    strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
-                else
-                    strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText + "\"]";
-                XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+	        foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
+	        {
+		        string strXPath = "";
+		        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+		                   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+		        XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+
+				if (objItems.Count == 0)
+		        {
+			        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+						   "\" and not (gameplayoption)]";
+					objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+				}
+	        
                 if (objItems.Count > 0)
                 {
                     List<ListItem> lstItems = new List<ListItem>();
@@ -1424,25 +1430,30 @@ namespace Chummer
 				// Add any Natural Weapons the Metavariant should have.
 				if (cboMetavariant.SelectedValue.ToString() != "None")
 				{
-					foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
+					if (objXmlMetavariant["naturalweapons"] != null)
 					{
-						Weapon objWeapon = new Weapon(_objCharacter);
-						objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-						objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
-						objWeapon.WeaponType = "Melee";
-						objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-						objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
-						objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
-						objWeapon.Mode = "0";
-						objWeapon.RC = "0";
-						objWeapon.Concealability = 0;
-						objWeapon.Avail = "0";
-						objWeapon.Cost = 0;
-						objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-						objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-						objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+						foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
+						{
+							Weapon objWeapon = new Weapon(_objCharacter);
+							objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
+							objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
+							objWeapon.WeaponType = "Melee";
+							objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
+							;
+							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
+							;
+							objWeapon.Mode = "0";
+							objWeapon.RC = "0";
+							objWeapon.Concealability = 0;
+							objWeapon.Avail = "0";
+							objWeapon.Cost = 0;
+							objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
+							objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
+							objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
 
-						_objCharacter.Weapons.Add(objWeapon);
+							_objCharacter.Weapons.Add(objWeapon);
+						}
 					}
 				}
 
