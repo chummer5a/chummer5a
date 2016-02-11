@@ -6968,5 +6968,16 @@
 			<source>R5</source>
 			<page>123</page>
 		</mod>
+		<mod>
+			<id>ee2db19d-06e9-4443-9495-ec736b524c04</id>
+			<name>Paraplegic Modification</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>Vehicle Cost * 0.05</cost>
+			<source>RF</source>
+			<page>157</page>
+		</mod>
 	</mods>
 </chummer>

@@ -90,6 +90,8 @@ Data Change:
 - Fixed an issue with the Faceless quality not being visible. 
 - Restricted initiative improvements to the highest value. Will probably be broken in some way I haven't considered. Fixes #194.
 - Removed gameplayoptions from the priorities file. 
+- Added a new mod for vehicles, Paraplegic Modification. This is intended to support the Paraplegic Negative Quality, which increases the cost of vehicles by five percent.
+- Fixed the lifestylecost improvement for the Paraplegic quality to affect Advanced Lifestyles.
 
 New Strings:
 - Message_DeleteCalendarWeek
