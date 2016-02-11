@@ -171,67 +171,68 @@ namespace Chummer
 			// Populate the Priority Category list.
 			_blnInitializing = true;
             XmlNodeList objXmlPriorityCategoryList = objXmlDocumentPriority.SelectNodes("/chummer/categories/category");
-	        foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
-	        {
-		        string strXPath = "";
-		        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
-		                   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
-		        XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
-
-				if (objItems.Count == 0)
+	        if (objXmlPriorityCategoryList != null)
+		        foreach (XmlNode objXmlPriorityCategory in objXmlPriorityCategoryList)
 		        {
+			        string strXPath = "";
 			        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
-						   "\" and not (gameplayoption)]";
-					objItems = objXmlDocumentPriority.SelectNodes(strXPath);
-				}
-	        
-                if (objItems.Count > 0)
-                {
-                    List<ListItem> lstItems = new List<ListItem>();
-                    // lstItems.Add(new ListItem());
-                    foreach (XmlNode objXmlPriority in objItems)
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlPriority["value"].InnerText;
-                        objItem.Name = objXmlPriority["name"].InnerText;
-                        lstItems.Add(objItem);
-                    }
-                    SortListItem objPrioritySort = new SortListItem();
-                    lstItems.Sort(objPrioritySort.Compare);
-                    switch (objXmlPriorityCategory.InnerText)
-                    {
-                        case "Heritage":
-			                cboHeritage.ValueMember = "Value";
-			                cboHeritage.DisplayMember = "Name";
-			                cboHeritage.DataSource = lstItems;
-                            break;
-                        case "Talent":
-                            cboTalent.ValueMember = "Value";
-							cboTalent.DisplayMember = "Name";
-                            cboTalent.DataSource = lstItems;
-                            break;
-                        case "Attributes":
-                            cboAttributes.ValueMember = "Value";
-							cboAttributes.DisplayMember = "Name";
-                            cboAttributes.DataSource = lstItems;
-                            break;
-                        case "Skills":
-                            cboSkills.ValueMember = "Value";
-							cboSkills.DisplayMember = "Name";
-                            cboSkills.DataSource = lstItems;
-                            break;
-                        case "Resources":
-                            cboResources.ValueMember = "Value";
-							cboResources.DisplayMember = "Name";
-                            cboResources.DataSource = lstItems;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+			                   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+			        XmlNodeList objItems = objXmlDocumentPriority.SelectNodes(strXPath);
 
-			// Set Priority defaults.
+			        if (objItems != null && objItems.Count == 0)
+			        {
+				        strXPath = "/chummer/priorities/priority[category = \"" + objXmlPriorityCategory.InnerText +
+				                   "\" and not (gameplayoption)]";
+				        objItems = objXmlDocumentPriority.SelectNodes(strXPath);
+			        }
+	        
+			        if (objItems.Count > 0)
+			        {
+				        List<ListItem> lstItems = new List<ListItem>();
+				        // lstItems.Add(new ListItem());
+				        foreach (XmlNode objXmlPriority in objItems)
+				        {
+					        ListItem objItem = new ListItem();
+					        objItem.Value = objXmlPriority["value"].InnerText;
+					        objItem.Name = objXmlPriority["name"].InnerText;
+					        lstItems.Add(objItem);
+				        }
+				        SortListItem objPrioritySort = new SortListItem();
+				        lstItems.Sort(objPrioritySort.Compare);
+				        switch (objXmlPriorityCategory.InnerText)
+				        {
+					        case "Heritage":
+						        cboHeritage.ValueMember = "Value";
+						        cboHeritage.DisplayMember = "Name";
+						        cboHeritage.DataSource = lstItems;
+						        break;
+					        case "Talent":
+						        cboTalent.ValueMember = "Value";
+						        cboTalent.DisplayMember = "Name";
+						        cboTalent.DataSource = lstItems;
+						        break;
+					        case "Attributes":
+						        cboAttributes.ValueMember = "Value";
+						        cboAttributes.DisplayMember = "Name";
+						        cboAttributes.DataSource = lstItems;
+						        break;
+					        case "Skills":
+						        cboSkills.ValueMember = "Value";
+						        cboSkills.DisplayMember = "Name";
+						        cboSkills.DataSource = lstItems;
+						        break;
+					        case "Resources":
+						        cboResources.ValueMember = "Value";
+						        cboResources.DisplayMember = "Name";
+						        cboResources.DataSource = lstItems;
+						        break;
+					        default:
+						        break;
+				        }
+			        }
+		        }
+
+	        // Set Priority defaults.
 			if (_strAttributes != "")
 			{
 				int index = 0;
@@ -1654,7 +1655,7 @@ namespace Chummer
 				// Set the Knowledge Skill Ratings for the Critter.
 				foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/knowledge"))
 				{
-					Skill objKnowledge = new Skill(_objCharacter);
+					var objKnowledge = new Skill(_objCharacter);
 					objKnowledge.Name = objXmlSkill.InnerText;
 					objKnowledge.KnowledgeSkill = true;
 					if (objXmlSkill.Attributes["spec"] != null)
@@ -1753,8 +1754,18 @@ namespace Chummer
                     _objCharacter.StartingNuyen = _objCharacter.Nuyen;
                 }
 
-                // Set starting positive qualities
-                foreach (XmlNode objXmlQualityItem in objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality"))
+				// Set starting positive qualities
+				string strXPath = "";
+				strXPath = "/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality";
+				XmlNodeList objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+
+				if (objXmlPriorityList.Count == 0)
+				{
+					strXPath = "/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\" and not (gameplayoption)]/qualities/quality";
+					objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+				}
+
+				foreach (XmlNode objXmlQualityItem in objXmlPriorityList)
                 {
                     XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
                     TreeNode objNode = new TreeNode();
@@ -1776,16 +1787,25 @@ namespace Chummer
                         _objCharacter.Weapons.Add(objWeapon);
                 }
 
-                // Set starting magic
-                XmlNodeList objXmlTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
-                if (objXmlTalentList[0]["magic"] != null)
+				// Set starting magic
+				strXPath = "/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]";
+
+				objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+
+				if (objXmlPriorityList.Count == 0)
+				{
+					strXPath = "/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\" and not (gameplayoption)]";
+					objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+				}
+
+				if (objXmlPriorityList[0]["magic"] != null)
                 {
-                    _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
+                    _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlPriorityList[0]["magic"].InnerText);
                     if (_objCharacter.MAG.Value > 0)
                         _objCharacter.MAGEnabled = true;
-                    if (objXmlTalentList[0]["spells"] != null)
+                    if (objXmlPriorityList[0]["spells"] != null)
                     {
-                        _objCharacter.SpellLimit = Convert.ToInt32(objXmlTalentList[0]["spells"].InnerText);
+                        _objCharacter.SpellLimit = Convert.ToInt32(objXmlPriorityList[0]["spells"].InnerText);
                     }
                     else
                     {
@@ -1793,20 +1813,19 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlTalentList[0]["maxmagic"] != null)
-                    _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
+                if (objXmlPriorityList[0]["maxmagic"] != null)
+                    _objCharacter.MAG.MetatypeMaximum = Convert.ToInt32(objXmlPriorityList[0]["magic"].InnerText);
 
                 // Set starting resonance
-                objXmlTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]");
-                if (objXmlTalentList[0]["resonance"] != null)
+                if (objXmlPriorityList[0]["resonance"] != null)
                 {
-                    _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
+                    _objCharacter.RES.MetatypeMinimum = Convert.ToInt32(objXmlPriorityList[0]["resonance"].InnerText);
                     _objCharacter.RESEnabled = true;
-                    _objCharacter.CFPLimit = Convert.ToInt32(objXmlTalentList[0]["cfp"].InnerText);
+                    _objCharacter.CFPLimit = Convert.ToInt32(objXmlPriorityList[0]["cfp"].InnerText);
                 }
 
-                if (objXmlTalentList[0]["maxresonance"] != null)
-                    _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlTalentList[0]["resonance"].InnerText);
+                if (objXmlPriorityList[0]["maxresonance"] != null)
+                    _objCharacter.RES.MetatypeMaximum = Convert.ToInt32(objXmlPriorityList[0]["resonance"].InnerText);
 
                 // Set starting talent tabs
                 switch (cboTalents.SelectedValue.ToString())
@@ -1924,17 +1943,35 @@ namespace Chummer
                 // Set Special Attributes
                 _objCharacter.Special = Convert.ToInt32(lblSpecial.Text);
                 _objCharacter.TotalSpecial = Convert.ToInt32(lblSpecial.Text);
+				
+				// Set Attributes
+				strXPath = "/chummer/priorities/priority[category = \"Attributes\" and value = \"" + cboAttributes.SelectedValue +
+						   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+				objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
 
-                // Set Attributes
-                XmlNodeList objXmlPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Attributes\" and value = \"" + cboAttributes.SelectedValue + "\"]");
-                if (objXmlPriorityList[0]["attributes"] != null)
+				if (objXmlPriorityList.Count == 0)
+				{
+					strXPath = "/chummer/priorities/priority[category = \"Attributes\" and value = \"" + cboAttributes.SelectedValue +
+							   "\" and not (gameplayoption)]";
+					objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+				}
+				if (objXmlPriorityList[0]["attributes"] != null)
                 {
                     _objCharacter.Attributes = Convert.ToInt32(objXmlPriorityList[0]["attributes"].InnerText);
                     _objCharacter.TotalAttributes = _objCharacter.Attributes;
                 }
 
-                // Set Skills and Skill Groups
-                objXmlPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue + "\"]");
+				// Set Skills and Skill Groups
+				strXPath = "/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue +
+						   "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]";
+				objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+
+	            if (objXmlPriorityList.Count == 0)
+	            {
+		            strXPath = "/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue +
+		                       "\" and not (gameplayoption)]";
+					objXmlPriorityList = objXmlDocumentPriority.SelectNodes(strXPath);
+	            }
                 if (objXmlPriorityList[0]["skills"] != null)
                 {
                     _objCharacter.SkillPoints = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
