@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -7257,11 +7258,11 @@ namespace Chummer
             }
         }
 
-		/// <summary>
+        /// <summary>
 		/// Whether or not Black Market Discount is enabled.
-		/// </summary>
+        /// </summary>
 		public bool BlackMarketDiscount
-		{
+        {
             get
             {
                 return _blnBlackMarketDiscount;
@@ -8122,6 +8123,30 @@ namespace Chummer
         /// <note>Dashboard</note>
         /// </summary>
         public int InitialInit { get; set; }
+
+        /// <summary>
+        /// The InitRoll of a Character in StaticBattleMode (no initiative reroll)
+        /// <not>Dashboard</not>
+        /// </summary>
+        public int StaticInit
+        {
+            get { return _staticInit; }
+            set { _staticInit = value; }
+        }
+
+        private int _staticInit = int.MinValue;
+
+        /// <summary>
+        /// The Current Damage Modifier for the Character
+        /// <note>Dashboard</note>
+        /// </summary>
+        public int DamageInitModifier { get; set; }
+
+        /// <summary>
+        /// The Current Drain Resist for the Character
+        /// <note>Dashboard</note>
+        /// </summary>
+        public int SpellDrainResist { get; set; }
 
 		//Can't be at improvementmanager due reasons
 	    private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();

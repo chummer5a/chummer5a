@@ -27,89 +27,92 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-			this.menuStrip = new System.Windows.Forms.MenuStrip();
-			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuNewCritter = new System.Windows.Forms.ToolStripMenuItem();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuFilePrintMultiple = new System.Windows.Forms.ToolStripMenuItem();
-			this.printSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMURSep = new System.Windows.Forms.ToolStripSeparator();
-			this.mnuStickyMRU0 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuStickyMRU9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU0 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU6 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU8 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuMRU9 = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuFileMRUSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuToolsDiceRoller = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
-			this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.mnuHelpRevisionHistory = new System.Windows.Forms.ToolStripMenuItem();
-			this.mnuHelpDumpshock = new System.Windows.Forms.ToolStripMenuItem();
-			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStrip = new System.Windows.Forms.ToolStrip();
-			this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.tsbSave = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbPrint = new System.Windows.Forms.ToolStripButton();
-			this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.tabForms = new System.Windows.Forms.TabControl();
-			this.menuStrip.SuspendLayout();
-			this.toolStrip.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// menuStrip
-			// 
-			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuNewCritter = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFilePrintMultiple = new System.Windows.Forms.ToolStripMenuItem();
+            this.printSetupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMURSep = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuStickyMRU0 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStickyMRU9 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU0 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU7 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU8 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMRU9 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFileMRUSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuToolsDiceRoller = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuToolsUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDashboard = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuGMDashboard = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuPlayerDashboard = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuHelpRevisionHistory = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHelpDumpshock = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStrip = new System.Windows.Forms.ToolStrip();
+            this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.tsbSave = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbPrint = new System.Windows.Forms.ToolStripButton();
+            this.printPreviewToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.tabForms = new System.Windows.Forms.TabControl();
+            this.menuStrip.SuspendLayout();
+            this.toolStrip.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileMenu,
             this.toolsMenu,
             this.windowsMenu,
             this.helpMenu});
-			this.menuStrip.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip.MdiWindowListItem = this.windowsMenu;
-			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(1175, 24);
-			this.menuStrip.TabIndex = 0;
-			this.menuStrip.Text = "MenuStrip";
-			this.menuStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menuStrip_ItemAdded);
-			// 
-			// fileMenu
-			// 
-			this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.MdiWindowListItem = this.windowsMenu;
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1175, 24);
+            this.menuStrip.TabIndex = 0;
+            this.menuStrip.Text = "MenuStrip";
+            this.menuStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.menuStrip_ItemAdded);
+            // 
+            // fileMenu
+            // 
+            this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.mnuNewCritter,
             this.openToolStripMenuItem,
@@ -434,83 +437,109 @@
             this.toolStripSeparator5,
             this.optionsToolStripMenuItem,
             this.mnuToolsUpdate,
-            this.mnuToolsOmae});
-			this.toolsMenu.Name = "toolsMenu";
-			this.toolsMenu.Size = new System.Drawing.Size(47, 20);
-			this.toolsMenu.Tag = "Menu_Main_Tools";
-			this.toolsMenu.Text = "&Tools";
-			this.toolsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
-			// 
-			// mnuToolsDiceRoller
-			// 
-			this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
-			this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-			this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
-			this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
-			this.mnuToolsDiceRoller.Text = "&Dice Roller";
-			this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
-			// 
-			// optionsToolStripMenuItem
-			// 
-			this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-			this.optionsToolStripMenuItem.Tag = "Menu_Main_Options";
-			this.optionsToolStripMenuItem.Text = "&Options";
-			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
-			// 
-			// mnuToolsUpdate
-			// 
-			this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.server_lightning;
-			this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-			this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
-			this.mnuToolsUpdate.Tag = "Menu_Main_Update";
-			this.mnuToolsUpdate.Text = "Check for Updates";
-			this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
-			// 
-			// mnuToolsOmae
-			// 
-			this.mnuToolsOmae.Name = "mnuToolsOmae";
-			this.mnuToolsOmae.Size = new System.Drawing.Size(171, 22);
-			this.mnuToolsOmae.Tag = "Menu_Main_Omae";
-			this.mnuToolsOmae.Text = "Omae";
-			this.mnuToolsOmae.Click += new System.EventHandler(this.mnuToolsOmae_Click);
-			// 
-			// windowsMenu
-			// 
-			this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuToolsOmae,
+            this.mnuDashboard});
+            this.toolsMenu.Name = "toolsMenu";
+            this.toolsMenu.Size = new System.Drawing.Size(47, 20);
+            this.toolsMenu.Tag = "Menu_Main_Tools";
+            this.toolsMenu.Text = "&Tools";
+            this.toolsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
+            // 
+            // mnuToolsDiceRoller
+            // 
+            this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
+            this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
+            this.mnuToolsDiceRoller.Text = "&Dice Roller";
+            this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Image = global::Chummer.Properties.Resources.cog_edit;
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.optionsToolStripMenuItem.Tag = "Menu_Main_Options";
+            this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            // 
+            // mnuToolsUpdate
+            // 
+            this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.server_lightning;
+            this.mnuToolsUpdate.Name = "mnuToolsUpdate";
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsUpdate.Tag = "Menu_Main_Update";
+            this.mnuToolsUpdate.Text = "Check for Updates";
+            this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
+            // 
+            // mnuToolsOmae
+            // 
+            this.mnuToolsOmae.Name = "mnuToolsOmae";
+            this.mnuToolsOmae.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsOmae.Tag = "Menu_Main_Omae";
+            this.mnuToolsOmae.Text = "Omae";
+            this.mnuToolsOmae.Click += new System.EventHandler(this.mnuToolsOmae_Click);
+            // 
+            // mnuDashboard
+            // 
+            this.mnuDashboard.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuGMDashboard,
+            this.mnuPlayerDashboard});
+            this.mnuDashboard.Name = "mnuDashboard";
+            this.mnuDashboard.Size = new System.Drawing.Size(171, 22);
+            this.mnuDashboard.Text = "Dashboards";
+            // 
+            // mnuGMDashboard
+            // 
+            this.mnuGMDashboard.Name = "mnuGMDashboard";
+            this.mnuGMDashboard.Size = new System.Drawing.Size(152, 22);
+            this.mnuGMDashboard.Text = "GameMaster";
+            this.mnuGMDashboard.Click += new System.EventHandler(this.mnuGMDashboard_Click);
+            // 
+            // mnuPlayerDashboard
+            // 
+            this.mnuPlayerDashboard.Enabled = false;
+            this.mnuPlayerDashboard.Name = "mnuPlayerDashboard";
+            this.mnuPlayerDashboard.Size = new System.Drawing.Size(152, 22);
+            this.mnuPlayerDashboard.Text = "Player";
+            this.mnuPlayerDashboard.Visible = false;
+            this.mnuPlayerDashboard.Click += new System.EventHandler(this.mnuPlayerDashboard_Click);
+            // 
+            // windowsMenu
+            // 
+            this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindowToolStripMenuItem,
             this.closeAllToolStripMenuItem});
-			this.windowsMenu.Name = "windowsMenu";
-			this.windowsMenu.Size = new System.Drawing.Size(68, 20);
-			this.windowsMenu.Tag = "Menu_Main_Window";
-			this.windowsMenu.Text = "&Windows";
-			this.windowsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
-			// 
-			// newWindowToolStripMenuItem
-			// 
-			this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-			this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-			this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
-			this.newWindowToolStripMenuItem.Text = "&New Window";
-			this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
-			// 
-			// closeAllToolStripMenuItem
-			// 
-			this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-			this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-			this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
-			this.closeAllToolStripMenuItem.Text = "C&lose All";
-			this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
-			// 
-			// helpMenu
-			// 
-			this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.windowsMenu.Name = "windowsMenu";
+            this.windowsMenu.Size = new System.Drawing.Size(68, 20);
+            this.windowsMenu.Tag = "Menu_Main_Window";
+            this.windowsMenu.Text = "&Windows";
+            this.windowsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
+            // 
+            // newWindowToolStripMenuItem
+            // 
+            this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
+            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
+            this.newWindowToolStripMenuItem.Text = "&New Window";
+            this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
+            // 
+            // closeAllToolStripMenuItem
+            // 
+            this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
+            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
+            this.closeAllToolStripMenuItem.Text = "C&lose All";
+            this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
+            // 
+            // helpMenu
+            // 
+            this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contentsToolStripMenuItem,
             this.toolStripSeparator8,
             this.mnuHelpRevisionHistory,
@@ -572,124 +601,124 @@
             this.printPreviewToolStripButton,
             this.toolStripSeparator2,
             this.helpToolStripButton});
-			this.toolStrip.Location = new System.Drawing.Point(0, 24);
-			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(1175, 25);
-			this.toolStrip.TabIndex = 1;
-			this.toolStrip.Text = "ToolStrip";
-			this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
-			this.toolStrip.ItemRemoved += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemRemoved);
-			// 
-			// newToolStripButton
-			// 
-			this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.newToolStripButton.Image = global::Chummer.Properties.Resources.page;
-			this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
-			this.newToolStripButton.Name = "newToolStripButton";
-			this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.newToolStripButton.Tag = "Menu_Main_NewCharater";
-			this.newToolStripButton.Text = "New";
-			this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
-			// 
-			// openToolStripButton
-			// 
-			this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.openToolStripButton.Image = global::Chummer.Properties.Resources.folder_page;
-			this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
-			this.openToolStripButton.Name = "openToolStripButton";
-			this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.openToolStripButton.Tag = "Menu_Main_Open";
-			this.openToolStripButton.Text = "Open";
-			this.openToolStripButton.Click += new System.EventHandler(this.OpenFile);
-			// 
-			// tsbSave
-			// 
-			this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbSave.Image = global::Chummer.Properties.Resources.disk;
-			this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbSave.Name = "tsbSave";
-			this.tsbSave.Size = new System.Drawing.Size(23, 22);
-			this.tsbSave.Text = "Save";
-			this.tsbSave.Visible = false;
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-			this.toolStripSeparator1.Visible = false;
-			// 
-			// tsbPrint
-			// 
-			this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-			this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Black;
-			this.tsbPrint.Name = "tsbPrint";
-			this.tsbPrint.Size = new System.Drawing.Size(23, 22);
-			this.tsbPrint.Text = "Print";
-			this.tsbPrint.Visible = false;
-			// 
-			// printPreviewToolStripButton
-			// 
-			this.printPreviewToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.printPreviewToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripButton.Image")));
-			this.printPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
-			this.printPreviewToolStripButton.Name = "printPreviewToolStripButton";
-			this.printPreviewToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.printPreviewToolStripButton.Text = "Print Preview";
-			this.printPreviewToolStripButton.Visible = false;
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			this.toolStripSeparator2.Visible = false;
-			// 
-			// helpToolStripButton
-			// 
-			this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
-			this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
-			this.helpToolStripButton.Name = "helpToolStripButton";
-			this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.helpToolStripButton.Text = "Help";
-			this.helpToolStripButton.Visible = false;
-			// 
-			// tabForms
-			// 
-			this.tabForms.Dock = System.Windows.Forms.DockStyle.Top;
-			this.tabForms.Location = new System.Drawing.Point(0, 49);
-			this.tabForms.Name = "tabForms";
-			this.tabForms.SelectedIndex = 0;
-			this.tabForms.Size = new System.Drawing.Size(1175, 22);
-			this.tabForms.TabIndex = 3;
-			this.tabForms.Visible = false;
-			this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
-			// 
-			// frmMain
-			// 
-			this.AllowDrop = true;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1175, 713);
-			this.Controls.Add(this.tabForms);
-			this.Controls.Add(this.toolStrip);
-			this.Controls.Add(this.menuStrip);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.IsMdiContainer = true;
-			this.MainMenuStrip = this.menuStrip;
-			this.Name = "frmMain";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Chummer5";
-			this.Load += new System.EventHandler(this.frmMain_Load);
-			this.MdiChildActivate += new System.EventHandler(this.frmMain_MdiChildActivate);
-			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmMain_DragEnter);
-			this.menuStrip.ResumeLayout(false);
-			this.menuStrip.PerformLayout();
-			this.toolStrip.ResumeLayout(false);
-			this.toolStrip.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.toolStrip.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Size = new System.Drawing.Size(1175, 25);
+            this.toolStrip.TabIndex = 1;
+            this.toolStrip.Text = "ToolStrip";
+            this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
+            this.toolStrip.ItemRemoved += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemRemoved);
+            // 
+            // newToolStripButton
+            // 
+            this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.newToolStripButton.Image = global::Chummer.Properties.Resources.page;
+            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.newToolStripButton.Name = "newToolStripButton";
+            this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.newToolStripButton.Tag = "Menu_Main_NewCharater";
+            this.newToolStripButton.Text = "New";
+            this.newToolStripButton.Click += new System.EventHandler(this.ShowNewForm);
+            // 
+            // openToolStripButton
+            // 
+            this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openToolStripButton.Image = global::Chummer.Properties.Resources.folder_page;
+            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.openToolStripButton.Name = "openToolStripButton";
+            this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openToolStripButton.Tag = "Menu_Main_Open";
+            this.openToolStripButton.Text = "Open";
+            this.openToolStripButton.Click += new System.EventHandler(this.OpenFile);
+            // 
+            // tsbSave
+            // 
+            this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbSave.Image = global::Chummer.Properties.Resources.disk;
+            this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbSave.Name = "tsbSave";
+            this.tsbSave.Size = new System.Drawing.Size(23, 22);
+            this.tsbSave.Text = "Save";
+            this.tsbSave.Visible = false;
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator1.Visible = false;
+            // 
+            // tsbPrint
+            // 
+            this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
+            this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Black;
+            this.tsbPrint.Name = "tsbPrint";
+            this.tsbPrint.Size = new System.Drawing.Size(23, 22);
+            this.tsbPrint.Text = "Print";
+            this.tsbPrint.Visible = false;
+            // 
+            // printPreviewToolStripButton
+            // 
+            this.printPreviewToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.printPreviewToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("printPreviewToolStripButton.Image")));
+            this.printPreviewToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.printPreviewToolStripButton.Name = "printPreviewToolStripButton";
+            this.printPreviewToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.printPreviewToolStripButton.Text = "Print Preview";
+            this.printPreviewToolStripButton.Visible = false;
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator2.Visible = false;
+            // 
+            // helpToolStripButton
+            // 
+            this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
+            this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
+            this.helpToolStripButton.Name = "helpToolStripButton";
+            this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.helpToolStripButton.Text = "Help";
+            this.helpToolStripButton.Visible = false;
+            // 
+            // tabForms
+            // 
+            this.tabForms.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabForms.Location = new System.Drawing.Point(0, 49);
+            this.tabForms.Name = "tabForms";
+            this.tabForms.SelectedIndex = 0;
+            this.tabForms.Size = new System.Drawing.Size(1175, 22);
+            this.tabForms.TabIndex = 3;
+            this.tabForms.Visible = false;
+            this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
+            // 
+            // frmMain
+            // 
+            this.AllowDrop = true;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1175, 713);
+            this.Controls.Add(this.tabForms);
+            this.Controls.Add(this.toolStrip);
+            this.Controls.Add(this.menuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.IsMdiContainer = true;
+            this.MainMenuStrip = this.menuStrip;
+            this.Name = "frmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Chummer5";
+            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.MdiChildActivate += new System.EventHandler(this.frmMain_MdiChildActivate);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmMain_DragEnter);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion
@@ -754,7 +783,10 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
-	}
+        private System.Windows.Forms.ToolStripMenuItem mnuDashboard;
+        private System.Windows.Forms.ToolStripMenuItem mnuGMDashboard;
+        private System.Windows.Forms.ToolStripMenuItem mnuPlayerDashboard;
+    }
 }
 
 

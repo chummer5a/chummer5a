@@ -97,7 +97,8 @@ namespace Chummer
                     Delayed = false,
                     InitialInit = (int)this.nudInitStart.Value
                 };
-            this.parentControl.AddToken(this._character);
+            this.parentControl.AddToken(this._character,chkAutoRollInit.Checked);
+           
             this.Close();
         }
     }

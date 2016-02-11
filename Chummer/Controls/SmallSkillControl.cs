@@ -12,7 +12,7 @@ namespace Chummer
     public partial class SmallSkillControl : UserControl
     {
         private Skill _objSkill;
-        private Form _objParent;
+        private readonly Form _objParent;
         
         /// <summary>
         /// Fired when the user decides to roll the dice
@@ -32,7 +32,7 @@ namespace Chummer
             set
             {
                 this._objSkill = value;
-                this.lblSkillName.Text = this.Skill.Name + " : " + this.Skill.TotalRating.ToString();
+                this.lblSkillName.Text = this.Skill.DisplayName + " : " + this.Skill.TotalRating.ToString();
             }
         }
 

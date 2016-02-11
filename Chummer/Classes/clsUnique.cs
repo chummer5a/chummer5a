@@ -5181,21 +5181,12 @@ namespace Chummer
 
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
-				XPathExpression xprDV;
-
 				try
 				{
 					for (int i = 1; i <= intMAG * 2; i++)
 					{
-						// Calculate the Spell's Drain for the current Force.
-						xprDV = nav.Compile(_strDV.Replace("F", i.ToString()).Replace("/", " div "));
-						decimal decDV = Convert.ToDecimal(nav.Evaluate(xprDV).ToString());
-						decDV = Math.Floor(decDV);
-						int intDV = Convert.ToInt32(decDV);
-						// Drain cannot be lower than 2.
-						if (intDV < 2)
-							intDV = 2;
-						strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
+					    var intDV = CalculateDrain(nav, i);
+					    strTip += "\n   " + LanguageManager.Instance.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
 					}
 				}
 				catch
@@ -5207,7 +5198,29 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
+	    public int GetDrainValue(int force)
+	    {
+            XmlDocument objXmlDocument = new XmlDocument();
+            XPathNavigator nav = objXmlDocument.CreateNavigator();
+	        return CalculateDrain(nav, force);
+	    }
+
+
+	    private int CalculateDrain(XPathNavigator nav, int force)
+	    {
+	        XPathExpression xprDV;
+            // Calculate the Spell's Drain for the current Force.
+	        xprDV = nav.Compile(_strDV.Replace("F", force.ToString()).Replace("/", " div "));
+	        decimal decDV = Convert.ToDecimal(nav.Evaluate(xprDV)?.ToString());
+	        decDV = Math.Floor(decDV);
+	        int intDV = Convert.ToInt32(decDV);
+	        // Drain cannot be lower than 2.
+	        if (intDV < 2)
+	            intDV = 2;
+	        return intDV;
+	    }
+
+	    /// <summary>
 		/// Spell's range.
 		/// </summary>
 		public string Range

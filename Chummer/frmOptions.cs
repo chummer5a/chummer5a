@@ -719,7 +719,7 @@ namespace Chummer
 
         private void CloseCreateForm()
         {
-            Form fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
+            Form fc =System.Windows.Forms.Application.OpenForms["frmCreate"];
 
             if (fc == null)
                 return;

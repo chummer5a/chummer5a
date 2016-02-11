@@ -130,6 +130,8 @@ namespace Chummer
 			catch
 			{
 			}
+            mnuPlayerDashboard.Enabled = false;
+            mnuPlayerDashboard.ToolTipText = "to be done";
 		}
 
 		private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
@@ -949,6 +951,16 @@ namespace Chummer
 				_frmRoller = value;
 			}
 		}
-		#endregion
-	}
+        #endregion
+
+        private void mnuGMDashboard_Click(object sender, EventArgs e)
+        {
+            dashboardToolStripMenuItem_Click(sender,e);
+        }
+
+        private void mnuPlayerDashboard_Click(object sender, EventArgs e)
+        {
+            frmPlayerDashboard.Instance.Show();
+        }
+    }
 }

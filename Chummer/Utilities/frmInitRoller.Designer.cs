@@ -57,10 +57,10 @@
             this.lblDice.AutoSize = true;
             this.lblDice.Location = new System.Drawing.Point(69, 59);
             this.lblDice.Name = "lblDice";
-            this.lblDice.Size = new System.Drawing.Size(81, 13);
+            this.lblDice.Size = new System.Drawing.Size(52, 13);
             this.lblDice.TabIndex = 6;
             this.lblDice.Tag = "String_DiceHits_HitsOn";
-            this.lblDice.Text = "Result of 4D6: (";
+            this.lblDice.Text = "Result of ";
             this.lblDice.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // cmdOK

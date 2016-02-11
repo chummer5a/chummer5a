@@ -154,6 +154,12 @@
     <Compile Include="Controls\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SmallSpellControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SmallSpellControl.Designer.cs">
+      <DependentUpon>SmallSpellControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -735,6 +741,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SmallSpellControl.resx">
+      <DependentUpon>SmallSpellControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddToken.resx">
       <DependentUpon>frmAddToken.cs</DependentUpon>
@@ -1456,13 +1465,11 @@
     <None Include="icons\emoticon_waii.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin\manifestdata.xml" />
+    <Content Include="Admin\manifestlang.xml" />
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Admin\manifestdata.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Admin\manifestlang.xml" />
     <EmbeddedResource Include="Collapse.png" />
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1680,6 +1687,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Character Creation\Admin\" />
     <Folder Include="settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

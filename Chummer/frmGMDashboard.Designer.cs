@@ -54,7 +54,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(442, 258);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(500, 294);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tabControl
@@ -63,7 +63,7 @@
             this.tabControl.Location = new System.Drawing.Point(3, 26);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(436, 229);
+            this.tabControl.Size = new System.Drawing.Size(494, 265);
             this.tabControl.TabIndex = 1;
             // 
             // menuStrip1
@@ -74,7 +74,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(442, 23);
+            this.menuStrip1.Size = new System.Drawing.Size(500, 23);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -92,14 +92,14 @@
             // initativeToolStripMenuItem
             // 
             this.initativeToolStripMenuItem.Name = "initativeToolStripMenuItem";
-            this.initativeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.initativeToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.initativeToolStripMenuItem.Text = "{Initiative}";
             this.initativeToolStripMenuItem.Click += new System.EventHandler(this.initativeToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.openToolStripMenuItem.Tag = "Label_Open";
             this.openToolStripMenuItem.Text = "{Open}";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
@@ -107,7 +107,7 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.exitToolStripMenuItem.Tag = "Label_Exit";
             this.exitToolStripMenuItem.Text = "{Exit}";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -132,14 +132,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(442, 258);
+            this.ClientSize = new System.Drawing.Size(500, 294);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmGMDashboard";
             this.Tag = "String_Dashboard";
             this.Text = "{Dashboard}";
-            this.TopMost = true;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
