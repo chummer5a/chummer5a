@@ -13721,7 +13721,8 @@ namespace Chummer
 		private string _strAltCategory = "";
 		private string _strAltPage = "";
 		private string _strExtra = "";
-		private bool _blnDiscountCost = false;
+		private string _strWeaponMountCategories = "";
+        private bool _blnDiscountCost = false;
 
 		// Variables used to calculate the Mod's cost from the Vehicle.
 		private int _intVehicleCost = 0;
@@ -13747,15 +13748,8 @@ namespace Chummer
 		{
 			_strName = objXmlMod["name"].InnerText;
 			_strCategory = objXmlMod["category"].InnerText;
-			try
-			{
-				_strLimit = objXmlMod["limit"].InnerText;
-			}
-			catch
-			{
-			}
-
-			_strSlots = objXmlMod["slots"].InnerText;
+			objXmlMod.TryGetField("limit", out _strLimit);
+			objXmlMod.TryGetField("slots", out _strSlots);
 			if (intRating != 0)
 			{
 				_intRating = Convert.ToInt32(intRating);
@@ -13764,41 +13758,12 @@ namespace Chummer
 				_strMaxRating = objXmlMod["rating"].InnerText;
 			else
 				_strMaxRating = "0";
-			try
-			{
-				_intResponse = Convert.ToInt32(objXmlMod["response"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSystem = Convert.ToInt32(objXmlMod["system"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intFirewall = Convert.ToInt32(objXmlMod["firewall"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSignal = Convert.ToInt32(objXmlMod["signal"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intPilot = Convert.ToInt32(objXmlMod["pilot"].InnerText);
-			}
-			catch
-			{
-			}
+			objXmlMod.TryGetField("response", out _intResponse);
+			objXmlMod.TryGetField("system", out _intSystem);
+			objXmlMod.TryGetField("firewall", out _intFirewall);
+			objXmlMod.TryGetField("signal", out _intSignal);
+			objXmlMod.TryGetField("pilot", out _intPilot);
+			objXmlMod.TryGetField("weaponmountcategories", out _strWeaponMountCategories);
 			// Add Subsytem information if applicable.
 			if (objXmlMod.InnerXml.Contains("subsystems"))
 			{
@@ -13901,6 +13866,7 @@ namespace Chummer
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("subsystems", _strSubsystems);
+			objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
 			objWriter.WriteStartElement("weapons");
 			foreach (Weapon objWeapon in _lstVehicleWeapons)
 				objWeapon.Save(objWriter);
@@ -13932,49 +13898,19 @@ namespace Chummer
 			_strSlots = objNode["slots"].InnerText;
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_strMaxRating = objNode["maxrating"].InnerText;
-			try
-			{
-				_intResponse = Convert.ToInt32(objNode["response"].InnerText);
-				_intSystem = Convert.ToInt32(objNode["system"].InnerText);
-				_intFirewall = Convert.ToInt32(objNode["firewall"].InnerText);
-				_intSignal = Convert.ToInt32(objNode["signal"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intPilot = Convert.ToInt32(objNode["pilot"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("weaponmountcategories", out _strWeaponMountCategories);
+			objNode.TryGetField("response", out _intResponse);
+			objNode.TryGetField("system", out _intSystem);
+			objNode.TryGetField("firewall", out _intFirewall);
+			objNode.TryGetField("signal", out _intSignal);
+			objNode.TryGetField("pilot", out _intPilot);
+			objNode.TryGetField("page", out _strPage);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-
 			_blnIncludeInVehicle = Convert.ToBoolean(objNode["included"].InnerText);
-			try
-			{
-				_blnInstalled = Convert.ToBoolean(objNode["installed"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strSubsystems = objNode["subsystems"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("installed", out _blnInstalled);
+			objNode.TryGetField("subsystems", out _strSubsystems);
 
 			if (objNode.InnerXml.Contains("<weapons>"))
 			{
@@ -13996,6 +13932,7 @@ namespace Chummer
 					_lstCyberware.Add(objCyberware);
 				}
 			}
+
 			try
 			{
 				_nodBonus = objNode["bonus"];
@@ -14003,27 +13940,9 @@ namespace Chummer
 			catch
 			{
 			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strExtra = objNode["extra"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("discountedcost", out _blnDiscountCost);
+			objNode.TryGetField("extra", out _strExtra);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -14156,6 +14075,21 @@ namespace Chummer
 			set
 			{
 				_strCategory = value;
+			}
+		}
+
+		/// <summary>
+		/// Limits the Weapon Selection form to specified categories.
+		/// </summary>
+		public string WeaponMountCategories
+		{
+			set
+			{
+				_strWeaponMountCategories = value;
+			}
+			get
+			{
+				return _strWeaponMountCategories; 
 			}
 		}
 
@@ -15019,7 +14953,7 @@ namespace Chummer
 					// Find the first free Weapon Mount in the Vehicle.
 					foreach (VehicleMod objMod in _lstVehicleMods)
 					{
-						if ((objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount")) && objMod.Weapons.Count == 0)
+						if ((objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (objMod.WeaponMountCategories != "" && objMod.WeaponMountCategories.Contains(objWeapon.Category))) && objMod.Weapons.Count == 0)
 						{
 							objMod.Weapons.Add(objWeapon);
 							foreach (TreeNode objModNode in objNode.Nodes)
@@ -15042,7 +14976,7 @@ namespace Chummer
 					{
 						foreach (VehicleMod objMod in _lstVehicleMods)
 						{
-                            if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount"))
+                            if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (objMod.WeaponMountCategories != "" && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
 							{
 								objMod.Weapons.Add(objWeapon);
 								foreach (TreeNode objModNode in objNode.Nodes)

@@ -5238,6 +5238,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>2500</cost>
 			<source>SR5</source>
@@ -5249,6 +5250,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>9F</avail>
 			<cost>3000</cost>
 			<source>SR5</source>
@@ -5260,6 +5262,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>14F</avail>
 			<cost>5000</cost>
 			<source>SR5</source>
@@ -5271,6 +5274,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>15F</avail>
 			<cost>5500</cost>
 			<source>SR5</source>
@@ -6000,6 +6004,7 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>1</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Melee</weaponmountcategories>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>R5</source>
@@ -6011,6 +6016,7 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>2</slots>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>1500</cost>
 			<source>R5</source>
@@ -6022,6 +6028,7 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>4</slots>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>4000</cost>
 			<source>R5</source>

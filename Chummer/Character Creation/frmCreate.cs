@@ -3914,7 +3914,7 @@ namespace Chummer
                             {
                                 if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
                                 {
-                                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm"))
+                                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objVehicleMod.WeaponMountCategories != "")
                                     {
                                         objVehicleMod.Weapons.Add(objWeapon);
 
@@ -9203,7 +9203,7 @@ namespace Chummer
                 Vehicle objFoundVehicle = new Vehicle(_objCharacter);
                 objMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
 
-                if (!objMod.Name.StartsWith("Weapon Mount") && !objMod.Name.StartsWith("Heavy Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm"))
+                if (!objMod.Name.StartsWith("Weapon Mount") && !objMod.Name.StartsWith("Heavy Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories == "")
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotAddWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -9216,7 +9216,8 @@ namespace Chummer
             }
 
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
-            frmPickWeapon.ShowDialog();
+			frmPickWeapon.LimitToCategories = objMod.WeaponMountCategories;
+			frmPickWeapon.ShowDialog();
 
             if (frmPickWeapon.DialogResult == DialogResult.Cancel)
                 return;
@@ -9409,7 +9410,7 @@ namespace Chummer
             }
 
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(_objCharacter);
-            frmPickWeapon.ShowDialog(this);
+			frmPickWeapon.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickWeapon.DialogResult == DialogResult.Cancel)
@@ -23016,7 +23017,7 @@ namespace Chummer
                             // Find the first Weapon Mount in the Vehicle.
                             foreach (VehicleMod objMod in objVehicle.Mods)
                             {
-                                if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount"))
+                                if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (objMod.WeaponMountCategories != "" && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
                                     foreach (TreeNode objModNode in objNode.Nodes)
@@ -24496,7 +24497,7 @@ namespace Chummer
                             {
                                 if (objVehicleMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
                                 {
-                                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm"))
+                                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories != "")
                                     {
                                         blnPasteEnabled = true;
                                         break;
