@@ -865,7 +865,7 @@
 			<rc>0</rc>
 			<ammo>0</ammo>
 			<avail>8R</avail>
-			<cost>950</cost>
+			<cost>900</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>19</page>
