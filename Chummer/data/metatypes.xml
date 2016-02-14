@@ -1362,9 +1362,9 @@
 					<bodmin>2</bodmin>
 					<bodmax>7</bodmax>
 					<bodaug>11</bodaug>
-					<agimin>2</agimin>
-					<agimax>7</agimax>
-					<agiaug>11</agiaug>
+					<agimin>1</agimin>
+					<agimax>6</agimax>
+					<agiaug>10</agiaug>
 					<reamin>1</reamin>
 					<reamax>6</reamax>
 					<reaaug>10</reaaug>
