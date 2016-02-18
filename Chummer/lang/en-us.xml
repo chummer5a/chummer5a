@@ -2107,6 +2107,14 @@
 			<text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>
 		<string>
+			<key>MessageTitle_ExtraPoints</key>
+			<text>Extra Points</text>
+		</string>
+		<string>
+			<key>Message_ExtraPoints</key>
+			<text>You have {0} points to spend on {1}.\nAre you sure you want to lose these extra points?</text>
+		</string>
+		<string>
 			<key>Message_NoExtraKarma</key>
 			<text>You have {0} remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>	
@@ -3334,8 +3342,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
 		</string>
 		<string>
-			<key>Tip_OptionsDontDoubleQualities</key>
-			<text>Allows characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
+			<key>Tip_OptionsDontDoubleQualityRefunds</key>
+			<text>Allows characters in Career mode to remove Negative Qualities at their normal price instead of doubling them.</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityPurchases</key>
+			<text>Allows characters in Career mode to purchase Positive Qualities at their normal price instead of doubling them.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalAttribute</key>
@@ -6183,8 +6195,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Knucks Benefit from Unarmed Attack Bonuses</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_DontDoubleQualities</key>
-			<text>Don't double the cost of Qualities in Career Mode</text>
+			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
+			<text>Don't double the cost of refunding Negative Qualities in Career Mode</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_DontDoubleQualityPurchases</key>
+			<text>Don't double the cost of purchasing Positive Qualities in Career Mode</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreArt</key>

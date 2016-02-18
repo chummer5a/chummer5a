@@ -126,7 +126,7 @@ namespace Chummer
 			{
 				intBP = Convert.ToInt32(objXmlQuality["karma"].InnerText);
 			}
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualities)
+            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
             {
                 intBP *= 2;
             }

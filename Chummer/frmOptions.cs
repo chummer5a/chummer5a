@@ -69,8 +69,9 @@ namespace Chummer
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             _characterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _characterOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
-            _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
+            _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
+			_characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
+			_characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
             _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
@@ -569,7 +570,8 @@ namespace Chummer
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
-			chkDontDoubleQualities.Checked = _characterOptions.DontDoubleQualities;
+			chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
+			chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
 			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
 			chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
 			chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
@@ -855,8 +857,9 @@ namespace Chummer
             tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
             tipTooltip.SetToolTip(chkIgnoreArt, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
             tipTooltip.SetToolTip(chkCyberlegMovement, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
-            tipTooltip.SetToolTip(chkDontDoubleQualities, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
-            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
+            tipTooltip.SetToolTip(chkDontDoubleQualityPurchases, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityPurchases"), width));
+			tipTooltip.SetToolTip(chkDontDoubleQualityRefunds, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityRefunds"), width));
+			tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
             tipTooltip.SetToolTip(chkAllowInitiation, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
         }
 
@@ -1130,5 +1133,6 @@ namespace Chummer
 			#endif
 		}
 		#endregion
+
 	}
 }

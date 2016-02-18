@@ -52,7 +52,9 @@ Application Change:
 - Enabled Vehicle Modifications to gain flat increases to Speed,Handling or Acceleration based on the Rating of the mod. Partial fix for #675.
 - Fixed a visual bug with Limit Modifiers in creation mode. Fixes #665.
 - Expanded the category selection mechanism to support falling back to default values. The general idea is that for each priority category loaded, it will attempt to load nodes that have a gameplayoptions node. If it can't do that, it'll load the Standard settings instead. This is intended to support alternate gameplay options as requested by #357. The actual data will need to be added for the appropriate categories, which I really can't be bothered transcribing.
-- New Feature: Weapon Mounts will now limit the available weapons based on a predefined list of weapon categories. This also enables the weapon mounts added in Rigger 5.0 for adding weapons.
+- New Feature: Weapon Mounts will now limit the available weapons based on a predefined list of weapon categories. This also enables the weapon mounts added in Rigger 5.0 for adding weapons. I'm not particularly happy with how this looks in the XML so the underlying code might get changed over time. For now it's all good though.
+- Fixed an issue that prevented magic- or reseonance-enabled karma-created characters from moving to Career mode.
+- New Feature: Added a bunch of prompts to warn the user if they still have free contact points, knowledge points, skill points and such before moving to Career mode. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -99,6 +101,16 @@ New Strings:
 - Button_DeleteWeek
 - Tip_CalculatedMovement
 - Message_ConfirmExoticSkillRemove
+- MessageTitle_ExtraPoints
+- Message_ExtraPoints
+- Tip_OptionsDontDoubleQualityRefunds
+- Tip_OptionsDontDoubleQualityPurchases
+- Checkbox_Options_DontDoubleQualityPurchases
+- Checkbox_Options_DontDoubleNegativeQualityRefunds
+
+Removed Strings:
+- Checkbox_Options_DontDoubleQualities
+- Tip_OptionsDontDoubleQualities
 
 Build 178: 
 Application Change: 

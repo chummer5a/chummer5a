@@ -828,8 +828,9 @@ namespace Chummer
         private bool _blnConfirmKarmaExpense = true;
         private bool _blnCreateBackupOnCareer = false;
         private bool _blnCyberlegMovement = false;
-        private bool _blnDontDoubleQualityCost = false;
-        private bool _blnEnforceCapacity = true;
+        private bool _blnDontDoubleQualityPurchaseCost = false;
+		private bool _blnDontDoubleQualityRefundCost = false;
+		private bool _blnEnforceCapacity = true;
         private bool _blnEnforceSkillMaximumModifiedRating = false;
         private bool _blnErgonomicProgramsLimit = true;
         private bool _blnESSLossReducesMaximumOnly = false;
@@ -1025,9 +1026,11 @@ namespace Chummer
             // <usepointsonbrokengroups />
             objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString());
             // <dontdoublequalities />
-            objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityCost.ToString());
-            // <ignoreart />
-            objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString());
+            objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString());
+			// <dontdoublequalities />
+			objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString());
+			// <ignoreart />
+			objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString());
             // <cyberlegmovement />
             objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString());
             // <allow2ndmaxattribute />
@@ -1333,631 +1336,230 @@ namespace Chummer
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.Instance.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-
+			XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
 			// Setting name.
 			_strName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
-
 			// Confirm delete.
-			_blnConfirmDelete = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/confirmdelete").InnerText);
-            // License Restricted items.
-            try
-            {
-                _blnLicenseRestrictedItems = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/licenserestricted").InnerText);
-            }
-            catch
-            { }
-            // Confirm Karama Expense.
-			_blnConfirmKarmaExpense = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/confirmkarmaexpense").InnerText);
+			objXmlNode.TryGetField("confirmdelete", out _blnConfirmDelete);
+			// License Restricted items.
+			objXmlNode.TryGetField("licenserestricted", out _blnLicenseRestrictedItems);
+			// Confirm Karama ExpenseTryGetField
+			objXmlNode.TryGetField("confirmkarmaexpense", out _blnConfirmKarmaExpense);
 			// Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-			_blnPrintSkillsWithZeroRating = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/printzeroratingskills").InnerText);
+			objXmlNode.TryGetField("printzeroratingskills", out _blnPrintSkillsWithZeroRating);
 			// More Lethal Gameplay.
-			_blnMoreLethalGameplay = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/morelethalgameplay").InnerText);
+			objXmlNode.TryGetField("morelethalgameplay", out _blnMoreLethalGameplay);
 			// Spirit Force Based on Total MAG.
-			_blnSpiritForceBasedOnTotalMAG = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/spiritforcebasedontotalmag").InnerText);
+			objXmlNode.TryGetField("spiritforcebasedontotalmag", out _blnSpiritForceBasedOnTotalMAG);
 			// Skill Defaulting Includes Modifers.
-			_blnSkillDefaultingIncludesModifiers = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/skilldefaultingincludesmodifiers").InnerText);
+			objXmlNode.TryGetField("skilldefaultingincludesmodifiers", out _blnSkillDefaultingIncludesModifiers);
 			// Enforce Skill Maximum Modified Rating.
-			_blnEnforceSkillMaximumModifiedRating = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/enforceskillmaximummodifiedrating").InnerText);
+			objXmlNode.TryGetField("enforceskillmaximummodifiedrating", out _blnEnforceSkillMaximumModifiedRating);
 			// Cap Skill Rating.
-			_blnCapSkillRating = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/capskillrating").InnerText);
+			_blnCapSkillRating = objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
 			// Print Expenses.
-			_blnPrintExpenses = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/printexpenses").InnerText);
+			_blnPrintExpenses = objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
 			// Nuyen per Build Point
-			_intNuyenPerBP = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/nuyenperbp").InnerText);
-            // Knucks use Unarmed
-            try
-            {
-            _blnKnucksUseUnarmed = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/knucksuseunarmed").InnerText);
-            }
-            catch
-            { }
-            // Allow Initiation in Create Mode
-            try
-            {
-                _blnAllowInitiationInCreateMode = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowinitiationincreatemode").InnerText);
-            }
-            catch
-            { }
-            // Use Points on Broken Groups
-            try
-            {
-                _blnUsePointsOnBrokenGroups = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/usepointsonbrokengroups").InnerText);
-            }
-            catch
-            { }
-            // Don't Double the Cost of Qualities in Career Mode
-            try
-            {
-                _blnDontDoubleQualityCost = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/dontdoublequalities").InnerText);
-            }
-            catch
-            { }
-            // Ignore Art Requirements from Street Grimoire
-            try
-            {
-                _blnIgnoreArt = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/ignoreart").InnerText);
-            }
-            catch
-            { }
-            // Use Cyberleg Stats for Movement
-            try
-            {
-                _blnCyberlegMovement = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/cyberlegmovement").InnerText);
-            }
-            catch
-            { }
-            // Allow a 2nd Max Attribute
-            try
-            {
-                _blnAllow2ndMaxAttribute = false; // Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allow2ndmaxattribute").InnerText);
-            }
-            catch
-            { }
-            // Allow using Attribute Points with Exceptional Attribute
-            try
-            {
-                _blnAllowAttributePointsOnExceptional = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowattributepointsonexceptional").InnerText);
-            }
-            catch
-            { }
-            try
-            {
-                // Free Contacts Multiplier
-                _intFreeContactsMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmacontactsmultiplier").InnerText);
-            }
-            catch 
-            { }
-            try
-            {
-                // Free Contacts Multiplier Enabled
-                _blnFreeContactsMultiplierEnabled = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freecontactsmultiplierenabled").InnerText);
-            }
-            catch { }
-            try
-            {
-                // Free Knowledge Multiplier Enabled
-                _blnFreeKnowledgeMultiplierEnabled = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplierenabled").InnerText);
-            }
-            catch { }
-
-		    try
-		    {
-		        // Karma Free Knowledge
-		        _blnFreeKarmaContacts =
-		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmacontacts").InnerText);
-		        // Karma Free Knowledge
-		        _blnFreeKarmaKnowledge =
-		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledge").InnerText);
-		        // Free Contacts Multiplier
-		        _intFreeKnowledgeMultiplier =
-		            Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/freekarmaknowledgemultiplier").InnerText);
-				// No Single Armor Encumbrance
-		        _blnNoSingleArmorEncumbrance =
-		            Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/nosinglearmorencumbrance").InnerText);
-		        // Ignore Armor Encumbrance
-		    }
-		    catch
-		    {
-		    }
-
-		    try
-			{
-				_blnIgnoreArmorEncumbrance = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/ignorearmorencumbrance").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("nuyenperbp", out _intNuyenPerBP);
+			// Knucks use Unarmed
+			objXmlNode.TryGetField("knucksuseunarmed", out _blnKnucksUseUnarmed);
+			// Allow Initiation in Create Mode
+			objXmlNode.TryGetField("allowinitiationincreatemode", out _blnAllowInitiationInCreateMode);
+			// Use Points on Broken Groups
+			objXmlNode.TryGetField("usepointsonbrokengroups", out _blnUsePointsOnBrokenGroups);
+			// Don't Double the Cost of purchasing Qualities in Career Mode
+			objXmlNode.TryGetField("dontdoublequalities", out _blnDontDoubleQualityPurchaseCost);
+			// Don't Double the Cost of removing Qualities in Career Mode
+			objXmlNode.TryGetField("dontdoublequalityrefunds", out _blnDontDoubleQualityRefundCost);
+			// Ignore Art Requirements from Street Grimoire
+			objXmlNode.TryGetField("ignoreart", out _blnIgnoreArt);
+			// Use Cyberleg Stats for Movement
+			objXmlNode.TryGetField("cyberlegmovement", out _blnCyberlegMovement);
+			// Allow a 2nd Max Attribute
+			objXmlNode.TryGetField("allow2ndmaxattribute", out _blnAllow2ndMaxAttribute);
+			// Allow using Attribute Points with Exceptional Attribute
+			objXmlNode.TryGetField("allowattributepointsonexceptional", out _blnAllowAttributePointsOnExceptional);
+			// Free Contacts Multiplier
+			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
+			// Free Contacts Multiplier Enabled
+			objXmlNode.TryGetField("freecontactsmultiplierenabled", out _blnFreeContactsMultiplierEnabled);
+			// Free Knowledge Multiplier Enabled
+			objXmlNode.TryGetField("freekarmaknowledgemultiplierenabled", out _blnFreeKnowledgeMultiplierEnabled);
+			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
+			objXmlNode.TryGetField("freekarmacontacts", out _blnFreeKarmaContacts);
+			// Karma Free Knowledge
+			objXmlNode.TryGetField("freekarmaknowledge", out _blnFreeKarmaKnowledge);
+			// Free Contacts Multiplier
+			objXmlNode.TryGetField("freekarmaknowledgemultiplier", out _intFreeKnowledgeMultiplier);
+			// No Single Armor Encumbrance
+			objXmlNode.TryGetField("nosinglearmorencumbrance", out _blnNoSingleArmorEncumbrance);
+			// Ignore Armor Encumbrance
+			objXmlNode.TryGetField("ignorearmorencumbrance", out _blnIgnoreArmorEncumbrance);
 			// Alternate Armor Encumbrance (BOD+STR)
-			try
-			{
-				_blnAlternateArmorEncumbrance = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alternatearmorencumbrance").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("alternatearmorencumbrance", out _blnAlternateArmorEncumbrance);
 			// Essence Loss Reduces Maximum Only.
-			_blnESSLossReducesMaximumOnly = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/esslossreducesmaximumonly").InnerText);
+			objXmlNode.TryGetField("esslossreducesmaximumonly", out _blnESSLossReducesMaximumOnly);
 			// Allow Skill Regrouping.
-			_blnAllowSkillRegrouping = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowskillregrouping").InnerText);
+			objXmlNode.TryGetField("allowskillregrouping", out _blnAllowSkillRegrouping);
 			// Metatype Costs Karma.
-			try
-			{
-				_blnMetatypeCostsKarma = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/metatypecostskarma").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("metatypecostskarma", out _blnMetatypeCostsKarma);
 			// Metatype Costs Karma Multiplier.
-			try
-			{
-				_intMetatypeCostMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/metatypecostskarmamultiplier").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("metatypecostskarmamultiplier", out _intMetatypeCostMultiplier);
 			// Limb Count.
-			try
-			{
-				_intLimbCount = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/limbcount").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("limbcount", out _intLimbCount);
 			// Exclude Limb Slot.
-			try
-			{
-				_strExcludeLimbSlot = objXmlDocument.SelectSingleNode("/settings/excludelimbslot").InnerText;
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("excludelimbslot", out _strExcludeLimbSlot);
 			// Allow Cyberware Essence Cost Discounts.
-			try
-			{
-				_blnAllowCyberwareESSDiscounts = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowcyberwareessdiscounts").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowcyberwareessdiscounts", out _blnAllowCyberwareESSDiscounts);
 			// Strength Affects Recoil.
-			try
-			{
-                _blnStrengthAffectsRecoil = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/strengthaffectsrecoil").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("strengthaffectsrecoil", out _blnStrengthAffectsRecoil);
 			// Use Maximum Armor Modifications.
-			try
-			{
-				_blnMaximumArmorModifications = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/maximumarmormodifications").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("maximumarmormodifications", out _blnMaximumArmorModifications);
 			// Use Armor Suit Capacity.
-			try
-			{
-				_blnArmorSuitCapacity = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/armorsuitcapacity").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("armorsuitcapacity", out _blnArmorSuitCapacity);
 			// Allow Armor Degredation.
-			try
-			{
-				_blnArmorDegradation = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/armordegredation").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("armordegredation", out _blnArmorDegradation);
 			// Automatically add Copy Protection Program Option.
-			try
-			{
-				_blnAutomaticCopyProtection = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/automaticcopyprotection").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("automaticcopyprotection", out _blnAutomaticCopyProtection);
 			// Automatically add Registration Program Option.
-			try
-			{
-				_blnAutomaticRegistration = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/automaticregistration").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("automaticregistration", out _blnAutomaticRegistration);
 			// Whether or not option for Ergonomic Programs affecting a Commlink's effective Response is enabled.
-			try
-			{
-				_blnErgonomicProgramsLimit = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/ergonomicprogramlimit").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("ergonomicprogramlimit", out _blnErgonomicProgramsLimit);
 			// Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
-			try
-			{
-				_blnSpecialKarmaCostBasedOnShownValue = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/specialkarmacostbasedonshownvalue").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("specialkarmacostbasedonshownvalue", out _blnSpecialKarmaCostBasedOnShownValue);
 			// Allow more than 35 BP in Positive Qualities.
-			try
-			{
-				_blnExceedPositiveQualities = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/exceedpositivequalities").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("exceedpositivequalities", out _blnExceedPositiveQualities);
 			// Allow more than 35 BP in Negative Qualities.
-			try
-			{
-				_blnExceedNegativeQualities = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/exceednegativequalities").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("exceednegativequalities", out _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
-			try
-			{
-				_blnExceedNegativeQualitiesLimit = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/exceednegativequalitieslimit").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("exceednegativequalitieslimit", out _blnExceedNegativeQualitiesLimit);
 			// Whether or not calculated Vehicle Sensor Ratings should be used.
-			try
-			{
-				_blnUseCalculatedVehicleSensorRatings = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/usecalculatedvehiclesensorratings").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("usecalculatedvehiclesensorratings", out _blnUseCalculatedVehicleSensorRatings);
 			// Whether or not Restricted items have their cost multiplied.
-			try
-			{
-				_blnMultiplyRestrictedCost = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/multiplyrestrictedcost").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("multiplyrestrictedcost", out _blnMultiplyRestrictedCost);
 			// Whether or not Forbidden items have their cost multiplied.
-			try
-			{
-				_blnMultiplyForbiddenCost = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/multiplyforbiddencost").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("multiplyforbiddencost", out _blnMultiplyForbiddenCost);
 			// Restricted cost multiplier.
-			try
-			{
-				_intRestrictedCostMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/restrictedcostmultiplier").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("restrictedcostmultiplier", out _intRestrictedCostMultiplier);
 			// Forbidden cost multiplier.
-			try
-			{
-				_intForbiddenCostMultiplier = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/forbiddencostmultiplier").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("forbiddencostmultiplier", out _intForbiddenCostMultiplier);
 			// Number of decimal places to round to when calculating Essence.
-			try
-			{
-				_intEssenceDecimals = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/essencedecimals").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("essencedecimals", out _intEssenceDecimals);
 			// Whether or not Capacity limits should be enforced.
-			try
-			{
-				_blnEnforceCapacity = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/enforcecapacity").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("enforcecapacity", out _blnEnforceCapacity);
 			// Whether or not Recoil modifiers are restricted (AR 148).
-			try
-			{
-				_blnRestrictRecoil = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/restrictrecoil").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("restrictrecoil", out _blnRestrictRecoil);
 			// Whether or not characters can exceed putting 50% of their points into Attributes.
-			try
-			{
-				_blnAllowExceedAttributeBP = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowexceedattributebp").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowexceedattributebp", out _blnAllowExceedAttributeBP);
 			// Whether or not character are not restricted to the number of points they can invest in Nuyen.
-			try
-			{
-				_blnUnrestrictedNuyen = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/unrestrictednuyen").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("unrestrictednuyen", out _blnUnrestrictedNuyen);
 			// Whether or not a Commlink's Response should be calculated based on the number of programms it has running.
-			try
-			{
-				_blnCalculateCommlinkResponse = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/calculatecommlinkresponse").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("calculatecommlinkresponse", out _blnCalculateCommlinkResponse);
 			// Whether or not Stacked Foci can go a combined Force higher than 6.
-			try
-			{
-				_blnAllowHigherStackedFoci = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowhigherstackedfoci").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowhigherstackedfoci", out _blnAllowHigherStackedFoci);
 			// Whether or not Complex Forms are treated as Spell for BP/Karma costs.
-			try
-			{
-				_blnAlternateComplexFormCost = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alternatecomplexformcost").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("alternatecomplexformcost", out _blnAlternateComplexFormCost);
 			// Whether or not LOG is used in place of Program Ratings for Matrix Tests.
-			try
-			{
-				_blnAlternateMatrixAttribute = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alternatematrixattribute").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("alternatematrixattribute", out _blnAlternateMatrixAttribute);
 			// Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
-			try
-			{
-				_blnAllowEditPartOfBaseWeapon = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alloweditpartofbaseweapon").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("alloweditpartofbaseweapon", out _blnAllowEditPartOfBaseWeapon);
 			// Whether or not the user can mark any piece of Bioware as being Transgenic.
-			try
-			{
-				_blnAllowCustomTransgenics = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowcustomtransgenics").InnerText);
-			}
-			catch
-			{
-			}
-            // Whether or not the user may buy qualities.
-            try
-            {
-                _blnMayBuyQualities = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/maybuyqualities").InnerText);
-            }
-            catch
-            {
-            }
+			objXmlNode.TryGetField("allowcustomtransgenics", out _blnAllowCustomTransgenics);
+			// Whether or not the user may buy qualities.
+            objXmlNode.TryGetField("maybuyqualities", out _blnMayBuyQualities);
             // Whether or not contact points are used instead of fixed contacts.
-            try
-            {
-                _blnUseContactPoints = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/usecontactpoints").InnerText);
-            }
-            catch
-            {
-            }
+            objXmlNode.TryGetField("usecontactpoints", out _blnUseContactPoints);
             // Whether or not the user can break Skill Groups while in Create Mode.
-			try
-			{
-				_blnBreakSkillGroupsInCreateMode = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/breakskillgroupsincreatemode").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnBreakSkillGroupsInCreateMode);
 			// Whether or not any Detection Spell can be taken as Extended range version.
-			try
-			{
-				_blnExtendAnyDetectionSpell = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/extendanydetectionspell").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("extendanydetectionspell", out _blnExtendAnyDetectionSpell);
 			// Whether or not dice rolling id allowed for Skills.
-			try
-			{
-				_blnAllowSkillDiceRolling = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowskilldicerolling").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowskilldicerolling", out _blnAllowSkillDiceRolling);
 			// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-			try
-			{
-				_blnAlternateMetatypeAttributeKarma = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/alternatemetatypeattributekarma").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("alternatemetatypeattributekarma", out _blnAlternateMetatypeAttributeKarma);
 			// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
-			try
-			{
-				_blnCreateBackupOnCareer = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/createbackuponcareer").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("createbackuponcareer", out _blnCreateBackupOnCareer);
 			// Whether or not the alternate uses for the Leadership Skill should be printed.
-			try
-			{
-				_blnPrintLeadershipAlternates = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/printleadershipalternates").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("printleadershipalternates", out _blnPrintLeadershipAlternates);
 			// Whether or not the alternate uses for the Arcana Skill should be printed.
-			try
-			{
-				_blnPrintArcanaAlternates = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/printarcanaalternates").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("printarcanaalternates", out _blnPrintArcanaAlternates);
 			// Whether or not Notes should be printed.
-			try
-			{
-				_blnPrintNotes = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/printnotes").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("printnotes", out _blnPrintNotes);
 			// Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
-			try
-			{
-				_blnAllowObsolescentUpgrade = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowobsolescentupgrade").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowobsolescentupgrade", out _blnAllowObsolescentUpgrade);
 			// Whether or not Bioware Suites can be created and added.
-			try
-			{
-				_blnAllowBiowareSuites = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/allowbiowaresuites").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("allowbiowaresuites", out _blnAllowBiowareSuites);
 			// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-			try
-			{
-				_blnFreeSpiritPowerPointsMAG = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/freespiritpowerpointsmag").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("freespiritpowerpointsmag", out _blnFreeSpiritPowerPointsMAG);
 			// House rule: Whether or not Special Attributes count towards the maximum 50% Karma allowed for Attributes during karma gen.
-			try
-			{
-				_blnSpecialAttributeKarmaLimit = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/specialattributekarmalimit").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("specialattributekarmalimit", out _blnSpecialAttributeKarmaLimit);
 			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
-			try
-			{
-				_blnTechnomancerAllowAutosoft = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/technomancerallowautosoft").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("technomancerallowautosoft", out _blnTechnomancerAllowAutosoft);
 
-			try
-			{
-				_automaticBackstory = Convert.ToBoolean(objXmlDocument.SelectSingleNode("/settings/autobackstory").InnerText);
-			}
-			catch { }
+			objXmlNode.TryGetField("autobackstory", out _automaticBackstory);
 
+			objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
 			// Attempt to populate the BP vlaues.
-			try
-			{
-				_intBPAttribute = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpattribute").InnerText);
-				_intBPAttributeMax = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpattributemax").InnerText);
-				_intBPContact = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpcontact").InnerText);
-				_intBPMartialArt = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpmartialart").InnerText);
-				_intBPMartialArtManeuver = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpmartialartmaneuver").InnerText);
-				_intBPSkillGroup = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpskillgroup").InnerText);
-				_intBPActiveSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpactiveskill").InnerText);
-				_intBPActiveSkillSpecialization = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpactiveskillspecialization").InnerText);
-				_intBPKnowledgeSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpknowledgeskill").InnerText);
-				_intBPSpell = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpspell").InnerText);
-				_intBPFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpfocus").InnerText);
-				_intBPSpirit = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpspirit").InnerText);
-				_intBPComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpcomplexform").InnerText);
-				_intBPComplexFormOption = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/bpcost/bpcomplexformoption").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("bpattribute", out _intBPAttribute);
+			objXmlNode.TryGetField("bpattributemax", out _intBPAttributeMax);
+			objXmlNode.TryGetField("bpcontact", out _intBPContact);
+			objXmlNode.TryGetField("bpmartialart", out _intBPMartialArt);
+			objXmlNode.TryGetField("bpmartialartmaneuver", out _intBPMartialArtManeuver);
+			objXmlNode.TryGetField("bpskillgroup", out _intBPSkillGroup);
+			objXmlNode.TryGetField("bpactiveskill", out _intBPActiveSkill);
+			objXmlNode.TryGetField("bpactiveskillspecialization", out _intBPActiveSkillSpecialization);
+			objXmlNode.TryGetField("bpknowledgeskill", out _intBPKnowledgeSkill);
+			objXmlNode.TryGetField("bpspell", out _intBPSpell);
+			objXmlNode.TryGetField("bpfocus", out _intBPFocus);
+			objXmlNode.TryGetField("bpspirit", out _intBPSpirit);
+			objXmlNode.TryGetField("bpcomplexform", out _intBPComplexForm);
+			objXmlNode.TryGetField("bpcomplexformoption", out _intBPComplexFormOption);
 
+			objXmlNode = objXmlDocument.SelectSingleNode("//settings/karmacost");
 			// Attempt to populate the Karma values.
-			_intKarmaAttribute = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaattribute").InnerText);
-			_intKarmaQuality = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaquality").InnerText);
-			_intKarmaSpecialization = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspecialization").InnerText);
-			_intKarmaNewKnowledgeSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanewknowledgeskill").InnerText);
-			_intKarmaNewActiveSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanewactiveskill").InnerText);
-			_intKarmaNewSkillGroup = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanewskillgroup").InnerText);
-			_intKarmaImproveKnowledgeSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimproveknowledgeskill").InnerText);
-			_intKarmaImproveActiveSkill = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimproveactiveskill").InnerText);
-			_intKarmaImproveSkillGroup = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimproveskillgroup").InnerText);
-			_intKarmaSpell = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspell").InnerText);
-			_intKarmaNewComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanewcomplexform").InnerText);
-			_intKarmaImproveComplexForm = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaimprovecomplexform").InnerText);
-			_intKarmaNuyenPer = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmanuyenper").InnerText);
-			_intKarmaContact = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacontact").InnerText);
-			try
-			{
-				_intKarmaEnemy = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenemy").InnerText);
-			}
-			catch
-			{
-			}
-			_intKarmaCarryover = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacarryover").InnerText);
-			_intKarmaSpirit = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspirit").InnerText);
-			_intKarmaManeuver = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmamaneuver").InnerText);
-			_intKarmaInitiation = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmainitiation").InnerText);
-			_intKarmaMetamagic = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmametamagic").InnerText);
-			_intKarmaComplexFormOption = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacomplexformoption").InnerText);
-			try
-			{
-				_intKarmaJoinGroup = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmajoingroup").InnerText);
-				_intKarmaLeaveGroup = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaleavegroup").InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intKarmaComplexFormSkillfot = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacomplexformskillsoft").InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _intKarmaEnhancement = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaenhancement").InnerText);
-            }
-            catch
-            {
-            }
-
-			try
-			{
-				// Attempt to load the Karma costs for Foci.
-				_intKarmaAlchemicalFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaalchemicalfocus").InnerText);
-				_intKarmaBanishingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmabanishingfocus").InnerText);
-				_intKarmaBindingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmabindingfocus").InnerText);
-				_intKarmaCenteringFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacenteringfocus").InnerText);
-				_intKarmaCounterspellingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmacounterspellingfocus").InnerText);
-				_intKarmaDisenchantingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmadisenchantingfocus").InnerText);
-				_intKarmaFlexibleSignatureFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaflexiblesignaturefocus").InnerText);
-				_intKarmaMaskingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmamaskingfocus").InnerText);
-				_intKarmaPowerFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmapowerfocus").InnerText);
-				_intKarmaQiFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaqifocus").InnerText);
-				_intKarmaRitualSpellcastingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaritualspellcastingfocus").InnerText);
-                _intKarmaSpellcastingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspellcastingfocus").InnerText);
-                _intKarmaSpellShapingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaspellshapingfocus").InnerText);
-                _intKarmaSummoningFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmasummoningfocus").InnerText);
-				_intKarmaSustainingFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmasustainingfocus").InnerText);
-				_intKarmaWeaponFocus = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/karmacost/karmaweaponfocus").InnerText);
-			}
-			catch
-			{
-			}
+			objXmlNode.TryGetField("karmaattribute", out _intKarmaAttribute);
+			objXmlNode.TryGetField("karmaquality", out _intKarmaQuality);
+			objXmlNode.TryGetField("karmaspecialization", out _intKarmaSpecialization);
+			objXmlNode.TryGetField("karmanewknowledgeskill", out _intKarmaNewKnowledgeSkill);
+			objXmlNode.TryGetField("karmanewactiveskill", out _intKarmaNewActiveSkill);
+			objXmlNode.TryGetField("karmanewskillgroup", out _intKarmaNewSkillGroup);
+			objXmlNode.TryGetField("karmaimproveknowledgeskill", out _intKarmaImproveKnowledgeSkill);
+			objXmlNode.TryGetField("karmaimproveactiveskill", out _intKarmaImproveActiveSkill);
+			objXmlNode.TryGetField("karmaimproveskillgroup", out _intKarmaImproveSkillGroup);
+			objXmlNode.TryGetField("karmaspell", out _intKarmaSpell);
+			objXmlNode.TryGetField("karmanewcomplexform", out _intKarmaNewComplexForm);
+			objXmlNode.TryGetField("karmaimprovecomplexform", out _intKarmaImproveComplexForm);
+			objXmlNode.TryGetField("karmanuyenper", out _intKarmaNuyenPer);
+			objXmlNode.TryGetField("karmacontact", out _intKarmaContact);
+			objXmlNode.TryGetField("karmaenemy", out _intKarmaEnemy);
+			objXmlNode.TryGetField("karmacarryover", out _intKarmaCarryover);
+			objXmlNode.TryGetField("karmaspirit", out _intKarmaSpirit);
+			objXmlNode.TryGetField("karmamaneuver", out _intKarmaManeuver);
+			objXmlNode.TryGetField("karmainitiation", out _intKarmaInitiation);
+			objXmlNode.TryGetField("karmametamagic", out _intKarmaMetamagic);
+			objXmlNode.TryGetField("karmacomplexformoption", out _intKarmaComplexFormOption);
+			objXmlNode.TryGetField("karmajoingroup", out _intKarmaJoinGroup);
+			objXmlNode.TryGetField("karmaleavegroup", out _intKarmaLeaveGroup);
+			objXmlNode.TryGetField("karmacomplexformskillsoft", out _intKarmaComplexFormSkillfot);
+            objXmlNode.TryGetField("karmaenhancement", out _intKarmaEnhancement);
+			
+			// Attempt to load the Karma costs for Foci.
+			objXmlNode.TryGetField("karmaalchemicalfocus", out _intKarmaAlchemicalFocus);
+			objXmlNode.TryGetField("karmabanishingfocus", out _intKarmaBanishingFocus);
+			objXmlNode.TryGetField("karmabindingfocus", out _intKarmaBindingFocus);
+			objXmlNode.TryGetField("karmacenteringfocus", out _intKarmaCenteringFocus);
+			objXmlNode.TryGetField("karmacounterspellingfocus", out _intKarmaCounterspellingFocus);
+			objXmlNode.TryGetField("karmadisenchantingfocus", out _intKarmaDisenchantingFocus);
+			objXmlNode.TryGetField("karmaflexiblesignaturefocus", out _intKarmaFlexibleSignatureFocus);
+			objXmlNode.TryGetField("karmamaskingfocus", out _intKarmaMaskingFocus);
+			objXmlNode.TryGetField("karmapowerfocus", out _intKarmaPowerFocus);
+			objXmlNode.TryGetField("karmaqifocus", out _intKarmaQiFocus);
+			objXmlNode.TryGetField("karmaritualspellcastingfocus", out _intKarmaRitualSpellcastingFocus);
+            objXmlNode.TryGetField("karmaspellcastingfocus", out _intKarmaSpellcastingFocus);
+            objXmlNode.TryGetField("karmaspellshapingfocus", out _intKarmaSpellShapingFocus);
+            objXmlNode.TryGetField("karmasummoningfocus", out _intKarmaSummoningFocus);
+			objXmlNode.TryGetField("karmasustainingfocus", out _intKarmaSustainingFocus);
+			objXmlNode.TryGetField("karmaweaponfocus", out _intKarmaWeaponFocus);
 
 
 			// Load Books.
@@ -1966,9 +1568,10 @@ namespace Chummer
 				_lstBooks.Add(objXmlBook.InnerText);
 
 			// Load default build settings.
-			_strBuildMethod = objXmlDocument.SelectSingleNode("/settings/defaultbuild/buildmethod").InnerText;
-			_intBuildPoints = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/defaultbuild/buildpoints").InnerText);
-			_intAvailability = Convert.ToInt32(objXmlDocument.SelectSingleNode("/settings/defaultbuild/availability").InnerText);
+			objXmlNode = objXmlDocument.SelectSingleNode("//settings/defaultbuild");
+			objXmlNode.TryGetField("buildmethod", out _strBuildMethod);
+			objXmlNode.TryGetField("buildpoints", out _intBuildPoints);
+			objXmlNode.TryGetField("availability", out _intAvailability);
 
 			return true;
 		}
@@ -2577,22 +2180,37 @@ namespace Chummer
         /// <summary>
         /// Whether or not characters in Career Mode should pay double for qualities.
         /// </summary>
-        public bool DontDoubleQualities
+        public bool DontDoubleQualityPurchases
         {
             get
             {
-                return _blnDontDoubleQualityCost;
+                return _blnDontDoubleQualityPurchaseCost;
             }
             set
             {
-                _blnDontDoubleQualityCost = value;
+				_blnDontDoubleQualityPurchaseCost = value;
             }
-        }
+		}
 
-        /// <summary>
-        /// Whether or not to ignore the art requirements from street grimoire.
-        /// </summary>
-        public bool IgnoreArt
+		/// <summary>
+		/// Whether or not characters in Career Mode should pay double for removing Negative Qualities.
+		/// </summary>
+		public bool DontDoubleQualityRefunds
+		{
+			get
+			{
+				return _blnDontDoubleQualityRefundCost;
+			}
+			set
+			{
+				_blnDontDoubleQualityRefundCost = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not to ignore the art requirements from street grimoire.
+		/// </summary>
+		public bool IgnoreArt
         {
             get
             {

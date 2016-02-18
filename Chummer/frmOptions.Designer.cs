@@ -245,7 +245,7 @@
 			this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
 			this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
-			this.chkDontDoubleQualities = new System.Windows.Forms.CheckBox();
+			this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
 			this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
 			this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
 			this.cboSetting = new System.Windows.Forms.ComboBox();
@@ -253,6 +253,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2552,6 +2553,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityRefunds);
 			this.tabHouseRules.Controls.Add(this.chkESSLossReducesMaximumOnly);
 			this.tabHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts);
 			this.tabHouseRules.Controls.Add(this.chkExceedNegativeQualitiesLimit);
@@ -2567,7 +2569,7 @@
 			this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
 			this.tabHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups);
-			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualities);
+			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityPurchases);
 			this.tabHouseRules.Controls.Add(this.chkCyberlegMovement);
 			this.tabHouseRules.Controls.Add(this.chkIgnoreArt);
 			this.tabHouseRules.Controls.Add(this.chkKnucks);
@@ -2581,7 +2583,7 @@
 			// chkESSLossReducesMaximumOnly
 			// 
 			this.chkESSLossReducesMaximumOnly.AutoSize = true;
-			this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 164);
+			this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(8, 187);
 			this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
 			this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
 			this.chkESSLossReducesMaximumOnly.TabIndex = 19;
@@ -2592,7 +2594,7 @@
 			// chkAllowCyberwareESSDiscounts
 			// 
 			this.chkAllowCyberwareESSDiscounts.AutoSize = true;
-			this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 141);
+			this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(8, 164);
 			this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
 			this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
 			this.chkAllowCyberwareESSDiscounts.TabIndex = 18;
@@ -2749,7 +2751,7 @@
 			// chkAllowInitiation
 			// 
 			this.chkAllowInitiation.AutoSize = true;
-			this.chkAllowInitiation.Location = new System.Drawing.Point(8, 118);
+			this.chkAllowInitiation.Location = new System.Drawing.Point(8, 141);
 			this.chkAllowInitiation.Name = "chkAllowInitiation";
 			this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
 			this.chkAllowInitiation.TabIndex = 7;
@@ -2761,7 +2763,7 @@
 			// chkUsePointsOnBrokenGroups
 			// 
 			this.chkUsePointsOnBrokenGroups.AutoSize = true;
-			this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(8, 95);
+			this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(8, 118);
 			this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
 			this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
 			this.chkUsePointsOnBrokenGroups.TabIndex = 6;
@@ -2770,18 +2772,18 @@
 			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
 			this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
 			// 
-			// chkDontDoubleQualities
+			// chkDontDoubleQualityPurchases
 			// 
-			this.chkDontDoubleQualities.AutoSize = true;
-			this.chkDontDoubleQualities.Location = new System.Drawing.Point(8, 72);
-			this.chkDontDoubleQualities.Name = "chkDontDoubleQualities";
-			this.chkDontDoubleQualities.Size = new System.Drawing.Size(257, 17);
-			this.chkDontDoubleQualities.TabIndex = 5;
-			this.chkDontDoubleQualities.Tag = "Checkbox_Options_DontDoubleQualities";
-			this.chkDontDoubleQualities.Text = "Don\'t double the cost of Qualities in Career Mode";
-			this.tipTooltip.SetToolTip(this.chkDontDoubleQualities, "Allows characters in Career mode to purchase Positive Qualities and buy off Negat" +
+			this.chkDontDoubleQualityPurchases.AutoSize = true;
+			this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(8, 72);
+			this.chkDontDoubleQualityPurchases.Name = "chkDontDoubleQualityPurchases";
+			this.chkDontDoubleQualityPurchases.Size = new System.Drawing.Size(352, 17);
+			this.chkDontDoubleQualityPurchases.TabIndex = 5;
+			this.chkDontDoubleQualityPurchases.Tag = "Checkbox_Options_DontDoubleQualityPurchases";
+			this.chkDontDoubleQualityPurchases.Text = "Don\'t double the cost of purchasing Positive Qualities in Career Mode";
+			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityPurchases, "Allows characters in Career mode to purchase Positive Qualities and buy off Negat" +
         "ive at their normal price instead of doubling them.");
-			this.chkDontDoubleQualities.UseVisualStyleBackColor = true;
+			this.chkDontDoubleQualityPurchases.UseVisualStyleBackColor = true;
 			// 
 			// chkCyberlegMovement
 			// 
@@ -2851,6 +2853,19 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// chkDontDoubleQualityRefunds
+			// 
+			this.chkDontDoubleQualityRefunds.AutoSize = true;
+			this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(8, 95);
+			this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
+			this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
+			this.chkDontDoubleQualityRefunds.TabIndex = 20;
+			this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
+			this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
+			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
+        "e at their normal price instead of doubling them.");
+			this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3143,7 +3158,7 @@
         private System.Windows.Forms.CheckBox chkUseLogging;
         private System.Windows.Forms.CheckBox chkIgnoreArt;
         private System.Windows.Forms.CheckBox chkCyberlegMovement;
-        private System.Windows.Forms.CheckBox chkDontDoubleQualities;
+        private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
         private System.Windows.Forms.CheckBox chkUsePointsOnBrokenGroups;
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
@@ -3168,5 +3183,6 @@
 		private System.Windows.Forms.CheckBox chkESSLossReducesMaximumOnly;
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.Button cmdUploadPastebin;
+		private System.Windows.Forms.CheckBox chkDontDoubleQualityRefunds;
 	}
 }

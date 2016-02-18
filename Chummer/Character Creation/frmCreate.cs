@@ -15480,18 +15480,22 @@ namespace Chummer
 			string strDEP = "";
 			int intBP = 0;
 			int intSpecialBP = 0;
-            // Get the total of "free points" spent
-            int intAtt = 0;
-            intAtt += Convert.ToInt32(nudEDG.Value - nudEDG.Minimum);
-            if (_objCharacter.MAGEnabled)
-                intAtt += Convert.ToInt32(nudMAG.Value - nudMAG.Minimum);
-            if (_objCharacter.RESEnabled)
-                intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
+			int intAtt = 0;
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+	            _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+	        {
+		        // Get the total of "free points" spent
+		        intAtt += Convert.ToInt32(nudEDG.Value - nudEDG.Minimum);
+		        if (_objCharacter.MAGEnabled)
+			        intAtt += Convert.ToInt32(nudMAG.Value - _objCharacter.MAG.TotalMinimum);
+		        if (_objCharacter.RESEnabled)
+			        intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
+			}
 
-            _objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
-            
-            // For each attribute, figure out the actual karma cost of attributes raised with karma
-            for (int i = 1; i <= nudKEDG.Value; i++)
+			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
+
+			// For each attribute, figure out the actual karma cost of attributes raised with karma
+			for (int i = 1; i <= nudKEDG.Value; i++)
             {
                 intBP += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
             }
@@ -21731,9 +21735,77 @@ namespace Chummer
                 }
             }
 
-            if (!_objCharacter.IgnoreRules)
+
+
+			// Check if the character has gone over on Primary Attributes
+			if (blnValid && _objCharacter.Attributes > 0)
+			{
+				if (MessageBox.Show(
+					LanguageManager.Instance.GetString("Message_ExtraPoints")
+						.Replace("{0}", _objCharacter.Attributes.ToString())
+						.Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryPrimaryAttributes")),
+					LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+					MessageBoxIcon.Warning) == DialogResult.No)
+				{
+					blnValid = false;
+				}
+			}
+
+			// Check if the character has gone over on Special Attributes
+			if (blnValid && _objCharacter.Special > 0)
+			{
+				if (
+					MessageBox.Show(
+						LanguageManager.Instance.GetString("Message_ExtraPoints")
+							.Replace("{0}", _objCharacter.Special.ToString())
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.Warning) == DialogResult.No)
+					blnValid = false;
+			}
+
+			// Check if the character has gone over on Skill Groups
+			if (blnValid && _objCharacter.SkillGroupPoints > 0)
+			{
+				if (
+					MessageBox.Show(
+						LanguageManager.Instance.GetString("Message_ExtraPoints")
+							.Replace("{0}", _objCharacter.SkillGroupPoints.ToString())
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.Warning) == DialogResult.No)
+					blnValid = false;
+			}
+
+			// Check if the character has gone over on Active Skills
+			if (blnValid && _objCharacter.SkillPoints > 0)
+			{
+				if (
+					MessageBox.Show(
+						LanguageManager.Instance.GetString("Message_ExtraPoints")
+							.Replace("{0}", _objCharacter.SkillPoints.ToString())
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.Warning) == DialogResult.No)
+					blnValid = false;
+			}
+
+			// Check if the character has gone over on Knowledge Skills
+			if (blnValid && _objCharacter.KnowledgeSkillPointsUsed > 0)
+			{
+				if (
+					MessageBox.Show(
+						LanguageManager.Instance.GetString("Message_ExtraPoints")
+							.Replace("{0}", _objCharacter.KnowledgeSkillPointsUsed.ToString())
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+						MessageBoxIcon.Warning) == DialogResult.No)
+					blnValid = false;
+			}
+
+			if (!_objCharacter.IgnoreRules)
             {
-                if (!blnValid)
+                if (!blnValid && strMessage.Length > LanguageManager.Instance.GetString("Message_InvalidBeginning").Length)
                     MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
@@ -21768,8 +21840,8 @@ namespace Chummer
                     _objCharacter.FileName = strFileName;
                 }
 
-                // See if the character has any Karma remaining.
-                if (intBuildPoints > _objOptions.KarmaCarryover)
+				// See if the character has any Karma remaining.
+				if (intBuildPoints > _objOptions.KarmaCarryover)
                 {
                     if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                     {
