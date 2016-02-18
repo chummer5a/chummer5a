@@ -26175,6 +26175,10 @@ namespace Chummer
 						{
 							objMod.MaxRating = objSelectedVehicle.Seats.ToString();
 						}
+						if (objMod.MaxRating == "body")
+						{
+							objMod.MaxRating = objSelectedVehicle.Body.ToString();
+						}
 						if (Convert.ToInt32(objMod.MaxRating) > 0)
 						{
 							_blnSkipRefresh = true;

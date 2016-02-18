@@ -55,6 +55,7 @@ Application Change:
 - New Feature: Weapon Mounts will now limit the available weapons based on a predefined list of weapon categories. This also enables the weapon mounts added in Rigger 5.0 for adding weapons. I'm not particularly happy with how this looks in the XML so the underlying code might get changed over time. For now it's all good though.
 - Fixed an issue that prevented magic- or reseonance-enabled karma-created characters from moving to Career mode.
 - New Feature: Added a bunch of prompts to warn the user if they still have free contact points, knowledge points, skill points and such before moving to Career mode. 
+- Fixed an issue that caused a crash when adding armour to vehicles and drones.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

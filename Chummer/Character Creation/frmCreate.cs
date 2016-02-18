@@ -19627,7 +19627,11 @@ namespace Chummer
 						{
 							objMod.MaxRating = objSelectedVehicle.Seats.ToString();
 						}
-                        if (Convert.ToInt32(objMod.MaxRating) > 0)
+						if (objMod.MaxRating == "body")
+						{
+							objMod.MaxRating = objSelectedVehicle.Body.ToString();
+						}
+						if (Convert.ToInt32(objMod.MaxRating) > 0)
                         {
                             _blnSkipRefresh = true;
                             lblVehicleRatingLabel.Text = LanguageManager.Instance.GetString("Label_Rating");
