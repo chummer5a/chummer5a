@@ -8185,6 +8185,8 @@ namespace Chummer
 		private Guid _guiID = new Guid();
 		private string _strName = "";
 		private string _strNotes = "";
+        private string _strSource = "";
+        private string _strPage = "";
 		private Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -8202,6 +8204,8 @@ namespace Chummer
 		public void Create(XmlNode objXmlAdvantageNode, Character objCharacter, TreeNode objNode)
 		{
 			_strName = objXmlAdvantageNode["name"].InnerText;
+            _strSource = objXmlAdvantageNode["source"].InnerText;
+            _strPage = objXmlAdvantageNode["page"].InnerText;
 
 			if (objXmlAdvantageNode["bonus"] != null)
 			{
@@ -8227,7 +8231,9 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+			objWriter.WriteElementString("source", _strSource);
+			objWriter.WriteElementString("page", _strSource);
+            objWriter.WriteEndElement();
 		}
 
 		/// <summary>
@@ -8245,7 +8251,23 @@ namespace Chummer
 			catch
 			{
 			}
-		}
+
+            try
+            {
+                _strSource = objNode["source"].InnerText;
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                _strPage = objNode["page"].InnerText;
+            }
+            catch
+            {
+            }
+        }
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
@@ -8257,7 +8279,9 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayNameShort);
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteEndElement();
 		}
 		#endregion
 
@@ -8339,13 +8363,43 @@ namespace Chummer
                 _strNotes = value;
             }
         }
-        #endregion
-	}
 
-	/// <summary>
-	/// A Martial Art Maneuver.
-	/// </summary>
-	public class MartialArtManeuver
+        /// <summary>
+		/// Sourcebook.
+		/// </summary>
+		public string Source
+        {
+            get
+            {
+                return _strSource;
+            }
+            set
+            {
+                _strSource = value;
+            }
+        }
+
+        /// <summary>
+        /// Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                return _strPage;
+            }
+            set
+            {
+                _strPage = value;
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// A Martial Art Maneuver.
+    /// </summary>
+    public class MartialArtManeuver
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = "";
