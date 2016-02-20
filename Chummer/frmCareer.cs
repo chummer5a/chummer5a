@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -23681,7 +23682,8 @@ namespace Chummer
 			cboCyberwareGearSleaze.Visible = false;
 			cboCyberwareGearDataProcessing.Visible = false;
 			cboCyberwareGearFirewall.Visible = false;
-			lblCyberDeviceRating.Visible = false;
+			cboCyberwareGearOverclocker.Visible = false;
+            lblCyberDeviceRating.Visible = false;
 			lblCyberDeviceRatingLabel.Visible = false;
 			lblCyberAttackLabel.Visible = false;
 			lblCyberSleazeLabel.Visible = false;
@@ -23821,6 +23823,8 @@ namespace Chummer
 					cboCyberwareGearFirewall.SelectedIndex = 3;
 					lblCyberDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
 
+					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
 					cboCyberwareGearAttack.Visible = true;
 					cboCyberwareGearSleaze.Visible = true;
 					cboCyberwareGearDataProcessing.Visible = true;
@@ -23839,6 +23843,8 @@ namespace Chummer
 				{
 					lblCyberDeviceRating.Text = objGear.DeviceRating.ToString();
 					chkActiveCommlink.Visible = false;
+					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
 					cboCyberwareGearAttack.Visible = false;
 					cboCyberwareGearSleaze.Visible = false;
 					cboCyberwareGearDataProcessing.Visible = false;
@@ -24420,6 +24426,8 @@ namespace Chummer
 							}
 							else
 							{
+								cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+								lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
 								lblWeaponAttackLabel.Visible = false;
 								cboWeaponGearAttack.Visible = false;
 								lblWeaponDataProcessingLabel.Visible = false;
@@ -24727,31 +24735,65 @@ namespace Chummer
                     _blnSkipRefresh = true;
 					chkActiveCommlink.Checked = objCommlink.IsActive;
 					_blnSkipRefresh = false;
-					List<string> objASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 
+
+					cboGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblGearOverclocker.Visible = _objCharacter.Overclocker;
+					ArrayList lstOverclocker = new ArrayList();
+					ListItem objAttribute = new ListItem();
+					objAttribute.Value = "None";
+					objAttribute.Name = LanguageManager.Instance.GetString("String_None");
+					lstOverclocker.Add(objAttribute);
+					if (_objCharacter.Overclocker)
+					{
+						objAttribute = new ListItem();
+						objAttribute.Value = "Attack";
+						objAttribute.Name = LanguageManager.Instance.GetString("String_Attack");
+						lstOverclocker.Add(objAttribute);
+						objAttribute = new ListItem();
+						objAttribute.Value = "Sleaze";
+						objAttribute.Name = LanguageManager.Instance.GetString("String_Sleaze");
+						lstOverclocker.Add(objAttribute);
+						objAttribute = new ListItem();
+						objAttribute.Value = "DataProc";
+						objAttribute.Name = LanguageManager.Instance.GetString("String_DataProcessing");
+						lstOverclocker.Add(objAttribute);
+						objAttribute = new ListItem();
+						objAttribute.Value = "Firewall";
+						objAttribute.Name = LanguageManager.Instance.GetString("String_Firewall");
+					}
+					lstOverclocker.Add(objAttribute);
+					cboGearOverclocker.BindingContext = new BindingContext();
+					cboGearOverclocker.DisplayMember = "Name";
+					cboGearOverclocker.ValueMember = "Value";
+					cboGearOverclocker.DataSource = lstOverclocker;
+					cboGearOverclocker.SelectedIndex = 0;
+
+					List<string> lstASDF = new List<string>() { objCommlink.Attack.ToString(), objCommlink.Sleaze.ToString(), objCommlink.DataProcessing.ToString(), objCommlink.Firewall.ToString() };
 					cboGearAttack.BindingContext = new BindingContext();
 					cboGearAttack.ValueMember = "Value";
 					cboGearAttack.DisplayMember = "Name";
-					cboGearAttack.DataSource = objASDF;
+					cboGearAttack.DataSource = lstASDF;
 					cboGearAttack.SelectedIndex = 0;
 					cboGearAttack.Visible = true;
 					cboGearSleaze.BindingContext = new BindingContext();
 					cboGearSleaze.ValueMember = "Value";
 					cboGearSleaze.DisplayMember = "Name";
-					cboGearSleaze.DataSource = objASDF;
+					cboGearSleaze.DataSource = lstASDF;
 					cboGearSleaze.SelectedIndex = 1;
 					cboGearDataProcessing.BindingContext = new BindingContext();
 					cboGearDataProcessing.ValueMember = "Value";
 					cboGearDataProcessing.DisplayMember = "Name";
-					cboGearDataProcessing.DataSource = objASDF;
+					cboGearDataProcessing.DataSource = lstASDF;
 					cboGearDataProcessing.SelectedIndex = 2;
 					cboGearFirewall.BindingContext = new BindingContext();
 					cboGearFirewall.ValueMember = "Value";
 					cboGearFirewall.DisplayMember = "Name";
-					cboGearFirewall.DataSource = objASDF;
+					cboGearFirewall.DataSource = lstASDF;
 					cboGearFirewall.SelectedIndex = 3;
 					lblGearDeviceRating.Text = objCommlink.TotalDeviceRating.ToString();
-
+					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
 					cboGearAttack.Visible = true;
 					cboGearSleaze.Visible = true;
 					cboGearDataProcessing.Visible = true;
@@ -24772,7 +24814,9 @@ namespace Chummer
 				}
 				else
 				{
-                    lblGearDeviceRating.Text = objGear.DeviceRating.ToString();
+					cboCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblCyberwareGearOverclocker.Visible = _objCharacter.Overclocker;
+					lblGearDeviceRating.Text = objGear.DeviceRating.ToString();
                     chkActiveCommlink.Visible = false;
 					cboGearAttack.Visible = false;
 					cboGearSleaze.Visible = false;
@@ -29717,5 +29761,17 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle(false);
         }
+
+		private void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Commlink objCommlink = _objFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+			objCommlink.Overclocked = cboGearOverclocker.SelectedValue.ToString();
+		}
+
+		private void cboCyberwareGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Commlink objCommlink = _objFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+			objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
+		}
 	}
 }

@@ -1286,20 +1286,8 @@ namespace Chummer
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
 			_objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
-            try
-            {
-                _strMetagenetic = objNode["metagenetic"].InnerText;
-            }
-            catch 
-            {
-            }
-			try
-			{
-				_strMutant = objNode["mutant"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("metagenetic", out _strMetagenetic);
+			objNode.TryGetField("mutant", out _strMutant);
 			_strSource = objNode["source"].InnerText;
 			_strPage = objNode["page"].InnerText;
 			_nodBonus = objNode["bonus"];
@@ -1310,13 +1298,7 @@ namespace Chummer
 			catch
 			{
 			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes);
 
 			if (_objQualityType == QualityType.LifeModule)
 			{

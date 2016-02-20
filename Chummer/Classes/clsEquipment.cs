@@ -12880,6 +12880,7 @@ namespace Chummer
         private int _intSleaze = 0;
         private int _intDataProcessing = 0;
         private int _intFirewall = 0;
+		private string _strOverclocked = "None";
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Commlink(Character objCharacter) : base(objCharacter)
@@ -12898,41 +12899,11 @@ namespace Chummer
 			_strName = objXmlGear["name"].InnerText;
 			_strCategory = objXmlGear["category"].InnerText;
 			_strAvail = objXmlGear["avail"].InnerText;
-			try
-			{
-				_strCost = objXmlGear["cost"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost3 = objXmlGear["cost3"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost6 = objXmlGear["cost6"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strCost10 = objXmlGear["cost10"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strArmorCapacity = objXmlGear["armorcapacity"].InnerText;
-			}
-			catch
-			{
-			}
+			objXmlGear.TryGetField("cost", out _strCost);
+			objXmlGear.TryGetField("cost3", out _strCost3);
+			objXmlGear.TryGetField("cost6", out _strCost6);
+			objXmlGear.TryGetField("cost10", out _strCost10);
+			objXmlGear.TryGetField("armorcapacity", out _strArmorCapacity);
 			_nodBonus = objXmlGear["bonus"];
 			_intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
 			_intRating = intRating;
@@ -13124,6 +13095,7 @@ namespace Chummer
 			_strAvail6 = objGear.Avail6;
 			_strAvail10 = objGear.Avail10;
 			_intCostFor = objGear.CostFor;
+			_strOverclocked = objGear.Overclocked;
 			_intDeviceRating = objGear.DeviceRating;
             _intAttack = objGear.Attack;
             _intDataProcessing = objGear.DataProcessing;
@@ -13187,6 +13159,7 @@ namespace Chummer
 			objWriter.WriteElementString("bonded", _blnBonded.ToString());
 			objWriter.WriteElementString("equipped", _blnEquipped.ToString());
 			objWriter.WriteElementString("homenode", _blnHomeNode.ToString());
+			objWriter.WriteElementString("overclocked", _blnHomeNode.ToString());
 			if (_nodBonus != null)
 				objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
 			else
@@ -13238,75 +13211,19 @@ namespace Chummer
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_strExtra = objNode["extra"].InnerText;
-			try
-			{
-				_blnBonded = Convert.ToBoolean(objNode["bonded"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnEquipped = Convert.ToBoolean(objNode["equipped"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnHomeNode = Convert.ToBoolean(objNode["homenode"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("overclocked", out _strOverclocked);
+			objNode.TryGetField("bonded", out _blnBonded);
+			objNode.TryGetField("equipped", out _blnEquipped);
+			objNode.TryGetField("homenode", out _blnHomeNode);
 			_nodBonus = objNode["bonus"];
 			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("page", out _strPage);
             _intDeviceRating = Convert.ToInt32(objNode["devicerating"].InnerText);
-
-		    
-            try
-            {
-                _intAttack = Convert.ToInt32(objNode["attack"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intSleaze = Convert.ToInt32(objNode["sleaze"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intDataProcessing = Convert.ToInt32(objNode["dataprocessing"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intFirewall = Convert.ToInt32(objNode["firewall"].InnerText);
-            }
-            catch
-            {
-            }
-
-			try
-			{
-				_strGearName = objNode["gearname"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("attack", out _intAttack);
+			objNode.TryGetField("sleaze", out _intSleaze);
+			objNode.TryGetField("dataprocessing", out _intDataProcessing);
+			objNode.TryGetField("firewall", out _intFirewall);
+			objNode.TryGetField("gearname", out _strGearName);
 
 			if (objNode.InnerXml.Contains("<gear>"))
 			{
@@ -13333,37 +13250,10 @@ namespace Chummer
 					}
 				}
 			}
-
-			try
-			{
-				_strLocation = objNode["location"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnActiveCommlink = Convert.ToBoolean(objNode["active"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("location", out _strLocation);
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("discountedcost", out _blnDiscountCost);
+			objNode.TryGetField("active", out _blnActiveCommlink);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -13611,8 +13501,12 @@ namespace Chummer
 	                {
 	                    rating = Math.Max(rating, link.TotalDataProcessing);
 	                }
-	            }
-	            return rating;
+				}
+				if (_objCharacter.Overclocker && Overclocked == "DataProc")
+				{
+					rating++;
+				}
+				return rating;
 	        }
 	    }
 
@@ -13632,6 +13526,10 @@ namespace Chummer
                         rating = Math.Max(rating, link.TotalAttack);
                     }
                 }
+	            if (_objCharacter.Overclocker && Overclocked == "Attack")
+	            {
+		            rating++;
+	            }
                 return rating;
             }
 	    }
@@ -13651,8 +13549,12 @@ namespace Chummer
                     {
                         rating = Math.Max(rating, link.TotalSleaze);
                     }
-                }
-                return rating;
+				}
+				if (_objCharacter.Overclocker && Overclocked == "Sleaze")
+				{
+					rating++;
+				}
+				return rating;
             }
 	    }
 
@@ -13671,8 +13573,12 @@ namespace Chummer
                     {
                         rating = Math.Max(rating, link.TotalFirewall);
                     }
-                }
-                return rating;
+				}
+				if (_objCharacter.Overclocker && Overclocked == "Firewall")
+				{
+					rating++;
+				}
+				return rating;
 	        }
 	    }
 
@@ -13684,6 +13590,21 @@ namespace Chummer
 			get
 			{
 				return TotalDeviceRating;
+			}
+		}
+
+		/// <summary>
+		/// ASDF attribute boosted by Overclocker.
+		/// </summary>
+		public string Overclocked
+		{
+			get
+			{
+				return _strOverclocked;
+			}
+			set
+			{
+				_strOverclocked = value;
 			}
 		}
 		#endregion

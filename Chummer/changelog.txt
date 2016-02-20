@@ -56,6 +56,7 @@ Application Change:
 - Fixed an issue that prevented magic- or reseonance-enabled karma-created characters from moving to Career mode.
 - New Feature: Added a bunch of prompts to warn the user if they still have free contact points, knowledge points, skill points and such before moving to Career mode. 
 - Fixed an issue that caused a crash when adding armour to vehicles and drones.
+- Partially implemented the Overclocker feature for Career mode. Code works, but I haven't added it on for Vehicles yet. Fixes #198.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -108,6 +109,9 @@ New Strings:
 - Tip_OptionsDontDoubleQualityPurchases
 - Checkbox_Options_DontDoubleQualityPurchases
 - Checkbox_Options_DontDoubleNegativeQualityRefunds
+- String_Attack
+- String_Sleaze
+- String_DataProcessing
 
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities

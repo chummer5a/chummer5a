@@ -4782,6 +4782,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Open Dice Roller</text>
 		</string>
 		<!-- End Region-->
+		<!-- Region ASDF Attributes-->
+		<string>
+			<key>String_Attack</key>
+			<text>Attack</text>
+		</string>
+		<string>
+			<key>String_Sleaze</key>
+			<text>Sleaze</text>
+		</string>
+		<string>
+			<key>String_DataProcessing</key>
+			<text>Data Processing</text>
+		</string>
+		<!-- End Region -->
 		<!-- Region Individual Form- and UserControl-specific strings below this point -->
 		<!-- Region Contacts/Enemies -->
 		<string>
