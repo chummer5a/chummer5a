@@ -15186,13 +15186,23 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             _objFunctions.OpenPDF(lblVehicleSource.Text);
         }
-        #endregion
 
-        #region Custom Methods
-        /// <summary>
-        /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
-        /// </summary>
-        public void ShowAttributeRule()
+		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+				if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
+		}
+		#endregion
+
+		#region Custom Methods
+		/// <summary>
+		/// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
+		/// </summary>
+		public void ShowAttributeRule()
         {
             MessageBox.Show(LanguageManager.Instance.GetString("Message_AttributeMaximum"), LanguageManager.Instance.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

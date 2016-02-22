@@ -29,6 +29,13 @@ namespace Chummer
 		{
 			if (e.KeyCode == Keys.Escape)
 				this.DialogResult = DialogResult.OK;
+
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+                if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
 		}
 
 		private void frmNotes_Resize(object sender, EventArgs e)

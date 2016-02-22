@@ -107,7 +107,20 @@ namespace Chummer
 			System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LG855DVUT8FDU");
 		}
 
-        private void okButton_Click(object sender, EventArgs e)
+		private void txt_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				this.DialogResult = DialogResult.OK;
+
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+				if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
+		}
+
+		private void okButton_Click(object sender, EventArgs e)
         {
 
         }

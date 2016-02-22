@@ -21087,6 +21087,16 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
+		private void txtNotes_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+				if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
+		}
+
 		private void txtGroupNotes_TextChanged(object sender, EventArgs e)
 		{
 			_objCharacter.GroupNotes = txtGroupNotes.Text;

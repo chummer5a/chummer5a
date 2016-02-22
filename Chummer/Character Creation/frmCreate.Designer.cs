@@ -9486,6 +9486,7 @@ namespace Chummer
 			this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtNotes.Size = new System.Drawing.Size(618, 100);
 			this.txtNotes.TabIndex = 25;
+			this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
 			// 
 			// lblNotes
@@ -9538,6 +9539,7 @@ namespace Chummer
 			this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtConcept.Size = new System.Drawing.Size(618, 100);
 			this.txtConcept.TabIndex = 19;
+			this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			this.txtConcept.TextChanged += new System.EventHandler(this.txtConcept_TextChanged);
 			// 
 			// lblConcept
@@ -9559,6 +9561,7 @@ namespace Chummer
 			this.txtBackground.Size = new System.Drawing.Size(618, 96);
 			this.txtBackground.TabIndex = 17;
 			this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
+			this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			this.txtBackground.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBackground_KeyPress);
 			// 
 			// lblBackground
@@ -9579,6 +9582,7 @@ namespace Chummer
 			this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtDescription.Size = new System.Drawing.Size(618, 101);
 			this.txtDescription.TabIndex = 15;
+			this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
 			// 
 			// lblDescription
