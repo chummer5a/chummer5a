@@ -14782,25 +14782,28 @@ namespace Chummer
 				foreach (XmlNode objXmlVehicleMod in objXmlModList)
 				{
 					XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
-					TreeNode objModNode = new TreeNode();
-					VehicleMod objMod = new VehicleMod(_objCharacter);
-					int intRating = 0;
+					if (objXmlMod != null)
+					{
+						TreeNode objModNode = new TreeNode();
+						VehicleMod objMod = new VehicleMod(_objCharacter);
+						int intRating = 0;
 
-					if (objXmlVehicleMod.Attributes["rating"] != null)
-						intRating = Convert.ToInt32(objXmlVehicleMod.Attributes["rating"].InnerText);
+						if (objXmlVehicleMod.Attributes["rating"] != null)
+							intRating = Convert.ToInt32(objXmlVehicleMod.Attributes["rating"].InnerText);
 
-                    if (objXmlVehicleMod.Attributes["select"] != null)
-						objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
+						if (objXmlVehicleMod.Attributes["select"] != null)
+							objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
 
-					objMod.Create(objXmlMod, objModNode, intRating);
-					objMod.IncludedInVehicle = true;
+						objMod.Create(objXmlMod, objModNode, intRating);
+						objMod.IncludedInVehicle = true;
 
-					_lstVehicleMods.Add(objMod);
-					objModNode.ForeColor = SystemColors.GrayText;
-					objModNode.ContextMenuStrip = cmsVehicle;
+						_lstVehicleMods.Add(objMod);
+						objModNode.ForeColor = SystemColors.GrayText;
+						objModNode.ContextMenuStrip = cmsVehicle;
 
-					objNode.Nodes.Add(objModNode);
-					objNode.Expand();
+						objNode.Nodes.Add(objModNode);
+						objNode.Expand();
+					}
 				}
 				if (objXmlVehicle.SelectSingleNode("mods/addslots") != null)
 					_intAddSlots = Convert.ToInt32(objXmlVehicle.SelectSingleNode("mods/addslots").InnerText);
@@ -14815,43 +14818,46 @@ namespace Chummer
 				foreach (XmlNode objXmlVehicleGear in objXmlGearList)
 				{
 					XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
-					TreeNode objGearNode = new TreeNode();
-					Gear objGear = new Gear(_objCharacter);
-					int intRating = 0;
-					int intQty = 1;
-					string strForceValue = "";
+					if (objXmlGear != null)
+					{
+						TreeNode objGearNode = new TreeNode();
+						Gear objGear = new Gear(_objCharacter);
+						int intRating = 0;
+						int intQty = 1;
+						string strForceValue = "";
 
-					if (objXmlVehicleGear.Attributes["rating"] != null)
-						intRating = Convert.ToInt32(objXmlVehicleGear.Attributes["rating"].InnerText);
+						if (objXmlVehicleGear.Attributes["rating"] != null)
+							intRating = Convert.ToInt32(objXmlVehicleGear.Attributes["rating"].InnerText);
 
-                    int intMaxRating = intRating;
-                    if (objXmlVehicleGear.Attributes["maxrating"] != null)
-                        intMaxRating = Convert.ToInt32(objXmlVehicleGear.Attributes["maxrating"].InnerText);
+						int intMaxRating = intRating;
+						if (objXmlVehicleGear.Attributes["maxrating"] != null)
+							intMaxRating = Convert.ToInt32(objXmlVehicleGear.Attributes["maxrating"].InnerText);
 
-                    if (objXmlVehicleGear.Attributes["qty"] != null)
-						intQty = Convert.ToInt32(objXmlVehicleGear.Attributes["qty"].InnerText);
+						if (objXmlVehicleGear.Attributes["qty"] != null)
+							intQty = Convert.ToInt32(objXmlVehicleGear.Attributes["qty"].InnerText);
 
-					if (objXmlVehicleGear.Attributes["select"] != null)
-						strForceValue = objXmlVehicleGear.Attributes["select"].InnerText;
-					else
-						strForceValue = "";
+						if (objXmlVehicleGear.Attributes["select"] != null)
+							strForceValue = objXmlVehicleGear.Attributes["select"].InnerText;
+						else
+							strForceValue = "";
 
-					List<Weapon> objWeapons = new List<Weapon>();
-					List<TreeNode> objWeaponNodes = new List<TreeNode>();
-					objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
-					objGear.Cost = "0";
-					objGear.Quantity = intQty;
-                    objGear.MaxRating = intMaxRating;
-					objGearNode.Text = objGear.DisplayName;
-					objGearNode.ContextMenuStrip = cmsVehicleGear;
+						List<Weapon> objWeapons = new List<Weapon>();
+						List<TreeNode> objWeaponNodes = new List<TreeNode>();
+						objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+						objGear.Cost = "0";
+						objGear.Quantity = intQty;
+						objGear.MaxRating = intMaxRating;
+						objGearNode.Text = objGear.DisplayName;
+						objGearNode.ContextMenuStrip = cmsVehicleGear;
 
-					foreach (Weapon objWeapon in objWeapons)
-						objWeapon.VehicleMounted = true;
+						foreach (Weapon objWeapon in objWeapons)
+							objWeapon.VehicleMounted = true;
 
-					_lstGear.Add(objGear);
+						_lstGear.Add(objGear);
 
-					objNode.Nodes.Add(objGearNode);
-					objNode.Expand();
+						objNode.Nodes.Add(objGearNode);
+						objNode.Expand();
+					}
 				}
 			}
 
@@ -14874,7 +14880,7 @@ namespace Chummer
 					// Find the first free Weapon Mount in the Vehicle.
 					foreach (VehicleMod objMod in _lstVehicleMods)
 					{
-						if ((objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (objMod.WeaponMountCategories != "" && objMod.WeaponMountCategories.Contains(objWeapon.Category))) && objMod.Weapons.Count == 0)
+						if ((objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
 						{
 							objMod.Weapons.Add(objWeapon);
 							foreach (TreeNode objModNode in objNode.Nodes)
@@ -14897,7 +14903,7 @@ namespace Chummer
 					{
 						foreach (VehicleMod objMod in _lstVehicleMods)
 						{
-                            if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (objMod.WeaponMountCategories != "" && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                            if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
 							{
 								objMod.Weapons.Add(objWeapon);
 								foreach (TreeNode objModNode in objNode.Nodes)
