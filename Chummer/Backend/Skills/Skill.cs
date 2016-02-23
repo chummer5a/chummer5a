@@ -416,18 +416,36 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				string strReturn = "";
 				if (LearnedRating == 0)
 				{
 					return ""; //Unleveled skills cannot have a specialization;
 				}
 
-				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? -1 : 1));
+				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? 1 : -1));
 				if (Specializations.Count > 0)
 				{
-					strReturn =  Specializations[0].Name;
+					return Specializations[0].Name;
 				}
-				return strReturn;
+
+				return "";
+			}
+			set
+			{
+				if (Specializations.Count == 0)
+				{
+					Specializations.Add(new SkillSpecialization(value, false));
+				}
+				else
+				{
+					if (Specializations[0].Free)
+					{
+						Specializations.Add(new SkillSpecialization(value, false));
+					}
+					else
+					{
+						Specializations[0] = new SkillSpecialization(value, false);
+					}
+				}
 			}
 		}
 

@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Xml;
+using Chummer.Datastructures;
 
 namespace Chummer
 {
@@ -8,15 +10,31 @@ namespace Chummer
 	/// </summary>
 	public class SkillSpecialization
 	{
+		private static TranslatedField<string> _translator = new TranslatedField<string>(); 
+
 		private Guid _guiID;
-		private string _strName = "";
+		private string _name;
+		private string _translated;
 		private readonly bool _free;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 
+		static SkillSpecialization()
+		{
+			if (GlobalOptions.Instance.Language != "en-us")
+			{
+				XmlDocument document = XmlManager.Instance.Load("skills.xml");
+				XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");
+				foreach (XmlNode node in specList.Cast<XmlNode>().Where(node => node.Attributes?["translate"] != null))
+				{
+					_translator.Add(node.InnerText, node.Attributes["translate"]?.InnerText);
+				}
+			}
+		}
+
 		public SkillSpecialization(string strName, bool free)
 		{
-			_strName = strName;
+			_translator.Write(strName, ref _name, ref _translated);
 			_guiID = Guid.NewGuid();
 			_free = free;
 		}
@@ -29,7 +47,8 @@ namespace Chummer
 		{
 			objWriter.WriteStartElement("spec");
 			objWriter.WriteElementString("guid", _guiID.ToString());
-			objWriter.WriteElementString("name", _strName);
+			objWriter.WriteElementString("name", _name);
+			if(_translated != null) objWriter.WriteElementString(GlobalOptions.Instance.Language, _translated);
 			if(_free) objWriter.WriteElementString("free", "");
 			objWriter.WriteEndElement();
 		}
@@ -42,7 +61,8 @@ namespace Chummer
 		{
 			return new SkillSpecialization(objNode["name"].InnerText, objNode["free"] != null)
 			{
-				_guiID = Guid.Parse(objNode["guid"].InnerText)
+				_guiID = Guid.Parse(objNode["guid"].InnerText),
+				_translated = objNode[GlobalOptions.Instance.Language]?.InnerText
 			};
 		}
 
@@ -75,7 +95,7 @@ namespace Chummer
 		/// </summary>
 		public string Name
 		{
-			get { return _strName; }
+			get { return _translator.Read(_name, ref _translated); }
 		}
 
 		/// <summary>
