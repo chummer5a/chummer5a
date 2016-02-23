@@ -10454,8 +10454,8 @@ namespace Chummer
 		protected bool _blnDiscountCost = false;
 		protected string _strGearName = "";
 		protected bool _blnIncludedInParent = false;
-		private int _intMatrixCM = 0;
-		private int _intMatrixCMFilled = 0;
+		protected int _intMatrixCM = 0;
+		protected int _intMatrixCMFilled = 0;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public Gear(Character objCharacter)
@@ -12900,9 +12900,9 @@ namespace Chummer
 			_strCategory = objXmlGear["category"].InnerText;
 			_strAvail = objXmlGear["avail"].InnerText;
 			objXmlGear.TryGetField("cost", out _strCost);
-			objXmlGear.TryGetField("cost3", out _strCost3);
-			objXmlGear.TryGetField("cost6", out _strCost6);
-			objXmlGear.TryGetField("cost10", out _strCost10);
+			objXmlGear.TryGetField("cost3", out _strCost3, "");
+			objXmlGear.TryGetField("cost6", out _strCost6, "");
+			objXmlGear.TryGetField("cost10", out _strCost10, "");
 			objXmlGear.TryGetField("armorcapacity", out _strArmorCapacity);
 			_nodBonus = objXmlGear["bonus"];
 			_intMaxRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
