@@ -1889,7 +1889,7 @@
 			<ess>FixedValues(3,4,5)</ess>
 			<capacity>0</capacity>
 			<avail>FixedValues(12F,18F,24F)</avail>
-			<cost>FixedValues(43000,97000,208000)</cost>
+			<cost>FixedValues(40000,125000,205000)</cost>
 			<bonus>
 				<initiativepass precedence="1">FixedValues(0,1,1)</initiativepass>
 				<initiative precedence="1">FixedValues(3,6,9)</initiative> 
