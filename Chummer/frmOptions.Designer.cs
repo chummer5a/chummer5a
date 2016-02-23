@@ -230,6 +230,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
 			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
 			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
 			this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
@@ -253,7 +254,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2580,6 +2580,19 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
+			// chkDontDoubleQualityRefunds
+			// 
+			this.chkDontDoubleQualityRefunds.AutoSize = true;
+			this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(8, 95);
+			this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
+			this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
+			this.chkDontDoubleQualityRefunds.TabIndex = 20;
+			this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
+			this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
+			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
+        "e at their normal price instead of doubling them.");
+			this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
+			// 
 			// chkESSLossReducesMaximumOnly
 			// 
 			this.chkESSLossReducesMaximumOnly.AutoSize = true;
@@ -2854,19 +2867,6 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkDontDoubleQualityRefunds
-			// 
-			this.chkDontDoubleQualityRefunds.AutoSize = true;
-			this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(8, 95);
-			this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
-			this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
-			this.chkDontDoubleQualityRefunds.TabIndex = 20;
-			this.chkDontDoubleQualityRefunds.Tag = "Checkbox_Options_DontDoubleNegativeQualityRefunds";
-			this.chkDontDoubleQualityRefunds.Text = "Don\'t double the cost of refunding Negative Qualities in Career Mode";
-			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
-        "e at their normal price instead of doubling them.");
-			this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
-			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -2884,6 +2884,7 @@
 			this.MinimumSize = new System.Drawing.Size(16, 667);
 			this.Name = "frmOptions";
 			this.ShowInTaskbar = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Tag = "Title_Options";
 			this.Text = "Options";

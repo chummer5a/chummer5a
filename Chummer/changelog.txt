@@ -99,6 +99,7 @@ Data Change:
 - Added a new mod for vehicles, Paraplegic Modification. This is intended to support the Paraplegic Negative Quality, which increases the cost of vehicles by five percent.
 - Fixed the lifestylecost improvement for the Paraplegic quality to affect Advanced Lifestyles.
 - Fixed incorrect costs for Move-By-Wire.
+- Fixed an incorrect value for the UCAS (Seattle) Life Module. Fixes #699.
 
 New Strings:
 - Message_DeleteCalendarWeek
