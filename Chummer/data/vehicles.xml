@@ -6715,7 +6715,7 @@
 			<rating>4</rating>
 			<slots>0</slots>
 			<avail>FixedValues(2,4,8,12R)</avail>
-			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 100,Body * Body * 5000)</cost>
+			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
