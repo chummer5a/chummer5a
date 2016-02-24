@@ -836,7 +836,7 @@
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>2</avail>
-			<cost>Variable(50-500)</cost>
+			<cost>Variable(500-2000)</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
