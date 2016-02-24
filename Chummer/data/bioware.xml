@@ -833,9 +833,9 @@
 			<id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
 			<name>Moderate Biosculpting Modification</name>
 			<category>Biosculpting</category>
-			<ess>0</ess>
+			<ess>0.1</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
+			<avail>4</avail>
 			<cost>Variable(50-500)</cost>
 			<bonus>
 				<selecttext />
@@ -849,8 +849,8 @@
 			<category>Biosculpting</category>
 			<ess>0</ess>
 			<capacity>0</capacity>
-			<avail>2</avail>
-			<cost>Variable(50-500)</cost>
+			<avail>8</avail>
+			<cost>Variable(2000-10000)</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
