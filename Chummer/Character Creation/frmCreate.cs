@@ -14220,23 +14220,6 @@ namespace Chummer
             ArmorMod objMod = _objFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
             if (objMod != null)
                 blnIsMod = true;
-
-            if (blnIsMod)
-            {
-                objMod.Rating = Convert.ToInt32(nudArmorRating.Value);
-                treArmor.SelectedNode.Text = objMod.DisplayName;
-
-                // See if a Bonus node exists.
-                if (objMod.Bonus != null)
-                {
-                    // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                    if (objMod.Bonus.InnerXml.Contains("Rating"))
-                    {
-                        _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
-                        _objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
-                    }
-                }
-            }
 			// Locate the selected Gear.
 			bool blnIsGear = false;
 			Armor objSelectedArmor = new Armor(_objCharacter);
@@ -14257,6 +14240,22 @@ namespace Chummer
 					{
 						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId);
 						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+					}
+				}
+			}
+			else if (blnIsMod)
+			{
+				objMod.Rating = Convert.ToInt32(nudArmorRating.Value);
+				treArmor.SelectedNode.Text = objMod.DisplayName;
+
+				// See if a Bonus node exists.
+				if (objMod.Bonus != null)
+				{
+					// If the Bonus contains "Rating", remove the existing Improvements and create new ones.
+					if (objMod.Bonus.InnerXml.Contains("Rating"))
+					{
+						_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+						_objImprovementManager.CreateImprovements(Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
 					}
 				}
 			}
