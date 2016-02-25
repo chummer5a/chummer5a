@@ -9126,17 +9126,10 @@ namespace Chummer
             Vehicle objSelectedVehicle = _objFunctions.FindVehicle(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter);
-            // Set the Vehicle properties for the window.
-            frmPickVehicleMod.VehicleCost = Convert.ToInt32(objSelectedVehicle.Cost);
-            frmPickVehicleMod.Body = objSelectedVehicle.TotalBody;
-			frmPickVehicleMod.Seats = objSelectedVehicle.Seats;
-			frmPickVehicleMod.Handling = objSelectedVehicle.Handling;
-			frmPickVehicleMod.Speed = objSelectedVehicle.Speed;
-            frmPickVehicleMod.Accel = objSelectedVehicle.Accel;
-            frmPickVehicleMod.DeviceRating = objSelectedVehicle.DeviceRating;
-            frmPickVehicleMod.HasModularElectronics = objSelectedVehicle.HasModularElectronics();
+			// Set the Vehicle properties for the window.
+			frmPickVehicleMod.SelectedVehicle = objSelectedVehicle;
 
-            frmPickVehicleMod.ShowDialog(this);
+			frmPickVehicleMod.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)

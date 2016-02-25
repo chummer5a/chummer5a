@@ -6903,6 +6903,9 @@
 			<name>Pilot Program (Drone)</name>
 			<category>All</category>
 			<rating>6</rating>
+			<bonus>
+				<pilot>Rating</pilot>
+			</bonus>
 			<slots>0</slots>
 			<avail>FixedValues(4,0,8R,12R,16F,24F</avail>
 			<cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
@@ -6926,6 +6929,9 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Handling + 1</minrating>
+			<bonus>
+				<handling>Rating</handling>
+			</bonus>
 			<slots>Handling - Rating - 1</slots>
 			<avail>Rating * 2</avail>
 			<cost>Body * Rating * 200</cost>
@@ -6940,6 +6946,9 @@
 			<minrating>Speed + 1</minrating>
 			<slots>Speed - Rating - 1</slots>
 			<avail>Rating * 2</avail>
+			<bonus>
+				<speed>Rating</speed>
+			</bonus>
 			<cost>Body * Rating * 400</cost>
 			<source>R5</source>
 			<page>123</page>
@@ -6950,7 +6959,10 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Acceleration + 1</minrating>
-			<slots>Acceleration - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<accel>Rating</accel>
+			</bonus>
 			<avail>Rating * 4</avail>
 			<cost>Body * Rating * 200</cost>
 			<source>R5</source>
@@ -6961,6 +6973,9 @@
 			<name>Body (Drone)</name>
 			<category>All</category>
 			<rating>99</rating>
+			<bonus>
+				<body>Rating</body>
+			</bonus>
 			<slots>0</slots>
 			<avail>Rating * 3</avail>
 			<cost>0</cost>
@@ -6972,8 +6987,11 @@
 			<name>Armor (Drone)</name>
 			<category>All</category>
 			<rating>6</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>Armor + 1</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -6984,8 +7002,11 @@
 			<name>Armor Restricted (Drone)</name>
 			<category>All</category>
 			<rating>12</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>6</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -6996,8 +7017,11 @@
 			<name>Armor Forbidden(Drone)</name>
 			<category>All</category>
 			<rating>99</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>12</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -7009,7 +7033,10 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Sensor + 1</minrating>
-			<slots>Sensor - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<sensor>Rating</sensor>
+			</bonus>
 			<avail>Rating * 2</avail>
 			<cost>Rating * 1000</cost>
 			<source>R5</source>
@@ -7021,7 +7048,10 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Sensor + 1</minrating>
-			<slots>Sensor - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<sensor>Rating</sensor>
+			</bonus>
 			<avail>Rating * 2</avail>
 			<cost>Rating * 100</cost>
 			<source>R5</source>
