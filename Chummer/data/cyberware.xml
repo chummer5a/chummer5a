@@ -676,7 +676,7 @@
 			<name>Skillwires</name>
 			<category>Bodyware</category>
 			<rating>6</rating>
-			<ess>Rating * 0.2</ess>
+			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 3)</avail>
 			<cost>Rating * 20000</cost>
