@@ -59,6 +59,7 @@ Application Change:
 - Partially implemented the Overclocker feature for Career mode. Code works, but I haven't added it on for Vehicles yet. Fixes #198.
 - Added support for CTRL-A in the Notes forms. Slim chance I've missed other multiline forms Fixes #693. 
 - Fixed a crash caused by loading custom Critters.
+- Properly fixed movement calculation. Oops.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -101,6 +102,7 @@ Data Change:
 - Fixed the lifestylecost improvement for the Paraplegic quality to affect Advanced Lifestyles.
 - Fixed incorrect costs for Move-By-Wire.
 - Fixed an incorrect value for the UCAS (Seattle) Life Module. Fixes #699.
+- Fixed the karma cost for the Loss of confidence quality. Fixes #706.
 
 New Strings:
 - Message_DeleteCalendarWeek

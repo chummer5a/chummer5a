@@ -6828,41 +6828,43 @@ namespace Chummer
                     try
                     {
                         _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-						try
-                        {
-                            string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
-                            string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
-                            string strSprint = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["sprint"].InnerText;
-
-                            if (_objOptions.CyberlegMovement)
-                            {
-                                int intLegs = 0;
-                                int intAGI = 0;
-                                foreach (Cyberware objCyber in _lstCyberware)
-                                {
-                                    if (objCyber.LimbSlot == "leg")
-                                    {
-                                        intLegs++;
-                                        if (intAGI > 0)
-                                            intAGI = Math.Min(intAGI, objCyber.TotalAgility);
-                                        else
-                                            intAGI = objCyber.TotalAgility;
-                                    }
-                                }
-                                if (intLegs == 2)
-                                    _strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
-                                else
-                                    _strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
-                            }
-                            else
-                                _strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
-                        }
-                        catch
-                        { }
+						
                     }
                     catch
                     {
-                        _strMovement = "0";
+						try
+						{
+							string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
+							string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
+							string strSprint = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["sprint"].InnerText;
+
+							if (_objOptions.CyberlegMovement)
+							{
+								int intLegs = 0;
+								int intAGI = 0;
+								foreach (Cyberware objCyber in _lstCyberware)
+								{
+									if (objCyber.LimbSlot == "leg")
+									{
+										intLegs++;
+										if (intAGI > 0)
+											intAGI = Math.Min(intAGI, objCyber.TotalAgility);
+										else
+											intAGI = objCyber.TotalAgility;
+									}
+								}
+								if (intLegs == 2)
+									_strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
+								else
+									_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+							}
+							else
+								_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+						}
+						catch
+						{
+							_strMovement = "0";
+						}						
                     }
                     Save();
                 }
