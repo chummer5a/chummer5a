@@ -6827,9 +6827,8 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
                     try
                     {
-                        _strMovement = "0"; // objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-
-                        try
+                        _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
+						try
                         {
                             string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
                             string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
