@@ -9821,7 +9821,9 @@ namespace Chummer
 			objWriter.WriteStartElement("lifestyle");
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("cost", _intCost.ToString());
-			objWriter.WriteElementString("dice", _intDice.ToString());
+            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString());
+            objWriter.WriteElementString("totalcost", TotalCost.ToString());
+            objWriter.WriteElementString("dice", _intDice.ToString());
 			objWriter.WriteElementString("multiplier", _intMultiplier.ToString());
 			objWriter.WriteElementString("months", _intMonths.ToString());
 			objWriter.WriteElementString("purchased", _blnPurchased.ToString());

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!-- Character sheet with fancy blocks for teh modularity-->
-<!-- Created by AngelForest https://github.com/angelforest/chummer5_fancy_blocks_charsheet -->
+<!-- Created by AngelForest -->
 <!-- Prototype by Adam Schmidt -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
@@ -613,9 +613,13 @@
 		
 		<ul style="margin-left:0px;">
 			<xsl:for-each select="qualities/quality[qualitytype_english=$quality_type]">
+				<xsl:sort select="qualitysource='Metatype'" order='descending' />
 				<xsl:sort select="name" />
 		
 				<li>
+					<xsl:if test="qualitysource='Metatype'">
+						<xsl:attribute name="style">color:grey;</xsl:attribute>
+					</xsl:if>
 					<xsl:value-of select="name" />
 					<xsl:if test="extra!=''"> (<xsl:value-of select="extra" />)</xsl:if> 
 					<xsl:call-template name="print_source_page" />
@@ -712,15 +716,22 @@
 				<xsl:sort select="location" />
 				<xsl:sort select="name" />
 				
-				<xsl:copy-of select="current()" />
+				<xsl:copy>
+					<xsl:if test="../../gears/gear[name=current()/name]">
+						<xsl:element name="qty"><xsl:value-of select="../../gears/gear[name=current()/name]/qty" /></xsl:element>
+					</xsl:if>
+					<xsl:copy-of select="*" />
+				</xsl:copy>
 			</xsl:for-each>
 		</xsl:variable>
 		
 		<xsl:variable name="sorted_ammunition">
-			<xsl:for-each select="gears/gear[category_english='Ammunition' and (starts-with(name, 'Ammo:') or starts-with(name, 'Arrow:') or starts-with(name, 'Bolt:'))]">
+			<xsl:for-each select="gears/gear[category_english='Ammunition']">
 				<xsl:sort select="name" />
 				
-				<xsl:copy-of select="current()" />
+				<xsl:if test="count(../../weapons/weapon[name=current()/name]) = 0">
+					<xsl:copy-of select="current()" />
+				</xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
 		
@@ -734,7 +745,11 @@
 		
 				<xsl:for-each select="msxsl:node-set($sorted_ranged)/weapon">
 					<xsl:if test="$need_location and (position()=1 or location!=preceding-sibling::weapon[1]/location)">
-						<xsl:call-template name="print_location" />
+						<tr>
+							<td colspan="8">
+								<xsl:call-template name="print_location" />
+							</td>
+						</tr>
 					</xsl:if>
 					
 					<xsl:call-template name="print_ranged_weapon_stats" />
@@ -776,16 +791,7 @@
 				</td>
 			</xsl:if>
 			<td rowspan="2">
-				<xsl:value-of select="name" />
-				<xsl:variable name="weapon_name" select="name" />
-				<xsl:if test="../../gears/gear[name=$weapon_name]">
-					<xsl:variable name="qty" select="../../gears/gear[name=$weapon_name]/qty" />
-					<xsl:if test="$qty &gt; 1">
-						<xsl:text> x</xsl:text><xsl:value-of select="$qty" />
-					</xsl:if>
-				</xsl:if>
-				<xsl:call-template name="print_source_page" />
-				<xsl:call-template name="print_notes" />
+				<xsl:call-template name="print_nested" />
 				<ul>
 					<xsl:for-each select="accessories/accessory">
 						<xsl:sort select="included" order="descending" />
@@ -793,9 +799,6 @@
 						
 						<li><xsl:call-template name="print_nested" /></li>
 					</xsl:for-each>
-					<xsl:call-template name="print_clips">
-						<xsl:with-param name="gun_name" select="name" />
-					</xsl:call-template>
 				</ul>
 			</td>
 			<td><xsl:value-of select="damage" /></td>
@@ -845,22 +848,6 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template name="print_clips">
-		<xsl:param name="gun_name" />
-		
-		<xsl:for-each select="../../gears/gear[category_english='Ammunition']">
-			<xsl:sort select="name" />
-		
-			<xsl:if test="extra=$gun_name">
-				<li>
-					<xsl:value-of select="name" />
-					<xsl:if test="qty!='' and qty!='1'"> x<xsl:value-of select="qty" /></xsl:if>
-					<xsl:call-template name="print_notes" />
-				</li>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-	
 	<xsl:template name="print_melee_weapons">
 		<xsl:variable name="sorted_melee">
 			<xsl:for-each select="weapons/weapon[type='Melee']">
@@ -879,7 +866,11 @@
 			
 			<xsl:for-each select="msxsl:node-set($sorted_melee)/weapon">
 				<xsl:if test="$need_location and (position()=1 or location!=preceding-sibling::weapon[1]/location)">
-					<xsl:call-template name="print_location" />
+					<tr>
+						<td colspan="6">
+							<xsl:call-template name="print_location" />
+						</td>
+					</tr>					
 				</xsl:if>
 			
 				<xsl:call-template name="print_melee_weapon_stats" />
@@ -935,7 +926,11 @@
 			
 			<xsl:for-each select="msxsl:node-set($sorted_armor)/armor">
 				<xsl:if test="$need_location and (position()=1 or location!=preceding-sibling::armor[1]/location)">
-					<xsl:call-template name="print_location" />
+					<tr>
+						<td colspan="3">
+							<xsl:call-template name="print_location" />
+						</td>
+					</tr>
 				</xsl:if>
 				
 				<tr>
@@ -992,7 +987,7 @@
 										<xsl:sort select="name" />
 										<li>
 											<xsl:value-of select="name" />
-                      <xsl:call-template name="print_source_page" />
+											<xsl:call-template name="print_source_page" />
 											<xsl:call-template name="print_notes" />
 										</li>
 									</xsl:for-each>
@@ -1010,21 +1005,21 @@
 		<xsl:if test="count(vehicles/vehicle) &gt; 0">
 	
 			<table class="stats machine">
-				<tr><td colspan="5"><div class="bigheader">[Vehicles]</div></td></tr>
+				<tr><td colspan="2"><div class="bigheader">[Vehicles]</div></td></tr>
 				<xsl:for-each select="vehicles/vehicle">
 					<xsl:sort select="name" />
 					
 					<xsl:if test="position()!=1">
-						<tr><td colspan="5"><hr /></td></tr>
+						<tr><td colspan="2"><hr /></td></tr>
 					</xsl:if>
 					
 					<tr>
-						<td rowspan="6">
+						<td>
 							<xsl:value-of select="name" />
 							<xsl:call-template name="print_source_page" />
 							<xsl:call-template name="print_notes" />
 							<ul>
-								<xsl:if test="count(mods/mod[not(contains(name, 'Weapon Mount'))]) &gt; 0">
+								<xsl:if test="count(mods/mod) &gt; 0">
 									<li><strong>Mods</strong></li>
 									<xsl:for-each select="mods/mod[not(contains(name, 'Weapon Mount'))]">
 										<xsl:sort select="included" order="descending" />
@@ -1043,41 +1038,53 @@
 								</xsl:if>
 							</ul>
 						</td>
-						<td>Handling</td><td><xsl:value-of select="handling" /></td><td>Body</td><td><xsl:value-of select="body" /></td>
+						<td>
+							<table style="width:100%;">
+								<tr><td>Handling</td><td><xsl:value-of select="handling" /></td><td>Body</td><td><xsl:value-of select="body" /></td></tr>
+								<tr><td>Acceleration</td><td><xsl:value-of select="accel" /></td><td>Armor</td><td><xsl:value-of select="armor" /></td></tr>
+								<tr><td>Speed</td><td><xsl:value-of select="speed" /></td><td>Sensor</td><td><xsl:value-of select="sensor" /></td></tr>
+								<tr><td>Pilot</td><td><xsl:value-of select="pilot" /></td><td>Device</td><td><xsl:value-of select="devicerating" /></td></tr>
+								<tr>
+									<td>Physical CM</td><td><xsl:value-of select="physicalcm" /></td>
+									<xsl:if test="seats &gt; 0"><td>Seats</td><td><xsl:value-of select="seats" /></td></xsl:if>
+								</tr>
+								<tr><td>Matrix CM</td><td><xsl:value-of select="8 + ceiling(devicerating div 2)" /></td></tr>
+							</table>
+						</td>
 					</tr>
-					<tr><td>Acceleration</td><td><xsl:value-of select="accel" /></td><td>Armor</td><td><xsl:value-of select="armor" /></td></tr>
-					<tr><td>Speed</td><td><xsl:value-of select="speed" /></td><td>Sensor</td><td><xsl:value-of select="sensor" /></td></tr>
-					<tr><td>Pilot</td><td><xsl:value-of select="pilot" /></td><td>Device</td><td><xsl:value-of select="devicerating" /></td></tr>
-					<tr>
-						<td>Physical CM</td><td><xsl:value-of select="physicalcm" /></td>
-						<xsl:if test="seats &gt; 0"><td>Seats</td><td><xsl:value-of select="seats" /></td></xsl:if>
-					</tr>
-					<tr><td>Matrix CM</td><td><xsl:value-of select="8 + ceiling(devicerating div 2)" /></td></tr>
 					
 					<xsl:if test="count(mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']) &gt; 0">
-						<tr><td colspan="5"><table>
-							<tr class="smallheader"><td>Mount</td><td>Weapon</td><td>DV</td><td>AP</td><td>Mode</td><td>RC</td><td>Ammo</td><td>Acc</td><td>Pool</td></tr>
-							<xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']">
-								<xsl:sort select="name" />
-							
-								<xsl:call-template name="print_ranged_weapon_stats">
-									<xsl:with-param name="is_mount" select="true()" />
-								</xsl:call-template>
-							</xsl:for-each>
-						</table></td></tr>
+						<tr>
+							<td colspan="2">
+								<table>
+									<tr class="smallheader"><td>Mount</td><td>Weapon</td><td>DV</td><td>AP</td><td>Mode</td><td>RC</td><td>Ammo</td><td>Acc</td><td>Pool</td></tr>
+									<xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Ranged']">
+										<xsl:sort select="name" />
+									
+										<xsl:call-template name="print_ranged_weapon_stats">
+											<xsl:with-param name="is_mount" select="true()" />
+										</xsl:call-template>
+									</xsl:for-each>
+								</table>
+							</td>
+						</tr>
 					</xsl:if>
 					
 					<xsl:if test="count(mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']) &gt; 0">
-						<tr><td colspan="5"><table>
-							<tr class="smallheader"><td>Mount</td><td>Weapon</td><td>DV</td><td>AP</td><td>Reach</td><td>Acc</td><td>Pool</td></tr>
-							<xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']">
-								<xsl:sort select="name" />
-							
-								<xsl:call-template name="print_melee_weapon_stats">
-									<xsl:with-param name="is_mount" select="true()" />
-								</xsl:call-template>
-							</xsl:for-each>
-						</table></td></tr>
+						<tr>
+							<td colspan="2">
+								<table>
+									<tr class="smallheader"><td>Mount</td><td>Weapon</td><td>DV</td><td>AP</td><td>Reach</td><td>Acc</td><td>Pool</td></tr>
+									<xsl:for-each select="mods/mod[contains(name, 'Weapon Mount')]/weapons/weapon[type='Melee']">
+										<xsl:sort select="name" />
+									
+										<xsl:call-template name="print_melee_weapon_stats">
+											<xsl:with-param name="is_mount" select="true()" />
+										</xsl:call-template>
+									</xsl:for-each>
+								</table>
+							</td>
+						</tr>
 					</xsl:if>			
 				</xsl:for-each>
 			</table>
@@ -1217,6 +1224,7 @@
 		<tr>
 			<td>
 				<xsl:value-of select="name" />
+				<xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty" /></xsl:if>
 				<xsl:call-template name="print_source_page" />
 			</td>
 			<td><xsl:value-of select="devicerating" /></td>
@@ -1693,23 +1701,21 @@
 		<xsl:param name="condition" />
 	
 		<xsl:variable name="gears_half_count" select="ceiling(count(msxsl:node-set($gear_list)/gear) div 2) + 1" />
-		
 		<xsl:variable name="need_location" select="count(msxsl:node-set($gear_list)/gear[location!='']) &gt; 0" />
 	
-		<table>
+		<ul style="margin-left:0px;">
 			<xsl:for-each select="msxsl:node-set($gear_list)/gear">
 				<xsl:if test="(position() &lt; $gears_half_count)=$condition">
 					<xsl:if test="$need_location and (position()=1 or location!=preceding-sibling::gear[1]/location)">
-						<xsl:call-template name="print_location" />
+						<li>
+							<xsl:call-template name="print_location" />
+						</li>
 					</xsl:if>
 					
-					<tr><td><xsl:call-template name="print_nested" /></td></tr>
+					<li><xsl:call-template name="print_nested" /></li>
 				</xsl:if>
 			</xsl:for-each>
-			
-			<!--Fucking crutch to prevent everything from collapsing if table is empty-->
-			<xsl:if test="count(msxsl:node-set($gear_list)/gear) &lt; 2"><tr /></xsl:if>
-		</table>
+		</ul>
 	</xsl:template>
 	
 	<xsl:template name="print_ids">
@@ -1738,9 +1744,15 @@
 						<xsl:call-template name="print_source_page" />
 						<xsl:call-template name="print_notes" />
 						<br />
-						Base Cost: <xsl:value-of select="cost" />&#165;
-						Purchased: <xsl:choose><xsl:when test="purchased='True'">Forever</xsl:when><xsl:otherwise><xsl:value-of select="months" /> month(s)</xsl:otherwise></xsl:choose>
-						<br />
+            <xsl:choose>
+              <xsl:when test="purchased='True'">
+                [Purchaced permanently]
+              </xsl:when>
+              <xsl:otherwise>
+                Cost: <xsl:value-of select="cost" />&#165; (<xsl:value-of select="totalmonthlycost" />&#165;) x<xsl:value-of select="months" /> = <xsl:value-of select="totalcost" />&#165;
+              </xsl:otherwise>
+            </xsl:choose>
+            <br />
 						<ul>
 						<xsl:for-each select="qualities/lifestylequality">
 							<li>
@@ -1835,21 +1847,27 @@
 	</xsl:template>
 	
 	<xsl:template name="print_nested">
+		<xsl:variable name="is_long_extra" select="name_english='Custom Fit (Stack)'" />
+	
 		<span>
 			<xsl:if test="included and included='True'">
 				<xsl:attribute name="style">color:grey;</xsl:attribute>
 			</xsl:if>
 			<xsl:value-of select="name" />
-			<xsl:if test="extra!=''">
+			<xsl:if test="extra!='' and not($is_long_extra)">
 				(<xsl:value-of select="extra" />)
 			</xsl:if>
 			<xsl:if test="rating &gt; 0">
 				<xsl:text> [R</xsl:text><xsl:value-of select="rating" />]
 			</xsl:if>
-			<xsl:if test="qty &gt; 1">
+			<xsl:if test="qty and qty &gt; 1">
 				<xsl:text> x</xsl:text><xsl:value-of select="qty" />
 			</xsl:if>
 			<xsl:call-template name="print_source_page" />
+			<xsl:if test="extra!='' and $is_long_extra">
+				<br />
+				(<xsl:value-of select="extra" />)
+			</xsl:if>
 			<xsl:call-template name="print_notes" />
 		</span>
 		
@@ -1884,16 +1902,12 @@
 	</xsl:template>
 	
 	<xsl:template name="print_location">
-		<tr>
-			<td>
-				<strong>
-					<xsl:choose>
-						<xsl:when test="location=''">Selected Gear</xsl:when>
-						<xsl:otherwise><xsl:value-of select="location" /></xsl:otherwise>
-					</xsl:choose>
-				</strong>
-			</td>
-		</tr>
+		<strong>
+			<xsl:choose>
+				<xsl:when test="location=''">Selected Gear</xsl:when>
+				<xsl:otherwise><xsl:value-of select="location" /></xsl:otherwise>
+			</xsl:choose>
+		</strong>
 	</xsl:template>
 	
 	<xsl:template name="make_grey_lines">
