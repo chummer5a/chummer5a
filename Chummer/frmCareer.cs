@@ -28544,12 +28544,24 @@ namespace Chummer
 				{
 					if (objCyberware.AllowGear["gearcategory"] != null)
 					{
-						if (objCyberware.AllowGear["gearcategory"].InnerText == "Commlink")
+						if (objCyberware.AllowGear["gearcategory"].InnerText == "Commlinks" || objCyberware.AllowGear["gearcategory"].InnerText == "Cyberdecks")
 						{
 							TreeNode objNode = new TreeNode();
 							objNode.Tag = objCyberware.InternalId.ToString();
 							objNode.Text = objCyberware.DisplayCategory + ": " + objCyberware.DisplayName;
-							treGear.Nodes.Add(objNode);
+							bool blnFound = false;
+							foreach (string objLocation in _objCharacter.Locations)
+							{
+								if (objLocation == objNode.Text)
+								{
+									blnFound = true;
+								}
+							}
+							if (!blnFound)
+							{
+								treGear.Nodes.Add(objNode);
+								_objCharacter.Locations.Add(objNode.Text);
+							}
 						}
 					}
 				}
@@ -28562,7 +28574,19 @@ namespace Chummer
 							TreeNode objNode = new TreeNode();
 							objNode.Tag = objPlugin.InternalId.ToString();
 							objNode.Text = objPlugin.DisplayCategory + ": " + objPlugin.DisplayName;
-							treGear.Nodes.Add(objNode);
+							bool blnFound = false;
+							foreach (string objLocation in _objCharacter.Locations)
+							{
+								if (objLocation == objNode.Text)
+								{
+									blnFound = true;
+								}
+							}
+							if (!blnFound)
+							{
+								treGear.Nodes.Add(objNode);
+								_objCharacter.Locations.Add(objNode.Text);
+							}
 						}
 					}
 				}
@@ -28575,12 +28599,24 @@ namespace Chummer
 					{
 						if (objAccessory.AllowGear["gearcategory"] != null)
 						{
-							if (objAccessory.AllowGear["gearcategory"].InnerText == "Commlink")
+							if (objAccessory.AllowGear["gearcategory"].InnerText == "Commlinks" || objAccessory.AllowGear["gearcategory"].InnerText == "Cyberdecks")
 							{
 								TreeNode objNode = new TreeNode();
 								objNode.Tag = objAccessory.InternalId.ToString();
 								objNode.Text = objWeapon.DisplayName + ": " + objAccessory.DisplayName;
-								treGear.Nodes.Add(objNode);
+								bool blnFound = false;
+								foreach (string objLocation in _objCharacter.Locations)
+								{
+									if (objLocation == objNode.Text)
+									{
+										blnFound = true;
+									}
+								}
+								if (!blnFound)
+								{
+									_objCharacter.Locations.Add(objNode.Text);
+									treGear.Nodes.Add(objNode);
+								}
 							}
 						}
 					}
@@ -28593,12 +28629,24 @@ namespace Chummer
 						{
 							if (objUnderbarrelAccessory.AllowGear["gearcategory"] != null)
 							{
-								if (objUnderbarrelAccessory.AllowGear["gearcategory"].InnerText == "Commlink")
+								if (objUnderbarrelAccessory.AllowGear["gearcategory"].InnerText == "Commlinks" || objUnderbarrelAccessory.AllowGear["gearcategory"].InnerText == "Cyberdecks")
 								{
 									TreeNode objNode = new TreeNode();
 									objNode.Tag = objUnderbarrelAccessory.InternalId.ToString();
 									objNode.Text = objUnderbarrel.DisplayName + ": " + objUnderbarrelAccessory.DisplayName;
-									treGear.Nodes.Add(objNode);
+									bool blnFound = false;
+									foreach (string objLocation in _objCharacter.Locations)
+									{
+										if (objLocation == objNode.Text)
+										{
+											blnFound = true;
+										}
+									}
+									if (!blnFound)
+									{
+										_objCharacter.Locations.Add(objNode.Text);
+										treGear.Nodes.Add(objNode);
+									}
 								}
 							}
 						}
@@ -28608,33 +28656,40 @@ namespace Chummer
 
 			foreach (Gear objGear in _objCharacter.Gear)
 			{
-				TreeNode objNode = new TreeNode();
-				objNode.Text = objGear.DisplayName;
-				objNode.Tag = objGear.InternalId;
-				if (objGear.Notes != string.Empty)
-					objNode.ForeColor = Color.SaddleBrown;
-				objNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
+				bool blnAdd = true;
+				if (chkCommlinks.Checked && (objGear.Category != "Commlinks" && objGear.Category != "Cyberdecks"))
+					blnAdd = false;
 
-				_objFunctions.BuildGearTree(objGear, objNode, cmsGear);
-
-				objNode.ContextMenuStrip = cmsGear;
-
-				TreeNode objParent = new TreeNode();
-				if (objGear.Location == "")
-					objParent = treGear.Nodes[0];
-				else
+				if (blnAdd)
 				{
-					foreach (TreeNode objFind in treGear.Nodes)
+					TreeNode objNode = new TreeNode();
+					objNode.Text = objGear.DisplayName;
+					objNode.Tag = objGear.InternalId;
+					if (objGear.Notes != string.Empty)
+						objNode.ForeColor = Color.SaddleBrown;
+					objNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
+
+					_objFunctions.BuildGearTree(objGear, objNode, cmsGear);
+
+					objNode.ContextMenuStrip = cmsGear;
+
+					TreeNode objParent = new TreeNode();
+					if (objGear.Location == "")
+						objParent = treGear.Nodes[0];
+					else
 					{
-						if (objFind.Text == objGear.Location)
+						foreach (TreeNode objFind in treGear.Nodes)
 						{
-							objParent = objFind;
-							break;
+							if (objFind.Text == objGear.Location)
+							{
+								objParent = objFind;
+								break;
+							}
 						}
 					}
+					objParent.Nodes.Add(objNode);
+					objParent.Expand();
 				}
-				objParent.Nodes.Add(objNode);
-				objParent.Expand();
 			}
 		}
 

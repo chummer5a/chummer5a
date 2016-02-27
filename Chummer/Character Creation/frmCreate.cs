@@ -24818,11 +24818,23 @@ namespace Chummer
                     if (objCyberware.AllowGear["gearcategory"] != null)
                     {
                         if (objCyberware.AllowGear["gearcategory"].InnerText == "Commlinks" || objCyberware.AllowGear["gearcategory"].InnerText == "Cyberdecks")
-                        {
-                            TreeNode objNode = new TreeNode();
-                            objNode.Tag = objCyberware.InternalId.ToString();
-                            objNode.Text = objCyberware.DisplayCategory + ": " + objCyberware.DisplayName;
-                            treGear.Nodes.Add(objNode);
+						{
+							TreeNode objNode = new TreeNode();
+							objNode.Tag = objCyberware.InternalId.ToString();
+							objNode.Text = objCyberware.DisplayCategory + ": " + objCyberware.DisplayName;
+							bool blnFound = false;
+							foreach (string objLocation in _objCharacter.Locations)
+							{
+								if (objLocation == objNode.Text)
+								{
+									blnFound = true;
+								}
+							}
+							if (!blnFound)
+							{
+								treGear.Nodes.Add(objNode);
+								_objCharacter.Locations.Add(objNode.Text);
+							}
                         }
                     }
                 }
@@ -24835,8 +24847,20 @@ namespace Chummer
                             TreeNode objNode = new TreeNode();
                             objNode.Tag = objPlugin.InternalId.ToString();
                             objNode.Text = objPlugin.DisplayCategory + ": " + objPlugin.DisplayName;
-                            treGear.Nodes.Add(objNode);
-                        }
+							bool blnFound = false;
+							foreach (string objLocation in _objCharacter.Locations)
+							{
+								if (objLocation == objNode.Text)
+								{
+									blnFound = true;
+								}
+							}
+							if (!blnFound)
+							{
+								treGear.Nodes.Add(objNode);
+								_objCharacter.Locations.Add(objNode.Text);
+							}
+						}
                     }
                 }
             }
@@ -24853,8 +24877,20 @@ namespace Chummer
                                 TreeNode objNode = new TreeNode();
                                 objNode.Tag = objAccessory.InternalId.ToString();
                                 objNode.Text = objWeapon.DisplayName + ": " + objAccessory.DisplayName;
-                                treGear.Nodes.Add(objNode);
-                            }
+								bool blnFound = false;
+								foreach (string objLocation in _objCharacter.Locations)
+								{
+									if (objLocation == objNode.Text)
+									{
+										blnFound = true;
+									}
+								}
+								if (!blnFound)
+								{
+									_objCharacter.Locations.Add(objNode.Text);
+									treGear.Nodes.Add(objNode);
+								}
+							}
                         }
                     }
                 }
@@ -24871,8 +24907,20 @@ namespace Chummer
                                     TreeNode objNode = new TreeNode();
                                     objNode.Tag = objUnderbarrelAccessory.InternalId.ToString();
                                     objNode.Text = objUnderbarrel.DisplayName + ": " + objUnderbarrelAccessory.DisplayName;
-                                    treGear.Nodes.Add(objNode);
-                                }
+									bool blnFound = false;
+									foreach (string objLocation in _objCharacter.Locations)
+									{
+										if (objLocation == objNode.Text)
+										{
+											blnFound = true;
+										}
+									}
+									if (!blnFound)
+									{
+										_objCharacter.Locations.Add(objNode.Text);
+										treGear.Nodes.Add(objNode);
+									}
+								}
                             }
                         }
                     }
