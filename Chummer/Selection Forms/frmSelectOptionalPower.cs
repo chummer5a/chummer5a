@@ -96,7 +96,14 @@ namespace Chummer
             {
 				ListItem objItem = new ListItem();
 				objItem.Value = lstObject.Key;
-				objItem.Name = lstObject.Key + " (" + lstObject.Value + ")";
+				if (lstObject.Value != "")
+				{
+					objItem.Name = lstObject.Key + " (" + lstObject.Value + ")";
+				}
+				else
+				{
+					objItem.Name = lstObject.Key;
+                }
                 _lstPowers.Add(objItem);
 			}
 			cboPower.DataSource = null;

@@ -969,11 +969,6 @@
 			<name>Magician</name>
 			<karma>30</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<contributetolimit>no</contributetolimit>
@@ -991,11 +986,6 @@
 			<name>Adept</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-					</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1013,11 +1003,6 @@
 			<name>Mystic Adept</name>
 			<karma>35</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1035,11 +1020,6 @@
 			<name>Technomancer</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>RES</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1057,11 +1037,6 @@
 			<name>Aspected Magician</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>

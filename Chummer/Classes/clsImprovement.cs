@@ -4490,7 +4490,6 @@ namespace Chummer
 					{
 						strForcedValue = objXmlOptionalPower.Attributes["select"].InnerText;
 					}
-					//values.Add(new KeyValuePair<string, Stream>(title, contents));
 					lstValue.Add(new KeyValuePair<string, string>(strQuality,strForcedValue));
 				}
 				frmPickPower.LimitToList(lstValue);
@@ -4527,7 +4526,7 @@ namespace Chummer
 				TreeNode objPowerNode = new TreeNode();
 				CritterPower objPower = new CritterPower(_objCharacter);
 				
-                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, intRating, strForcedValue);
+                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, 0, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
 			}
 

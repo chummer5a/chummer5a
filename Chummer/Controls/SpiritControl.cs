@@ -447,7 +447,7 @@ namespace Chummer
 
                     lstCritters.Add(objItem);
                 }
-            }
+			}
 
 			if (_objSpirit.CharacterObject.RESEnabled)
 			{
@@ -462,6 +462,19 @@ namespace Chummer
 						lstCritters.Add(objItem);
 					}
 				}
+			}
+
+			//Add Ally Spirit to MAG-enabled traditions.
+			if (_objSpirit.CharacterObject.MAGEnabled)
+			{
+				ListItem objItem = new ListItem();
+				objItem.Value = "Ally Spirit";
+				XmlNode objXmlCritterNode = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objItem.Value + "\"]");
+				if (objXmlCritterNode["translate"] != null)
+					objItem.Name = objXmlCritterNode["translate"].InnerText;
+				else
+					objItem.Name = objItem.Value;
+				lstCritters.Add(objItem);
 			}
 
 			cboSpiritName.DisplayMember = "Name";

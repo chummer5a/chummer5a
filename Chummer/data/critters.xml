@@ -21853,6 +21853,11 @@
           <name>critter</name>
           <name>magician</name>
         </enabletab>
+			<optionalpowers>
+				<optionalpower>Inhabitation</optionalpower>
+				<optionalpower>Possession</optionalpower>
+				<optionalpower>Materialization</optionalpower>
+			</optionalpowers>
       </bonus>
       <powers>
         <power>Astral Form</power>

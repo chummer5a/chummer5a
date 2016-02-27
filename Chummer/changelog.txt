@@ -60,6 +60,7 @@ Application Change:
 - Added support for CTRL-A in the Notes forms. Slim chance I've missed other multiline forms Fixes #693. 
 - Fixed a crash caused by loading custom Critters related to movement strings.
 - Fixed the display of Locations created by cybewrware or weapons with AllowGear properties. Fixes #536.
+- Added some support for creating an Ally Spirit, per #244. Not 100% RAW yet, but it doesn't crash so that's a start.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
