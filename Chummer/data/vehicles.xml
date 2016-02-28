@@ -5498,7 +5498,7 @@
 			</bonus>
 			<slots>FixedValues(4,8)</slots>
 			<avail>6</avail>
-			<cost>FixedValues(Accel * 10000,Accel * 25000)</cost>
+			<cost>FixedValues(Acceleration * 10000,Acceleration * 25000)</cost>
 			<source>R5</source>
 			<page>154</page>
 		</mod>
