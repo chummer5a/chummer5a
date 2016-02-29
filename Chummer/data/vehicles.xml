@@ -70,22 +70,22 @@
 			<id>d43b2b6a-d6e6-460a-ab75-ca445db06dde</id>
 			<name>Daihatsu-Caterpillar Horseman</name>
 			<category>Bikes</category>
-			<handling>2/1</handling>
+			<handling>3/1</handling>
 			<speed>3</speed>
-			<accel>3</accel>
+			<accel>2</accel>
 			<body>4</body>
-			<armor>4</armor>
+			<armor>3</armor>
 			<pilot>2</pilot>
-			<sensor>1</sensor>
+			<sensor>2</sensor>
 			<seats>1</seats>
 			<gears>
-				<gear rating="1">Sensor Array</gear>
+				<gear rating="2">Sensor Array</gear>
 			</gears>
 			<mods>
 				<name>Enviroseal</name>
 			</mods>
 			<avail>0</avail>
-			<cost>3000</cost>
+			<cost>12000</cost>
 			<source>R5</source>
 			<page>41</page>
 		</vehicle>
@@ -260,9 +260,6 @@
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
-			<mods>
-				<name>Gyro-Stabalization</name>
-			</mods>
 			<avail>0</avail>
 			<cost>22000</cost>
 			<source>R5</source>
@@ -410,7 +407,7 @@
 			<armor>6</armor>
 			<pilot>2</pilot>
 			<sensor>2</sensor>
-			<seats>2</seats>
+			<seats>4</seats>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -516,7 +513,7 @@
 			<armor>6</armor>
 			<pilot>1</pilot>
 			<sensor>2</sensor>
-			<seats>12</seats>
+			<seats>6</seats>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -574,7 +571,7 @@
 				<name>Weapon Mount Flexibility (Fixed)</name>
 				<name>Weapon Mount Control (Manual)</name>
 			</mods>
-			<avail>2</avail>
+			<avail>8</avail>
 			<cost>7500</cost>
 			<source>R5</source>
 			<page>52</page>
@@ -631,7 +628,7 @@
 			<accel>2</accel>
 			<body>15</body>
 			<armor>6</armor>
-			<pilot>6</pilot>
+			<pilot>4</pilot>
 			<sensor>3</sensor>
 			<seats>6</seats>
 			<gears>
@@ -938,7 +935,6 @@
 				<name>Landing Drone Rack (Micro)</name>
 				<name>Landing Drone Rack (Small)</name>
 				<name>Landing Drone Rack (Small)</name>
-				<name>Standard Drone Rack (Small)</name>
 				<name>Rigger Cocoon</name>
 				<name>Rigger Cocoon</name>
 				<name>Rigger Interface</name>
@@ -1015,7 +1011,7 @@
 			<avail>12</avail>
 			<cost>248000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>49ed00fb-70b2-46d3-b10a-4e12bd89d798</id>
@@ -1035,7 +1031,7 @@
 			<avail>12</avail>
 			<cost>196000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>4bd62e1e-11e1-4b69-9f16-6073abaab680</id>
@@ -1055,7 +1051,7 @@
 			<avail>12</avail>
 			<cost>312000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>8cb508c2-462b-4499-9c00-ac244b9c72b6</id>
@@ -1144,7 +1140,7 @@
 			<id>b7a2c6af-b0b3-446e-8a49-b1e6b8fd131b</id>
 			<name>Vodyanoy Assault Hovercraft</name>
 			<category>Municipal/Construction</category>
-			<handling>3/4</handling>
+			<handling>3/3</handling>
 			<speed>4</speed>
 			<accel>3</accel>
 			<body>16</body>
@@ -1583,16 +1579,16 @@
 			<id>193a6429-b4ba-4e68-a89e-5cd9a7965e50</id>
 			<name>Sea Ray Cottonmouth</name>
 			<category>Boats</category>
-			<handling>3</handling>
-			<speed>3</speed>
-			<accel>2</accel>
-			<body>14</body>
-			<armor>8</armor>
+			<handling>5</handling>
+			<speed>7</speed>
+			<accel>4</accel>
+			<body>8</body>
+			<armor>4</armor>
 			<pilot>3</pilot>
-			<sensor>2</sensor>
-			<seats>12</seats>
+			<sensor>3</sensor>
+			<seats>4</seats>
 			<gears>
-				<gear rating="2">Sensor Array</gear>
+				<gear rating="3">Sensor Array</gear>
 			</gears>
 			<mods>
 				<name>Amenities (Squatter)</name>
