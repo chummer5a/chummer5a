@@ -14508,7 +14508,7 @@ namespace Chummer
 					strCost = strCost.Replace("Body", "2");
 				
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Accel", _strAccel);
+				strCost = strCost.Replace("Acceleration", _strAccel);
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
 
