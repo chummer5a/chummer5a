@@ -105,6 +105,7 @@ Data Change:
 - Fixed incorrect costs for Move-By-Wire.
 - Fixed an incorrect value for the UCAS (Seattle) Life Module. Fixes #699.
 - Fixed the karma cost for the Loss of confidence quality. Fixes #706.
+- Fixed the name for Poor Self Control (Sadistic). Fixes #737.
 
 New Strings:
 - Message_DeleteCalendarWeek
