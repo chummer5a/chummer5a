@@ -50,7 +50,7 @@
 		<category>Formulae</category>
 		<category>Grapple Gun</category>
 		<category>Hacking Programs</category>
-		<category>houseware</category>
+		<category>Housewares</category>
 		<category>ID/Credsticks</category>
 		<category>Magical Compounds</category>
 		<category>Magical Supplies</category>
@@ -8190,11 +8190,11 @@
 			<page>255</page>
 		</gear>
 		<!-- End Region -->
-		<!-- Region Houseware -->
+		<!-- Region Housewares -->
 		<gear>
 			<id>f07ede44-aae5-4708-863f-6708cacc347a</id>
 			<name>Kitchen Timer</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>5</cost>
@@ -8204,7 +8204,7 @@
 		<gear>
 			<id>70016828-fb59-4c90-b342-d426ebca203e</id>
 			<name>Towel</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10</cost>
@@ -8214,7 +8214,7 @@
 		<gear>
 			<id>7e8abfc5-d62c-45d6-8400-848c15e4cece</id>
 			<name>Pillowcase</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>5</cost>
@@ -8224,7 +8224,7 @@
 		<gear>
 			<id>83707109-9e57-4775-9f28-20da1b5195f7</id>
 			<name>Sheet</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10</cost>
@@ -8234,7 +8234,7 @@
 		<gear>
 			<id>1d39096e-f9e8-484a-90b3-645f796afeb8</id>
 			<name>Sheet Set</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50</cost>
@@ -8244,7 +8244,7 @@
 		<gear>
 			<id>efe6a5c9-372a-4ebe-9b86-b9343ef00ecf</id>
 			<name>Table Lamp</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10</cost>
@@ -8254,7 +8254,7 @@
 		<gear>
 			<id>bc3b56d0-a6b0-426c-b62a-40e1baa0d892</id>
 			<name>Floor Lamp</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50</cost>
@@ -8264,7 +8264,7 @@
 		<gear>
 			<id>337b3bfb-00b0-4058-9b5f-8df164b1756c</id>
 			<name>Electric Fan (Cheap)</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10</cost>
@@ -8274,7 +8274,7 @@
 		<gear>
 			<id>3f005184-8b23-4e63-ab8b-e6bf3208d6ce</id>
 			<name>Electric Fan (Good)</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>50</cost>
@@ -8284,7 +8284,7 @@
 		<gear>
 			<id>8b1c61a6-5355-409c-af79-e495218e3ae6</id>
 			<name>Air Conditioner (One Room)</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>500</cost>
@@ -8294,7 +8294,7 @@
 		<gear>
 			<id>670869c9-c4b1-4673-978b-a6d9f228b99f</id>
 			<name>Mat</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>10</cost>
@@ -8304,7 +8304,7 @@
 		<gear>
 			<id>60295864-8e0c-47a8-8e4d-be06fe752a44</id>
 			<name>Rug</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>100</cost>
@@ -8324,7 +8324,7 @@
 		<gear>
 			<id>ee19955d-cf91-44da-ba5b-9b496dbd14cb</id>
 			<name>Washcloth (Thin)</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>1</cost>
@@ -8334,7 +8334,7 @@
 		<gear>
 			<id>2a2aa705-4996-498f-8e38-af7c30741ae5</id>
 			<name>Paper Plate</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<costfor>10</costfor>
@@ -8345,7 +8345,7 @@
 		<gear>
 			<id>6f6719c5-4f70-4e8c-ba49-7de365629f9b</id>
 			<name>Paper Cup</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<costfor>10</costfor>
@@ -8356,7 +8356,7 @@
 		<gear>
 			<id>968efa9b-fff3-4962-abf3-e81298d35ebb</id>
 			<name>Plastic Plate</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>1</cost>
@@ -8366,7 +8366,7 @@
 		<gear>
 			<id>c599019e-2fd3-4c2f-88f7-4486c7bdbe83</id>
 			<name>Plastic Cup</name>
-			<category>Houseware</category>
+			<category>Housewares</category>
 			<rating>0</rating>
 			<avail>0</avail>
 			<cost>1</cost>
