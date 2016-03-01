@@ -61,6 +61,7 @@ Application Change:
 - Fixed a crash caused by loading custom Critters related to movement strings.
 - Fixed the display of Locations created by cybewrware or weapons with AllowGear properties. Fixes #536.
 - Added some support for creating an Ally Spirit, per #244. Not 100% RAW yet, but it doesn't crash so that's a start.
+- Added support for enabling calculated Public Awareness, per the rules from SR4. Hides the tooltips and calculations if not in use.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -119,6 +120,7 @@ New Strings:
 - String_Attack
 - String_Sleaze
 - String_DataProcessing
+- Checkbox_Options_UseCalculatedPublicAwareness
 
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities

@@ -885,7 +885,8 @@ namespace Chummer
         private bool _blnStrengthAffectsRecoil = false;
         private bool _blnTechnomancerAllowAutosoft = false;
         private bool _blnUnrestrictedNuyen = false;
-        private bool _blnUseCalculatedVehicleSensorRatings = false;
+		private bool _blnUseCalculatedPublicAwareness = false;
+		private bool _blnUseCalculatedVehicleSensorRatings = false;
         private bool _blnUseContactPoints = false;
         private bool _blnUsePointsOnBrokenGroups = false;
         private int _intEssenceDecimals = 2;
@@ -971,6 +972,7 @@ namespace Chummer
 
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
+		
 
 		#region Initialization, Save, and Load Methods
 		public CharacterOptions()
@@ -1173,8 +1175,10 @@ namespace Chummer
 			objWriter.WriteElementString("specialattributekarmalimit", _blnSpecialAttributeKarmaLimit.ToString());
 			// <technomancerallowautosoft />
 			objWriter.WriteElementString("technomancerallowautosoft", _blnTechnomancerAllowAutosoft.ToString());
+			// <autobackstory />
 			objWriter.WriteElementString("autobackstory", _automaticBackstory.ToString());
-
+			// <usecalculatedpublicawareness />
+			objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString());
 			// <bpcost>
 			objWriter.WriteStartElement("bpcost");
 			// <bpattribute />
@@ -1513,8 +1517,10 @@ namespace Chummer
 			objXmlNode.TryGetField("specialattributekarmalimit", out _blnSpecialAttributeKarmaLimit);
 			// House rule: Whether or not Technomancers can select Autosofts as Complex Forms.
 			objXmlNode.TryGetField("technomancerallowautosoft", out _blnTechnomancerAllowAutosoft);
-
+			// Optional Rule: Whether Life Modules should automatically create a character back story.
 			objXmlNode.TryGetField("autobackstory", out _automaticBackstory);
+			// House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
+			objXmlNode.TryGetField("usecalculatedpublicawareness", out _blnUseCalculatedPublicAwareness);
 
 			objXmlNode = objXmlDocument.SelectSingleNode("//settings/bpcost");
 			// Attempt to populate the BP vlaues.
@@ -4088,11 +4094,28 @@ namespace Chummer
 			}
 		}
 
-
+		/// <summary>
+		/// Whether Life Modules should automatically generate a character background.
+		/// </summary>
 		public bool AutomaticBackstory
 		{
 			get { return _automaticBackstory; }
 			internal set { _automaticBackstory = value; }
+		}
+
+		/// <summary>
+		/// Whether to use the rules from SR4 to calculate Public Awareness.
+		/// </summary>
+		public bool UseCalculatedPublicAwareness
+		{
+			get
+			{
+				return _blnUseCalculatedPublicAwareness;
+			}
+			set
+			{
+				_blnUseCalculatedPublicAwareness = value;
+			}
 		}
 
 		#endregion

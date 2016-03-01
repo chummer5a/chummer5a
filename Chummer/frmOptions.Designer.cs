@@ -254,6 +254,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2553,6 +2554,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
 			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityRefunds);
 			this.tabHouseRules.Controls.Add(this.chkESSLossReducesMaximumOnly);
 			this.tabHouseRules.Controls.Add(this.chkAllowCyberwareESSDiscounts);
@@ -2866,6 +2868,17 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// chkUseCalculatedPublicAwareness
+			// 
+			this.chkUseCalculatedPublicAwareness.AutoSize = true;
+			this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(8, 210);
+			this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
+			this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
+			this.chkUseCalculatedPublicAwareness.TabIndex = 21;
+			this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
+			this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
+			this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3185,5 +3198,6 @@
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.Button cmdUploadPastebin;
 		private System.Windows.Forms.CheckBox chkDontDoubleQualityRefunds;
+		private System.Windows.Forms.CheckBox chkUseCalculatedPublicAwareness;
 	}
 }

@@ -125,6 +125,7 @@ namespace Chummer
             _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
             _characterOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
             _characterOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
+			_characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             switch (cboLimbCount.SelectedValue.ToString())
@@ -618,6 +619,7 @@ namespace Chummer
 			chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
 			chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
 			chkUseCalculatedVehicleSensorRatings.Checked = _characterOptions.UseCalculatedVehicleSensorRatings;
+			chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
 			chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
@@ -879,7 +881,8 @@ namespace Chummer
 			tipTooltip.SetToolTip(chkDontDoubleQualityRefunds, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityRefunds"), width));
 			tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
             tipTooltip.SetToolTip(chkAllowInitiation, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
-        }
+			tipTooltip.SetToolTip(chkUseCalculatedPublicAwareness, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_PublicAwareness"), width));
+		}
 
         private void PopulateSettingsList()
         {

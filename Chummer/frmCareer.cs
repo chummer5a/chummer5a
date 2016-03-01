@@ -27621,7 +27621,10 @@ namespace Chummer
 			// Common Info Tab.
 			tipTooltip.SetToolTip(lblStreetCred, LanguageManager.Instance.GetString("Tip_StreetCred"));
 			tipTooltip.SetToolTip(lblNotoriety, LanguageManager.Instance.GetString("Tip_Notoriety"));
-			tipTooltip.SetToolTip(lblPublicAware, LanguageManager.Instance.GetString("Tip_PublicAwareness"));
+			if (_objOptions.UseCalculatedPublicAwareness)
+			{
+				tipTooltip.SetToolTip(lblPublicAware, LanguageManager.Instance.GetString("Tip_PublicAwareness"));
+			}
 			tipTooltip.SetToolTip(cmdBurnStreetCred, LanguageManager.Instance.GetString("Tip_BurnStreetCred"));
 
 			// Attribute Labels.

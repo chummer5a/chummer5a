@@ -5737,13 +5737,17 @@ namespace Chummer
         {
             get
             {
-                // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
-                double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
-                dblAwareness = Math.Floor(dblAwareness / 3);
+				int intReturn = 0;
+				if (_objOptions.UseCalculatedPublicAwareness)
+				{
+					// Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
+					double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
+					dblAwareness = Math.Floor(dblAwareness / 3);
+					intReturn += Convert.ToInt32(dblAwareness);
+				}
 
 				ImprovementManager manager = new ImprovementManager(this);
 
-                int intReturn = 0;
 
                 return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
             }
@@ -5769,7 +5773,10 @@ namespace Chummer
             {
                 string strReturn = "";
 
-                //strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+				if (_objOptions.UseCalculatedPublicAwareness)
+				{
+					strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+				}
 
                 return strReturn;
             }

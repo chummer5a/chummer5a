@@ -1389,8 +1389,6 @@ namespace Chummer
 			this.lblPublicAware.TabIndex = 86;
 			this.lblPublicAware.Tag = "Label_PublicAwareness";
 			this.lblPublicAware.Text = "Public Aware:";
-			this.tipTooltip.SetToolTip(this.lblPublicAware, "Public Awareness is calculated as (Street Cred + Notoriety) ÷ 3, rounded down, an" +
-        "d can be further adjusted by Game Masters.");
 			// 
 			// lblNotoriety
 			// 
