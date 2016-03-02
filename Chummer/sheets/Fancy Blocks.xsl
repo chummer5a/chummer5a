@@ -1702,6 +1702,7 @@
 	
 		<xsl:variable name="gears_half_count" select="ceiling(count(msxsl:node-set($gear_list)/gear) div 2) + 1" />
 		<xsl:variable name="need_location" select="count(msxsl:node-set($gear_list)/gear[location!='']) &gt; 0" />
+		<xsl:variable name="need_equip_mark" select="count(msxsl:node-set($gear_list)/gear[equipped='False']) &gt; 0" />
 	
 		<ul style="margin-left:0px;">
 			<xsl:for-each select="msxsl:node-set($gear_list)/gear">
@@ -1712,7 +1713,11 @@
 						</li>
 					</xsl:if>
 					
-					<li><xsl:call-template name="print_nested" /></li>
+					<li>
+						<xsl:call-template name="print_nested">
+							<xsl:with-param name="need_equip_mark" select="$need_equip_mark" />
+						</xsl:call-template>
+					</li>
 				</xsl:if>
 			</xsl:for-each>
 		</ul>
@@ -1847,11 +1852,19 @@
 	</xsl:template>
 	
 	<xsl:template name="print_nested">
+		<xsl:param name="need_equip_mark" select="false()" />
+		
 		<xsl:variable name="is_long_extra" select="name_english='Custom Fit (Stack)'" />
 	
 		<span>
 			<xsl:if test="included and included='True'">
 				<xsl:attribute name="style">color:grey;</xsl:attribute>
+			</xsl:if>
+			<xsl:if test="$need_equip_mark">
+				<xsl:choose>
+					<xsl:when test="equipped='True'">&#x26AB; </xsl:when>
+					<xsl:otherwise>&#x26AA; </xsl:otherwise>
+				</xsl:choose>
 			</xsl:if>
 			<xsl:value-of select="name" />
 			<xsl:if test="extra!='' and not($is_long_extra)">
@@ -1872,11 +1885,16 @@
 		</span>
 		
 		<xsl:if test="count(children/gear) &gt; 0">
+			<xsl:variable name="child_need_equip_mark" select="count(children/gear[equipped='False']) &gt; 0" />
 			<ul>
 				<xsl:for-each select="children/gear">
 					<xsl:sort select="name" />
 				
-					<li><xsl:call-template name="print_nested" /></li>
+					<li>
+						<xsl:call-template name="print_nested">
+							<xsl:with-param name="need_equip_mark" select="$child_need_equip_mark" />
+						</xsl:call-template>
+					</li>
 				</xsl:for-each>
 			</ul>
 		</xsl:if>
