@@ -61,7 +61,7 @@
       <descriptor>Indirect</descriptor>
       <category>Combat</category>
       <type>P</type>
-      <range>LOS</range>
+      <range>T</range>
       <damage>S</damage>
       <duration>I</duration>
       <dv>F-6</dv>
@@ -661,7 +661,7 @@
       <range>T</range>
       <damage>0</damage>
       <duration>P</duration>
-      <dv>(Damage Value)-6</dv>
+      <dv>-4</dv>
       <source>SR5</source>
       <page>289</page>
     </spell>
