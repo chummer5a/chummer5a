@@ -3429,7 +3429,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_StreetCred</key>
-			<text>Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further adjusted by Game Masters.</text>
+			<text>Street Cred is calculated as Career Karma ÷ 10, rounded down, and can be further adjusted by Game Masters.</text>
 		</string>
 		<string>
 			<key>Tip_Notoriety</key>

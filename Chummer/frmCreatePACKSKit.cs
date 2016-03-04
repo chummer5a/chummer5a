@@ -544,27 +544,6 @@ namespace Chummer
 							objWriter.WriteEndElement();
 						}
 						
-						// Weapon Mods.
-						if (objWeapon.WeaponMods.Count > 0)
-						{
-							// <mods>
-							objWriter.WriteStartElement("mods");
-							foreach (WeaponMod objMod in objWeapon.WeaponMods)
-							{
-								// Don't attempt to export items included in the Weapon.
-								if (!objMod.IncludedInWeapon)
-								{
-									// <mod>
-									objWriter.WriteStartElement("mod");
-									objWriter.WriteElementString("name", objMod.Name);
-									// </mod>
-									objWriter.WriteEndElement();
-								}
-							}
-							// </mods>
-							objWriter.WriteEndElement();
-						}
-						
 						// Underbarrel Weapon.
 						if (objWeapon.UnderbarrelWeapons.Count > 0)
 						{
@@ -664,27 +643,6 @@ namespace Chummer
 										}
 									}
 									// </accessories>
-									objWriter.WriteEndElement();
-								}
-
-								// Weapon Mods.
-								if (objWeapon.WeaponMods.Count > 0)
-								{
-									// <mods>
-									objWriter.WriteStartElement("mods");
-									foreach (WeaponMod objMod in objWeapon.WeaponMods)
-									{
-										// Don't attempt to export items included in the Weapon.
-										if (!objMod.IncludedInWeapon)
-										{
-											// <mod>
-											objWriter.WriteStartElement("mod");
-											objWriter.WriteElementString("name", objMod.Name);
-											// </mod>
-											objWriter.WriteEndElement();
-										}
-									}
-									// </mods>
 									objWriter.WriteEndElement();
 								}
 

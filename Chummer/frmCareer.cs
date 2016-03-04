@@ -810,7 +810,7 @@ namespace Chummer
 			}
 			foreach (Weapon objWeapon in _objCharacter.Weapons)
 			{
-				_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponMod, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+				_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			}
 
 			PopulateCyberware();
@@ -1073,7 +1073,7 @@ namespace Chummer
 			// Populate Vehicles.
 			foreach (Vehicle objVehicle in _objCharacter.Vehicles)
 			{
-				_objFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponMod, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear);
+				_objFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear);
 			}
 
             UpdateInitiationGradeTree();
@@ -6253,7 +6253,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponMod);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
 
 			int intCost = objWeapon.TotalCost;
 			// Apply a markup if applicable.
@@ -6451,19 +6451,6 @@ namespace Chummer
 
 						if (!blnAccessory)
 						{
-							// Locate the Mod that is selected in the tree.
-							bool blnMod = false;
-							WeaponMod objMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-							if (objMod != null)
-								blnMod = true;
-
-							if (blnMod)
-							{
-								objWeapon.WeaponMods.Remove(objMod);
-								treWeapons.SelectedNode.Remove();
-							}
-							else
-							{
 								// Find the selected Gear.
 								Gear objGear = _objFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons, out objAccessory);
 								_objFunctions.DeleteGear(objGear, treWeapons, _objImprovementManager);
@@ -6472,7 +6459,6 @@ namespace Chummer
 								else
 									objGear.Parent.Children.Remove(objGear);
 								treWeapons.SelectedNode.Remove();
-							}
 						}
 					}
 				}
@@ -6638,7 +6624,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Vehicle objVehicle = new Vehicle(_objCharacter);
-			objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponMod);
+			objVehicle.Create(objXmlVehicle, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
 			// Update the Used Vehicle information if applicable.
 			if (frmPickVehicle.UsedVehicle)
 			{
@@ -6995,19 +6981,6 @@ namespace Chummer
 							}
 							if (!blnFound)
 							{
-								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-								{
-									if (objWeaponMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-									{
-										objWeapon.WeaponMods.Remove(objWeaponMod);
-										treVehicles.SelectedNode.Remove();
-										blnFound = true;
-										break;
-									}
-								}
-							}
-							if (!blnFound)
-							{
 								// Remove the Underbarrel Weapon if the selected item it is one.
 								if (objWeapon.UnderbarrelWeapons.Count > 0)
 								{
@@ -7044,7 +7017,7 @@ namespace Chummer
 			}
 			else if (treVehicles.SelectedNode.Level == 5)
 			{
-				// Locate the selected WeaponAccessory or VehicleWeaponMod that is selected in the tree.
+				// Locate the selected WeaponAccessory that is selected in the tree.
 				bool blnFound = false;
 				foreach (Vehicle objCharacterVehicle in _objCharacter.Vehicles)
 				{
@@ -7064,19 +7037,6 @@ namespace Chummer
 											treVehicles.SelectedNode.Remove();
 											blnFound = true;
 											break;
-										}
-									}
-									if (!blnFound)
-									{
-										foreach (WeaponMod objWeaponMod in objUnderbarrelWeapon.WeaponMods)
-										{
-											if (objWeaponMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-											{
-												objUnderbarrelWeapon.WeaponMods.Remove(objWeaponMod);
-												treVehicles.SelectedNode.Remove();
-												blnFound = true;
-												break;
-											}
 										}
 									}
 								}
@@ -10266,138 +10226,6 @@ namespace Chummer
 				tsWeaponAddAccessory_Click(sender, e);
 		}
 
-		private void tsWeaponAddModification_Click(object sender, EventArgs e)
-		{
-			// Make sure a parent item is selected, then open the Select Accessory window.
-			try
-			{
-				if (treWeapons.SelectedNode.Level == 0)
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-			}
-			catch
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_SelectWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			// Locate the Weapon that is selected in the Tree.
-			Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-
-			frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, true);
-
-			// Make sure the Weapon allows Modifications to be added to it.
-			// Open the Weapons XML file and locate the selected Weapon.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objWeapon.Name + "\"]");
-
-			if (objXmlWeapon == null)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (objXmlWeapon["allowmod"] != null)
-			{
-				if (objXmlWeapon["allowmod"].InnerText == "false")
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-			}
-
-			// Set the Weapon properties for the window.
-			frmPickVehicleMod.WeaponCost = objWeapon.Cost;
-			frmPickVehicleMod.TotalWeaponCost = objWeapon.TotalCost;
-			frmPickVehicleMod.ModMultiplier = objWeapon.ModMultiplier;
-			frmPickVehicleMod.InputFile = "weapons";
-
-			frmPickVehicleMod.ShowDialog(this);
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
-				return;
-
-			// Locate the selected piece.
-			XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickVehicleMod.SelectedMod + "\"]");
-
-			TreeNode objNode = new TreeNode();
-			WeaponMod objMod = new WeaponMod(_objCharacter);
-			objMod.Create(objXmlMod, objNode);
-			objMod.Rating = frmPickVehicleMod.SelectedRating;
-			objMod.Parent = objWeapon;
-
-			// Do not allow the user to add a new Weapon Mod if the Weapon's Capacity has been reached.
-			if (_objOptions.EnforceCapacity && objWeapon.SlotsRemaining - objMod.Slots < 0)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				if (frmPickVehicleMod.AddAgain)
-					tsWeaponAddModification_Click(sender, e);
-				return;
-			}
-
-			// Check the item's Cost and make sure the character can afford it.
-			int intOriginalCost = objWeapon.TotalCost;
-			objWeapon.WeaponMods.Add(objMod);
-
-			int intCost = objWeapon.TotalCost - intOriginalCost;
-			// Apply a markup if applicable.
-			if (frmPickVehicleMod.Markup != 0)
-			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickVehicleMod.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
-				intCost = Convert.ToInt32(dblCost);
-			}
-
-			// Multiply the cost if applicable.
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
-				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
-				intCost *= _objOptions.ForbiddenCostMultiplier;
-
-			if (!frmPickVehicleMod.FreeCost)
-			{
-				if (intCost > _objCharacter.Nuyen)
-				{
-					objWeapon.WeaponMods.Remove(objMod);
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					if (frmPickVehicleMod.AddAgain)
-						tsWeaponAddModification_Click(sender, e);
-
-					return;
-				}
-				else
-				{
-					// Create the Expense Log Entry.
-					ExpenseLogEntry objExpense = new ExpenseLogEntry();
-					objExpense.Create(intCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseWeaponMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-					_objCharacter.ExpenseEntries.Add(objExpense);
-					_objCharacter.Nuyen -= intCost;
-
-					ExpenseUndo objUndo = new ExpenseUndo();
-					objUndo.CreateNuyen(NuyenExpenseType.AddWeaponMod, objMod.InternalId);
-					objExpense.Undo = objUndo;
-				}
-			}
-			
-			objNode.Text = objMod.DisplayName;
-			objNode.ContextMenuStrip = cmsWeaponMod;
-
-			treWeapons.SelectedNode.Nodes.Add(objNode);
-			treWeapons.SelectedNode.Expand();
-
-			UpdateCharacterInfo();
-			RefreshSelectedWeapon();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-
-			if (frmPickVehicleMod.AddAgain)
-				tsWeaponAddModification_Click(sender, e);
-		}
-
 		private void tsAddArmorMod_Click(object sender, EventArgs e)
 		{
 			// Make sure a parent item is selected, then open the Select Accessory window.
@@ -10729,7 +10557,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponMod);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
 			objWeapon.VehicleMounted = true;
 
 			int intCost = objWeapon.TotalCost;
@@ -10912,131 +10740,6 @@ namespace Chummer
 			UpdateWindowTitle();
 		}
 
-		private void tsVehicleAddWeaponModification_Click(object sender, EventArgs e)
-		{
-			// Attempt to locate the selected VehicleWeapon.
-			bool blnFound = false;
-			Vehicle objFoundVehicle = new Vehicle(_objCharacter);
-			Weapon objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
-			if (objWeapon != null)
-				blnFound = true;
-
-			if (!blnFound)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_VehicleWeaponMods"), LanguageManager.Instance.GetString("MessageTitle_VehicleWeaponMods"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter, true);
-
-			// Make sure the Weapon allows Modifications to be added to it.
-			// Open the Weapons XML file and locate the selected Weapon.
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objWeapon.Name + "\"]");
-
-			if (objXmlWeapon == null)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			}
-
-			if (objXmlWeapon["allowmod"] != null)
-			{
-				if (objXmlWeapon["allowmod"].InnerText == "false")
-				{
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotModifyWeaponMod"), LanguageManager.Instance.GetString("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-			}
-
-			// Set the Weapon properties for the window.
-			frmPickVehicleMod.WeaponCost = objWeapon.Cost;
-			frmPickVehicleMod.TotalWeaponCost = objWeapon.TotalCost;
-			frmPickVehicleMod.ModMultiplier = objWeapon.ModMultiplier;
-			frmPickVehicleMod.InputFile = "weapons";
-
-			frmPickVehicleMod.ShowDialog(this);
-
-			// Make sure the dialogue window was not canceled.
-			if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
-				return;
-
-			// Locate the selected piece.
-			XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickVehicleMod.SelectedMod + "\"]");
-
-			TreeNode objNode = new TreeNode();
-			WeaponMod objMod = new WeaponMod(_objCharacter);
-			objMod.Create(objXmlMod, objNode);
-			objMod.Rating = frmPickVehicleMod.SelectedRating;
-			objMod.Parent = objWeapon;
-
-			// Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
-			if (_objOptions.EnforceCapacity && objWeapon.SlotsRemaining - objMod.Slots < 0)
-			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				if (frmPickVehicleMod.AddAgain)
-					tsVehicleAddWeaponModification_Click(sender, e);
-				return;
-			}
-
-			// Check the item's Cost and make sure the character can afford it.
-			int intOriginalCost = objWeapon.TotalCost;
-			objWeapon.WeaponMods.Add(objMod);
-
-			int intCost = objWeapon.TotalCost - intOriginalCost;
-			// Apply a markup if applicable.
-			if (frmPickVehicleMod.Markup != 0)
-			{
-				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
-				dblCost *= 1 + (Convert.ToDouble(frmPickVehicleMod.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
-				intCost = Convert.ToInt32(dblCost);
-			}
-
-			// Multiply the cost if applicable.
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
-				intCost *= _objOptions.RestrictedCostMultiplier;
-			if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
-				intCost *= _objOptions.ForbiddenCostMultiplier;
-
-			if (!frmPickVehicleMod.FreeCost)
-			{
-				if (intCost > _objCharacter.Nuyen)
-				{
-					objWeapon.WeaponMods.Remove(objMod);
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughNuyen"), LanguageManager.Instance.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-					if (frmPickVehicleMod.AddAgain)
-						tsVehicleAddWeaponModification_Click(sender, e);
-
-					return;
-				}
-				else
-				{
-					// Create the Expense Log Entry.
-					ExpenseLogEntry objExpense = new ExpenseLogEntry();
-					objExpense.Create(intCost * -1, LanguageManager.Instance.GetString("String_ExpensePurchaseVehicleWeaponMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-					_objCharacter.ExpenseEntries.Add(objExpense);
-					_objCharacter.Nuyen -= intCost;
-
-					ExpenseUndo objUndo = new ExpenseUndo();
-					objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMod, objMod.InternalId);
-					objExpense.Undo = objUndo;
-				}
-			}
-
-			objNode.Text = objMod.DisplayName;
-			objNode.ContextMenuStrip = cmsVehicleWeaponMod;
-			treVehicles.SelectedNode.Nodes.Add(objNode);
-			treVehicles.SelectedNode.Expand();
-
-			if (frmPickVehicleMod.AddAgain)
-				tsVehicleAddWeaponModification_Click(sender, e);
-
-			UpdateCharacterInfo();
-
-			_blnIsDirty = true;
-			UpdateWindowTitle();
-		}
-
 		private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
 		{
 			// Attempt to locate the selected VehicleWeapon.
@@ -11066,7 +10769,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeapon);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
 			objWeapon.VehicleMounted = true;
 			objWeapon.IsUnderbarrelWeapon = true;
 
@@ -11125,11 +10828,6 @@ namespace Chummer
 		private void tsVehicleAddWeaponAccessoryAlt_Click(object sender, EventArgs e)
 		{
 			tsVehicleAddWeaponAccessory_Click(sender, e);
-		}
-
-		private void tsVehicleAddWeaponModificationAlt_Click(object sender, EventArgs e)
-		{
-			tsVehicleAddWeaponModification_Click(sender, e);
 		}
 
 		private void tsVehicleAddUnderbarrelWeaponAlt_Click(object sender, EventArgs e)
@@ -12577,38 +12275,6 @@ namespace Chummer
 						_objCharacter.ExpenseEntries.Add(objExpense);
 						_objCharacter.Nuyen += intAmount;
 					}
-
-					WeaponMod objMod = new WeaponMod(_objCharacter);
-					// Locate the Mod that is selected in the tree.
-					foreach (WeaponMod objCharacterMod in objWeapon.WeaponMods)
-					{
-						if (objCharacterMod.InternalId == treWeapons.SelectedNode.Tag.ToString())
-						{
-							objMod = objCharacterMod;
-							break;
-						}
-					}
-
-					if (objMod.Name != "")
-					{
-						frmSellItem frmSell = new frmSellItem();
-						frmSell.ShowDialog(this);
-
-						if (frmSell.DialogResult == DialogResult.Cancel)
-							return;
-
-						// Record the Weapon's original cost.
-						int intOriginal = objWeapon.TotalCost;
-
-						objWeapon.WeaponMods.Remove(objMod);
-						treWeapons.SelectedNode.Remove();
-
-						int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objWeapon.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
-						ExpenseLogEntry objExpense = new ExpenseLogEntry();
-						objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldWeaponMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-						_objCharacter.ExpenseEntries.Add(objExpense);
-						_objCharacter.Nuyen += intAmount;
-					}
 					else
 					{
 						frmSellItem frmSell = new frmSellItem();
@@ -12987,32 +12653,6 @@ namespace Chummer
 										break;
 									}
 								}
-								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-								{
-									if (objWeaponMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-									{
-										frmSellItem frmSell = new frmSellItem();
-										frmSell.ShowDialog(this);
-
-										if (frmSell.DialogResult == DialogResult.Cancel)
-											return;
-
-										// Record tthe original value of the Vehicle.
-										int intOriginal = objCharacterVehicle.TotalCost;
-
-										objWeapon.WeaponMods.Remove(objWeaponMod);
-										treVehicles.SelectedNode.Remove();
-
-										// Create the Expense Log Entry for the sale.
-										int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
-										ExpenseLogEntry objExpense = new ExpenseLogEntry();
-										objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-										_objCharacter.ExpenseEntries.Add(objExpense);
-										_objCharacter.Nuyen += intAmount;
-
-										break;
-									}
-								}
 								if (objWeapon.UnderbarrelWeapons.Count > 0)
 								{
 									foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
@@ -13106,32 +12746,6 @@ namespace Chummer
 												int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
 												ExpenseLogEntry objExpense = new ExpenseLogEntry();
 												objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponAccessory") + " " + objAccessory.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-												_objCharacter.ExpenseEntries.Add(objExpense);
-												_objCharacter.Nuyen += intAmount;
-
-												break;
-											}
-										}
-										foreach (WeaponMod objWeaponMod in objUnderbarrelWeapon.WeaponMods)
-										{
-											if (objWeaponMod.InternalId == treVehicles.SelectedNode.Tag.ToString())
-											{
-												frmSellItem frmSell = new frmSellItem();
-												frmSell.ShowDialog(this);
-
-												if (frmSell.DialogResult == DialogResult.Cancel)
-													return;
-
-												// Record tthe original value of the Vehicle.
-												int intOriginal = objCharacterVehicle.TotalCost;
-
-												objUnderbarrelWeapon.WeaponMods.Remove(objWeaponMod);
-												treVehicles.SelectedNode.Remove();
-
-												// Create the Expense Log Entry for the sale.
-												int intAmount = Convert.ToInt32(Convert.ToDouble(intOriginal - objCharacterVehicle.TotalCost, GlobalOptions.Instance.CultureInfo) * frmSell.SellPercent);
-												ExpenseLogEntry objExpense = new ExpenseLogEntry();
-												objExpense.Create(intAmount, LanguageManager.Instance.GetString("String_ExpenseSoldVehicleWeaponMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
 												_objCharacter.ExpenseEntries.Add(objExpense);
 												_objCharacter.Nuyen += intAmount;
 
@@ -13429,7 +13043,7 @@ namespace Chummer
 
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeapon);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
 			objWeapon.IsUnderbarrelWeapon = true;
 
 			int intCost = objWeapon.TotalCost;
@@ -14792,83 +14406,6 @@ namespace Chummer
 						}
 					}
 					break;
-				case NuyenExpenseType.AddVehicleWeaponMod:
-					// Locate the Weapon Mod that was added.
-					foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-					{
-						foreach (VehicleMod objMod in objVehicle.Mods)
-						{
-							foreach (Weapon objWeapon in objMod.Weapons)
-							{
-								foreach (WeaponMod objWMod in objWeapon.WeaponMods)
-								{
-									if (objMod.InternalId == objEntry.Undo.ObjectId)
-									{
-										// Remove the Weapon Mod.
-										objWeapon.WeaponMods.Remove(objWMod);
-
-										// Remove the Weapon Mod from the Tree.
-										foreach (TreeNode objVNode in treVehicles.Nodes[0].Nodes)
-										{
-											foreach (TreeNode objNode in objVNode.Nodes)
-											{
-												foreach (TreeNode objWNode in objNode.Nodes)
-												{
-													foreach (TreeNode objChild in objWNode.Nodes)
-													{
-														if (objChild.Tag.ToString() == objEntry.Undo.ObjectId)
-														{
-															objChild.Remove();
-															break;
-														}
-													}
-												}
-											}
-										}
-										break;
-									}
-								}
-								if (objWeapon.UnderbarrelWeapons.Count > 0)
-								{
-									foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-									{
-										foreach (WeaponMod objWMod in objUnderbarrelWeapon.WeaponMods)
-										{
-											if (objWMod.InternalId == objEntry.Undo.ObjectId)
-											{
-												// Remove the Weapon Mod.
-												objUnderbarrelWeapon.WeaponMods.Remove(objWMod);
-
-												// Remove the Weapon Mod from the Tree.
-												foreach (TreeNode objVNode in treVehicles.Nodes[0].Nodes)
-												{
-													foreach (TreeNode objNode in objVNode.Nodes)
-													{
-														foreach (TreeNode objWNode in objNode.Nodes)
-														{
-															foreach (TreeNode objChild in objWNode.Nodes)
-															{
-																foreach (TreeNode objSubChild in objChild.Nodes)
-																{
-																	if (objSubChild.Tag.ToString() == objEntry.Undo.ObjectId)
-																	{
-																		objSubChild.Remove();
-																		break;
-																	}
-																}
-															}
-														}
-													}
-												}
-												break;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					break;
 				case NuyenExpenseType.AddArmor:
 					// Locate the Armor that was added.
 					Armor objArmor = objCommon.FindArmor(objEntry.Undo.ObjectId, _objCharacter.Armor);
@@ -14969,34 +14506,6 @@ namespace Chummer
 								objWeapon.WeaponAccessories.Remove(objAccessory);
 
 								// Remove the Weapon Accessory from the tree.
-								foreach (TreeNode objNode in treWeapons.Nodes[0].Nodes)
-								{
-									foreach (TreeNode objChild in objNode.Nodes)
-									{
-										if (objChild.Tag.ToString() == objEntry.Undo.ObjectId)
-										{
-											objChild.Remove();
-											break;
-										}
-									}
-								}
-								break;
-							}
-						}
-					}
-					break;
-				case NuyenExpenseType.AddWeaponMod:
-					// Locate the Weapon Mod that was added.
-					foreach (Weapon objWeapon in _objCharacter.Weapons)
-					{
-						foreach (WeaponMod objMod in objWeapon.WeaponMods)
-						{
-							if (objMod.InternalId == objEntry.Undo.ObjectId)
-							{
-								// Remove the Weapon Mod.
-								objWeapon.WeaponMods.Remove(objMod);
-
-								// Remove the Weapon Mod from the tree.
 								foreach (TreeNode objNode in treWeapons.Nodes[0].Nodes)
 								{
 									foreach (TreeNode objChild in objNode.Nodes)
@@ -15497,32 +15006,6 @@ namespace Chummer
 			catch
 			{
 			}
-		}
-
-		private void tsWeaponModNotes_Click(object sender, EventArgs e)
-		{
-			WeaponMod objMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-
-			frmNotes frmItemNotes = new frmNotes();
-			frmItemNotes.Notes = objMod.Notes;
-			string strOldValue = objMod.Notes;
-			frmItemNotes.ShowDialog(this);
-
-			if (frmItemNotes.DialogResult == DialogResult.OK)
-			{
-				objMod.Notes = frmItemNotes.Notes;
-				if (objMod.Notes != strOldValue)
-				{
-					_blnIsDirty = true;
-					UpdateWindowTitle();
-				}
-			}
-
-			if (objMod.Notes != string.Empty)
-				treWeapons.SelectedNode.ForeColor = Color.SaddleBrown;
-			else
-				treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
-			treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMod.Notes, 100);
 		}
 
 		private void tsWeaponAccessoryNotes_Click(object sender, EventArgs e)
@@ -17347,7 +16830,7 @@ namespace Chummer
 
 			Weapon objWeapon = frmCreateNaturalWeapon.SelectedWeapon;
 			_objCharacter.Weapons.Add(objWeapon);
-			_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponMod, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+			_objFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 
 			_blnIsDirty = true;
 			UpdateCharacterInfo();
@@ -17378,32 +16861,6 @@ namespace Chummer
 			else
 				treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
 			treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAccessory.Notes, 100);
-		}
-
-		private void tsVehicleWeaponModNotes_Click(object sender, EventArgs e)
-		{
-			WeaponMod objMod = _objFunctions.FindVehicleWeaponMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-
-			frmNotes frmItemNotes = new frmNotes();
-			frmItemNotes.Notes = objMod.Notes;
-			string strOldValue = objMod.Notes;
-			frmItemNotes.ShowDialog(this);
-
-			if (frmItemNotes.DialogResult == DialogResult.OK)
-			{
-				objMod.Notes = frmItemNotes.Notes;
-				if (objMod.Notes != strOldValue)
-				{
-					_blnIsDirty = true;
-					UpdateWindowTitle();
-				}
-			}
-
-			if (objMod.Notes != string.Empty)
-				treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
-			else
-				treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-			treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMod.Notes, 100);
 		}
 
 		private void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -18489,16 +17946,6 @@ namespace Chummer
 			}
 			else
 			{
-				// Locate the selected Weapon Modification.
-				bool blnMod = false;
-				WeaponMod objMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-				if (objMod != null)
-					blnMod = true;
-
-				if (blnMod)
-					objMod.Installed = chkWeaponAccessoryInstalled.Checked;
-				else
-				{
 					// Determine if this is an Underbarrel Weapon.
 					bool blnUnderbarrel = false;
 					Weapon objWeapon = _objFunctions.FindWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
@@ -18526,7 +17973,6 @@ namespace Chummer
 						{
 						}
 					}
-				}
 
 				_blnIsDirty = true;
 				UpdateWindowTitle();
@@ -18545,13 +17991,6 @@ namespace Chummer
 			if (blnAccessory)
 			{
 				objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
-			}
-			else
-			{
-				// Locate the selected Weapon Modification.
-				WeaponMod objMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-				if (objMod != null)
-					objMod.IncludedInWeapon = chkIncludedInWeapon.Checked;
 
 				_blnIsDirty = true;
 				UpdateWindowTitle();
@@ -19990,16 +19429,6 @@ namespace Chummer
 				objAccessory.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
 			else
 			{
-				bool blnWeaponMod = false;
-				// Locate the selected Vehicle Weapon Modification.
-				WeaponMod objMod = _objFunctions.FindVehicleWeaponMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-				if (objMod != null)
-					blnWeaponMod = true;
-
-				if (blnWeaponMod)
-					objMod.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
-				else
-				{
 					// If this isn't a Weapon Mod, then it must be a Vehicle Mod.
 					Vehicle objFoundVehicle = new Vehicle(_objCharacter);
 					VehicleMod objVehicleMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
@@ -20011,7 +19440,6 @@ namespace Chummer
 						Weapon objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
 						objWeapon.Installed = chkVehicleWeaponAccessoryInstalled.Checked;
 					}
-				}
 			}
 
 			_blnIsDirty = true;
@@ -24169,7 +23597,7 @@ namespace Chummer
 				lblWeaponMode.Text = objWeapon.CalculatedMode;
 				lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
 				lblWeaponRating.Text = "";
-				lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+				lblWeaponSlots.Text = objWeapon.AccessoryMounts;
 				lblWeaponDicePool.Text = objWeapon.DicePool;
 				tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
                 tipTooltip.SetToolTip(lblWeaponRC, objWeapon.RCToolTip);
@@ -24214,7 +23642,7 @@ namespace Chummer
 					lblWeaponMode.Text = objWeapon.CalculatedMode;
 					lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
 					lblWeaponRating.Text = "";
-					lblWeaponSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					lblWeaponSlots.Text = objWeapon.AccessoryMounts;
 					lblWeaponDicePool.Text = objWeapon.DicePool;
 					tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
 					UpdateCharacterInfo();
@@ -24342,41 +23770,6 @@ namespace Chummer
 					}
 					else
 					{
-						bool blnMod = false;
-						WeaponMod objSelectedMod = _objFunctions.FindWeaponMod(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-						if (objSelectedMod != null)
-						{
-							blnMod = true;
-							objSelectedWeapon = objSelectedMod.Parent;
-						}
-
-						if (blnMod)
-						{
-							lblWeaponName.Text = objSelectedMod.DisplayNameShort;
-							lblWeaponCategory.Text = LanguageManager.Instance.GetString("String_WeaponModification");
-							lblWeaponAvail.Text = objSelectedMod.TotalAvail;
-							lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objSelectedMod.TotalCost));
-							lblWeaponConceal.Text = objSelectedMod.Concealability.ToString();
-                            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-                            lblWeaponDamage.Text = "";
-							lblWeaponRC.Text = objSelectedMod.RC;
-							lblWeaponAP.Text = "";
-							lblWeaponReach.Text = "";
-							lblWeaponMode.Text = "";
-							lblWeaponAmmo.Text = "";
-							lblWeaponRating.Text = "";
-							lblWeaponSlots.Text = objSelectedMod.Slots.ToString();
-							string strBook = _objOptions.LanguageBookShort(objSelectedMod.Source);
-							string strPage = objSelectedMod.Page;
-							lblWeaponSource.Text = strBook + " " + strPage;
-							tipTooltip.SetToolTip(lblWeaponSource, _objOptions.LanguageBookLong(objSelectedMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objSelectedMod.Page);
-							chkWeaponAccessoryInstalled.Enabled = true;
-							chkWeaponAccessoryInstalled.Checked = objSelectedMod.Installed;
-							chkIncludedInWeapon.Enabled = _objOptions.AllowEditPartOfBaseWeapon;
-							chkIncludedInWeapon.Checked = objSelectedMod.IncludedInWeapon;
-						}
-						else
-						{
 							// Find the selected Gear.
 							_blnSkipRefresh = true;
 							WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
@@ -24458,7 +23851,6 @@ namespace Chummer
 								lblWeaponSleazeLabel.Visible = false;
 								cboWeaponGearSleaze.Visible = false;
 							}
-                        }
 					}
 
 					// Show the Weapon Ranges.
@@ -26454,7 +25846,7 @@ namespace Chummer
 						lblVehicleBody.Text = "";
 						lblVehicleArmor.Text = "";
 						lblVehicleSensor.Text = "";
-						lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+						lblVehicleSlots.Text = "";
 						string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
 						string strPage = objWeapon.Page;
 						lblVehicleSource.Text = strBook + " " + strPage;
@@ -26655,7 +26047,7 @@ namespace Chummer
 						lblVehicleBody.Text = "";
 						lblVehicleArmor.Text = "";
 						lblVehicleSensor.Text = "";
-						lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+						lblVehicleSlots.Text = "";
 						string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
 						string strPage = objWeapon.Page;
 						lblVehicleSource.Text = strBook + " " + strPage;
@@ -26839,49 +26231,6 @@ namespace Chummer
 					}
 					else
 					{
-						bool blnMod = false;
-						// Locate the selected Vehicle Weapon Modification.
-						WeaponMod objMod = _objFunctions.FindVehicleWeaponMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-						if (objMod != null)
-						{
-							objWeapon = objMod.Parent;
-							blnMod = true;
-						}
-
-						if (blnMod)
-						{
-							lblVehicleName.Text = objMod.DisplayNameShort;
-							lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponModification");
-							lblVehicleAvail.Text = objMod.TotalAvail;
-							lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objMod.TotalCost));
-							lblVehicleHandling.Text = "";
-							lblVehicleAccel.Text = "";
-							lblVehicleSpeed.Text = "";
-							lblVehicleDevice.Text = "";
-							lblVehiclePilot.Text = "";
-							lblVehicleBody.Text = "";
-							lblVehicleArmor.Text = "";
-							lblVehicleSensor.Text = "";
-							lblVehicleSlots.Text = objMod.Slots.ToString();
-							string strBook = _objOptions.LanguageBookShort(objMod.Source);
-							string strPage = objMod.Page;
-							lblVehicleSource.Text = strBook + " " + strPage;
-							tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objMod.Page);
-							chkVehicleWeaponAccessoryInstalled.Enabled = true;
-							chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
-							chkVehicleIncludedInWeapon.Checked = objMod.IncludedInWeapon;
-
-							lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
-							lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
-							lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
-							lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
-
-							cmdFireVehicleWeapon.Enabled = false;
-							cmdReloadVehicleWeapon.Enabled = false;
-							cboVehicleWeaponAmmo.Enabled = false;
-						}
-						else
-						{
 							// If it's none of these, it must be an Underbarrel Weapon.
 							Vehicle objCurrentVehicle = new Vehicle(_objCharacter);
 							objWeapon = _objFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objCurrentVehicle);
@@ -26979,7 +26328,7 @@ namespace Chummer
 							lblVehicleBody.Text = "";
 							lblVehicleArmor.Text = "";
 							lblVehicleSensor.Text = "";
-							lblVehicleSlots.Text = "6 (" + objWeapon.SlotsRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+							lblVehicleSlots.Text = "";
 							string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
 							string strPage = objWeapon.Page;
 							lblVehicleSource.Text = strBook + " " + strPage;
@@ -27013,7 +26362,6 @@ namespace Chummer
 								intPilot -= 1;
 							lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
 						}
-					}
 				}
 			}
 			else if (treVehicles.SelectedNode.Level == 5)
@@ -27076,48 +26424,6 @@ namespace Chummer
 				}
 				else
 				{
-					// Locate the selected Vehicle Weapon Modification.
-					WeaponMod objMod = _objFunctions.FindVehicleWeaponMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-					if (objMod != null)
-					{
-						blnFound = true;
-						objWeapon = objMod.Parent;
-					}
-
-					if (blnFound)
-					{
-						lblVehicleName.Text = objMod.DisplayNameShort;
-						lblVehicleCategory.Text = LanguageManager.Instance.GetString("String_VehicleWeaponModification");
-						lblVehicleAvail.Text = objMod.TotalAvail;
-						lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objMod.TotalCost));
-						lblVehicleHandling.Text = "";
-						lblVehicleAccel.Text = "";
-						lblVehicleSpeed.Text = "";
-						lblVehicleDevice.Text = "";
-						lblVehiclePilot.Text = "";
-						lblVehicleBody.Text = "";
-						lblVehicleArmor.Text = "";
-						lblVehicleSensor.Text = "";
-						lblVehicleSlots.Text = objMod.Slots.ToString();
-						string strBook = _objOptions.LanguageBookShort(objMod.Source);
-						string strPage = objMod.Page;
-						lblVehicleSource.Text = strBook + " " + strPage;
-						tipTooltip.SetToolTip(lblVehicleSource, _objOptions.LanguageBookLong(objMod.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objMod.Page);
-						chkVehicleWeaponAccessoryInstalled.Enabled = true;
-						chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
-						chkVehicleIncludedInWeapon.Checked = objMod.IncludedInWeapon;
-
-						lblVehicleWeaponRangeShort.Text = objWeapon.RangeShort;
-						lblVehicleWeaponRangeMedium.Text = objWeapon.RangeMedium;
-						lblVehicleWeaponRangeLong.Text = objWeapon.RangeLong;
-						lblVehicleWeaponRangeExtreme.Text = objWeapon.RangeExtreme;
-
-						cmdFireVehicleWeapon.Enabled = false;
-						cmdReloadVehicleWeapon.Enabled = false;
-						cboVehicleWeaponAmmo.Enabled = false;
-					}
-					else
-					{
 						panVehicleCM.Visible = true;
 						Vehicle objSelectedVehicle = new Vehicle(_objCharacter);
 						Gear objGear = _objFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objSelectedVehicle);
@@ -27163,7 +26469,6 @@ namespace Chummer
 								chkVehicleHomeNode.Visible = true;
 								chkVehicleHomeNode.Checked = objCommlink.HomeNode;
 							}
-						}
 					}
 				}
 			}

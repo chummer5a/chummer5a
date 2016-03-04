@@ -203,16 +203,6 @@ namespace Chummer
                                 lstItems.Add(objItem);
                             }
                         }
-                        foreach (WeaponMod objMod in objWeapon.WeaponMods)
-                        {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objMod.IncludedInWeapon)
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
-                                lstItems.Add(objItem);
-                            }
-                        }
                         if (objWeapon.UnderbarrelWeapons.Count > 0)
                         {
                             foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
@@ -231,16 +221,6 @@ namespace Chummer
                                         ListItem objItem = new ListItem();
                                         objItem.Value = objAccessory.DisplayNameShort;
                                         objItem.Name = objAccessory.DisplayNameShort;
-                                        lstItems.Add(objItem);
-                                    }
-                                }
-                                foreach (WeaponMod objMod in objUnderbarrelWeapon.WeaponMods)
-                                {
-                                    if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objMod.IncludedInWeapon)
-                                    {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objMod.DisplayNameShort;
-                                        objItem.Name = objMod.DisplayNameShort;
                                         lstItems.Add(objItem);
                                     }
                                 }
@@ -318,16 +298,6 @@ namespace Chummer
                                         lstItems.Add(objItem);
                                     }
                                 }
-                                foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-                                {
-                                    if (objWeaponMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objWeaponMod.IncludedInWeapon)
-                                    {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objWeaponMod.DisplayNameShort;
-                                        objItem.Name = objWeaponMod.DisplayNameShort;
-                                        lstItems.Add(objItem);
-                                    }
-                                }
                                 if (objWeapon.UnderbarrelWeapons.Count > 0)
                                 {
                                     foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
@@ -346,16 +316,6 @@ namespace Chummer
                                                 ListItem objItem = new ListItem();
                                                 objItem.Value = objAccessory.DisplayNameShort;
                                                 objItem.Name = objAccessory.DisplayNameShort;
-                                                lstItems.Add(objItem);
-                                            }
-                                        }
-                                        foreach (WeaponMod objWeaponMod in objUnderbarrelWeapon.WeaponMods)
-                                        {
-                                            if (objWeaponMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objWeaponMod.IncludedInWeapon)
-                                            {
-                                                ListItem objItem = new ListItem();
-                                                objItem.Value = objWeaponMod.DisplayNameShort;
-                                                objItem.Name = objWeaponMod.DisplayNameShort;
                                                 lstItems.Add(objItem);
                                             }
                                         }

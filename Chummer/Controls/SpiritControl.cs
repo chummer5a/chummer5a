@@ -846,7 +846,7 @@ namespace Chummer
 				XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
 				TreeNode objDummy = new TreeNode();
 				Weapon objWeapon = new Weapon(objCharacter);
-				objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null, null);
+				objWeapon.Create(objXmlWeapon, objCharacter, objDummy, null, null);
 				objCharacter.Weapons.Add(objWeapon);
 			}
 			catch

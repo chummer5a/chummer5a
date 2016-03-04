@@ -88,7 +88,7 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					Vehicle objTemp = new Vehicle(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode, null, null, null, null, null);
+					objTemp.Create(objXmlGear, objTempNode, null, null, null, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
@@ -213,7 +213,7 @@ namespace Chummer
 				{
 					TreeNode objTempNode = new TreeNode();
 					Weapon objTemp = new Weapon(objCharacter);
-					objTemp.Create(objXmlGear, objCharacter, objTempNode, null, null, null);
+					objTemp.Create(objXmlGear, objCharacter, objTempNode, null, null);
 					try
 					{
 						int objValue = objTemp.TotalCost;
@@ -295,39 +295,6 @@ namespace Chummer
 					TreeNode objTempNode = new TreeNode();
 					WeaponAccessory objTemp = new WeaponAccessory(objCharacter);
 					objTemp.Create(objXmlGear, objTempNode, "", 0);
-					try
-					{
-						int objValue = objTemp.TotalCost;
-					}
-					catch
-					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed CalculatedCost\n";
-					}
-					try
-					{
-						string objValue = objTemp.TotalAvail;
-					}
-					catch
-					{
-						txtOutput.Text += objXmlGear["name"].InnerText + " failed TotalAvail\n";
-					}
-				}
-				catch
-				{
-					txtOutput.Text += objXmlGear["name"].InnerText + " general failure\n";
-				}
-			}
-
-			// Weapon Mods.
-			foreach (XmlNode objXmlGear in objXmlDocument.SelectNodes("/chummer/mods/mod"))
-			{
-				pgbProgress.Value++;
-				Application.DoEvents();
-				try
-				{
-					TreeNode objTempNode = new TreeNode();
-					WeaponMod objTemp = new WeaponMod(objCharacter);
-					objTemp.Create(objXmlGear, objTempNode);
 					try
 					{
 						int objValue = objTemp.TotalCost;

@@ -181,7 +181,7 @@ namespace Chummer
 
 			Weapon objWeapon = new Weapon(_objCharacter);
 			TreeNode objNode = new TreeNode();
-			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null, null);
+			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
 
             lblWeaponReach.Text = objWeapon.TotalReach.ToString();
 			lblWeaponDamage.Text = objWeapon.CalculatedDamage();
@@ -596,7 +596,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null, null);
+                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
 
                     string strWeaponName = objWeapon.Name;
                     string strDice = objWeapon.DicePool;
@@ -689,7 +689,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null, null);
+                    objWeapon.Create(objXmlWeapon, _objCharacter, objNode, null, null);
 
                     string strWeaponName = objWeapon.Name;
                     string strDice = objWeapon.DicePool;

@@ -638,7 +638,7 @@ namespace Chummer
 					if (intReturn < 1)
 						intReturn = 1;
 				}
-
+				/*
 				if	(
 					(_strAbbrev == "MAG" && !(_objCharacter.AdeptEnabled || _objCharacter.MagicianEnabled)) || 
 					(_strAbbrev == "RES" && !_objCharacter.TechnomancerEnabled) || 
@@ -646,7 +646,7 @@ namespace Chummer
 					)
 				{
 					intReturn = 0;
-				}
+				}*/
 
 				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
 				{
@@ -1183,7 +1183,7 @@ namespace Chummer
 
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
-					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null, null);
+					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					objWeaponNodes.Add(objGearWeaponNode);
 					objWeapons.Add(objGearWeapon);

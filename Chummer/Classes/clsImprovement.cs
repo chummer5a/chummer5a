@@ -4879,10 +4879,6 @@ namespace Chummer
 									{
 										objWeaponAccessory.DiscountCost = false;
 									}
-									foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-									{
-										objWeaponMod.DiscountCost = false;
-									}
 								}
 								foreach (Gear objGear in objVehicle.Gear)
 								{
@@ -4899,10 +4895,6 @@ namespace Chummer
 								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
 								{
 									objWeaponAccessory.DiscountCost = false;
-								}
-								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-								{
-									objWeaponMod.DiscountCost = false;
 								}
 							}
 							foreach (Gear objGear in _objCharacter.Gear)

@@ -336,6 +336,16 @@
 				<page>434</page>
 			</gear>
 		<gear>
+			<id>d27dfc89-095d-440c-ad1c-c7f888df2824</id>
+			<name>Ammo: Peak-Discharge Energy Units</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>RG</source>
+			<page>22</page>
+		</gear>
+		<gear>
 			<id>b2a0b340-c793-4322-8422-8b03d18a6fae</id>
 			<name>Ammo: Regular Ammo</name>
 			<category>Ammunition</category>

@@ -47,7 +47,6 @@ namespace Chummer
 		public List<VehicleMod> VehicleMods = new List<VehicleMod>();
 		public List<Weapon> Weapons = new List<Weapon>();
 		public List<WeaponAccessory> WeaponAccessories = new List<WeaponAccessory>();
-		public List<WeaponMod> WeaponMods = new List<WeaponMod>();
 	}
 
 	/// <summary>
@@ -155,7 +154,7 @@ namespace Chummer
 
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(_objCharacter);
-					objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null, null);
+					objGearWeapon.Create(objXmlWeapon, _objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					objWeaponNodes.Add(objGearWeaponNode);
 					objWeapons.Add(objGearWeapon);
@@ -2656,7 +2655,7 @@ namespace Chummer
 
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
-					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null, null);
+					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					objWeaponNodes.Add(objGearWeaponNode);
 					objWeapons.Add(objGearWeapon);
@@ -4478,7 +4477,6 @@ namespace Chummer
 		private int _intFullBurst = 10;
 		private int _intSuppressive = 20;
 		private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
-		private List<WeaponMod> _lstWeaponMods = new List<WeaponMod>();
 		private List<Weapon> _lstUnderbarrel = new List<Weapon>();
 		private bool _blnUnderbarrel = false;
 		private bool _blnVehicleMounted = false;
@@ -4515,9 +4513,8 @@ namespace Chummer
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
-		/// <param name="cmsWeaponMod">ContextMenuStrip to use for Weapon Mods.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponMod, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlWeapon, Character objCharacter, TreeNode objNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, bool blnCreateChildren = true)
 		{
 			_strName = objXmlWeapon["name"].InnerText;
 			_strCategory = objXmlWeapon["category"].InnerText;
@@ -4638,7 +4635,7 @@ namespace Chummer
 				Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
 				TreeNode objUnderbarrelNode = new TreeNode();
 				XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-				objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponMod);
+				objUnderbarrelWeapon.Create(objXmlWeaponNode, _objCharacter, objUnderbarrelNode, cmsWeapon, cmsWeaponAccessory);
 				objUnderbarrelWeapon.IncludedInWeapon = true;
 				objUnderbarrelWeapon.IsUnderbarrelWeapon = true;
 				_lstUnderbarrel.Add(objUnderbarrelWeapon);
@@ -4676,33 +4673,8 @@ namespace Chummer
 					objAccessory.Parent = this;
 					objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
 					_lstAccessories.Add(objAccessory);
-
+					objAccessoryNode.Text = objAccessory.DisplayName;
 					objNode.Nodes.Add(objAccessoryNode);
-					objNode.Expand();
-				}
-			}
-
-			// If there are any Mods that come with the Weapon, add them.
-			if (objXmlWeapon.InnerXml.Contains("<mods>") && blnCreateChildren)
-			{
-				XmlNodeList objXmlModList = objXmlWeapon.SelectNodes("mods/mod");
-				foreach (XmlNode objXmlWeaponMod in objXmlModList)
-				{
-					TreeNode objModNode = new TreeNode();
-					XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlWeaponMod.InnerText + "\"]");
-					WeaponMod objMod = new WeaponMod(_objCharacter);
-					objMod.Create(objXmlMod, objModNode);
-					objMod.IncludedInWeapon = true;
-					objMod.Parent = this;
-					objModNode.ContextMenuStrip = cmsWeaponMod;
-					_lstWeaponMods.Add(objMod);
-
-					if (objXmlWeaponMod.Attributes["rating"] != null)
-						objMod.Rating = Convert.ToInt32(objXmlWeaponMod.Attributes["rating"].InnerText);
-
-					objModNode.Text = objMod.DisplayName;
-
-					objNode.Nodes.Add(objModNode);
 					objNode.Expand();
 				}
 			}
@@ -4751,23 +4723,11 @@ namespace Chummer
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("requireammo", _blnRequireAmmo.ToString());
             objWriter.WriteElementString("accuracy", _strAccuracy.ToString());
-
-			if (_strWeaponSlots != null)
-			{
-				objWriter.WriteElementString("weaponslots", _strWeaponSlots.ToString());
-			}
 			if (_lstAccessories.Count > 0)
 			{
 				objWriter.WriteStartElement("accessories");
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
 					objAccessory.Save(objWriter);
-				objWriter.WriteEndElement();
-			}
-			if (_lstWeaponMods.Count > 0)
-			{
-				objWriter.WriteStartElement("weaponmods");
-				foreach (WeaponMod objMod in _lstWeaponMods)
-					objMod.Save(objWriter);
 				objWriter.WriteEndElement();
 			}
 			if (_lstUnderbarrel.Count > 0)
@@ -4968,18 +4928,6 @@ namespace Chummer
 				}
 			}
 
-			if (objNode.InnerXml.Contains("<weaponmods>"))
-			{
-				XmlNodeList nodChildren = objNode.SelectNodes("weaponmods/weaponmod");
-				foreach (XmlNode nodChild in nodChildren)
-				{
-					WeaponMod objMod = new WeaponMod(_objCharacter);
-					objMod.Load(nodChild, blnCopy);
-					objMod.Parent = this;
-					_lstWeaponMods.Add(objMod);
-				}
-			}
-
 			if (objNode.InnerXml.Contains("<underbarrel>"))
 			{
 				foreach (XmlNode nodWeapon in objNode.SelectNodes("underbarrel/weapon"))
@@ -5072,13 +5020,6 @@ namespace Chummer
 					objAccessory.Print(objWriter);
 				objWriter.WriteEndElement();
 			}
-			if (_lstWeaponMods.Count > 0)
-			{
-				objWriter.WriteStartElement("mods");
-				foreach (WeaponMod objMod in _lstWeaponMods)
-					objMod.Print(objWriter);
-				objWriter.WriteEndElement();
-			}
 
 			// <ranges>
 			objWriter.WriteStartElement("ranges");
@@ -5152,17 +5093,6 @@ namespace Chummer
 			get
 			{
 				return _lstAccessories;
-			}
-		}
-
-		/// <summary>
-		/// Weapon Modifications.
-		/// </summary>
-		public List<WeaponMod> WeaponMods
-		{
-			get
-			{
-				return _lstWeaponMods;
 			}
 		}
 
@@ -5774,12 +5704,6 @@ namespace Chummer
 					intReturn += objAccessory.Concealability;
 			}
 
-			foreach (WeaponMod objMod in _lstWeaponMods)
-			{
-				if (objMod.Installed)
-					intReturn += objMod.Concealability;
-			}
-
 			// Add +4 for each Underbarrel Weapon installed.
 			if (_lstUnderbarrel.Count > 0)
 			{
@@ -5997,12 +5921,6 @@ namespace Chummer
 					}
 				}
 			}
-			// Add in the DV bonus from any Weapon Mods.
-			foreach (WeaponMod objMod in _lstWeaponMods)
-			{
-				if (objMod.Installed)
-					intImprove += objMod.DVBonus;
-			}
 			strDamage += " + " + intImprove.ToString();
 
 			try
@@ -6172,20 +6090,20 @@ namespace Chummer
 
 			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name == "Extended Clip" ? 1 : 0) * x.Rating) : 0;
 
-			foreach (WeaponMod objMod in _lstWeaponMods)
+			foreach (WeaponAccessory objAccessory in _lstAccessories)
 			{
 				// Replace the Ammo value.
-				if (objMod.AmmoReplace != "")
+				if (objAccessory.AmmoReplace != "")
 				{
-					strAmmos = new string[] { objMod.AmmoReplace };
+					strAmmos = new string[] { objAccessory.AmmoReplace };
 					break;
 				}
 
 				// If the Mod is an Additional Clip that is not included with the base Weapon, turn on the Additional Clip flag.
-				if ((objMod.Name == "Spare Clip" || objMod.Name == "Additional Clip, Pistol") && !objMod.IncludedInWeapon)
+				if ((objAccessory.Name == "Spare Clip" || objAccessory.Name == "Additional Clip, Pistol") && !objAccessory.IncludedInWeapon)
 					blnAdditionalClip = true;
 
-				intAmmoBonus += objMod.AmmoBonus;
+				intAmmoBonus += objAccessory.AmmoBonus;
 			}
 
 			foreach (string strAmmo in strAmmos)
@@ -6193,11 +6111,11 @@ namespace Chummer
 				string strThisAmmo = strAmmo;
 				if (strThisAmmo.Contains("("))
 				{
-					int intAmmo = 0;
 					string strAmmoString = "";
 					string strPrepend = "";
 					try
 					{
+						int intAmmo = 0;
 						strThisAmmo = strThisAmmo.Substring(0, strThisAmmo.IndexOf("("));
 						if (strThisAmmo.Contains("x"))
 						{
@@ -6229,6 +6147,7 @@ namespace Chummer
 					}
 					catch
 					{
+						// ignored
 					}
 					strThisAmmo = strAmmoString + strAmmo.Substring(strAmmo.IndexOf("("), strAmmo.Length - strAmmo.IndexOf("("));
 				}
@@ -6399,10 +6318,10 @@ namespace Chummer
 					}
 				}
 
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (objMod.AddMode != "")
-						lstModes.Add(objMod.AddMode);
+					if (objAccessory.AddMode != "")
+						lstModes.Add(objAccessory.AddMode);
 				}
 
 				if (lstModes.Contains("SS"))
@@ -6450,16 +6369,51 @@ namespace Chummer
 				int intReturn = intWeaponCost;
 
 				// Run through the list of Weapon Mods.
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (!objMod.IncludedInWeapon)
+					if (!objAccessory.IncludedInWeapon)
 					{
-						if (!objMod.Cost.StartsWith("Total Cost"))
-							intReturn += objMod.TotalCost;
+						if (!objAccessory.Cost.StartsWith("Total Cost"))
+							intReturn += objAccessory.TotalCost;
 					}
 				}
 
 				return intReturn;
+			}
+		}
+
+		public string AccessoryMounts
+		{
+			get
+			{
+				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
+				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
+				XmlNodeList objXmlMountList = objAccessoryNode.SelectNodes("accessorymounts/mount");
+				string strMounts = "";
+
+				if (objXmlMountList != null)
+				{
+					foreach (XmlNode objXmlMount in objXmlMountList)
+					{
+						bool blnFound = false;
+						foreach (WeaponAccessory objAccessory in _lstAccessories)
+						{
+							if (objAccessory.Mount == objXmlMount.InnerText)
+							{
+								blnFound = true;
+							}
+						}
+						if (!blnFound)
+						{
+							strMounts += objXmlMount.InnerText + "/";
+						}
+					}
+
+					// Remove the trailing /
+					if (strMounts != "" && strMounts.Contains('/'))
+						strMounts = strMounts.Substring(0, strMounts.Length - 1);
+				}
+				return strMounts;
 			}
 		}
 
@@ -6473,35 +6427,22 @@ namespace Chummer
 				int intWeaponCost = _intCost;
 				int intReturn = intWeaponCost;
 				int intCostMultiplier = 1;
-				int intWeaponCostMultiplier = 1;
 
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
 
-				// Run through the list of Weapon Mods.
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				// Run through the Weapon Accessories and see if anything changes the cost multiplier (Vintage mod).
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (!objMod.IncludedInWeapon)
-					{
-						intReturn += objMod.TotalCost;
-					}
+					if (objAccessory.AccessoryCostMultiplier > 1)
+						intCostMultiplier = objAccessory.AccessoryCostMultiplier;
 				}
-
-				// Run through the Weapon Mods and see if anything changes the cost multiplier (Vintage mod).
-				foreach (WeaponMod objMod in _lstWeaponMods)
-				{
-					if (objMod.AccessoryCostMultiplier > 1 || objMod.ModCostMultiplier > 1)
-						intCostMultiplier = objMod.AccessoryCostMultiplier;
-				}
-
-				// Multiply the Total Cost of the Weapon (base cost + Mods only, not Accessories)
-				intReturn *= intWeaponCostMultiplier;
 
 				// Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (!objAccessory.IncludedInWeapon)
-						intReturn += objAccessory.TotalCost;
+					if (!objAccessory.IncludedInWeapon) { 
+						intReturn += (objAccessory.TotalCost * intCostMultiplier);}
 				}
 
 				// If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
@@ -6533,16 +6474,6 @@ namespace Chummer
 
 				if (DiscountCost)
 					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
-
-				// Run through the Weapon Mods and see if anything changes the cost multiplier (Vintage mod).
-				foreach (WeaponMod objMod in _lstWeaponMods)
-				{
-					if (objMod.AccessoryCostMultiplier > 1 || objMod.ModCostMultiplier > 1)
-						intCostMultiplier = objMod.AccessoryCostMultiplier;
-				}
-
-				// Multiply the Total Cost of the Weapon (base cost + Mods only, not Accessories)
-				intReturn *= intWeaponCostMultiplier;
 
 				// If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
 				if (_blnCyberware || _strCategory == "Gear")
@@ -6634,13 +6565,6 @@ namespace Chummer
 						ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 						intAP += objImprovementManager.ValueOf(Improvement.ImprovementType.UnarmedAP);
 					}
-				}
-
-				// Add any AP modifications from Weapon Mods.
-				foreach (WeaponMod objMod in _lstWeaponMods)
-				{
-					if (objMod.Installed)
-						intAP += objMod.APBonus;
 				}
 
 				foreach (WeaponAccessory objAccessory in _lstAccessories)
@@ -6923,7 +6847,7 @@ namespace Chummer
 
                 if (strAccuracy.StartsWith("Physical"))
                 {
-                    strAccuracy = strAccuracy.Replace("Physical", _objCharacter.LimitPhysical.ToString());
+                    strAccuracy = strAccuracy.Replace("Physical", _objCharacter.LimitPhysical);
 
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -6932,7 +6856,7 @@ namespace Chummer
                 }
                 else if (strAccuracy.StartsWith("Missile"))
                 {
-                    strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical.ToString());
+                    strAccuracy = strAccuracy.Replace("Missile", _objCharacter.LimitPhysical);
 
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -7060,38 +6984,6 @@ namespace Chummer
 			}
 
 		}
-        /// <summary>
-		/// The number of Weapon Mod slots remaining.
-		/// </summary>
-		public int SlotsRemaining
-		{
-			get
-			{
-				int intSlots = 6;
-
-				foreach (WeaponMod objMod in _lstWeaponMods)
-				{
-					// Only Mods that are installed and do not come included in the Weapon should consume slots.
-					if (objMod.Installed)
-					{
-						if (!objMod.IncludedInWeapon)
-							intSlots -= objMod.Slots;
-					}
-				}
-
-				// Each installed Underbarrel Weapon consumes 3 slots.
-				if (_lstUnderbarrel.Count > 0)
-				{
-					foreach (Weapon objUnderbarrelWeapon in _lstUnderbarrel)
-					{
-						if (objUnderbarrelWeapon.Installed && objUnderbarrelWeapon.Cost != 0)
-							intSlots -= 3;
-					}
-				}
-
-				return intSlots;
-			}
-		}
 
 		/// <summary>
 		/// Permanently alters the Weapon's Range category.
@@ -7148,7 +7040,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Weapon's total Range bonus from Modifications.
+		/// Weapon's total Range bonus from Accessories.
 		/// </summary>
 		public double RangeBonus
 		{
@@ -7157,8 +7049,8 @@ namespace Chummer
 				int intRangeBonus = 100;
 
 				// Weapon Mods.
-				foreach (WeaponMod objMod in _lstWeaponMods)
-					intRangeBonus += objMod.RangeBonus;
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
+					intRangeBonus += objAccessory.RangeBonus;
 
 				// Check if the Weapon has Ammunition loaded and look for any Range bonus.
 				if (AmmoLoaded != "")
@@ -7290,10 +7182,10 @@ namespace Chummer
 				int intReturn = _intFullBurst;
 
 				// Check to see if any of the Mods replace this value.
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (objMod.FullBurst > intReturn)
-						intReturn = objMod.FullBurst;
+					if (objAccessory.FullBurst > intReturn)
+						intReturn = objAccessory.FullBurst;
 				}
 
 				return intReturn;
@@ -7310,10 +7202,10 @@ namespace Chummer
 				int intReturn = _intSuppressive;
 				
 				// Check to see if any of the Mods replace this value.
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (objMod.Suppressive > intReturn)
-						intReturn = objMod.Suppressive;
+					if (objAccessory.Suppressive > intReturn)
+						intReturn = objAccessory.Suppressive;
 				}
 
 				return intReturn;
@@ -7328,33 +7220,10 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (objMod.AccessoryCostMultiplier != 1)
-						intReturn += objMod.AccessoryCostMultiplier;
-				}
-
-				if (intReturn == 0)
-					intReturn = 1;
-
-				return intReturn;
-			}
-		}
-
-		/// <summary>
-		/// Total Mod Cost multiplier for the Weapon.
-		/// </summary>
-		public int ModMultiplier
-		{
-			get
-			{
-				int intReturn = 0;
-				foreach (WeaponMod objMod in _lstWeaponMods)
-				{
-					if (objMod.ModCostMultiplier != 1)
-						intReturn += objMod.ModCostMultiplier;
-					if (objMod.Cost.Contains("Total Cost"))
-						intReturn += Convert.ToInt32(objMod.Cost.Replace("Total Cost * ", string.Empty));
+					if (objAccessory.AccessoryCostMultiplier != 1)
+						intReturn += objAccessory.AccessoryCostMultiplier;
 				}
 
 				if (intReturn == 0)
@@ -7659,10 +7528,10 @@ namespace Chummer
 			get
 			{
 				int intReturn = 1;
-				foreach (WeaponMod objMod in _lstWeaponMods)
+				foreach (WeaponAccessory objAccessory in _lstAccessories)
 				{
-					if (objMod.AccessoryCostMultiplier > 1 || objMod.ModCostMultiplier > 1)
-						intReturn = objMod.AccessoryCostMultiplier;
+					if (objAccessory.AccessoryCostMultiplier > 1)
+						intReturn = objAccessory.AccessoryCostMultiplier;
 				}
 
 				return intReturn;
@@ -7750,6 +7619,14 @@ namespace Chummer
 		private bool _blnBlackMarketDiscount = false;
 		private bool _blnIncludedInWeapon = false;
 		private bool _blnInstalled = true;
+		private int _intAccessoryCostMultiplier = 1;
+		private string _strExtra = "";
+		private int _intRangeBonus = 0;
+		private int _intSuppressive = 0;
+		private int _intFullBurst = 0;
+		private string _strAddMode = "";
+		private string _strAmmoReplace = "";
+		private int _intAmmoBonus = 0;
 
 		#region Constructor, Create, Save, Load, and Print Methods
 		public WeaponAccessory(Character objCharacter)
@@ -7763,33 +7640,38 @@ namespace Chummer
 		/// <param name="objXmlAccessory">XmlNode to create the object from.</param>
 		/// <param name="objNode">TreeNode to populate a TreeView.</param>
 		/// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
+		/// <param name="intRating">Rating of the Weapon Accessory.</param>
 		public void Create(XmlNode objXmlAccessory, TreeNode objNode, string strMount, int intRating)
 		{
 			_strName = objXmlAccessory["name"].InnerText;
 			_strMount = strMount;
 			_intRating = intRating;
-			if (objXmlAccessory.InnerXml.Contains("<rc>"))
-				_strRC = objXmlAccessory["rc"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<rcgroup>"))
-				_intRCGroup = Convert.ToInt32(objXmlAccessory["rcgroup"].InnerText);
-			if (objXmlAccessory.InnerXml.Contains("<conceal>"))
-				_strConceal = (objXmlAccessory["conceal"].InnerText);
-			if (objXmlAccessory.InnerXml.Contains("<ammoslots>"))
-				_intAmmoSlots = Convert.ToInt32(objXmlAccessory["ammoslots"].InnerText);
 			_strAvail = objXmlAccessory["avail"].InnerText;
 			_strCost = objXmlAccessory["cost"].InnerText;
 			_strSource = objXmlAccessory["source"].InnerText;
 			_strPage = objXmlAccessory["page"].InnerText;
 			_nodAllowGear = objXmlAccessory["allowgear"];
-            if (objXmlAccessory.InnerXml.Contains("<accuracy>"))
-                _intAccuracy = Convert.ToInt32(objXmlAccessory["accuracy"].InnerText);
-            try
-			{
-				_strDicePool = objXmlAccessory["dicepool"].InnerText;
-			}
-			catch
-			{
-			}
+			objXmlAccessory.TryGetField("rc", out _strRC, "");
+			objXmlAccessory.TryGetField("rcgroup", out _intRCGroup);
+			objXmlAccessory.TryGetField("conceal", out _strConceal, "");
+			objXmlAccessory.TryGetField("ammoslots", out _intAmmoSlots);
+			objXmlAccessory.TryGetField("ammoreplace", out _strAmmoReplace, "");
+			objXmlAccessory.TryGetField("accuracy", out _intAccuracy);
+			objXmlAccessory.TryGetField("dicepool", out _strDicePool,"");
+			objXmlAccessory.TryGetField("damagetype", out _strDamageType,"");
+			objXmlAccessory.TryGetField("damage", out _strDamage, "");
+			objXmlAccessory.TryGetField("damagereplace", out _strDamageReplace, "");
+			objXmlAccessory.TryGetField("firemode", out _strFireMode, "");
+			objXmlAccessory.TryGetField("firemodereplace", out _strFireModeReplace, "");
+			objXmlAccessory.TryGetField("ap", out _strAP,"");
+			objXmlAccessory.TryGetField("apreplace", out _strAPReplace,"");
+			objXmlAccessory.TryGetField("addmode", out _strAddMode,"");
+			objXmlAccessory.TryGetField("fullburst", out _intFullBurst);
+			objXmlAccessory.TryGetField("suppressive", out _intSuppressive);
+			objXmlAccessory.TryGetField("rangebonus", out _intRangeBonus);
+			objXmlAccessory.TryGetField("extra", out _strExtra, "");
+			objXmlAccessory.TryGetField("ammobonus", out _intAmmoBonus);
+			objXmlAccessory.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -7803,20 +7685,6 @@ namespace Chummer
 						_strAltPage = objAccessoryNode["altpage"].InnerText;
 				}
 			}
-			if (objXmlAccessory.InnerXml.Contains("<damagetype>"))
-				_strDamageType = objXmlAccessory["damagetype"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<damage>"))
-				_strDamage = objXmlAccessory["damage"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<damagereplace>"))
-				_strDamageReplace = objXmlAccessory["damagereplace"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<firemode>"))
-				_strFireMode = objXmlAccessory["firemode"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<firemodereplace>"))
-				_strFireModeReplace = objXmlAccessory["firemodereplace"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<apreplace>"))
-				_strAPReplace = objXmlAccessory["apreplace"].InnerText;
-			if (objXmlAccessory.InnerXml.Contains("<ap>"))
-				_strAP = objXmlAccessory["ap"].InnerText;
 
 			objNode.Text = DisplayName;
 			objNode.Tag = _guiID.ToString();
@@ -7866,7 +7734,7 @@ namespace Chummer
 				}
 				objWriter.WriteEndElement();
 			}
-			objWriter.WriteElementString("ammoslots", _strDamageType);
+			objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString());
 			objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
 			objWriter.WriteElementString("damagereplace", _strDamageReplace);
@@ -7876,6 +7744,12 @@ namespace Chummer
 			objWriter.WriteElementString("apreplace", _strAPReplace);
             objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+			objWriter.WriteElementString("addmode", _strAddMode);
+			objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
+			objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
+			objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
+			objWriter.WriteElementString("extra", _strExtra);
+			objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
 			objWriter.WriteEndElement();
 		}
 
@@ -7883,50 +7757,23 @@ namespace Chummer
 		/// Load the Attribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
+		/// <param name="blnCopy">Whether another node is being copied.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strMount = objNode["mount"].InnerText;
 			_strRC = objNode["rc"].InnerText;
-			try
-			{
-				_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intRCGroup = Convert.ToInt32(objNode["rcgroup"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _intAccuracy = Convert.ToInt32(objNode["accuracy"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-			{
-				_strConceal = objNode["conceal"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("rating", out _intRating,0);
+			objNode.TryGetField("rcgroup", out _intRCGroup, 0);
+			objNode.TryGetField("accuracy", out _intAccuracy, 0);
+			objNode.TryGetField("rating", out _intRating, 0);
+			objNode.TryGetField("rating", out _intRating, 0);
+			objNode.TryGetField("conceal", out _strConceal, "0");
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
-			try
-			{
-				_blnInstalled = Convert.ToBoolean(objNode["installed"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("installed", out _blnInstalled, true);
 			try
 			{
 				_nodAllowGear = objNode["allowgear"];
@@ -7935,29 +7782,12 @@ namespace Chummer
 			{
 			}
 			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strDicePool = objNode["dicepool"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("page", out _strPage, "0");
+			objNode.TryGetField("dicepool", out _strDicePool, "0");
+			
 			if (objNode.InnerXml.Contains("ammoslots"))
 			{
-				try
-				{
-					_intAmmoSlots = Convert.ToInt32(objNode["ammoslots"].InnerText);
-				}
-				catch
-				{
-				}
+				objNode.TryGetField("ammoslots", out _intAmmoSlots, 0);
 			}
 
 			if (objNode.InnerXml.Contains("<gears>"))
@@ -7983,22 +7813,8 @@ namespace Chummer
 					}
 				}
 			}
-
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes, "");
+			objNode.TryGetField("discountedcost", out _blnDiscountCost, false);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -8041,6 +7857,13 @@ namespace Chummer
 			{
 				_strAPReplace = objNode["apreplace"].InnerText;
 			}
+			objNode.TryGetField("accessorycostmultiplier", out _intAccessoryCostMultiplier);
+			objNode.TryGetField("addmode", out _strAddMode);
+			objNode.TryGetField("fullburst", out _intFullBurst,0);
+			objNode.TryGetField("suppressive", out _intSuppressive,0);
+			objNode.TryGetField("rangebonus", out _intRangeBonus,0);
+			objNode.TryGetField("extra", out _strExtra,"");
+			objNode.TryGetField("ammobonus", out _intAmmoBonus,0);
 
 			if (blnCopy)
 			{
@@ -8688,584 +8511,6 @@ namespace Chummer
 				return _strDicePool;
 			}
 		}
-		#endregion
-	}
-
-	/// <summary>
-	/// Weapon Modification.
-	/// </summary>
-	public class WeaponMod
-	{
-		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private int _intSlots = 0;
-		private string _strCost = "";
-		private string _strRC = "";
-		private int _intRCGroup = 0;
-		private int _intConceal = 0;
-		private string _strAvail = "";
-		private string _strSource = "";
-		private string _strPage = "";
-		private string _strAddMode = "";
-		private int _intAmmoBonus = 0;
-		private string _strAmmoReplace = "";
-		private int _intDVBonus = 0;
-		private int _intAPBonus = 0;
-		private int _intRangeBonus = 0;
-		private int _intRating = 0;
-		private int _intAccessoryCostMultiplier = 1;
-		private int _intModCostMultiplier = 1;
-		private int _intFullBurst = 0;
-		private int _intSuppressive = 0;
-		private string _strDicePool = "";
-		private bool _blnIncludedInWeapon = false;
-		private bool _blnInstalled = true;
-		private string _strNotes = "";
-		private readonly Character _objCharacter;
-		private string _strAltName = "";
-		private string _strAltPage = "";
-		private string _strExtra = "";
-		private bool _blnDiscountCost = false;
-		private bool _blnBlackMarketDiscount = false;
-		private Weapon _objParent;
-
-		#region Constructor, Create, Save, Load, and Print Methods
-		public WeaponMod(Character objCharacter)
-		{
-			// Create the GUID for the new Mod.
-			_guiID = Guid.NewGuid();
-			_objCharacter = objCharacter;
-		}
-
-		/// Create a Weapon Modification from an XmlNode and return the TreeNodes for it.
-		/// <param name="objXmlMod">XmlNode to create the object from.</param>
-		/// <param name="objNode">TreeNode to populate a TreeView.</param>
-		public void Create(XmlNode objXmlMod, TreeNode objNode)
-		{
-			_strName = objXmlMod["name"].InnerText;
-			_intSlots = Convert.ToInt32(objXmlMod["slots"].InnerText);
-			_strAvail = objXmlMod["avail"].InnerText;
-			if (objXmlMod.InnerXml.Contains("<rc>"))
-				_strRC = objXmlMod["rc"].InnerText;
-			if (objXmlMod.InnerXml.Contains("<rcgroup>"))
-				_intRCGroup = Convert.ToInt32(objXmlMod["rcgroup"].InnerText);
-			if (objXmlMod.InnerXml.Contains("<conceal>"))
-				_intConceal = Convert.ToInt32(objXmlMod["conceal"].InnerText);
-			_strCost = objXmlMod["cost"].InnerText;
-			_strSource = objXmlMod["source"].InnerText;
-			_strPage = objXmlMod["page"].InnerText;
-			try
-			{
-				_intAmmoBonus = Convert.ToInt32(objXmlMod["ammobonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAmmoReplace = objXmlMod["ammoreplace"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAccessoryCostMultiplier = Convert.ToInt32(objXmlMod["accessorycostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intModCostMultiplier = Convert.ToInt32(objXmlMod["modcostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAddMode = objXmlMod["addmode"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intFullBurst = Convert.ToInt32(objXmlMod["fullburst"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSuppressive = Convert.ToInt32(objXmlMod["suppressive"].InnerText);
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_intDVBonus = Convert.ToInt32(objXmlMod["dvbonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAPBonus = Convert.ToInt32(objXmlMod["apbonus"].InnerText);
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_intRangeBonus = Convert.ToInt32(objXmlMod["rangebonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strDicePool = objXmlMod["dicepool"].InnerText;
-			}
-			catch
-			{
-			}
-
-			if (GlobalOptions.Instance.Language != "en-us")
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-				XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
-				if (objModNode != null)
-				{
-					if (objModNode["translate"] != null)
-						_strAltName = objModNode["translate"].InnerText;
-					if (objModNode["altpage"] != null)
-						_strAltPage = objModNode["altpage"].InnerText;
-				}
-			}
-
-			objNode.Text = DisplayName;
-			objNode.Tag = _guiID.ToString();
-		}
-
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
-		{
-			objWriter.WriteStartElement("weaponmod");
-			objWriter.WriteElementString("guid", _guiID.ToString());
-			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteElementString("slots", _intSlots.ToString());
-			objWriter.WriteElementString("avail", _strAvail);
-			objWriter.WriteElementString("rc", _strRC);
-			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
-			objWriter.WriteElementString("dvbonus", _intDVBonus.ToString());
-			objWriter.WriteElementString("apbonus", _intAPBonus.ToString());
-			objWriter.WriteElementString("conceal", _intConceal.ToString());
-			objWriter.WriteElementString("cost", _strCost);
-			objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-			objWriter.WriteElementString("installed", _blnInstalled.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			if (_intAmmoBonus != 0)
-				objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
-			if (_strAmmoReplace != "")
-				objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
-			if (_intAccessoryCostMultiplier != 1)
-				objWriter.WriteElementString("accessorycostmultiplier", _intAccessoryCostMultiplier.ToString());
-			if (_intModCostMultiplier != 1)
-				objWriter.WriteElementString("modcostmultiplier", _intModCostMultiplier.ToString());
-			if (_strAddMode != "")
-				objWriter.WriteElementString("addmode", _strAddMode);
-			if (_strDicePool != "")
-				objWriter.WriteElementString("dicepool", _strDicePool);
-			objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
-			objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
-			objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString());
-			objWriter.WriteElementString("extra", _strExtra);
-			objWriter.WriteElementString("source", _strSource);
-			objWriter.WriteElementString("page", _strPage);
-			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
-			objWriter.WriteEndElement();
-		}
-
-		/// <summary>
-		/// Load the Attribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode, bool blnCopy = false)
-		{
-			_guiID = Guid.Parse(objNode["guid"].InnerText);
-			_strName = objNode["name"].InnerText;
-			_intSlots = Convert.ToInt32(objNode["slots"].InnerText);
-			_strAvail = objNode["avail"].InnerText;
-			try
-			{
-				_strRC = objNode["rc"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intRCGroup = Convert.ToInt32(objNode["rcgroup"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intConceal = Convert.ToInt32(objNode["conceal"].InnerText);
-			}
-			catch
-			{
-			}
-			_strCost = objNode["cost"].InnerText;
-			_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
-			try
-			{
-				_blnInstalled = Convert.ToBoolean(objNode["installed"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			}
-			catch
-			{
-			}
-			_strSource = objNode["source"].InnerText;
-			try
-			{
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAmmoBonus = Convert.ToInt32(objNode["ammobonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAmmoReplace = objNode["ammoreplace"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAccessoryCostMultiplier = Convert.ToInt32(objNode["accessorycostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intModCostMultiplier = Convert.ToInt32(objNode["modcostmultiplier"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strAddMode = objNode["addmode"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intFullBurst = Convert.ToInt32(objNode["fullburst"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSuppressive = Convert.ToInt32(objNode["suppressive"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intDVBonus = Convert.ToInt32(objNode["dvbonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intAPBonus = Convert.ToInt32(objNode["apbonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intRangeBonus = Convert.ToInt32(objNode["rangebonus"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strExtra = objNode["extra"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strDicePool = objNode["dicepool"].InnerText;
-			}
-			catch
-			{
-			}
-
-			if (GlobalOptions.Instance.Language != "en-us")
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
-				XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + _strName + "\"]");
-				if (objModNode != null)
-				{
-					if (objModNode["translate"] != null)
-						_strAltName = objModNode["translate"].InnerText;
-					if (objModNode["altpage"] != null)
-						_strAltPage = objModNode["altpage"].InnerText;
-				}
-			}
-
-			if (blnCopy)
-			{
-				_guiID = Guid.NewGuid();
-			}
-		}
-
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
-		{
-			objWriter.WriteStartElement("weaponmod");
-			objWriter.WriteElementString("name", DisplayNameShort);
-			objWriter.WriteElementString("slots", _intSlots.ToString());
-			objWriter.WriteElementString("avail", TotalAvail);
-			objWriter.WriteElementString("rc", _strRC);
-			objWriter.WriteElementString("rating", _intRating.ToString());
-			objWriter.WriteElementString("cost", TotalCost.ToString());
-			objWriter.WriteElementString("owncost", OwnCost.ToString());
-			objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-			objWriter.WriteElementString("page", Page);
-			if (_objCharacter.Options.PrintNotes)
-				objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Internal identifier which will be used to identify this VehicleWeaponMod.
-		/// </summary>
-		public string InternalId
-		{
-			get
-			{
-				return _guiID.ToString();
-			}
-		}
-
-		/// <summary>
-		/// Name.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
-		}
-
-		/// <summary>
-		/// Slots used by the Mod.
-		/// </summary>
-		public int Slots
-		{
-			get
-			{
-				return _intSlots;
-			}
-			set
-			{
-				_intSlots = value;
-			}
-		}
-
-		/// <summary>
-		/// Concealability.
-		/// </summary>
-		public int Concealability
-		{
-			get
-			{
-				return _intConceal;
-			}
-			set
-			{
-				_intConceal = value;
-			}
-		}
-
-		/// <summary>
-		/// Availability.
-		/// </summary>
-		public string Avail
-		{
-			get
-			{
-				return _strAvail;
-			}
-			set
-			{
-				_strAvail = value;
-			}
-		}
-
-		/// <summary>
-		/// Recoil.
-		/// </summary>
-		public string RC
-		{
-			get
-			{
-				return _strRC;
-			}
-			set
-			{
-				_strRC = value;
-			}
-		}
-
-		/// <summary>
-		/// Recoil Group.
-		/// </summary>
-		public int RCGroup
-		{
-			get
-			{
-				return _intRCGroup;
-			}
-		}
-
-		/// <summary>
-		/// Cost.
-		/// </summary>
-		public string Cost
-		{
-			get
-			{
-				return _strCost;
-			}
-			set
-			{
-				_strCost = value;
-			}
-		}
-
-		/// <summary>
-		/// Sourcebook.
-		/// </summary>
-		public string Source
-		{
-			get
-			{
-				return _strSource;
-			}
-			set
-			{
-				_strSource = value;
-			}
-		}
-
-		/// <summary>
-		/// Sourcebook Page Number.
-		/// </summary>
-		public string Page
-		{
-			get
-			{
-				string strReturn = _strPage;
-				if (_strAltPage != string.Empty)
-					strReturn = _strAltPage;
-
-				return strReturn;
-			}
-			set
-			{
-				_strPage = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not this Mod is part of the base weapon configuration.
-		/// </summary>
-		public bool IncludedInWeapon
-		{
-			get
-			{
-				return _blnIncludedInWeapon;
-			}
-			set
-			{
-				_blnIncludedInWeapon = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not this Mod is installed and contributing towards the Weapon's stats.
-		/// </summary>
-		public bool Installed
-		{
-			get
-			{
-				return _blnInstalled;
-			}
-			set
-			{
-				_blnInstalled = value;
-			}
-		}
 
 		/// <summary>
 		/// Adjust the Weapon's Ammo amount by the specified percent.
@@ -9298,7 +8543,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Accessory cost multiplier (comes from the Vintage mod).
+		/// Multiply the cost of other installed Accessories.
 		/// </summary>
 		public int AccessoryCostMultiplier
 		{
@@ -9309,21 +8554,6 @@ namespace Chummer
 			set
 			{
 				_intAccessoryCostMultiplier = value;
-			}
-		}
-
-		/// <summary>
-		/// Mod cost multiplier (comes from the Vintage mod).
-		/// </summary>
-		public int ModCostMultiplier
-		{
-			get
-			{
-				return _intModCostMultiplier;
-			}
-			set
-			{
-				_intModCostMultiplier = value;
 			}
 		}
 
@@ -9339,36 +8569,6 @@ namespace Chummer
 			set
 			{
 				_strAddMode = value;
-			}
-		}
-
-		/// <summary>
-		/// Weapon Mod Rating.
-		/// </summary>
-		public int Rating
-		{
-			get
-			{
-				return _intRating;
-			}
-			set
-			{
-				_intRating = value;
-			}
-		}
-
-		/// <summary>
-		/// Notes.
-		/// </summary>
-		public string Notes
-		{
-			get
-			{
-				return _strNotes;
-			}
-			set
-			{
-				_strNotes = value;
 			}
 		}
 
@@ -9395,35 +8595,13 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Range bonus granted by the Modification.
+		/// Range bonus granted by the Accessory.
 		/// </summary>
 		public int RangeBonus
 		{
 			get
 			{
 				return _intRangeBonus;
-			}
-		}
-
-		/// <summary>
-		/// DV bonus granted by the Modification.
-		/// </summary>
-		public int DVBonus
-		{
-			get
-			{
-				return _intDVBonus;
-			}
-		}
-
-		/// <summary>
-		/// AP bonus granted by the Modification.
-		/// </summary>
-		public int APBonus
-		{
-			get
-			{
-				return _intAPBonus;
 			}
 		}
 
@@ -9441,162 +8619,19 @@ namespace Chummer
 				_strExtra = value;
 			}
 		}
-
+		
 		/// <summary>
-		/// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+		/// Whether the Accessory is affected by Black Market Discounts.
 		/// </summary>
-		public bool DiscountCost
+		public bool BlackMarketDiscount
 		{
 			get
 			{
-				return _blnDiscountCost;
+				return _blnBlackMarketDiscount;
 			}
 			set
 			{
-				_blnDiscountCost = value;
-			}
-		}
-
-		/// <summary>
-		/// Parent Weapon.
-		/// </summary>
-		public Weapon Parent
-		{
-			get
-			{
-				return _objParent;
-			}
-			set
-			{
-				_objParent = value;
-			}
-		}
-		#endregion
-
-		#region Complex Properties
-		/// <summary>
-		/// The name of the object as it should appear on printouts (translated name only).
-		/// </summary>
-		public string DisplayNameShort
-		{
-			get
-			{
-				string strReturn = _strName;
-				if (_strAltName != string.Empty)
-					strReturn = _strAltName;
-
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
-		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				string strReturn = DisplayNameShort;
-
-				if (_strExtra != "")
-					strReturn += " (" + LanguageManager.Instance.TranslateExtra(_strExtra) + ")";
-				if (_intRating > 0)
-					strReturn += " (" + LanguageManager.Instance.GetString("String_Rating") + " " + _intRating.ToString() + ")";
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Total Availability.
-		/// </summary>
-		public string TotalAvail
-		{
-			get
-			{
-				string strReturn = _strAvail;
-
-				// Translate the Avail string.
-				strReturn = strReturn.Replace("R", LanguageManager.Instance.GetString("String_AvailRestricted"));
-				strReturn = strReturn.Replace("F", LanguageManager.Instance.GetString("String_AvailForbidden"));
-
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Dice Pool modifier.
-		/// </summary>
-		public int DicePool
-		{
-			get
-			{
-				int intReturn = 0;
-
-				if (_strDicePool != string.Empty)
-				{
-					if (_strDicePool == "Rating")
-						intReturn = _intRating;
-					else if (_strDicePool == "-Rating")
-						intReturn = _intRating * -1;
-					else
-						intReturn = Convert.ToInt32(_strDicePool);
-				}
-
-				return intReturn;
-			}
-		}
-
-		private string DicePoolString
-		{
-			get
-			{
-				return _strDicePool;
-			}
-		}
-
-		/// <summary>
-		/// Total cost of the Weapon Mod.
-		/// </summary>
-		public int TotalCost
-		{
-			get
-			{
-				int intReturn = 0;
-
-				if (_strCost.StartsWith("Total Cost"))
-				{
-					int intMultiplier = Convert.ToInt32(_strCost.Replace("Total Cost * ", string.Empty));
-					intReturn = _objParent.MultipliableCost * intMultiplier;
-				}
-				else
-				{
-					XmlDocument objXmlDocument = new XmlDocument();
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-					string strCost = "";
-					string strCostExpression = _strCost;
-
-					strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
-					strCost = strCost.Replace("Rating", _intRating.ToString());
-					XPathExpression xprCost = nav.Compile(strCost);
-					intReturn = (Convert.ToInt32(nav.Evaluate(xprCost).ToString()) * _objParent.CostMultiplier);
-				}
-
-				if (DiscountCost)
-					intReturn = Convert.ToInt32(Convert.ToDouble(intReturn, GlobalOptions.Instance.CultureInfo) * 0.9);
-
-				return intReturn;
-			}
-		}
-
-		/// <summary>
-		/// The cost of just the Weapon Mod itself.
-		/// </summary>
-		public int OwnCost
-		{
-			get
-			{
-				return TotalCost;
+				_blnBlackMarketDiscount = value;
 			}
 		}
 		#endregion
@@ -10702,7 +9737,7 @@ namespace Chummer
 					{
 						frmPickWeaponCategory.WeaponType = "flame";
 					}
-					else if (_strName.StartsWith("Ammo: Injection Dart"))
+					else if (_strName.StartsWith("Ammo: Injection Dart") || _strName.StartsWith("Ammo: Peak-Discharge"))
 					{
 						frmPickWeaponCategory.WeaponType = "exotic";
 					}
@@ -10737,7 +9772,7 @@ namespace Chummer
 
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
-					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null, null);
+					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					if (blnAerodynamic)
 					{
@@ -14700,9 +13735,8 @@ namespace Chummer
 		/// <param name="cmsVehicleGear">ContextMenuStrip to attach to Gear.</param>
 		/// <param name="cmsVehicleWeapon">ContextMenuStrip to attach to Vehicle Weapons.</param>
 		/// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip to attach to Weapon Accessories.</param>
-		/// <param name="cmsVehicleWeaponMod">ContextMenuStrip to attachk to Weapon Mods.</param>
 		/// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponMod, bool blnCreateChildren = true)
+		public void Create(XmlNode objXmlVehicle, TreeNode objNode, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, bool blnCreateChildren = true)
 		{
 			_strName = objXmlVehicle["name"].InnerText;
 			_strCategory = objXmlVehicle["category"].InnerText;
@@ -14893,7 +13927,7 @@ namespace Chummer
 					Weapon objWeapon = new Weapon(_objCharacter);
 
 					XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-					objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponMod);
+					objWeapon.Create(objXmlWeaponNode, _objCharacter, objWeaponNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
 					objWeapon.Cost = 0;
 					objWeapon.VehicleMounted = true;
 
@@ -14959,25 +13993,6 @@ namespace Chummer
 							objModNode.ContextMenuStrip = cmsVehicleWeaponAccessory;
 
 							objWeapon.WeaponAccessories.Add(objMod);
-
-							objWeaponNode.Nodes.Add(objModNode);
-							objWeaponNode.Expand();
-						}
-					}
-
-					// Look for Weapon Mods.
-					if (objXmlWeapon["mods"] != null)
-					{
-						foreach (XmlNode objXmlMod in objXmlWeapon.SelectNodes("mods/mod"))
-						{
-							XmlNode objXmlModNode = objXmlWeaponDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
-							WeaponMod objMod = new WeaponMod(_objCharacter);
-							TreeNode objModNode = new TreeNode();
-							objMod.Create(objXmlModNode, objModNode);
-							objMod.Cost = "0";
-							objModNode.ContextMenuStrip = cmsVehicleWeaponMod;
-
-							objWeapon.WeaponMods.Add(objMod);
 
 							objWeaponNode.Nodes.Add(objModNode);
 							objWeaponNode.Expand();

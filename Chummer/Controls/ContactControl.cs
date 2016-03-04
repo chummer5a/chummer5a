@@ -132,10 +132,13 @@ namespace Chummer
                     objItem.Name = objXmlCategory.InnerText;
                 lstCategories.Add(objItem);
             }
-            cboContactRole.ValueMember = "Value";
-            cboContactRole.DisplayMember = "Name";
+
+			SortListItem objContactSort = new SortListItem();
+			lstCategories.Sort(objContactSort.Compare);
             cboContactRole.DataSource = lstCategories;
-            chkGroup.Checked = _objContact.IsGroup;
+			cboContactRole.ValueMember = "Value";
+			cboContactRole.DisplayMember = "Name";
+			chkGroup.Checked = _objContact.IsGroup;
 	        chkFree.Checked = _objContact.Free;
             if (_objContact.MadeMan)
             {

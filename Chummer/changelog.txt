@@ -106,6 +106,8 @@ Data Change:
 - Fixed an incorrect value for the UCAS (Seattle) Life Module. Fixes #699.
 - Fixed the karma cost for the Loss of confidence quality. Fixes #706.
 - Fixed the name for Poor Self Control (Sadistic). Fixes #737.
+- Fixed the calculation for Street Cred. Fixes #735.
+- Contact archetypes are now sorted alphabetically; mostly affects custom files. Fixes #733.
 
 New Strings:
 - Message_DeleteCalendarWeek
@@ -126,6 +128,9 @@ New Strings:
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities
 - Tip_OptionsDontDoubleQualities
+
+Changed Strings: 
+- Tip_StreetCred
 
 Build 178: 
 Application Change: 

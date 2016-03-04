@@ -8351,6 +8351,8 @@
 			<mount/>
 			<avail>14F</avail>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>10</ammoreplace>
 			<cost>400</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8360,6 +8362,8 @@
 			<name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
 			<mount/>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>20</ammoreplace>
 			<avail>16F</avail>
 			<cost>900</cost>
 			<source>RG</source>
@@ -8371,6 +8375,8 @@
 			<mount/>
 			<avail>20F</avail>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>30</ammoreplace>
 			<cost>2500</cost>
 			<source>RG</source>
 			<page>52</page>

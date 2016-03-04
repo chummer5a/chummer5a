@@ -2297,7 +2297,7 @@ namespace Chummer
                     XmlNode objXmlWeapon = objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
-                    objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null, null);
+                    objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null);
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     _lstWeapons.Add(objWeapon);
                 }
@@ -5624,11 +5624,12 @@ namespace Chummer
         {
             get
             {
-                // Street Cred = Career Karma / 10, rounded down
-                int intReturn = CareerKarma/10;
+				// Street Cred = Career Karma / 10, rounded down
+				double dblReturn = Math.Floor(Convert.ToDouble(CareerKarma / 10));
+                int intReturn = Convert.ToInt32(dblReturn);
 
-                // Deduct burnt Street Cred.
-                intReturn -= _intBurntStreetCred;
+				// Deduct burnt Street Cred.
+				intReturn -= _intBurntStreetCred;
 
                 return intReturn;
             }
