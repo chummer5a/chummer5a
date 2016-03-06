@@ -108,6 +108,8 @@ Data Change:
 - Fixed the name for Poor Self Control (Sadistic). Fixes #737.
 - Fixed the calculation for Street Cred. Fixes #735.
 - Contact archetypes are now sorted alphabetically; mostly affects custom files. Fixes #733.
+- Added woogy woogy cyberfingers from Chrome Flesh.
+- Fixed an incorrect Limit value for the Chameleon Skin bioware.
 
 New Strings:
 - Message_DeleteCalendarWeek

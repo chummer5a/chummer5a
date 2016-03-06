@@ -1188,7 +1188,7 @@
 			<cost>4000</cost>
 			<bonus>
 				<limitmodifier>
-					<limit>Stealth</limit>
+					<limit>Physical</limit>
 					<value>2</value>
 					<condition>Stealth Skill: Must be completely naked</condition>
 				</limitmodifier>
