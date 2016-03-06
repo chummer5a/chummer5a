@@ -1609,7 +1609,6 @@
     </Content>
     <None Include="Resources\Collapse.png" />
     <None Include="Resources\Expand.png" />
-    <Content Include="LICENSE.txt" />
     <Content Include="sheets\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
