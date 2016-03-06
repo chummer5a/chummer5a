@@ -4442,7 +4442,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Laser Sight</name></accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
 				<accessory>
 					<name>Tripod</name>
 			</accessory>
@@ -4641,11 +4643,27 @@
 			<avail>9R</avail>
 			<cost>1200</cost>
 			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
 			<accessories>
 				<accessory>
 					<name>Advanced Safety System, Basic</name>
 				</accessory>
-				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
+				<accessory>
+					<name>Melee Hardening</name>
+				</accessory>
+				<accessory>
+					<name>Trigger Removal</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>22</page>
