@@ -9836,6 +9836,7 @@ namespace Chummer
 					objChild.Source = _strSource;
 					objChild.Page = _strPage;
 					objChild.Parent = this;
+					objChild.IncludedInParent = true;
 					_objChildren.Add(objChild);
 
 					objChildNode.Text = objChild.DisplayName;
@@ -9961,6 +9962,7 @@ namespace Chummer
 					objChild.MinRating = intChildRating;
 					objChild.MaxRating = intChildRating;
 					objChild.Parent = this;
+					objChild.IncludedInParent = true;
 					objParent.Children.Add(objChild);
 
 					// Change the Capacity of the child if necessary.
@@ -13901,6 +13903,7 @@ namespace Chummer
 						objGear.Cost = "0";
 						objGear.Quantity = intQty;
 						objGear.MaxRating = intMaxRating;
+						objGear.IncludedInParent = true;
 						objGearNode.Text = objGear.DisplayName;
 						objGearNode.ContextMenuStrip = cmsVehicleGear;
 

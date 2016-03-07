@@ -707,7 +707,7 @@ namespace Chummer
 			foreach (Gear objGear in lstGear)
 			{
 				// Do not attempt to export Nexi since they're completely custom objects.
-				if (!objGear.Name.StartsWith("Nexus"))
+				if (!objGear.Name.StartsWith("Nexus") && !objGear.IncludedInParent)
 				{
 					// <gear>
 					objWriter.WriteStartElement("gear");

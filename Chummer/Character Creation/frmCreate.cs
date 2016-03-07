@@ -21551,8 +21551,8 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Instance.Load("packs.xml");
 
             // Do not create child items for Gear if the chosen Kit is in the Custom category since these items will contain the exact plugins desired.
-            if (frmPickPACKSKit.SelectedCategory == "Custom")
-                blnCreateChildren = false;
+            //if (frmPickPACKSKit.SelectedCategory == "Custom")
+			//blnCreateChildren = false;
 
             XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmPickPACKSKit.SelectedCategory + "\"]");
             // Update Qualities.

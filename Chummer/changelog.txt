@@ -62,6 +62,7 @@ Application Change:
 - Fixed the display of Locations created by cybewrware or weapons with AllowGear properties. Fixes #536.
 - Added some support for creating an Ally Spirit, per #244. Not 100% RAW yet, but it doesn't crash so that's a start.
 - Added support for enabling calculated Public Awareness, per the rules from SR4. Hides the tooltips and calculations if not in use.
+- Fixed the creation method for custom packs kits to not treat included mods as being purchased. Should fix #707 and fix #691.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
