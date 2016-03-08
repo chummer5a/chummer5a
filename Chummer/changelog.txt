@@ -111,6 +111,7 @@ Data Change:
 - Contact archetypes are now sorted alphabetically; mostly affects custom files. Fixes #733.
 - Added woogy woogy cyberfingers from Chrome Flesh.
 - Fixed an incorrect Limit value for the Chameleon Skin bioware.
+- Removed the Distinctive Style quality from the Gnome metavariant. 
 
 New Strings:
 - Message_DeleteCalendarWeek
