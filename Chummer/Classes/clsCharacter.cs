@@ -6174,13 +6174,22 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Number of free Skill Points the character has.
+        /// Number of free Skill Points the character has left.
         /// </summary>
         public int SkillPoints
         {
             get
             {
-                return SkillPointsMaximum - Skills.TotalCostSp();
+				//Even if it is stupid, you can spend real skill points on knoskills...
+	            if (SkillPointsMaximum == 0)
+	            {
+		            return 0;
+	            }
+	            int work = 0; 
+	            if (KnowledgeSkillPointsUsed > KnowledgeSkillPoints)
+		            work -= KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
+
+                return SkillPointsMaximum - Skills.TotalCostSp() + work;
             }
         }
 
