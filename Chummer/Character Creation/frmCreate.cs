@@ -14986,19 +14986,6 @@ namespace Chummer
             nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
 			nudDEP.Maximum = _objCharacter.DEP.TotalMaximum + intEssenceLoss;
 
-			nudAGI.Value = _objCharacter.AGI.Base;
-			nudBOD.Value = _objCharacter.BOD.Base;
-            nudREA.Value = _objCharacter.REA.Base;
-            nudSTR.Value = _objCharacter.STR.Base;
-            nudCHA.Value = _objCharacter.CHA.Base;
-            nudINT.Value = _objCharacter.INT.Base;
-            nudLOG.Value = _objCharacter.LOG.Base;
-            nudWIL.Value = _objCharacter.WIL.Base;
-            nudEDG.Value = _objCharacter.EDG.Base;
-            nudMAG.Value = _objCharacter.MAG.Base;
-            nudRES.Value = _objCharacter.RES.Base;
-			nudDEP.Value = _objCharacter.DEP.Base;
-
 			nudKBOD.Value = _objCharacter.BOD.Karma;
             nudKAGI.Value = _objCharacter.AGI.Karma;
             nudKREA.Value = _objCharacter.REA.Karma;
