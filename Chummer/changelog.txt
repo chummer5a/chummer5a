@@ -112,6 +112,7 @@ Data Change:
 - Added woogy woogy cyberfingers from Chrome Flesh.
 - Fixed an incorrect Limit value for the Chameleon Skin bioware.
 - Removed the Distinctive Style quality from the Gnome metavariant. 
+- Removed an extra Victorinox Collapsible Hatchet from the weapons XML.
 
 New Strings:
 - Message_DeleteCalendarWeek
