@@ -143,8 +143,10 @@ namespace Chummer
 			}
 			catch
 			{
-				MessageBox.Show("Could not load default language file!", "Default Language Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Application.Exit();
+				//TODO this might fuck stuff up, remove before release, or fix?
+				//Had obscure bug where this closed visual studio
+				MessageBox.Show("Could not load default language file!" + Path.Combine(Environment.CurrentDirectory, "lang", "en-us.xml"), "Default Language Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				//Application.Exit();
 			}
 		}
 

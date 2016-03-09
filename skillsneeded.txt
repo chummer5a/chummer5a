@@ -2,7 +2,7 @@ Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. W
 
 Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)
 
-Don't think translate is called. Somehow visual studio crashed if i had it earlier. Not able to reproduce.
+Translate for all but skill level buttons
 
 UI is missing stuff. Labels and old tooltips. Skillgroups should be straight forward, nfi about how skills currently works, but salvaging is probably best bet.
 
