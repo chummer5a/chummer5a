@@ -63,6 +63,7 @@ Application Change:
 - Added some support for creating an Ally Spirit, per #244. Not 100% RAW yet, but it doesn't crash so that's a start.
 - Added support for enabling calculated Public Awareness, per the rules from SR4. Hides the tooltips and calculations if not in use.
 - Fixed the creation method for custom packs kits to not treat included mods as being purchased. Should fix #707 and fix #691.
+- Save files is now in UTF-8 instead of UTF-16. This should not have any visible impact but it is more tool frindly and leads to smaller files
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
