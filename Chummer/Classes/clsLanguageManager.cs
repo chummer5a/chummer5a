@@ -491,7 +491,7 @@ namespace Chummer
                 return strReturn;
             }
             catch
-            {
+            {		//TODO THIS IS RETARDED. Doctor it hurts if i do this. Thats why i try again to see if it stops hurting
                 string strReturn = "Error in string return - " + _objDictionary[strKey].ToString();
                 return strReturn;
             }

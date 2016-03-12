@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.lblName = new System.Windows.Forms.Label();
 			this.lblAttribute = new System.Windows.Forms.Label();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
@@ -40,6 +41,7 @@
 			this.btnCareerIncrease = new System.Windows.Forms.Button();
 			this.lblCareerSpec = new System.Windows.Forms.Label();
 			this.btnAddSpec = new System.Windows.Forms.Button();
+			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -166,6 +168,15 @@
 			this.btnAddSpec.Visible = false;
 			this.btnAddSpec.Click += new System.EventHandler(this.btnAddSpec_Click);
 			// 
+			// tipTooltip
+			// 
+			this.tipTooltip.AutoPopDelay = 10000;
+			this.tipTooltip.InitialDelay = 250;
+			this.tipTooltip.IsBalloon = true;
+			this.tipTooltip.ReshowDelay = 100;
+			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			this.tipTooltip.ToolTipTitle = "Chummer Help";
+			// 
 			// SkillControl2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,5 +218,6 @@
 		private System.Windows.Forms.Button btnCareerIncrease;
 		private System.Windows.Forms.Label lblCareerSpec;
 		private System.Windows.Forms.Button btnAddSpec;
+		private System.Windows.Forms.ToolTip tipTooltip;
 	}
 }

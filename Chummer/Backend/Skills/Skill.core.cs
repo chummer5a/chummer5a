@@ -184,6 +184,26 @@ namespace Chummer.Skills
 		}
 
 		/// <summary>
+		/// The total, general pourpose dice pool for this skill, using another
+		/// value for the attribute part of the test. This allows calculation of dice pools
+		/// while using cyberlimbs or while rigging
+		/// </summary>
+		/// <param name="attribute">The value of the used attribute</param>
+		/// <returns></returns>
+		public int PoolOtherAttribute(int attribute)
+		{
+			if (Rating > 0)
+			{
+				return Rating + attribute + PoolModifiers;
+			}
+			if (Default)
+			{
+				return attribute + PoolModifiers - 1;
+			}
+			return 0;
+		}
+
+		/// <summary>
 		/// Things that modify the dicepool of the skill
 		/// </summary>
 		public virtual int PoolModifiers
@@ -237,27 +257,7 @@ namespace Chummer.Skills
 				return intModifier + Math.Min(0, condition);
 			}
 		}
-
-		/// <summary>
-		/// The total, general pourpose dice pool for this skill, using another
-		/// value for the attribute part of the test. This allows calculation of dice pools
-		/// while using cyberlimbs or while rigging
-		/// </summary>
-		/// <param name="attribute">The value of the used attribute</param>
-		/// <returns></returns>
-		public int PoolOtherAttribute(int attribute)
-		{
-			if (Rating > 0)
-			{
-				return Rating + attribute + PoolModifiers;
-			}
-			if (Default)
-			{
-				return attribute + PoolModifiers - 1;
-			}
-			return 0;
-		}
-
+		
 		/// <summary>
 		/// How much Sp this costs. Price during career mode is undefined
 		/// </summary>

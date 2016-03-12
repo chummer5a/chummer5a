@@ -1217,8 +1217,8 @@ namespace Chummer
             }
             lblAttribute.Text = _objSkill.GetDisplayAttribute();
 
-            // Build the Tooltip.
-            string strTooltip = "";
+			// Build the Tooltip.
+			string strTooltip = "";
 			if (blnSkillsoft)
 				strTooltip += LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating") + " (" + intSkillRating.ToString() + ")";
 			else
@@ -1228,11 +1228,11 @@ namespace Chummer
 				strTooltip += " - " + LanguageManager.Instance.GetString("Tip_Skill_Defaulting") + " (1)";
 			if ((!_objSkill.Default && intSkillRating > 0) || _objSkill.Default)
 			{
-			    strTooltip += " + " + LanguageManager.Instance.GetString("String_Attribute" + _objSkill.Attribute + "Short") + " (" + _objSkill.AttributeModifiers.ToString() + ")";
+				strTooltip += " + " + LanguageManager.Instance.GetString("String_Attribute" + _objSkill.Attribute + "Short") + " (" + _objSkill.AttributeModifiers.ToString() + ")";
 			}
 
-            // Modifiers only apply when not Defaulting.
-            if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
+			// Modifiers only apply when not Defaulting.
+			if (intSkillRating > 0 || _objSkill.CharacterObject.Options.SkillDefaultingIncludesModifiers)
 			{
 				if (_objSkill.PoolModifiers != 0)
 				{
@@ -1255,7 +1255,7 @@ namespace Chummer
 						strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + _objSkill.PoolModifiers.ToString() + ")";
 				}
 				// Dice Pool Modifiers.
-				strTooltip += _objSkill.DicePoolModifiersTooltip;
+				//strTooltip += _objSkill.DicePoolModifiersTooltip;
 			}
 
 			if (_objSkill.SkillCategory == "Language" && _objSkill.KnowledgeSkill && intSkillRating == 0)
@@ -1263,7 +1263,7 @@ namespace Chummer
 				lblModifiedRating.Text = "N";
 				strTooltip = LanguageManager.Instance.GetString("Tip_Skill_NativeLanguage");
 			}
-			
+
 			// Condition Monitor Modifiers.
 			if (objImprovementManager.ValueOf(Improvement.ImprovementType.ConditionMonitor) < 0)
 				strTooltip += " + " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + objImprovementManager.ValueOf(Improvement.ImprovementType.ConditionMonitor).ToString() + ")";

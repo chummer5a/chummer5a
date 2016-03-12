@@ -4,7 +4,7 @@ Loading of legacy not loading specs. Everything else seems to work. Might give e
 
 Translate for all but skill level buttons
 
-UI is missing stuff. Labels and old tooltips. Skillgroups should be straight forward, nfi about how skills currently works, but salvaging is probably best bet.
+Some adept powers don't seem to impact skills
 
 Skillgroups are not saving
 
@@ -14,7 +14,7 @@ Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever c
 
 Not possible to spend skill points on knoskill (Stupid but explictily allowed)
 
-Skillsofts is not tested, not check not called
+Skillsofts is not tested
 
 Knoskills LM not working
 

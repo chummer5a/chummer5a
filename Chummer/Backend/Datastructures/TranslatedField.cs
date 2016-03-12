@@ -50,7 +50,7 @@ namespace Chummer.Datastructures
 		{
 			if (GlobalOptions.Instance.Language == "en-us")
 			{
-				if (_translate.ContainsKey(orginal) && _translate[orginal] == translated)
+				if (orginal != null && _translate.ContainsKey(orginal) && _translate[orginal] == translated)
 				{
 					translated = _translate[value];
 				}

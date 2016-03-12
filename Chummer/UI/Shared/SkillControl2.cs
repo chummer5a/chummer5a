@@ -29,15 +29,9 @@ namespace Chummer.UI.Shared
 			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
 				DataSourceUpdateMode.OnPropertyChanged);
 
+			skill.PropertyChanged += Skill_PropertyChanged;
 
-			base.BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-			skill.PropertyChanged += (o, e) =>
-			{
-				if (e.PropertyName == nameof(Skill.Leveled))
-				{
-					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-				}
-			};
+			Skill_PropertyChanged(null, null);  //if null it updates all
 
 			if (skill.CharacterObject.Created)
 			{
@@ -106,8 +100,49 @@ namespace Chummer.UI.Shared
 			{
 				cmdDelete.Visible = false;
 			}
+		}
+
+		private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			//I learned something from this but i'm not sure it is a good solution
+			//scratch that, i'm sure it is a bad solution. (Tooltip manager from tooltip, properties from reflection?
+
+			//if name of changed is null it does magic to change all, otherwise it only does one.
+			bool all = false;
+			switch (propertyChangedEventArgs?.PropertyName)
+			{
+				case null:
+					all = true;
+					goto case nameof(Skill.Leveled);
 
 
+				case nameof(Skill.Leveled):
+					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
+
+
+				case nameof(Skill.SkillToolTip):
+					tipTooltip.SetToolTip(lblName, skill.SkillToolTip);  //is this the best way?
+					//tipTooltip.SetToolTip(this, skill.SkillToolTip);
+					//tipTooltip.SetToolTip(lblAttribute, skill.SkillToolTip);
+					//tipTooltip.SetToolTip(lblCareerSpec, skill.SkillToolTip);
+					if (all) { goto case nameof(Skill.AddSpecToolTip); } break;
+
+
+				case nameof(Skill.AddSpecToolTip):
+					tipTooltip.SetToolTip(btnAddSpec, skill.AddSpecToolTip);
+					if (all) { goto case nameof(Skill.PoolToolTip); } break;
+
+
+				case nameof(Skill.PoolToolTip):
+					tipTooltip.SetToolTip(lblModifiedRating, skill.PoolToolTip);
+					if (all) { goto case nameof(Skill.UpgradeToolTip); } break;
+
+
+				case nameof(Skill.UpgradeToolTip):
+					tipTooltip.SetToolTip(btnCareerIncrease, skill.UpgradeToolTip);
+					break;
+			}
 		}
 
 		private void VisibleDatabindingBrokenWorkaround(object sender, PropertyChangedEventArgs e)
