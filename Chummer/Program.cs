@@ -4,12 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Chummer.Debugging;
 
 namespace Chummer
 {
     static class Program
     {
-        /// <summary>
+		/// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
@@ -36,6 +37,8 @@ namespace Chummer
 	        sw.TaskEnd("fixcwd");
 			//Log exceptions that is caught. Wanting to know about this cause of performance
 	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+			AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
+			
 
 			sw.TaskEnd("appdomain 2");
 
@@ -61,7 +64,12 @@ namespace Chummer
 				Application.Run(new frmMain());
 			else
 				Application.Exit();
+
+			string ExceptionMap = heatmap.GenerateInfo();
+			Log.Info(ExceptionMap);
         }
+
+		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
 
 		static void FixCwd()
 		{
@@ -78,7 +86,6 @@ namespace Chummer
 			}
 
 			Environment.CurrentDirectory = Application.StartupPath;
-
 		}
     }
 }
