@@ -7680,26 +7680,6 @@
 			<page>179</page>
 		</weapon>
 		<weapon>
-			<id>8080fafb-9784-43ca-bd71-6c823853b80b</id>
-			<name>Victorinox Collapsible Hatchet</name>
-			<category>Blades</category>
-			<type>Melee</type>
-			<spec>Swords</spec>
-			<conceal>4</conceal>
-			<accuracy>5</accuracy>
-			<reach>1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>4</avail>
-			<cost>250</cost>
-			<allowaccessory>true</allowaccessory>
-			<source>HT</source>
-			<page>179</page>
-		</weapon>
-		<weapon>
 			<id>4225b0c1-2da0-4dd9-9c98-2136a57946cf</id>
 			<name>Throwing Syringe</name>
 			<category>Gear</category>

@@ -361,12 +361,13 @@ namespace Chummer
         public void Save()
         {
             FileStream objStream = new FileStream(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
-
-            objWriter.WriteStartDocument();
+	        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+	        {
+		        Formatting = Formatting.Indented,
+		        Indentation = 1,
+		        IndentChar = '\t'
+	        };
+	        objWriter.WriteStartDocument();
 
             // <character>
             objWriter.WriteStartElement("character");
