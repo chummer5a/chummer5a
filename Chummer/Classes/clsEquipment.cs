@@ -9403,22 +9403,22 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				if (_objType != LifestyleType.Standard)
+				/*if (_objType != LifestyleType.Standard)
 				{
 					intReturn = Cost;
 					return intReturn;
-				}
+				}*/
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-				double dblMultiplier = 1.0;
-				double dblModifier = Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+				decimal decMultiplier = 1;
+				decimal decMod = 0;
+				decMod = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
-					dblModifier += Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+					decMod += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 decimal decBaseCost = Cost;
 				decimal decCost = 0;
-				decimal decMod = 0;
                 foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
 					XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\"]");
@@ -9434,11 +9434,11 @@ namespace Chummer
 					}
                 }
 
-                dblMultiplier = 1.0 + Convert.ToDouble(dblModifier / 100, GlobalOptions.Instance.CultureInfo);
+                decMultiplier = 1 + Convert.ToDecimal(decMod / 100, GlobalOptions.Instance.CultureInfo);
                 
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
-				intReturn = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
+				intReturn = Convert.ToInt32(decBaseCost * decMultiplier);
 				intReturn += Convert.ToInt32(decCost);
 
 				intReturn = Convert.ToInt32(intReturn * dblPercentage);
