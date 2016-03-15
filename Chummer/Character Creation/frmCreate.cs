@@ -7727,7 +7727,15 @@ namespace Chummer
                             objWeaponNodes);
                         if (objSubQuality != null)
                         {
-                            _objCharacter.Qualities.Add(objSubQuality);
+							if (objXmlAddQuality.Attributes["contributetobp"] != null)
+							{
+								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objSubQuality.BP = 0;
+									objSubQuality.ContributeToLimit = false;
+								}
+							}
+							_objCharacter.Qualities.Add(objSubQuality);
                         }
                     }
                 }
@@ -7904,10 +7912,16 @@ namespace Chummer
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                         Quality objSubQuality = AddQuality(objXmlAddQuality, objXmlSelectedQuality, objWeapons, objWeaponNodes);
                         if (objSubQuality != null)
-                            {
-                            _objCharacter.Qualities.Add(objSubQuality);
-                            }
+                        {
+	                        if (objXmlAddQuality.Attributes["contributetobp"] != null &&
+								objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objSubQuality.BP = 0;
+									objSubQuality.ContributeToLimit = false;
+								}
+	                        _objCharacter.Qualities.Add(objSubQuality);
                         }
+                    }
                 }
 
                 // Add any Critter Powers that are gained through the Quality (Infected).
@@ -8226,8 +8240,39 @@ namespace Chummer
                     }
                 }
             }
+			XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+			XmlNodeList objRemoveQualitiesNodeList = objXmlQuality.SelectNodes("addqualities/addquality");
+			if (objRemoveQualitiesNodeList.Count > 0)
+			{
+				foreach (XmlNode objNode in objRemoveQualitiesNodeList)
+				{
+					XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.InnerText + "\"]");
+					foreach (Quality objChildQuality in _objCharacter.Qualities)
+					{
+						if (objChildQuality.Name == objNode.InnerText)
+						{
+							foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
+							{
+								if (nodQuality.Text.ToString() == objChildQuality.DisplayName)
+								{
+									nodQuality.Remove();
+								}
+							}
+							foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
+							{
+								if (nodQuality.Text.ToString() == objChildQuality.DisplayName)
+								{
+									nodQuality.Remove();
+								}
+							}
+							_objCharacter.Qualities.Remove(objChildQuality);
+							break;
+						}
+					}
+				}
+			}
 
-            XmlNode objXmlDeleteQuality;
+			XmlNode objXmlDeleteQuality;
             if (objQuality.Type == QualityType.LifeModule)
             {
                 objXmlDeleteQuality =
@@ -8239,8 +8284,9 @@ namespace Chummer
                     objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
             }
 
-            // Remove any Critter Powers that are gained through the Quality (Infected).
-            if (objXmlDeleteQuality.SelectNodes("powers/power").Count > 0)
+
+			// Remove any Critter Powers that are gained through the Quality (Infected).
+			if (objXmlDeleteQuality.SelectNodes("powers/power").Count > 0)
             {
                 objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
                 foreach (XmlNode objXmlPower in objXmlDeleteQuality.SelectNodes("powers/power"))
@@ -18532,6 +18578,14 @@ namespace Chummer
 					objQuality.OriginSource = QualitySource.BuiltIn;
 					if (objQuality != null)
 					{
+						if (objXmlAddQuality.Attributes["contributetobp"] != null)
+						{
+							if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+							{
+								objQuality.BP = 0;
+								objQuality.ContributeToLimit = false;
+							}
+						}
 						_objCharacter.Qualities.Add(objQuality);
 					}
 				}

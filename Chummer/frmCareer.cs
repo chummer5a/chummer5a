@@ -8655,6 +8655,14 @@ namespace Chummer
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objAddWeapons, objAddWeaponNodes, strForceValue);
 							objNode.Nodes.Add(objAddQualityNode);
 							objNode.Expand();
+							if (objXmlAddQuality.Attributes["contributetobp"] != null)
+							{
+								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objQuality.BP = 0;
+									objQuality.ContributeToLimit = false;
+								}
+							}
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.
@@ -9154,6 +9162,16 @@ namespace Chummer
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue);
 							objNode.Nodes.Add(objAddQualityNode);
 							objNode.Expand();
+
+							if (objXmlAddQuality.Attributes["contributetobp"] != null)
+							{
+								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objQuality.BP = 0;
+									objQuality.ContributeToLimit = false;
+								}
+							}
+
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.

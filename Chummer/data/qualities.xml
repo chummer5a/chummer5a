@@ -3436,10 +3436,9 @@
 			<nomission/>
 			<bonus>
 				<excon />
-				<freenegativequalities>-10</freenegativequalities>
 			</bonus>
 			<addqualities>
-				<addquality>SINner (Criminal)</addquality>
+				<addquality contributetobp="false">SINner (Criminal)</addquality>
 			</addqualities>
 			<source>RF</source>
 			<page>155</page>
