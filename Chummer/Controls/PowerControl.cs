@@ -61,7 +61,7 @@ namespace Chummer
 			}
 			else
 			{
-				if (actualRating > _objPower.FreeLevels)
+				if (actualRating > 0)
 				{
 					nudRating.Value = newRating;
 				}
