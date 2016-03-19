@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -9,8 +10,14 @@ using Chummer.Skills;
 
 namespace Chummer
 {
+	[DebuggerDisplay("{DisplayDebug()}")]
     public class Improvement
     {
+		private string DisplayDebug()
+		{
+			return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+		}
+
         public enum ImprovementType
         {
             Attribute,

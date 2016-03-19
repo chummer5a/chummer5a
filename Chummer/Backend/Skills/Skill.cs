@@ -316,7 +316,7 @@ namespace Chummer.Skills
 		/// </summary>
 		public int Pool
 		{
-			get { return PoolOtherAttribute(AttributeObject.Augmented); }
+			get { return PoolOtherAttribute(AttributeObject.TotalValue); }
 		}
 
 		public bool Leveled
