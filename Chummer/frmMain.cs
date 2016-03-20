@@ -871,28 +871,8 @@ namespace Chummer
 
 		private void objCareer_DiceRollerOpened(Object sender)
 		{
-			SkillControl objControl = (SkillControl)sender;
-
-			if (GlobalOptions.Instance.SingleDiceRoller)
-			{
-				if (_frmRoller == null)
-				{
-					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
-					_frmRoller = frmRoller;
-					frmRoller.Show();
-				}
-				else
-				{
-					_frmRoller.Dice = objControl.SkillObject.Pool;
-					_frmRoller.Qualities = objControl.SkillObject.CharacterObject.Qualities;
-					_frmRoller.Focus();
-				}
-			}
-			else
-			{
-				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.Pool);
-				frmRoller.Show();
-			}
+			MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
+			//TODO: IMPLEMENT THIS SHIT
 		}
 
 		private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)

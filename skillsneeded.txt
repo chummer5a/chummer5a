@@ -14,6 +14,6 @@ Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever c
 
 Knoskills LM not working
 
-Remove old skill forms. Keept as shitloads of code calls it, eventually that code have to be stripped out too.
+Remove old skillcode
 
-Clean frmCreate/Career to not have old skillcode.
+Uncought/Uneducated/ect?

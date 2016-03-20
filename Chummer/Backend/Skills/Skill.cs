@@ -959,8 +959,8 @@ namespace Chummer.Skills
 
 			ImprovementManager manager = new ImprovementManager(CharacterObject);
 
-			//bug I don't think || CharacterObject.SkillSoftAccess is acctually correct. Reads to me as if skilljack alone can give skills
-			if (manager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || (CharacterObject.SkillsoftAccess && KnowledgeSkill))
+			int skillWireRating = manager.ValueOf(Improvement.ImprovementType.Skillwire);
+			if (skillWireRating > 0 || (CharacterObject.SkillsoftAccess && KnowledgeSkill))
 			{
 				Func<Gear, int> recusivestuff = null; recusivestuff = (gear) =>
 				{
@@ -970,7 +970,7 @@ namespace Chummer.Skills
 					     gear.Extra == Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
 					{
 						return gear.Name == "Activesoft"
-							? Math.Min(gear.Rating, manager.ValueOf(Improvement.ImprovementType.Skillwire))
+							? Math.Min(gear.Rating, skillWireRating)
 							: gear.Rating;
 
 					}

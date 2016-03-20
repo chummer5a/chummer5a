@@ -717,12 +717,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Controls\SkillGroupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SkillGroupControl.Designer.cs">
-      <DependentUpon>SkillGroupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Character Creation\frmCreate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -749,18 +743,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\SkillControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SkillControl.Designer.cs">
-      <DependentUpon>SkillControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SmallSkillControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SmallSkillControl.Designer.cs">
-      <DependentUpon>SmallSkillControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SpiritControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1050,9 +1032,6 @@
     <EmbeddedResource Include="Controls\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SkillGroupControl.resx">
-      <DependentUpon>SkillGroupControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
       <DependentUpon>frmCreate.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1076,12 +1055,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Controls\SkillControl.resx">
-      <DependentUpon>SkillControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SmallSkillControl.resx">
-      <DependentUpon>SmallSkillControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>

@@ -115,8 +115,8 @@ namespace Chummer
 		#region Constructor and Instance
 		static GlobalOptions()
 		{
-			string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
+			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
+			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
 			// Automatic Update.
