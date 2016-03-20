@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -186,9 +204,9 @@ namespace Chummer
 					bool blnCultured = cboCategory.SelectedValue.ToString() == "Cultured";
 					PopulateGrades(blnCultured);
 					cboGrade.SelectedValue = strSelectedValue;
-					if (cboGrade.SelectedIndex == -1)
-						cboGrade.SelectedIndex = 0;
 				}
+				if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
+					cboGrade.SelectedIndex = 0;
 			}
 
             // Update the list of Cyberware based on the selected Category.
@@ -722,10 +740,6 @@ namespace Chummer
 				if (strSelectCategory == "Basic")
 					dblCharacterESSModifier -= (1 - _dblBasicBiowareESSModifier);
 
-				// Genetech and Genetic Infusions are not subject to Bioware cost multipliers, so if we're looking at either, suppress the multiplier.
-				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
-					dblCharacterESSModifier = 1;
-
 				if (nudESSDiscount.Visible)
 				{
 					double dblDiscountModifier = Convert.ToDouble(nudESSDiscount.Value, GlobalOptions.Instance.CultureInfo) * 0.01;
@@ -733,6 +747,10 @@ namespace Chummer
 				}
 
 				dblCharacterESSModifier -= (1 - _dblESSMultiplier);
+
+				// Genetech and Genetic Infusions are not subject to Bioware cost multipliers, so if we're looking at either, suppress the multiplier.
+				if (strSelectCategory.StartsWith("Genetech") || strSelectCategory.StartsWith("Genetic Infusions") || strSelectCategory.StartsWith("Genemods"))
+					dblCharacterESSModifier = 1;
 
 				// Place the Genetech cost multiplier in a varaible that can be safely modified.
 				double dblGenetechCostModifier = 1;
@@ -1015,11 +1033,24 @@ namespace Chummer
 			}
 
 			if (_objMode == Mode.Bioware)
-				_objSelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+			{
+				if (cboCategory.SelectedValue.ToString().StartsWith("Genetech:") ||
+				    cboCategory.SelectedValue.ToString() == "Symbionts" ||
+				    cboCategory.SelectedValue.ToString() == "Genemods")
+				{
+					_objSelectedGrade = GlobalOptions.BiowareGrades.GetGrade("Standard");
+				}
+				else
+				{
+					_objSelectedGrade = GlobalOptions.BiowareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+				}
+			}
 			else
+			{
 				_objSelectedGrade = GlobalOptions.CyberwareGrades.GetGrade(cboGrade.SelectedValue.ToString());
+			}
 
-			_strSelectedGrade = cboGrade.SelectedValue.ToString();
+			_strSelectedGrade = _objSelectedGrade.ToString();
 			_intSelectedRating = Convert.ToInt32(nudRating.Value);
 
 			if (nudESSDiscount.Visible)

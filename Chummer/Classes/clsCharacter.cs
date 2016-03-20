@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -351,12 +369,13 @@ namespace Chummer
         public void Save()
         {
             FileStream objStream = new FileStream(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
-
-            objWriter.WriteStartDocument();
+	        XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+	        {
+		        Formatting = Formatting.Indented,
+		        Indentation = 1,
+		        IndentChar = '\t'
+	        };
+	        objWriter.WriteStartDocument();
 
             // <character>
             objWriter.WriteStartElement("character");
@@ -1739,7 +1758,7 @@ namespace Chummer
                     XmlNode objXmlWeapon = objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                     TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(this);
-                    objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null, null);
+                    objWeapon.Create(objXmlWeapon, this, objGearWeaponNode, null, null);
                     objGearWeaponNode.ForeColor = SystemColors.GrayText;
                     _lstWeapons.Add(objWeapon);
                 }
@@ -5090,11 +5109,12 @@ namespace Chummer
         {
             get
             {
-                // Street Cred = Career Karma / 10, rounded down
-                int intReturn = CareerKarma/10;
+				// Street Cred = Career Karma / 10, rounded down
+				double dblReturn = Math.Floor(Convert.ToDouble(CareerKarma / 10));
+                int intReturn = Convert.ToInt32(dblReturn);
 
-                // Deduct burnt Street Cred.
-                intReturn -= _intBurntStreetCred;
+				// Deduct burnt Street Cred.
+				intReturn -= _intBurntStreetCred;
 
                 return intReturn;
             }
@@ -5203,13 +5223,17 @@ namespace Chummer
         {
             get
             {
-                // Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
-                double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
-                dblAwareness = Math.Floor(dblAwareness / 3);
+				int intReturn = 0;
+				if (_objOptions.UseCalculatedPublicAwareness)
+				{
+					// Public Awareness is calculated as (Street Cred + Notoriety) / 3, rounded down.
+					double dblAwareness = Convert.ToDouble(TotalStreetCred, GlobalOptions.Instance.CultureInfo) + Convert.ToDouble(TotalNotoriety, GlobalOptions.Instance.CultureInfo);
+					dblAwareness = Math.Floor(dblAwareness / 3);
+					intReturn += Convert.ToInt32(dblAwareness);
+				}
 
 				ImprovementManager manager = new ImprovementManager(this);
 
-                int intReturn = 0;
 
                 return intReturn + manager.ValueOf(Improvement.ImprovementType.PublicAwareness);
             }
@@ -5235,7 +5259,10 @@ namespace Chummer
             {
                 string strReturn = "";
 
-                //strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+				if (_objOptions.UseCalculatedPublicAwareness)
+				{
+					strReturn += "(" + LanguageManager.Instance.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.Instance.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+				}
 
                 return strReturn;
             }
@@ -6320,43 +6347,44 @@ namespace Chummer
                         objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
                     try
                     {
-                        _strMovement = "0"; // objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-
-                        try
-                        {
-                            string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
-                            string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
-                            string strSprint = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["sprint"].InnerText;
-
-                            if (_objOptions.CyberlegMovement)
-                            {
-                                int intLegs = 0;
-                                int intAGI = 0;
-                                foreach (Cyberware objCyber in _lstCyberware)
-                                {
-                                    if (objCyber.LimbSlot == "leg")
-                                    {
-                                        intLegs++;
-                                        if (intAGI > 0)
-                                            intAGI = Math.Min(intAGI, objCyber.TotalAgility);
-                                        else
-                                            intAGI = objCyber.TotalAgility;
-                                    }
-                                }
-                                if (intLegs == 2)
-                                    _strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
-                                else
-                                    _strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
-                            }
-                            else
-                                _strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
-                        }
-                        catch
-                        { }
+                        _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
+						
                     }
                     catch
                     {
-                        _strMovement = "0";
+						try
+						{
+							string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
+							string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
+							string strSprint = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["sprint"].InnerText;
+
+							if (_objOptions.CyberlegMovement)
+							{
+								int intLegs = 0;
+								int intAGI = 0;
+								foreach (Cyberware objCyber in _lstCyberware)
+								{
+									if (objCyber.LimbSlot == "leg")
+									{
+										intLegs++;
+										if (intAGI > 0)
+											intAGI = Math.Min(intAGI, objCyber.TotalAgility);
+										else
+											intAGI = objCyber.TotalAgility;
+									}
+								}
+								if (intLegs == 2)
+									_strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
+								else
+									_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+							}
+							else
+								_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+						}
+						catch
+						{
+							_strMovement = "0";
+						}						
                     }
                     
                 }

@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-350</version>
 	<name>English (US)</name>
@@ -2107,6 +2125,14 @@
 			<text>You have {0} remaining but are only allowed to carry {1} over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>
 		<string>
+			<key>MessageTitle_ExtraPoints</key>
+			<text>Extra Points</text>
+		</string>
+		<string>
+			<key>Message_ExtraPoints</key>
+			<text>You have {0} points to spend on {1}.\nAre you sure you want to lose these extra points?</text>
+		</string>
+		<string>
 			<key>Message_NoExtraKarma</key>
 			<text>You have {0} remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose these extra points?</text>
 		</string>	
@@ -3334,8 +3360,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Allows characters with two Cyberlegs to use the Cyberlegs Agility to calculate movement rates.</text>
 		</string>
 		<string>
-			<key>Tip_OptionsDontDoubleQualities</key>
-			<text>Allows characters in Career mode to purchase Positive Qualities and buy off Negative at their normal price instead of doubling them.</text>
+			<key>Tip_OptionsDontDoubleQualityRefunds</key>
+			<text>Allows characters in Career mode to remove Negative Qualities at their normal price instead of doubling them.</text>
+		</string>
+		<string>
+			<key>Tip_OptionsDontDoubleQualityPurchases</key>
+			<text>Allows characters in Career mode to purchase Positive Qualities at their normal price instead of doubling them.</text>
 		</string>
 		<string>
 			<key>Tip_OptionsExceptionalAttribute</key>
@@ -3399,7 +3429,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_StreetCred</key>
-			<text>Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further adjusted by Game Masters.</text>
+			<text>Street Cred is calculated as Career Karma ÷ 10, rounded down, and can be further adjusted by Game Masters.</text>
 		</string>
 		<string>
 			<key>Tip_Notoriety</key>
@@ -4418,6 +4448,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Hide Qualities prohibited by Missions</text>
     </string>
 		<string>
+			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
+			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
+		</string>
+		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
 		</string>
@@ -4770,6 +4804,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Open Dice Roller</text>
 		</string>
 		<!-- End Region-->
+		<!-- Region ASDF Attributes-->
+		<string>
+			<key>String_Attack</key>
+			<text>Attack</text>
+		</string>
+		<string>
+			<key>String_Sleaze</key>
+			<text>Sleaze</text>
+		</string>
+		<string>
+			<key>String_DataProcessing</key>
+			<text>Data Processing</text>
+		</string>
+		<!-- End Region -->
 		<!-- Region Individual Form- and UserControl-specific strings below this point -->
 		<!-- Region Contacts/Enemies -->
 		<string>
@@ -6183,8 +6231,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Knucks Benefit from Unarmed Attack Bonuses</text>
 		</string>
 		<string>
-			<key>Checkbox_Options_DontDoubleQualities</key>
-			<text>Don't double the cost of Qualities in Career Mode</text>
+			<key>Checkbox_Options_DontDoubleNegativeQualityRefunds</key>
+			<text>Don't double the cost of refunding Negative Qualities in Career Mode</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_DontDoubleQualityPurchases</key>
+			<text>Don't double the cost of purchasing Positive Qualities in Career Mode</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreArt</key>

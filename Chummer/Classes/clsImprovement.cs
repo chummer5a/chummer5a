@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -4513,7 +4531,6 @@ namespace Chummer
 					{
 						strForcedValue = objXmlOptionalPower.Attributes["select"].InnerText;
 					}
-					//values.Add(new KeyValuePair<string, Stream>(title, contents));
 					lstValue.Add(new KeyValuePair<string, string>(strQuality,strForcedValue));
 				}
 				frmPickPower.LimitToList(lstValue);
@@ -4550,7 +4567,7 @@ namespace Chummer
 				TreeNode objPowerNode = new TreeNode();
 				CritterPower objPower = new CritterPower(_objCharacter);
 				
-                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, intRating, strForcedValue);
+                objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, 0, strForcedValue);
 				_objCharacter.CritterPowers.Add(objPower);
 			}
 
@@ -4662,33 +4679,42 @@ namespace Chummer
                 // Remove "free" adept powers if any.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
                 {
-                    // Load the power from XML.
-                    // objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
-                    XmlDocument objXmlMentorDocument = new XmlDocument();
-                    objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
-					XmlNode objXmlMentorBonus =
-						objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" + objImprovement.Notes +
-						                                      "\"]");
-                    XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
-                    foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
-                    {
-                        // Get the Power information
-                        XmlDocument objXmlDocument = new XmlDocument();
-                        objXmlDocument = XmlManager.Instance.Load("powers.xml");
+					// Load the power from XML.
+					// objImprovement.Notes = name of the mentor spirit choice. Find the power name from here.
+					// TODO: Fix this properly. Generates a null exception if multiple adept powers are added by the improvement, as with the Dragonslayer Mentor Spirit. 
+	                try
+	                {
+		                XmlDocument objXmlMentorDocument = new XmlDocument();
+		                objXmlMentorDocument = XmlManager.Instance.Load("mentors.xml");
+		                XmlNode objXmlMentorBonus =
+			                objXmlMentorDocument.SelectSingleNode("/chummer/mentors/mentor/choices/choice[name = \"" +
+			                                                      objImprovement.Notes +
+			                                                      "\"]");
+		                XmlNodeList objXmlPowerList = objXmlMentorBonus["bonus"].SelectNodes("specificpower");
+		                foreach (XmlNode objXmlSpecificPower in objXmlPowerList)
+		                {
+			                // Get the Power information
+			                XmlDocument objXmlDocument = new XmlDocument();
+			                objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
-                        string strPowerName = objXmlSpecificPower["name"].InnerText;
+			                string strPowerName = objXmlSpecificPower["name"].InnerText;
 
-                        // Find the power (if it still exists)
-						foreach (Power objPower in _objCharacter.Powers)
-                        {
-                            if (objPower.Name == strPowerName)
-                            {
-                                // Disable the free property and remove any free levels.
-                                objPower.Free = false;
-                                objPower.FreeLevels = 0;
-                            }
-                        }
-                    }
+			                // Find the power (if it still exists)
+			                foreach (Power objPower in _objCharacter.Powers)
+			                {
+				                if (objPower.Name == strPowerName)
+				                {
+					                // Disable the free property and remove any free levels.
+					                objPower.Free = false;
+					                objPower.FreeLevels = 0;
+				                }
+			                }
+		                }
+	                }
+	                catch
+	                {
+
+	                }
                 }
 
 				// Determine if access to any Special Attributes have been lost.
@@ -4876,10 +4902,6 @@ namespace Chummer
 									{
 										objWeaponAccessory.DiscountCost = false;
 									}
-									foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-									{
-										objWeaponMod.DiscountCost = false;
-									}
 								}
 								foreach (Gear objGear in objVehicle.Gear)
 								{
@@ -4896,10 +4918,6 @@ namespace Chummer
 								foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
 								{
 									objWeaponAccessory.DiscountCost = false;
-								}
-								foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-								{
-									objWeaponMod.DiscountCost = false;
 								}
 							}
 							foreach (Gear objGear in _objCharacter.Gear)

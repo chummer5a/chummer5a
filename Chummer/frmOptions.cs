@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -69,8 +87,9 @@ namespace Chummer
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             _characterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _characterOptions.DontDoubleQualities = chkDontDoubleQualities.Checked;
-            _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
+            _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
+			_characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
+			_characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
             _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = Convert.ToInt32(cboEssenceDecimals.SelectedValue);
@@ -106,6 +125,7 @@ namespace Chummer
             _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
             _characterOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
             _characterOptions.UseCalculatedVehicleSensorRatings = chkUseCalculatedVehicleSensorRatings.Checked;
+			_characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.UsePointsOnBrokenGroups = chkUsePointsOnBrokenGroups.Checked;
 
             switch (cboLimbCount.SelectedValue.ToString())
@@ -569,7 +589,8 @@ namespace Chummer
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
-			chkDontDoubleQualities.Checked = _characterOptions.DontDoubleQualities;
+			chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
+			chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
 			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
 			chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
 			chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
@@ -598,6 +619,7 @@ namespace Chummer
 			chkSpecialKarmaCost.Checked = _characterOptions.SpecialKarmaCostBasedOnShownValue;
 			chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
 			chkUseCalculatedVehicleSensorRatings.Checked = _characterOptions.UseCalculatedVehicleSensorRatings;
+			chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
 			chkUsePointsOnBrokenGroups.Checked = _characterOptions.UsePointsOnBrokenGroups;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
@@ -855,10 +877,12 @@ namespace Chummer
             tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
             tipTooltip.SetToolTip(chkIgnoreArt, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsIgnoreArt"), width));
             tipTooltip.SetToolTip(chkCyberlegMovement, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsCyberlegMovement"), width));
-            tipTooltip.SetToolTip(chkDontDoubleQualities, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualities"), width));
-            tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
+            tipTooltip.SetToolTip(chkDontDoubleQualityPurchases, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityPurchases"), width));
+			tipTooltip.SetToolTip(chkDontDoubleQualityRefunds, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsDontDoubleQualityRefunds"), width));
+			tipTooltip.SetToolTip(chkUsePointsOnBrokenGroups, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsUsePointsOnBrokenGroups"), width));
             tipTooltip.SetToolTip(chkAllowInitiation, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsAllowInitiation"), width));
-        }
+			tipTooltip.SetToolTip(chkUseCalculatedPublicAwareness, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_PublicAwareness"), width));
+		}
 
         private void PopulateSettingsList()
         {
@@ -1130,5 +1154,6 @@ namespace Chummer
 			#endif
 		}
 		#endregion
+
 	}
 }

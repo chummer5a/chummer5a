@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
   <version>-355</version>
   <grades>
@@ -246,7 +264,7 @@
       <cost>Rating * 32000</cost>
       <bonus>
         <specificattribute>
-          <name>AGI</name>
+          <name precedence="0">AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -393,7 +411,7 @@
       <avail>(Rating * 6)R</avail>
       <cost>Rating * 95000</cost>
       <bonus>
-        <initiativepass>Rating</initiativepass>
+        <initiativepass precedence="1">Rating</initiativepass>
         <specificattribute>
           <name precedence="1">REA</name>
           <val>Rating</val>
@@ -833,10 +851,10 @@
 			<id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
 			<name>Moderate Biosculpting Modification</name>
 			<category>Biosculpting</category>
-			<ess>0</ess>
+			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>2</avail>
-			<cost>Variable(50-500)</cost>
+			<cost>Variable(500-2000)</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
@@ -850,7 +868,7 @@
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>2</avail>
-			<cost>Variable(50-500)</cost>
+			<cost>Variable(2000-10000)</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
@@ -1170,7 +1188,7 @@
 			<cost>4000</cost>
 			<bonus>
 				<limitmodifier>
-					<limit>Stealth</limit>
+					<limit>Physical</limit>
 					<value>2</value>
 					<condition>Stealth Skill: Must be completely naked</condition>
 				</limitmodifier>
@@ -1326,7 +1344,7 @@
 			<avail>8R</avail>
 			<cost>10000</cost>
 			<bonus>
-				<initiativepass>1</initiativepass>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>118</page>
@@ -1797,8 +1815,8 @@
 			<avail>8</avail>
 			<cost>78000</cost>
 			<bonus>
-				<initiative>1</initiative>
-				<initiativepass>1</initiativepass>
+				<initiative precedence="1">1</initiative>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>162</page>

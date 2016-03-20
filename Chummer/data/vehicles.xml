@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-390</version>
 	<categories>
@@ -37,6 +55,9 @@
 			<armor>4</armor>
 			<seats>1</seats>
 			<sensor>1</sensor>
+			<mods>
+				<name>Improved Economy</name>
+			</mods>
 			<gears>
 				<gear rating="1">Sensor Array</gear>
 			</gears>
@@ -49,22 +70,22 @@
 			<id>d43b2b6a-d6e6-460a-ab75-ca445db06dde</id>
 			<name>Daihatsu-Caterpillar Horseman</name>
 			<category>Bikes</category>
-			<handling>2/1</handling>
+			<handling>3/1</handling>
 			<speed>3</speed>
-			<accel>3</accel>
+			<accel>2</accel>
 			<body>4</body>
-			<armor>4</armor>
+			<armor>3</armor>
 			<pilot>2</pilot>
-			<sensor>1</sensor>
+			<sensor>2</sensor>
 			<seats>1</seats>
 			<gears>
-				<gear rating="1">Sensor Array</gear>
+				<gear rating="2">Sensor Array</gear>
 			</gears>
 			<mods>
 				<name>Enviroseal</name>
 			</mods>
 			<avail>0</avail>
-			<cost>3000</cost>
+			<cost>12000</cost>
 			<source>R5</source>
 			<page>41</page>
 		</vehicle>
@@ -239,9 +260,6 @@
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
-			<mods>
-				<name>Gyro-Stabalization</name>
-			</mods>
 			<avail>0</avail>
 			<cost>22000</cost>
 			<source>R5</source>
@@ -389,7 +407,7 @@
 			<armor>6</armor>
 			<pilot>2</pilot>
 			<sensor>2</sensor>
-			<seats>2</seats>
+			<seats>4</seats>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -495,7 +513,7 @@
 			<armor>6</armor>
 			<pilot>1</pilot>
 			<sensor>2</sensor>
-			<seats>12</seats>
+			<seats>6</seats>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -553,7 +571,7 @@
 				<name>Weapon Mount Flexibility (Fixed)</name>
 				<name>Weapon Mount Control (Manual)</name>
 			</mods>
-			<avail>2</avail>
+			<avail>8</avail>
 			<cost>7500</cost>
 			<source>R5</source>
 			<page>52</page>
@@ -610,7 +628,7 @@
 			<accel>2</accel>
 			<body>15</body>
 			<armor>6</armor>
-			<pilot>6</pilot>
+			<pilot>4</pilot>
 			<sensor>3</sensor>
 			<seats>6</seats>
 			<gears>
@@ -917,7 +935,6 @@
 				<name>Landing Drone Rack (Micro)</name>
 				<name>Landing Drone Rack (Small)</name>
 				<name>Landing Drone Rack (Small)</name>
-				<name>Standard Drone Rack (Small)</name>
 				<name>Rigger Cocoon</name>
 				<name>Rigger Cocoon</name>
 				<name>Rigger Interface</name>
@@ -994,7 +1011,7 @@
 			<avail>12</avail>
 			<cost>248000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>49ed00fb-70b2-46d3-b10a-4e12bd89d798</id>
@@ -1014,7 +1031,7 @@
 			<avail>12</avail>
 			<cost>196000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>4bd62e1e-11e1-4b69-9f16-6073abaab680</id>
@@ -1034,7 +1051,7 @@
 			<avail>12</avail>
 			<cost>312000</cost>
 			<source>R5</source>
-			<page>62</page>
+			<page>63</page>
 		</vehicle>
 		<vehicle>
 			<id>8cb508c2-462b-4499-9c00-ac244b9c72b6</id>
@@ -1123,7 +1140,7 @@
 			<id>b7a2c6af-b0b3-446e-8a49-b1e6b8fd131b</id>
 			<name>Vodyanoy Assault Hovercraft</name>
 			<category>Municipal/Construction</category>
-			<handling>3/4</handling>
+			<handling>3/3</handling>
 			<speed>4</speed>
 			<accel>3</accel>
 			<body>16</body>
@@ -1562,16 +1579,16 @@
 			<id>193a6429-b4ba-4e68-a89e-5cd9a7965e50</id>
 			<name>Sea Ray Cottonmouth</name>
 			<category>Boats</category>
-			<handling>3</handling>
-			<speed>3</speed>
-			<accel>2</accel>
-			<body>14</body>
-			<armor>8</armor>
+			<handling>5</handling>
+			<speed>7</speed>
+			<accel>4</accel>
+			<body>8</body>
+			<armor>4</armor>
 			<pilot>3</pilot>
-			<sensor>2</sensor>
-			<seats>12</seats>
+			<sensor>3</sensor>
+			<seats>4</seats>
 			<gears>
-				<gear rating="2">Sensor Array</gear>
+				<gear rating="3">Sensor Array</gear>
 			</gears>
 			<mods>
 				<name>Amenities (Squatter)</name>
@@ -2607,7 +2624,7 @@
 			<id>a38e5f21-eb84-4f01-81cc-ee214d88ed96</id>
 			<name>Ares Arms Sentry V (Small)</name>
 			<category>Drones: Small</category>
-			<handling>4/-</handling>
+			<handling>4/0</handling>
 			<accel>1</accel>
 			<speed>1</speed>
 			<pilot>3</pilot>
@@ -3821,7 +3838,7 @@
 			<accel>1</accel>
 			<speed>4</speed>
 			<pilot>3</pilot>
-			<body>5</body>
+			<body>6</body>
 			<armor>12</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
@@ -3915,6 +3932,9 @@
 			<armor>9</armor>
 			<seats>1</seats>
 			<sensor>2</sensor>
+			<mods>
+				<name>Metahuman Adjustment</name>
+			</mods>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -4015,6 +4035,10 @@
 			<armor>8</armor>
 			<sensor>5</sensor>
 			<seats>2</seats>
+			<mods>
+				<name rating="6">Passenger Protection System</name>
+				<name rating="2">Anti-Theft System</name>
+			</mods>
 			<gears>
 				<gear rating="5">Sensor Array</gear>
 			</gears>
@@ -4095,6 +4119,9 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>4</seats>
+			<mods>
+				<addslots>4</addslots>
+			</mods>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -4175,6 +4202,10 @@
 			<armor>15</armor>
 			<sensor>5</sensor>
 			<seats>8</seats>
+			<mods>
+				<name>Amenities (Luxury)</name>
+				<name rating="2">Life Support</name>
+			</mods>
 			<gears>
 				<gear rating="5">Sensor Array</gear>
 			</gears>
@@ -4255,6 +4286,9 @@
 			<armor>10</armor>
 			<sensor>2</sensor>
 			<seats>3</seats>
+			<mods>
+				<name>Off-Road Suspension</name>
+			</mods>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -4275,6 +4309,9 @@
 			<armor>12</armor>
 			<sensor>2</sensor>
 			<seats>6</seats>
+			<mods>
+				<addslots>4</addslots>
+			</mods>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -4438,6 +4475,10 @@
 			<armor>6</armor>
 			<sensor>1</sensor>
 			<seats>3</seats>
+			<mods>
+				<name>Smuggling Compartment</name>
+				<name>Assembly/Disassembly</name>
+			</mods>
 			<gears>
 				<gear rating="1">Sensor Array</gear>
 			</gears>
@@ -4485,6 +4526,7 @@
 			<avail>0</avail>
 			<cost>14000</cost>
 			<mods>
+				<name>Standard drone rack (medium)</name>
 				<name>Ballast Tanks Level 1</name>
 				<name>Drone Rack, Small Landing</name>
 			</mods>
@@ -4526,6 +4568,9 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>1</seats>
+			<mods>
+				<name rating="4">Signature Masking</name>
+			</mods>
 			<gears>
 				<gear rating="2">Sensor Array</gear>
 			</gears>
@@ -4566,6 +4611,9 @@
 			<armor>10</armor>
 			<sensor>3</sensor>
 			<seats>24</seats>
+			<mods>
+				<name>Secondary Propulsion (Amphibious, Surface)</name>
+			</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
@@ -4673,6 +4721,10 @@
 			<armor>18</armor>
 			<sensor>6</sensor>
 			<seats>12</seats>
+			<mods>
+				<name>Rigger Cocoon</name>
+				<name rating="4">ECM</name>
+			</mods>
 			<gears>
 				<gear rating="6">Sensor Array</gear>
 			</gears>
@@ -4713,6 +4765,7 @@
 			<armor>0</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<mods>Gecko Tips</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
@@ -4795,6 +4848,9 @@
 			<armor>0</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<mods>
+				<name rating="2">Realistic Features</name>
+			</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
@@ -4836,6 +4892,7 @@
 			<armor>2</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<mods rating="3">Signature Masking</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
@@ -4877,6 +4934,7 @@
 			<sensor>3</sensor>
 			<seats>0</seats>
 			<mods>
+				<name rating="1">Realistic Features</name>
 				<name>Weapon Mount</name>
 				<name>Weapon Mount</name>
 			</mods>
@@ -4971,6 +5029,9 @@
 			<armor>4</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<mods>
+				<addslots>3</addslots>
+			</mods>
 			<gears>
 				<gear rating="3">Sensor Array</gear>
 			</gears>
@@ -5238,6 +5299,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>2500</cost>
 			<source>SR5</source>
@@ -5249,6 +5311,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>9F</avail>
 			<cost>3000</cost>
 			<source>SR5</source>
@@ -5260,6 +5323,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>14F</avail>
 			<cost>5000</cost>
 			<source>SR5</source>
@@ -5271,6 +5335,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>15F</avail>
 			<cost>5500</cost>
 			<source>SR5</source>
@@ -5424,9 +5489,12 @@
 			<name>Acceleration Enhancement</name>
 			<category>Powertrain</category>
 			<rating>2</rating>
+			<bonus>
+				<accel>+Rating</accel>
+			</bonus>
 			<slots>FixedValues(4,8)</slots>
 			<avail>6</avail>
-			<cost>FixedValues(Accel * 10000,Accel * 2500)</cost>
+			<cost>FixedValues(Acceleration * 10000,Acceleration * 25000)</cost>
 			<source>R5</source>
 			<page>154</page>
 		</mod>
@@ -5492,7 +5560,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<handling>Rating</handling>
+				<handling>+Rating</handling>
 			</bonus>
 			<slots>FixedValues(4,10,18)</slots>
 			<avail>FixedValues(6,8,10)</avail>
@@ -5664,7 +5732,7 @@
 			<category>Powertrain</category>
 			<rating>3</rating>
 			<bonus>
-				<speed>Rating</speed>
+				<speed>+Rating</speed>
 			</bonus>
 			<slots>FixedValues(5,14,20)</slots>
 			<avail>FixedValues(6,8,12)</avail>
@@ -5997,6 +6065,7 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>1</slots>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Melee</weaponmountcategories>
 			<avail>6F</avail>
 			<cost>750</cost>
 			<source>R5</source>
@@ -6008,8 +6077,9 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>2</slots>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>8F</avail>
-			<cost>750</cost>
+			<cost>1500</cost>
 			<source>R5</source>
 			<page>163</page>
 		</mod>
@@ -6019,8 +6089,9 @@
 			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>4</slots>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles</weaponmountcategories>
 			<avail>10F</avail>
-			<cost>750</cost>
+			<cost>4000</cost>
 			<source>R5</source>
 			<page>163</page>
 		</mod>
@@ -6576,6 +6647,7 @@
 			<rating>0</rating>
 			<slots>0</slots>
 			<avail>4R</avail>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Grenades,Blades,Clubs</weaponmountcategories>
 			<cost>Variable(0-1000000)</cost>
 			<source>R5</source>
 			<page>124</page>
@@ -6598,6 +6670,7 @@
 			<rating>0</rating>
 			<slots>0</slots>
 			<avail>8R</avail>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols</weaponmountcategories>
 			<cost>Variable(0-1000000)</cost>
 			<source>R5</source>
 			<page>124</page>
@@ -6609,6 +6682,7 @@
 			<rating>0</rating>
 			<slots>0</slots>
 			<avail>10F</avail>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Grenade Launchers</weaponmountcategories>
 			<cost>Variable(0-1000000)</cost>
 			<source>R5</source>
 			<page>124</page>
@@ -6620,6 +6694,7 @@
 			<rating>0</rating>
 			<slots>0</slots>
 			<avail>12F</avail>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Sporting Rifles</weaponmountcategories>
 			<cost>Variable(0-1000000)</cost>
 			<source>R5</source>
 			<page>124</page>
@@ -6630,6 +6705,7 @@
 			<category>All</category>
 			<rating>0</rating>
 			<slots>0</slots>
+			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine GunsSporting Rifles</weaponmountcategories>
 			<avail>16F</avail>
 			<cost>Variable(0-1000000)</cost>
 			<source>R5</source>
@@ -6653,7 +6729,7 @@
 			<rating>4</rating>
 			<slots>0</slots>
 			<avail>FixedValues(2,4,8,12R)</avail>
-			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 100,Body * Body * 5000)</cost>
+			<cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
 			<source>R5</source>
 			<page>125</page>
 		</mod>
@@ -6841,6 +6917,9 @@
 			<name>Pilot Program (Drone)</name>
 			<category>All</category>
 			<rating>6</rating>
+			<bonus>
+				<pilot>Rating</pilot>
+			</bonus>
 			<slots>0</slots>
 			<avail>FixedValues(4,0,8R,12R,16F,24F</avail>
 			<cost>FixedValues(100,400,1800,3200,10000,20000)</cost>
@@ -6864,6 +6943,9 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Handling + 1</minrating>
+			<bonus>
+				<handling>Rating</handling>
+			</bonus>
 			<slots>Handling - Rating - 1</slots>
 			<avail>Rating * 2</avail>
 			<cost>Body * Rating * 200</cost>
@@ -6878,6 +6960,9 @@
 			<minrating>Speed + 1</minrating>
 			<slots>Speed - Rating - 1</slots>
 			<avail>Rating * 2</avail>
+			<bonus>
+				<speed>Rating</speed>
+			</bonus>
 			<cost>Body * Rating * 400</cost>
 			<source>R5</source>
 			<page>123</page>
@@ -6888,7 +6973,10 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Acceleration + 1</minrating>
-			<slots>Acceleration - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<accel>Rating</accel>
+			</bonus>
 			<avail>Rating * 4</avail>
 			<cost>Body * Rating * 200</cost>
 			<source>R5</source>
@@ -6899,6 +6987,9 @@
 			<name>Body (Drone)</name>
 			<category>All</category>
 			<rating>99</rating>
+			<bonus>
+				<body>Rating</body>
+			</bonus>
 			<slots>0</slots>
 			<avail>Rating * 3</avail>
 			<cost>0</cost>
@@ -6910,8 +7001,11 @@
 			<name>Armor (Drone)</name>
 			<category>All</category>
 			<rating>6</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>Armor + 1</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -6922,8 +7016,11 @@
 			<name>Armor Restricted (Drone)</name>
 			<category>All</category>
 			<rating>12</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>6</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -6934,8 +7031,11 @@
 			<name>Armor Forbidden(Drone)</name>
 			<category>All</category>
 			<rating>99</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<minrating>12</minrating>
-			<slots>Armor - Rating - 3</slots>
+			<slots>0</slots>
 			<avail>Rating</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
@@ -6947,7 +7047,10 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Sensor + 1</minrating>
-			<slots>Sensor - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<sensor>Rating</sensor>
+			</bonus>
 			<avail>Rating * 2</avail>
 			<cost>Rating * 1000</cost>
 			<source>R5</source>
@@ -6959,11 +7062,25 @@
 			<category>All</category>
 			<rating>99</rating>
 			<minrating>Sensor + 1</minrating>
-			<slots>Sensor - Rating - 1</slots>
+			<slots>0</slots>
+			<bonus>
+				<sensor>Rating</sensor>
+			</bonus>
 			<avail>Rating * 2</avail>
 			<cost>Rating * 100</cost>
 			<source>R5</source>
 			<page>123</page>
+		</mod>
+		<mod>
+			<id>ee2db19d-06e9-4443-9495-ec736b524c04</id>
+			<name>Paraplegic Modification</name>
+			<category>All</category>
+			<rating>0</rating>
+			<slots>0</slots>
+			<avail>0</avail>
+			<cost>Vehicle Cost * 0.05</cost>
+			<source>RF</source>
+			<page>157</page>
 		</mod>
 	</mods>
 </chummer>

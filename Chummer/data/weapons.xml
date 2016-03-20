@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-330</version>
 	<categories>
@@ -865,7 +883,7 @@
 			<rc>0</rc>
 			<ammo>0</ammo>
 			<avail>8R</avail>
-			<cost>950</cost>
+			<cost>900</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>19</page>
@@ -4099,8 +4117,12 @@
 			<cost>830</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Smartgun System, Internal</name></accessory>
@@ -4129,8 +4151,12 @@
 			<cost>775</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4157,8 +4183,12 @@
 			<cost>270</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Stock</name></accessory>
@@ -4210,8 +4240,12 @@
 			<cost>850</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4239,8 +4273,12 @@
 			<cost>750</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
@@ -4265,7 +4303,14 @@
 			<ammo>30(c)</ammo>
 			<avail>17F</avail>
 			<cost>2800</cost>
-			<accessorymounts/>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
 			<accessories>
 				<accessory>
 					<name>Collapsed Frame</name>
@@ -4294,8 +4339,12 @@
 			<cost>700</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory>
@@ -4323,8 +4372,12 @@
 			<cost>350</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Laser Sight</name></accessory>
@@ -4350,8 +4403,12 @@
 			<cost>800</cost>
 			<allowaccessory>true</allowaccessory>
 			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
 				<mount>Barrel</mount>
 				<mount>Top</mount>
+				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
 				<accessory><name>Laser Sight</name></accessory>
@@ -4385,7 +4442,9 @@
 				<mount>Under</mount>
 			</accessorymounts>
 			<accessories>
-				<accessory><name>Laser Sight</name></accessory>
+				<accessory>
+					<name>Laser Sight</name>
+				</accessory>
 				<accessory>
 					<name>Tripod</name>
 			</accessory>
@@ -4584,11 +4643,27 @@
 			<avail>9R</avail>
 			<cost>1200</cost>
 			<allowaccessory>true</allowaccessory>
+			<accessorymounts>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+				<mount>Internal</mount>
+				<mount>Barrel</mount>
+				<mount>Top</mount>
+				<mount>Under</mount>
+			</accessorymounts>
 			<accessories>
 				<accessory>
 					<name>Advanced Safety System, Basic</name>
 				</accessory>
-				<accessory><name>Smartgun System, Internal</name></accessory>
+				<accessory>
+					<name>Smartgun System, Internal</name>
+				</accessory>
+				<accessory>
+					<name>Melee Hardening</name>
+				</accessory>
+				<accessory>
+					<name>Trigger Removal</name>
+				</accessory>
 			</accessories>
 			<source>GH3</source>
 			<page>22</page>
@@ -7605,26 +7680,6 @@
 			<page>179</page>
 		</weapon>
 		<weapon>
-			<id>8080fafb-9784-43ca-bd71-6c823853b80b</id>
-			<name>Victorinox Collapsible Hatchet</name>
-			<category>Blades</category>
-			<type>Melee</type>
-			<spec>Swords</spec>
-			<conceal>4</conceal>
-			<accuracy>5</accuracy>
-			<reach>1</reach>
-			<damage>(STR+2)P</damage>
-			<ap>-1</ap>
-			<mode>0</mode>
-			<rc>0</rc>
-			<ammo>0</ammo>
-			<avail>4</avail>
-			<cost>250</cost>
-			<allowaccessory>true</allowaccessory>
-			<source>HT</source>
-			<page>179</page>
-		</weapon>
-		<weapon>
 			<id>4225b0c1-2da0-4dd9-9c98-2136a57946cf</id>
 			<name>Throwing Syringe</name>
 			<category>Gear</category>
@@ -8294,6 +8349,8 @@
 			<mount/>
 			<avail>14F</avail>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>10</ammoreplace>
 			<cost>400</cost>
 			<source>RG</source>
 			<page>52</page>
@@ -8303,6 +8360,8 @@
 			<name>Peak-Discharge Battery Pack, Satchel Power Pack</name>
 			<mount/>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>20</ammoreplace>
 			<avail>16F</avail>
 			<cost>900</cost>
 			<source>RG</source>
@@ -8314,6 +8373,8 @@
 			<mount/>
 			<avail>20F</avail>
 			<rating>0</rating>
+			<ammoslots>1</ammoslots>
+			<ammoreplace>30</ammoreplace>
 			<cost>2500</cost>
 			<source>RG</source>
 			<page>52</page>

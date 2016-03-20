@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -472,14 +490,14 @@ namespace Chummer
 				}
 
 				// If this is AGI or STR, factor in any Cyberlimbs.
-                //if (_strAbbrev == "AGI" || _strAbbrev == "STR")
-                //{
-                //    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                //    {
-                //        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
-                //            return true;
-                //    }
-                //}
+                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                {
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    {
+                        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                            return true;
+                    }
+                }
 				return false;
 			}
 		}
@@ -552,41 +570,41 @@ namespace Chummer
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                //if (_strAbbrev == "AGI" || _strAbbrev == "STR")
-                //{
-                //    int intLimbTotal = 0;
-                //    int intLimbCount = 0;
-                //    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                //    {
-                //        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "" && objCyberware.LimbSlot != _objCharacter.Options.ExcludeLimbSlot)
-                //        {
-                //            intLimbCount++;
-                //            switch (_strAbbrev)
-                //            {
-                //                case "STR":
-                //                    intLimbTotal += objCyberware.TotalStrength;
-                //                    break;
-                //                default:
-                //                    intLimbTotal += objCyberware.TotalAgility;
-                //                    break;
-                //            }
-                //        }
-                //    }
+                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                {
+                    int intLimbTotal = 0;
+                    int intLimbCount = 0;
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    {
+                        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "" && objCyberware.LimbSlot != _objCharacter.Options.ExcludeLimbSlot)
+                        {
+                            intLimbCount++;
+                            switch (_strAbbrev)
+                            {
+                                case "STR":
+                                    intLimbTotal += objCyberware.TotalStrength;
+                                    break;
+                                default:
+                                    intLimbTotal += objCyberware.TotalAgility;
+                                    break;
+                            }
+                        }
+                    }
 
-                //    if (intLimbCount > 0)
-                //    {
-                //        intReturn = 0;
-                //        if (intLimbCount < _objCharacter.Options.LimbCount)
-                //        {
-                //            // Not all of the limbs have been replaced, so we need to place the CharacterAttribute in the other "limbs" to get the average value.
-                //            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
-                //                intLimbTotal += intMeat;
-                //            intLimbCount = _objCharacter.Options.LimbCount;
-                //        }
-                //        int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
-                //        intReturn += intTotal;
-                //    }
-                //}
+                    if (intLimbCount > 0)
+                    {
+                        intReturn = 0;
+                        if (intLimbCount < _objCharacter.Options.LimbCount)
+                        {
+                            // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
+                            for (int i = intLimbCount + 1; i <= _objCharacter.Options.LimbCount; i++)
+                                intLimbTotal += intMeat;
+                            intLimbCount = _objCharacter.Options.LimbCount;
+                        }
+                        int intTotal = Convert.ToInt32(Math.Floor(Convert.ToDecimal((intLimbTotal), GlobalOptions.Instance.CultureInfo) / Convert.ToDecimal(intLimbCount, GlobalOptions.Instance.CultureInfo)));
+                        intReturn += intTotal;
+                    }
+                }
 
 				// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 				if (intReturn > TotalAugmentedMaximum)
@@ -630,7 +648,7 @@ namespace Chummer
 					if (intReturn < 1)
 						intReturn = 1;
 				}
-
+				/*
 				if	(
 					(_strAbbrev == "MAG" && !(_objCharacter.AdeptEnabled || _objCharacter.MagicianEnabled)) || 
 					(_strAbbrev == "RES" && !_objCharacter.TechnomancerEnabled) || 
@@ -638,7 +656,7 @@ namespace Chummer
 					)
 				{
 					intReturn = 0;
-				}
+				}*/
 
 				if (_objCharacter.EssencePenalty != 0 && (_strAbbrev == "MAG" || _strAbbrev == "RES"))
 				{
@@ -872,20 +890,20 @@ namespace Chummer
 			}
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
-            //string strCyberlimb = "";
-            //if (_strAbbrev == "AGI" || _strAbbrev == "STR")
-            //{
-            //    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-            //    {
-            //        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
-            //        {
-            //            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-            //            strCyberlimb = LanguageManager.Instance.GetString("String_CyberlimbAttributeModifier");
-            //        }
-            //    }
-            //    if (strCyberlimb != "")
-            //        strModifier += " " + strCyberlimb;
-            //}
+            string strCyberlimb = "";
+            if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+            {
+                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                {
+                    if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                    {
+                        LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+                        strCyberlimb = LanguageManager.Instance.GetString("String_CyberlimbAttributeModifier");
+                    }
+                }
+                if (strCyberlimb != "")
+                    strModifier += " " + strCyberlimb;
+            }
 
 			return strReturn + strModifier;
 		}
@@ -1182,7 +1200,7 @@ namespace Chummer
 
 					TreeNode objGearWeaponNode = new TreeNode();
 					Weapon objGearWeapon = new Weapon(objCharacter);
-					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null, null);
+					objGearWeapon.Create(objXmlWeapon, objCharacter, objGearWeaponNode, null, null);
 					objGearWeaponNode.ForeColor = SystemColors.GrayText;
 					objWeaponNodes.Add(objGearWeaponNode);
 					objWeapons.Add(objGearWeapon);
@@ -1303,20 +1321,8 @@ namespace Chummer
 			_blnPrint = Convert.ToBoolean(objNode["print"].InnerText);
 			_objQualityType = ConvertToQualityType(objNode["qualitytype"].InnerText);
 			_objQualitySource = ConvertToQualitySource(objNode["qualitysource"].InnerText);
-            try
-            {
-                _strMetagenetic = objNode["metagenetic"].InnerText;
-            }
-            catch 
-            {
-            }
-			try
-			{
-				_strMutant = objNode["mutant"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("metagenetic", out _strMetagenetic);
+			objNode.TryGetField("mutant", out _strMutant);
 			_strSource = objNode["source"].InnerText;
 			_strPage = objNode["page"].InnerText;
 			_nodBonus = objNode["bonus"];
@@ -1327,13 +1333,7 @@ namespace Chummer
 			catch
 			{
 			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes);
 
 			if (_objQualityType == QualityType.LifeModule)
 			{
@@ -6031,6 +6031,8 @@ namespace Chummer
 		private Guid _guiID = new Guid();
 		private string _strName = "";
 		private string _strNotes = "";
+        private string _strSource = "";
+        private string _strPage = "";
 		private Character _objCharacter;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -6048,6 +6050,8 @@ namespace Chummer
 		public void Create(XmlNode objXmlAdvantageNode, Character objCharacter, TreeNode objNode)
 		{
 			_strName = objXmlAdvantageNode["name"].InnerText;
+            _strSource = objXmlAdvantageNode["source"].InnerText;
+            _strPage = objXmlAdvantageNode["page"].InnerText;
 
 			if (objXmlAdvantageNode["bonus"] != null)
 			{
@@ -6073,7 +6077,9 @@ namespace Chummer
 			objWriter.WriteElementString("guid", _guiID.ToString());
 			objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+			objWriter.WriteElementString("source", _strSource);
+			objWriter.WriteElementString("page", _strSource);
+            objWriter.WriteEndElement();
 		}
 
 		/// <summary>
@@ -6091,7 +6097,23 @@ namespace Chummer
 			catch
 			{
 			}
-		}
+
+            try
+            {
+                _strSource = objNode["source"].InnerText;
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                _strPage = objNode["page"].InnerText;
+            }
+            catch
+            {
+            }
+        }
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
@@ -6103,7 +6125,9 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayNameShort);
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteEndElement();
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteEndElement();
 		}
 		#endregion
 
@@ -6185,13 +6209,43 @@ namespace Chummer
                 _strNotes = value;
             }
         }
-        #endregion
-	}
 
-	/// <summary>
-	/// A Martial Art Maneuver.
-	/// </summary>
-	public class MartialArtManeuver
+        /// <summary>
+		/// Sourcebook.
+		/// </summary>
+		public string Source
+        {
+            get
+            {
+                return _strSource;
+            }
+            set
+            {
+                _strSource = value;
+            }
+        }
+
+        /// <summary>
+        /// Page Number.
+        /// </summary>
+        public string Page
+        {
+            get
+            {
+                return _strPage;
+            }
+            set
+            {
+                _strPage = value;
+            }
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// A Martial Art Maneuver.
+    /// </summary>
+    public class MartialArtManeuver
 	{
 		private Guid _guiID = new Guid();
 		private string _strName = "";

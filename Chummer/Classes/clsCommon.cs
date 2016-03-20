@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -290,31 +308,6 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Locate a Weapon Mod within the character's Vehicles.
-		/// </summary>
-		/// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
-		/// <param name="lstVehicles">List of Vehicles to search.</param>
-		public WeaponMod FindVehicleWeaponMod(string strGuid, List<Vehicle> lstVehicles)
-		{
-			WeaponMod objReturn = new WeaponMod(_objCharacter);
-			foreach (Vehicle objVehicle in lstVehicles)
-			{
-				objReturn = FindWeaponMod(strGuid, objVehicle.Weapons);
-				if (objReturn != null)
-					return objReturn;
-
-				foreach (VehicleMod objMod in objVehicle.Mods)
-				{
-					objReturn = FindWeaponMod(strGuid, objMod.Weapons);
-					if (objReturn != null)
-						return objReturn;
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
 		/// Locate a piece of Cyberware within the character's Vehicles.
 		/// </summary>
 		/// <param name="strGuid">InternalId of the Cyberware to find.</param>
@@ -477,31 +470,6 @@ namespace Chummer
 
 				// Look within Underbarrel Weapons.
 				objReturn = FindWeaponAccessory(strGuid, objWeapon.UnderbarrelWeapons);
-				if (objReturn != null)
-					return objReturn;
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Locate a WeaponMod within the character's Weapons.
-		/// </summary>
-		/// <param name="strGuid">InternalId of the WeaponMod to find.</param>
-		/// <param name="lstWeapons">List of Weapons to search.</param>
-		public WeaponMod FindWeaponMod(string strGuid, List<Weapon> lstWeapons)
-		{
-			WeaponMod objReturn = new WeaponMod(_objCharacter);
-			foreach (Weapon objWeapon in lstWeapons)
-			{
-				foreach (WeaponMod objMod in objWeapon.WeaponMods)
-				{
-					if (objMod.InternalId == strGuid)
-						return objMod;
-				}
-
-				// Look within Underbarrel Weapons.
-				objReturn = FindWeaponMod(strGuid, objWeapon.UnderbarrelWeapons);
 				if (objReturn != null)
 					return objReturn;
 			}
@@ -1160,10 +1128,9 @@ namespace Chummer
 		/// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
 		/// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
 		/// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
-		/// <param name="cmsWeaponMod">ContextMenuStrip for Vehicle Weapon Mod Nodes.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
 		/// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
-		public void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponMod, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
+		public void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear)
 		{
 			TreeNode objNode = new TreeNode();
 			objNode.Text = objVehicle.DisplayName;
@@ -1209,7 +1176,7 @@ namespace Chummer
 
 				// VehicleWeapons.
 				foreach (Weapon objWeapon in objMod.Weapons)
-					CreateWeaponTreeNode(objWeapon, objChildNode, cmsVehicleWeapon, cmsWeaponMod, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+					CreateWeaponTreeNode(objWeapon, objChildNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 
 				// Attach the ContextMenuStrip.
 				objChildNode.ContextMenuStrip = cmsVehicle;
@@ -1220,7 +1187,7 @@ namespace Chummer
 
 			// Vehicle Weapons (not attached to a mount).
 			foreach (Weapon objWeapon in objVehicle.Weapons)
-				CreateWeaponTreeNode(objWeapon, objNode, cmsVehicleWeapon, cmsWeaponMod, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+				CreateWeaponTreeNode(objWeapon, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 
 			// Vehicle Gear.
 			foreach (Gear objGear in objVehicle.Gear)
@@ -1266,10 +1233,9 @@ namespace Chummer
 		/// <param name="objWeapon">Weapon to add.</param>
 		/// <param name="objWeaponsNode">Node to append the Weapon Node to.</param>
 		/// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
-		/// <param name="cmsWeaponMod">ContextMenuStrip for Weapon Mod Nodes.</param>
 		/// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
 		/// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
-		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponMod, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+		public void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
 		{
 			TreeNode objNode = new TreeNode();
 			objNode.Text = objWeapon.DisplayName;
@@ -1312,25 +1278,11 @@ namespace Chummer
 				objNode.Expand();
 			}
 
-			// Add Attached Weapon Modifications.
-			foreach (WeaponMod objMod in objWeapon.WeaponMods)
-			{
-				TreeNode objChild = new TreeNode();
-				objChild.Text = objMod.DisplayName;
-				objChild.Tag = objMod.InternalId;
-				objChild.ContextMenuStrip = cmsWeaponMod;
-				if (objMod.Notes != string.Empty)
-					objChild.ForeColor = Color.SaddleBrown;
-				objChild.ToolTipText = objMod.Notes;
-				objNode.Nodes.Add(objChild);
-				objNode.Expand();
-			}
-
 			// Add Underbarrel Weapons.
 			if (objWeapon.UnderbarrelWeapons.Count > 0)
 			{
 				foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-					CreateWeaponTreeNode(objUnderbarrelWeapon, objNode, cmsWeapon, cmsWeaponMod, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+					CreateWeaponTreeNode(objUnderbarrelWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
 			}
 
 			// If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.

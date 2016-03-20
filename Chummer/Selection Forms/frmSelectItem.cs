@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -185,16 +203,6 @@ namespace Chummer
                                 lstItems.Add(objItem);
                             }
                         }
-                        foreach (WeaponMod objMod in objWeapon.WeaponMods)
-                        {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objMod.IncludedInWeapon)
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
-                                lstItems.Add(objItem);
-                            }
-                        }
                         if (objWeapon.UnderbarrelWeapons.Count > 0)
                         {
                             foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
@@ -213,16 +221,6 @@ namespace Chummer
                                         ListItem objItem = new ListItem();
                                         objItem.Value = objAccessory.DisplayNameShort;
                                         objItem.Name = objAccessory.DisplayNameShort;
-                                        lstItems.Add(objItem);
-                                    }
-                                }
-                                foreach (WeaponMod objMod in objUnderbarrelWeapon.WeaponMods)
-                                {
-                                    if (objMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objMod.IncludedInWeapon)
-                                    {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objMod.DisplayNameShort;
-                                        objItem.Name = objMod.DisplayNameShort;
                                         lstItems.Add(objItem);
                                     }
                                 }
@@ -300,16 +298,6 @@ namespace Chummer
                                         lstItems.Add(objItem);
                                     }
                                 }
-                                foreach (WeaponMod objWeaponMod in objWeapon.WeaponMods)
-                                {
-                                    if (objWeaponMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objWeaponMod.IncludedInWeapon)
-                                    {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objWeaponMod.DisplayNameShort;
-                                        objItem.Name = objWeaponMod.DisplayNameShort;
-                                        lstItems.Add(objItem);
-                                    }
-                                }
                                 if (objWeapon.UnderbarrelWeapons.Count > 0)
                                 {
                                     foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
@@ -328,16 +316,6 @@ namespace Chummer
                                                 ListItem objItem = new ListItem();
                                                 objItem.Value = objAccessory.DisplayNameShort;
                                                 objItem.Name = objAccessory.DisplayNameShort;
-                                                lstItems.Add(objItem);
-                                            }
-                                        }
-                                        foreach (WeaponMod objWeaponMod in objUnderbarrelWeapon.WeaponMods)
-                                        {
-                                            if (objWeaponMod.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailRestricted")) && !objWeaponMod.IncludedInWeapon)
-                                            {
-                                                ListItem objItem = new ListItem();
-                                                objItem.Value = objWeaponMod.DisplayNameShort;
-                                                objItem.Name = objWeaponMod.DisplayNameShort;
                                                 lstItems.Add(objItem);
                                             }
                                         }

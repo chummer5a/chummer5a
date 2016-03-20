@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Reflection;
 using System.Windows.Forms;
@@ -107,7 +125,20 @@ namespace Chummer
 			System.Diagnostics.Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LG855DVUT8FDU");
 		}
 
-        private void okButton_Click(object sender, EventArgs e)
+		private void txt_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				this.DialogResult = DialogResult.OK;
+
+			if (e.Control && e.KeyCode == Keys.A)
+			{
+				e.SuppressKeyPress = true;
+				if (sender != null)
+					((TextBox)sender).SelectAll();
+			}
+		}
+
+		private void okButton_Click(object sender, EventArgs e)
         {
 
         }

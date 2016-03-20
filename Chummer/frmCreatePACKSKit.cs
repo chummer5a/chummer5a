@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
@@ -529,27 +547,6 @@ namespace Chummer
 							objWriter.WriteEndElement();
 						}
 						
-						// Weapon Mods.
-						if (objWeapon.WeaponMods.Count > 0)
-						{
-							// <mods>
-							objWriter.WriteStartElement("mods");
-							foreach (WeaponMod objMod in objWeapon.WeaponMods)
-							{
-								// Don't attempt to export items included in the Weapon.
-								if (!objMod.IncludedInWeapon)
-								{
-									// <mod>
-									objWriter.WriteStartElement("mod");
-									objWriter.WriteElementString("name", objMod.Name);
-									// </mod>
-									objWriter.WriteEndElement();
-								}
-							}
-							// </mods>
-							objWriter.WriteEndElement();
-						}
-						
 						// Underbarrel Weapon.
 						if (objWeapon.UnderbarrelWeapons.Count > 0)
 						{
@@ -652,27 +649,6 @@ namespace Chummer
 									objWriter.WriteEndElement();
 								}
 
-								// Weapon Mods.
-								if (objWeapon.WeaponMods.Count > 0)
-								{
-									// <mods>
-									objWriter.WriteStartElement("mods");
-									foreach (WeaponMod objMod in objWeapon.WeaponMods)
-									{
-										// Don't attempt to export items included in the Weapon.
-										if (!objMod.IncludedInWeapon)
-										{
-											// <mod>
-											objWriter.WriteStartElement("mod");
-											objWriter.WriteElementString("name", objMod.Name);
-											// </mod>
-											objWriter.WriteEndElement();
-										}
-									}
-									// </mods>
-									objWriter.WriteEndElement();
-								}
-
 								// Underbarrel Weapon.
 								if (objWeapon.UnderbarrelWeapons.Count > 0)
 								{
@@ -734,7 +710,7 @@ namespace Chummer
 			foreach (Gear objGear in lstGear)
 			{
 				// Do not attempt to export Nexi since they're completely custom objects.
-				if (!objGear.Name.StartsWith("Nexus"))
+				if (!objGear.Name.StartsWith("Nexus") && !objGear.IncludedInParent)
 				{
 					// <gear>
 					objWriter.WriteStartElement("gear");

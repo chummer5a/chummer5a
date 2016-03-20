@@ -152,10 +152,10 @@ namespace Chummer
 			this.cmsWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsCreateNaturalWeapon = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsWeaponAddModification = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponName = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsWeaponAddModification = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearButtonAddAccessory = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsGearAddNexus = new System.Windows.Forms.ToolStripMenuItem();
@@ -232,8 +232,6 @@ namespace Chummer
 			this.cmsWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsWeaponAccessoryAddGear = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsWeaponAccessoryNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmsWeaponMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsWeaponModNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGearPlugin = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsGearPluginNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsComplexFormPlugin = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -258,8 +256,6 @@ namespace Chummer
 			this.tsVehicleWeaponAccessoryNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsVehicleWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
-			this.cmsVehicleWeaponMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.tsVehicleWeaponModNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsWeaponLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsWeaponRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
@@ -931,7 +927,6 @@ namespace Chummer
 			this.cmsCritterPowers.SuspendLayout();
 			this.cmsLifestyleNotes.SuspendLayout();
 			this.cmsWeaponAccessory.SuspendLayout();
-			this.cmsWeaponMod.SuspendLayout();
 			this.cmsGearPlugin.SuspendLayout();
 			this.cmsComplexFormPlugin.SuspendLayout();
 			this.cmsBioware.SuspendLayout();
@@ -943,7 +938,6 @@ namespace Chummer
 			this.cmsVehicleLocation.SuspendLayout();
 			this.cmsVehicleWeaponAccessory.SuspendLayout();
 			this.cmsVehicleWeaponAccessoryGear.SuspendLayout();
-			this.cmsVehicleWeaponMod.SuspendLayout();
 			this.cmsWeaponLocation.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
@@ -1096,6 +1090,244 @@ namespace Chummer
 			this.tssNuyenRemaining.Name = "tssNuyenRemaining";
 			this.tssNuyenRemaining.Size = new System.Drawing.Size(23, 19);
 			this.tssNuyenRemaining.Text = "0¥";
+			// 
+			// pgbProgress
+			// 
+			this.pgbProgress.Name = "pgbProgress";
+			this.pgbProgress.Size = new System.Drawing.Size(400, 18);
+			this.pgbProgress.Visible = false;
+			// 
+			// dlgSaveFile
+			// 
+			this.dlgSaveFile.DefaultExt = "sr5";
+			this.dlgSaveFile.Filter = "Chummer Character|*.sr5";
+			this.dlgSaveFile.Title = "Save Character";
+			// 
+			// tipTooltip
+			// 
+			this.tipTooltip.AutoPopDelay = 10000;
+			this.tipTooltip.InitialDelay = 250;
+			this.tipTooltip.IsBalloon = true;
+			this.tipTooltip.ReshowDelay = 100;
+			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			this.tipTooltip.ToolTipTitle = "Chummer Help";
+			// 
+			// lblSignalLabel
+			// 
+			this.lblSignalLabel.AutoSize = true;
+			this.lblSignalLabel.Location = new System.Drawing.Point(650, 211);
+			this.lblSignalLabel.Name = "lblSignalLabel";
+			this.lblSignalLabel.Size = new System.Drawing.Size(36, 13);
+			this.lblSignalLabel.TabIndex = 74;
+			this.lblSignalLabel.Tag = "String_Signal";
+			this.lblSignalLabel.Text = "Signal";
+			this.tipTooltip.SetToolTip(this.lblSignalLabel, "Signal of the Node the A.I. currently resides on.");
+			this.lblSignalLabel.Visible = false;
+			// 
+			// lblResponseLabel
+			// 
+			this.lblResponseLabel.AutoSize = true;
+			this.lblResponseLabel.Location = new System.Drawing.Point(650, 185);
+			this.lblResponseLabel.Name = "lblResponseLabel";
+			this.lblResponseLabel.Size = new System.Drawing.Size(55, 13);
+			this.lblResponseLabel.TabIndex = 72;
+			this.lblResponseLabel.Tag = "String_Response";
+			this.lblResponseLabel.Text = "Response";
+			this.tipTooltip.SetToolTip(this.lblResponseLabel, "Response of the Node the A.I. currently resides on.");
+			this.lblResponseLabel.Visible = false;
+			// 
+			// lblFirewallLabel
+			// 
+			this.lblFirewallLabel.AutoSize = true;
+			this.lblFirewallLabel.Location = new System.Drawing.Point(650, 159);
+			this.lblFirewallLabel.Name = "lblFirewallLabel";
+			this.lblFirewallLabel.Size = new System.Drawing.Size(42, 13);
+			this.lblFirewallLabel.TabIndex = 70;
+			this.lblFirewallLabel.Tag = "String_Firewall";
+			this.lblFirewallLabel.Text = "Firewall";
+			this.tipTooltip.SetToolTip(this.lblFirewallLabel, "An A.I.\'s Firewall is the average of their CHA and WIL Attributes.");
+			this.lblFirewallLabel.Visible = false;
+			// 
+			// lblSystemLabel
+			// 
+			this.lblSystemLabel.AutoSize = true;
+			this.lblSystemLabel.Location = new System.Drawing.Point(650, 133);
+			this.lblSystemLabel.Name = "lblSystemLabel";
+			this.lblSystemLabel.Size = new System.Drawing.Size(41, 13);
+			this.lblSystemLabel.TabIndex = 68;
+			this.lblSystemLabel.Tag = "String_System";
+			this.lblSystemLabel.Text = "System";
+			this.tipTooltip.SetToolTip(this.lblSystemLabel, "An A.I.\'s System is the average of their INT and LOG Attributes.");
+			this.lblSystemLabel.Visible = false;
+			// 
+			// lblRatingLabel
+			// 
+			this.lblRatingLabel.AutoSize = true;
+			this.lblRatingLabel.Location = new System.Drawing.Point(650, 107);
+			this.lblRatingLabel.Name = "lblRatingLabel";
+			this.lblRatingLabel.Size = new System.Drawing.Size(38, 13);
+			this.lblRatingLabel.TabIndex = 44;
+			this.lblRatingLabel.Tag = "String_Rating";
+			this.lblRatingLabel.Text = "Rating";
+			this.tipTooltip.SetToolTip(this.lblRatingLabel, "An A.I.\'s Rating is the average of their CHA, INT, LOG, and WIL Attributes.");
+			this.lblRatingLabel.Visible = false;
+			// 
+			// lblAttributesAug
+			// 
+			this.lblAttributesAug.AutoSize = true;
+			this.lblAttributesAug.Location = new System.Drawing.Point(508, 32);
+			this.lblAttributesAug.Name = "lblAttributesAug";
+			this.lblAttributesAug.Size = new System.Drawing.Size(50, 13);
+			this.lblAttributesAug.TabIndex = 55;
+			this.lblAttributesAug.Tag = "Label_ValAugmented";
+			this.lblAttributesAug.Text = "Val (Aug)";
+			this.tipTooltip.SetToolTip(this.lblAttributesAug, "Augmented Attribute value.");
+			// 
+			// lblAttributesBase
+			// 
+			this.lblAttributesBase.AutoSize = true;
+			this.lblAttributesBase.Location = new System.Drawing.Point(413, 32);
+			this.lblAttributesBase.Name = "lblAttributesBase";
+			this.lblAttributesBase.Size = new System.Drawing.Size(31, 13);
+			this.lblAttributesBase.TabIndex = 54;
+			this.lblAttributesBase.Tag = "Label_Base";
+			this.lblAttributesBase.Text = "Base";
+			this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
+			// 
+			// lblAttributesMetatype
+			// 
+			this.lblAttributesMetatype.AutoSize = true;
+			this.lblAttributesMetatype.Location = new System.Drawing.Point(564, 32);
+			this.lblAttributesMetatype.Name = "lblAttributesMetatype";
+			this.lblAttributesMetatype.Size = new System.Drawing.Size(80, 13);
+			this.lblAttributesMetatype.TabIndex = 53;
+			this.lblAttributesMetatype.Tag = "Label_MetatypeLimits";
+			this.lblAttributesMetatype.Text = "Metatype Limits";
+			this.tipTooltip.SetToolTip(this.lblAttributesMetatype, "Metatype Minimum / Maximum (Augmented Maximum) values.");
+			// 
+			// lblAttributes
+			// 
+			this.lblAttributes.AutoSize = true;
+			this.lblAttributes.Location = new System.Drawing.Point(285, 32);
+			this.lblAttributes.Name = "lblAttributes";
+			this.lblAttributes.Size = new System.Drawing.Size(51, 13);
+			this.lblAttributes.TabIndex = 5;
+			this.lblAttributes.Tag = "Label_Attributes";
+			this.lblAttributes.Text = "Attributes";
+			this.tipTooltip.SetToolTip(this.lblAttributes, "Characters cannot spend more than 50% of their BP on Primary Attributes (not incl" +
+        "uding EDG, MAG, and RES).\r\nOnly one attribute may be at its Maximum value during" +
+        " character creation.");
+			// 
+			// lblNuyen
+			// 
+			this.lblNuyen.AutoSize = true;
+			this.lblNuyen.Location = new System.Drawing.Point(650, 65);
+			this.lblNuyen.Name = "lblNuyen";
+			this.lblNuyen.Size = new System.Drawing.Size(38, 13);
+			this.lblNuyen.TabIndex = 16;
+			this.lblNuyen.Tag = "Label_Nuyen";
+			this.lblNuyen.Text = "Nuyen";
+			this.tipTooltip.SetToolTip(this.lblNuyen, "The amount of Nuyen your character has to purchase equipment. 1 BP = 5,000¥.");
+			// 
+			// lblSpirits
+			// 
+			this.lblSpirits.AutoSize = true;
+			this.lblSpirits.Location = new System.Drawing.Point(10, 404);
+			this.lblSpirits.Name = "lblSpirits";
+			this.lblSpirits.Size = new System.Drawing.Size(35, 13);
+			this.lblSpirits.TabIndex = 0;
+			this.lblSpirits.Tag = "Label_Spirits";
+			this.lblSpirits.Text = "Spirits";
+			this.tipTooltip.SetToolTip(this.lblSpirits, "Each Service a Spirit owes costs 1 BP.");
+			// 
+			// lblComplexForms
+			// 
+			this.lblComplexForms.AutoSize = true;
+			this.lblComplexForms.Location = new System.Drawing.Point(8, 9);
+			this.lblComplexForms.Name = "lblComplexForms";
+			this.lblComplexForms.Size = new System.Drawing.Size(78, 13);
+			this.lblComplexForms.TabIndex = 28;
+			this.lblComplexForms.Tag = "Label_ComplexForms";
+			this.lblComplexForms.Text = "Complex Forms";
+			this.tipTooltip.SetToolTip(this.lblComplexForms, "Complex Forms cost a number of BP equal to their Rating.");
+			// 
+			// lblSprites
+			// 
+			this.lblSprites.AutoSize = true;
+			this.lblSprites.Location = new System.Drawing.Point(8, 400);
+			this.lblSprites.Name = "lblSprites";
+			this.lblSprites.Size = new System.Drawing.Size(39, 13);
+			this.lblSprites.TabIndex = 24;
+			this.lblSprites.Tag = "Label_Sprites";
+			this.lblSprites.Text = "Sprites";
+			this.tipTooltip.SetToolTip(this.lblSprites, "Each Service a Sprite owes costs 1 BP.");
+			// 
+			// chkArmorEquipped
+			// 
+			this.chkArmorEquipped.AutoSize = true;
+			this.chkArmorEquipped.Enabled = false;
+			this.chkArmorEquipped.Location = new System.Drawing.Point(310, 157);
+			this.chkArmorEquipped.Name = "chkArmorEquipped";
+			this.chkArmorEquipped.Size = new System.Drawing.Size(71, 17);
+			this.chkArmorEquipped.TabIndex = 78;
+			this.chkArmorEquipped.Tag = "Checkbox_Equipped";
+			this.chkArmorEquipped.Text = "Equipped";
+			this.tipTooltip.SetToolTip(this.chkArmorEquipped, "Equipped Armor and Armor Mods are factored into Armor Encumbrance and a character" +
+        "\'s highest Armor Ratings.");
+			this.chkArmorEquipped.UseVisualStyleBackColor = true;
+			this.chkArmorEquipped.CheckedChanged += new System.EventHandler(this.chkArmorEquipped_CheckedChanged);
+			// 
+			// chkWeaponAccessoryInstalled
+			// 
+			this.chkWeaponAccessoryInstalled.AutoSize = true;
+			this.chkWeaponAccessoryInstalled.Enabled = false;
+			this.chkWeaponAccessoryInstalled.Location = new System.Drawing.Point(586, 150);
+			this.chkWeaponAccessoryInstalled.Name = "chkWeaponAccessoryInstalled";
+			this.chkWeaponAccessoryInstalled.Size = new System.Drawing.Size(65, 17);
+			this.chkWeaponAccessoryInstalled.TabIndex = 72;
+			this.chkWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
+			this.chkWeaponAccessoryInstalled.Text = "Installed";
+			this.tipTooltip.SetToolTip(this.chkWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
+			this.chkWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
+			this.chkWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkWeaponAccessoryInstalled_CheckedChanged);
+			// 
+			// lblFoci
+			// 
+			this.lblFoci.AutoSize = true;
+			this.lblFoci.Location = new System.Drawing.Point(307, 332);
+			this.lblFoci.Name = "lblFoci";
+			this.lblFoci.Size = new System.Drawing.Size(67, 13);
+			this.lblFoci.TabIndex = 92;
+			this.lblFoci.Tag = "Label_BondedFoci";
+			this.lblFoci.Text = "Bonded Foci";
+			this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
+			// 
+			// chkVehicleWeaponAccessoryInstalled
+			// 
+			this.chkVehicleWeaponAccessoryInstalled.AutoSize = true;
+			this.chkVehicleWeaponAccessoryInstalled.Enabled = false;
+			this.chkVehicleWeaponAccessoryInstalled.Location = new System.Drawing.Point(728, 170);
+			this.chkVehicleWeaponAccessoryInstalled.Name = "chkVehicleWeaponAccessoryInstalled";
+			this.chkVehicleWeaponAccessoryInstalled.Size = new System.Drawing.Size(65, 17);
+			this.chkVehicleWeaponAccessoryInstalled.TabIndex = 74;
+			this.chkVehicleWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
+			this.chkVehicleWeaponAccessoryInstalled.Text = "Installed";
+			this.tipTooltip.SetToolTip(this.chkVehicleWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
+			this.chkVehicleWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
+			this.chkVehicleWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkVehicleWeaponAccessoryInstalled_CheckedChanged);
+			// 
+			// lblNotoriety
+			// 
+			this.lblNotoriety.AutoSize = true;
+			this.lblNotoriety.Location = new System.Drawing.Point(634, 86);
+			this.lblNotoriety.Name = "lblNotoriety";
+			this.lblNotoriety.Size = new System.Drawing.Size(52, 13);
+			this.lblNotoriety.TabIndex = 84;
+			this.lblNotoriety.Tag = "Label_Notoriety";
+			this.lblNotoriety.Text = "Notoriety:";
+			this.tipTooltip.SetToolTip(this.lblNotoriety, "Notoriety is typically gained through Qualities and can be further adjusted by Ga" +
+        "me Masters. Notoriety can be reduced by 1 point by burning 2 points of Street Cr" +
+        "ed.");
 			// 
 			// pgbProgress
 			// 
@@ -1800,6 +2032,57 @@ namespace Chummer
 			this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
 			this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
+			// lblPublicAware
+			// 
+			this.lblPublicAware.AutoSize = true;
+			this.lblPublicAware.Location = new System.Drawing.Point(634, 109);
+			this.lblPublicAware.Name = "lblPublicAware";
+			this.lblPublicAware.Size = new System.Drawing.Size(72, 13);
+			this.lblPublicAware.TabIndex = 86;
+			this.lblPublicAware.Tag = "Label_PublicAwareness";
+			this.lblPublicAware.Text = "Public Aware:";
+			
+			// 
+			// lblSocialLabel
+			// 
+			this.lblSocialLabel.AutoSize = true;
+			this.lblSocialLabel.Location = new System.Drawing.Point(328, 84);
+			this.lblSocialLabel.Name = "lblSocialLabel";
+			this.lblSocialLabel.Size = new System.Drawing.Size(36, 13);
+			this.lblSocialLabel.TabIndex = 76;
+			this.lblSocialLabel.Tag = "Node_Social";
+			this.lblSocialLabel.Text = "Social";
+			// 
+			// lblMentalLabel
+			// 
+			this.lblMentalLabel.AutoSize = true;
+			this.lblMentalLabel.Location = new System.Drawing.Point(328, 58);
+			this.lblMentalLabel.Name = "lblMentalLabel";
+			this.lblMentalLabel.Size = new System.Drawing.Size(39, 13);
+			this.lblMentalLabel.TabIndex = 74;
+			this.lblMentalLabel.Tag = "Node_Mental";
+			this.lblMentalLabel.Text = "Mental";
+			// 
+			// lblPhysicalLabel
+			// 
+			this.lblPhysicalLabel.AutoSize = true;
+			this.lblPhysicalLabel.Location = new System.Drawing.Point(328, 32);
+			this.lblPhysicalLabel.Name = "lblPhysicalLabel";
+			this.lblPhysicalLabel.Size = new System.Drawing.Size(46, 13);
+			this.lblPhysicalLabel.TabIndex = 72;
+			this.lblPhysicalLabel.Tag = "Node_Physical";
+			this.lblPhysicalLabel.Text = "Physical";
+			// 
+			// lblAstralLabel
+			// 
+			this.lblAstralLabel.AutoSize = true;
+			this.lblAstralLabel.Location = new System.Drawing.Point(328, 111);
+			this.lblAstralLabel.Name = "lblAstralLabel";
+			this.lblAstralLabel.Size = new System.Drawing.Size(33, 13);
+			this.lblAstralLabel.TabIndex = 78;
+			this.lblAstralLabel.Tag = "Node_Astral";
+			this.lblAstralLabel.Text = "Astral";
+			// 
 			// cmsMartialArts
 			// 
 			this.cmsMartialArts.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1975,12 +2258,11 @@ namespace Chummer
 			this.cmsWeapon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCreateNaturalWeapon,
             this.tsWeaponAddAccessory,
-            this.tsWeaponAddModification,
             this.tsWeaponAddUnderbarrel,
             this.tsWeaponName,
             this.tsWeaponNotes});
 			this.cmsWeapon.Name = "cmsWeapon";
-			this.cmsWeapon.Size = new System.Drawing.Size(209, 136);
+			this.cmsWeapon.Size = new System.Drawing.Size(209, 114);
 			this.cmsWeapon.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
 			// 
 			// tsCreateNaturalWeapon
@@ -2000,16 +2282,6 @@ namespace Chummer
 			this.tsWeaponAddAccessory.Tag = "Menu_AddAccessory";
 			this.tsWeaponAddAccessory.Text = "&Add Accessory";
 			this.tsWeaponAddAccessory.Click += new System.EventHandler(this.tsWeaponAddAccessory_Click);
-			// 
-			// tsWeaponAddModification
-			// 
-			this.tsWeaponAddModification.Image = global::Chummer.Properties.Resources.shield_add;
-			this.tsWeaponAddModification.Name = "tsWeaponAddModification";
-			this.tsWeaponAddModification.Size = new System.Drawing.Size(208, 22);
-			this.tsWeaponAddModification.Tag = "Menu_AddModification";
-			this.tsWeaponAddModification.Text = "A&dd Modification";
-			this.tsWeaponAddModification.Visible = false;
-			this.tsWeaponAddModification.Click += new System.EventHandler(this.tsWeaponAddModification_Click);
 			// 
 			// tsWeaponAddUnderbarrel
 			// 
@@ -2037,6 +2309,11 @@ namespace Chummer
 			this.tsWeaponNotes.Tag = "Menu_Notes";
 			this.tsWeaponNotes.Text = "&Notes";
 			this.tsWeaponNotes.Click += new System.EventHandler(this.tsWeaponNotes_Click);
+			// 
+			// tsWeaponAddModification
+			// 
+			this.tsWeaponAddModification.Name = "tsWeaponAddModification";
+			this.tsWeaponAddModification.Size = new System.Drawing.Size(32, 19);
 			// 
 			// cmsGearButton
 			// 
@@ -2789,23 +3066,6 @@ namespace Chummer
 			this.tsWeaponAccessoryNotes.Text = "&Notes";
 			this.tsWeaponAccessoryNotes.Click += new System.EventHandler(this.tsWeaponAccessoryNotes_Click);
 			// 
-			// cmsWeaponMod
-			// 
-			this.cmsWeaponMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsWeaponModNotes});
-			this.cmsWeaponMod.Name = "cmsWeaponMod";
-			this.cmsWeaponMod.Size = new System.Drawing.Size(106, 26);
-			this.cmsWeaponMod.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
-			// 
-			// tsWeaponModNotes
-			// 
-			this.tsWeaponModNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tsWeaponModNotes.Name = "tsWeaponModNotes";
-			this.tsWeaponModNotes.Size = new System.Drawing.Size(105, 22);
-			this.tsWeaponModNotes.Tag = "Menu_Notes";
-			this.tsWeaponModNotes.Text = "&Notes";
-			this.tsWeaponModNotes.Click += new System.EventHandler(this.tsWeaponModNotes_Click);
-			// 
 			// cmsGearPlugin
 			// 
 			this.cmsGearPlugin.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3005,22 +3265,6 @@ namespace Chummer
 			this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
 			this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Text = "&Add as Plugin";
 			this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click);
-			// 
-			// cmsVehicleWeaponMod
-			// 
-			this.cmsVehicleWeaponMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleWeaponModNotes});
-			this.cmsVehicleWeaponMod.Name = "cmsWeaponMod";
-			this.cmsVehicleWeaponMod.Size = new System.Drawing.Size(106, 26);
-			// 
-			// tsVehicleWeaponModNotes
-			// 
-			this.tsVehicleWeaponModNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tsVehicleWeaponModNotes.Name = "tsVehicleWeaponModNotes";
-			this.tsVehicleWeaponModNotes.Size = new System.Drawing.Size(105, 22);
-			this.tsVehicleWeaponModNotes.Tag = "Menu_Notes";
-			this.tsVehicleWeaponModNotes.Text = "&Notes";
-			this.tsVehicleWeaponModNotes.Click += new System.EventHandler(this.tsVehicleWeaponModNotes_Click);
 			// 
 			// cmsWeaponLocation
 			// 
@@ -3768,7 +4012,7 @@ namespace Chummer
 			this.nudCounterspellingDice.Name = "nudCounterspellingDice";
 			this.nudCounterspellingDice.Size = new System.Drawing.Size(40, 20);
 			this.nudCounterspellingDice.TabIndex = 61;
-			this.nudCounterspellingDice.ValueChanged += new System.EventHandler(this.nudCounterspellingDice_Changed);
+			//this.nudCounterspellingDice.ValueChanged += new System.EventHandler(this.nudCounterspellingDice_Changed);
 			// 
 			// lbllSpellDefenceManipPhysical
 			// 
@@ -7183,7 +7427,12 @@ namespace Chummer
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
 			// 
-			// cmdAddCyberware
+			this.lblWeaponSlots.AutoSize = true;
+			this.lblWeaponSlots.Location = new System.Drawing.Point(371, 174);
+			this.lblWeaponSlots.Name = "lblWeaponSlots";
+			this.lblWeaponSlots.Size = new System.Drawing.Size(36, 13);
+			this.lblWeaponSlots.TabIndex = 71;
+			this.lblWeaponSlots.Text = "[Slots]";
 			// 
 			this.cmdAddCyberware.AutoSize = true;
 			this.cmdAddCyberware.ContextMenuStrip = this.cmsCyberware;
@@ -7197,7 +7446,13 @@ namespace Chummer
 			this.cmdAddCyberware.UseVisualStyleBackColor = true;
 			this.cmdAddCyberware.Click += new System.EventHandler(this.cmdAddCyberware_Click);
 			// 
-			// treCyberware
+			this.lblWeaponSlotsLabel.AutoSize = true;
+			this.lblWeaponSlotsLabel.Location = new System.Drawing.Point(308, 174);
+			this.lblWeaponSlotsLabel.Name = "lblWeaponSlotsLabel";
+			this.lblWeaponSlotsLabel.Size = new System.Drawing.Size(57, 13);
+			this.lblWeaponSlotsLabel.TabIndex = 70;
+			this.lblWeaponSlotsLabel.Tag = "Label_ModSlots";
+			this.lblWeaponSlotsLabel.Text = "Mod Slots:";
 			// 
 			this.treCyberware.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
@@ -7221,7 +7476,13 @@ namespace Chummer
 			this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
 			this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
 			// 
-			// lblCyberwareNameLabel
+			this.lblWeaponSource.AutoSize = true;
+			this.lblWeaponSource.Location = new System.Drawing.Point(372, 151);
+			this.lblWeaponSource.Name = "lblWeaponSource";
+			this.lblWeaponSource.Size = new System.Drawing.Size(47, 13);
+			this.lblWeaponSource.TabIndex = 69;
+			this.lblWeaponSource.Text = "[Source]";
+			this.lblWeaponSource.Click += new System.EventHandler(this.lblWeaponSource_Click);
 			// 
 			this.lblCyberwareNameLabel.AutoSize = true;
 			this.lblCyberwareNameLabel.Location = new System.Drawing.Point(309, 36);
@@ -7231,7 +7492,13 @@ namespace Chummer
 			this.lblCyberwareNameLabel.Tag = "Label_Name";
 			this.lblCyberwareNameLabel.Text = "Name:";
 			// 
-			// lblCyberwareName
+			this.lblWeaponSourceLabel.AutoSize = true;
+			this.lblWeaponSourceLabel.Location = new System.Drawing.Point(309, 151);
+			this.lblWeaponSourceLabel.Name = "lblWeaponSourceLabel";
+			this.lblWeaponSourceLabel.Size = new System.Drawing.Size(44, 13);
+			this.lblWeaponSourceLabel.TabIndex = 68;
+			this.lblWeaponSourceLabel.Tag = "Label_Source";
+			this.lblWeaponSourceLabel.Text = "Source:";
 			// 
 			this.lblCyberwareName.AutoSize = true;
 			this.lblCyberwareName.Location = new System.Drawing.Point(387, 36);
@@ -9002,7 +9269,14 @@ namespace Chummer
 			this.cmdAddMartialArt.UseVisualStyleBackColor = true;
 			this.cmdAddMartialArt.Click += new System.EventHandler(this.cmdAddMartialArt_Click);
 			// 
-			// tabLimits
+			this.txtNotes.Location = new System.Drawing.Point(10, 434);
+			this.txtNotes.Multiline = true;
+			this.txtNotes.Name = "txtNotes";
+			this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtNotes.Size = new System.Drawing.Size(618, 100);
+			this.txtNotes.TabIndex = 25;
+			this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
+			this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			// 
 			this.tabLimits.Controls.Add(this.lblAstralLabel);
 			this.tabLimits.Controls.Add(this.lblAstral);
@@ -9084,13 +9358,14 @@ namespace Chummer
 			// 
 			// lblPhysicalLabel
 			// 
-			this.lblPhysicalLabel.AutoSize = true;
-			this.lblPhysicalLabel.Location = new System.Drawing.Point(328, 32);
-			this.lblPhysicalLabel.Name = "lblPhysicalLabel";
-			this.lblPhysicalLabel.Size = new System.Drawing.Size(46, 13);
-			this.lblPhysicalLabel.TabIndex = 72;
-			this.lblPhysicalLabel.Tag = "Node_Physical";
-			this.lblPhysicalLabel.Text = "Physical";
+			this.txtConcept.Location = new System.Drawing.Point(10, 315);
+			this.txtConcept.Multiline = true;
+			this.txtConcept.Name = "txtConcept";
+			this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtConcept.Size = new System.Drawing.Size(618, 100);
+			this.txtConcept.TabIndex = 19;
+			this.txtConcept.TextChanged += new System.EventHandler(this.txtConcept_TextChanged);
+			this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			// 
 			// lblMental
 			// 
@@ -9103,13 +9378,15 @@ namespace Chummer
 			// 
 			// lblMentalLabel
 			// 
-			this.lblMentalLabel.AutoSize = true;
-			this.lblMentalLabel.Location = new System.Drawing.Point(328, 58);
-			this.lblMentalLabel.Name = "lblMentalLabel";
-			this.lblMentalLabel.Size = new System.Drawing.Size(39, 13);
-			this.lblMentalLabel.TabIndex = 74;
-			this.lblMentalLabel.Tag = "Node_Mental";
-			this.lblMentalLabel.Text = "Mental";
+			this.txtBackground.Location = new System.Drawing.Point(10, 200);
+			this.txtBackground.Multiline = true;
+			this.txtBackground.Name = "txtBackground";
+			this.txtBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtBackground.Size = new System.Drawing.Size(618, 96);
+			this.txtBackground.TabIndex = 17;
+			this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
+			this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
+			this.txtBackground.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBackground_KeyPress);
 			// 
 			// lblSocial
 			// 
@@ -9122,13 +9399,14 @@ namespace Chummer
 			// 
 			// lblSocialLabel
 			// 
-			this.lblSocialLabel.AutoSize = true;
-			this.lblSocialLabel.Location = new System.Drawing.Point(328, 84);
-			this.lblSocialLabel.Name = "lblSocialLabel";
-			this.lblSocialLabel.Size = new System.Drawing.Size(36, 13);
-			this.lblSocialLabel.TabIndex = 76;
-			this.lblSocialLabel.Tag = "Node_Social";
-			this.lblSocialLabel.Text = "Social";
+			this.txtDescription.Location = new System.Drawing.Point(10, 80);
+			this.txtDescription.Multiline = true;
+			this.txtDescription.Name = "txtDescription";
+			this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtDescription.Size = new System.Drawing.Size(618, 101);
+			this.txtDescription.TabIndex = 15;
+			this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
+			this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
 			// 
 			// lblAstral
 			// 
@@ -10521,7 +10799,6 @@ namespace Chummer
 			this.cmsCritterPowers.ResumeLayout(false);
 			this.cmsLifestyleNotes.ResumeLayout(false);
 			this.cmsWeaponAccessory.ResumeLayout(false);
-			this.cmsWeaponMod.ResumeLayout(false);
 			this.cmsGearPlugin.ResumeLayout(false);
 			this.cmsComplexFormPlugin.ResumeLayout(false);
 			this.cmsBioware.ResumeLayout(false);
@@ -10533,7 +10810,6 @@ namespace Chummer
 			this.cmsVehicleLocation.ResumeLayout(false);
 			this.cmsVehicleWeaponAccessory.ResumeLayout(false);
 			this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
-			this.cmsVehicleWeaponMod.ResumeLayout(false);
 			this.cmsWeaponLocation.ResumeLayout(false);
 			this.splitMain.Panel1.ResumeLayout(false);
 			this.splitMain.Panel2.ResumeLayout(false);

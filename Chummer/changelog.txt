@@ -47,6 +47,23 @@ Application Change:
 - Did some stuff to enable selecting multiple powers through the selectpower bonus node. This shouldn't affect any existing characters, but if you're using the Chaos Mentor Spirit I'd recommend deleting it and removing it. This miiiiight also break existing characters with Qi Foci. Probably not though. Like 70/30 at most.
 - Did various shenanigans with the karma selection form to make it show qualities and karma costs properly. 
 - Rebuilt the functionality for Black Market Pipeline nad the Dealer Connection quality. Both should now work properly; there's a teeny tiny chance that existing characters that have the qualities might break, please raise a ticket if so.
+- Fixed a crash caused by adding Genemods to a character with the Burnout's Way. Fixes #674.
+- Fixed a UI issue that left the dropdown null when switching between genemods and bioware. Fixes #674.
+- Enabled Vehicle Modifications to gain flat increases to Speed,Handling or Acceleration based on the Rating of the mod. Partial fix for #675.
+- Fixed a visual bug with Limit Modifiers in creation mode. Fixes #665.
+- Expanded the category selection mechanism to support falling back to default values. The general idea is that for each priority category loaded, it will attempt to load nodes that have a gameplayoptions node. If it can't do that, it'll load the Standard settings instead. This is intended to support alternate gameplay options as requested by #357. The actual data will need to be added for the appropriate categories, which I really can't be bothered transcribing.
+- New Feature: Weapon Mounts will now limit the available weapons based on a predefined list of weapon categories. This also enables the weapon mounts added in Rigger 5.0 for adding weapons. I'm not particularly happy with how this looks in the XML so the underlying code might get changed over time. For now it's all good though.
+- Fixed an issue that prevented magic- or reseonance-enabled karma-created characters from moving to Career mode.
+- New Feature: Added a bunch of prompts to warn the user if they still have free contact points, knowledge points, skill points and such before moving to Career mode. 
+- Fixed an issue that caused a crash when adding armour to vehicles and drones.
+- Partially implemented the Overclocker feature for Career mode. Code works, but I haven't added it on for Vehicles yet. Fixes #198.
+- Added support for CTRL-A in the Notes forms. Slim chance I've missed other multiline forms Fixes #693. 
+- Fixed a crash caused by loading custom Critters related to movement strings.
+- Fixed the display of Locations created by cybewrware or weapons with AllowGear properties. Fixes #536.
+- Added some support for creating an Ally Spirit, per #244. Not 100% RAW yet, but it doesn't crash so that's a start.
+- Added support for enabling calculated Public Awareness, per the rules from SR4. Hides the tooltips and calculations if not in use.
+- Fixed the creation method for custom packs kits to not treat included mods as being purchased. Should fix #707 and fix #691.
+- Save files is now in UTF-8 instead of UTF-16. This should not have any visible impact but it is more tool frindly and leads to smaller files
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -82,12 +99,44 @@ Data Change:
 - Removed Fangs from Oni. 
 - Customised Agility and Strength for cyberlimbs now increase based on the rating. Fixes #654.
 - Added the necessary qualities for the Metasapient A.I. Fixes #668.
+- Fixed an issue with the Faceless quality not being visible. 
+- Restricted initiative improvements to the highest value. Will probably be broken in some way I haven't considered. Fixes #194.
+- Removed gameplayoptions from the priorities file. 
+- Added a new mod for vehicles, Paraplegic Modification. This is intended to support the Paraplegic Negative Quality, which increases the cost of vehicles by five percent.
+- Fixed the lifestylecost improvement for the Paraplegic quality to affect Advanced Lifestyles.
+- Fixed incorrect costs for Move-By-Wire.
+- Fixed an incorrect value for the UCAS (Seattle) Life Module. Fixes #699.
+- Fixed the karma cost for the Loss of confidence quality. Fixes #706.
+- Fixed the name for Poor Self Control (Sadistic). Fixes #737.
+- Fixed the calculation for Street Cred. Fixes #735.
+- Contact archetypes are now sorted alphabetically; mostly affects custom files. Fixes #733.
+- Added woogy woogy cyberfingers from Chrome Flesh.
+- Fixed an incorrect Limit value for the Chameleon Skin bioware.
+- Removed the Distinctive Style quality from the Gnome metavariant. 
+- Removed an extra Victorinox Collapsible Hatchet from the weapons XML.
 
 New Strings:
 - Message_DeleteCalendarWeek
 - Button_DeleteWeek
 - Tip_CalculatedMovement
 - Message_ConfirmExoticSkillRemove
+- MessageTitle_ExtraPoints
+- Message_ExtraPoints
+- Tip_OptionsDontDoubleQualityRefunds
+- Tip_OptionsDontDoubleQualityPurchases
+- Checkbox_Options_DontDoubleQualityPurchases
+- Checkbox_Options_DontDoubleNegativeQualityRefunds
+- String_Attack
+- String_Sleaze
+- String_DataProcessing
+- Checkbox_Options_UseCalculatedPublicAwareness
+
+Removed Strings:
+- Checkbox_Options_DontDoubleQualities
+- Tip_OptionsDontDoubleQualities
+
+Changed Strings: 
+- Tip_StreetCred
 
 Build 178: 
 Application Change: 

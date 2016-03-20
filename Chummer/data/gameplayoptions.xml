@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-300</version>
 	<gameplayoptions>
@@ -22,6 +40,14 @@
 		<gameplayoption>
 			<id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
 			<name>Street Level</name>
+			<karma>13</karma>
+			<maxavailability>10</maxavailability>
+			<maxnuyen>5</maxnuyen>
+			<contactmultiplier>3</contactmultiplier>
+		</gameplayoption>
+		<gameplayoption>
+			<id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
+			<name>Street Scum</name>
 			<karma>13</karma>
 			<maxavailability>10</maxavailability>
 			<maxnuyen>5</maxnuyen>

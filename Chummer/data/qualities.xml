@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-350</version>
 	<categories>
@@ -969,11 +987,6 @@
 			<name>Magician</name>
 			<karma>30</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<contributetolimit>no</contributetolimit>
@@ -991,11 +1004,6 @@
 			<name>Adept</name>
 			<karma>20</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-					</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1013,11 +1021,6 @@
 			<name>Mystic Adept</name>
 			<karma>35</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1035,11 +1038,6 @@
 			<name>Technomancer</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>RES</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1057,11 +1055,6 @@
 			<name>Aspected Magician</name>
 			<karma>15</karma>
 			<category>Positive</category>
-			<bonus>
-				<addattribute>
-					<name>MAG</name>
-				</addattribute>
-			</bonus>
 			<source>SR5</source>
 			<page>69</page>
 			<forbidden>
@@ -1457,7 +1450,7 @@
 		<quality>
 			<id>c9cd05ad-cd3c-451e-8285-e0fb1d95ebc1</id>
 			<name>Loss of Confidence</name>
-			<karma>-5</karma>
+			<karma>-10</karma>
 			<category>Negative</category>
 			<bonus>
 				<selectskill>
@@ -2606,8 +2599,8 @@
 			<category>Positive</category>
 			<bonus>
 				<lightningreflexes />
-				<initiative>1</initiative>
-				<initiativepass>1</initiativepass>
+				<initiative precedence="1">1</initiative>
+				<initiativepass precedence="1">1</initiativepass>
 			</bonus>
 			<source>RF</source>
 			<page>148</page>
@@ -4201,6 +4194,7 @@
 			<category>Negative</category>
 			<bonus>
 				<basiclifestylecost>10</basiclifestylecost>
+				<lifestylecost>10</lifestylecost>
 			</bonus>
 			<source>RF</source>
 			<page>157</page>
@@ -9990,7 +9984,7 @@
 		</quality>
 		<quality>
 			<id>f5fada49-7344-4e0d-b2d8-61aead583d7b</id>
-			<name>Poor Self Control (Sadisic)</name>
+			<name>Poor Self Control (Sadistic)</name>
 			<category>Negative</category>
 			<karma>-8</karma>
 			<source>CF</source>
@@ -10127,14 +10121,14 @@
 			<source>HT</source>
 			<page>191</page>
 			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
-			<quality>
-				<name>Faceless</name>
-				<karma>-6</karma>
-				<category>Negative</category>
-				<source>HT</source>
-				<page>191</page>
-				<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
-			</quality>
+		</quality>
+		<quality>
+			<name>Faceless</name>
+			<karma>-6</karma>
+			<category>Negative</category>
+			<source>HT</source>
+			<page>191</page>
+			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
 		</quality>
 		<!-- End Region -->
 		<!-- End Region -->

@@ -1,4 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
 <chummer>
 	<version>-350</version>
 	<grades>
@@ -642,11 +660,11 @@
 			<cost>Rating * 25000</cost>
 			<bonus>
 				<specificattribute>
-					<name>AGI</name>
+					<name precedence="1">AGI</name>
 					<val>Rating</val>
 				</specificattribute>
 				<specificattribute>
-					<name>STR</name>
+					<name precedence="1">STR</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -676,7 +694,7 @@
 			<name>Skillwires</name>
 			<category>Bodyware</category>
 			<rating>6</rating>
-			<ess>Rating * 0.2</ess>
+			<ess>Rating * 0.1</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 3)</avail>
 			<cost>Rating * 20000</cost>
@@ -708,7 +726,7 @@
 			<avail>FixedValues(8R,12R,20R)</avail>
 			<cost>FixedValues(39000,149000,217000)</cost>
 			<bonus>
-				<initiativepass>Rating</initiativepass>
+				<initiativepass precedence="1">Rating</initiativepass>
 				<specificattribute>
 					<name precedence="1">REA</name>
 					<val>Rating</val>
@@ -1889,16 +1907,13 @@
 			<ess>FixedValues(3,4,5)</ess>
 			<capacity>0</capacity>
 			<avail>FixedValues(12F,18F,24F)</avail>
-			<cost>FixedValues(43000,97000,208000)</cost>
+			<cost>FixedValues(40000,125000,205000)</cost>
 			<bonus>
-				<initiativepass>FixedValues(0,1,1)</initiativepass>
+				<initiativepass precedence="1">FixedValues(0,1,1)</initiativepass>
+				<initiative precedence="1">FixedValues(3,6,9)</initiative> 
 				<specificattribute>
 					<name precedence="1">REA</name>
 					<val>Rating</val>
-				</specificattribute>
-				<specificattribute>
-					<name precedence="1">INI</name>
-					<val>FixedValues(3,6,9)</val>
 				</specificattribute>
 			</bonus>
 			<source>CF</source>
@@ -2232,12 +2247,56 @@
 			<name>Cyberfinger</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.05</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>[1]</capacity>
 			<avail>2</avail>
 			<cost>500</cost>
+			<source>CF</source>
+			<page>86</page>
+		</cyberware>
+		<cyberware>
+			<id>1b2c94f9-86a6-4d84-8f58-1c16569213fa</id>
+			<name>Cyberfinger (Fingerlight)</name>
+			<category>Cyberlimb Enhancement</category>
+			<ess>0.05</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>550</cost>
+			<source>CF</source>
+			<page>86</page>
+		</cyberware>
+		<cyberware>
+			<id>caa21274-3a2f-416e-9589-dfeffc11b1a7</id>
+			<name>Cyberfinger (Fingerlighter)</name>
+			<category>Cyberlimb Enhancement</category>
+			<ess>0.05</ess>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>550</cost>
+			<source>CF</source>
+			<page>86</page>
+		</cyberware>
+		<cyberware>
+			<id>2badbf90-bf03-432c-95a6-495359039ba8</id>
+			<name>Cyberfinger (Grenade)</name>
+			<category>Cyberlimb Enhancement</category>
+			<ess>0.05</ess>
+			<allowgear>
+				<gearcategory>Ammunition</gearcategory>
+			</allowgear>
+			<capacity>[1]</capacity>
+			<avail>4</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>86</page>
+		</cyberware>
+		<cyberware>
+			<id>e6f65d1d-0a49-4256-aca9-2007404013a2</id>
+			<name>Cyberfinger (Pistol)</name>
+			<category>Cyberlimb Enhancement</category>
+			<ess>0.05</ess>
+			<capacity>[1]</capacity>
+			<avail>8R</avail>
+			<cost>1000</cost>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>

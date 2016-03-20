@@ -58,7 +58,8 @@
             this.textBoxDescription.Location = new System.Drawing.Point(195, 172);
             this.textBoxDescription.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
             this.textBoxDescription.Multiline = true;
-            this.textBoxDescription.Name = "textBoxDescription";
+			this.textBoxDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
+			this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.ReadOnly = true;
             this.textBoxDescription.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxDescription.Size = new System.Drawing.Size(376, 96);
@@ -161,7 +162,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDisclaimer.Location = new System.Drawing.Point(192, 274);
             this.txtDisclaimer.Multiline = true;
-            this.txtDisclaimer.Name = "txtDisclaimer";
+			this.txtDisclaimer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_KeyDown);
+			this.txtDisclaimer.Name = "txtDisclaimer";
             this.txtDisclaimer.ReadOnly = true;
             this.txtDisclaimer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDisclaimer.Size = new System.Drawing.Size(379, 127);
