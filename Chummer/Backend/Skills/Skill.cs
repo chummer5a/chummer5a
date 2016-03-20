@@ -875,7 +875,7 @@ namespace Chummer.Skills
 
 		public int AttributeModifiers
 		{
-			get { return _character.GetAttribute(Attribute).TotalValue; }  //TODO: Totalhere, argumented elsewhere, investigate
+			get { return _character.GetAttribute(Attribute).TotalValue; }
 		}
 
 		//TODO: Add translation support
