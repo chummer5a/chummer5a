@@ -63,6 +63,7 @@
 			this.cboCategory.Name = "cboCategory";
 			this.cboCategory.Size = new System.Drawing.Size(234, 21);
 			this.cboCategory.TabIndex = 1;
+			this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
 			// 
 			// cmdCancel
 			// 
