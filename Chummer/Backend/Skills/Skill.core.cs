@@ -135,7 +135,7 @@ namespace Chummer.Skills
 			{
 				int skillWire = WireRating();
 
-				return skillWire > 0 ? skillWire : LearnedRating;
+				return Math.Max(skillWire, LearnedRating);
 			}
 		}
 
@@ -194,11 +194,11 @@ namespace Chummer.Skills
 		{
 			if (Rating > 0)
 			{
-				return Rating + attribute + PoolModifiers;
+				return Rating + attribute + PoolModifiers + WoundModifier;
 			}
 			if (Default)
 			{
-				return attribute + PoolModifiers - 1;
+				return attribute + PoolModifiers - 1 + WoundModifier;
 			}
 			return 0;
 		}
@@ -213,7 +213,6 @@ namespace Chummer.Skills
 				ImprovementManager manager = new ImprovementManager(_character);
 				
 				int intModifier = 0;
-				int condition = manager.ValueOf(Improvement.ImprovementType.ConditionMonitor); 
 				
 				//Dump loop looking at all improvements
 				foreach (Improvement objImprovement in CharacterObject.Improvements)
@@ -253,11 +252,19 @@ namespace Chummer.Skills
 					}
 					
 				}
-				
-				return intModifier + Math.Min(0, condition);
+
+				return intModifier;
 			}
 		}
-		
+
+		public int WoundModifier
+		{
+			get
+			{
+				return Math.Min(0, new ImprovementManager(_character).ValueOf(Improvement.ImprovementType.ConditionMonitor));
+			}
+		}
+
 		/// <summary>
 		/// How much Sp this costs. Price during career mode is undefined
 		/// </summary>

@@ -103,7 +103,6 @@ namespace Chummer
                 read = onError;
                 return false;
             }
-
         }
 
 

@@ -123,7 +123,7 @@ namespace Chummer.Skills
 			get
 			{
 				int adj = _type == "Language" && CharacterObject.Linguist ? 1 : 0;
-				return base.PoolModifiers + adj;
+				return base.PoolModifiers + adj + WoundModifier;
 			}
 		}
 

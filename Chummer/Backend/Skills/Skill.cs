@@ -188,10 +188,10 @@ namespace Chummer.Skills
 				var q = v.ToList();
 				if (q.Count != 0)
 				{
-					
+					skill.Specializations.AddRange(q);
 				}
 
-				skill.Specializations.AddRange(q);
+				
 				
 
 				return skill;
@@ -446,7 +446,6 @@ namespace Chummer.Skills
 			}
 		}
 
-
 		public string PoolToolTip
 		{
 			get
@@ -457,7 +456,7 @@ namespace Chummer.Skills
 				}
 
 				string s;
-				if (WireRating() > 0)
+				if (WireRating() > LearnedRating)
 				{
 					s = $"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({WireRating()})";
 				}
@@ -477,6 +476,18 @@ namespace Chummer.Skills
 				if (Rating > 0)
 				{
 					s += InsaneOldModifiersMaker();  //TODO: Confirm. Old code hints modifiers are only when not defaulting.
+				}
+
+				int poolmod = PoolModifiers;
+				if (poolmod != 0)
+				{
+					s += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + poolmod + ")" ;
+				}
+
+				int wound = WoundModifier;
+				if (wound != 0)
+				{
+					s += " - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound + ")";
 				}
 
 				return s;
@@ -999,6 +1010,15 @@ namespace Chummer.Skills
 		
 		
 		#endregion
+
+		public void ForceEvent(string property)
+		{
+			foreach (string s in DependencyTree.Find(property))
+			{
+				var v = new PropertyChangedEventArgs(s);
+				PropertyChanged?.Invoke(this, v);
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

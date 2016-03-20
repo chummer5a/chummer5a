@@ -1363,17 +1363,17 @@ namespace Chummer
 				List<Skill> skills = new List<Skill>();
 
 				foreach (Skill skill in v)
-                {
+				{
 					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
-					if(knoSkill != null)
-                    {
+					if (knoSkill != null)
+					{
 						KnowledgeSkills.Add(knoSkill);
-            }
+					}
 					else
-            {
+					{
 						skills.Add(skill);
 					}
-            }
+				}
 
 				skills.Sort(CompareSkills);
 				foreach (Skill skill in skills) Skills.Add(skill); 
