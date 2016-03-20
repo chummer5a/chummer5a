@@ -7434,7 +7434,7 @@ namespace Chummer
 				}
 
 				// Locate the Active Skill to be used.
-				Skill objSkill = new Skill(_objCharacter);
+				Skill objSkill = null; 
 				foreach (Skill objCharacterSkill in _objCharacter.Skills)
 				{
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
@@ -7562,7 +7562,7 @@ namespace Chummer
 					strSkill = _strUseSkill;
 
 				// Locate the Active Skill to be used.
-				Skill objSkill = new Skill(_objCharacter);
+				Skill objSkill = null;
 				foreach (Skill objCharacterSkill in _objCharacter.Skills)
 				{
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)

@@ -13,9 +13,6 @@ namespace Chummer.Debugging
 			
 		public void OnException(object sender, FirstChanceExceptionEventArgs e)  
 		{
-			//TODO. What happens when no pdb file is present
-			//I fear that i get recursive exceptions. Yuck!
-
 			//Notes down the line number of every first chance exception.
 			//Then counts the occurences. Should make it easier to find what throws the most exceptions
 			StackTrace trace = new StackTrace(e.Exception, true);

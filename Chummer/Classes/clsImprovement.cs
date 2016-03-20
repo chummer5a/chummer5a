@@ -1952,33 +1952,33 @@ namespace Chummer
 
 					if (!blnFound)
 					{
-						Skill objNSkill = new Skill(_objCharacter);
-						//objNSkill.Id = id;
-						objNSkill.IdImprovement = true;
-						//objNSkill.AllowDelete = false;
-						objNSkill.KnowledgeSkill = true;
-						objNSkill.LockKnowledge = true;
-						objNSkill.SkillCategory = group;
-						int max;
-						bonusNode.TryGetField("max", out max, 9);
-						//objNSkill.RatingMaximum = max;
+						//Skill objNSkill = new Skill(_objCharacter);
+						////objNSkill.Id = id;
+						//objNSkill.IdImprovement = true;
+						////objNSkill.AllowDelete = false;
+						//objNSkill.KnowledgeSkill = true;
+						//objNSkill.LockKnowledge = true;
+						//objNSkill.SkillCategory = group;
+						//int max;
+						//bonusNode.TryGetField("max", out max, 9);
+						////objNSkill.RatingMaximum = max;
 
-						String name;
-						if (bonusNode.TryGetField("name", out name))
-						{
-							//objNSkill.Name = name;
-						}
-						if (bonusNode["options"] != null)
-						{
-							List<String> Options = new List<String>();
-							foreach (XmlNode node in bonusNode["options"].ChildNodes)
-							{
-								Options.Add(node.InnerText);
-							}
-							//objNSkill.KnowledgeSkillCatagories = Options;  //TODO: WTHISTHIS?
-						}
+						//String name;
+						//if (bonusNode.TryGetField("name", out name))
+						//{
+						//	//objNSkill.Name = name;
+						//}
+						//if (bonusNode["options"] != null)
+						//{
+						//	List<String> Options = new List<String>();
+						//	foreach (XmlNode node in bonusNode["options"].ChildNodes)
+						//	{
+						//		Options.Add(node.InnerText);
+						//	}
+						//	//objNSkill.KnowledgeSkillCatagories = Options;  //TODO: WTHISTHIS?
+						//}
 
-						_objCharacter.Skills.Add(objNSkill);
+						//_objCharacter.Skills.Add(objNSkill);
 					}
 
 					CreateImprovement(id.ToString(), objImprovementSource, strSourceName,

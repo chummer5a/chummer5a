@@ -5,21 +5,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization.Json;
-using System.Windows.Input;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Datastructures;
-
-/*
- * When comming back:
- * Karma can exceed ratingMaximum
- * 
- * Base = Group + FreeLevels
- * Should be
- * Base = Group > FreeLevels ? Group : FreeLevels 
- */
-
 
 namespace Chummer.Skills
 {
@@ -274,20 +262,6 @@ namespace Chummer.Skills
 			}
 
 			ImprovementEvent += OnImprovementEvent;
-		}
-
-		[Obsolete]
-		public Skill(Character character)
-		{
-			//TODO REMOVE, keept because LOTS of places require this
-			//Refactor still underway
-			_character = character;  //INIT FROM HERE?
-			
-			Id = Guid.NewGuid();
-
-			if (Debugger.IsAttached)
-				Debugger.Break();
-
 		}
 
 		//load from data
