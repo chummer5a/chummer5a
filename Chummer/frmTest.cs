@@ -802,19 +802,19 @@ namespace Chummer
 					{
 						if (objXmlSkill.InnerText.Contains("Exotic"))
 						{
-							Skill objExotic = new Skill(_objCharacter);
-							objExotic.ExoticSkill = true;
+							//Skill objExotic = new Skill(_objCharacter);
+							//objExotic.ExoticSkill = true;
 							//objExotic.Attribute = "AGI";
-							if (objXmlSkill.Attributes["spec"] != null)
-                            {
+							//if (objXmlSkill.Attributes["spec"] != null)
+                            //{
                                 //SkillSpecialization objSpec = new SkillSpecialization(objXmlSkill.Attributes["spec"].InnerText);
                                 //objExotic.Specializations.Add(objSpec);
-                            }
+                            //}
 							//if (Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0)) > 6)
 							//	objExotic.RatingMaximum = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							//objExotic.Rating = Convert.ToInt32(ExpressionToString(objXmlSkill.Attributes["rating"].InnerText, Convert.ToInt32(intForce), 0));
 							//objExotic.Name = objXmlSkill.InnerText;
-							_objCharacter.Skills.Add(objExotic);
+							//_objCharacter.Skills.Add(objExotic);
 						}
 						else
 						{
