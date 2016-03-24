@@ -55,22 +55,18 @@ namespace Chummer
 			nudRating.Maximum = _objPower.MaxLevels;
             nudRating.Minimum = _objPower.FreeLevels;
 
-			if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
-			{
-				nudRating.Value = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value);
-			}
-			else
-			{
-				if (actualRating > _objPower.FreeLevels)
-				{
-					nudRating.Value = newRating;
-				}
-				else
-				{
-					nudRating.Value = _objPower.FreeLevels;
-				}
-			}
-		}
+            if (newRating < _objPower.FreeLevels)
+            {
+                newRating = _objPower.FreeLevels;
+            }
+
+            if (newRating > Convert.ToDecimal(_objPower.CharacterObject.MAG.Value))
+            {
+                newRating = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value);
+            }
+
+            nudRating.Value = newRating;
+        }
         
 		private void nudRating_ValueChanged(object sender, EventArgs e)
         {

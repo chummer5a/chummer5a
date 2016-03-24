@@ -3499,7 +3499,10 @@ namespace Chummer
 					Log.Info("_strSelectedValue = " + _strSelectedValue);
 					Log.Info("_strForcedValue = " + _strForcedValue);
 
-					bool blnExistingPower = false;
+                    //Gerry: These unfortunately did not work in any case of multiple bonuses
+                    // Switched the setting of powerpoints and levels to ADDING them
+                    // Remove resetting powerpoints.
+                    bool blnExistingPower = false;
 					foreach (Power objExistingPower in _objCharacter.Powers)
 					{
 						if (objExistingPower.BonusSource == strSourceName)
@@ -3509,29 +3512,29 @@ namespace Chummer
 									if (objExistingPower.Name.EndsWith("1"))
 									{
 										if (intRating >= 6)
-											objExistingPower.FreePoints = 1.5M;
-										else
-											objExistingPower.FreePoints = 0;
+											objExistingPower.FreePoints += 1.5M;
+										//else
+										//	objExistingPower.FreePoints = 0;
 									}
 									else if (objExistingPower.Name.EndsWith("2"))
 									{
 										if (intRating >= 10)
-											objExistingPower.FreePoints = 2.5M;
+											objExistingPower.FreePoints += 2.5M;
 										else if (intRating >= 4)
-											objExistingPower.FreePoints = 1.0M;
-										else
-											objExistingPower.FreePoints = 0;
+											objExistingPower.FreePoints += 1.0M;
+										//else
+										//	objExistingPower.FreePoints = 0;
 									}
 									else
 									{
 										if (intRating >= 14)
-											objExistingPower.FreePoints = 3.5M;
+											objExistingPower.FreePoints += 3.5M;
 										else if (intRating >= 8)
-											objExistingPower.FreePoints = 2.0M;
+											objExistingPower.FreePoints += 2.0M;
 										else if (intRating >= 4)
-											objExistingPower.FreePoints = 1.0M;
-										else
-											objExistingPower.FreePoints = 0;
+											objExistingPower.FreePoints += 1.0M;
+										//else
+										//	objExistingPower.FreePoints = 0;
 									}
 								}
 								else
@@ -3539,7 +3542,7 @@ namespace Chummer
 									// we have to adjust the number of free levels.
 									decimal decLevels = Convert.ToDecimal(intRating)/4;
 									decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
-									objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
+									objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
 									if (objExistingPower.Rating < intRating)
 										objExistingPower.Rating = objExistingPower.FreeLevels;
 									break;
