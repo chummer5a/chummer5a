@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using Chummer.Annotations;
 
 namespace Chummer.Skills
@@ -207,6 +208,34 @@ namespace Chummer.Skills
 			skill.PropertyChanged += SkillOnPropertyChanged;
 		}
 
+		internal void WriteTo(XmlWriter writer)
+		{
+			writer.WriteStartElement("group");
+
+			writer.WriteElementString("karma", _skillFromKarma.ToString());
+			writer.WriteElementString("base", _skillFromSp.ToString());
+			writer.WriteElementString("id", Id.ToString());
+			writer.WriteElementString("name", _groupName);
+
+			writer.WriteEndElement();
+		}
+
+		internal static SkillGroup Load(Character character, XmlNode saved)
+		{
+			Guid g;
+
+			SkillGroup group = new SkillGroup(character, saved["name"].InnerText);
+
+			saved.TryGetField("karma", out group._skillFromKarma);
+			saved.TryGetField("base", out group._skillFromSp);
+			saved.TryGetField("id", Guid.TryParse, out g);
+
+			group.Id = g;
+
+
+			return group;
+		}
+
 		private void SkillOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
 			if (propertyChangedEventArgs.PropertyName == nameof(Skill.Base))
@@ -270,7 +299,7 @@ namespace Chummer.Skills
 			get { return Name; } //TODO TRANSLATE
 		}
 
-		public Guid Id { get; } = Guid.NewGuid();
+		public Guid Id { get; private set; } = Guid.NewGuid();
 
 
 		#region HasWhateverSkills

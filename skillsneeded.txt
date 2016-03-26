@@ -6,8 +6,6 @@ Translate for all but skill level buttons
 
 External events not doing PropertyChanged, not updating pool/whatever
 
-Skillgroups are not saving
-
 Undo expense mostly working. (skills working (history not, needfix? i guess), skillgroups not working, dunremember baut specs)
 
 Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever created without user doing it manually, but it is a thing and we (probably) have to support it. Also kinda usefull.
@@ -17,3 +15,7 @@ Knoskills LM not working
 Remove old skillcode
 
 Uncought/Uneducated/ect?
+
+Skill grouping button in options
+
+Events need unsubscribe or memory leak

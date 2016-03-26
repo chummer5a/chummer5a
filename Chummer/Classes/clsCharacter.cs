@@ -28,7 +28,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Skills;
+﻿using Chummer.Backend;
+﻿using Chummer.Skills;
 
 // MAGEnabledChanged Event Handler
 public delegate void MAGEnabledChangedHandler(Object sender);
@@ -687,9 +688,13 @@ namespace Chummer
 		        knowledgeSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
+			objWriter.WriteStartElement("groups");
+	        foreach (SkillGroup skillGroup in SkillGroups)
+	        {
 
-
-
+		        skillGroup.WriteTo(objWriter);
+	        }
+			objWriter.WriteEndElement();
 			objWriter.WriteEndElement();
 
 
@@ -1326,79 +1331,87 @@ namespace Chummer
 			oldSkillsBackup = objXmlDocument.SelectSingleNode("/character/skills")?.Clone();
 		    oldSKillGroupBackup = objXmlDocument.SelectSingleNode("/character/skillgroups")?.Clone();
 
-			if (objXmlDocument.SelectSingleNode("/character/newskills") != null)
-		    {
-			Timekeeper.Start("load_char_skills_normal");
-			    {
-					
-					//Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-					List<Skill> loadingSkills =
-					    (from XmlNode node
-						    in objXmlDocument.SelectNodes("/character/newskills/skills/skill")
-						    let skill = Skill.Load(this, node)
-						    where skill != null
-						    select skill
-						    ).ToList();
+	        if (objXmlDocument.SelectSingleNode("/character/newskills") != null)
+	        {
+		        Timekeeper.Start("load_char_skills_groups");
+		        (from XmlNode node in objXmlDocument.SelectNodes("/character/newskills/groups/group")
+			        let @group = SkillGroup.Load(this, node)
+			        where @group != null
+			        orderby @group.DisplayName descending
+			        select @group).ForEach(x => SkillGroups.Add(x));
 
-				    loadingSkills.Sort(CompareSkills);
+		        Timekeeper.Finish("load_char_skills_groups");
+		        Timekeeper.Start("load_char_skills_normal");
 
 
-				    foreach (Skill skill in loadingSkills)
-                {
-					    Skills.Add(skill);
-                }
-            }
+		        //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
+		        List<Skill> loadingSkills =
+			        (from XmlNode node
+				        in objXmlDocument.SelectNodes("/character/newskills/skills/skill")
+				        let skill = Skill.Load(this, node)
+				        where skill != null
+				        select skill
+				        ).ToList();
 
-			Timekeeper.Finish("load_char_skills_normal");
-			    Timekeeper.Start("load_char_skills_kno");
-			    {
-				    List<KnowledgeSkill> knoSkills =
-					    (from XmlNode node
-						    in objXmlDocument.SelectNodes("/character/newskills/knoskills/skill")
-						    let skill = (KnowledgeSkill) Skill.Load(this, node)
-						    where skill != null
-						    select skill).ToList();
+		        loadingSkills.Sort(CompareSkills);
 
 
-				    foreach (KnowledgeSkill skill in knoSkills)
-            {
-					    KnowledgeSkills.Add(skill);
-            }
-                }
-			    Timekeeper.Finish("load_char_skills_kno");
-            }
-		    else
-			{
-				XmlNodeList oldskills = objXmlDocument.SelectNodes("/character/skills/skill");
-
-				var v = (from XmlNode node
-					in oldskills
-					let skill = Skill.LegacyLoad(this, node)
-					where skill != null
-					select skill).ToList();
+		        foreach (Skill skill in loadingSkills)
+		        {
+			        Skills.Add(skill);
+		        }
 
 
+		        Timekeeper.Finish("load_char_skills_normal");
+		        Timekeeper.Start("load_char_skills_kno");
 
-				List<Skill> skills = new List<Skill>();
+		        List<KnowledgeSkill> knoSkills =
+			        (from XmlNode node
+				        in objXmlDocument.SelectNodes("/character/newskills/knoskills/skill")
+				        let skill = (KnowledgeSkill) Skill.Load(this, node)
+				        where skill != null
+				        select skill).ToList();
 
-				foreach (Skill skill in v)
-				{
-					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
-					if (knoSkill != null)
-					{
-						KnowledgeSkills.Add(knoSkill);
-					}
-					else
-					{
-						skills.Add(skill);
-					}
-				}
 
-				skills.Sort(CompareSkills);
-				foreach (Skill skill in skills) Skills.Add(skill); 
+		        foreach (KnowledgeSkill skill in knoSkills)
+		        {
+			        KnowledgeSkills.Add(skill);
+		        }
 
-            }
-			Timekeeper.Finish("load_char_skills");
+		        Timekeeper.Finish("load_char_skills_kno");
+	        }
+	        else
+	        {
+		        XmlNodeList oldskills = objXmlDocument.SelectNodes("/character/skills/skill");
+
+		        var v = (from XmlNode node
+			        in oldskills
+			        let skill = Skill.LegacyLoad(this, node)
+			        where skill != null
+			        select skill).ToList();
+
+
+
+		        List<Skill> skills = new List<Skill>();
+
+		        foreach (Skill skill in v)
+		        {
+			        KnowledgeSkill knoSkill = skill as KnowledgeSkill;
+			        if (knoSkill != null)
+			        {
+				        KnowledgeSkills.Add(knoSkill);
+			        }
+			        else
+			        {
+				        skills.Add(skill);
+			        }
+		        }
+
+		        skills.Sort(CompareSkills);
+		        foreach (Skill skill in skills) Skills.Add(skill);
+
+	        }
+	        Timekeeper.Finish("load_char_skills");
 			Timekeeper.Start("load_char_contacts");
 
 
