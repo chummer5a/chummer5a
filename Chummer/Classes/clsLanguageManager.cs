@@ -144,6 +144,8 @@ namespace Chummer
 		/// </summary>
 		private static void RefreshStrings()
 		{
+			if (Utils.IsRunningInVisualStudio()) return;
+
 			try
 			{
 				_objDictionary.Clear();
@@ -159,8 +161,9 @@ namespace Chummer
 				}
 				_blnLoaded = true;
 			}
-			catch
+			catch(Exception ex)
 			{
+				MessageBox.Show(ex.ToString());
 				//TODO this might fuck stuff up, remove before release, or fix?
 				//Had obscure bug where this closed visual studio
 				MessageBox.Show("Could not load default language file!" + Path.Combine(Application.StartupPath, "lang", "en-us.xml"), "Default Language Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);

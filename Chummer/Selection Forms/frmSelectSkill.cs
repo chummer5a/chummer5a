@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
+﻿using Chummer.Skills;
 
 namespace Chummer
 {

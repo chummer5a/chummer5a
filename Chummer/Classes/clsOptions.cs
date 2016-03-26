@@ -133,6 +133,8 @@ namespace Chummer
 		#region Constructor and Instance
 		static GlobalOptions()
 		{
+			if (Utils.IsRunningInVisualStudio()) return;
+
 			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
