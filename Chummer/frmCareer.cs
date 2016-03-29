@@ -28,7 +28,8 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+﻿using Chummer.Backend;
+﻿using Chummer.Skills;
 
 public delegate void DiceRollerOpenHandler(Object sender);
 public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
@@ -12334,11 +12335,15 @@ namespace Chummer
 						}
 					}
 					break;
+				case KarmaExpenseType.SkillSpec:  //I am resonable sure those 2 are the same. Was written looking at old AddSpecialization code
 				case KarmaExpenseType.AddSpecialization:
-					//TODO: FIX THIS
-					break;
-				case KarmaExpenseType.SkillSpec:
-					//TODO CREATE
+					{
+						Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.KnowledgeSkills, _objCharacter.Skills)
+							.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
+
+						ContainingSkill.Specializations.Remove(
+							ContainingSkill.Specializations.First(x => x.InternalId == objEntry.Undo.ObjectId));
+					}
 					break;
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.

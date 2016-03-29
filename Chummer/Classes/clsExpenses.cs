@@ -99,57 +99,8 @@ namespace Chummer
 		/// <param name="strValue">String value to convert.</param>
 		public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
 		{
-			switch (strValue)
-			{
-				case "AddComplexForm":
-					return KarmaExpenseType.AddComplexForm;
-				case "AddComplexFormOption":
-					return KarmaExpenseType.AddComplexFormOption;
-				case "AddMartialArt":
-					return KarmaExpenseType.AddMartialArt;
-				case "AddMartialArtManeuver":
-					return KarmaExpenseType.AddMartialArtManeuver;
-				case "AddMetamagic":
-					return KarmaExpenseType.AddMetamagic;
-				case "AddQuality":
-					return KarmaExpenseType.AddQuality;
-				case "AddSkill":
-					return KarmaExpenseType.AddSkill;
-                case "AddSpecialization":
-                    return KarmaExpenseType.AddSpecialization;
-                case "AddSpell":
-					return KarmaExpenseType.AddSpell;
-				case "BindFocus":
-					return KarmaExpenseType.BindFocus;
-				case "ImproveAttribute":
-					return KarmaExpenseType.ImproveAttribute;
-				case "ImproveComplexForm":
-					return KarmaExpenseType.ImproveComplexForm;
-				case "ImproveComplexFormOption":
-					return KarmaExpenseType.ImproveComplexFormOption;
-				case "ImproveInitiateGrade":
-					return KarmaExpenseType.ImproveInitiateGrade;
-				case "ImproveMartialArt":
-					return KarmaExpenseType.ImproveMartialArt;
-				case "ImproveSkill":
-					return KarmaExpenseType.ImproveSkill;
-				case "ImproveSkillGroup":
-					return KarmaExpenseType.ImproveSkillGroup;
-				case "ManualAdd":
-					return KarmaExpenseType.ManualAdd;
-				case "ManualSubtract":
-					return KarmaExpenseType.ManualSubtract;
-				case "RemoveQuality":
-					return KarmaExpenseType.RemoveQuality;
-				case "SkillSpec":
-					return KarmaExpenseType.SkillSpec;
-				case "JoinGroup":
-					return KarmaExpenseType.JoinGroup;
-				case "LeaveGroup":
-					return KarmaExpenseType.LeaveGroup;
-				default:
-					return KarmaExpenseType.ManualAdd;
-			}
+			KarmaExpenseType result;
+			return KarmaExpenseType.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
 		}
 
 		/// <summary>
@@ -158,51 +109,8 @@ namespace Chummer
 		/// <param name="strValue">String value to convert.</param>
 		public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
 		{
-			switch (strValue)
-			{
-				case "AddArmor":
-					return NuyenExpenseType.AddArmor;
-				case "AddArmorGear":
-					return NuyenExpenseType.AddArmorGear;
-				case "AddArmorMod":
-					return NuyenExpenseType.AddArmorMod;
-				case "AddCyberware":
-					return NuyenExpenseType.AddCyberware;
-				case "AddGear":
-					return NuyenExpenseType.AddGear;
-				case "AddVehicle":
-					return NuyenExpenseType.AddVehicle;
-				case "AddVehicleGear":
-					return NuyenExpenseType.AddVehicleGear;
-				case "AddVehicleMod":
-					return NuyenExpenseType.AddVehicleMod;
-				case "AddVehicleWeapon":
-					return NuyenExpenseType.AddVehicleWeapon;
-				case "AddVehicleWeaponAccessory":
-					return NuyenExpenseType.AddVehicleWeaponAccessory;
-				case "AddVehicleWeaponMod":
-					return NuyenExpenseType.AddVehicleWeaponMod;
-				case "AddWeapon":
-					return NuyenExpenseType.AddWeapon;
-				case "AddWeaponAccessory":
-					return NuyenExpenseType.AddWeaponAccessory;
-				case "AddWeaponMod":
-					return NuyenExpenseType.AddWeaponMod;
-				case "IncreaseLifestyle":
-					return NuyenExpenseType.IncreaseLifestyle;
-				case "ManualAdd":
-					return NuyenExpenseType.ManualAdd;
-				case "ManualSubtract":
-					return NuyenExpenseType.ManualSubtract;
-				case "AddVehicleModCyberware":
-					return NuyenExpenseType.AddVehicleModCyberware;
-				case "AddCyberwareGear":
-					return NuyenExpenseType.AddCyberwareGear;
-				case "AddWeaponGear":
-					return NuyenExpenseType.AddWeaponGear;
-				default:
-					return NuyenExpenseType.ManualAdd;
-			}
+			NuyenExpenseType result;
+			return NuyenExpenseType.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
 		}
 		#endregion
 
@@ -412,7 +320,7 @@ namespace Chummer
 		/// <param name="objExpenseType">Type of expense, either Karma or Nuyen.</param>
 		/// <param name="datDate">Date and time of the Expense.</param>
 		/// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
-		public void Create(int intKarma, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
+		public ExpenseLogEntry Create(int intKarma, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
 		{
 			if (blnRefund)
 				strReason += " (" + LanguageManager.Instance.GetString("String_Expense_Refund") + ")";
@@ -421,6 +329,8 @@ namespace Chummer
 			_datDate = datDate;
 			_objExpenseType = objExpenseType;
 			_blnRefund = blnRefund;
+
+			return this;  //Allow chaining
 		}
 
 		/// <summary>

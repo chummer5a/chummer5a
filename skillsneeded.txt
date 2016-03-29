@@ -12,8 +12,6 @@ Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever c
 
 Knoskills LM not working
 
-Remove old skillcode
-
 Uncought/Uneducated/ect?
 
 Skill grouping button in options

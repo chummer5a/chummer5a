@@ -390,8 +390,7 @@ namespace Chummer.Skills
 		public void AddSpecialization(string name)
 		{
 			if (!CharacterObject.CanAffordSpecialization) return;
-
-
+			
 
 			int price = CharacterObject.Options.KarmaSpecialization;
 

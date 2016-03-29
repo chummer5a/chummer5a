@@ -28,7 +28,7 @@ namespace Chummer.UI.Shared
 		{
 			_contents = list;
 			_createFunc = createFunc;
-			DoubleBuffered = true;
+			//DoubleBuffered = true;
 			InitializeComponent();
 		}
 
@@ -124,6 +124,7 @@ namespace Chummer.UI.Shared
 			{
 				_map.Add(content, c);
 				_controls.Add(c);
+				c.Location = new Point(999,2999); //Moves it out of visible arear. Otherwise first control will flicker
 				tblContents.Controls.Add(c);
 				
 			}
@@ -134,7 +135,7 @@ namespace Chummer.UI.Shared
 			{
 				possibleInterface.PropertyChanged += OnChildChanged;
 			}
-
+			
 		}
 
 		private void OnChildChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

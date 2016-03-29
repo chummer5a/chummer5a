@@ -147,9 +147,18 @@ namespace Chummer.Skills
 			if (!n.TryGetField("id", Guid.TryParse, out suid))
 				return null;
 
+			Skill skill;
+
 			if (n.TryCheckValue("knowledge", "True"))
 			{
-				return null;
+				Skills.KnowledgeSkill kno = new KnowledgeSkill(character);
+				kno.WriteableName = n["name"].InnerText;
+				kno.Base = Int32.Parse(n["base"].InnerText);
+				kno.Karma = Int32.Parse(n["karma"].InnerText);
+
+				kno.SkillCategory = n["skillcategory"].InnerText;
+
+				skill = kno;
 			}
 			else
 			{
@@ -163,27 +172,26 @@ namespace Chummer.Skills
 				}
 
 
-				Skill skill = Skill.FromData(data, character);
+				skill = Skill.FromData(data, character);
 
 				n.TryGetField("base", out skill._base);
 				n.TryGetField("karma", out skill._karma);
 
 				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
 
-				var v = from XmlNode node
+				
+			}
+
+			var v = from XmlNode node
 					in n.SelectNodes("skillspecializations/skillspecialization")
 					select SkillSpecialization.Load(node);
-				var q = v.ToList();
-				if (q.Count != 0)
-				{
-					skill.Specializations.AddRange(q);
-				}
-
-				
-				
-
-				return skill;
+			var q = v.ToList();
+			if (q.Count != 0)
+			{
+				skill.Specializations.AddRange(q);
 			}
+
+			return skill;
 		}
 
 		protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();  //TODO CACHE INVALIDATE
