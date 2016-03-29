@@ -64,7 +64,7 @@ namespace Chummer
 			_objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 
 			// Populate the Weapon Category list.
-			if (_strLimitToCategories != "")
+			if (!string.IsNullOrEmpty(_strLimitToCategories))
 			{
 				string[] strValues = _strLimitToCategories.Split(',');
 				// Populate the Category list.

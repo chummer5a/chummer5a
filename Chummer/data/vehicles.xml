@@ -7021,7 +7021,7 @@
 			</bonus>
 			<minrating>6</minrating>
 			<slots>0</slots>
-			<avail>Rating</avail>
+			<avail>RatingR</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
 			<page>123</page>
@@ -7036,7 +7036,7 @@
 			</bonus>
 			<minrating>12</minrating>
 			<slots>0</slots>
-			<avail>Rating</avail>
+			<avail>RatingF</avail>
 			<cost>Rating * Body * 200</cost>
 			<source>R5</source>
 			<page>123</page>

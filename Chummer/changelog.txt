@@ -115,6 +115,7 @@ Data Change:
 - Fixed an incorrect Limit value for the Chameleon Skin bioware.
 - Removed the Distinctive Style quality from the Gnome metavariant. 
 - Removed an extra Victorinox Collapsible Hatchet from the weapons XML.
+- Fixed incorrect capacity values for the Responsive Interface Gear.
 
 New Strings:
 - Message_DeleteCalendarWeek
