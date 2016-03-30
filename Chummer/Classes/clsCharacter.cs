@@ -1038,9 +1038,10 @@ namespace Chummer
 
             // Metatype information.
             _strMetatype = objXmlCharacter["metatype"].InnerText;
-            try
+			try
             {
-                _strWalk = objXmlCharacter["walk"].InnerText;
+				_strMovement = objXmlCharacter["movement"].InnerText;
+				_strWalk = objXmlCharacter["walk"].InnerText;
                 _strRun = objXmlCharacter["run"].InnerText;
                 _strSprint = objXmlCharacter["sprint"].InnerText;
             }
@@ -6841,10 +6842,12 @@ namespace Chummer
                 string strReturn = "";
 
                 // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                    return "Special";
+	            if (_strMovement == "Special")
+	            {
+		            return "Special";
+	            }
 
-                // If there is no Movement data, read it from the Metatype file, apply it to the character and save the updated file.
+	            // If there is no Movement data, read it from the Metatype file, apply it to the character and save the updated file.
                 if (_strMovement.Trim() == "")
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
@@ -6855,8 +6858,11 @@ namespace Chummer
                     try
                     {
                         _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-						
-                    }
+						if (_strMovement == "Special")
+						{
+							return "Special";
+						}
+					}
                     catch
                     {
 						try
