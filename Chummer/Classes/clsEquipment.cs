@@ -14437,8 +14437,16 @@ namespace Chummer
 				int intReturn = _intPilot;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Pilot > intReturn && objMod.Installed)
-						intReturn = objMod.Pilot;
+					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
+					{
+						// Set the Vehicle's Pilot to the Modification's bonus.
+						if (objMod.Bonus.InnerXml.Contains("<pilot>"))
+						{
+							int intTest = Convert.ToInt32(objMod.Bonus["pilot"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (intTest > intReturn)
+								intReturn = intTest;
+						}
+					}
 				}
 				return intReturn;
 			}
