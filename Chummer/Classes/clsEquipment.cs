@@ -14977,10 +14977,11 @@ namespace Chummer
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
-					// Not true with Rigger 5
-					//if (!objMod.IncludedInVehicle && objMod.Installed)
-					if (objMod.CalculatedSlots < 0)
-						intDroneModSlots -= objMod.CalculatedSlots;
+					if (!objMod.IncludedInVehicle && objMod.Installed)
+					{
+						if (objMod.CalculatedSlots < 0)
+							intDroneModSlots -= objMod.CalculatedSlots;
+					}
 				}
 				return intDroneModSlots;
 			}
@@ -15003,7 +15004,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed)
+					if (!objMod.IncludedInVehicle && objMod.Installed)
 					{
 						int intActualSlots = 0;
 
@@ -15228,8 +15229,17 @@ namespace Chummer
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
 						// Add the Modification's Body to the Vehicle's base Body.
-						if (objMod.Bonus.InnerXml.Contains("<body>"))
-							intBody += Convert.ToInt32(objMod.Bonus["body"].InnerText);
+						
+						if (objMod.Bonus.InnerXml.Contains("<body>") && objMod.Bonus["body"].InnerText.Contains("Rating"))
+						{
+							// If the cost is determined by the Rating, evaluate the expression.
+							XmlDocument objXmlDocument = new XmlDocument();
+							XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+							string strBody = objMod.Bonus["body"].InnerText.Replace("Rating", objMod.Rating.ToString());
+							XPathExpression xprBody = nav.Compile(strBody);
+							intBody += Convert.ToInt32(nav.Evaluate(xprBody).ToString());
+						}
 					}
 				}
 

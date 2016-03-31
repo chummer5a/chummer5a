@@ -6988,11 +6988,11 @@
 		</mod>
 		<mod>
 			<id>3ffae49d-1b3d-4214-95da-96a25f8a65f2</id>
-			<name>Body (Drone)</name>
+			<name>Fragile (Drone)</name>
 			<category>All</category>
 			<rating>99</rating>
 			<bonus>
-				<body>Rating</body>
+				<body>-Rating</body>
 			</bonus>
 			<slots>-Rating * 2</slots>
 			<avail>Rating * 3</avail>
