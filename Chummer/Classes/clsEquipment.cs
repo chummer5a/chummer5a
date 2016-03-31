@@ -13620,7 +13620,7 @@ namespace Chummer
 				}
 				else
 				{
-					// If the cost is determined by the Rating, evaluate the expression.
+					// If the slots is determined by the Rating, evaluate the expression.
 					int intReturn = 0;
 					XmlDocument objXmlDocument = new XmlDocument();
 					XPathNavigator nav = objXmlDocument.CreateNavigator();
@@ -14967,6 +14967,118 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Number of Slots the Drone has for Modifications.
+		/// </summary>
+		public int DroneModSlots
+		{
+			get
+			{
+				int intDroneModSlots = TotalBody + _intAddSlots;
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					// Mods that are included with a Vehicle by default do not count toward the Slots used.
+					// Not true with Rigger 5
+					//if (!objMod.IncludedInVehicle && objMod.Installed)
+					if (objMod.CalculatedSlots < 0)
+						intDroneModSlots -= objMod.CalculatedSlots;
+				}
+				return intDroneModSlots;
+			}
+		}
+
+		/// <summary>
+		/// The number of Slots on the Drone that are used by Mods.
+		/// </summary>
+		public int DroneModSlotsUsed
+		{
+			get
+			{
+				int intModSlotsUsed = 0;
+
+				bool blnHandling = false;
+				bool blnSpeed = false;
+				bool blnAccel = false;
+				bool blnArmor = false;
+				bool blnSensor = false;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed)
+					{
+						int intActualSlots = 0;
+
+						if (objMod.CalculatedSlots > 0)
+						{
+							if (objMod.Category == "Handling")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intHandling;
+								if (!blnHandling)
+								{
+									blnHandling = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Speed")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intSpeed;
+								if (!blnSpeed)
+								{
+									blnSpeed = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Acceleration")
+							{
+								intActualSlots = objMod.CalculatedSlots - Convert.ToInt32(_strAccel);
+								if (!blnAccel)
+								{
+									blnAccel = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Armor")
+							{
+								int intArmorDiff = objMod.Rating - _intArmor;
+								double dblDivThree = intArmorDiff / 3;
+								int intThird = (int)Math.Ceiling(dblDivThree);
+
+								if (!blnArmor)
+								{
+									blnAccel = true;
+									intActualSlots = intThird - 1;
+								}
+								else
+								{
+									intActualSlots = intThird;
+								}
+							}
+							else if (objMod.Category == "Sensor")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intSensor;
+								if (!blnSensor)
+								{
+									blnSensor = true;
+									intActualSlots -= 1;
+								}
+							}
+							else
+							{
+								intActualSlots = objMod.CalculatedSlots;
+							}
+
+							if (intActualSlots < 0)
+								intActualSlots = 0;
+
+							intModSlotsUsed += intActualSlots;
+						}
+					}
+				}
+				return intModSlotsUsed;
+			}
+		}
+
+
+		/// <summary>
 		/// Total cost of the Vehicle including all after-market Modification.
 		/// </summary>
 		public int TotalCost
@@ -15031,7 +15143,7 @@ namespace Chummer
 		{
 			get
 			{
-				decimal decSpeed = Convert.ToDecimal(_intSpeed, GlobalOptions.Instance.CultureInfo);
+				int intTotalSpeed = _intSpeed;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15042,30 +15154,18 @@ namespace Chummer
 							//Increase the vehicles base Speed by the Modification's value.
 							if (objMod.Bonus["speed"].InnerText.Contains("+"))
 							{
-								string strSpeed = objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								decSpeed += Convert.ToDecimal(strSpeed, GlobalOptions.Instance.CultureInfo);
+								intTotalSpeed += Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty));
 							}
-							// Multiply the Vehicle's base Speed by the Modification's Speed multiplier.
+							// Add the Vehicle's base Speed to the Modification's Speed adjustment.
 							else
 							{
-								decSpeed += (Convert.ToDecimal(Speed, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["speed"].InnerText, GlobalOptions.Instance.CultureInfo));
+								intTotalSpeed = Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 							}
 						}
 					}
 				}
-
-				// If the Vehicle's Total Armor exceeds its Total Body, Accel and Speed are decreased by 20%.
-				// The value must also exceed the Armor Rating that the Vehicles comes equipped with by default.
-				if (TotalArmor > TotalBody && TotalArmor > _intArmor)
-				{
-					decSpeed -= (Convert.ToDecimal(_intSpeed, GlobalOptions.Instance.CultureInfo) * 0.2m);
-				}
-
-				// Make sure Speed doesn't go below 0.
-				if (decSpeed < 0.0m)
-					decSpeed = 0.0m;
-
-				return Convert.ToInt32(Math.Ceiling(decSpeed));
+				
+				return intTotalSpeed;
 			}
 		}
 
@@ -15092,7 +15192,8 @@ namespace Chummer
 							}
 							else
 							{
-								decAccel += (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["accel"].InnerText, GlobalOptions.Instance.CultureInfo));
+								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								decAccel = Convert.ToDecimal(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 						}
 					}
@@ -15154,11 +15255,21 @@ namespace Chummer
 						// Add the Modification's Handling to the Vehicle's base Handling.
 						if (objMod.Bonus.InnerXml.Contains("<handling>"))
 						{
-							intBaseHandling += Convert.ToInt32(objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (objMod.Bonus["handling"].InnerText.Contains("+"))
+							{
+								string strHandle = objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intBaseHandling += Convert.ToInt32(strHandle, GlobalOptions.Instance.CultureInfo);
+							}
+							else intBaseHandling = Convert.ToInt32(objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 						if (objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
 						{
-							intBaseOffroadHandling += Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (objMod.Bonus["offroadhandling"].InnerText.Contains("+"))
+							{
+								string strHandle = objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intBaseOffroadHandling += Convert.ToInt32(strHandle, GlobalOptions.Instance.CultureInfo);
+							}
+							else intBaseOffroadHandling = Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 					}
 				}
