@@ -19353,13 +19353,13 @@ namespace Chummer
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
 
-				// Set the vehicle mods to the body
-				lblVehiclePowertrain.Text = objVehicle.TotalBody.ToString();
-				lblVehicleCosmetic.Text = objVehicle.TotalBody.ToString();
-				lblVehicleElectromagnetic.Text = objVehicle.TotalBody.ToString();
-				lblVehicleBodymod.Text = objVehicle.TotalBody.ToString();
-				lblVehicleWeaponsmod.Text = objVehicle.TotalBody.ToString();
-				lblVehicleProtection.Text = objVehicle.TotalBody.ToString();
+				// Update the vehicle mod slots
+				lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
+				lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
+				lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
+				lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
+				lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
+				lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
 
 				nudVehicleGearQty.Visible = true;
 				lblVehicleGearQtyLabel.Visible = true;

@@ -5756,7 +5756,7 @@
 			<name>Armor (Standard)</name>
 			<category>Protection</category>
 			<rating>body</rating>
-			<slots>0</slots>
+			<slots>Rating * 2</slots>
 			<avail>6R</avail>
 			<cost>Rating * 500</cost>
 			<source>R5</source>

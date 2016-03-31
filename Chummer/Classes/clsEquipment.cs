@@ -13620,9 +13620,17 @@ namespace Chummer
 				}
 				else
 				{
-				return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
+					// If the cost is determined by the Rating, evaluate the expression.
+					int intReturn = 0;
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					//return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
+					XPathExpression xprSlots = nav.Compile(_strSlots.Replace("Rating", _intRating.ToString()));
+					intReturn = Convert.ToInt32(nav.Evaluate(xprSlots).ToString());
+					return intReturn;
+				}
 			}
-		}
 		}
 
 		/// <summary>
@@ -15215,6 +15223,144 @@ namespace Chummer
 					intReturn = 20;
 
 				return intReturn;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Powertrain slots
+		/// </summary>
+		public int CalcPowertrain
+		{
+			get
+			{
+				int intPowertrain = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Powertrain"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intPowertrain -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intPowertrain;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Protection slots
+		/// </summary>
+		public int CalcProtection
+		{
+			get
+			{
+				int intProtection = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Protection"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intProtection -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intProtection;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Weapon slots
+		/// </summary>
+		public int CalcWeaponsmod
+		{
+			get
+			{
+				int intWeaponsmod = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Weapons"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intWeaponsmod -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intWeaponsmod;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Bodymod slots
+		/// </summary>
+		public int CalcBodymod
+		{
+			get
+			{
+				int intBodymod = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Body"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intBodymod -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intBodymod;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Electromagnetic slots
+		/// </summary>
+		public int CalcElectromagnetic
+		{
+			get
+			{
+				int intElectromagnetic = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Electromagnetic"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intElectromagnetic -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intElectromagnetic;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Cosmetic slots
+		/// </summary>
+		public int CalcCosmetic
+		{
+			get
+			{
+				int intCosmetic = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Cosmetic"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intCosmetic -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intCosmetic;
 			}
 		}
 
