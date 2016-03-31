@@ -475,6 +475,30 @@
 			<text>Slots:</text>
 		</string>
 		<string>
+			<key>Label_Weapons</key>
+			<text>Weapons:</text>
+		</string>
+		<string>
+			<key>Label_Protection</key>
+			<text>Prot:</text>
+		</string>
+		<string>
+			<key>Label_Powertrain</key>
+			<text>Power:</text>
+		</string>
+		<string>
+			<key>Label_Bodymod</key>
+			<text>Body Mods:</text>
+		</string>
+		<string>
+			<key>Label_Electromagnetic</key>
+			<text>Elec:</text>
+		</string>
+		<string>
+			<key>Label_Cosmetic</key>
+			<text>Cosmetic:</text>
+		</string>
+		<string>
 			<key>Label_Rating</key>
 			<text>Rating:</text>
 		</string>
