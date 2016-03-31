@@ -499,6 +499,10 @@
 			<text>Cosmetic:</text>
 		</string>
 		<string>
+			<key>Label_ModSlots</key>
+			<text>Mod Slots:</text>
+		</string>
+		<string>
 			<key>Label_Rating</key>
 			<text>Rating:</text>
 		</string>
