@@ -23752,7 +23752,9 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblVehicleHandlingLabel.Width);
             intWidth = Math.Max(intWidth, lblVehiclePilotLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleWeaponsmodLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleBodymodLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleGearQtyLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleSourceLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleAttackLabel.Width);
@@ -23762,8 +23764,10 @@ namespace Chummer
             lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
             cboVehicleGearAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
             lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
-            lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
-            nudVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
+			lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
+			lblVehicleWeaponsmod.Left = lblVehicleWeaponsmodLabel.Left + intWidth + 6;
+			lblVehicleBodymod.Left = lblVehicleBodymodLabel.Left + intWidth + 6;
+			nudVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
             nudVehicleGearQty.Left = lblVehicleGearQtyLabel.Left + intWidth + 6;
             lblVehicleSource.Left = lblVehicleSourceLabel.Left + intWidth + 6;
             lblVehicleWeaponName.Left = lblVehicleWeaponNameLabel.Left + intWidth + 6;
@@ -23771,16 +23775,22 @@ namespace Chummer
             lblVehicleWeaponDamage.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehicleBodyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleProtectionLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleElectromagneticLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
 
             lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 47;
             lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
             lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 47;
             lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
-            lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
+			lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleProtection.Left = lblVehicleProtectionLabel.Left + intWidth + 6;
+			lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleElectromagnetic.Left = lblVehicleElectromagneticLabel.Left + intWidth + 6;
+			lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
             cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
 
             chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
@@ -23791,9 +23801,13 @@ namespace Chummer
 
             lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 53;
             lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
-            lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
+			lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehiclePowertrain.Left = lblVehiclePowertrainLabel.Left + intWidth + 6;
+			lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleCosmetic.Left = lblVehicleCosmeticLabel.Left + intWidth + 6;
+			lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
             cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblVehicleDeviceLabel.Width, lblVehicleSensorLabel.Width);
