@@ -678,7 +678,7 @@ namespace Chummer
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
-            if (cboXSLT.SelectedValue.ToString() == "")
+            if (cboXSLT.SelectedValue == null || cboXSLT.SelectedValue.ToString() == "")
             {
                 cboXSLT.SelectedValue = "Shadowrun 5";
             }
