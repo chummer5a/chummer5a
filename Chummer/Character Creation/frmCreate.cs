@@ -19386,7 +19386,7 @@ namespace Chummer
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
 
 				// Update the vehicle mod slots
-				if (objVehicle.IsDrone)
+				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
 				{
 					lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
 				}
@@ -19424,8 +19424,8 @@ namespace Chummer
 				DisplayVehicleWeaponStats(false);
 				DisplayVehicleCommlinkStats(false);
 				DisplayVehicleStats(true);
-				DisplayVehicleDroneMods(objVehicle.IsDrone);
-				DisplayVehicleMods(!(objVehicle.IsDrone));
+				DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+				DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
 				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
