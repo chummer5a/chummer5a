@@ -19378,7 +19378,7 @@ namespace Chummer
 				lblVehicleCostLabel.Visible = true;
 				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
                 lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
-                lblVehicleAccel.Text = objVehicle.TotalAccel;
+                lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
                 lblVehicleDevice.Text = objVehicle.DeviceRating.ToString();
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();

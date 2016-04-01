@@ -12706,7 +12706,7 @@ namespace Chummer
 		private int _intVehicleCost = 0;
 		private int _intBody = 0;
 		private int _intSpeed = 0;
-		private string _strAccel = "0";
+		private int _intAccel = 0;
 
 		private readonly Character _objCharacter;
 
@@ -13356,15 +13356,15 @@ namespace Chummer
 			}
 		}
 
-		public string Accel
+		public int Accel
 		{
 			get
 			{
-				return _strAccel;
+				return _intAccel;
 			}
 			set
 			{
-                _strAccel = value;
+                _intAccel = value;
 			}
 		}
 
@@ -13545,7 +13545,7 @@ namespace Chummer
 					strCost = strCost.Replace("Body", "2");
 				
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Acceleration", _strAccel);
+				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
 
@@ -13595,7 +13595,7 @@ namespace Chummer
 				else
 					strCost = strCost.Replace("Body", "2");
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Accel", _strAccel);
+				strCost = strCost.Replace("Accel", _intAccel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 
@@ -13698,7 +13698,7 @@ namespace Chummer
 		private string _strCategory = "";
 		private int _intHandling = 0;
 		private int _intOffroadHandling = 0;
-		private string _strAccel = "";
+		private int _intAccel = 0;
 		private int _intSpeed = 0;
 		private int _intPilot = 0;
 		private int _intBody = 0;
@@ -13760,7 +13760,7 @@ namespace Chummer
 			{
 				_intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText);
 			}
-			_strAccel = objXmlVehicle["accel"].InnerText;
+			_intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText);
 			_intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText);
 			_intPilot = Convert.ToInt32(objXmlVehicle["pilot"].InnerText);
 			_intBody = Convert.ToInt32(objXmlVehicle["body"].InnerText);
@@ -14025,7 +14025,7 @@ namespace Chummer
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("handling", _intHandling.ToString());
 			objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString());
-			objWriter.WriteElementString("accel", _strAccel);
+			objWriter.WriteElementString("accel", _intAccel.ToString());
 			objWriter.WriteElementString("speed", _intSpeed.ToString());
 			objWriter.WriteElementString("pilot", _intPilot.ToString());
 			objWriter.WriteElementString("body", _intBody.ToString());
@@ -14105,7 +14105,7 @@ namespace Chummer
 					_intOffroadHandling = Convert.ToInt32(objNode["offroadhandling"].InnerText);
 				}
 			}
-			_strAccel = objNode["accel"].InnerText;
+			_intAccel = Convert.ToInt32(objNode["accel"].InnerText);
 			objNode.TryGetField("seats", out _intSeats);
             _intSpeed = Convert.ToInt32(objNode["speed"].InnerText);
 			_intPilot = Convert.ToInt32(objNode["pilot"].InnerText);
@@ -14224,7 +14224,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("handling", TotalHandling.ToString());
-			objWriter.WriteElementString("accel", TotalAccel);
+			objWriter.WriteElementString("accel", TotalAccel.ToString());
 			objWriter.WriteElementString("speed", TotalSpeed.ToString());
 			objWriter.WriteElementString("pilot", Pilot.ToString());
 			objWriter.WriteElementString("body", TotalBody.ToString());
@@ -14408,15 +14408,15 @@ namespace Chummer
 		/// <summary>
 		/// Acceleration.
 		/// </summary>
-		public string Accel
+		public int Accel
 		{
 			get
 			{
-				return _strAccel;
+				return _intAccel;
 			}
 			set
 			{
-				_strAccel = value;
+				_intAccel = value;
 			}
 		}
 
@@ -15030,7 +15030,7 @@ namespace Chummer
 							}
 							else if (objMod.Category == "Acceleration")
 							{
-								intActualSlots = objMod.CalculatedSlots - Convert.ToInt32(_strAccel);
+								intActualSlots = objMod.CalculatedSlots - _intAccel;
 								if (!blnAccel)
 								{
 									blnAccel = true;
@@ -15098,7 +15098,7 @@ namespace Chummer
 						objMod.VehicleCost = Convert.ToInt32(_strCost);
 						objMod.Body = _intBody;
 						objMod.Speed = _intSpeed;
-						objMod.Accel = Accel;
+						objMod.Accel = _intAccel;
 
 						intCost += objMod.TotalCost;
 					}
@@ -15173,11 +15173,11 @@ namespace Chummer
 		/// <summary>
 		/// Total Accel of the Vehicle including Modifications.
 		/// </summary>
-		public string TotalAccel
+		public int TotalAccel
 		{
 			get
 			{
-				decimal decAccel = Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo);
+				int intTotalAccel = _intAccel;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15189,29 +15189,18 @@ namespace Chummer
 							if (objMod.Bonus["accel"].InnerText.Contains("+"))
 							{
 								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								decAccel += Convert.ToDecimal(strAccel, GlobalOptions.Instance.CultureInfo);
+								intTotalAccel += Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 							else
 							{
 								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								decAccel = Convert.ToDecimal(strAccel, GlobalOptions.Instance.CultureInfo);
+								intTotalAccel = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 						}
 					}
 				}
-
-				// If the Vehicle's Total Armor exceeds its Total Body, Accel and Speed are decreased by 20%.
-				// The value must also exceed the Armor Rating that the Vehicles comes equipped with by default.
-				if (TotalArmor > TotalBody && TotalArmor > _intArmor)
-				{
-					decAccel -= (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * 0.2m);
-				}
-
-				// Make sure Acceleration doesn't go below 0.
-				if (decAccel < 0.0m)
-					decAccel = 0.0m;
-
-				return Convert.ToInt32(Math.Ceiling(decAccel)).ToString();
+				
+				return intTotalAccel;
 			}
 		}
 
