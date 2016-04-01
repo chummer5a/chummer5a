@@ -4471,10 +4471,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseLifeModule</key>
 			<text>Life modules available</text>
 		</string>
-    <string>
-      <key>Checkbox_Options_Missions</key>
-      <text>Hide Qualities prohibited by Missions</text>
-    </string>
+		<string>
+			<key>Checkbox_Options_Missions</key>
+			<text>Hide Qualities prohibited by Missions</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Dronemods</key>
+			<text>Use Drone Modification rules (R5 122)</text>
+		</string>
 		<string>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>

@@ -230,6 +230,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
 			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
 			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
 			this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
@@ -254,7 +255,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
+			this.chkDronemods = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2292,6 +2293,7 @@
 			// tabOptionalRules
 			// 
 			this.tabOptionalRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabOptionalRules.Controls.Add(this.chkDronemods);
 			this.tabOptionalRules.Controls.Add(this.chkMissions);
 			this.tabOptionalRules.Controls.Add(this.chkContactPoints);
 			this.tabOptionalRules.Controls.Add(this.chkMayBuyQualities);
@@ -2582,6 +2584,17 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
+			// chkUseCalculatedPublicAwareness
+			// 
+			this.chkUseCalculatedPublicAwareness.AutoSize = true;
+			this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(8, 210);
+			this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
+			this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
+			this.chkUseCalculatedPublicAwareness.TabIndex = 21;
+			this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
+			this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
+			this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
+			// 
 			// chkDontDoubleQualityRefunds
 			// 
 			this.chkDontDoubleQualityRefunds.AutoSize = true;
@@ -2869,16 +2882,16 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkUseCalculatedPublicAwareness
+			// chkDronemods
 			// 
-			this.chkUseCalculatedPublicAwareness.AutoSize = true;
-			this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(8, 210);
-			this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
-			this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
-			this.chkUseCalculatedPublicAwareness.TabIndex = 21;
-			this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
-			this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
-			this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
+			this.chkDronemods.AutoSize = true;
+			this.chkDronemods.Location = new System.Drawing.Point(8, 98);
+			this.chkDronemods.Name = "chkDronemods";
+			this.chkDronemods.Size = new System.Drawing.Size(206, 17);
+			this.chkDronemods.TabIndex = 34;
+			this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
+			this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
+			this.chkDronemods.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3199,5 +3212,6 @@
 		private System.Windows.Forms.Button cmdUploadPastebin;
 		private System.Windows.Forms.CheckBox chkDontDoubleQualityRefunds;
 		private System.Windows.Forms.CheckBox chkUseCalculatedPublicAwareness;
+		private System.Windows.Forms.CheckBox chkDronemods;
 	}
 }

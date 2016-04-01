@@ -111,6 +111,8 @@ namespace Chummer
 		private static bool _blnPrintToFileFirst = false;
 		private static bool _lifeModuleEnabled;
 		private static bool _blnMissionsOnly = false;
+		private static bool _blnDronemods = false;
+
 
 		// Omae Information.
 		private static string _strOmaeUserName = "";
@@ -187,6 +189,13 @@ namespace Chummer
 				_blnMissionsOnly = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("missionsonly").ToString());
 			}
 			catch { }
+
+			try
+			{
+				_blnDronemods = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("dronemods").ToString());
+			}
+			catch { }
+
 
 			// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
 			try
@@ -384,18 +393,32 @@ namespace Chummer
 			}
 		}
 
-		public bool MissionsOnly {
+		public bool MissionsOnly
+		{
 			get
 			{
 				return _blnMissionsOnly;
-				
+
 			}
 			set
 			{
 				_blnMissionsOnly = value;
 			}
 		}
-		
+
+		public bool Dronemods
+		{
+			get
+			{
+				return _blnDronemods;
+
+			}
+			set
+			{
+				_blnDronemods = value;
+			}
+		}
+
 
 		/// <summary>
 		/// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.

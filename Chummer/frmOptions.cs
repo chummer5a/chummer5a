@@ -687,7 +687,8 @@ namespace Chummer
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
-        }
+			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
+		}
 
 	    /// <summary>
         /// Save the global settings to the registry.
@@ -711,9 +712,11 @@ namespace Chummer
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
+			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
 
-            // Save the SourcebookInfo.
-            Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
+
+			// Save the SourcebookInfo.
+			Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
             foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
                 objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
         }
@@ -972,8 +975,9 @@ namespace Chummer
             chkStartupFullscreen.Checked = GlobalOptions.Instance.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
-            chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
-            chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
+			chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
+			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
+			chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
             chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
             txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
