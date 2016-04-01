@@ -2601,6 +2601,26 @@
 			<page>130</page>
 		</vehicle>
 		<vehicle>
+			<id>8e9830e5-16e4-40e3-9803-4036945b786d</id>
+			<name>Horizon CU^3 Professional (Minidrone)</name>
+			<category>Drones: Mini</category>
+			<handling>4</handling>
+			<accel>1</accel>
+			<speed>1</speed>
+			<pilot>4</pilot>
+			<body>1</body>
+			<armor>0</armor>
+			<sensor>3</sensor>
+			<seats>0</seats>
+			<gears>
+				<gear rating="4" select="Clearsight Autosoft">Autosoft</gear>
+			</gears>
+			<avail>4</avail>
+			<cost>6000</cost>
+			<source>R5</source>
+			<page>130</page>
+		</vehicle>
+		<vehicle>
 			<id>94a53ea0-c8de-4f2f-9098-55180205d8fa</id>
 			<name>Renraku Gerbil (Minidrone)</name>
 			<category>Drones: Mini</category>
