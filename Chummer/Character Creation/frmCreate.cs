@@ -19258,7 +19258,51 @@ namespace Chummer
 			lblVehicleBodyLabel.Visible = blnDisplay;
 			lblVehicleArmorLabel.Visible = blnDisplay;
 			lblVehicleSensorLabel.Visible = blnDisplay;
+			lblVehiclePowertrainLabel.Visible = blnDisplay;
+			lblVehiclePowertrain.Visible = blnDisplay;
+			lblVehicleCosmeticLabel.Visible = blnDisplay;
+			lblVehicleCosmetic.Visible = blnDisplay;
+			lblVehicleElectromagneticLabel.Visible = blnDisplay;
+			lblVehicleElectromagnetic.Visible = blnDisplay;
+			lblVehicleBodymodLabel.Visible = blnDisplay;
+			lblVehicleBodymod.Visible = blnDisplay;
+			lblVehicleWeaponsmodLabel.Visible = blnDisplay;
+			lblVehicleWeaponsmod.Visible = blnDisplay;
+			lblVehicleProtectionLabel.Visible = blnDisplay;
+			lblVehicleProtection.Visible = blnDisplay;
+			lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
+			lblVehicleDroneModSlots.Visible = blnDisplay;
 		}
+
+		private void DisplayVehicleMods(bool blnDisplay)
+		/// <summary>
+		/// Switches the visibility of Vehicle (non-drone) Mods on the Vehicles and Drones form.
+		/// </summary>
+		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		{
+			lblVehiclePowertrainLabel.Visible = blnDisplay;
+			lblVehiclePowertrain.Visible = blnDisplay;
+			lblVehicleCosmeticLabel.Visible = blnDisplay;
+			lblVehicleCosmetic.Visible = blnDisplay;
+			lblVehicleElectromagneticLabel.Visible = blnDisplay;
+			lblVehicleElectromagnetic.Visible = blnDisplay;
+			lblVehicleBodymodLabel.Visible = blnDisplay;
+			lblVehicleBodymod.Visible = blnDisplay;
+			lblVehicleWeaponsmodLabel.Visible = blnDisplay;
+			lblVehicleWeaponsmod.Visible = blnDisplay;
+			lblVehicleProtectionLabel.Visible = blnDisplay;
+			lblVehicleProtection.Visible = blnDisplay;
+		}
+		private void DisplayVehicleDroneMods(bool blnDisplay)
+		/// <summary>
+		/// Switches the visibility of Drone Mods on the Vehicles and Drones form.
+		/// </summary>
+		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		{
+			lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
+			lblVehicleDroneModSlots.Visible = blnDisplay;
+		}
+
 		/// <summary>
 		/// Refresh the currently-selected Vehicle.
 		/// </summary>
@@ -19321,14 +19365,29 @@ namespace Chummer
 				lblVehicleCostLabel.Visible = true;
 				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
                 lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
-                lblVehicleAccel.Text = objVehicle.TotalAccel;
+                lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
                 lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
                 lblVehicleDevice.Text = objVehicle.DeviceRating.ToString();
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
 
-				nudVehicleGearQty.Visible = true;
+				// Update the vehicle mod slots
+				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+				{
+					lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
+				}
+				else
+				{
+					lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
+					lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
+					lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
+					lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
+					lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
+					lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
+				}
+
+						nudVehicleGearQty.Visible = true;
 				lblVehicleGearQtyLabel.Visible = true;
 
 				if (_objOptions.UseCalculatedVehicleSensorRatings)
@@ -19352,6 +19411,8 @@ namespace Chummer
 				DisplayVehicleWeaponStats(false);
 				DisplayVehicleCommlinkStats(false);
 				DisplayVehicleStats(true);
+				DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+				DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
 				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
@@ -19721,6 +19782,20 @@ namespace Chummer
 						lblVehicleBodyLabel.Visible = false;
 						lblVehicleArmorLabel.Visible = false;
 						lblVehicleSensorLabel.Visible = false;
+						lblVehiclePowertrainLabel.Visible = false;
+						lblVehiclePowertrain.Text = "";
+						lblVehicleCosmeticLabel.Visible = false;
+						lblVehicleCosmetic.Text = "";
+						lblVehicleElectromagneticLabel.Visible = false;
+						lblVehicleElectromagnetic.Text = "";
+						lblVehicleBodymodLabel.Visible = false;
+						lblVehicleBodymod.Text = "";
+						lblVehicleWeaponsmodLabel.Visible = false;
+						lblVehicleWeaponsmod.Text = "";
+						lblVehicleProtectionLabel.Visible = false;
+						lblVehicleProtection.Text = "";
+						lblVehicleDroneModSlotsLabel.Visible = false;
+						lblVehicleDroneModSlots.Text = "";
 						lblVehicleSlots.Text = "";
                         string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                         string strPage = objWeapon.Page;
@@ -19769,6 +19844,21 @@ namespace Chummer
 							lblVehicleArmorLabel.Visible = false;
 							lblVehicleSensorLabel.Visible = false;
 							lblVehicleSlotsLabel.Visible = false;
+							lblVehiclePowertrainLabel.Visible = false;
+							lblVehiclePowertrain.Text = "";
+							lblVehicleCosmeticLabel.Visible = false;
+							lblVehicleCosmetic.Text = "";
+							lblVehicleElectromagneticLabel.Visible = false;
+							lblVehicleElectromagnetic.Text = "";
+							lblVehicleBodymodLabel.Visible = false;
+							lblVehicleBodymod.Text = "";
+							lblVehicleWeaponsmodLabel.Visible = false;
+							lblVehicleWeaponsmod.Text = "";
+							lblVehicleProtectionLabel.Visible = false;
+							lblVehicleProtection.Text = "";
+							lblVehicleDroneModSlotsLabel.Visible = false;
+							lblVehicleDroneModSlots.Text = "";
+
 							string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
                             string strPage = objCyberware.Page;
                             lblVehicleSource.Text = strBook + " " + strPage;
@@ -19821,7 +19911,21 @@ namespace Chummer
                     lblVehicleBody.Text = "";
                     lblVehicleArmor.Text = "";
                     lblVehicleSensor.Text = "";
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+					lblVehiclePowertrainLabel.Visible = false;
+					lblVehiclePowertrain.Text = "";
+					lblVehicleCosmeticLabel.Visible = false;
+					lblVehicleCosmetic.Text = "";
+					lblVehicleElectromagneticLabel.Visible = false;
+					lblVehicleElectromagnetic.Text = "";
+					lblVehicleBodymodLabel.Visible = false;
+					lblVehicleBodymod.Text = "";
+					lblVehicleWeaponsmodLabel.Visible = false;
+					lblVehicleWeaponsmod.Text = "";
+					lblVehicleProtectionLabel.Visible = false;
+					lblVehicleProtection.Text = "";
+					lblVehicleDroneModSlotsLabel.Visible = false;
+					lblVehicleDroneModSlots.Text = "";
+					lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                     string strBook = _objOptions.LanguageBookShort(objGear.Source);
                     string strPage = objGear.Page;
                     lblVehicleSource.Text = strBook + " " + strPage;
@@ -19888,7 +19992,21 @@ namespace Chummer
                         lblVehicleBody.Text = "";
                         lblVehicleArmor.Text = "";
                         lblVehicleSensor.Text = "";
-                        _blnSkipRefresh = true;
+						lblVehiclePowertrainLabel.Visible = false;
+						lblVehiclePowertrain.Text = "";
+						lblVehicleCosmeticLabel.Visible = false;
+						lblVehicleCosmetic.Text = "";
+						lblVehicleElectromagneticLabel.Visible = false;
+						lblVehicleElectromagnetic.Text = "";
+						lblVehicleBodymodLabel.Visible = false;
+						lblVehicleBodymod.Text = "";
+						lblVehicleWeaponsmodLabel.Visible = false;
+						lblVehicleWeaponsmod.Text = "";
+						lblVehicleProtectionLabel.Visible = false;
+						lblVehicleProtection.Text = "";
+						lblVehicleDroneModSlotsLabel.Visible = false;
+						lblVehicleDroneModSlots.Text = "";
+						_blnSkipRefresh = true;
                         _blnSkipRefresh = false;
 
                         string[] strMounts = objAccessory.Mount.Split('/');
@@ -19930,6 +20048,20 @@ namespace Chummer
                             lblVehicleArmor.Text = "";
                             lblVehicleSensor.Text = "";
 							lblVehicleSlots.Text = "";
+							lblVehiclePowertrainLabel.Visible = false;
+							lblVehiclePowertrain.Text = "";
+							lblVehicleCosmeticLabel.Visible = false;
+							lblVehicleCosmetic.Text = "";
+							lblVehicleElectromagneticLabel.Visible = false;
+							lblVehicleElectromagnetic.Text = "";
+							lblVehicleBodymodLabel.Visible = false;
+							lblVehicleBodymod.Text = "";
+							lblVehicleWeaponsmodLabel.Visible = false;
+							lblVehicleWeaponsmod.Text = "";
+							lblVehicleProtectionLabel.Visible = false;
+							lblVehicleProtection.Text = "";
+							lblVehicleDroneModSlotsLabel.Visible = false;
+							lblVehicleDroneModSlots.Text = "";
 							string strBook = _objOptions.LanguageBookShort(objWeapon.Source);
                             string strPage = objWeapon.Page;
                             lblVehicleSource.Text = strBook + " " + strPage;
@@ -19968,6 +20100,20 @@ namespace Chummer
 					lblVehicleBody.Text = "";
 					lblVehicleArmor.Text = "";
 					lblVehicleSensor.Text = "";
+					lblVehiclePowertrainLabel.Visible = false;
+					lblVehiclePowertrain.Text = "";
+					lblVehicleCosmeticLabel.Visible = false;
+					lblVehicleCosmetic.Text = "";
+					lblVehicleElectromagneticLabel.Visible = false;
+					lblVehicleElectromagnetic.Text = "";
+					lblVehicleBodymodLabel.Visible = false;
+					lblVehicleBodymod.Text = "";
+					lblVehicleWeaponsmodLabel.Visible = false;
+					lblVehicleWeaponsmod.Text = "";
+					lblVehicleProtectionLabel.Visible = false;
+					lblVehicleProtection.Text = "";
+					lblVehicleDroneModSlotsLabel.Visible = false;
+					lblVehicleDroneModSlots.Text = "";
 
 					string[] strMounts = objAccessory.Mount.Split('/');
 					string strMount = "";
@@ -20029,6 +20175,20 @@ namespace Chummer
 						lblVehicleBody.Text = "";
 						lblVehicleArmor.Text = "";
 						lblVehicleSensor.Text = "";
+						lblVehiclePowertrainLabel.Visible = false;
+						lblVehiclePowertrain.Text = "";
+						lblVehicleCosmeticLabel.Visible = false;
+						lblVehicleCosmetic.Text = "";
+						lblVehicleElectromagneticLabel.Visible = false;
+						lblVehicleElectromagnetic.Text = "";
+						lblVehicleBodymodLabel.Visible = false;
+						lblVehicleBodymod.Text = "";
+						lblVehicleWeaponsmodLabel.Visible = false;
+						lblVehicleWeaponsmod.Text = "";
+						lblVehicleProtectionLabel.Visible = false;
+						lblVehicleProtection.Text = "";
+						lblVehicleDroneModSlotsLabel.Visible = false;
+						lblVehicleDroneModSlots.Text = "";
 						lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 						string strBook = _objOptions.LanguageBookShort(objGear.Source);
 						string strPage = objGear.Page;
@@ -20107,7 +20267,21 @@ namespace Chummer
                 lblVehicleBody.Text = "";
                 lblVehicleArmor.Text = "";
                 lblVehicleSensor.Text = "";
-                lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+				lblVehiclePowertrainLabel.Visible = false;
+				lblVehiclePowertrain.Text = "";
+				lblVehicleCosmeticLabel.Visible = false;
+				lblVehicleCosmetic.Text = "";
+				lblVehicleElectromagneticLabel.Visible = false;
+				lblVehicleElectromagnetic.Text = "";
+				lblVehicleBodymodLabel.Visible = false;
+				lblVehicleBodymod.Text = "";
+				lblVehicleWeaponsmodLabel.Visible = false;
+				lblVehicleWeaponsmod.Text = "";
+				lblVehicleProtectionLabel.Visible = false;
+				lblVehicleProtection.Text = "";
+				lblVehicleDroneModSlotsLabel.Visible = false;
+				lblVehicleDroneModSlots.Text = "";
+				lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objGear.Source);
                 string strPage = objGear.Page;
                 lblVehicleSource.Text = strBook + " " + strPage;
@@ -23623,7 +23797,9 @@ namespace Chummer
             intWidth = Math.Max(intWidth, lblVehicleHandlingLabel.Width);
             intWidth = Math.Max(intWidth, lblVehiclePilotLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleAvailLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleWeaponsmodLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleBodymodLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleRatingLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleGearQtyLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleSourceLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleAttackLabel.Width);
@@ -23633,8 +23809,10 @@ namespace Chummer
             lblVehicleHandling.Left = lblVehicleHandlingLabel.Left + intWidth + 6;
             cboVehicleGearAttack.Left = lblVehicleAttackLabel.Left + intWidth + 6;
             lblVehiclePilot.Left = lblVehiclePilotLabel.Left + intWidth + 6;
-            lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
-            nudVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
+			lblVehicleAvail.Left = lblVehicleAvailLabel.Left + intWidth + 6;
+			lblVehicleWeaponsmod.Left = lblVehicleWeaponsmodLabel.Left + intWidth + 6;
+			lblVehicleBodymod.Left = lblVehicleBodymodLabel.Left + intWidth + 6;
+			nudVehicleRating.Left = lblVehicleRatingLabel.Left + intWidth + 6;
             nudVehicleGearQty.Left = lblVehicleGearQtyLabel.Left + intWidth + 6;
             lblVehicleSource.Left = lblVehicleSourceLabel.Left + intWidth + 6;
             lblVehicleWeaponName.Left = lblVehicleWeaponNameLabel.Left + intWidth + 6;
@@ -23642,16 +23820,22 @@ namespace Chummer
             lblVehicleWeaponDamage.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehicleBodyLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleProtectionLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleElectromagneticLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleSleazeLabel.Width);
 
             lblVehicleAccelLabel.Left = lblVehicleHandling.Left + 47;
             lblVehicleAccel.Left = lblVehicleAccelLabel.Left + intWidth + 6;
             lblVehicleBodyLabel.Left = lblVehicleHandling.Left + 47;
             lblVehicleBody.Left = lblVehicleBodyLabel.Left + intWidth + 6;
-            lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
-            lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
-            lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleCostLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleCost.Left = lblVehicleCostLabel.Left + intWidth + 6;
+			lblVehicleProtectionLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleProtection.Left = lblVehicleProtectionLabel.Left + intWidth + 6;
+			lblVehicleElectromagneticLabel.Left = lblVehicleHandling.Left + 47;
+			lblVehicleElectromagnetic.Left = lblVehicleElectromagneticLabel.Left + intWidth + 6;
+			lblVehicleSleazeLabel.Left = lblVehicleHandling.Left + 47;
             cboVehicleGearSleaze.Left = lblVehicleSleazeLabel.Left + intWidth + 6;
 
             chkVehicleIncludedInWeapon.Left = lblVehicleAccel.Left;
@@ -23662,20 +23846,29 @@ namespace Chummer
 
             lblVehicleSpeedLabel.Left = lblVehicleAccel.Left + 53;
             lblVehicleSpeed.Left = lblVehicleSpeedLabel.Left + intWidth + 6;
-            lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
-            lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
-            lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleArmorLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleArmor.Left = lblVehicleArmorLabel.Left + intWidth + 6;
+			lblVehiclePowertrainLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehiclePowertrain.Left = lblVehiclePowertrainLabel.Left + intWidth + 6;
+			lblVehicleCosmeticLabel.Left = lblVehicleAccel.Left + 53;
+			lblVehicleCosmetic.Left = lblVehicleCosmeticLabel.Left + intWidth + 6;
+			lblVehicleDataProcessingLabel.Left = lblVehicleAccel.Left + 53;
             cboVehicleGearDataProcessing.Left = lblVehicleDataProcessingLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblVehicleDeviceLabel.Width, lblVehicleSensorLabel.Width);
-            intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleFirewallLabel.Width);
+			intWidth = Math.Max(intWidth, lblVehicleDroneModSlotsLabel.Width);
 
-            lblVehicleDeviceLabel.Left = lblVehicleSpeed.Left + 35;
+
+			lblVehicleDeviceLabel.Left = lblVehicleSpeed.Left + 35;
             lblVehicleDevice.Left = lblVehicleDeviceLabel.Left + intWidth + 6;
             lblVehicleSensorLabel.Left = lblVehicleSpeed.Left + 35;
             lblVehicleSensor.Left = lblVehicleSensorLabel.Left + intWidth + 6;
             lblVehicleFirewallLabel.Left = lblVehicleSpeed.Left + 35;
-            cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
+			lblVehicleDroneModSlotsLabel.Left = lblVehicleSpeed.Left + 35;
+			lblVehicleDroneModSlots.Left = lblVehicleDroneModSlotsLabel.Left + intWidth + 6;
+
+			cboVehicleGearFirewall.Left = lblVehicleFirewallLabel.Left + intWidth + 6;
 
             lblVehicleSlotsLabel.Left = lblVehicleCost.Left + 94;
             lblVehicleSlots.Left = lblVehicleSlotsLabel.Left + lblVehicleSlotsLabel.Width + 6;

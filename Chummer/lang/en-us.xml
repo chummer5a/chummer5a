@@ -475,6 +475,34 @@
 			<text>Slots:</text>
 		</string>
 		<string>
+			<key>Label_Weapons</key>
+			<text>Weapons:</text>
+		</string>
+		<string>
+			<key>Label_Protection</key>
+			<text>Prot:</text>
+		</string>
+		<string>
+			<key>Label_Powertrain</key>
+			<text>Power:</text>
+		</string>
+		<string>
+			<key>Label_Bodymod</key>
+			<text>Body Mods:</text>
+		</string>
+		<string>
+			<key>Label_Electromagnetic</key>
+			<text>Elec:</text>
+		</string>
+		<string>
+			<key>Label_Cosmetic</key>
+			<text>Cosmetic:</text>
+		</string>
+		<string>
+			<key>Label_DroneModSlots</key>
+			<text>Mod Slots:</text>
+		</string>
+		<string>
 			<key>Label_Rating</key>
 			<text>Rating:</text>
 		</string>
@@ -4443,10 +4471,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseLifeModule</key>
 			<text>Life modules available</text>
 		</string>
-    <string>
-      <key>Checkbox_Options_Missions</key>
-      <text>Hide Qualities prohibited by Missions</text>
-    </string>
+		<string>
+			<key>Checkbox_Options_Missions</key>
+			<text>Hide Qualities prohibited by Missions</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_Dronemods</key>
+			<text>Use Drone Modification rules (R5 122)</text>
+		</string>
 		<string>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>

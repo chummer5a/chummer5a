@@ -190,11 +190,11 @@ namespace Chummer
         {
 	        if (cboBuildMethod.SelectedValue != null)
 	        {
-		        if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
-			        nudBP.Value = 800;
-		        else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
-			        nudBP.Value = 750;
-	        }
+            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
+                nudBP.Value = 800;
+            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
+				nudBP.Value = 750;
+        }
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -690,6 +690,7 @@ namespace Chummer
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
+			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
         }
 
 	    /// <summary>
@@ -714,6 +715,8 @@ namespace Chummer
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
+			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
+
 
             // Save the SourcebookInfo.
             Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
@@ -812,10 +815,10 @@ namespace Chummer
         private void PopulateBuildMethodList()
         {
 			// Populate the Build Method list.
-			List<ListItem> lstBuildMethod = new List<ListItem>();
-			ListItem objKarma = new ListItem();
+            List<ListItem> lstBuildMethod = new List<ListItem>();
+            ListItem objKarma = new ListItem();
 			objKarma.Value = "Karma";
-			objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
+            objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
 
 			ListItem objPriority = new ListItem();
 			objPriority.Value = "Priority";
@@ -834,11 +837,11 @@ namespace Chummer
 			}
 
 			lstBuildMethod.Add(objPriority);
-			lstBuildMethod.Add(objKarma);
+            lstBuildMethod.Add(objKarma);
 			lstBuildMethod.Add(objSumtoTen);
 			cboBuildMethod.DataSource = lstBuildMethod;
-			cboBuildMethod.ValueMember = "Value";
-			cboBuildMethod.DisplayMember = "Name";
+            cboBuildMethod.ValueMember = "Value";
+            cboBuildMethod.DisplayMember = "Name";
         }
 
         private void PopulateEssenceDecimalsList()
@@ -988,6 +991,7 @@ namespace Chummer
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
             chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
+			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
             chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
             chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
