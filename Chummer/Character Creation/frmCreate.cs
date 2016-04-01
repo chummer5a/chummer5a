@@ -17596,8 +17596,8 @@ namespace Chummer
 				}
 				else
 				{
-					nudArmorRating.Value = objArmor.Rating;
 					nudArmorRating.Maximum = objArmor.MaxRating;
+					nudArmorRating.Value = objArmor.Rating;
 					nudArmorRating.Enabled = true;
 				}
 
