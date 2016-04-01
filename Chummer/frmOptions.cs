@@ -188,10 +188,13 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
-                nudBP.Value = 800;
-            else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
-				nudBP.Value = 750;
+	        if (cboBuildMethod.SelectedValue != null)
+	        {
+		        if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
+			        nudBP.Value = 800;
+		        else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
+			        nudBP.Value = 750;
+	        }
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -808,22 +811,34 @@ namespace Chummer
 
         private void PopulateBuildMethodList()
         {
-            List<ListItem> lstBuildMethod = new List<ListItem>();
+			// Populate the Build Method list.
+			List<ListItem> lstBuildMethod = new List<ListItem>();
+			ListItem objKarma = new ListItem();
+			objKarma.Value = "Karma";
+			objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
 
-            ListItem objKarma = new ListItem();
-            objKarma.Value = LanguageManager.Instance.GetString("String_Karma");
-            objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
+			ListItem objPriority = new ListItem();
+			objPriority.Value = "Priority";
+			objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
 
-            ListItem objLifeModules = new ListItem();
-			objLifeModules.Value = LanguageManager.Instance.GetString("String_LifeModule");
-			objLifeModules.Name = LanguageManager.Instance.GetString("String_LifeModule");
+			ListItem objSumtoTen = new ListItem();
+			objSumtoTen.Value = "SumtoTen";
+			objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
 
-            lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objLifeModules);
+			if (GlobalOptions.Instance.LifeModuleEnabled)
+			{
+				ListItem objLifeModule = new ListItem();
+				objLifeModule.Value = "LifeModule";
+				objLifeModule.Name = LanguageManager.Instance.GetString("String_LifeModule");
+				lstBuildMethod.Add(objLifeModule);
+			}
 
-            cboBuildMethod.ValueMember = "Value";
-            cboBuildMethod.DisplayMember = "Name";
-            cboBuildMethod.DataSource = lstBuildMethod;
+			lstBuildMethod.Add(objPriority);
+			lstBuildMethod.Add(objKarma);
+			lstBuildMethod.Add(objSumtoTen);
+			cboBuildMethod.DataSource = lstBuildMethod;
+			cboBuildMethod.ValueMember = "Value";
+			cboBuildMethod.DisplayMember = "Name";
         }
 
         private void PopulateEssenceDecimalsList()

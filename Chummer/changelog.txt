@@ -65,6 +65,8 @@ Application Change:
 - Fixed the creation method for custom packs kits to not treat included mods as being purchased. Should fix #707 and fix #691.
 - Save files is now in UTF-8 instead of UTF-16. This should not have any visible impact but it is more tool frindly and leads to smaller files
 - Fixed an issue where qualities that add other qualities for free didn't discount properly. Fixes #762.
+- Fixed an issue where default build methods other than Karma would cause a crash while launching the Options menu. Fixes #796.
+- Fixed an issue with the Acceleration Enhancement modification causing a crash when printing. Fixes #772.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
