@@ -2034,6 +2034,10 @@ namespace Chummer
 				strPath += " and not(nomission)";
 			}
 
+			if (!GlobalOptions.Instance.Dronemods)
+			{
+				strPath += " and not(optionaldrone)";
+			}
 			_strBookXPath = strPath;
 			
 			return strPath;
