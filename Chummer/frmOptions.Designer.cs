@@ -210,6 +210,7 @@
 			this.nudKarmaJoinGroup = new System.Windows.Forms.NumericUpDown();
 			this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
 			this.tabOptionalRules = new System.Windows.Forms.TabPage();
+			this.chkDronemods = new System.Windows.Forms.CheckBox();
 			this.chkMissions = new System.Windows.Forms.CheckBox();
 			this.chkContactPoints = new System.Windows.Forms.CheckBox();
 			this.chkMayBuyQualities = new System.Windows.Forms.CheckBox();
@@ -230,6 +231,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkUseTotalValueForFreeContacts = new System.Windows.Forms.CheckBox();
 			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
 			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
 			this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
@@ -255,7 +257,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkDronemods = new System.Windows.Forms.CheckBox();
+			this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2321,6 +2323,17 @@
 			this.tabOptionalRules.Tag = "Tab_Options_OptionalRules";
 			this.tabOptionalRules.Text = "Optional Rules";
 			// 
+			// chkDronemods
+			// 
+			this.chkDronemods.AutoSize = true;
+			this.chkDronemods.Location = new System.Drawing.Point(8, 98);
+			this.chkDronemods.Name = "chkDronemods";
+			this.chkDronemods.Size = new System.Drawing.Size(206, 17);
+			this.chkDronemods.TabIndex = 34;
+			this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
+			this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
+			this.chkDronemods.UseVisualStyleBackColor = true;
+			// 
 			// chkMissions
 			// 
 			this.chkMissions.AutoSize = true;
@@ -2556,6 +2569,8 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge);
+			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeContacts);
 			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
 			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityRefunds);
 			this.tabHouseRules.Controls.Add(this.chkESSLossReducesMaximumOnly);
@@ -2583,6 +2598,17 @@
 			this.tabHouseRules.TabIndex = 3;
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
+			// 
+			// chkUseTotalValueForFreeContacts
+			// 
+			this.chkUseTotalValueForFreeContacts.AutoSize = true;
+			this.chkUseTotalValueForFreeContacts.Location = new System.Drawing.Point(366, 26);
+			this.chkUseTotalValueForFreeContacts.Name = "chkUseTotalValueForFreeContacts";
+			this.chkUseTotalValueForFreeContacts.Size = new System.Drawing.Size(261, 17);
+			this.chkUseTotalValueForFreeContacts.TabIndex = 22;
+			this.chkUseTotalValueForFreeContacts.Tag = "Checkbox_Options_UseTotalValueForFreeContacts";
+			this.chkUseTotalValueForFreeContacts.Text = "Free Contacts use the augmented Charisma value";
+			this.chkUseTotalValueForFreeContacts.UseVisualStyleBackColor = true;
 			// 
 			// chkUseCalculatedPublicAwareness
 			// 
@@ -2635,7 +2661,7 @@
 			// 
 			this.chkExceedNegativeQualitiesLimit.AutoSize = true;
 			this.chkExceedNegativeQualitiesLimit.Enabled = false;
-			this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(384, 141);
+			this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(384, 187);
 			this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
 			this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(308, 17);
 			this.chkExceedNegativeQualitiesLimit.TabIndex = 17;
@@ -2646,7 +2672,7 @@
 			// chkExceedNegativeQualities
 			// 
 			this.chkExceedNegativeQualities.AutoSize = true;
-			this.chkExceedNegativeQualities.Location = new System.Drawing.Point(366, 118);
+			this.chkExceedNegativeQualities.Location = new System.Drawing.Point(366, 164);
 			this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
 			this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
 			this.chkExceedNegativeQualities.TabIndex = 16;
@@ -2658,7 +2684,7 @@
 			// chkExceedPositiveQualities
 			// 
 			this.chkExceedPositiveQualities.AutoSize = true;
-			this.chkExceedPositiveQualities.Location = new System.Drawing.Point(366, 95);
+			this.chkExceedPositiveQualities.Location = new System.Drawing.Point(366, 141);
 			this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
 			this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
 			this.chkExceedPositiveQualities.TabIndex = 15;
@@ -2669,7 +2695,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(594, 50);
+			this.label3.Location = new System.Drawing.Point(594, 73);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(12, 13);
 			this.label3.TabIndex = 13;
@@ -2678,7 +2704,7 @@
 			// nudKnowledgeMultiplier
 			// 
 			this.nudKnowledgeMultiplier.Enabled = false;
-			this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 46);
+			this.nudKnowledgeMultiplier.Location = new System.Drawing.Point(612, 69);
 			this.nudKnowledgeMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -2701,7 +2727,7 @@
 			// chkKnowledgeMultiplier
 			// 
 			this.chkKnowledgeMultiplier.AutoSize = true;
-			this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(366, 49);
+			this.chkKnowledgeMultiplier.Location = new System.Drawing.Point(366, 72);
 			this.chkKnowledgeMultiplier.Name = "chkKnowledgeMultiplier";
 			this.chkKnowledgeMultiplier.Size = new System.Drawing.Size(231, 17);
 			this.chkKnowledgeMultiplier.TabIndex = 12;
@@ -2757,7 +2783,7 @@
 			// chkFreeKarmaContacts
 			// 
 			this.chkFreeKarmaContacts.AutoSize = true;
-			this.chkFreeKarmaContacts.Location = new System.Drawing.Point(366, 26);
+			this.chkFreeKarmaContacts.Location = new System.Drawing.Point(366, 49);
 			this.chkFreeKarmaContacts.Name = "chkFreeKarmaContacts";
 			this.chkFreeKarmaContacts.Size = new System.Drawing.Size(234, 17);
 			this.chkFreeKarmaContacts.TabIndex = 0;
@@ -2768,7 +2794,7 @@
 			// chkFreeKarmaKnowledge
 			// 
 			this.chkFreeKarmaKnowledge.AutoSize = true;
-			this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 72);
+			this.chkFreeKarmaKnowledge.Location = new System.Drawing.Point(366, 118);
 			this.chkFreeKarmaKnowledge.Name = "chkFreeKarmaKnowledge";
 			this.chkFreeKarmaKnowledge.Size = new System.Drawing.Size(245, 17);
 			this.chkFreeKarmaKnowledge.TabIndex = 4;
@@ -2882,16 +2908,16 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkDronemods
+			// chkUseTotalValueForFreeKnowledge
 			// 
-			this.chkDronemods.AutoSize = true;
-			this.chkDronemods.Location = new System.Drawing.Point(8, 98);
-			this.chkDronemods.Name = "chkDronemods";
-			this.chkDronemods.Size = new System.Drawing.Size(206, 17);
-			this.chkDronemods.TabIndex = 34;
-			this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
-			this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
-			this.chkDronemods.UseVisualStyleBackColor = true;
+			this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
+			this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(364, 95);
+			this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
+			this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
+			this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
+			this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
+			this.chkUseTotalValueForFreeKnowledge.Text = "Free Contacts use the augmented LOG+INT values";
+			this.chkUseTotalValueForFreeKnowledge.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3213,5 +3239,7 @@
 		private System.Windows.Forms.CheckBox chkDontDoubleQualityRefunds;
 		private System.Windows.Forms.CheckBox chkUseCalculatedPublicAwareness;
 		private System.Windows.Forms.CheckBox chkDronemods;
+		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeContacts;
+		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeKnowledge;
 	}
 }

@@ -5999,6 +5999,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Print all Active Skills with total score higher than 0</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>
+			<text>Free Knowledge Skill Points are calculated with augmented LOG+INT values.</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
+			<text>Free Contact Points are calculated with augmented LOG+INT values.</text>
+		</string>
+		<string>
 			<key>Checkbox_Options_PrintExpenses</key>
 			<text>Print Karma and Nuyen Expenses</text>
 		</string>

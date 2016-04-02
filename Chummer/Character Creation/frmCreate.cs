@@ -16258,14 +16258,32 @@ namespace Chummer
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * _objOptions.FreeKnowledgeMultiplier;
+	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) ||
+	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	            {
+		            int intLogInt = _objCharacter.INT.Value + _objCharacter.LOG.Value;
+		            if (_objOptions.UseTotalValueForFreeKnowledge)
+		            {
+						intLogInt = _objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue;
+					}
+		            _objCharacter.KnowledgeSkillPoints = intLogInt * _objOptions.FreeKnowledgeMultiplier;
+	            }
                 else
                     _objCharacter.KnowledgeSkillPoints = 0;
 
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.ContactPoints = (int)(_objCharacter.CHA.Value) * _objOptions.FreeContactsMultiplier;
+	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) ||
+	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	            {
+		            int intCHA = _objCharacter.CHA.Value;
+					if (_objOptions.UseTotalValueForFreeKnowledge)
+					{
+						intCHA = _objCharacter.CHA.TotalValue;
+					}
+					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier;
+				}
                 else
                     _objCharacter.ContactPoints = 0;
 

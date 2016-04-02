@@ -87,7 +87,9 @@ namespace Chummer
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             _characterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
+	        _characterOptions.UseTotalValueForFreeContacts = chkUseTotalValueForFreeContacts.Checked;
+			_characterOptions.UseTotalValueForFreeKnowledge = chkUseTotalValueForFreeKnowledge.Checked;
+			_characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
 			_characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
 			_characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
@@ -588,6 +590,8 @@ namespace Chummer
 			chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
 			chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
 			chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
+	        chkUseTotalValueForFreeContacts.Checked = _characterOptions.UseTotalValueForFreeContacts;
+	        chkUseTotalValueForFreeKnowledge.Checked = _characterOptions.UseTotalValueForFreeKnowledge;
 			chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
