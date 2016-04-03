@@ -826,7 +826,7 @@ namespace Chummer
 				}
                 else if (_strArmorCapacity.Contains("Capacity"))
                 {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
+                    // If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
@@ -2035,35 +2035,28 @@ namespace Chummer
 					strReturn = _strArmorCapacity;
 				}
 
-				foreach (ArmorMod am in this.ArmorMods)
+				foreach (ArmorMod objArmorMod in this.ArmorMods)
 				{
-					if (am.Name == "YNT Softweave Armor")
-					{ 
-						if (_strArmorCapacity.Contains("Rating"))
-						{
-							// If the Capaicty is determined by the Rating, evaluate the expression.
-							XmlDocument objXmlDocument = new XmlDocument();
-							XPathNavigator nav = objXmlDocument.CreateNavigator();
+					if (objArmorMod.ArmorCapacity.StartsWith("-") || objArmorMod.ArmorCapacity.StartsWith("[-"))
+					{
+						// If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+						XmlDocument objXmlDocument = new XmlDocument();
+						XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-							// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-							bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-							string strCapacity = _strArmorCapacity;
-							if (blnSquareBrackets)
-								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+						// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+						string strCapacity = objArmorMod.ArmorCapacity;
+						strCapacity = strCapacity.Replace("[-", "");
+						strCapacity = strCapacity.Replace("[", "");
+						strCapacity = strCapacity.Replace("]", "");
+						strCapacity = strCapacity.Replace("Capacity", _strArmorCapacity);
+						strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
+						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
-							strReturn = nav.Evaluate(xprCapacity).ToString();
-							if (blnSquareBrackets)
-								strReturn = "[" + strReturn + "]";
-
-							return strReturn;
-						}
-						else
-						{
-							strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
-						}
+						strCapacity = nav.Evaluate(xprCapacity).ToString();
+						strCapacity = Math.Floor(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
+						strReturn = strCapacity;
 					}
-                }
+				}
 
 				return strReturn;
 			}

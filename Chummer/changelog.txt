@@ -69,6 +69,7 @@ Application Change:
 - Fixed an issue with the Acceleration Enhancement modification causing a crash when printing. Fixes #772.
 - Fixed an occasional issue in the Options menu where a null default character sheet caused a crash. Fixes #774.
 - Added house rules to gain free contacts and knowledge skills based on the total value of your CHA or LOG+INT. Fixes #783.
+- Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -120,6 +121,8 @@ Data Change:
 - Removed the Distinctive Style quality from the Gnome metavariant. 
 - Removed an extra Victorinox Collapsible Hatchet from the weapons XML.
 - Fixed incorrect capacity values for the Responsive Interface Gear.
+- Added missing GUIDs for some AI qualities.
+- Fixed missing quality restrictions for AIs.
 
 New Strings:
 - Message_DeleteCalendarWeek

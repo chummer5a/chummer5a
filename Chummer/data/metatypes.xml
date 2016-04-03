@@ -3230,7 +3230,7 @@
 					<quality>Go Big or Go Home</quality>
 					<quality>Golden Screwdriver</quality>
 					<quality>Guts</quality>
-					<quality>Hello World</quality>
+					<quality>Hello World!</quality>
 					<quality>High Pain Tolerance</quality>
 					<quality>Home Ground</quality>
 					<quality>I C U</quality>
@@ -3248,13 +3248,16 @@
 					<quality>Overclocker</quality>
 					<quality>Perceptive</quality>
 					<quality>Photographic Memory</quality>
-					<quality>Pilot Origins</quality>
+					<quality>Pilot Origins (Rating 1)</quality>
+					<quality>Pilot Origins (Rating 2)</quality>
+					<quality>Pilot Origins (Rating 3)</quality>
 					<quality>Prime Data-Haven</quality>
 					<quality>Quick Healer</quality>
 					<quality>Redundancy</quality>
 					<quality>Restricted Gear</quality>
 					<quality>Sapper</quality>
 					<quality>Sensor Upgrade</quality>
+					<quality>Snooper</quality>
 					<quality>Speed Reading</quality>
 					<quality>Strive For Perfection</quality>
 					<quality>Steely-Eyed Wheelman</quality>
@@ -3373,7 +3376,7 @@
 							<quality>Go Big or Go Home</quality>
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
-							<quality>Hello World</quality>
+							<quality>Hello World!</quality>
 							<quality>High Pain Tolerance</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
@@ -3391,13 +3394,16 @@
 							<quality>Overclocker</quality>
 							<quality>Perceptive</quality>
 							<quality>Photographic Memory</quality>
-							<quality>Pilot Origins</quality>
+							<quality>Pilot Origins (Rating 1)</quality>
+							<quality>Pilot Origins (Rating 2)</quality>
+							<quality>Pilot Origins (Rating 3)</quality>
 							<quality>Prime Data-Haven</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
 							<quality>Sensor Upgrade</quality>
+							<quality>Snooper</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
 							<quality>Steely-Eyed Wheelman</quality>
@@ -3528,7 +3534,7 @@
 							<quality>Go Big or Go Home</quality>
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
-							<quality>Hello World</quality>
+							<quality>Hello World!</quality>
 							<quality>High Pain Tolerance</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
@@ -3546,7 +3552,9 @@
 							<quality>Overclocker</quality>
 							<quality>Perceptive</quality>
 							<quality>Photographic Memory</quality>
-							<quality>Pilot Origins</quality>
+							<quality>Pilot Origins (Rating 1)</quality>
+							<quality>Pilot Origins (Rating 2)</quality>
+							<quality>Pilot Origins (Rating 3)</quality>
 							<quality>Prime Data-Haven</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
@@ -3559,6 +3567,7 @@
 							<quality>Sense of Direction</quality>
 							<quality>Sharpshooter</quality>
 							<quality>Sensei</quality>
+							<quality>Snooper</quality>
 							<quality>Virtual Stability</quality>
 							<quality>Solid/Legendary Rep</quality>
 							<quality>Trustworthy</quality>
@@ -3682,7 +3691,7 @@
 							<quality>Go Big or Go Home</quality>
 							<quality>Golden Screwdriver</quality>
 							<quality>Guts</quality>
-							<quality>Hello World</quality>
+							<quality>Hello World!</quality>
 							<quality>High Pain Tolerance</quality>
 							<quality>Home Ground</quality>
 							<quality>I C U</quality>
@@ -3700,13 +3709,16 @@
 							<quality>Overclocker</quality>
 							<quality>Perceptive</quality>
 							<quality>Photographic Memory</quality>
-							<quality>Pilot Origins</quality>
+							<quality>Pilot Origins (Rating 1)</quality>
+							<quality>Pilot Origins (Rating 2)</quality>
+							<quality>Pilot Origins (Rating 3)</quality>
 							<quality>Prime Data-Haven</quality>
 							<quality>Quick Healer</quality>
 							<quality>Redundancy</quality>
 							<quality>Restricted Gear</quality>
 							<quality>Sapper</quality>
 							<quality>Sensor Upgrade</quality>
+							<quality>Snooper</quality>
 							<quality>Speed Reading</quality>
 							<quality>Strive For Perfection</quality>
 							<quality>Steely-Eyed Wheelman</quality>
