@@ -12254,7 +12254,7 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-			_strArmorCapacity = objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
+			objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_intQty = Convert.ToInt32(objNode["qty"].InnerText);

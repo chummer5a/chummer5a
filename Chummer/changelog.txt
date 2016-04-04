@@ -70,6 +70,8 @@ Application Change:
 - Fixed an occasional issue in the Options menu where a null default character sheet caused a crash. Fixes #774.
 - Added house rules to gain free contacts and knowledge skills based on the total value of your CHA or LOG+INT. Fixes #783.
 - Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
+- Fixed a crash issue related to the Overclocker quality in career mode.
+- Fixed a loading issue for commlinks with armor capacity values. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -123,6 +125,7 @@ Data Change:
 - Fixed incorrect capacity values for the Responsive Interface Gear.
 - Added missing GUIDs for some AI qualities.
 - Fixed missing quality restrictions for AIs.
+
 
 New Strings:
 - Message_DeleteCalendarWeek

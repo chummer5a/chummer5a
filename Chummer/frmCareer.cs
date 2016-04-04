@@ -29206,12 +29206,16 @@ namespace Chummer
 
 		private void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_blnLoading || !_objCharacter.Overclocker)
+				return;
 			Commlink objCommlink = _objFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 			objCommlink.Overclocked = cboGearOverclocker.SelectedValue.ToString();
 		}
 
 		private void cboCyberwareGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_blnLoading || !_objCharacter.Overclocker)
+				return;
 			Commlink objCommlink = _objFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 			objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
 		}
