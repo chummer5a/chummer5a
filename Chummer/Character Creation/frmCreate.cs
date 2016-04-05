@@ -15076,6 +15076,15 @@ namespace Chummer
             nudKRES.Value = _objCharacter.RES.Karma;
 			nudKDEP.Value = _objCharacter.DEP.Karma;
 
+			nudBOD.Minimum = _objCharacter.BOD.MetatypeMinimum;
+			nudAGI.Minimum = _objCharacter.AGI.MetatypeMinimum;
+			nudREA.Minimum = _objCharacter.REA.MetatypeMinimum;
+			nudSTR.Minimum = _objCharacter.STR.MetatypeMinimum;
+			nudCHA.Minimum = _objCharacter.CHA.MetatypeMinimum;
+			nudINT.Minimum = _objCharacter.INT.MetatypeMinimum;
+			nudLOG.Minimum = _objCharacter.LOG.MetatypeMinimum;
+			nudWIL.Minimum = _objCharacter.WIL.MetatypeMinimum;
+
 			// Metatypes cost Karma.
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                 lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
