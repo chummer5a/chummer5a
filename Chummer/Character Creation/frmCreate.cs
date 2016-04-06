@@ -15083,7 +15083,10 @@ namespace Chummer
 			nudCHA.Minimum = _objCharacter.CHA.MetatypeMinimum;
 			nudINT.Minimum = _objCharacter.INT.MetatypeMinimum;
 			nudLOG.Minimum = _objCharacter.LOG.MetatypeMinimum;
-			nudWIL.Minimum = _objCharacter.WIL.MetatypeMinimum;
+			nudEDG.Minimum = _objCharacter.EDG.MetatypeMinimum;
+			nudMAG.Minimum = _objCharacter.RES.MetatypeMinimum;
+			nudRES.Minimum = _objCharacter.MAG.MetatypeMinimum;
+			nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
 
 			// Metatypes cost Karma.
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
