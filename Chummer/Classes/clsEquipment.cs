@@ -9404,10 +9404,9 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decMultiplier = 1;
-				decimal decMod = 0;
-				decMod = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
-					decMod += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 decimal decBaseCost = Cost;
@@ -9423,11 +9422,11 @@ namespace Chummer
 					//Add the percentage point modifiers from Qualities.
 					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
 					{
-						decMod += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText) / 100;
+						decMultiplier += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText);
 					}
                 }
 
-                decMultiplier = 1 + Convert.ToDecimal(decMod / 100, GlobalOptions.Instance.CultureInfo);
+                decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
                 
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
