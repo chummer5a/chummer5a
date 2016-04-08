@@ -1117,6 +1117,17 @@
 			<page>102</page>
 		</gear>
 		<gear>
+			<id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
+			<name>Smokebomb</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6</avail>
+			<addweapon>Smokebomb</addweapon>
+			<cost>25</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
 			<id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
 			<name>Rocket: Anti-Vehicle</name>
 			<category>Ammunition</category>
