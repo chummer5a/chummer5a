@@ -7951,6 +7951,7 @@
 		<accessory>
 			<id>7ca0c689-a05e-4377-ae44-3dc15abe2ee2</id>
 			<name>Hidden Gun Arm Slide</name>
+			<conceal>-1</conceal>
 			<mount/>
 			<rating>0</rating>
 			<avail>4R</avail>

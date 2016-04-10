@@ -125,7 +125,7 @@ Data Change:
 - Fixed incorrect capacity values for the Responsive Interface Gear.
 - Added missing GUIDs for some AI qualities.
 - Fixed missing quality restrictions for AIs.
-
+- Added a missing concealment bonus for the Hidden Gun Arm Slide. Fixes #723.
 
 New Strings:
 - Message_DeleteCalendarWeek
