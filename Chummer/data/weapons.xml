@@ -2276,6 +2276,27 @@
 			<page>102</page>
 		</weapon>
 		<weapon>
+			<id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
+			<name>Smokebomb</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(3m Radius)</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6</avail>
+			<cost>25</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>HT</source>
+			<page>187</page>
+		</weapon>
+		<weapon>
 			<id>aab70ade-8586-4539-a184-99cb63e7bfab</id>
 			<name>Grenade: Smoke</name>
 			<category>Gear</category>

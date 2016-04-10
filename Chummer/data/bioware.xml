@@ -974,7 +974,7 @@
 			<capacity>0</capacity>
 			<avail>6R</avail>
 			<addweapon>Retractable Claws (Bio-Weapon)</addweapon>
-			<cost>1000</cost>
+			<cost>Rating * 1000</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>
