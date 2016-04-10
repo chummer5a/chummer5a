@@ -5146,7 +5146,7 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">2</armor>
+				<armor group="0">2</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5220,7 +5220,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">4</armor>
+				<armor group="0">4</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5246,7 +5246,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">3</armor>
+				<armor group="0">3</armor>
 			</bonus>
 			<required>
 				<oneof>
