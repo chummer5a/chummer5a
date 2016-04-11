@@ -2347,7 +2347,13 @@ namespace Chummer
 				Log.Info("Calling CreateImprovement");
 				string strUseUnique = strUnique;
 				if (bonusNode.Attributes["precedence"] != null)
+				{
 					strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+				}
+				else if (bonusNode.Attributes["group"] != null)
+				{
+					strUseUnique = "group" + bonusNode.Attributes["group"].InnerText;
+				}
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Armor, strUseUnique,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}

@@ -95,7 +95,7 @@ namespace Chummer
 	public sealed class GlobalOptions
 	{
 		static readonly GlobalOptions _objInstance = new GlobalOptions();
-		static readonly CultureInfo _objCultureInfo = new CultureInfo("en-US");
+		static readonly CultureInfo _objCultureInfo = CultureInfo.InvariantCulture;
 
 		public event MRUChangedHandler MRUChanged;
 
@@ -867,7 +867,7 @@ namespace Chummer
         private bool _blnCapSkillRating = false;
         private bool _blnConfirmDelete = true;
         private bool _blnConfirmKarmaExpense = true;
-        private bool _blnCreateBackupOnCareer = false;
+		private bool _blnCreateBackupOnCareer = false;
         private bool _blnCyberlegMovement = false;
         private bool _blnDontDoubleQualityPurchaseCost = false;
 		private bool _blnDontDoubleQualityRefundCost = false;
@@ -912,7 +912,9 @@ namespace Chummer
 		private bool _blnUseCalculatedVehicleSensorRatings = false;
         private bool _blnUseContactPoints = false;
         private bool _blnUsePointsOnBrokenGroups = false;
-        private int _intEssenceDecimals = 2;
+		private bool _blnUseTotalValueForFreeContacts = false;
+		private bool _blnUseTotalValueForFreeKnowledge = false;
+		private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
         private int _intFreeContactsMultiplier = 3;
@@ -995,7 +997,7 @@ namespace Chummer
 
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
-		
+
 
 		#region Initialization, Save, and Load Methods
 		public CharacterOptions()
@@ -1090,8 +1092,12 @@ namespace Chummer
             objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
 			// <freecontactsflatnumber />
 			objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
-            // <freekarmaknowledge />
-            objWriter.WriteElementString("freekarmacontacts", _blnFreeKarmaContacts.ToString());
+			// <usetotalvalueforknowledge />
+			objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
+			// <usetotalvalueforcontacts />
+			objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
+			// <freekarmaknowledge />
+			objWriter.WriteElementString("freekarmacontacts", _blnFreeKarmaContacts.ToString());
             // <freekarmaknowledge />
             objWriter.WriteElementString("freekarmaknowledge", _blnFreeKarmaKnowledge.ToString());
 			// <nosinglearmorencumbrance />
@@ -1426,6 +1432,8 @@ namespace Chummer
 			objXmlNode.TryGetField("allowattributepointsonexceptional", out _blnAllowAttributePointsOnExceptional);
 			// Free Contacts Multiplier
 			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
+			// Free Contacts use Total Value instead of Value
+			objXmlNode.TryGetField("usetotalvalueforcontacts", out _blnUseTotalValueForFreeContacts);
 			// Free Contacts Multiplier Enabled
 			objXmlNode.TryGetField("freecontactsmultiplierenabled", out _blnFreeContactsMultiplierEnabled);
 			// Free Knowledge Multiplier Enabled
@@ -1434,6 +1442,8 @@ namespace Chummer
 			objXmlNode.TryGetField("freekarmacontacts", out _blnFreeKarmaContacts);
 			// Karma Free Knowledge
 			objXmlNode.TryGetField("freekarmaknowledge", out _blnFreeKarmaKnowledge);
+			// Free Knowledge uses Total Value instead of Value
+			objXmlNode.TryGetField("usetotalvalueforknowledge", out _blnUseTotalValueForFreeKnowledge);
 			// Free Contacts Multiplier
 			objXmlNode.TryGetField("freekarmaknowledgemultiplier", out _intFreeKnowledgeMultiplier);
 			// No Single Armor Encumbrance
@@ -4145,6 +4155,35 @@ namespace Chummer
 			}
 		}
 
+		/// <summary>
+		/// Whether you benefit from augmented values for contact points.
+		/// </summary>
+		public bool UseTotalValueForFreeContacts
+		{
+			get
+			{
+				return _blnUseTotalValueForFreeContacts;
+			}
+			set
+			{
+				_blnUseTotalValueForFreeContacts = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether you benefit from augmented values for free knowledge points.
+		/// </summary>
+		public bool UseTotalValueForFreeKnowledge
+		{
+			get
+			{
+				return _blnUseTotalValueForFreeKnowledge;
+			}
+			set
+			{
+				_blnUseTotalValueForFreeKnowledge = value;
+			}
+		}
 		#endregion
 
 	}

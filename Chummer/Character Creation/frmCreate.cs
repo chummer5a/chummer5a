@@ -6151,7 +6151,9 @@ namespace Chummer
 
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
+	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             _objCharacter.Weapons.Add(objWeapon);
 
             objNode.ContextMenuStrip = cmsWeapon;
@@ -8591,11 +8593,11 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Armor objArmor = new Armor(_objCharacter);
             objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
-            if (objArmor.InternalId == Guid.Empty.ToString())
+			objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+			if (objArmor.InternalId == Guid.Empty.ToString())
                 return;
 
-            _objCharacter.Armor.Add(objArmor);
-
+			_objCharacter.Armor.Add(objArmor);
             objNode.ContextMenuStrip = cmsArmor;
             treArmor.Nodes[0].Nodes.Add(objNode);
             treArmor.Nodes[0].Expand();
@@ -9169,6 +9171,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
 
             objMod.Weapons.Add(objWeapon);
@@ -9292,6 +9295,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory);
+	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.VehicleMounted = true;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
@@ -9417,6 +9421,8 @@ namespace Chummer
                     objGear = objNewGear;
                     break;
             }
+
+	        objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
             if (objGear.InternalId == Guid.Empty.ToString())
                 return;
@@ -9863,6 +9869,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             Weapon objWeapon = new Weapon(_objCharacter);
             objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+	        objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.IsUnderbarrelWeapon = true;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
 
@@ -10912,6 +10919,8 @@ namespace Chummer
             if (frmPickCyberware.FreeCost)
                 objCyberware.Cost = "0";
 
+	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
             objMod.Cyberware.Add(objCyberware);
@@ -11310,6 +11319,8 @@ namespace Chummer
                     break;
             }
 
+	        objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -11456,8 +11467,9 @@ namespace Chummer
                     objGear = objNewGear;
                     break;
             }
+			objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
-            if (objGear.InternalId == Guid.Empty.ToString())
+			if (objGear.InternalId == Guid.Empty.ToString())
                 return;
 
             // Reduce the cost for Do It Yourself components.
@@ -11598,9 +11610,11 @@ namespace Chummer
 
             if (objGear.InternalId == Guid.Empty.ToString())
                 return;
+			
+			objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
-            // Reduce the cost for Do It Yourself components.
-            if (frmPickGear.DoItYourself)
+			// Reduce the cost for Do It Yourself components.
+			if (frmPickGear.DoItYourself)
                 objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
@@ -11725,9 +11739,10 @@ namespace Chummer
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
+			objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
 
-            // Reduce the cost for Do It Yourself components.
-            if (frmPickGear.DoItYourself)
+			// Reduce the cost for Do It Yourself components.
+			if (frmPickGear.DoItYourself)
                 objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
@@ -11855,8 +11870,10 @@ namespace Chummer
             if (objGear.InternalId == Guid.Empty.ToString())
                 return;
 
-            // Reduce the cost for Do It Yourself components.
-            if (frmPickGear.DoItYourself)
+			objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+			// Reduce the cost for Do It Yourself components.
+			if (frmPickGear.DoItYourself)
                 objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
@@ -12067,8 +12084,10 @@ namespace Chummer
             if (objGear.InternalId == Guid.Empty.ToString())
                 return;
 
-            // Reduce the cost for Do It Yourself components.
-            if (frmPickGear.DoItYourself)
+			objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+			// Reduce the cost for Do It Yourself components.
+			if (frmPickGear.DoItYourself)
                 objGear.Cost = (Convert.ToDouble(objGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
@@ -12188,8 +12207,10 @@ namespace Chummer
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
 
-            // Reduce the cost for Do It Yourself components.
-            if (frmPickGear.DoItYourself)
+			objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
+			// Reduce the cost for Do It Yourself components.
+			if (frmPickGear.DoItYourself)
                 objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
             // Reduce the cost to 10% for Hacked programs.
             if (frmPickGear.Hacked)
@@ -15076,6 +15097,23 @@ namespace Chummer
             nudKRES.Value = _objCharacter.RES.Karma;
 			nudKDEP.Value = _objCharacter.DEP.Karma;
 
+			nudBOD.Minimum = _objCharacter.BOD.TotalMinimum;
+			nudAGI.Minimum = _objCharacter.AGI.TotalMinimum;
+			nudREA.Minimum = _objCharacter.REA.TotalMinimum;
+			nudSTR.Minimum = _objCharacter.STR.TotalMinimum;
+			nudCHA.Minimum = _objCharacter.CHA.TotalMinimum;
+			nudWIL.Minimum = _objCharacter.WIL.TotalMinimum;
+			nudINT.Minimum = _objCharacter.INT.TotalMinimum;
+			nudLOG.Minimum = _objCharacter.LOG.TotalMinimum;
+			nudEDG.Minimum = _objCharacter.EDG.TotalMinimum;
+			nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
+			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
+			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
+
+			nudMAG.Value = _objCharacter.MAG.Value;
+			nudRES.Value = _objCharacter.RES.Value;
+			nudDEP.Value = _objCharacter.DEP.Value;
+
 			// Metatypes cost Karma.
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                 lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
@@ -16258,14 +16296,32 @@ namespace Chummer
                     _objCharacter.EDG.MetatypeMaximum = _objCharacter.DEP.Value;
 
                 // Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.KnowledgeSkillPoints = (int)(_objCharacter.INT.Value + _objCharacter.LOG.Value) * _objOptions.FreeKnowledgeMultiplier;
+	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaKnowledge) ||
+	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	            {
+		            int intLogInt = _objCharacter.INT.Value + _objCharacter.LOG.Value;
+		            if (_objOptions.UseTotalValueForFreeKnowledge)
+		            {
+						intLogInt = _objCharacter.INT.TotalValue + _objCharacter.LOG.TotalValue;
+					}
+		            _objCharacter.KnowledgeSkillPoints = intLogInt * _objOptions.FreeKnowledgeMultiplier;
+	            }
                 else
                     _objCharacter.KnowledgeSkillPoints = 0;
 
                 // Calculate Free Contacts Points. Free points = (CHA) * 2.
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                    _objCharacter.ContactPoints = (int)(_objCharacter.CHA.Value) * _objOptions.FreeContactsMultiplier;
+	            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+	                (_objCharacter.BuildMethod == CharacterBuildMethod.Karma && _objOptions.FreeKarmaContacts) ||
+	                _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+	            {
+		            int intCHA = _objCharacter.CHA.Value;
+					if (_objOptions.UseTotalValueForFreeKnowledge)
+					{
+						intCHA = _objCharacter.CHA.TotalValue;
+					}
+					_objCharacter.ContactPoints = intCHA * _objOptions.FreeContactsMultiplier;
+				}
                 else
                     _objCharacter.ContactPoints = 0;
 
@@ -18522,6 +18578,9 @@ namespace Chummer
 
             // Create the Cyberware object.
             Cyberware objCyberware = new Cyberware(_objCharacter);
+
+	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+
             List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
@@ -18694,6 +18753,9 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             Gear objNewGear = new Gear(_objCharacter);
+
+	        objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
             switch (frmPickGear.SelectedCategory)
             {
                 case "Commlinks":
@@ -18921,6 +18983,9 @@ namespace Chummer
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             Gear objNewGear = new Gear(_objCharacter);
+
+	        objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+
             switch (frmPickGear.SelectedCategory)
             {
                 case "Commlinks":
@@ -19187,11 +19252,11 @@ namespace Chummer
             }
 		}
 
-		private void DisplayVehicleWeaponStats(bool blnDisplay)
 		/// <summary>
 		/// Switches the visibility of Weapon attributes on the Vehicles and Drones form.
 		/// </summary>
 		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		private void DisplayVehicleWeaponStats(bool blnDisplay)
 		{
 			lblVehicleWeaponName.Visible = blnDisplay;
 			lblVehicleWeaponCategory.Visible = blnDisplay;
@@ -23044,9 +23109,7 @@ namespace Chummer
                 return;
             }
 
-			//moving this belove the display select fixes #304, but prevents switch between 
-			//techno and magican, arguably a worse bug.
-			//needs a "restore state" function, but can't be arsed to implement atm
+			List<Quality> lstRemoveQualities = new List<Quality>();
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
@@ -23055,29 +23118,37 @@ namespace Chummer
                     case "Magician":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
+						lstRemoveQualities.Add(objQuality);
                         break;
                     case "Aspected Magician":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Adept":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.AdeptEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Mystic Adept":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
                         _objCharacter.AdeptEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Technomancer":
                         _objCharacter.RESEnabled = false;
                         _objCharacter.TechnomancerEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     default:
                         break;
                 }
             }
-
+			foreach (Quality objQuality in lstRemoveQualities)
+			{
+				_objCharacter.Qualities.Remove(objQuality);
+			}
 
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)

@@ -495,7 +495,7 @@
 			this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
 			this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
 			this.chkBlackMarketDiscount.Visible = false;
-			this.chkBlackMarketDiscount.CheckedChanged += this.chkBlackMarketDiscount_CheckedChanged;
+			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
 			// 
 			// frmSelectVehicle
 			// 

@@ -826,7 +826,7 @@ namespace Chummer
 				}
                 else if (_strArmorCapacity.Contains("Capacity"))
                 {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
+                    // If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
@@ -2035,35 +2035,28 @@ namespace Chummer
 					strReturn = _strArmorCapacity;
 				}
 
-				foreach (ArmorMod am in this.ArmorMods)
+				foreach (ArmorMod objArmorMod in this.ArmorMods)
 				{
-					if (am.Name == "YNT Softweave Armor")
-					{ 
-						if (_strArmorCapacity.Contains("Rating"))
-						{
-							// If the Capaicty is determined by the Rating, evaluate the expression.
-							XmlDocument objXmlDocument = new XmlDocument();
-							XPathNavigator nav = objXmlDocument.CreateNavigator();
+					if (objArmorMod.ArmorCapacity.StartsWith("-") || objArmorMod.ArmorCapacity.StartsWith("[-"))
+					{
+						// If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+						XmlDocument objXmlDocument = new XmlDocument();
+						XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-							// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-							bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-							string strCapacity = _strArmorCapacity;
-							if (blnSquareBrackets)
-								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+						// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+						string strCapacity = objArmorMod.ArmorCapacity;
+						strCapacity = strCapacity.Replace("[-", "");
+						strCapacity = strCapacity.Replace("[", "");
+						strCapacity = strCapacity.Replace("]", "");
+						strCapacity = strCapacity.Replace("Capacity", _strArmorCapacity);
+						strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
+						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
-							strReturn = nav.Evaluate(xprCapacity).ToString();
-							if (blnSquareBrackets)
-								strReturn = "[" + strReturn + "]";
-
-							return strReturn;
-						}
-						else
-						{
-							strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
-						}
+						strCapacity = nav.Evaluate(xprCapacity).ToString();
+						strCapacity = Math.Floor(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
+						strReturn = strCapacity;
 					}
-                }
+				}
 
 				return strReturn;
 			}
@@ -9411,10 +9404,9 @@ namespace Chummer
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decMultiplier = 1;
-				decimal decMod = 0;
-				decMod = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
-					decMod += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 decimal decBaseCost = Cost;
@@ -9430,11 +9422,11 @@ namespace Chummer
 					//Add the percentage point modifiers from Qualities.
 					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
 					{
-						decMod += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText) / 100;
+						decMultiplier += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText);
 					}
                 }
 
-                decMultiplier = 1 + Convert.ToDecimal(decMod / 100, GlobalOptions.Instance.CultureInfo);
+                decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
                 
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
@@ -12261,7 +12253,7 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-			_strArmorCapacity = objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
+			objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_intQty = Convert.ToInt32(objNode["qty"].InnerText);

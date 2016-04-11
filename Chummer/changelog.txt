@@ -16,7 +16,6 @@ Application Change:
 - Fixed a string formatting issue that prevented Accuracy modifications from adept powers from working properly for translated Chummer.
 - Fixed an issue that prevented priority/sum-to-ten from using the gameplay options for their nuyen limit.
 - Sum to Ten and Priority now use the same form for character generation. Doesn't mean anything particularly interesting for you guys, but may reduce or introduce some interesting new bugs. 
-- Did some shenanigans to make it not look like mundane characters have resonance, magic or depth attributes. There are a couple of caveats with this; the major one is that if you add a quality like Adept or Technomancer, the Base value will revert to 1. Actual value of the stat reverts to 0 properly, but keep that in mind. It's not as tidy as I'd like.
 - Contacts can now be dragged around and reordered according to your whims. It's only really easy to do when the control you want to move is expanded. 
 - Armor can now have a Rating; currently this is used exclusively for the cloaks from Hard Targets.
 - Fixed the percentage discount for basic lifestyles.
@@ -68,6 +67,13 @@ Application Change:
 - Fixed an issue where default build methods other than Karma would cause a crash while launching the Options menu. Fixes #796.
 - Fixed an issue with the Acceleration Enhancement modification causing a crash when printing. Fixes #772.
 - Fixed an occasional issue in the Options menu where a null default character sheet caused a crash. Fixes #774.
+- Added house rules to gain free contacts and knowledge skills based on the total value of your CHA or LOG+INT. Fixes #783.
+- Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
+- Fixed a crash issue related to the Overclocker quality in career mode.
+- Fixed a loading issue for commlinks with armor capacity values. 
+- Fixed an issue where removing a Foci before unbonding it would leave the Improvement enabled. Fixes #660. Note: Characters that have already been affected by this bug will need to manually remove the improvement. 
+- Fixed the ability to switch between adepts, magicians or technomancers when changing priority selections. Fixes #745.
+- Added a method for grouping armour value improvements with the 'group' attribute. Fixes #758.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -119,6 +125,13 @@ Data Change:
 - Removed the Distinctive Style quality from the Gnome metavariant. 
 - Removed an extra Victorinox Collapsible Hatchet from the weapons XML.
 - Fixed incorrect capacity values for the Responsive Interface Gear.
+- Added missing GUIDs for some AI qualities.
+- Fixed missing quality restrictions for AIs.
+- Added a missing concealment bonus for the Hidden Gun Arm Slide. Fixes #723.
+- Fixed cost and availability for Monofilament Chainsaw, Blast Shield, and Battering Rams. Fixes #808.
+- Reverted precedence 0 settings for dermal plating cyberware.
+- Reverted precedence 0 settings for orthoskin bioware.
+- Reverted precedence 0 settings for dermal alteration SURGE qualities.
 
 New Strings:
 - Message_DeleteCalendarWeek
@@ -135,6 +148,8 @@ New Strings:
 - String_Sleaze
 - String_DataProcessing
 - Checkbox_Options_UseCalculatedPublicAwareness
+- Checkbox_Options_UseTotalValueForFreeKnowledge
+- Checkbox_Options_UseTotalValueForFreeContacts
 
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities

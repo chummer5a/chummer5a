@@ -281,7 +281,7 @@
       <avail>(Rating * 4)R</avail>
       <cost>Rating * 6000</cost>
       <bonus>
-        <armor precedence="0">Rating</armor>
+        <armor group="0">Rating</armor>
       </bonus>
       <source>SR5</source>
       <page>459</page>
@@ -974,7 +974,7 @@
 			<capacity>0</capacity>
 			<avail>6R</avail>
 			<addweapon>Retractable Claws (Bio-Weapon)</addweapon>
-			<cost>1000</cost>
+			<cost>Rating * 1000</cost>
 			<source>CF</source>
 			<page>120</page>
 		</bioware>

@@ -5146,7 +5146,7 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">2</armor>
+				<armor group="0">2</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5220,7 +5220,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">4</armor>
+				<armor group="0">4</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -5246,7 +5246,7 @@
 			<karma>7</karma>
 			<category>Positive</category>
 			<bonus>
-				<armor precedence="0">3</armor>
+				<armor group="0">3</armor>
 			</bonus>
 			<required>
 				<oneof>
@@ -9243,7 +9243,7 @@
 			<page>148</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>6a2da674-ba73-4a95-ab3d-e4bbe2eeb926</id>
 			<name>Low Profile</name>
 			<karma>15</karma>
 			<category>Positive</category>
@@ -9257,7 +9257,7 @@
 			<page>149</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>d7c75876-dc2d-44c3-bdb4-e898ef733d4e</id>
 			<name>Munge</name>
 			<karma>15</karma>
 			<category>Positive</category>
@@ -9271,7 +9271,7 @@
 			<page>149</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>b86f54af-cca7-4698-ad6d-21ffca93fb23</id>
 			<name>Multiprocessing</name>
 			<karma>8</karma>
 			<category>Positive</category>
@@ -9324,7 +9324,7 @@
 			<page>45</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>b86f54af-cca7-4698-ad6d-21ffca93fb23</id>
 			<name>Pilot Origins (Rating 1)</name>
 			<karma>8</karma>
 			<category>Positive</category>
@@ -9346,7 +9346,7 @@
 			<page>149</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>839a175f-3710-44f8-9372-78f2b1e19c31</id>
 			<name>Pilot Origins (Rating 2)</name>
 			<karma>16</karma>
 			<category>Positive</category>
@@ -9368,7 +9368,7 @@
 			<page>149</page>
 		</quality>
 		<quality>
-			<id></id>
+			<id>80ba0f08-029d-4b0b-9286-9f7d182ac389</id>
 			<name>Pilot Origins (Rating 3)</name>
 			<karma>24</karma>
 			<category>Positive</category>
