@@ -23079,9 +23079,7 @@ namespace Chummer
                 return;
             }
 
-			//moving this belove the display select fixes #304, but prevents switch between 
-			//techno and magican, arguably a worse bug.
-			//needs a "restore state" function, but can't be arsed to implement atm
+			List<Quality> lstRemoveQualities = new List<Quality>();
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
@@ -23090,29 +23088,37 @@ namespace Chummer
                     case "Magician":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
+						lstRemoveQualities.Add(objQuality);
                         break;
                     case "Aspected Magician":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Adept":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.AdeptEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Mystic Adept":
                         _objCharacter.MAGEnabled = false;
                         _objCharacter.MagicianEnabled = false;
                         _objCharacter.AdeptEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     case "Technomancer":
                         _objCharacter.RESEnabled = false;
                         _objCharacter.TechnomancerEnabled = false;
-                        break;
+						lstRemoveQualities.Add(objQuality);
+						break;
                     default:
                         break;
                 }
             }
-
+			foreach (Quality objQuality in lstRemoveQualities)
+			{
+				_objCharacter.Qualities.Remove(objQuality);
+			}
 
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
