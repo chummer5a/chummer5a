@@ -71,6 +71,7 @@ Application Change:
 - Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
 - Fixed a crash issue related to the Overclocker quality in career mode.
 - Fixed a loading issue for commlinks with armor capacity values. 
+- Fixed an issue where removing a Foci before unbonding it would leave the Improvement enabled. Fixes #660. Note: Characters that have already been affected by this bug will need to manually remove the improvement. 
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
