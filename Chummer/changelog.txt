@@ -125,6 +125,7 @@ Data Change:
 - Added missing GUIDs for some AI qualities.
 - Fixed missing quality restrictions for AIs.
 - Added a missing concealment bonus for the Hidden Gun Arm Slide. Fixes #723.
+- Fixed cost and availability for Monofilament Chainsaw, Blast Shield, and Battering Rams. Fixes #808.
 
 New Strings:
 - Message_DeleteCalendarWeek
