@@ -71,6 +71,8 @@ Application Change:
 - Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
 - Fixed a crash issue related to the Overclocker quality in career mode.
 - Fixed a loading issue for commlinks with armor capacity values. 
+- Fixed an issue where removing a Foci before unbonding it would leave the Improvement enabled. Fixes #660. Note: Characters that have already been affected by this bug will need to manually remove the improvement. 
+- Fixed the ability to switch between adepts, magicians or technomancers when changing priority selections. Fixes #745.
 - Added a method for grouping armour value improvements with the 'group' attribute. Fixes #758.
 
 Data Change:
@@ -126,6 +128,7 @@ Data Change:
 - Added missing GUIDs for some AI qualities.
 - Fixed missing quality restrictions for AIs.
 - Added a missing concealment bonus for the Hidden Gun Arm Slide. Fixes #723.
+- Fixed cost and availability for Monofilament Chainsaw, Blast Shield, and Battering Rams. Fixes #808.
 - Reverted precedence 0 settings for dermal plating cyberware.
 - Reverted precedence 0 settings for orthoskin bioware.
 - Reverted precedence 0 settings for dermal alteration SURGE qualities.
