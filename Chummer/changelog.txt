@@ -71,6 +71,7 @@ Application Change:
 - Fixed a bonus point calculation issue for YNT Softweave and Cloaks. 
 - Fixed a crash issue related to the Overclocker quality in career mode.
 - Fixed a loading issue for commlinks with armor capacity values. 
+- Added a method for grouping armour value improvements with the 'group' attribute. Fixes #758.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -125,6 +126,9 @@ Data Change:
 - Added missing GUIDs for some AI qualities.
 - Fixed missing quality restrictions for AIs.
 - Added a missing concealment bonus for the Hidden Gun Arm Slide. Fixes #723.
+- Reverted precedence 0 settings for dermal plating cyberware.
+- Reverted precedence 0 settings for orthoskin bioware.
+- Reverted precedence 0 settings for dermal alteration SURGE qualities.
 
 New Strings:
 - Message_DeleteCalendarWeek

@@ -95,7 +95,7 @@ namespace Chummer
 	public sealed class GlobalOptions
 	{
 		static readonly GlobalOptions _objInstance = new GlobalOptions();
-		static readonly CultureInfo _objCultureInfo = new CultureInfo("en-US");
+		static readonly CultureInfo _objCultureInfo = CultureInfo.InvariantCulture;
 
 		public event MRUChangedHandler MRUChanged;
 

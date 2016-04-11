@@ -52,6 +52,7 @@ namespace Chummer
 		private string _strNode = "cyberware";
 		private bool _blnAddAgain = false;
 		private bool _blnAllowModularPlugins = false;
+	    private bool _blnBlackMarketDiscount = false;
 		private static string _strSelectCategory = "";
 		private static string _strSelectedGrade = "";
 
@@ -60,6 +61,7 @@ namespace Chummer
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
 		private List<ListItem> _lstGrade = new List<ListItem>();
+		
 
 		public enum Mode
 		{
@@ -703,6 +705,17 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
+			}
+		}
+
+		/// <summary>
 		/// Whether or not the Bioware should be forced into the Genetech: Transgenics category.
 		/// </summary>
 		public bool ForceTransgenic
@@ -899,12 +912,21 @@ namespace Chummer
 					}
 				}
 
+				if (chkBlackMarketDiscount.Checked)
+				{
+					double dblDiscount = 0;
+					dblDiscount = intItemCost - (intItemCost * 0.90);
+					intItemCost -= Convert.ToInt32(dblDiscount);
+					lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+				}
+
 				if (chkFree.Checked)
 				{
 					lblCost.Text = String.Format("{0:###,###,##0¥}", 0);
 					intItemCost = 0;
 				}
 
+				// Test required to find the item.
 				lblTest.Text = _objCharacter.AvailTest(intItemCost, lblAvail.Text);
 
 				// Essence.
@@ -1051,6 +1073,7 @@ namespace Chummer
 
 			_strSelectedGrade = _objSelectedGrade.ToString();
 			_intSelectedRating = Convert.ToInt32(nudRating.Value);
+			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
 			if (nudESSDiscount.Visible)
 				_intSelectedESSDiscount = Convert.ToInt32(nudESSDiscount.Value);

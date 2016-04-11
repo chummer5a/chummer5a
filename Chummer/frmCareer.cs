@@ -6001,6 +6001,8 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Armor objArmor = new Armor(_objCharacter);
 			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
+			objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+
 			if (objArmor.InternalId == Guid.Empty.ToString())
 				return;
 
@@ -6254,6 +6256,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
 			int intCost = objWeapon.TotalCost;
 			// Apply a markup if applicable.
@@ -6671,6 +6674,8 @@ namespace Chummer
 					objExpense.Undo = objUndo;
 				}
 			}
+
+			objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
 			_objCharacter.Vehicles.Add(objVehicle);
 
@@ -10788,6 +10793,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.VehicleMounted = true;
 			objWeapon.IsUnderbarrelWeapon = true;
 
@@ -13062,6 +13068,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.IsUnderbarrelWeapon = true;
 
 			int intCost = objWeapon.TotalCost;

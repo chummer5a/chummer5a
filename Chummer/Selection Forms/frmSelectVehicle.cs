@@ -416,7 +416,13 @@ namespace Chummer
                 // Apply the markup if applicable.
                 double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
                 dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-                intCost = Convert.ToInt32(dblCost);
+
+				if (chkBlackMarketDiscount.Checked)
+				{
+					dblCost = dblCost - (dblCost * 0.90);
+				}
+
+				intCost = Convert.ToInt32(dblCost);
 
                 if (chkFreeItem.Checked)
                     intCost = 0;

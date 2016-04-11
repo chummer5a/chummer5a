@@ -41,6 +41,7 @@ namespace Chummer
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
+		private bool _blnBlackMarketDiscount;
 
 		#region Control Events
 		public frmSelectVehicleMod(Character objCharacter, bool blnCareer = false)
@@ -174,6 +175,17 @@ namespace Chummer
 			get
 			{
 				return _blnAddAgain;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
 			}
 		}
 
@@ -413,6 +425,7 @@ namespace Chummer
 			_strSelectedMod = lstMod.SelectedValue.ToString();
 			_intSelectedRating = Convert.ToInt32(nudRating.Value);
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
+			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 			this.DialogResult = DialogResult.OK;
 		}
 
@@ -523,8 +536,13 @@ namespace Chummer
 					// Apply any markup.
 					double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
 					dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
-					intCost = Convert.ToInt32(dblCost);
+					
+					if (chkBlackMarketDiscount.Checked)
+					{
+						dblCost = dblCost - (dblCost*0.90);
+					}
 
+					intCost = Convert.ToInt32(dblCost);
 					lblCost.Text = String.Format("{0:###,###,##0¥}", intCost);
 
 					intItemCost = intCost;

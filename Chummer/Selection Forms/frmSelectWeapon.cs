@@ -31,7 +31,8 @@ namespace Chummer
 		private int _intMarkup = 0;
 
 		private bool _blnAddAgain = false;
-	    private string _strLimitToCategories = "";
+	    private bool _blnBlackMarketDiscount = false;
+		private string _strLimitToCategories = "";
         private static string _strSelectCategory = "";
 		private readonly Character _objCharacter;
 	    private XmlNodeList objXmlCategoryList;
@@ -384,6 +385,17 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
+			}
+		}
+
+		/// <summary>
 		/// Name of Weapon that was selected in the dialogue.
 		/// </summary>
 		public string SelectedWeapon
@@ -463,6 +475,7 @@ namespace Chummer
 				_strSelectCategory = objNode["category"].InnerText;
 				_strSelectedWeapon = objNode["name"].InnerText;
 				_intMarkup = Convert.ToInt32(nudMarkup.Value);
+				_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
 				this.DialogResult = DialogResult.OK;
 			}
