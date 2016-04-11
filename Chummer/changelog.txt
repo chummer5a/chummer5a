@@ -74,6 +74,7 @@ Application Change:
 - Fixed an issue where removing a Foci before unbonding it would leave the Improvement enabled. Fixes #660. Note: Characters that have already been affected by this bug will need to manually remove the improvement. 
 - Fixed the ability to switch between adepts, magicians or technomancers when changing priority selections. Fixes #745.
 - Added a method for grouping armour value improvements with the 'group' attribute. Fixes #758.
+- Fixed an issue that prevented some old characters from being saved. Fixes #806.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
