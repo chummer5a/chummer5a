@@ -15076,18 +15076,18 @@ namespace Chummer
             nudKRES.Value = _objCharacter.RES.Karma;
 			nudKDEP.Value = _objCharacter.DEP.Karma;
 
-			nudBOD.Minimum = _objCharacter.BOD.MetatypeMinimum;
-			nudAGI.Minimum = _objCharacter.AGI.MetatypeMinimum;
-			nudREA.Minimum = _objCharacter.REA.MetatypeMinimum;
-			nudSTR.Minimum = _objCharacter.STR.MetatypeMinimum;
-			nudCHA.Minimum = _objCharacter.CHA.MetatypeMinimum;
-			nudWIL.Minimum = _objCharacter.WIL.MetatypeMinimum;
-			nudINT.Minimum = _objCharacter.INT.MetatypeMinimum;
-			nudLOG.Minimum = _objCharacter.LOG.MetatypeMinimum;
-			nudEDG.Minimum = _objCharacter.EDG.MetatypeMinimum;
-			nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
-			nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
-			nudDEP.Minimum = _objCharacter.DEP.MetatypeMinimum;
+			nudBOD.Minimum = _objCharacter.BOD.TotalMinimum;
+			nudAGI.Minimum = _objCharacter.AGI.TotalMinimum;
+			nudREA.Minimum = _objCharacter.REA.TotalMinimum;
+			nudSTR.Minimum = _objCharacter.STR.TotalMinimum;
+			nudCHA.Minimum = _objCharacter.CHA.TotalMinimum;
+			nudWIL.Minimum = _objCharacter.WIL.TotalMinimum;
+			nudINT.Minimum = _objCharacter.INT.TotalMinimum;
+			nudLOG.Minimum = _objCharacter.LOG.TotalMinimum;
+			nudEDG.Minimum = _objCharacter.EDG.TotalMinimum;
+			nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
+			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
+			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
 
 			nudMAG.Value = _objCharacter.MAG.Value;
 			nudRES.Value = _objCharacter.RES.Value;
