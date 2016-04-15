@@ -242,34 +242,34 @@ namespace Chummer
 
             // Remove the Improvements Tab.
             tabCharacterTabs.TabPages.Remove(tabImprovements);
-
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-            {
-                if (!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled)
-                    tabCharacterTabs.TabPages.Remove(tabInitiation);
-                else
-                {
-                    if (_objCharacter.MAGEnabled)
-                    {
-                        tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Initiation");
-                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
-                        chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_GroupInitiation");
-                        chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_InitiationOrdeal");
-                    }
-                    else
-                    {
-                        tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
-                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
-                        chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_NetworkSubmersion");
-                        chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
-                    }
-                }
-            }
-            else
-            {
-                if ((!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled) || !_objCharacter.Options.AllowInitiationInCreateMode)
-                    tabCharacterTabs.TabPages.Remove(tabInitiation);
-            }
+			
+			if ((!_objCharacter.MAGEnabled && !_objCharacter.RESEnabled) || !_objOptions.AllowInitiationInCreateMode)
+				tabCharacterTabs.TabPages.Remove(tabInitiation);
+			else
+			{
+				if (_objCharacter.MAGEnabled)
+				{
+					tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Initiation");
+					tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
+					cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddInitiateGrade");
+				}
+				else
+				{
+					tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Submersion");
+					tsMetamagicAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddEcho");
+					cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddSubmersionGrade");
+					chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_SubmersionTask");
+					chkInitiationGroup.Visible = false;
+					chkInitiationSchooling.Visible = false;
+					tsMetamagicAddArt.Visible = false;
+					tsMetamagicAddEnchantment.Visible = false;
+					tsMetamagicAddEnhancement.Visible = false;
+					tsMetamagicAddRitual.Visible = false;
+					treMetamagic.Top = cmdAddMetamagic.Top + cmdAddMetamagic.Height + 6;
+					cmdAddMetamagic.Left = treMetamagic.Left + treMetamagic.Width - cmdAddMetamagic.Width;
+				}
+				UpdateInitiationCost();
+			}
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
             if (_objCharacter.Mugshot != "")
@@ -1716,7 +1716,8 @@ namespace Chummer
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
-                    nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
+					UpdateInitiationCost();
+					nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -1793,11 +1794,11 @@ namespace Chummer
                     intEssenceLoss = _objCharacter.EssencePenalty;
                 nudRES.Minimum = _objCharacter.RES.MetatypeMinimum;
                 nudRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
-
                 // If the character options permit submersion in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
-                    nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
+					UpdateInitiationCost();
+					nudKRES.Maximum = _objCharacter.RES.MetatypeMaximum + intEssenceLoss;
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -7106,18 +7107,6 @@ namespace Chummer
                     return;
                 }
 
-                // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
-                if (chkInitiationGroup.Checked)
-                    dblMultiplier -= 0.1;
-                if (chkInitiationOrdeal.Checked)
-                    dblMultiplier -= 0.1;
-                if (chkInitiationSchooling.Checked)
-                    dblMultiplier -= 0.1;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
-
-                int intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(_objCharacter);
                 objGrade.Create(_objCharacter.InitiateGrade + 1, _objCharacter.MAGEnabled, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
@@ -7146,11 +7135,7 @@ namespace Chummer
                         }
                     }
                 }
-
-
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-                tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-            }
+			}
             else if (_objCharacter.RESEnabled)
             {
                 tsMetamagicAddArt.Visible = false;
@@ -7165,12 +7150,6 @@ namespace Chummer
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.Instance.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
-                // Make sure the character has enough Karma.
-                double dblMultiplier = 1.0;
-                dblMultiplier = Math.Round(dblMultiplier, 2);
-
-                int intKarmaExpense = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
 
                 // Create the Initiate Grade object.
                 InitiationGrade objGrade = new InitiationGrade(_objCharacter);
@@ -7200,14 +7179,10 @@ namespace Chummer
                         }
                     }
                 }
+			}
 
-                int intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-                string strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-                tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-            }
-
-            UpdateInitiationGradeTree();
+			UpdateInitiationCost();
+			UpdateInitiationGradeTree();
             UpdateCharacterInfo();
 
             _blnIsDirty = true;
@@ -16939,7 +16914,8 @@ namespace Chummer
             RefreshImprovements();
             RefreshLimitModifiers();
             UpdateReputation();
-        }
+			UpdateInitiationCost();
+		}
 
 	    private void UpdateAttribute(Attribute attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
 	    {
@@ -23057,35 +23033,52 @@ namespace Chummer
                 }
             }
             treMetamagic.ExpandAll();
+		}
 
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
+		/// <summary>
+		/// Update the karma cost tooltip for Initiation/Submersion.
+		/// </summary>
+		private void UpdateInitiationCost()
+		{
+			double dblMultiplier = 1.0;
+			int intAmount = 0;
 
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			if (_objCharacter.MAGEnabled)
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
+			else
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
 
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			string strInitTip = "";
+			if (_objCharacter.MAGEnabled)
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			else
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
 
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-        }
+			tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
+		}
 
-        /// <summary>
-        /// Change the character's Metatype.
-        /// </summary>
-        public void ChangeMetatype()
+		/// <summary>
+		/// Change the character's Metatype.
+		/// </summary>
+		public void ChangeMetatype()
         {
             // Determine if the character has any chosen Qualities that depend on their current Metatype. If so, don't let the change happen.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
@@ -25820,6 +25813,11 @@ namespace Chummer
 		private void nudCounterspellingDice_Changed(object sender, EventArgs e)
 		{
 			UpdateSpellDefence();
+		}
+
+		private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateCharacterInfo();
 		}
 	}
 }

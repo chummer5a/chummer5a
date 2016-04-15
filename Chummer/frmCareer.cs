@@ -20341,80 +20341,17 @@ namespace Chummer
 		#region Additional Initiation Tab Control Events
 		private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-        }
+			UpdateInitiationCost();
+		}
 
 		private void chkInitiationOrdeal_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-        }
+			UpdateInitiationCost();
+		}
 
         private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
+            UpdateInitiationCost();
         }
 
 		private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
@@ -26871,29 +26808,47 @@ namespace Chummer
                 }
             }
             treMetamagic.ExpandAll();
+			UpdateInitiationCost();
+		}
 
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
+		/// <summary>
+		/// Update the karma cost tooltip for Initiation/Submersion.
+		/// </summary>
+		private void UpdateInitiationCost()
+		{
+			double dblMultiplier = 1.0;
+			int intAmount = 0;
 
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			if (_objCharacter.MAGEnabled)
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
+			else
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
 
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			string strInitTip = "";
+			if (_objCharacter.MAGEnabled)
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			else
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
 
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
+			tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
 		}
 
 		/// <summary>

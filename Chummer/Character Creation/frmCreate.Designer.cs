@@ -6197,6 +6197,7 @@ namespace Chummer
 			this.chkInitiationSchooling.Tag = "Checkbox_InitiationSchooling";
 			this.chkInitiationSchooling.Text = "Schooling (-10%)";
 			this.chkInitiationSchooling.UseVisualStyleBackColor = true;
+			this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.chkInitiationSchooling_CheckedChanged);
 			// 
 			// lblMetamagicSource
 			// 
