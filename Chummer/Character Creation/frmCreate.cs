@@ -20475,6 +20475,8 @@ namespace Chummer
 		        // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
 		        int intFreePoints = (_objCharacter.CHA.TotalValue*_objOptions.FreeContactsMultiplier);
 
+				
+
 		        if (intContactPointsUsed >= intFreePoints)
 		        {
 			        intContactPointsUsed -= intFreePoints;

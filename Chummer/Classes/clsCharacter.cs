@@ -90,7 +90,7 @@ namespace Chummer
     public class Character
     {
         private readonly ImprovementManager _objImprovementManager;
-        private readonly CharacterOptions _objOptions = new CharacterOptions();
+        private readonly CharacterOptions _objOptions;
 
         private string _strFileName = "";
         private string _strSettingsFileName = "default.xml";
@@ -353,6 +353,8 @@ namespace Chummer
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
+			_objOptions = new CharacterOptions(this);
+
         }
 
         /// <summary>

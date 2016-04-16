@@ -30,7 +30,7 @@ namespace Chummer
 {
 	public partial class frmOptions : Form
 	{
-		private readonly CharacterOptions _characterOptions = new CharacterOptions();
+		private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
 		private bool _skipRefresh;
 		#region Form Events
 		public frmOptions()

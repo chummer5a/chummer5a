@@ -109,6 +109,7 @@
     <Compile Include="Character Creation\frmSelectLifeModule.Designer.cs">
       <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashreport.cs" />
     <Compile Include="Classes\clsEquipment.cs" />
