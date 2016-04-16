@@ -135,7 +135,7 @@ namespace Chummer.Skills
 			{
 				int skillWire = WireRating();
 
-				return Math.Max(skillWire, LearnedRating);
+				return Math.Max(skillWire, LearnedRating + Bonus(true));
 			}
 		}
 
@@ -208,53 +208,58 @@ namespace Chummer.Skills
 		/// </summary>
 		public virtual int PoolModifiers
 		{
-			get
-			{
-				ImprovementManager manager = new ImprovementManager(_character);
-				
-				int intModifier = 0;
-				
-				//Dump loop looking at all improvements
-				foreach (Improvement objImprovement in CharacterObject.Improvements)
-				{
-					if (objImprovement.AddToRating && objImprovement.Enabled)
-					{
-						// Improvement for an individual Skill.
-						//TODO NOT WORKING FOR EXOTIC SKILLS (when is that needed?)
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-							intModifier += objImprovement.Value;
-
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _group)
-						{
-							if (!objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(Category))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == Category)
-						{
-							if (!objImprovement.Exclude.Contains(Name))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill linked to an CharacterAttribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == AttributeObject.Abbrev)
-						{
-							if (!objImprovement.Exclude.Contains(Name))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for Enhanced Articulation
-						if (Category == "Physical Active" && (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-								intModifier += objImprovement.Value;
-						}
-					}
-					
-				}
-
-				return intModifier;
+			get {
+				return Bonus(false);
 			}
+		}
+
+		private int Bonus(bool AddToRating)
+		{
+			ImprovementManager manager = new ImprovementManager(_character);
+
+			int intModifier = 0;
+
+			//Dump loop looking at all improvements
+			foreach (Improvement objImprovement in CharacterObject.Improvements)
+			{
+				if (objImprovement.AddToRating ==AddToRating && objImprovement.Enabled)
+				{
+					// Improvement for an individual Skill.
+					//TODO NOT WORKING FOR EXOTIC SKILLS (when is that needed?)
+					if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
+						intModifier += objImprovement.Value;
+
+
+					// Improvement for a Skill Group.
+					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _group)
+					{
+						if (!objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+							intModifier += objImprovement.Value;
+					}
+					// Improvement for a Skill Category.
+					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == SkillCategory)
+					{
+						if (!objImprovement.Exclude.Contains(Name))
+							intModifier += objImprovement.Value;
+					}
+					// Improvement for a Skill linked to an CharacterAttribute.
+					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == AttributeObject.Abbrev)
+					{
+						if (!objImprovement.Exclude.Contains(Name))
+							intModifier += objImprovement.Value;
+					}
+					// Improvement for Enhanced Articulation
+					if (Category == "Physical Active" &&
+					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
+					     AttributeObject.Abbrev == "STR"))
+					{
+						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
+							intModifier += objImprovement.Value;
+					}
+				}
+			}
+
+			return intModifier;
 		}
 
 		public int WoundModifier
@@ -272,8 +277,12 @@ namespace Chummer.Skills
 		public virtual int CurrentSpCost()
 		{
 
-			return _base + 
-				((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+			int cost = _base +
+			           ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+
+			if (Unaware()) cost *= 2;
+
+			return cost;
 		}
 
 		/// <summary>
@@ -318,6 +327,8 @@ namespace Chummer.Skills
 					_character.Options.KarmaSpecialization : 0;
 
 
+			if (Unaware()) cost *= 2;
+
 			return cost;
 
 		}
@@ -352,18 +363,40 @@ namespace Chummer.Skills
 				masterAdjustment = LearnedRating > 5 ? 2 : -1;
 			}
 
+			int upgrade;
 			if (LearnedRating >= RatingMaximum)
 			{
-				return -1;
+				upgrade = -1;
 			}
 			else if (LearnedRating == 0)
 			{
-				return _character.Options.KarmaNewActiveSkill + masterAdjustment;
+				upgrade = _character.Options.KarmaNewActiveSkill + masterAdjustment;
 			}
 			else
 			{
-				return  (LearnedRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
+				upgrade = (LearnedRating + 1)*_character.Options.KarmaImproveActiveSkill + masterAdjustment;
 			}
+
+			if (Unaware()) upgrade *= 2;
+
+			return upgrade;
+
+		}
+
+		//Character is really bad at this. Uncouth and a social skill or Uneducated and technical skill
+		private bool Unaware()
+		{
+			if (CharacterObject.Uncouth && Category == "Social Active")
+			{
+				return true;
+			}
+
+			if (CharacterObject.Uneducated && Category == "Technical Active")
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		public void Upgrade()

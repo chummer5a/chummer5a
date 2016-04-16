@@ -1915,6 +1915,7 @@
 					<name precedence="1">REA</name>
 					<val>Rating</val>
 				</specificattribute>
+        <skillwire>Rating * 2</skillwire>
 			</bonus>
 			<source>CF</source>
 			<page>84</page>

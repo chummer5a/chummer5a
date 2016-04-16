@@ -53,7 +53,8 @@ namespace Chummer.Skills
 		protected string _translated; //non english name, if present
 		private List<ListItem> _knowledgeSkillCatagories;
 		private string _type;
-		
+		private string _skillCategory;
+
 		public KnowledgeSkill(Character character) : base(character, (string)null)
 		{
 			AttributeObject = character.GetAttribute("LOG");
@@ -101,7 +102,12 @@ namespace Chummer.Skills
 				OnPropertyChanged();
 			}
 		}
-		
+
+		public override string SkillCategory
+		{
+			get { return Type; }
+		}
+
 		public string Type
 		{
 			get { return _type; }
@@ -159,7 +165,7 @@ namespace Chummer.Skills
 					(!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
 					CharacterObject.Options.KarmaSpecialization : 0;
 
-			
+			if (UneducatedEffect()) cost *= 2;
 
 			return cost;
 		}
@@ -182,21 +188,26 @@ namespace Chummer.Skills
 				adjustment -= 1;
 			}
 
+
+			int value;
 			if (LearnedRating <= RatingMaximum)
 			{
 				return -1;
 			}
 			else if (LearnedRating == 0)
 			{
-				return CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment;
+				value =  CharacterObject.Options.KarmaNewKnowledgeSkill + adjustment;
 			}
 			else
 			{
-				return (LearnedRating == 0
+				value = (LearnedRating == 0
 					? CharacterObject.Options.KarmaNewActiveSkill
 					: (LearnedRating + 1) * CharacterObject.Options.KarmaImproveKnowledgeSkill)
 					   + adjustment;
 			}
+
+			if (UneducatedEffect()) value *= 2;
+			return value;
 		}
 
 		/// <summary>
@@ -239,6 +250,20 @@ namespace Chummer.Skills
 				case "Interest":
 					return false; 
 
+
+				default:
+					return false;
+			}
+		}
+
+		private bool UneducatedEffect()
+		{
+			switch (_type)
+			{
+				case "Professional":
+					return CharacterObject.Uneducated;
+				case "Academic":
+					return CharacterObject.Uneducated;
 
 				default:
 					return false;

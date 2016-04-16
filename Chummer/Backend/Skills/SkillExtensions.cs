@@ -8,19 +8,14 @@ namespace Chummer.Skills
 	{
 		public static bool HasSpecialization(this Skill skill, string specialization)
 		{
-			return false;
+			return skill.Specializations.Any(x => x.Name == specialization);
 		}
 
 		public static string GetDisplayName(this Skill skill)
 		{
-			return skill.Name;
+			return skill.DisplayName;
 		}
-
-		public static string GetDisplayAttribute(this Skill skill)
-		{
-			return skill.Attribute;
-		}
-
+		
 		public static string GetDisplayCategory(this Skill skill)
 		{
 			return skill.SkillCategory;

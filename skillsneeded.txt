@@ -2,7 +2,7 @@ Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. W
 
 Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)  (think this works)
 
-Translate for all but skill level buttons
+Tooltips for skillgroups
 
 External events not doing PropertyChanged, not updating pool/whatever
 
@@ -12,8 +12,45 @@ Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever c
 
 Knoskills LM not working
 
-Uncought/Uneducated/ect?
-
 Skill grouping button in options
 
-Events need unsubscribe or memory leak
+Events need unsubscribe or memory leak (wth cares?) (i think)
+
+To test
+Ware
+Mnemonic Enhancer
+Reflex recorder
+
+Skillwires
+Skilljack
+Active Hardwires
+
+Magic
+Improved Ability
+Lots of domain specific stuff
+Mentor spirits
+
+Qualities
+Generic (Catlike, Double-Jointed, Natural Athlete, Perfect Time, Sense of direction), Water sprite, Trustworthy)
+Generic Group(Grease Monkey, Vehicle Empathy)
+Jack of all trades
+Linguist, Technical school education
+School of hard knocks
+Aged
+Deaf, Blind (Technically they don't do anything right now, gives general modifier to perception tests)
+Dimmer Bulb
+Illiterate
+Incompetent
+Loss of confidence
+Oblivious
+Quasimodo
+Superhuman psychosis
+Uncouth
+Uneducated
+
+
+Wounds
++Damage compensator
++High pain tolerance
+
+Drugs/BTL can too, but that is not supported in chummer

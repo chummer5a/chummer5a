@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Datastructures;
@@ -26,6 +27,8 @@ namespace Chummer.Skills
 		protected readonly string _group;  //Name of the skill group this skill belongs to (remove?)
 		protected string _name;  //English name of this skill
 		protected List<ListItem> _spec;  //List of suggested specializations for this skill
+		private readonly string _translatedName = null;
+
 
 		#region REMOVELATERANDPLACEINCHILDORNEVER?
 
@@ -156,7 +159,7 @@ namespace Chummer.Skills
 				kno.Base = Int32.Parse(n["base"].InnerText);
 				kno.Karma = Int32.Parse(n["karma"].InnerText);
 
-				kno.SkillCategory = n["skillcategory"].InnerText;
+				kno.Type = n["skillcategory"].InnerText;
 
 				skill = kno;
 			}
@@ -282,6 +285,9 @@ namespace Chummer.Skills
 			Source = n["source"].InnerText;
 			Page = n["page"].InnerText;
 			SkillId = Guid.Parse(n["id"].InnerText);
+
+			_translatedName = n["translate"]?.InnerText;
+
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 
 			_spec = new List<ListItem>();
@@ -313,11 +319,21 @@ namespace Chummer.Skills
 
 		//TODO change to the acctual characterattribute object
 		/// <summary>
-		/// The Abbreviation of the linke attribute. This way due legacy
+		/// The Abbreviation of the linke attribute. Not the object due legacy
 		/// </summary>
 		public string Attribute
 		{
-			get { return AttributeObject.Abbrev; }
+			get
+			{
+				if (GlobalOptions.Instance.Language != "en-us")
+				{
+					return LanguageManager.Instance.GetString($"String_Attribute{AttributeObject.Abbrev}Short");
+				}
+				else
+				{
+					return AttributeObject.Abbrev;
+				}
+			}
 		}
 
 		private bool _oldEnable = true; //For OnPropertyChanged 
@@ -376,15 +392,10 @@ namespace Chummer.Skills
 
 		public string SkillGroup { get { return _group; } }
 
-		public string SkillCategory
+		public virtual string SkillCategory
 		{
 			get { return Category; }
-			set
-			{
-				if (Debugger.IsAttached && false) //TODO REMOVE AGAIN
-					Debugger.Break();
-			}
-		} //TODO REFACTOR?
+		}
 
 		public IReadOnlyList<ListItem> CGLSpecializations { get { return _spec; } } 
 
@@ -432,47 +443,48 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				
 				if (!Default && !Leveled)
 				{
-					return "You cannot default in this skill"; //TODO translate
+					return "You cannot default in this skill"; //TODO translate (could not find it in lang file, did not check old source)
 				}
 
-				string s;
+				StringBuilder s;
 				if (WireRating() > LearnedRating)
 				{
-					s = $"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({WireRating()})";
+					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({WireRating()})");
 				}
 				else
 				{
-					s = $"{LanguageManager.Instance.GetString("Tip_Skill_SkillRating")} ({Rating})";
+					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillRating")} ({Rating})");
 				}
 
-				s += $" + {LanguageManager.Instance.GetString("String_Attribute" + Attribute + "Short")} ({AttributeModifiers})";
+				s.Append($" + {Attribute} ({AttributeModifiers})");
 
 				if (Default && !Leveled)
 				{
-					s += $" - {LanguageManager.Instance.GetString("Tip_Skill_Defaulting")} (1)";
+					s.Append($" - {LanguageManager.Instance.GetString("Tip_Skill_Defaulting")} (1)");
 				}
 				
 
 				if (Rating > 0)
 				{
-					s += InsaneOldModifiersMaker();  //TODO: Confirm. Old code hints modifiers are only when not defaulting.
+					s.Append(InsaneOldModifiersMaker());  //TODO: Confirm. Old code hints modifiers are only when not defaulting.
 				}
 
 				int poolmod = PoolModifiers;
 				if (poolmod != 0)
 				{
-					s += " + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + poolmod + ")" ;
+					s.Append(" + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + poolmod + ")");
 				}
 
 				int wound = WoundModifier;
 				if (wound != 0)
 				{
-					s += " - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound + ")";
+					s.Append(" - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound + ")");
 				}
 
-				return s;
+				return s.ToString();
 			}
 		}
 
@@ -591,7 +603,7 @@ namespace Chummer.Skills
 
 					// Improvement for Enhanced Articulation
 					if (SkillCategory == "Physical Active" &&
-					    (Attribute == "BOD" || Attribute == "AGI" || Attribute == "REA" || Attribute == "STR"))
+					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
 						{
@@ -787,7 +799,7 @@ namespace Chummer.Skills
 					}
 					// Improvement for a Skill linked to an Attribute.
 					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute &&
-					    objImprovement.ImprovedName == Attribute)
+					    objImprovement.ImprovedName == AttributeObject.Abbrev)
 					{
 						if (!objImprovement.Exclude.Contains(Name))
 						{
@@ -799,7 +811,7 @@ namespace Chummer.Skills
 
 					// Improvement for Enhanced Articulation
 					if (SkillCategory == "Physical Active" &&
-					    (Attribute == "BOD" || Attribute == "AGI" || Attribute == "REA" || Attribute == "STR"))
+					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
 						{
@@ -883,13 +895,13 @@ namespace Chummer.Skills
 
 		public int AttributeModifiers
 		{
-			get { return _character.GetAttribute(Attribute).TotalValue; }
+			get { return AttributeObject.TotalValue; }
 		}
 
 		//TODO: Add translation support
 		public string DisplayName
 		{
-			get { return Name; }
+			get { return _translatedName ?? Name; }
 		}
 
 		public string DisplayPool

@@ -18,8 +18,8 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (Character.Uncouth && HasSocialSkills) return 0;
 				return _skillFromSp + FreeBase();
-
 			}
 			set
 			{
@@ -44,7 +44,11 @@ namespace Chummer.Skills
 
 		public int Karma
 		{
-			get { return _skillFromKarma + FreeLevels(); }
+			get
+			{
+				if (Character.Uncouth && HasSocialSkills) return 0;
+				return _skillFromKarma + FreeLevels();
+			}
 			set
 			{
 				if (KarmaUnbroken)
@@ -74,6 +78,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (Character.Uncouth && HasSocialSkills) return false;
 				return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.Ibase > 0);
 			}
 		}
@@ -86,6 +91,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (Character.Uncouth && HasSocialSkills) return false;
 				int high = _affectedSkills.Max(x => x.Ibase);
 				bool ret = _affectedSkills.Any(x => x.Ibase + x.Ikarma < high);
 
@@ -111,6 +117,8 @@ namespace Chummer.Skills
 				{
 					return false;
 				}
+
+				if (Character.Uncouth && HasSocialSkills) return false;
 
 				return _affectedSkills.Max(x => x.LearnedRating) < RatingMaximum;
 			}
@@ -216,7 +224,7 @@ namespace Chummer.Skills
 			writer.WriteElementString("base", _skillFromSp.ToString());
 			writer.WriteElementString("id", Id.ToString());
 			writer.WriteElementString("name", _groupName);
-
+			
 			writer.WriteEndElement();
 		}
 
@@ -281,6 +289,17 @@ namespace Chummer.Skills
 			_groupName = groupName;
 			_baseBrokenOldValue = BaseUnbroken;
 
+			// ReSharper disable once ExplicitCallerInfoArgument
+			Character.UncouthChanged += sender =>
+			{
+				if(HasSocialSkills)
+				{
+					OnPropertyChanged(nameof(Rating));
+					OnPropertyChanged(nameof(BaseUnbroken));
+					OnPropertyChanged(nameof(KarmaUnbroken));
+				}
+			};
+
 			ImprovementEvent += OnImprovementEvent;
 		}
 
@@ -294,9 +313,25 @@ namespace Chummer.Skills
 			get { return _groupName; }
 		}
 
+		private string _cachedDisplayName = null;
 		public string DisplayName
 		{
-			get { return Name; } //TODO TRANSLATE
+			get
+			{
+				if(_cachedDisplayName != null) return _cachedDisplayName;
+				 
+				if (GlobalOptions.Instance.Language != "en-us")
+				{
+					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
+					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
+					if (objNode != null)
+					{
+						if (objNode.Attributes["translate"] != null)
+							return _cachedDisplayName = objNode.Attributes["translate"].InnerText;
+					}
+				}
+				return _cachedDisplayName = Name;
+			} 
 		}
 
 		public Guid Id { get; private set; } = Guid.NewGuid();
