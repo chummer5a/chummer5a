@@ -3863,6 +3863,11 @@ namespace Chummer
 		{
 			get
 			{
+				if (SourceID == Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196")) //Essence hole
+				{
+					return _intRating/100m;
+				}
+
 				decimal decReturn = 0;
 				decimal decESSMultiplier = 0;
 

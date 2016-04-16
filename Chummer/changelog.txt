@@ -78,6 +78,8 @@ Application Change:
 - Added and consolidated some code to update initiation costs and discounts properly. Fixes #810.
 - Implemented a minor quality of life update; the most recently used folder location is not stored for mugshots, per character. Fixes #458.
 - Contacts, spirits and pets can now be linked to non-Chummer files; when clicking on the Open Character Sheet button, the file will be opened in the default application for that extension. Fixes #636.
+- Prime runners now get twice the amount of free contacts compared to standard
+- Essence Hole value is not impacted by grade or ware essence cost reductions. You don't get a little essence back each time now. Fixes #673
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
