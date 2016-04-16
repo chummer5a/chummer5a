@@ -277,14 +277,26 @@ namespace Chummer
                     return;
                 }
             }
-
-            if (!blnUseRelative)
-                GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
-            else
-            {
-                string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
-            }
+	        if (Path.GetExtension(_objContact.FileName) == "chum5")
+	        {
+		        if (!blnUseRelative)
+			        GlobalOptions.Instance.MainForm.LoadCharacter(_objContact.FileName, false);
+		        else
+		        {
+			        string strFile = Path.GetFullPath(_objContact.RelativeFileName);
+			        GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
+		        }
+	        }
+	        else
+	        {
+				if (!blnUseRelative)
+					System.Diagnostics.Process.Start(_objContact.FileName);
+				else
+				{
+					string strFile = Path.GetFullPath(_objContact.RelativeFileName);
+					System.Diagnostics.Process.Start(strFile);
+				}
+	        }
         }
 
         private void tsAttachCharacter_Click(object sender, EventArgs e)

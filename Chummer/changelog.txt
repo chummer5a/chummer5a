@@ -77,6 +77,7 @@ Application Change:
 - Fixed an issue that prevented some old characters from being saved. Fixes #806.
 - Added and consolidated some code to update initiation costs and discounts properly. Fixes #810.
 - Implemented a minor quality of life update; the most recently used folder location is not stored for mugshots, per character. Fixes #458.
+- Contacts, spirits and pets can now be linked to non-Chummer files; when clicking on the Open Character Sheet button, the file will be opened in the default application for that extension. Fixes #636.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

@@ -139,13 +139,25 @@ namespace Chummer
 					return;
 				}
 			}
-
-			if (!blnUseRelative)
-				GlobalOptions.Instance.MainForm.LoadCharacter(_objSpirit.FileName, false);
+			if (Path.GetExtension(_objSpirit.FileName) == "chum5")
+			{
+				if (!blnUseRelative)
+					GlobalOptions.Instance.MainForm.LoadCharacter(_objSpirit.FileName, false);
+				else
+				{
+					string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
+					GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
+				}
+			}
 			else
 			{
-				string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
-				GlobalOptions.Instance.MainForm.LoadCharacter(strFile, false);
+				if (!blnUseRelative)
+					System.Diagnostics.Process.Start(_objSpirit.FileName);
+				else
+				{
+					string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
+					System.Diagnostics.Process.Start(strFile);
+				}
 			}
 		}
 
