@@ -6799,7 +6799,7 @@
 					<group>Interest</group>
 					<val>1</val>
 				</knowledgeskilllevel>
-				<nuyen>16000</nuyen>
+				<nuyenamt>16000</nuyenamt>
 			</bonus>
 			<addqualities>
 				<!--todo: choose biocompatibility type-->
@@ -6846,7 +6846,7 @@
 					<group>Street</group>
 					<val>1</val>
 				</knowledgeskilllevel>
-				<nuyen>15000</nuyen>
+				<nuyenamt>15000</nuyenamt>
 			</bonus>
 			<!--todo: Special: 15,000 nuyen in cyberlimbs-->
 			<story>$real was a child laborer in one of the few factories that hadn’t fully mechanized. Their pay almost managed to pay for limbs to replace those they lost via work. Almost.</story>
