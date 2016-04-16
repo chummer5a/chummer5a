@@ -7065,9 +7065,13 @@ namespace Chummer
         }
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
-        {
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			if (!String.IsNullOrEmpty(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+			{
+				openFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+			}
             // Prompt the user to select an image to associate with this character.
-            OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All Files (*.*)|*.*";
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -7083,6 +7087,7 @@ namespace Chummer
 
                 objStream.Close();
 
+	            _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
                 _blnIsDirty = true;
                 UpdateWindowTitle();
             }

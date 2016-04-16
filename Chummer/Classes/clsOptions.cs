@@ -840,9 +840,10 @@ namespace Chummer
 	{
 		private string _strFileName = "default.xml";
 		private string _strName = "Default Settings";
+		private string _strImageFolder = "";
 
 		// Settings.
-        private bool _blnAllow2ndMaxAttribute = false;
+		private bool _blnAllow2ndMaxAttribute = false;
         private bool _blnAllowAttributePointsOnExceptional = false;
         private bool _blnAllowBiowareSuites = false;
         private bool _blnAllowCustomTransgenics = false;
@@ -1042,6 +1043,8 @@ namespace Chummer
 
 			// <name />
 			objWriter.WriteElementString("name", _strName);
+			// <confirmdelete />
+			objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
 			// <confirmdelete />
 			objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
             // <licenserestricted />
@@ -1390,6 +1393,8 @@ namespace Chummer
 			XmlNode objXmlNode = objXmlDocument.SelectSingleNode("//settings");
 			// Setting name.
 			_strName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
+			// Most recent image folder location used.
+			objXmlNode.TryGetField("recentimagefolder", out _strImageFolder);
 			// Confirm delete.
 			objXmlNode.TryGetField("confirmdelete", out _blnConfirmDelete);
 			// License Restricted items.
@@ -3755,7 +3760,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Karma cost for a Spirit = this value.
+		/// Karma cost for a Spirit = this value.regis
 		/// </summary>
 		public int KarmaSpirit
 		{
@@ -4182,6 +4187,21 @@ namespace Chummer
 			set
 			{
 				_blnUseTotalValueForFreeKnowledge = value;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public string RecentImageFolder
+		{
+			get
+			{
+				return _strImageFolder;
+			}
+			set
+			{
+				_strImageFolder = value;
 			}
 		}
 		#endregion
