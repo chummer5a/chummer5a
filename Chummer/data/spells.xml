@@ -528,7 +528,7 @@
       <range>T</range>
       <damage>0</damage>
       <duration>S</duration>
-      <dv>(F/2)-4</dv>
+      <dv>F-3</dv>
       <source>SG</source>
       <page>109</page>
     </spell>
