@@ -32,14 +32,15 @@ namespace Chummer.Debugging
 
 		public string GenerateInfo()
 		{
-			StringBuilder builder = new StringBuilder();
+			StringBuilder builder = new StringBuilder(Environment.NewLine);
 			int lenght = -1;
 			IOrderedEnumerable<KeyValuePair<string, int>> exceptions = from i in _map
 				orderby -i.Value
 				select i;
 
 			foreach (KeyValuePair<string, int> exception in exceptions)
-			{
+			{ 
+				builder.Append('\t'); builder.Append('\t');
 				lenght = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), lenght);
 				builder.Append(exception.Value.ToString($"D{lenght}"));
 
