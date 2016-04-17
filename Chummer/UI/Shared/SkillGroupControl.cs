@@ -25,6 +25,8 @@ namespace Chummer.UI.Shared
 		{
 			lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
+			tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
+
 			if (_skillGroup.Character.Created)
 			{
 				nudKarma.Visible = false;
@@ -52,6 +54,8 @@ namespace Chummer.UI.Shared
 					nudSkill.Enabled = false;
 				}
 			}
+
+			
 		}
 
 		private void btnCareerIncrease_Click(object sender, EventArgs e)

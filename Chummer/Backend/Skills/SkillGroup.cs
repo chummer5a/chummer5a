@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 
@@ -213,6 +214,8 @@ namespace Chummer.Skills
 		private void Add(Skill skill)
 		{
 			_affectedSkills.Add(skill);
+			_toolTip = null;
+			OnPropertyChanged(nameof(ToolTip));
 			skill.PropertyChanged += SkillOnPropertyChanged;
 		}
 
@@ -332,6 +335,21 @@ namespace Chummer.Skills
 				}
 				return _cachedDisplayName = Name;
 			} 
+		}
+
+		private string _toolTip = null;
+		public string ToolTip
+		{
+			get
+			{
+				if (_toolTip != null) return _toolTip;
+
+				_toolTip = LanguageManager.Instance.GetString("Tip_SkillGroup_Skills");
+				_toolTip += " ";
+				_toolTip += string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
+
+				return _toolTip;
+			}
 		}
 
 		public Guid Id { get; private set; } = Guid.NewGuid();

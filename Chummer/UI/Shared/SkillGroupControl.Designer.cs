@@ -28,11 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.nudSkill = new System.Windows.Forms.NumericUpDown();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.lblName = new System.Windows.Forms.Label();
 			this.lblGroupRating = new System.Windows.Forms.Label();
 			this.btnCareerIncrease = new System.Windows.Forms.Button();
+			this.tipToolTip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			this.SuspendLayout();
@@ -118,5 +120,6 @@
 		private System.Windows.Forms.Label lblName;
 		private System.Windows.Forms.Label lblGroupRating;
 		private System.Windows.Forms.Button btnCareerIncrease;
+		private System.Windows.Forms.ToolTip tipToolTip;
 	}
 }

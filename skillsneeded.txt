@@ -2,8 +2,6 @@ Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. W
 
 Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)  (think this works)
 
-Tooltips for skillgroups
-
 External events not doing PropertyChanged, not updating pool/whatever
 
 Undo expense mostly working. (skills working (history not, needfix? i guess), skillgroups not working, dunremember baut specs)
@@ -22,8 +20,10 @@ Mnemonic Enhancer
 Reflex recorder
 
 Skillwires
+Move by wire
 Skilljack
 Active Hardwires
+
 
 Magic
 Improved Ability
