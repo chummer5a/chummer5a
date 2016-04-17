@@ -32,6 +32,11 @@ namespace Chummer.UI.Shared
 			InitializeComponent();
 		}
 
+		private void SkillsDisplay_Load(object sender, EventArgs e)
+		{
+			InitialFill();
+		}
+
 		private void ApplicationOnIdle(object sender, EventArgs eventArgs)
 		{
 			if (AddMore()) return;
@@ -45,8 +50,6 @@ namespace Chummer.UI.Shared
 			tblContents.ResumeLayout();
 			Application.Idle -= ApplicationOnIdle;
 		}
-
-		
 
 		private bool AddMore()
 		{
@@ -76,8 +79,8 @@ namespace Chummer.UI.Shared
 
 			return false;
 		}
-
-		private void SkillsDisplay_Load(object sender, EventArgs e)
+		
+		private void InitialFill()
 		{
 			Application.Idle += ApplicationOnIdle;
 			Log.Info($"Initial height suspected {ClientSize.Height}");
@@ -88,17 +91,16 @@ namespace Chummer.UI.Shared
 			{
 				AddItem(content);
 				_progress++;
-				if (tblContents.Controls.Count > 0 && tblContents.Controls.Count*tblContents.Controls[0].Height > ClientSize.Height)
+				if (tblContents.Controls.Count > 0 && tblContents.Controls.Count * tblContents.Controls[0].Height > ClientSize.Height)
 				{
 					break;
 				}
 			}
-			
+
 			SkillsDisplay_Resize(null, null);
-			
+
 			tblContents.ResumeLayout();
 			tblContents.SuspendLayout();
-
 		}
 
 		private void ContentsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)

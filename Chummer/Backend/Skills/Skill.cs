@@ -272,7 +272,7 @@ namespace Chummer.Skills
 				SkillGroupObject.PropertyChanged += OnSkillGroupChanged;
 			}
 
-			ImprovementEvent += OnImprovementEvent;
+			character.ImprovementEvent += OnImprovementEvent;
 		}
 
 		//load from data
@@ -1067,19 +1067,12 @@ namespace Chummer.Skills
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
 		{
+			_cachedFreeBase = int.MinValue;
+			_cachedFreeKarma = int.MinValue;
 			if(improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillLevel 
 			&& imp.ImprovedName == _name))
 				OnPropertyChanged(nameof(PoolModifiers));
 		}
-		//I also think this prevents GC. But there is no good way to do it...
-		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
-		//To get when things change in improvementmanager
-		//Ugly, ugly done, but we cannot get events out of it today
-		// FUTURE REFACTOR HERE
-		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-		internal static void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
-		{
-			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
-		}
+		
 	}
 }

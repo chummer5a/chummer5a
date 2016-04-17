@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Skills;
+using System.Diagnostics;
 
 namespace Chummer
 {
@@ -1827,9 +1828,16 @@ namespace Chummer
             }
         }
 
+		private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 		private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{  //TODO: This fires an ABOSURD amount of times, put acctual code on a n ms delay, or not return early if last call was within n ms?
+		{
+			//HACK PERFORMANCE
 			_blnIsDirty = true;
+			//So, skills tell if anything maybe intresting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
+
+			if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
+			SkillPropertyChanged_StopWatch.Restart();
+			
 			CalculateBP();
 			UpdateWindowTitle();
 			UpdateCharacterInfo();

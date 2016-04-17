@@ -7773,5 +7773,16 @@ namespace Chummer
 			    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		    }
 	    }
+
+		//I also think this prevents GC. But there is no good way to do it...
+		internal event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
+		//To get when things change in improvementmanager
+		//Ugly, ugly done, but we cannot get events out of it today
+		// FUTURE REFACTOR HERE
+		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
+		internal void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
+		{
+			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+		}
 	}
 }

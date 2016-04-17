@@ -5518,8 +5518,7 @@ namespace Chummer
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
 
-			Skill.ImprovementHook(_lstTransaction, this);
-			SkillGroup.ImprovementHook(_lstTransaction, this);
+			_objCharacter.ImprovementHook(_lstTransaction, this);
 			_lstTransaction.Clear();
             Log.Exit("Commit");
         }

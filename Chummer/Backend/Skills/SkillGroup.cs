@@ -130,17 +130,21 @@ namespace Chummer.Skills
 			get { return Karma + Base; }
 		}
 
+		private int _cachedFreeBase = int.MinValue;
 		internal int FreeBase()
 		{
-			return (from improvement in _character.Improvements
+			if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;
+			return _cachedFreeBase = (from improvement in _character.Improvements
 					where improvement.ImproveType == Improvement.ImprovementType.SkillGroupBase
 					   && improvement.ImprovedName == _groupName
 					select improvement.Value).Sum();
 		}
 
+		private int _cachedFreeLevels;
 		int FreeLevels()
 		{
-			return (from improvement in _character.Improvements
+			if (_cachedFreeLevels != int.MinValue) return _cachedFreeLevels;
+			return _cachedFreeLevels = (from improvement in _character.Improvements
 					where improvement.ImproveType == Improvement.ImprovementType.SkillGroupLevel
 					   && improvement.ImprovedName == _groupName
 					select improvement.Value).Sum();
@@ -303,7 +307,7 @@ namespace Chummer.Skills
 				}
 			};
 
-			ImprovementEvent += OnImprovementEvent;
+			character.ImprovementEvent += OnImprovementEvent;
 		}
 
 		public Character Character
@@ -403,6 +407,9 @@ namespace Chummer.Skills
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		private void OnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
 		{
+			_cachedFreeBase = int.MinValue;
+			_cachedFreeLevels = int.MinValue;
+
 			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillGroupLevel
 			                            && imp.ImprovedName == _groupName))
 			{
@@ -411,18 +418,6 @@ namespace Chummer.Skills
 				//OnPropertyChanged(nameof(Base));
 			}
 
-		}
-
-		//TODO static, but per character? This is probably a bug
-		//I also think this prevents GC. But there is no good way to do it short of rewriting improvements
-		private static event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
-		//To get when things change in improvementmanager
-		//Ugly, ugly done, but we cannot get events out of it today
-		// FUTURE REFACTOR HERE
-		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-		internal static void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
-		{
-			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
 		}
 
 		public int CurrentSpCost()

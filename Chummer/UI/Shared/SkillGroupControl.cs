@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -18,11 +19,8 @@ namespace Chummer.UI.Shared
 			_skillGroup = skillGroup;
 			InitializeComponent();
 
-			
-		}
-
-		private void SkillGroupControl_Load(object sender, EventArgs e)
-		{
+			//This is apparently a factor 30 faster than placed in load. NFI why
+			Stopwatch sw = Stopwatch.StartNew();
 			lblName.DataBindings.Add("Text", _skillGroup, "DisplayName");
 
 			tipToolTip.SetToolTip(lblName, _skillGroup.ToolTip);
@@ -55,7 +53,7 @@ namespace Chummer.UI.Shared
 				}
 			}
 
-			
+			sw.TaskEnd("Create skillgroup");
 		}
 
 		private void btnCareerIncrease_Click(object sender, EventArgs e)

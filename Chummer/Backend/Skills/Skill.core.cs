@@ -447,24 +447,29 @@ namespace Chummer.Skills
 		/// How many free points of this skill have gotten, with the exception of some things during character creation
 		/// </summary>
 		/// <returns></returns>
+		private int _cachedFreeKarma = int.MinValue;
 		protected int FreeKarma()
 		{
-			return (from improvement in CharacterObject.Improvements
-				   where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-					  && improvement.ImprovedName == _name
-				  select improvement.Value).Sum();  //TODO change to ImpManager.ValueOf?
+			if (_cachedFreeKarma != int.MinValue) return _cachedFreeKarma;
+
+			return _cachedFreeKarma = (from improvement in CharacterObject.Improvements
+				where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
+				      && improvement.ImprovedName == _name
+				select improvement.Value).Sum(); //TODO change to ImpManager.ValueOf?
 		}
 
 		/// <summary>
 		/// How many free points this skill have gotten during some parts of character creation
 		/// </summary>
 		/// <returns></returns>
+		private int _cachedFreeBase = int.MinValue;
 		protected int FreeBase()
 		{
-			return (from improvement in CharacterObject.Improvements
-				   where improvement.ImproveType == Improvement.ImprovementType.SkillBase
-					  && improvement.ImprovedName == _name
-				  select improvement.Value).Sum();
+			if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;
+			return _cachedFreeBase = (from improvement in CharacterObject.Improvements
+				where improvement.ImproveType == Improvement.ImprovementType.SkillBase
+				      && improvement.ImprovedName == _name
+				select improvement.Value).Sum();
 		}
 
 		/// <summary>

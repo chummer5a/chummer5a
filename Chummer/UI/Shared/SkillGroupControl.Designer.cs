@@ -105,7 +105,6 @@
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "SkillGroupControl";
 			this.Size = new System.Drawing.Size(225, 23);
-			this.Load += new System.EventHandler(this.SkillGroupControl_Load);
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			this.ResumeLayout(false);
