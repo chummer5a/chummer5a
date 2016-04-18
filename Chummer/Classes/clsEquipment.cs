@@ -15150,6 +15150,8 @@ namespace Chummer
 			get
 			{
 				int intTotalSpeed = _intSpeed;
+				int intTotalArmor = 0;
+				int intPenalty = 0;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15168,10 +15170,25 @@ namespace Chummer
 								intTotalSpeed = Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 							}
 						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
+						}
 					}
 				}
 
-				return intTotalSpeed;
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 3;
+					intPenalty = (int) Math.Floor(dblResult);
+				}
+
+				return intTotalSpeed - intPenalty;
 				}
 			}
 
@@ -15183,6 +15200,9 @@ namespace Chummer
 			get
 			{
 				int intTotalAccel = _intAccel;
+				int intTotalArmor = 0;
+				int intPenalty = 0;
+
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15200,12 +15220,27 @@ namespace Chummer
 							{
 								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
 								intTotalAccel = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
+							}
+						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
 						}
 					}
 				}
+
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 6;
+					intPenalty = (int)Math.Floor(dblResult);
 				}
 
-				return intTotalAccel;
+				return intTotalAccel - intPenalty;
 			}
 		}
 
@@ -15251,6 +15286,8 @@ namespace Chummer
 				string strHandling = "";
 				int intBaseHandling = _intHandling;
 				int intBaseOffroadHandling = _intOffroadHandling;
+				int intPenalty = 0;
+				int intTotalArmor = 0;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15275,15 +15312,31 @@ namespace Chummer
 							}
 							else intBaseOffroadHandling = Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
+						}
 					}
 				}
+
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 3;
+					intPenalty = (int)Math.Floor(dblResult);
+				}
+
 				if (_intOffroadHandling > 0)
 				{
-					strHandling = (intBaseHandling.ToString() + '/' + intBaseOffroadHandling.ToString());
+					strHandling = ((intBaseHandling - intPenalty).ToString() + '/' + (intBaseOffroadHandling - intPenalty).ToString());
 				}
 				else
 				{
-					strHandling = (intBaseHandling.ToString());
+					strHandling = ((intBaseHandling - intPenalty).ToString());
                 }
 
 				return strHandling;
@@ -15297,23 +15350,39 @@ namespace Chummer
 		{
 			get
 			{
-				int intBaseArmor = _intArmor;
 				int intModArmor = 0;
+				bool blnArmorMod = false;
+
+				// Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
+				if (IsDrone && GlobalOptions.Instance.Dronemods)
+					intModArmor = 0;
+				else
+					intModArmor = _intArmor;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
-						// Add the Modification's Armor to the Vehicle's base Armor. Armor provided by Mods strips the Vehicle of its base Armor.
+						blnArmorMod = true;
+						// Add the Modification's Armor to the Vehicle's base Armor. 
 						if (objMod.Bonus.InnerXml.Contains("<armor>"))
 						{
-							intBaseArmor = 0;
-							intModArmor += Math.Min(MaxArmor, Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString())));
+							//intBaseArmor = 0;
+							intModArmor += Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 					}
 				}
-
-				return intBaseArmor + intModArmor;
+				// Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
+				if (!IsDrone || !GlobalOptions.Instance.Dronemods)
+				{
+					intModArmor = Math.Min(MaxArmor, intModArmor);
+				}
+				else if (!blnArmorMod)
+				{
+					// We're a drone, but we didn't have any mods, so keep the base value
+					intModArmor = _intArmor;
+				}
+				return intModArmor;
 			}
 		}
 
@@ -15325,17 +15394,13 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				int intMultiplier = 2;
 
-				// Drones are allowed up to Body x 3 Armor.
-				if (_strCategory.StartsWith("Drones:"))
-					intMultiplier = 3;
-
-				intReturn = TotalBody * intMultiplier;
+				// Rigger 5 says max armor is Body + starting Armor, p159
+				intReturn = _intBody + _intArmor;
 
 				// If ignoring the rules, do not limit Armor to the Vehicle's standard rules.
 				if (_objCharacter.IgnoreRules)
-					intReturn = 20;
+					intReturn = 99;
 
 				return intReturn;
 			}
