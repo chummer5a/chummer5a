@@ -15145,6 +15145,8 @@ namespace Chummer
 			get
 			{
 				int intTotalSpeed = _intSpeed;
+				int intTotalArmor = 0;
+				int intPenalty = 0;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15163,10 +15165,25 @@ namespace Chummer
 								intTotalSpeed = Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 							}
 						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
+						}
 					}
 				}
 
-				return intTotalSpeed;
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 3;
+					intPenalty = (int) Math.Floor(dblResult);
+				}
+
+				return intTotalSpeed - intPenalty;
 				}
 			}
 
@@ -15178,6 +15195,9 @@ namespace Chummer
 			get
 			{
 				int intTotalAccel = _intAccel;
+				int intTotalArmor = 0;
+				int intPenalty = 0;
+
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15195,12 +15215,27 @@ namespace Chummer
 							{
 								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
 								intTotalAccel = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
+							}
+						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
 						}
 					}
 				}
+
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 6;
+					intPenalty = (int)Math.Floor(dblResult);
 				}
 
-				return intTotalAccel;
+				return intTotalAccel - intPenalty;
 			}
 		}
 
@@ -15246,6 +15281,8 @@ namespace Chummer
 				string strHandling = "";
 				int intBaseHandling = _intHandling;
 				int intBaseOffroadHandling = _intOffroadHandling;
+				int intPenalty = 0;
+				int intTotalArmor = 0;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15270,15 +15307,31 @@ namespace Chummer
 							}
 							else intBaseOffroadHandling = Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
+						if (objMod.Bonus.InnerXml.Contains("<armor>"))
+						{
+							if (IsDrone && GlobalOptions.Instance.Dronemods)
+							{
+								intTotalArmor = Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							}
+						}
 					}
 				}
+
+				if (intTotalArmor > _intBody * 3)
+				{
+					// Reduce speed of the drone if there is too much armor
+					int intExcess = intTotalArmor - (_intBody * 3);
+					double dblResult = intExcess / 3;
+					intPenalty = (int)Math.Floor(dblResult);
+				}
+
 				if (_intOffroadHandling > 0)
 				{
-					strHandling = (intBaseHandling.ToString() + '/' + intBaseOffroadHandling.ToString());
+					strHandling = ((intBaseHandling - intPenalty).ToString() + '/' + (intBaseOffroadHandling - intPenalty).ToString());
 				}
 				else
 				{
-					strHandling = (intBaseHandling.ToString());
+					strHandling = ((intBaseHandling - intPenalty).ToString());
                 }
 
 				return strHandling;
