@@ -5776,6 +5776,9 @@
 			<name>Armor (Standard)</name>
 			<category>Protection</category>
 			<rating>body</rating>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<slots>Rating * 2</slots>
 			<avail>6R</avail>
 			<cost>Rating * 500</cost>
@@ -5787,7 +5790,10 @@
 			<name>Armor (Concealed)</name>
 			<category>Protection</category>
 			<rating>body</rating>
-			<slots>0</slots>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
+			<slots>Rating * 3</slots>
 			<avail>12R</avail>
 			<cost>Rating * 3000</cost>
 			<source>R5</source>

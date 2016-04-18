@@ -15292,23 +15292,39 @@ namespace Chummer
 		{
 			get
 			{
-				int intBaseArmor = _intArmor;
 				int intModArmor = 0;
+				bool blnArmorMod = false;
+
+				// Rigger5 Drone Armor starts at 0. All other vehicles start with their base armor.
+				if (IsDrone && GlobalOptions.Instance.Dronemods)
+					intModArmor = 0;
+				else
+					intModArmor = _intArmor;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
-						// Add the Modification's Armor to the Vehicle's base Armor. Armor provided by Mods strips the Vehicle of its base Armor.
+						blnArmorMod = true;
+						// Add the Modification's Armor to the Vehicle's base Armor. 
 						if (objMod.Bonus.InnerXml.Contains("<armor>"))
 						{
-							intBaseArmor = 0;
-							intModArmor += Math.Min(MaxArmor, Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString())));
+							//intBaseArmor = 0;
+							intModArmor += Convert.ToInt32(objMod.Bonus["armor"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 					}
 				}
-
-				return intBaseArmor + intModArmor;
+				// Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
+				if (!IsDrone || !GlobalOptions.Instance.Dronemods)
+				{
+					intModArmor = Math.Min(MaxArmor, intModArmor);
+				}
+				else if (!blnArmorMod)
+				{
+					// We're a drone, but we didn't have any mods, so keep the base value
+					intModArmor = _intArmor;
+				}
+				return intModArmor;
 			}
 		}
 
@@ -15320,17 +15336,13 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				int intMultiplier = 2;
 
-				// Drones are allowed up to Body x 3 Armor.
-				if (_strCategory.StartsWith("Drones:"))
-					intMultiplier = 3;
-
-				intReturn = TotalBody * intMultiplier;
+				// Rigger 5 says max armor is Body + starting Armor, p159
+				intReturn = _intBody + _intArmor;
 
 				// If ignoring the rules, do not limit Armor to the Vehicle's standard rules.
 				if (_objCharacter.IgnoreRules)
-					intReturn = 20;
+					intReturn = 99;
 
 				return intReturn;
 			}
