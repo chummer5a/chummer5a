@@ -2929,7 +2929,7 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <armorcapacity>[2]</armorcapacity>
+      <armorcapacity>[4]</armorcapacity>
       <avail>8</avail>
       <cost>2500</cost>
       <source>RG</source>
@@ -2941,7 +2941,7 @@
       <category>General</category>
       <armor>0</armor>
       <maxrating>1</maxrating>
-      <armorcapacity>[1]</armorcapacity>
+      <armorcapacity>[2]</armorcapacity>
       <avail>8</avail>
       <cost>2500</cost>
       <source>RG</source>

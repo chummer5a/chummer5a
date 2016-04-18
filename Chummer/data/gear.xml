@@ -1117,6 +1117,17 @@
 			<page>102</page>
 		</gear>
 		<gear>
+			<id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
+			<name>Smokebomb</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<avail>6</avail>
+			<addweapon>Smokebomb</addweapon>
+			<cost>25</cost>
+			<source>HT</source>
+			<page>187</page>
+		</gear>
+		<gear>
 			<id>60d28c15-42dd-4837-bc5f-8d8a15393655</id>
 			<name>Rocket: Anti-Vehicle</name>
 			<category>Ammunition</category>
@@ -4088,6 +4099,18 @@
 			<cost>0</cost>
 			<source>SR5</source>
 			<page>446</page>
+		</gear>
+		<gear>
+			<id>884a5995-a6ff-4f46-b717-9de1ac677af8</id>
+			<name>Radar Sensor</name>
+			<category>Sensor Functions</category>
+			<rating>4</rating>
+			<capacity>[Rating]</capacity>
+			<armorcapacity>[1]</armorcapacity>
+			<avail>Rating * 3</avail>
+			<cost>Rating * 4000</cost>
+			<source>CF</source>
+			<page>81</page>
 		</gear>
 		<gear>
 			<id>4d12e4a1-edd3-4abf-830f-aa95874b7531</id>

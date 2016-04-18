@@ -39,6 +39,7 @@ namespace Chummer
 
 		private List<ListItem> _lstCategory = new List<ListItem>();
 		private int _intRating;
+		private bool _blnBlackMarketDiscount;
 
 		#region Control Events
 		public frmSelectArmor(Character objCharacter, bool blnCareer = false)
@@ -492,6 +493,17 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
+			}
+		}
+
+		/// <summary>
 		/// Armor that was selected in the dialogue.
 		/// </summary>
 		public string SelectedArmor
@@ -550,6 +562,7 @@ namespace Chummer
 				_strSelectedArmor = objNode["name"].InnerText;
 				_intMarkup = Convert.ToInt32(nudMarkup.Value);
 				_intRating = Convert.ToInt32(nudRating.Value);
+				_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
 				this.DialogResult = DialogResult.OK;
 			}
@@ -679,13 +692,22 @@ namespace Chummer
 			{
 				XPathNavigator nav = _objXmlDocument.CreateNavigator();
 				XPathExpression xprCost = nav.Compile(objXmlArmor["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-				lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32((Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo))));
-				intItemCost = Convert.ToInt32((Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo)));
+				double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo));
+				if (chkBlackMarketDiscount.Checked)
+				{
+					dblCost = dblCost - (dblCost*0.90);
+				}
+				intItemCost = Convert.ToInt32(dblCost);
+				lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
 			}
 			else
 			{
 				double dblCost = Convert.ToDouble(objXmlArmor["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
 				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+				if (chkBlackMarketDiscount.Checked)
+				{
+					dblCost = dblCost - (dblCost * 0.90);
+				}
 				lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
 				intItemCost = Convert.ToInt32(dblCost);
 			}

@@ -330,11 +330,12 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _objLifestyle.Source = "RF";
+			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue.ToString() + "\"]");
+			_objLifestyle.Source = "RF";
             _objLifestyle.Page = "154";
             _objLifestyle.Name = txtLifestyleName.Text;
-            _objLifestyle.Cost = CalculateValues();
-            _objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
+            _objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
+			_objLifestyle.Roommates = Convert.ToInt32(nudRoommates.Value);
             _objLifestyle.Percentage = Convert.ToInt32(nudPercentage.Value);
             _objLifestyle.BaseLifestyle = cboBaseLifestyle.Text;
 			_objLifestyle.Area = Convert.ToInt32(nudArea.Value);
@@ -348,7 +349,7 @@ namespace Chummer
 			//_objLifestyle.LifestyleQualities.Clear();
 
 			// Get the starting Nuyen information.
-			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboBaseLifestyle.SelectedValue + "\"]");
+			
             _objLifestyle.Dice = Convert.ToInt32(objXmlAspect["dice"].InnerText);
             _objLifestyle.Multiplier = Convert.ToInt32(objXmlAspect["multiplier"].InnerText);
             _objLifestyle.StyleType = _objType;

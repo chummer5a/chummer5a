@@ -4971,6 +4971,8 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Armor objArmor = new Armor(_objCharacter);
 			objArmor.Create(objXmlArmor, objNode, cmsArmorMod, frmPickArmor.Rating);
+			objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+
 			if (objArmor.InternalId == Guid.Empty.ToString())
 				return;
 
@@ -5224,6 +5226,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
 			int intCost = objWeapon.TotalCost;
 			// Apply a markup if applicable.
@@ -5641,6 +5644,8 @@ namespace Chummer
 					objExpense.Undo = objUndo;
 				}
 			}
+
+			objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
 			_objCharacter.Vehicles.Add(objVehicle);
 
@@ -6230,8 +6235,12 @@ namespace Chummer
 
 		private void cmdAddMugshot_Click(object sender, EventArgs e)
 		{
-			// Prompt the user to select an image to associate with this character.
 			OpenFileDialog openFileDialog = new OpenFileDialog();
+			if (!String.IsNullOrEmpty(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+			{
+				openFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+			}
+			// Prompt the user to select an image to associate with this character.
 			openFileDialog.Filter = "All Files (*.*)|*.*";
 
 			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
@@ -6247,6 +6256,7 @@ namespace Chummer
 
 				objStream.Close();
 
+				_objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
 				_blnIsDirty = true;
 				UpdateWindowTitle();
 			}
@@ -7576,6 +7586,14 @@ namespace Chummer
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objAddWeapons, objAddWeaponNodes, strForceValue);
 							objNode.Nodes.Add(objAddQualityNode);
 							objNode.Expand();
+							if (objXmlAddQuality.Attributes["contributetobp"] != null)
+							{
+								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objQuality.BP = 0;
+									objQuality.ContributeToLimit = false;
+								}
+							}
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.
@@ -8075,6 +8093,16 @@ namespace Chummer
 							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue);
 							objNode.Nodes.Add(objAddQualityNode);
 							objNode.Expand();
+
+							if (objXmlAddQuality.Attributes["contributetobp"] != null)
+							{
+								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+								{
+									objQuality.BP = 0;
+									objQuality.ContributeToLimit = false;
+								}
+							}
+
 							_objCharacter.Qualities.Add(objAddQuality);
 
 							// Add any created Weapons to the character.
@@ -9452,7 +9480,7 @@ namespace Chummer
 				Vehicle objFoundVehicle = new Vehicle(_objCharacter);
 				objMod = _objFunctions.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles, out objFoundVehicle);
 
-                if (!objMod.Name.StartsWith("Weapon Mount") && !objMod.Name.StartsWith("Heavy Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories == "")
+                if (!objMod.Name.Contains("Weapon Mount") && !objMod.Name.StartsWith("Mechanical Arm") || objMod.WeaponMountCategories == "")
 				{
 					MessageBox.Show(LanguageManager.Instance.GetString("Message_CannotAddWeapon"), LanguageManager.Instance.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
@@ -9691,6 +9719,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.VehicleMounted = true;
 			objWeapon.IsUnderbarrelWeapon = true;
 
@@ -11965,6 +11994,7 @@ namespace Chummer
 			TreeNode objNode = new TreeNode();
 			Weapon objWeapon = new Weapon(_objCharacter);
 			objWeapon.Create(objXmlWeapon, _objCharacter, objNode, cmsWeapon, cmsWeaponAccessory);
+			objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 			objWeapon.IsUnderbarrelWeapon = true;
 
 			int intCost = objWeapon.TotalCost;
@@ -17016,7 +17046,7 @@ namespace Chummer
 				foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
 				{
 					// Only add a Vehicle to the list if it has a Weapon Mount or Mechanical Arm.
-                    if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || (objVehicleMod.WeaponMountCategories != "" && objVehicleMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                    if (objVehicleMod.Name.Contains("Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || (objVehicleMod.WeaponMountCategories != "" && objVehicleMod.WeaponMountCategories.Contains(objWeapon.Category)))
 					{
 						lstVehicles.Add(objCharacterVehicle);
 						break;
@@ -17053,7 +17083,7 @@ namespace Chummer
 			List<VehicleMod> lstMods = new List<VehicleMod>();
 			foreach (VehicleMod objVehicleMod in objVehicle.Mods)
 			{
-                if (objVehicleMod.Name.StartsWith("Weapon Mount") || objVehicleMod.Name.StartsWith("Heavy Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || (objVehicleMod.WeaponMountCategories != "" && objVehicleMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                if (objVehicleMod.Name.Contains("Weapon Mount") || objVehicleMod.Name.StartsWith("Mechanical Arm") || (objVehicleMod.WeaponMountCategories != "" && objVehicleMod.WeaponMountCategories.Contains(objWeapon.Category)))
 					lstMods.Add(objVehicleMod);
 			}
 
@@ -18539,8 +18569,20 @@ namespace Chummer
                     _objCharacter.Foci.Remove(objFocus);
                     foreach (Power objPower in _objCharacter.Powers)
                     {
+                        // Known issues: 
+                        // 1) If freelevels > MAG, AND multiple sources give free levels, the calculation for the left-over free levels
+                        // will not be correct
+                        // Foci give their rating / 4 in power points - use power points per level to calculate the amount of levels this
+                        // focus is worth. May be troublesome in foci of non-integer power levels, but as foci should not be created
+                        // with such, this will be better handled in the focus rating itself.
                         if (objPower.BonusSource == objGear.InternalId)
                         {
+
+                            // If we do not remove the bonus source, foci completely break when binding-unbinding-rebinding, because their 
+                            // bonus is calculated twice in the improvement manager.
+                            // TODO - Clean up the improvement manager power management.
+                            objPower.BonusSource = "";
+
                             foreach (Improvement objImprovement in _objCharacter.Improvements.ToList())
                             {
                                 if (objImprovement.SourceName == objPower.InternalId) 
@@ -18550,13 +18592,41 @@ namespace Chummer
                             }
                             if (objPower.Free)
                                 _objCharacter.Powers.Remove(objPower);
-                            else if (objPower.FreeLevels < objPower.Rating)
+                            else if (objPower.FreeLevels > 0)
                             {
-                                objPower.Rating -= objPower.FreeLevels;
-                                objPower.FreeLevels = 0;
+                                int freeLevelsByThisFocus = (int)(Math.Min(objFocus.Rating * .25M, objPower.FreeLevels * objPower.PointsPerLevel) / objPower.PointsPerLevel);
+                                if (objPower.Rating > freeLevelsByThisFocus)
+                                {
+                                    objPower.Rating -= freeLevelsByThisFocus;
+                                    objPower.FreeLevels -= freeLevelsByThisFocus;
+                                }
+                                else
+                                {
+                                    _objCharacter.Powers.Remove(objPower);
+                                }
                             }
                             else if (objPower.FreePoints > 0)
-                                objPower.FreePoints = 0;
+                            {
+                                // For complete robustness, a way should be implemented to allow to switch
+                                // between Improved Reflexes I/II/III, with Foci, according to the force
+                                // of the focus.
+
+                                //In the meantime, calculate if the free points of the focus are equal
+                                //to the point cost of the power, and remove it if it is
+                                decimal freePointsByThisFocus = Math.Min(objFocus.Rating * .25M, objPower.FreePoints);
+
+                                //This should be the case, always as implemented currently.
+                                if (objPower.PointsPerLevel * objPower.Rating == freePointsByThisFocus)
+                                {
+                                    _objCharacter.Powers.Remove(objPower);
+                                }
+                                else
+                                {
+                                    //Should never happen currently.
+                                    objPower.FreePoints -= freePointsByThisFocus;
+                                    objPower.Rating -= freePointsByThisFocus * objPower.PointsPerLevel;
+                                }
+                            }
                             else
                                 _objCharacter.Powers.Remove(objPower);
 
@@ -19084,80 +19154,17 @@ namespace Chummer
 		#region Additional Initiation Tab Control Events
 		private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-        }
+			UpdateInitiationCost();
+		}
 
 		private void chkInitiationOrdeal_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
-        }
+			UpdateInitiationCost();
+		}
 
         private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
         {
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
-
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
+            UpdateInitiationCost();
         }
 
 		private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
@@ -24166,7 +24173,7 @@ namespace Chummer
 				lblVehicleAvail.Text = objVehicle.CalculatedAvail;
 				lblVehicleCost.Text = String.Format("{0:###,###,##0¥}", objVehicle.TotalCost);
 				lblVehicleHandling.Text = objVehicle.TotalHandling.ToString();
-				lblVehicleAccel.Text = objVehicle.TotalAccel;
+				lblVehicleAccel.Text = objVehicle.TotalAccel.ToString();
 				lblVehicleSpeed.Text = objVehicle.TotalSpeed.ToString();
 				lblVehicleDevice.Text = objVehicle.DeviceRating.ToString();
 				lblVehiclePilot.Text = objVehicle.Pilot.ToString();
@@ -25414,29 +25421,47 @@ namespace Chummer
                 }
             }
             treMetamagic.ExpandAll();
+			UpdateInitiationCost();
+		}
 
-            double dblMultiplier = 1.0;
-            if (chkInitiationGroup.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationOrdeal.Checked)
-                dblMultiplier -= 0.1;
-            if (chkInitiationSchooling.Checked)
-                dblMultiplier -= 0.1;
-            dblMultiplier = Math.Round(dblMultiplier, 2);
+		/// <summary>
+		/// Update the karma cost tooltip for Initiation/Submersion.
+		/// </summary>
+		private void UpdateInitiationCost()
+		{
+			double dblMultiplier = 1.0;
+			int intAmount = 0;
 
-            int intAmount = 0;
-            if (_objCharacter.MAGEnabled)
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
-            else
-                intAmount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			if (_objCharacter.MAGEnabled)
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.1;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.InitiateGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
+			else
+			{
+				if (chkInitiationGroup.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationOrdeal.Checked)
+					dblMultiplier -= 0.2;
+				if (chkInitiationSchooling.Checked)
+					dblMultiplier -= 0.1;
+				dblMultiplier = Math.Round(dblMultiplier, 2);
+				intAmount = Convert.ToInt32(Math.Floor(Convert.ToDouble((10 + ((_objCharacter.SubmersionGrade + 1) * _objOptions.KarmaInitiation)), GlobalOptions.Instance.CultureInfo) * dblMultiplier));
+			}
 
-            string strInitTip = "";
-            if (_objCharacter.MAGEnabled)
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
-            else
-                strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			string strInitTip = "";
+			if (_objCharacter.MAGEnabled)
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveInitiateGrade").Replace("{0}", (_objCharacter.InitiateGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
+			else
+				strInitTip = LanguageManager.Instance.GetString("Tip_ImproveSubmersionGrade").Replace("{0}", (_objCharacter.SubmersionGrade + 1).ToString()).Replace("{1}", intAmount.ToString());
 
-            tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
+			tipTooltip.SetToolTip(cmdAddMetamagic, strInitTip);
 		}
 
 		/// <summary>
@@ -27739,12 +27764,16 @@ namespace Chummer
 
 		private void cboGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_blnLoading || !_objCharacter.Overclocker)
+				return;
 			Commlink objCommlink = _objFunctions.FindCommlink(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 			objCommlink.Overclocked = cboGearOverclocker.SelectedValue.ToString();
 		}
 
 		private void cboCyberwareGearOverclocker_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (_blnLoading || !_objCharacter.Overclocker)
+				return;
 			Commlink objCommlink = _objFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 			objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
 		}

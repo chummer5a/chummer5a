@@ -131,6 +131,7 @@
     <Compile Include="Character Creation\frmSelectLifeModule.Designer.cs">
       <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashreport.cs" />
     <Compile Include="Classes\clsEquipment.cs" />
@@ -1579,6 +1580,7 @@
     </Content>
     <Content Include="data\priorities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\programs.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

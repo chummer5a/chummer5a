@@ -1755,8 +1755,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>10R</avail>
+			<cost>3500</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>103</page>
@@ -1775,8 +1775,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>18R</avail>
+			<cost>10000</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>104</page>
@@ -1795,8 +1795,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>10R</avail>
+			<cost>15000</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>104</page>
@@ -1815,8 +1815,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>10R</avail>
+			<cost>2000</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>103</page>
@@ -1835,8 +1835,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>8R</avail>
+			<cost>20000</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>RG</source>
 			<page>104</page>
@@ -1855,8 +1855,8 @@
 			<mode>0</mode>
 			<rc>0</rc>
 			<ammo>0</ammo>
-			<avail>0</avail>
-			<cost>0</cost>
+			<avail>8</avail>
+			<cost>500</cost>
 			<allowaccessory>true</allowaccessory>
 			<source>SR5</source>
 			<page>448</page>
@@ -2274,6 +2274,27 @@
 			<range>Standard Grenade</range>
 			<source>RG</source>
 			<page>102</page>
+		</weapon>
+		<weapon>
+			<id>bb4e9274-2cf0-4c73-a312-f1b51649d1bc</id>
+			<name>Smokebomb</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>(3m Radius)</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>6</avail>
+			<cost>25</cost>
+			<allowaccessory>true</allowaccessory>
+			<useskill>Throwing Weapons</useskill>
+			<range>Standard Grenade</range>
+			<source>HT</source>
+			<page>187</page>
 		</weapon>
 		<weapon>
 			<id>aab70ade-8586-4539-a184-99cb63e7bfab</id>
@@ -7951,6 +7972,7 @@
 		<accessory>
 			<id>7ca0c689-a05e-4377-ae44-3dc15abe2ee2</id>
 			<name>Hidden Gun Arm Slide</name>
+			<conceal>-1</conceal>
 			<mount/>
 			<rating>0</rating>
 			<avail>4R</avail>

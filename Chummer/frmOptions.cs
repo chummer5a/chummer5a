@@ -30,7 +30,7 @@ namespace Chummer
 {
 	public partial class frmOptions : Form
 	{
-		private readonly CharacterOptions _characterOptions = new CharacterOptions();
+		private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
 		private bool _skipRefresh;
 		#region Form Events
 		public frmOptions()
@@ -87,7 +87,9 @@ namespace Chummer
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
             _characterOptions.CyberlegMovement = chkCyberlegMovement.Checked;
-            _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
+	        _characterOptions.UseTotalValueForFreeContacts = chkUseTotalValueForFreeContacts.Checked;
+			_characterOptions.UseTotalValueForFreeKnowledge = chkUseTotalValueForFreeKnowledge.Checked;
+			_characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
 			_characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
 			_characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
             _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
@@ -188,10 +190,13 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
+	        if (cboBuildMethod.SelectedValue != null)
+	        {
             if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_Karma"))
                 nudBP.Value = 800;
             else if (cboBuildMethod.SelectedValue.ToString() == LanguageManager.Instance.GetString("String_LifeModule"))
 				nudBP.Value = 750;
+        }
         }
 
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -585,6 +590,8 @@ namespace Chummer
 			chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
 			chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
 			chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
+	        chkUseTotalValueForFreeContacts.Checked = _characterOptions.UseTotalValueForFreeContacts;
+	        chkUseTotalValueForFreeKnowledge.Checked = _characterOptions.UseTotalValueForFreeKnowledge;
 			chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
@@ -675,7 +682,7 @@ namespace Chummer
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.Instance.SingleDiceRoller = chkSingleDiceRoller.Checked;
-            if (cboXSLT.SelectedValue.ToString() == "")
+            if (cboXSLT.SelectedValue == null || cboXSLT.SelectedValue.ToString() == "")
             {
                 cboXSLT.SelectedValue = "Shadowrun 5";
             }
@@ -687,6 +694,7 @@ namespace Chummer
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
+			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
         }
 
 	    /// <summary>
@@ -711,6 +719,8 @@ namespace Chummer
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
+			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
+
 
             // Save the SourcebookInfo.
             Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
@@ -808,22 +818,34 @@ namespace Chummer
 
         private void PopulateBuildMethodList()
         {
+			// Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>();
-
             ListItem objKarma = new ListItem();
-            objKarma.Value = LanguageManager.Instance.GetString("String_Karma");
+			objKarma.Value = "Karma";
             objKarma.Name = LanguageManager.Instance.GetString("String_Karma");
 
-            ListItem objLifeModules = new ListItem();
-			objLifeModules.Value = LanguageManager.Instance.GetString("String_LifeModule");
-			objLifeModules.Name = LanguageManager.Instance.GetString("String_LifeModule");
+			ListItem objPriority = new ListItem();
+			objPriority.Value = "Priority";
+			objPriority.Name = LanguageManager.Instance.GetString("String_Priority");
 
+			ListItem objSumtoTen = new ListItem();
+			objSumtoTen.Value = "SumtoTen";
+			objSumtoTen.Name = LanguageManager.Instance.GetString("String_SumtoTen");
+
+			if (GlobalOptions.Instance.LifeModuleEnabled)
+			{
+				ListItem objLifeModule = new ListItem();
+				objLifeModule.Value = "LifeModule";
+				objLifeModule.Name = LanguageManager.Instance.GetString("String_LifeModule");
+				lstBuildMethod.Add(objLifeModule);
+			}
+
+			lstBuildMethod.Add(objPriority);
             lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objLifeModules);
-
+			lstBuildMethod.Add(objSumtoTen);
+			cboBuildMethod.DataSource = lstBuildMethod;
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
-            cboBuildMethod.DataSource = lstBuildMethod;
         }
 
         private void PopulateEssenceDecimalsList()
@@ -973,6 +995,7 @@ namespace Chummer
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
             chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
+			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
             chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
             chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;

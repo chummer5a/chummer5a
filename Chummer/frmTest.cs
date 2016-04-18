@@ -100,7 +100,7 @@ namespace Chummer
 					}
 					try
 					{
-						string objValue = objTemp.TotalAccel;
+						int objValue = objTemp.TotalAccel;
 					}
 					catch
 					{

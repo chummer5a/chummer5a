@@ -827,7 +827,7 @@ namespace Chummer
 				}
                 else if (_strArmorCapacity.Contains("Capacity"))
                 {
-                    // If the Capaicty is determined by the Rating, evaluate the expression.
+                    // If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
                     XmlDocument objXmlDocument = new XmlDocument();
                     XPathNavigator nav = objXmlDocument.CreateNavigator();
 
@@ -2036,35 +2036,28 @@ namespace Chummer
 					strReturn = _strArmorCapacity;
 				}
 
-                foreach (ArmorMod am in this.ArmorMods)
-                {
-                    if (am.Name == "YNT Softweave Armor")
-					{ 
-						if (_strArmorCapacity.Contains("Rating"))
-						{
-							// If the Capaicty is determined by the Rating, evaluate the expression.
-							XmlDocument objXmlDocument = new XmlDocument();
-							XPathNavigator nav = objXmlDocument.CreateNavigator();
+				foreach (ArmorMod objArmorMod in this.ArmorMods)
+				{
+					if (objArmorMod.ArmorCapacity.StartsWith("-") || objArmorMod.ArmorCapacity.StartsWith("[-"))
+					{
+						// If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
+						XmlDocument objXmlDocument = new XmlDocument();
+						XPathNavigator nav = objXmlDocument.CreateNavigator();
 
-							// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-							bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-							string strCapacity = _strArmorCapacity;
-							if (blnSquareBrackets)
-								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
+						// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+						string strCapacity = objArmorMod.ArmorCapacity;
+						strCapacity = strCapacity.Replace("[-", "");
+						strCapacity = strCapacity.Replace("[", "");
+						strCapacity = strCapacity.Replace("]", "");
+						strCapacity = strCapacity.Replace("Capacity", _strArmorCapacity);
+						strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
+						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
-							strReturn = nav.Evaluate(xprCapacity).ToString();
-							if (blnSquareBrackets)
-								strReturn = "[" + strReturn + "]";
-
-							return strReturn;
-						}
-						else
-						{
-                        strReturn = (Math.Ceiling(Convert.ToInt32(_strArmorCapacity) * 1.5)).ToString();
-                }
+						strCapacity = nav.Evaluate(xprCapacity).ToString();
+						strCapacity = Math.Floor(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
+						strReturn = strCapacity;
 					}
-                }
+				}
 
 				return strReturn;
 			}
@@ -3871,6 +3864,11 @@ namespace Chummer
 		{
 			get
 			{
+				if (SourceID == Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196")) //Essence hole
+				{
+					return _intRating/100m;
+				}
+
 				decimal decReturn = 0;
 				decimal decESSMultiplier = 0;
 
@@ -9406,22 +9404,21 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				if (_objType != LifestyleType.Standard)
+				/*if (_objType != LifestyleType.Standard)
 				{
 					intReturn = Cost;
 					return intReturn;
-				}
+				}*/
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-				double dblMultiplier = 1.0;
-				double dblModifier = Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
+				decimal decMultiplier = 1;
+				decMultiplier = Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.LifestyleCost), GlobalOptions.Instance.CultureInfo);
 				if (_objType == LifestyleType.Standard)
-					dblModifier += Convert.ToDouble(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
+					decMultiplier += Convert.ToDecimal(objImprovementManager.ValueOf(Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.Instance.CultureInfo);
 				double dblRoommates = 1.0 + (0.1 * _intRoommates);
 
                 decimal decBaseCost = Cost;
 				decimal decCost = 0;
-				decimal decMod = 0;
                 foreach (LifestyleQuality objQuality in _lstLifestyleQualities)
                 {
 					XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name.ToString() + "\"]");
@@ -9433,15 +9430,15 @@ namespace Chummer
 					//Add the percentage point modifiers from Qualities.
 					if (objXmlQuality["multiplier"] != null && objXmlQuality["multiplier"].InnerText != "")
 					{
-						decMod += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText) / 100;
+						decMultiplier += Convert.ToDecimal(objXmlQuality["multiplier"].InnerText);
 					}
                 }
 
-                dblMultiplier = 1.0 + Convert.ToDouble(dblModifier / 100, GlobalOptions.Instance.CultureInfo);
+                decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.Instance.CultureInfo);
                 
                 double dblPercentage = Convert.ToDouble(_intPercentage, GlobalOptions.Instance.CultureInfo) / 100.0;
 
-				intReturn = Convert.ToInt32(decBaseCost + (decBaseCost * decMod));
+				intReturn = Convert.ToInt32(decBaseCost * decMultiplier);
 				intReturn += Convert.ToInt32(decCost);
 
 				intReturn = Convert.ToInt32(intReturn * dblPercentage);
@@ -12264,7 +12261,7 @@ namespace Chummer
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
-			_strArmorCapacity = objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
+			objNode.TryGetField("armorcapacity", out _strArmorCapacity).ToString();
 			_intMaxRating = Convert.ToInt32(objNode["maxrating"].InnerText);
 			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
 			_intQty = Convert.ToInt32(objNode["qty"].InnerText);
@@ -12709,7 +12706,7 @@ namespace Chummer
 		private int _intVehicleCost = 0;
 		private int _intBody = 0;
 		private int _intSpeed = 0;
-		private string _strAccel = "0";
+		private int _intAccel = 0;
 
 		private readonly Character _objCharacter;
 
@@ -13359,15 +13356,15 @@ namespace Chummer
 			}
 		}
 
-		public string Accel
+		public int Accel
 		{
 			get
 			{
-				return _strAccel;
+				return _intAccel;
 			}
 			set
 			{
-                _strAccel = value;
+                _intAccel = value;
 			}
 		}
 
@@ -13548,7 +13545,7 @@ namespace Chummer
 					strCost = strCost.Replace("Body", "2");
 				
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Acceleration", _strAccel);
+				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo);
 
@@ -13598,7 +13595,7 @@ namespace Chummer
 				else
 					strCost = strCost.Replace("Body", "2");
 				strCost = strCost.Replace("Speed", _intSpeed.ToString());
-				strCost = strCost.Replace("Accel", _strAccel);
+				strCost = strCost.Replace("Acceleration", _intAccel.ToString());
 				XPathExpression xprCost = nav.Compile(strCost);
 				intReturn = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 
@@ -13623,7 +13620,15 @@ namespace Chummer
 				}
 				else
 				{
-				return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
+					// If the slots is determined by the Rating, evaluate the expression.
+					int intReturn = 0;
+					XmlDocument objXmlDocument = new XmlDocument();
+					XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+					//return Convert.ToInt32(_strSlots.Replace("Rating", _intRating.ToString()));
+					XPathExpression xprSlots = nav.Compile(_strSlots.Replace("Rating", _intRating.ToString()));
+					intReturn = Convert.ToInt32(nav.Evaluate(xprSlots).ToString());
+					return intReturn;
 			}
 		}
 		}
@@ -13693,7 +13698,7 @@ namespace Chummer
 		private string _strCategory = "";
 		private int _intHandling = 0;
 		private int _intOffroadHandling = 0;
-		private string _strAccel = "";
+		private int _intAccel = 0;
 		private int _intSpeed = 0;
 		private int _intPilot = 0;
 		private int _intBody = 0;
@@ -13755,7 +13760,7 @@ namespace Chummer
 			{
 				_intHandling = Convert.ToInt32(objXmlVehicle["handling"].InnerText);
 			}
-			_strAccel = objXmlVehicle["accel"].InnerText;
+			_intAccel = Convert.ToInt32(objXmlVehicle["accel"].InnerText);
 			_intSpeed = Convert.ToInt32(objXmlVehicle["speed"].InnerText);
 			_intPilot = Convert.ToInt32(objXmlVehicle["pilot"].InnerText);
 			_intBody = Convert.ToInt32(objXmlVehicle["body"].InnerText);
@@ -13940,7 +13945,7 @@ namespace Chummer
 					// Find the first free Weapon Mount in the Vehicle.
 					foreach (VehicleMod objMod in _lstVehicleMods)
 					{
-						if ((objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+						if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
 						{
 							objMod.Weapons.Add(objWeapon);
 							foreach (TreeNode objModNode in objNode.Nodes)
@@ -13963,7 +13968,7 @@ namespace Chummer
 					{
 						foreach (VehicleMod objMod in _lstVehicleMods)
 						{
-                            if (objMod.Name.StartsWith("Weapon Mount") || objMod.Name.StartsWith("Heavy Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                            if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
 							{
 								objMod.Weapons.Add(objWeapon);
 								foreach (TreeNode objModNode in objNode.Nodes)
@@ -14020,7 +14025,7 @@ namespace Chummer
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("handling", _intHandling.ToString());
 			objWriter.WriteElementString("offroadhandling", _intOffroadHandling.ToString());
-			objWriter.WriteElementString("accel", _strAccel);
+			objWriter.WriteElementString("accel", _intAccel.ToString());
 			objWriter.WriteElementString("speed", _intSpeed.ToString());
 			objWriter.WriteElementString("pilot", _intPilot.ToString());
 			objWriter.WriteElementString("body", _intBody.ToString());
@@ -14100,7 +14105,7 @@ namespace Chummer
 					_intOffroadHandling = Convert.ToInt32(objNode["offroadhandling"].InnerText);
 				}
 			}
-			_strAccel = objNode["accel"].InnerText;
+			_intAccel = Convert.ToInt32(objNode["accel"].InnerText);
 			objNode.TryGetField("seats", out _intSeats);
             _intSpeed = Convert.ToInt32(objNode["speed"].InnerText);
 			_intPilot = Convert.ToInt32(objNode["pilot"].InnerText);
@@ -14219,7 +14224,7 @@ namespace Chummer
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("handling", TotalHandling.ToString());
-			objWriter.WriteElementString("accel", TotalAccel);
+			objWriter.WriteElementString("accel", TotalAccel.ToString());
 			objWriter.WriteElementString("speed", TotalSpeed.ToString());
 			objWriter.WriteElementString("pilot", Pilot.ToString());
 			objWriter.WriteElementString("body", TotalBody.ToString());
@@ -14403,15 +14408,15 @@ namespace Chummer
 		/// <summary>
 		/// Acceleration.
 		/// </summary>
-		public string Accel
+		public int Accel
 		{
 			get
 			{
-				return _strAccel;
+				return _intAccel;
 			}
 			set
 			{
-				_strAccel = value;
+				_intAccel = value;
 			}
 		}
 
@@ -14440,8 +14445,16 @@ namespace Chummer
 				int intReturn = _intPilot;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Pilot > intReturn && objMod.Installed)
-						intReturn = objMod.Pilot;
+					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
+					{
+						// Set the Vehicle's Pilot to the Modification's bonus.
+						if (objMod.Bonus.InnerXml.Contains("<pilot>"))
+						{
+							int intTest = Convert.ToInt32(objMod.Bonus["pilot"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (intTest > intReturn)
+								intReturn = intTest;
+						}
+					}
 				}
 				return intReturn;
 			}
@@ -14962,6 +14975,119 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Number of Slots the Drone has for Modifications.
+		/// </summary>
+		public int DroneModSlots
+		{
+			get
+			{
+				int intDroneModSlots = TotalBody + _intAddSlots;
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					// Mods that are included with a Vehicle by default do not count toward the Slots used.
+					if (!objMod.IncludedInVehicle && objMod.Installed)
+					{
+						if (objMod.CalculatedSlots < 0)
+							intDroneModSlots -= objMod.CalculatedSlots;
+					}
+				}
+				return intDroneModSlots;
+			}
+		}
+
+		/// <summary>
+		/// The number of Slots on the Drone that are used by Mods.
+		/// </summary>
+		public int DroneModSlotsUsed
+		{
+			get
+			{
+				int intModSlotsUsed = 0;
+
+				bool blnHandling = false;
+				bool blnSpeed = false;
+				bool blnAccel = false;
+				bool blnArmor = false;
+				bool blnSensor = false;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (!objMod.IncludedInVehicle && objMod.Installed)
+					{
+						int intActualSlots = 0;
+
+						if (objMod.CalculatedSlots > 0)
+						{
+							if (objMod.Category == "Handling")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intHandling;
+								if (!blnHandling)
+								{
+									blnHandling = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Speed")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intSpeed;
+								if (!blnSpeed)
+								{
+									blnSpeed = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Acceleration")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intAccel;
+								if (!blnAccel)
+								{
+									blnAccel = true;
+									intActualSlots -= 1;
+								}
+							}
+							else if (objMod.Category == "Armor")
+							{
+								int intArmorDiff = objMod.Rating - _intArmor;
+								double dblDivThree = intArmorDiff / 3;
+								int intThird = (int)Math.Ceiling(dblDivThree);
+
+								if (!blnArmor)
+								{
+									blnAccel = true;
+									intActualSlots = intThird - 1;
+								}
+								else
+								{
+									intActualSlots = intThird;
+								}
+							}
+							else if (objMod.Category == "Sensor")
+							{
+								intActualSlots = objMod.CalculatedSlots - _intSensor;
+								if (!blnSensor)
+								{
+									blnSensor = true;
+									intActualSlots -= 1;
+								}
+							}
+							else
+							{
+								intActualSlots = objMod.CalculatedSlots;
+							}
+
+							if (intActualSlots < 0)
+								intActualSlots = 0;
+
+							intModSlotsUsed += intActualSlots;
+						}
+					}
+				}
+				return intModSlotsUsed;
+			}
+		}
+
+
+		/// <summary>
 		/// Total cost of the Vehicle including all after-market Modification.
 		/// </summary>
 		public int TotalCost
@@ -14980,7 +15106,7 @@ namespace Chummer
 						objMod.VehicleCost = Convert.ToInt32(_strCost);
 						objMod.Body = _intBody;
 						objMod.Speed = _intSpeed;
-						objMod.Accel = Accel;
+						objMod.Accel = _intAccel;
 
 						intCost += objMod.TotalCost;
 					}
@@ -15026,7 +15152,7 @@ namespace Chummer
 		{
 			get
 			{
-				decimal decSpeed = Convert.ToDecimal(_intSpeed, GlobalOptions.Instance.CultureInfo);
+				int intTotalSpeed = _intSpeed;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15037,41 +15163,29 @@ namespace Chummer
 							//Increase the vehicles base Speed by the Modification's value.
 							if (objMod.Bonus["speed"].InnerText.Contains("+"))
 							{
-								string strSpeed = objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								decSpeed += Convert.ToDecimal(strSpeed, GlobalOptions.Instance.CultureInfo);
+								intTotalSpeed += Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty));
 							}
-							// Multiply the Vehicle's base Speed by the Modification's Speed multiplier.
+							// Add the Vehicle's base Speed to the Modification's Speed adjustment.
 							else
 							{
-								decSpeed += (Convert.ToDecimal(Speed, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["speed"].InnerText, GlobalOptions.Instance.CultureInfo));
+								intTotalSpeed = Convert.ToInt32(objMod.Bonus["speed"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 							}
 						}
 					}
 				}
 
-				// If the Vehicle's Total Armor exceeds its Total Body, Accel and Speed are decreased by 20%.
-				// The value must also exceed the Armor Rating that the Vehicles comes equipped with by default.
-				if (TotalArmor > TotalBody && TotalArmor > _intArmor)
-				{
-					decSpeed -= (Convert.ToDecimal(_intSpeed, GlobalOptions.Instance.CultureInfo) * 0.2m);
+				return intTotalSpeed;
 				}
-
-				// Make sure Speed doesn't go below 0.
-				if (decSpeed < 0.0m)
-					decSpeed = 0.0m;
-
-				return Convert.ToInt32(Math.Ceiling(decSpeed));
 			}
-		}
 
 		/// <summary>
 		/// Total Accel of the Vehicle including Modifications.
 		/// </summary>
-		public string TotalAccel
+		public int TotalAccel
 		{
 			get
 			{
-				decimal decAccel = Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo);
+				int intTotalAccel = _intAccel;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -15083,28 +15197,18 @@ namespace Chummer
 							if (objMod.Bonus["accel"].InnerText.Contains("+"))
 							{
 								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
-								decAccel += Convert.ToDecimal(strAccel, GlobalOptions.Instance.CultureInfo);
+								intTotalAccel += Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 							else
 							{
-								decAccel += (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * Convert.ToDecimal(objMod.Bonus["accel"].InnerText, GlobalOptions.Instance.CultureInfo));
-							}
+								string strAccel = objMod.Bonus["accel"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intTotalAccel = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 						}
 					}
 				}
-
-				// If the Vehicle's Total Armor exceeds its Total Body, Accel and Speed are decreased by 20%.
-				// The value must also exceed the Armor Rating that the Vehicles comes equipped with by default.
-				if (TotalArmor > TotalBody && TotalArmor > _intArmor)
-				{
-					decAccel -= (Convert.ToDecimal(Accel, GlobalOptions.Instance.CultureInfo) * 0.2m);
 				}
 
-				// Make sure Acceleration doesn't go below 0.
-				if (decAccel < 0.0m)
-					decAccel = 0.0m;
-
-				return Convert.ToInt32(Math.Ceiling(decAccel)).ToString();
+				return intTotalAccel;
 			}
 		}
 
@@ -15122,8 +15226,17 @@ namespace Chummer
 					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
 						// Add the Modification's Body to the Vehicle's base Body.
-						if (objMod.Bonus.InnerXml.Contains("<body>"))
-							intBody += Convert.ToInt32(objMod.Bonus["body"].InnerText);
+						
+						if (objMod.Bonus.InnerXml.Contains("<body>") && objMod.Bonus["body"].InnerText.Contains("Rating"))
+						{
+							// If the cost is determined by the Rating, evaluate the expression.
+							XmlDocument objXmlDocument = new XmlDocument();
+							XPathNavigator nav = objXmlDocument.CreateNavigator();
+
+							string strBody = objMod.Bonus["body"].InnerText.Replace("Rating", objMod.Rating.ToString());
+							XPathExpression xprBody = nav.Compile(strBody);
+							intBody += Convert.ToInt32(nav.Evaluate(xprBody).ToString());
+						}
 					}
 				}
 
@@ -15149,11 +15262,21 @@ namespace Chummer
 						// Add the Modification's Handling to the Vehicle's base Handling.
 						if (objMod.Bonus.InnerXml.Contains("<handling>"))
 						{
-							intBaseHandling += Convert.ToInt32(objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (objMod.Bonus["handling"].InnerText.Contains("+"))
+							{
+								string strHandle = objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intBaseHandling += Convert.ToInt32(strHandle, GlobalOptions.Instance.CultureInfo);
+							}
+							else intBaseHandling = Convert.ToInt32(objMod.Bonus["handling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 						if (objMod.Bonus.InnerXml.Contains("<offroadhandling>"))
 						{
-							intBaseOffroadHandling += Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+							if (objMod.Bonus["offroadhandling"].InnerText.Contains("+"))
+							{
+								string strHandle = objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intBaseOffroadHandling += Convert.ToInt32(strHandle, GlobalOptions.Instance.CultureInfo);
+							}
+							else intBaseOffroadHandling = Convert.ToInt32(objMod.Bonus["offroadhandling"].InnerText.Replace("Rating", objMod.Rating.ToString()));
 						}
 					}
 				}
@@ -15218,6 +15341,144 @@ namespace Chummer
 					intReturn = 20;
 
 				return intReturn;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Powertrain slots
+		/// </summary>
+		public int CalcPowertrain
+		{
+			get
+			{
+				int intPowertrain = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Powertrain"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intPowertrain -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intPowertrain;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Protection slots
+		/// </summary>
+		public int CalcProtection
+		{
+			get
+			{
+				int intProtection = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Protection"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intProtection -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intProtection;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Weapon slots
+		/// </summary>
+		public int CalcWeaponsmod
+		{
+			get
+			{
+				int intWeaponsmod = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Weapons"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intWeaponsmod -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intWeaponsmod;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Bodymod slots
+		/// </summary>
+		public int CalcBodymod
+		{
+			get
+			{
+				int intBodymod = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Body"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intBodymod -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intBodymod;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Electromagnetic slots
+		/// </summary>
+		public int CalcElectromagnetic
+		{
+			get
+			{
+				int intElectromagnetic = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Electromagnetic"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intElectromagnetic -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intElectromagnetic;
+			}
+		}
+
+		/// <summary>
+		/// Calculate remaining Cosmetic slots
+		/// </summary>
+		public int CalcCosmetic
+		{
+			get
+			{
+				int intCosmetic = _intBody;
+
+				foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					if (objMod.Installed && (objMod.Category == "Cosmetic"))
+					{
+						// Subtract the Modification's Slots from the Vehicle's base Body.
+						if (objMod.CalculatedSlots > 0)
+							intCosmetic -= Convert.ToInt32(objMod.CalculatedSlots);
+					}
+				}
+
+				return intCosmetic;
 			}
 		}
 

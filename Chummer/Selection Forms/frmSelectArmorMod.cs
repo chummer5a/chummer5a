@@ -37,6 +37,7 @@ namespace Chummer
 
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
+		private bool _blnBlackMarketDiscount;
 
 		#region Control Events
 		public frmSelectArmorMod(Character objCharacter, bool blnCareer = false)
@@ -161,6 +162,17 @@ namespace Chummer
 			set
 			{
 				_intArmorCost = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not the selected Vehicle is used.
+		/// </summary>
+		public bool BlackMarketDiscount
+		{
+			get
+			{
+				return _blnBlackMarketDiscount;
 			}
 		}
 
@@ -350,6 +362,7 @@ namespace Chummer
 		{
 			_strSelectedArmorMod = lstMod.SelectedValue.ToString();
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
+			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 			this.DialogResult = DialogResult.OK;
 		}
 

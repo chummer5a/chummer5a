@@ -906,7 +906,16 @@ namespace Chummer
 						lstRemoveFoci.Add(objFocus);
 				}
 				foreach (Focus objFocus in lstRemoveFoci)
+				{
+					foreach (Power objPower in _objCharacter.Powers)
+					{
+						if (objPower.BonusSource == objFocus.GearId)
+						{
+							objPower.FreeLevels -= (objFocus.Rating / 4);
+						}
+					}
 					_objCharacter.Foci.Remove(objFocus);
+				}
 			}
 
 			// If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.

@@ -98,7 +98,7 @@ namespace Chummer
 	    private XmlNode oldSKillGroupBackup;
 
         private readonly ImprovementManager _objImprovementManager;
-        private readonly CharacterOptions _objOptions = new CharacterOptions();
+        private readonly CharacterOptions _objOptions;
 
         private string _strFileName = "";
         private string _strSettingsFileName = "default.xml";
@@ -361,7 +361,9 @@ namespace Chummer
             _attESS._objCharacter = this;
 			_attDEP._objCharacter = this;
 			_objImprovementManager = new ImprovementManager(this);
+			_objOptions = new CharacterOptions(this);
 			Skills = GetSkillList(this);
+			
         }
 
         /// <summary>
@@ -1024,8 +1026,7 @@ namespace Chummer
 
             // Get the name of the settings file in use if possible.
 		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
-		    objXmlCharacter.TryGetField("settings", out _strSettingsFileName);
-
+		    
             // Load the character's settings file.
             if (!_objOptions.Load(_strSettingsFileName))
                 return false;
@@ -6347,10 +6348,12 @@ namespace Chummer
                 string strReturn = "";
 
                 // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                    return "Special";
+	            if (_strMovement == "Special")
+	            {
+		            return "Special";
+	            }
 
-                // If there is no Movement data, read it from the Metatype file, apply it to the character and save the updated file.
+	            // If there is no Movement data, read it from the Metatype file, apply it to the character and save the updated file.
                 if (_strMovement.Trim() == "")
                 {
                     XmlDocument objXmlDocument = new XmlDocument();
@@ -6361,8 +6364,11 @@ namespace Chummer
                     try
                     {
                         _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-						
-                    }
+						if (_strMovement == "Special")
+						{
+							return "Special";
+						}
+					}
                     catch
                     {
 						try

@@ -1276,7 +1276,10 @@ namespace Chummer
 			objWriter.WriteElementString("bp", _intBP.ToString());
 			objWriter.WriteElementString("implemented", _blnImplemented.ToString());
 			objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
-            objWriter.WriteElementString("metagenetic", _strMetagenetic.ToString());
+			if (_strMetagenetic != null)
+			{
+				objWriter.WriteElementString("metagenetic", _strMetagenetic.ToString());
+			}
 			objWriter.WriteElementString("print", _blnPrint.ToString());
 			objWriter.WriteElementString("qualitytype", _objQualityType.ToString());
 			objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
