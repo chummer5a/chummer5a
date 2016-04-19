@@ -14228,7 +14228,6 @@ namespace Chummer
 			objWriter.WriteElementString("armor", TotalArmor.ToString());
             objWriter.WriteElementString("seats", _intSeats.ToString());
 			objWriter.WriteElementString("sensor", _intSensor.ToString());
-			objWriter.WriteElementString("sensorsignal", SensorSignal.ToString());
 			objWriter.WriteElementString("avail", CalculatedAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());
@@ -14741,23 +14740,6 @@ namespace Chummer
 					return TotalBody + _intAddSlots;
 				else
 					return 4 + _intAddSlots;
-			}
-		}
-
-		/// <summary>
-		/// Sensor's Signal.
-		/// </summary>
-		public int SensorSignal
-		{
-			get
-			{
-				int intReturn = 0;
-				foreach (Gear objGear in _lstGear)
-				{
-                    if (objGear.Category == "Sensors" && objGear.DeviceRating > 0 && objGear.DeviceRating > intReturn)
-                        intReturn = objGear.DeviceRating;
-				}
-				return intReturn;
 			}
 		}
 
