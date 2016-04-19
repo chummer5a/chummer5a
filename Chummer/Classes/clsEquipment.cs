@@ -14490,7 +14490,7 @@ namespace Chummer
 		/// <summary>
 		/// Sensor.
 		/// </summary>
-		public int Sensor
+		public int BaseSensor
 		{
 			get
 			{
@@ -14750,36 +14750,41 @@ namespace Chummer
 		{
 			get
 			{
-				int intReturn = 0;
-				int intCount = 0;
-				foreach (Gear objGear in _lstGear)
+				int intSensor = _intSensor;
+				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objGear.Category == "Sensors" && objGear.DeviceRating > 0)
+					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
-						foreach (Gear objChild in objGear.Children)
+						if (objMod.Bonus.InnerXml.Contains("<sensor>"))
 						{
-							if (objChild.Category == "Sensor Functions")
+							if (objMod.Bonus["sensor"].InnerText.Contains("+"))
 							{
-								if (objChild.Rating > 0)
-								{
-									intCount++;
-									intReturn += objChild.Rating;
-								}
+								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intSensor += Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
+							}
+							else
+							{
+								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intSensor = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 						}
 					}
-					break;
 				}
 
-				if (intCount > 0)
+				if (intSensor != _intSensor)
 				{
-					decimal decReturn = Convert.ToDecimal(intReturn, GlobalOptions.Instance.CultureInfo);
-					intReturn = Convert.ToInt32(Math.Ceiling(decReturn / intCount));
+					foreach (Gear objGear in _lstGear)
+					{
+						if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+						{
+							objGear.Rating = intSensor;
+						}
+						break;
+					}
 				}
-				else
-					intReturn = _intSensor;
 
-				return intReturn;
+
+				return intSensor;
 			}
 		}
 
