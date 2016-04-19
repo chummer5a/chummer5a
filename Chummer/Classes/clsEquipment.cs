@@ -14227,10 +14227,7 @@ namespace Chummer
 			objWriter.WriteElementString("body", TotalBody.ToString());
 			objWriter.WriteElementString("armor", TotalArmor.ToString());
             objWriter.WriteElementString("seats", _intSeats.ToString());
-            if (_objCharacter.Options.UseCalculatedVehicleSensorRatings)
-				objWriter.WriteElementString("sensor", CalculatedSensor.ToString());
-			else
-				objWriter.WriteElementString("sensor", _intSensor.ToString());
+			objWriter.WriteElementString("sensor", _intSensor.ToString());
 			objWriter.WriteElementString("sensorsignal", SensorSignal.ToString());
 			objWriter.WriteElementString("avail", CalculatedAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());

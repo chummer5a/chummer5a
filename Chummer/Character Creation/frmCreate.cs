@@ -19435,11 +19435,8 @@ namespace Chummer
 
 						nudVehicleGearQty.Visible = true;
 				lblVehicleGearQtyLabel.Visible = true;
-
-				if (_objOptions.UseCalculatedVehicleSensorRatings)
-                    lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
-                else
-                    lblVehicleSensor.Text = objVehicle.Sensor.ToString();
+				
+                lblVehicleSensor.Text = objVehicle.Sensor.ToString();
                 lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
                 string strPage = objVehicle.Page;
