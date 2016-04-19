@@ -516,10 +516,10 @@
       <id>f90b52b6-1a4e-400f-b32f-9af5d7d932cd</id>
       <name>Vashon Island: Ace of Diamonds</name>
       <category>High-Fashion Armor Clothing</category>
-      <armor>7</armor>
-      <armorcapacity>6</armorcapacity>
-      <avail>6</avail>
-      <cost>1000</cost>
+			<armor>8</armor>
+			<armorcapacity>6</armorcapacity>
+			<avail>8</avail>
+			<cost>1400</cost>
       <mods>
         <name>Concealability</name>
       </mods>
