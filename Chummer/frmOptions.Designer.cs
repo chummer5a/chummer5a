@@ -219,7 +219,6 @@
 			this.chkAlternateMatrixAttribute = new System.Windows.Forms.CheckBox();
 			this.chkAllowCustomTransgenics = new System.Windows.Forms.CheckBox();
 			this.chkAlternateComplexFormCost = new System.Windows.Forms.CheckBox();
-			this.chkUseCalculatedVehicleSensorRatings = new System.Windows.Forms.CheckBox();
 			this.chkArmorDegradation = new System.Windows.Forms.CheckBox();
 			this.chkArmorSuitCapacity = new System.Windows.Forms.CheckBox();
 			this.chkMaximumArmorModifications = new System.Windows.Forms.CheckBox();
@@ -231,6 +230,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkUseTotalValueForFreeContacts = new System.Windows.Forms.CheckBox();
 			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
 			this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
@@ -257,7 +257,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2304,7 +2303,6 @@
 			this.tabOptionalRules.Controls.Add(this.chkAlternateMatrixAttribute);
 			this.tabOptionalRules.Controls.Add(this.chkAllowCustomTransgenics);
 			this.tabOptionalRules.Controls.Add(this.chkAlternateComplexFormCost);
-			this.tabOptionalRules.Controls.Add(this.chkUseCalculatedVehicleSensorRatings);
 			this.tabOptionalRules.Controls.Add(this.chkArmorDegradation);
 			this.tabOptionalRules.Controls.Add(this.chkArmorSuitCapacity);
 			this.tabOptionalRules.Controls.Add(this.chkMaximumArmorModifications);
@@ -2427,18 +2425,6 @@
 			this.chkAlternateComplexFormCost.Text = "Use alternate Complex Forms costs (UN 39)";
 			this.chkAlternateComplexFormCost.UseVisualStyleBackColor = true;
 			this.chkAlternateComplexFormCost.Visible = false;
-			// 
-			// chkUseCalculatedVehicleSensorRatings
-			// 
-			this.chkUseCalculatedVehicleSensorRatings.AutoSize = true;
-			this.chkUseCalculatedVehicleSensorRatings.Location = new System.Drawing.Point(366, 167);
-			this.chkUseCalculatedVehicleSensorRatings.Name = "chkUseCalculatedVehicleSensorRatings";
-			this.chkUseCalculatedVehicleSensorRatings.Size = new System.Drawing.Size(255, 17);
-			this.chkUseCalculatedVehicleSensorRatings.TabIndex = 11;
-			this.chkUseCalculatedVehicleSensorRatings.Tag = "Checkbox_Options_UseCalculatedVehicleSensorRatings";
-			this.chkUseCalculatedVehicleSensorRatings.Text = "Use calculated Vehicle Sensor Ratings (AR 105)";
-			this.chkUseCalculatedVehicleSensorRatings.UseVisualStyleBackColor = true;
-			this.chkUseCalculatedVehicleSensorRatings.Visible = false;
 			// 
 			// chkArmorDegradation
 			// 
@@ -2598,6 +2584,17 @@
 			this.tabHouseRules.TabIndex = 3;
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
+			// 
+			// chkUseTotalValueForFreeKnowledge
+			// 
+			this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
+			this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(364, 95);
+			this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
+			this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
+			this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
+			this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
+			this.chkUseTotalValueForFreeKnowledge.Text = "Free Contacts use the augmented LOG+INT values";
+			this.chkUseTotalValueForFreeKnowledge.UseVisualStyleBackColor = true;
 			// 
 			// chkUseTotalValueForFreeContacts
 			// 
@@ -2908,17 +2905,6 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkUseTotalValueForFreeKnowledge
-			// 
-			this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
-			this.chkUseTotalValueForFreeKnowledge.Location = new System.Drawing.Point(364, 95);
-			this.chkUseTotalValueForFreeKnowledge.Name = "chkUseTotalValueForFreeKnowledge";
-			this.chkUseTotalValueForFreeKnowledge.Size = new System.Drawing.Size(269, 17);
-			this.chkUseTotalValueForFreeKnowledge.TabIndex = 23;
-			this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
-			this.chkUseTotalValueForFreeKnowledge.Text = "Free Contacts use the augmented LOG+INT values";
-			this.chkUseTotalValueForFreeKnowledge.UseVisualStyleBackColor = true;
-			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -3118,7 +3104,6 @@
 		private System.Windows.Forms.CheckBox chkAutomaticRegistration;
         private System.Windows.Forms.CheckBox chkAutomaticCopyProtection;
 		private System.Windows.Forms.CheckBox chkStartupFullscreen;
-        private System.Windows.Forms.CheckBox chkUseCalculatedVehicleSensorRatings;
 		private System.Windows.Forms.CheckBox chkEnforceCapacity;
 		private System.Windows.Forms.CheckBox chkRestrictRecoil;
 		private System.Windows.Forms.Label lblKarmaComplexFormSkillsoftExtra;
