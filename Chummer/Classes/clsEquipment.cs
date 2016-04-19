@@ -15417,7 +15417,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Powertrain"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Powertrain"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15440,7 +15440,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Protection"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Protection"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15463,7 +15463,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Weapons"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Weapons"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15486,7 +15486,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Body"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Body"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15509,7 +15509,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Electromagnetic"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Electromagnetic"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15532,7 +15532,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Cosmetic"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Cosmetic"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
