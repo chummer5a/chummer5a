@@ -218,8 +218,11 @@ namespace Chummer
 
 			// <name />
 			objWriter.WriteElementString("name", _strName);
-			// <confirmdelete />
-			objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+			// <recentimagefolder />
+			if (!String.IsNullOrEmpty(_strImageFolder))
+			{
+				objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+			}
 			// <confirmdelete />
 			objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
 			// <licenserestricted />
