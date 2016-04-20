@@ -36,6 +36,8 @@
 			this.cmdDelete = new System.Windows.Forms.Button();
 			this.cboSkill = new System.Windows.Forms.ComboBox();
 			this.cboType = new System.Windows.Forms.ComboBox();
+			this.lblRating = new System.Windows.Forms.Label();
+			this.lblName = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -120,10 +122,32 @@
 			this.cboType.Sorted = true;
 			this.cboType.TabIndex = 21;
 			// 
+			// lblRating
+			// 
+			this.lblRating.AutoSize = true;
+			this.lblRating.Location = new System.Drawing.Point(210, 4);
+			this.lblRating.Name = "lblRating";
+			this.lblRating.Size = new System.Drawing.Size(13, 13);
+			this.lblRating.TabIndex = 22;
+			this.lblRating.Text = "0";
+			this.lblRating.Visible = false;
+			// 
+			// lblName
+			// 
+			this.lblName.AutoSize = true;
+			this.lblName.Location = new System.Drawing.Point(4, 4);
+			this.lblName.Name = "lblName";
+			this.lblName.Size = new System.Drawing.Size(44, 13);
+			this.lblName.TabIndex = 23;
+			this.lblName.Text = "[NAME]";
+			this.lblName.Visible = false;
+			// 
 			// KnowledgeSkillControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.lblName);
+			this.Controls.Add(this.lblRating);
 			this.Controls.Add(this.cboType);
 			this.Controls.Add(this.cboSkill);
 			this.Controls.Add(this.cmdDelete);
@@ -153,5 +177,7 @@
 		private System.Windows.Forms.Button cmdDelete;
 		private System.Windows.Forms.ComboBox cboSkill;
 		private System.Windows.Forms.ComboBox cboType;
+		private System.Windows.Forms.Label lblRating;
+		private System.Windows.Forms.Label lblName;
 	}
 }

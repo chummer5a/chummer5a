@@ -19,15 +19,38 @@ namespace Chummer.UI.Shared
 		{
 			this.skill = skill;
 			InitializeComponent();
+
+			//Display
+			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
+
+			cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
+			cboType.DisplayMember = nameof(ListItem.Name);
+			cboType.ValueMember = nameof(ListItem.Value);
+			cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
+
+
 			if (skill.CharacterObject.Created)
 			{
 				//TODO: Change display to play mode
+				nudKarma.Visible = false;
+				nudSkill.Visible = false;
+
+				lblRating.Visible = true;
+				lblRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false, DataSourceUpdateMode.OnPropertyChanged);
+
+				cboType.Enabled = false;
+
+				lblName.Visible = true;
+				lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
+
+				cboSkill.Visible = false;
+				chkKarma.Visible = false;
+				cboSpec.Visible = false;
+
+
 			}
 			else
 			{
-				//Display
-				lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
-
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -45,10 +68,7 @@ namespace Chummer.UI.Shared
 					chkKarma.Visible = false;
 				}
 
-				cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
-				cboType.DisplayMember = nameof(ListItem.Name);
-				cboType.ValueMember = nameof(ListItem.Value);
-				cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
+				
 				
 
 				cboSkill.DataSource = skill.KnowledgeSkillCatagories;
