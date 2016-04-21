@@ -365,7 +365,7 @@
 			<costfor>10</costfor>
 			<cost>80</cost>
 			<weaponbonus>
-				<ap>-5</ap>
+				<apreplace>-5</apreplace>
 				<damage>-2</damage>
 				<damagetype>S(e)</damagetype>
 			</weaponbonus>

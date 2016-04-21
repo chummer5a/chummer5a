@@ -141,6 +141,7 @@ Data Change:
 - Reverted precedence 0 settings for orthoskin bioware.
 - Reverted precedence 0 settings for dermal alteration SURGE qualities.
 - Added a missing skillwire rating to Move-By-Wire. 
+- Fixed an incorrect AP value for Stick-n-Shock ammo. Fixes #818.
 
 New Strings:
 - Message_DeleteCalendarWeek
