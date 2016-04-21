@@ -14967,7 +14967,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Total Number of Slots the Drone has for Modifications.
+		/// Total Number of Slots the Drone has for Modifications. (Rigger 5)
 		/// </summary>
 		public int DroneModSlots
 		{
@@ -15402,6 +15402,27 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Check if the vehicle is over capacity in any category
+		/// </summary>
+		public bool OverR5Capacity
+		{
+			get
+			{
+				bool blnOverCapacity = false;
+				string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+
+				foreach (string strCategory in arrCategories)
+				{
+					if (CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory))
+						blnOverCapacity = true;
+				}
+
+				return blnOverCapacity;
+			}
+		}
+
+
+		/// <summary>
 		/// Calculate remaining Powertrain slots
 		/// </summary>
 		public int CalcPowertrain
@@ -15580,6 +15601,45 @@ namespace Chummer
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Calculate remaining slots by provided Category
+		/// </summary>
+		public int CalcCategoryUsed(string strCategory)
+		{
+			int intBase = 0;
+
+			foreach (VehicleMod objMod in _lstVehicleMods)
+			{
+				if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == strCategory))
+				{
+					// Subtract the Modification's Slots from the Vehicle's base Body.
+					if (objMod.CalculatedSlots > 0)
+						intBase += Convert.ToInt32(objMod.CalculatedSlots);
+				}
+			}
+
+			return intBase;
+		}
+
+		/// <summary>
+		/// Total Number of Slots a Vehicle has used for Modifications. (Rigger 5)
+		/// </summary>
+		public int CalcCategoryAvail(string strCategory)
+		{
+			int intBase = _intBody;
+			foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					// Mods that are included with a Vehicle by default do not count toward the Slots used.
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == strCategory))
+					{
+						if (objMod.CalculatedSlots < 0)
+						intBase -= objMod.CalculatedSlots;
+					}
+				}
+				return intBase;
+		}
+
 		/// <summary>
 		/// Whether or not the Vehicle has the Modular Electronics Vehicle Modification installed.
 		/// </summary>

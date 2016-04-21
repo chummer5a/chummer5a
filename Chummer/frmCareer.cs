@@ -10470,13 +10470,37 @@ namespace Chummer
 			objSelectedVehicle.Mods.Add(objMod);
 
 			// Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-			if (_objOptions.EnforceCapacity && objSelectedVehicle.Slots < objSelectedVehicle.SlotsUsed)
+			if (_objOptions.EnforceCapacity)
 			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				objSelectedVehicle.Mods.Remove(objMod);
-				if (frmPickVehicleMod.AddAgain)
-					tsVehicleAddMod_Click(sender, e);
-				return;
+				bool blnOverCapacity = false;
+				if (_objOptions.BookEnabled("R5"))
+				{
+					if (objSelectedVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+					{
+						if (objSelectedVehicle.DroneModSlotsUsed > objSelectedVehicle.DroneModSlots)
+							blnOverCapacity = true;
+					}
+					else
+					{
+						int intUsed = objSelectedVehicle.CalcCategoryUsed(objMod.Category);
+						int intAvail = objSelectedVehicle.CalcCategoryAvail(objMod.Category);
+						if (intUsed > intAvail)
+							blnOverCapacity = true;
+					}
+				}
+				else if (objSelectedVehicle.Slots < objSelectedVehicle.SlotsUsed)
+				{
+					blnOverCapacity = true;
+				}
+
+				if(blnOverCapacity)
+				{ 
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+					objSelectedVehicle.Mods.Remove(objMod);
+					if (frmPickVehicleMod.AddAgain)
+						tsVehicleAddMod_Click(sender, e);
+					return;
+				}
 			}
 
 			int intCost = objSelectedVehicle.TotalCost - intOriginalCost;
