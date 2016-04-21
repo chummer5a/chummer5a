@@ -19437,6 +19437,8 @@ namespace Chummer
 				lblVehicleGearQtyLabel.Visible = true;
 				
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
+				UpdateSensor(objVehicle);
+
                 lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
                 string strPage = objVehicle.Page;
@@ -24011,8 +24013,28 @@ namespace Chummer
             lblFly.Left = lblCMPhysical.Left;
         }
 
+
+		/// <summary>
+		/// Recheck all mods to see if Sensor has changed. 
+		/// </summary>
+		/// <param name="objVehicle">Vehicle to modify.</param>
+		private void UpdateSensor(Vehicle objVehicle)
+		{
+			foreach (Gear objGear in objVehicle.Gear)
+			{
+				if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+				{
+					// Update the name of the item in the TreeView.
+					TreeNode objNode = _objFunctions.FindNode(objGear.InternalId, treVehicles);
+					objNode.Text = objGear.DisplayName;
+				}
+			}
+		}
+
+
+
         /// <summary>
-        /// Change the size of a Vehicle's Sensor
+        /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
         /// </summary>
         /// <param name="objVehicle">Vehicle to modify.</param>
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>

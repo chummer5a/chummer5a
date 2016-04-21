@@ -14770,19 +14770,19 @@ namespace Chummer
 						}
 					}
 				}
-
-				if (intSensor != _intSensor)
-				{
+				
+				// Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
+				// The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
 					foreach (Gear objGear in _lstGear)
 					{
 						if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
 						{
+							if (intSensor != _intSensor)
 							objGear.Rating = intSensor;
+							else objGear.Rating = _intSensor;
 						}
 						break;
 					}
-				}
-
 
 				return intSensor;
 			}
