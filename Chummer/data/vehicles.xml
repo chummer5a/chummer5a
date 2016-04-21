@@ -2528,6 +2528,7 @@
 			<armor>0</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2548,6 +2549,7 @@
 			<armor>3</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<gears>
 				<gear select="Targeting (Melee) Autosoft">Autosoft</gear>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
@@ -2654,6 +2656,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<weapons>
 				<weapon>
 					<name>Colt Cobra TZ-120</name>
@@ -2684,6 +2687,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<weapons>
 			</weapons>
 			<mods>
@@ -2708,6 +2712,7 @@
 			<armor>0</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
+			<modslots>1</modslots>
 			<weapons>
 			</weapons>
 			<mods>
@@ -2732,6 +2737,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
+			<modslots>1</modslots>
 			<weapons>
 			</weapons>
 			<mods>
@@ -2759,6 +2765,7 @@
 			<armor>3</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<modslots>1</modslots>
 			<weapons>
 				<weapon>
 					<name>Defiance EX Shocker</name>
@@ -2788,6 +2795,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
+			<modslots>1</modslots>
 			<weapons>
 			</weapons>
 			<mods>
@@ -2814,10 +2822,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>4</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2838,10 +2843,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>1</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2862,8 +2864,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Small Weapon Mount (Drone)</name>
 			</mods>
@@ -2889,8 +2890,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Standard Weapon Mount (Drone)</name>
 				<name>Immobile (Drone)</name>
@@ -2915,10 +2915,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2939,10 +2936,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2963,10 +2957,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -2987,10 +2978,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3011,10 +2999,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3035,10 +3020,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3059,10 +3041,7 @@
 			<armor>0</armor>
 			<sensor>1</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>3</modslots>
 			<gears>
 				<gear rating="1" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3083,10 +3062,7 @@
 			<armor>3</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="3" select="Electronic Warfare">Autosoft</gear>
 				<gear rating="4">Jammer, Directional</gear>
@@ -3110,10 +3086,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3134,14 +3107,15 @@
 			<armor>2</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Small Weapon Mount (Drone)</name>
 			</mods>
 			<gears>
 				<gear rating="3" maxrating="3">Sensor Array</gear>
-				<gear select="Nautical">Tool Kit</gear>
+				<gear select="Nautical Mechanic">Tool Kit</gear>
+				<gear>Plasma Torch</gear>
+				<gear>Ink Pouch</gear>
 			</gears>
 			<avail>18F</avail>
 			<cost>10000</cost>
@@ -3160,10 +3134,7 @@
 			<armor>0</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="4" maxrating="4">Sensor Array</gear>
 				<gear rating="6">Geiger Counter</gear>
@@ -3186,10 +3157,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>1</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 				<gear rating="6">Radio Signal Scanner</gear>
@@ -3211,10 +3179,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>1</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3261,10 +3226,7 @@
 			<armor>0</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>1</modslots>
 			<gears>
 				<gear rating="2" maxrating="3">Sensor Array</gear>
 			</gears>
@@ -3285,10 +3247,7 @@
 			<armor>4</armor>
 			<sensor>8</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear>Quicksilver Camera</gear>
 				<gear rating="8" maxrating="8">Sensor Array</gear>
@@ -3318,10 +3277,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="2" maxrating="4">Sensor Array</gear>
 			</gears>
@@ -3342,8 +3298,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>1</modslots>
 			<mods>
 				<name>Amphibious (Drone)</name>
 			</mods>
@@ -3391,10 +3346,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>2</modslots>
 			<gears>
 				<gear rating="2" maxrating="4">Sensor Array</gear>
 			</gears>
@@ -3415,6 +3367,7 @@
 			<armor>9</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<mods>
 				<name>Mini Weapon Mount (Drone)</name>
 			</mods>
@@ -3441,10 +3394,7 @@
 			<armor>0</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>1</modslots>
 			<gears>
 				<gear rating="4" maxrating="4">Sensor Array</gear>
 			</gears>
@@ -3489,8 +3439,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>3</modslots>
 			<mods>
 				<name>Drone Arm</name>
 			</mods>
@@ -3514,10 +3463,7 @@
 			<armor>18</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>0</modslots>
 			<gears>
 				<gear rating="2" maxrating="5">Sensor Array</gear>
 			</gears>
@@ -3538,10 +3484,7 @@
 			<armor>5</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
-			<mods>
-			</mods>
+			<modslots>2</modslots>
 			<gears>
 				<gear rating="4" maxrating="5">Sensor Array</gear>
 				<gear rating="6">Medkit</gear>
@@ -3563,8 +3506,7 @@
 			<armor>6</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Standard Drone Rack (Mini)</name>
 				<name>Standard Drone Rack (Mini)</name>
@@ -3591,8 +3533,7 @@
 			<armor>3</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Submersible (Drone)</name>
 				<name>Searchlight</name>
@@ -3617,8 +3558,7 @@
 			<armor>9</armor>
 			<sensor>4</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Standard Weapon Mount (Drone)</name>
 			</mods>
@@ -3645,8 +3585,7 @@
 			<armor>18</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Heavy Weapon Mount (Drone)</name>
 			</mods>
@@ -3672,8 +3611,7 @@
 			<armor>18</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Heavy Weapon Mount (Drone)</name>
 			</mods>
@@ -3699,6 +3637,7 @@
 			<armor>18</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<modslots>0</modslots>
 			<mods>
 				<name>Large Weapon Mount (Drone)</name>
 			</mods>
@@ -3727,8 +3666,7 @@
 			<armor>12</armor>
 			<sensor>2</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>2</modslots>
 			<mods>
 				<name>Drone Arm</name>
 			</mods>
@@ -3753,8 +3691,7 @@
 			<armor>12</armor>
 			<sensor>6</sensor>
 			<seats>0</seats>
-			<weapons>
-			</weapons>
+			<modslots>0</modslots>
 			<mods>
 				<name>Heavy Weapon Mount (Drone)</name>
 			</mods>
@@ -5051,6 +4988,7 @@
 			<armor>4</armor>
 			<sensor>3</sensor>
 			<seats>0</seats>
+			<modslots>7</modslots>
 			<mods>
 				<addslots>3</addslots>
 			</mods>
