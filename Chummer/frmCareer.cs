@@ -25605,11 +25605,59 @@ namespace Chummer
 				lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
 
 				// Update the vehicle mod slots
-				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+				if (_objOptions.BookEnabled("R5"))
 				{
-					lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
-					lblVehicleDroneModSlots.Visible = true;
-					lblVehicleDroneModSlotsLabel.Visible = true;
+					lblVehicleSlots.Text = "";
+					lblVehicleSlotsLabel.Visible = false;
+
+					if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+					{
+						lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
+						lblVehicleDroneModSlots.Visible = true;
+						lblVehicleDroneModSlotsLabel.Visible = true;
+						lblVehiclePowertrain.Visible = false;
+						lblVehicleCosmetic.Visible = false;
+						lblVehicleElectromagnetic.Visible = false;
+						lblVehicleBodymod.Visible = false;
+						lblVehicleWeaponsmod.Visible = false;
+						lblVehicleProtection.Visible = false;
+						lblVehiclePowertrainLabel.Visible = false;
+						lblVehicleCosmeticLabel.Visible = false;
+						lblVehicleElectromagneticLabel.Visible = false;
+						lblVehicleBodymodLabel.Visible = false;
+						lblVehicleWeaponsmodLabel.Visible = false;
+						lblVehicleProtectionLabel.Visible = false;
+					}
+					else
+					{
+						lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
+						lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
+						lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
+						lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
+						lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
+						lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
+
+						lblVehicleDroneModSlots.Visible = false;
+						lblVehicleDroneModSlotsLabel.Visible = false;
+						lblVehiclePowertrain.Visible = true;
+						lblVehicleCosmetic.Visible = true;
+						lblVehicleElectromagnetic.Visible = true;
+						lblVehicleBodymod.Visible = true;
+						lblVehicleWeaponsmod.Visible = true;
+						lblVehicleProtection.Visible = true;
+						lblVehiclePowertrainLabel.Visible = true;
+						lblVehicleCosmeticLabel.Visible = true;
+						lblVehicleElectromagneticLabel.Visible = true;
+						lblVehicleBodymodLabel.Visible = true;
+						lblVehicleWeaponsmodLabel.Visible = true;
+						lblVehicleProtectionLabel.Visible = true;
+					}
+				}
+				else
+				{
+					lblVehicleDroneModSlots.Text = "";
+					lblVehicleDroneModSlots.Visible = false;
+					lblVehicleDroneModSlotsLabel.Visible = false;
 					lblVehiclePowertrain.Visible = false;
 					lblVehicleCosmetic.Visible = false;
 					lblVehicleElectromagnetic.Visible = false;
@@ -25622,36 +25670,13 @@ namespace Chummer
 					lblVehicleBodymodLabel.Visible = false;
 					lblVehicleWeaponsmodLabel.Visible = false;
 					lblVehicleProtectionLabel.Visible = false;
+					lblVehicleSlotsLabel.Visible = true;
+					lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				}
-				else
-				{
-					lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
-					lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
-					lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
-					lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
-					lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
-					lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
 
-					lblVehicleDroneModSlots.Visible = false;
-					lblVehicleDroneModSlotsLabel.Visible = false;
-					lblVehiclePowertrain.Visible = true;
-					lblVehicleCosmetic.Visible = true;
-					lblVehicleElectromagnetic.Visible = true;
-					lblVehicleBodymod.Visible = true;
-					lblVehicleWeaponsmod.Visible = true;
-					lblVehicleProtection.Visible = true;
-					lblVehiclePowertrainLabel.Visible = true;
-					lblVehicleCosmeticLabel.Visible = true;
-					lblVehicleElectromagneticLabel.Visible = true;
-					lblVehicleBodymodLabel.Visible = true;
-					lblVehicleWeaponsmodLabel.Visible = true;
-					lblVehicleProtectionLabel.Visible = true;
-				}
-				
-                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
+				lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
 				UpdateSensor(objVehicle);
 
-				lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
 				string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
 				string strPage = objVehicle.Page;
 				lblVehicleSource.Text = strBook + " " + strPage;

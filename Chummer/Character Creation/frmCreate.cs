@@ -19456,8 +19456,21 @@ namespace Chummer
 				DisplayVehicleWeaponStats(false);
 				DisplayVehicleCommlinkStats(false);
 				DisplayVehicleStats(true);
-				DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
-				DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				if (_objOptions.BookEnabled("R5"))
+				{
+					lblVehicleSlotsLabel.Visible = false;
+					lblVehicleSlots.Visible = false;
+
+					DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+					DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				}
+				else
+				{
+					DisplayVehicleMods(false);
+					DisplayVehicleDroneMods(false);
+					lblVehicleSlotsLabel.Visible = true;
+					lblVehicleSlots.Visible = true;
+				}
 				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
