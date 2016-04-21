@@ -9523,6 +9523,26 @@
 			<page>153</page>
 		</gear>
 		<gear>
+			<id>304ac4ee-96aa-400d-a376-1ba699c94438</id>
+			<name>Carcerand-plus</name>
+			<category>Nanogear</category>
+			<rating>6</rating>
+			<avail>10F</avail>
+			<cost>Rating * 3000</cost>
+			<source>CF</source>
+			<page>149</page>
+		</gear>
+		<gear>
+			<id>cb64363f-c918-4cb1-9640-2c037a63bfe2</id>
+			<name>Cutters</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>4000</cost>
+			<source>CF</source>
+			<page>155</page>
+		</gear>
+		<gear>
 			<id>ab07341f-b49b-4002-bd9a-be809e7fc181</id>
 			<name>Etchers</name>
 			<category>Nanogear</category>
@@ -9533,6 +9553,19 @@
 			<page>153</page>
 		</gear>
 		<gear>
+			<id>bb0be5c4-90c4-4dbe-ae4b-76e3680f1952</id>
+			<name>Nantidotes</name>
+			<category>Nanogear</category>
+			<rating>9</rating>
+			<avail>8F</avail>
+			<cost>Rating * 1500</cost>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>149</page>
+		</gear>
+		<gear>
 			<id>40b7ac95-e4ba-4651-a348-fe277fac52bc</id>
 			<name>Monowire (Per Metre)</name>
 			<category>Nanogear</category>
@@ -9541,6 +9574,26 @@
 			<cost>1000</cost>
 			<source>CF</source>
 			<page>152</page>
+		</gear>
+		<gear>
+			<id>07d7b16b-9ae5-4cb2-b364-9da3f211516b</id>
+			<name>Hard Nanohive Supplies</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>(Rating*5)R</avail>
+			<cost>Rating*500</cost>
+			<source>CF</source>
+			<page>151</page>
+		</gear>
+		<gear>
+			<id>4a9061f4-fc66-48e1-bbd0-80241896d356</id>
+			<name>Intruders</name>
+			<category>Nanogear</category>
+			<rating>0</rating>
+			<avail>12F</avail>
+			<cost>3000</cost>
+			<source>CF</source>
+			<page>155</page>
 		</gear>
 		<gear>
 			<id>6bc81c68-d84b-435d-b441-660e4b18f2e8</id>
