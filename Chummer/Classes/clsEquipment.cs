@@ -13708,6 +13708,7 @@ namespace Chummer
 		private string _strPage = "";
 		private string _strVehicleName = "";
 		private int _intAddSlots = 0;
+		private int _intModSlots = 0;
 		private int _intDeviceRating = 3;
 		private bool _blnHomeNode = false;
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
@@ -13777,7 +13778,15 @@ namespace Chummer
             catch
             {
             }
-            _strAvail = objXmlVehicle["avail"].InnerText;
+			try
+			{
+				_intModSlots = Convert.ToInt32(objXmlVehicle["modslots"].InnerText);
+			}
+			catch (NullReferenceException e)
+			{
+				_intModSlots = _intBody;
+			}
+			_strAvail = objXmlVehicle["avail"].InnerText;
 			_strCost = objXmlVehicle["cost"].InnerText;
             // Check for a Variable Cost.
             if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
@@ -14033,6 +14042,7 @@ namespace Chummer
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
+			objWriter.WriteElementString("modslots", _intModSlots.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
@@ -14113,6 +14123,7 @@ namespace Chummer
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			objNode.TryGetField("addslots", out _intAddSlots);
+			objNode.TryGetField("modslots", out _intModSlots);
 			_strSource = objNode["source"].InnerText;
 			objNode.TryGetField("page", out _strPage);
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
@@ -14956,13 +14967,13 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Number of Slots the Drone has for Modifications.
+		/// Total Number of Slots the Drone has for Modifications.
 		/// </summary>
 		public int DroneModSlots
 		{
 			get
 			{
-				int intDroneModSlots = TotalBody + _intAddSlots;
+				int intDroneModSlots = _intModSlots;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
