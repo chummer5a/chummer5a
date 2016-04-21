@@ -38,6 +38,7 @@
 			this.cboType = new System.Windows.Forms.ComboBox();
 			this.lblRating = new System.Windows.Forms.Label();
 			this.lblName = new System.Windows.Forms.Label();
+			this.lblSpec = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -69,9 +70,10 @@
 			// lblModifiedRating
 			// 
 			this.lblModifiedRating.AutoSize = true;
+			this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblModifiedRating.Location = new System.Drawing.Point(294, 4);
 			this.lblModifiedRating.Name = "lblModifiedRating";
-			this.lblModifiedRating.Size = new System.Drawing.Size(13, 13);
+			this.lblModifiedRating.Size = new System.Drawing.Size(14, 13);
 			this.lblModifiedRating.TabIndex = 16;
 			this.lblModifiedRating.Text = "0";
 			// 
@@ -142,10 +144,21 @@
 			this.lblName.Text = "[NAME]";
 			this.lblName.Visible = false;
 			// 
+			// lblSpec
+			// 
+			this.lblSpec.AutoSize = true;
+			this.lblSpec.Location = new System.Drawing.Point(313, 4);
+			this.lblSpec.Name = "lblSpec";
+			this.lblSpec.Size = new System.Drawing.Size(41, 13);
+			this.lblSpec.TabIndex = 24;
+			this.lblSpec.Text = "[SPEC]";
+			this.lblSpec.Visible = false;
+			// 
 			// KnowledgeSkillControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.lblSpec);
 			this.Controls.Add(this.lblName);
 			this.Controls.Add(this.lblRating);
 			this.Controls.Add(this.cboType);
@@ -179,5 +192,6 @@
 		private System.Windows.Forms.ComboBox cboType;
 		private System.Windows.Forms.Label lblRating;
 		private System.Windows.Forms.Label lblName;
+		private System.Windows.Forms.Label lblSpec;
 	}
 }

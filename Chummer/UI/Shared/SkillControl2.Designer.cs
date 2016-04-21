@@ -91,16 +91,17 @@
 			// lblModifiedRating
 			// 
 			this.lblModifiedRating.AutoSize = true;
-			this.lblModifiedRating.Location = new System.Drawing.Point(246, 4);
+			this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblModifiedRating.Location = new System.Drawing.Point(256, 4);
 			this.lblModifiedRating.Name = "lblModifiedRating";
-			this.lblModifiedRating.Size = new System.Drawing.Size(13, 13);
+			this.lblModifiedRating.Size = new System.Drawing.Size(14, 13);
 			this.lblModifiedRating.TabIndex = 16;
 			this.lblModifiedRating.Text = "0";
 			// 
 			// cboSpec
 			// 
 			this.cboSpec.FormattingEnabled = true;
-			this.cboSpec.Location = new System.Drawing.Point(280, 1);
+			this.cboSpec.Location = new System.Drawing.Point(310, 1);
 			this.cboSpec.Name = "cboSpec";
 			this.cboSpec.Size = new System.Drawing.Size(172, 21);
 			this.cboSpec.Sorted = true;
@@ -117,9 +118,9 @@
 			// 
 			// cmdDelete
 			// 
-			this.cmdDelete.Location = new System.Drawing.Point(479, -1);
+			this.cmdDelete.Location = new System.Drawing.Point(488, 0);
 			this.cmdDelete.Name = "cmdDelete";
-			this.cmdDelete.Size = new System.Drawing.Size(75, 23);
+			this.cmdDelete.Size = new System.Drawing.Size(71, 23);
 			this.cmdDelete.TabIndex = 19;
 			this.cmdDelete.Tag = "String_Delete";
 			this.cmdDelete.Text = "Delete";
@@ -150,7 +151,7 @@
 			// lblCareerSpec
 			// 
 			this.lblCareerSpec.AutoSize = true;
-			this.lblCareerSpec.Location = new System.Drawing.Point(280, 4);
+			this.lblCareerSpec.Location = new System.Drawing.Point(290, 4);
 			this.lblCareerSpec.Name = "lblCareerSpec";
 			this.lblCareerSpec.Size = new System.Drawing.Size(35, 13);
 			this.lblCareerSpec.TabIndex = 22;
@@ -160,7 +161,7 @@
 			// btnAddSpec
 			// 
 			this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
-			this.btnAddSpec.Location = new System.Drawing.Point(452, -2);
+			this.btnAddSpec.Location = new System.Drawing.Point(535, -2);
 			this.btnAddSpec.Name = "btnAddSpec";
 			this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
 			this.btnAddSpec.TabIndex = 23;

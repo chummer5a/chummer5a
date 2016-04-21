@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 using Chummer.Skills;
 
 namespace Chummer.UI.Shared
@@ -31,7 +32,6 @@ namespace Chummer.UI.Shared
 
 			if (skill.CharacterObject.Created)
 			{
-				//TODO: Change display to play mode
 				nudKarma.Visible = false;
 				nudSkill.Visible = false;
 
@@ -43,11 +43,22 @@ namespace Chummer.UI.Shared
 				lblName.Visible = true;
 				lblName.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
+				lblSpec.Visible = true;
+				lblSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
 				cboSkill.Visible = false;
 				chkKarma.Visible = false;
 				cboSpec.Visible = false;
 
+				lblModifiedRating.Location = new Point(294 - 30, 4);
+				
 
+				skill.PropertyChanged += (sender, args) =>
+				{
+					if (args.PropertyName == nameof(Skill.Specializations))
+					{
+						lblSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
+					}
+				};
 			}
 			else
 			{

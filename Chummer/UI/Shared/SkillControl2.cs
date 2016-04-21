@@ -35,6 +35,8 @@ namespace Chummer.UI.Shared
 
 			if (skill.CharacterObject.Created)
 			{
+				lblModifiedRating.Location = new Point(256 - 13, 4);
+
 				lblCareerRating.DataBindings.Add("Text", skill, nameof(Skill.Rating), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				lblCareerRating.Visible = true;
@@ -47,9 +49,7 @@ namespace Chummer.UI.Shared
 				chkKarma.Visible = false;
 
 				cboSpec.Visible = false;
-				lblCareerSpec.Text = string.Join(", ", 
-					(from specialization in skill.Specializations
-					 select specialization.Name));
+				lblCareerSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
 				lblCareerSpec.Visible = true;
 
 				btnAddSpec.Visible = skill.Leveled;
@@ -94,6 +94,11 @@ namespace Chummer.UI.Shared
 				cmdDelete.Visible = true;
 				cmdDelete.Click += (sender, args) => { skill.CharacterObject.Skills.Remove(skill); };
 
+				if (skill.CharacterObject.Created)
+				{
+					btnCareerIncrease.Location = new Point(btnCareerIncrease.Location.X - cmdDelete.Width, btnCareerIncrease.Location.Y); 
+				}
+
 				//TODO Align?
 			}
 			else
@@ -115,6 +120,9 @@ namespace Chummer.UI.Shared
 					all = true;
 					goto case nameof(Skill.Leveled);
 
+				case nameof(Skill.DisplayPool):
+					all = true;
+					goto case nameof(Skill.PoolToolTip);
 
 				case nameof(Skill.Leveled):
 					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;

@@ -1843,7 +1843,7 @@ namespace Chummer
 			
 			CalculateBP();
 			UpdateWindowTitle();
-			UpdateCharacterInfo();
+			UpdateSkillRelatedInfo();
 		}
         #endregion
 
@@ -15031,6 +15031,19 @@ namespace Chummer
             lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.Instance.GetString("String_Remaining") + ")", strRemain, intMAG);
         }
 
+		private void UpdateSkillRelatedInfo()
+		{
+			//Update Skill Labels
+			//Active skills
+			lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints, _objCharacter.SkillPointsMaximum);
+
+			//Knowledge skills
+			lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
+
+			//Groups
+			lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);
+		}
+
         /// <summary>
         /// Update the Character information.
         /// </summary>
@@ -15095,21 +15108,9 @@ namespace Chummer
                 else
                     _objCharacter.ContactPoints = 0;
 
-               
-
-                //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
-
-				//TODO: Change order of this and kno, Wastefull but possible to use SP for KNO
-                // Update the character's Skill information.
-               lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints, _objCharacter.SkillPointsMaximum);
+				UpdateSkillRelatedInfo();
 
                 
-
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
-
-                // Update the character's skill group information.
-                lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);
 
                 // Condition Monitor.
                 double dblBOD = _objCharacter.BOD.TotalValue;
@@ -15523,7 +15524,7 @@ namespace Chummer
                 }
 
                 // Movement.
-                lblMovement.Text = _objCharacter.Movement;
+                lblMovement.Text = _objCharacter.Movement;  //TODO: don't we do some of this in the start?
                 lblSwim.Text = _objCharacter.Swim;
                 lblFly.Text = _objCharacter.Fly;
 				strTip = _objCharacter.CalculatedMovement;
@@ -23457,11 +23458,12 @@ namespace Chummer
                 }
             }
 
-            _objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
+			_objCharacter.CHA.Base = Convert.ToInt32(nudCHA.Value);
             _objCharacter.CHA.Karma = Convert.ToInt32(nudKCHA.Value);
-            _objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
+			_objCharacter.CHA.Value = Convert.ToInt32(nudCHA.Value) + Convert.ToInt32(nudKCHA.Value);
 
-            UpdateCharacterInfo();
+
+			UpdateCharacterInfo();
             CalculateBP();
             _blnIsDirty = true;
             UpdateWindowTitle();
