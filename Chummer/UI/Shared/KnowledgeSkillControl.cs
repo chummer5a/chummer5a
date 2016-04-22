@@ -1,21 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Windows.Navigation;
 using Chummer.Skills;
 
 namespace Chummer.UI.Shared
 {
 	public partial class KnowledgeSkillControl : UserControl
 	{
-		private static double total = 0;
-		private KnowledgeSkill skill;
+		private readonly KnowledgeSkill skill;
 		public KnowledgeSkillControl(KnowledgeSkill skill)
 		{
 			this.skill = skill;
@@ -50,7 +43,9 @@ namespace Chummer.UI.Shared
 				cboSpec.Visible = false;
 
 				lblModifiedRating.Location = new Point(294 - 30, 4);
-				
+
+				btnAddSpec.Visible = true;
+				btnCareerIncrease.Visible = true;
 
 				skill.PropertyChanged += (sender, args) =>
 				{
@@ -115,18 +110,48 @@ namespace Chummer.UI.Shared
 
 			cmdDelete.Click += (sender, args) => { skill.CharacterObject.KnowledgeSkills.Remove(skill); };
 
-
-
 		}
 
-		private void KnowledgeSkillControl_Load(object sender, EventArgs e)
+		private void btnAddSpec_Click(object sender, EventArgs e)
 		{
-			
+			frmCareer parrent = ParentForm as frmCareer;
+			if (parrent != null)
+			{
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
+					skill.DisplayName, skill.Rating + 1, skill.UpgradeKarmaCost());
+
+				if (!parrent.ConfirmKarmaExpense(confirmstring))
+					return;
+			}
+
+			skill.Upgrade();
 		}
 
-		private void KnowledgeSkillControl_DoubleClick(object sender, EventArgs e)
+		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
+			frmCareer parrent = ParentForm as frmCareer;
+			if (parrent != null)
+			{
+				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
+						skill.CharacterObject.Options.KarmaSpecialization);
 
+				if (!parrent.ConfirmKarmaExpense(confirmstring))
+					return;
+			}
+
+			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			selectForm.ShowDialog();
+
+			if (selectForm.DialogResult != DialogResult.OK) return;
+
+			skill.AddSpecialization(selectForm.SelectedItem);
+
+			//TODO turn this into a databinding, but i don't care enough right now
+			lblSpec.Text = string.Join(", ",
+					(from specialization in skill.Specializations
+					 select specialization.Name));
+
+			parrent?.UpdateCharacterInfo();
 		}
 	}
 }

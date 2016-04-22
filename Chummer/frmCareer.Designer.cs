@@ -250,6 +250,8 @@ namespace Chummer
 			this.treQualities = new Chummer.helpers.TreeView();
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
 			this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
+			this.tabSkills = new System.Windows.Forms.TabPage();
+			this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
 			this.lblAstral = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
@@ -1160,8 +1162,6 @@ namespace Chummer
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabSkills = new System.Windows.Forms.TabPage();
-	        this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1171,6 +1171,7 @@ namespace Chummer
 			this.tabEnemies.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).BeginInit();
+			this.tabSkills.SuspendLayout();
 			this.tabLimits.SuspendLayout();
 			this.tabMartialArts.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
@@ -3493,7 +3494,27 @@ namespace Chummer
 			this.lblMysticAdeptMAGAdept.TabIndex = 58;
 			this.lblMysticAdeptMAGAdept.Text = "[0]";
 			this.lblMysticAdeptMAGAdept.Visible = false;
-
+			// 
+			// tabSkills
+			// 
+			this.tabSkills.Controls.Add(this.tabSkillsUc);
+			this.tabSkills.Location = new System.Drawing.Point(4, 22);
+			this.tabSkills.Name = "tabSkills";
+			this.tabSkills.Padding = new System.Windows.Forms.Padding(3);
+			this.tabSkills.Size = new System.Drawing.Size(838, 611);
+			this.tabSkills.TabIndex = 17;
+			this.tabSkills.Tag = "Tab_Skills";
+			this.tabSkills.Text = "Skills";
+			this.tabSkills.UseVisualStyleBackColor = true;
+			// 
+			// tabSkillsUc
+			// 
+			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillsUc.Location = new System.Drawing.Point(3, 3);
+			this.tabSkillsUc.Name = "tabSkillsUc";
+			this.tabSkillsUc.ObjCharacter = null;
+			this.tabSkillsUc.Size = new System.Drawing.Size(832, 605);
+			this.tabSkillsUc.TabIndex = 1;
 			// 
 			// tabLimits
 			// 
@@ -13846,27 +13867,6 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// tabSkills
-			// 
-			this.tabSkills.Controls.Add(tabSkillsUc);
-			this.tabSkills.Location = new System.Drawing.Point(4, 22);
-			this.tabSkills.Name = "tabSkills";
-			this.tabSkills.Padding = new System.Windows.Forms.Padding(3);
-			this.tabSkills.Size = new System.Drawing.Size(838, 611);
-			this.tabSkills.TabIndex = 17;
-			this.tabSkills.Tag = "Tab_Skills";
-			this.tabSkills.Text = "Skills";
-			this.tabSkills.UseVisualStyleBackColor = true;
-			//
-			// tabSkillsUc
-			//
-			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
-			this.tabSkillsUc.Name = "tabSkillsUc";
-			this.tabSkillsUc.ObjCharacter = null;
-			this.tabSkillsUc.Size = new System.Drawing.Size(838, 611);
-			this.tabSkillsUc.TabIndex = 1;
-			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -13900,6 +13900,7 @@ namespace Chummer
 			this.tabEnemies.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).EndInit();
+			this.tabSkills.ResumeLayout(false);
 			this.tabLimits.ResumeLayout(false);
 			this.tabLimits.PerformLayout();
 			this.tabMartialArts.ResumeLayout(false);

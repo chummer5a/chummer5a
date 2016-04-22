@@ -9,20 +9,20 @@ namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{
-		private bool _allowVisible;
+		//private bool _allowVisible;
 
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
-			_spec.Clear();
+			//SuggestedSpecializations.Clear();
 
-			// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-			XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-			XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes($"/chummer/weapons/weapon[category = \"{node["name"].InnerText}s\" or useskill = \"{node["name"].InnerText}\"]");
-			foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-				_spec.Add(new ListItem(objXmlWeapon["name"].InnerText, 
-					objXmlWeapon.Attributes["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText));
+			//// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
+			//XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
+			//XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes($"/chummer/weapons/weapon[category = \"{node["name"].InnerText}s\" or useskill = \"{node["name"].InnerText}\"]");
+			//foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+			//	SuggestedSpecializations.Add(new ListItem(objXmlWeapon["name"].InnerText, 
+			//		objXmlWeapon.Attributes["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText));
 
-			_allowVisible = !CharacterObject.Created;
+			//_allowVisible = !CharacterObject.Created;
 		}
 
 		public override bool AllowDelete

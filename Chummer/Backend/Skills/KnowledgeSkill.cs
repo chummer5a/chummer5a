@@ -59,7 +59,7 @@ namespace Chummer.Skills
 		{
 			AttributeObject = character.GetAttribute("LOG");
 			_type = "";
-			_spec = new List<ListItem>();
+			SuggestedSpecializations = new List<ListItem>();
 		}
 		
 		public List<ListItem> KnowledgeSkillCatagories
@@ -87,13 +87,13 @@ namespace Chummer.Skills
 				if (NameCategoryMap.ContainsKey(_name))
 				{
 					Type = NameCategoryMap[_name];
-					_spec.Clear();
+					SuggestedSpecializations.Clear();
 
 					XmlNodeList list =
 						XmlManager.Instance.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{_name}\"]/specs/spec");
 					foreach (XmlNode node in list)
 					{
-						_spec.Add(ListItem.AutoXml(node.InnerText, node));
+						SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
 					}
 					OnPropertyChanged(nameof(CGLSpecializations));
 					OnPropertyChanged(nameof(Type));

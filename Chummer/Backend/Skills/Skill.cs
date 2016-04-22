@@ -26,7 +26,7 @@ namespace Chummer.Skills
 		protected readonly string Category; //Name of the skill category it belongs to
 		protected readonly string _group;  //Name of the skill group this skill belongs to (remove?)
 		protected string _name;  //English name of this skill
-		protected List<ListItem> _spec;  //List of suggested specializations for this skill
+		protected List<ListItem> SuggestedSpecializations;  //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 
 
@@ -112,7 +112,9 @@ namespace Chummer.Skills
 
 				if (node == null) return null;
 
-				skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) : new Skill(character, node);
+				skill = node["exotic"]?.InnerText == "Yes"
+					? new ExoticSkill(character, node)
+					: new Skill(character, node);
 			}
 			else  //This is ugly but i'm not sure how to make it pretty
 			{
@@ -290,10 +292,10 @@ namespace Chummer.Skills
 
 			AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
 
-			_spec = new List<ListItem>();
+			SuggestedSpecializations = new List<ListItem>();
 			foreach (XmlNode node in n["specs"].ChildNodes)
 			{
-				_spec.Add(ListItem.AutoXml(node.InnerText, node));
+				SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
 			}
 		}
 
@@ -363,7 +365,6 @@ namespace Chummer.Skills
 		public virtual bool ExoticSkill
 		{
 			get { return false; }
-			set { } //TODO REFACTOR AWAY
 		}
 
 		public virtual bool KnowledgeSkill
@@ -397,7 +398,7 @@ namespace Chummer.Skills
 			get { return Category; }
 		}
 
-		public IReadOnlyList<ListItem> CGLSpecializations { get { return _spec; } } 
+		public IReadOnlyList<ListItem> CGLSpecializations { get { return SuggestedSpecializations; } } 
 
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
 		//Or just ignore support for multiple specizalizations even if the rules say it is possible?

@@ -113,6 +113,8 @@ namespace Chummer
                 }
 			}
 		}
+
+
 		#endregion
 
 		private void BuildList()

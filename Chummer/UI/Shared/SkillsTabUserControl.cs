@@ -227,6 +227,13 @@ namespace Chummer.UI.Shared
 
 		private void btnExotic_Click(object sender, EventArgs e)
 		{
+			if (_character.Options.KarmaNewActiveSkill > _character.Karma)
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"));
+				return;
+			}
+
+
 			XmlDocument document = XmlManager.Instance.Load("skills.xml");
 			frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill();
 			frmPickExoticSkill.ShowDialog(this);
@@ -236,7 +243,11 @@ namespace Chummer.UI.Shared
 
 			XmlNode node =
 				document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
-			ObjCharacter.Skills.Add(new ExoticSkill(ObjCharacter, node));
+
+			ExoticSkill skill = new ExoticSkill(ObjCharacter, node);
+			skill.Specializations.Add(new SkillSpecialization(frmPickExoticSkill.SelectedExoticSkillSpecialisation, true));
+			skill.Upgrade();
+			ObjCharacter.Skills.Add(skill);
 		}
 
 		private void UpdateKnoSkillRemaining()

@@ -130,8 +130,13 @@ namespace Chummer
 		private void frmCareer_Load(object sender, EventArgs e)
 		{
 			Timekeeper.Finish("load_free");
+
 			Timekeeper.Start("load_frm_career");
 			_blnLoading = true;
+
+			_objCharacter.PropertyChanged += _objCharacter_PropertyChanged;
+
+			_objCharacter_PropertyChanged(null, null);
 
 			// Remove the Magician, Adept, and Technomancer tabs since they are not in use until the appropriate Quality is selected.
 			if (!_objCharacter.MagicianEnabled)
@@ -1114,6 +1119,23 @@ namespace Chummer
 			this.Icon = this.Icon.Clone() as System.Drawing.Icon;
 			Timekeeper.Finish("load_frm_career");
 			Timekeeper.Finish("loading");
+		}
+
+		
+		private void _objCharacter_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			//Self implemented one way databinding workaround. Ugly and should probably be done in a better way. (One day...)
+			bool all = false;
+			switch (e?.PropertyName)
+			{
+				case null:
+					all = true;
+					goto case nameof(Character.Karma);
+
+				case nameof(Character.Karma):
+					tssKarma.Text = _objCharacter.Karma.ToString();
+					break;
+			}
 		}
 
 		private void frmCareer_FormClosing(object sender, FormClosingEventArgs e)
@@ -21678,8 +21700,7 @@ namespace Chummer
 				// Update the Nuyen and Karma for the character.
 				tssNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.Nuyen);
 				lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", _objCharacter.Nuyen);
-				tssKarma.Text = _objCharacter.Karma.ToString();
-
+				
 				PopulateExpenseList();
 
 				// Movement.

@@ -51,12 +51,20 @@ namespace Chummer.UI.Shared
 				cboSpec.Visible = false;
 				lblCareerSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
 				lblCareerSpec.Visible = true;
+				
 
-				btnAddSpec.Visible = skill.Leveled;
-				skill.PropertyChanged += VisibleDatabindingBrokenWorkaround;
+				if (skill.ExoticSkill)
+				{
+					btnAddSpec.Visible = false;
+				}
+				else
+				{
+					btnAddSpec.Visible = skill.Leveled;
+					skill.PropertyChanged += VisibleDatabindingBrokenWorkaround;
 
-				btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
+					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
 					DataSourceUpdateMode.OnPropertyChanged);
+				}
 			}
 			else
 			{
@@ -96,7 +104,7 @@ namespace Chummer.UI.Shared
 
 				if (skill.CharacterObject.Created)
 				{
-					btnCareerIncrease.Location = new Point(btnCareerIncrease.Location.X - cmdDelete.Width, btnCareerIncrease.Location.Y); 
+					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y); 
 				}
 
 				//TODO Align?
@@ -105,6 +113,8 @@ namespace Chummer.UI.Shared
 			{
 				cmdDelete.Visible = false;
 			}
+
+			
 		}
 
 		private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -155,6 +165,8 @@ namespace Chummer.UI.Shared
 
 		private void VisibleDatabindingBrokenWorkaround(object sender, PropertyChangedEventArgs e)
 		{
+			//TO A FUTURE MAINTAINER: This is only used by btnAddSpec and therefore not added
+			//If the skill is an exotic skill. Hope i saved you some time debugging
 			if (e.PropertyName == nameof(Skill.Leveled))
 			{
 				btnAddSpec.Visible = skill.Leveled;
