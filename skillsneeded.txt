@@ -14,41 +14,49 @@ Events need unsubscribe or memory leak (wth cares?) (i think)
 
 To test
 Ware
-Mnemonic Enhancer
-Reflex recorder
-
-Skillwires
-Move by wire
-Skilljack
-Active Hardwires
+-Mnemonic Enhancer
+-Reflex recorder
+-Skillwires
+-Move by wire
+-Skilljack
+-Active Hardwires
 
 
 Magic
-Improved Ability
-Lots of domain specific stuff
-Mentor spirits
+-Improved Ability
+-Lots of skill specific powers such as Enhanced Perception
+-Mentor spirits
 
 Qualities
-Generic (Catlike, Double-Jointed, Natural Athlete, Perfect Time, Sense of direction), Water sprite, Trustworthy)
-Generic Group(Grease Monkey, Vehicle Empathy)
-Jack of all trades
-Linguist, Technical school education
-School of hard knocks
-Aged
-Deaf, Blind (Technically they don't do anything right now, gives general modifier to perception tests)
-Dimmer Bulb
-Illiterate
-Incompetent
-Loss of confidence
-Oblivious
-Quasimodo
-Superhuman psychosis
-Uncouth
-Uneducated
+-Catlike
+-Double-Jointed
+-Natural Athlete
+-Perfect Time
+-Sense of direction
+-Water sprite
+-Trustworthy
+-Grease Monkey
+-Vehicle Empathy
+-Jack of all trades
+-Linguist
+-Technical school education
+-School of hard knocks
+-Aged
+-Dimmer Bulb
+-Illiterate
+-Incompetent
+-Loss of confidence
+-Oblivious
+-Quasimodo
+-Superhuman psychosis
+-Uncouth
+-Uneducated
 
 
 Wounds
-+Damage compensator
-+High pain tolerance
+-Damage compensator
+-High pain tolerance
 
-Drugs/BTL can too, but that is not supported in chummer
+Testers bug
+Aspected magicans can take skills they should not be able to take
+Perceptive quality don't give assensing
