@@ -19456,8 +19456,21 @@ namespace Chummer
 				DisplayVehicleWeaponStats(false);
 				DisplayVehicleCommlinkStats(false);
 				DisplayVehicleStats(true);
-				DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
-				DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				if (_objOptions.BookEnabled("R5"))
+				{
+					lblVehicleSlotsLabel.Visible = false;
+					lblVehicleSlots.Visible = false;
+
+					DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+					DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				}
+				else
+				{
+					DisplayVehicleMods(false);
+					DisplayVehicleDroneMods(false);
+					lblVehicleSlotsLabel.Visible = true;
+					lblVehicleSlots.Visible = true;
+				}
 				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
@@ -21500,12 +21513,33 @@ namespace Chummer
                 // Vehicle Capacity.
                 foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
-                    if (objVehicle.Slots - objVehicle.SlotsUsed < 0)
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objVehicle.Name);
-                        intCapacityOver++;
-                    }
+					if (_objOptions.BookEnabled("R5"))
+					{
+						if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+						{
+							if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
+							{
+								blnOverCapacity = true;
+								lstOverCapacity.Add(objVehicle.Name);
+								intCapacityOver++;
+							}
+						}
+						else
+						{
+							if (objVehicle.OverR5Capacity)
+							{
+								blnOverCapacity = true;
+								lstOverCapacity.Add(objVehicle.Name);
+								intCapacityOver++;
+							}
+						}
+					}
+					else if (objVehicle.Slots < objVehicle.SlotsUsed)
+					{
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objVehicle.Name);
+						intCapacityOver++;
+					}
                     // Check Vehicle Gear.
                     foreach (Gear objGear in objVehicle.Gear)
                     {
