@@ -1,6 +1,6 @@
 ﻿namespace Chummer.UI.Shared
 {
-	partial class SkillsDisplay<TType>
+	partial class BindingListDisplay<TType>
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -43,13 +43,13 @@
 			this.tblContents.Size = new System.Drawing.Size(606, 433);
 			this.tblContents.TabIndex = 0;
 			// 
-			// SkillsDisplay
+			// BindingListDisplay
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.Controls.Add(this.tblContents);
-			this.Name = "SkillsDisplay";
+			this.Name = "BindingListDisplay";
 			this.Size = new System.Drawing.Size(606, 433);
 			this.Load += new System.EventHandler(this.SkillsDisplay_Load);
 			this.Resize += new System.EventHandler(this.SkillsDisplay_Resize);

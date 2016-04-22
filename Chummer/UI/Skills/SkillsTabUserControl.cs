@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Skills;
+using Chummer.UI.Shared;
 
-namespace Chummer.UI.Shared
+namespace Chummer.UI.Skills
 {
 	public partial class SkillsTabUserControl : UserControl
 	{
 		public event PropertyChangedEventHandler ChildPropertyChanged; 
 
-		private SkillsDisplay<Skill> _skills;
-		private SkillsDisplay<SkillGroup> _groups;
-		private SkillsDisplay<KnowledgeSkill> _knoSkills; 
+		private BindingListDisplay<Skill> _skills;
+		private BindingListDisplay<SkillGroup> _groups;
+		private BindingListDisplay<KnowledgeSkill> _knoSkills; 
 
 		public SkillsTabUserControl()
 		{
@@ -159,7 +158,7 @@ namespace Chummer.UI.Shared
 		private void MakeSkillDisplays()
 		{
 			Stopwatch sw = Stopwatch.StartNew();
-			_groups = new SkillsDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
+			_groups = new BindingListDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
 			};
@@ -169,7 +168,7 @@ namespace Chummer.UI.Shared
 
 			sw.TaskEnd("_group add");
 
-			_skills = new SkillsDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
+			_skills = new BindingListDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
 			{
 				Location = new Point(265, 39),
 			};
@@ -180,7 +179,7 @@ namespace Chummer.UI.Shared
 
 			sw.TaskEnd("_skills add");
 
-			_knoSkills = new SkillsDisplay<KnowledgeSkill>(_character.KnowledgeSkills,
+			_knoSkills = new BindingListDisplay<KnowledgeSkill>(_character.KnowledgeSkills,
 				knoSkill => new KnowledgeSkillControl(knoSkill))
 			{
 				Location = new Point(3, 50),

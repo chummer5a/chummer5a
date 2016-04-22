@@ -1,5 +1,6 @@
 ﻿using Chummer.helpers;
 using System;
+using Chummer.UI.Skills;
 
 namespace Chummer
 {
@@ -918,7 +919,7 @@ namespace Chummer
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabSkills = new System.Windows.Forms.TabPage();
-			this.tabSkillUc = new Chummer.UI.Shared.SkillsTabUserControl();
+			this.tabSkillUc = new SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -11622,7 +11623,7 @@ namespace Chummer
 		private System.Windows.Forms.Label lblVehicleElectromagnetic;
 		private System.Windows.Forms.Label lblVehicleDroneModSlots;
 		private System.Windows.Forms.Label lblVehicleDroneModSlotsLabel;
-		private UI.Shared.SkillsTabUserControl tabSkillUc;
+		private SkillsTabUserControl tabSkillUc;
 		private System.Windows.Forms.TabPage tabSkills;
 	}
 }

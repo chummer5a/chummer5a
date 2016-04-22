@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Chummer.Skills;
 
-namespace Chummer.UI.Shared
+namespace Chummer.UI.Skills
 {
 	public partial class KnowledgeSkillControl : UserControl
 	{

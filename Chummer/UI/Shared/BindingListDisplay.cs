@@ -13,7 +13,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Chummer.UI.Shared
 {
-	public partial class SkillsDisplay<TType> : UserControl
+	public partial class BindingListDisplay<TType> : UserControl
 	{
 		public PropertyChangedEventHandler ChildPropertyChanged;
 
@@ -24,7 +24,7 @@ namespace Chummer.UI.Shared
 
 		private int _progress = 0;
 
-		public SkillsDisplay(BindingList<TType> list, Func<TType, Control> createFunc)
+		public BindingListDisplay(BindingList<TType> list, Func<TType, Control> createFunc)
 		{
 			_contents = list;
 			_createFunc = createFunc;

@@ -1,4 +1,5 @@
 ﻿using Chummer.helpers;
+using Chummer.UI.Skills;
 
 namespace Chummer
 {
@@ -251,7 +252,7 @@ namespace Chummer
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
 			this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
 			this.tabSkills = new System.Windows.Forms.TabPage();
-			this.tabSkillsUc = new Chummer.UI.Shared.SkillsTabUserControl();
+			this.tabSkillsUc = new SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
 			this.lblAstral = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
@@ -15136,7 +15137,7 @@ namespace Chummer
 		private System.Windows.Forms.ComboBox cboCyberwareGearOverclocker;
 		private System.Windows.Forms.Label lblCyberwareGearOverclocker;
 		private System.Windows.Forms.TabPage tabSkills;
-	    private UI.Shared.SkillsTabUserControl tabSkillsUc;
+	    private SkillsTabUserControl tabSkillsUc;
     }
 }
 

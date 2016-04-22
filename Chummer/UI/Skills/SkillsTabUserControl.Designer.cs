@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Shared
+﻿namespace Chummer.UI.Skills
 {
 	partial class SkillsTabUserControl
 	{

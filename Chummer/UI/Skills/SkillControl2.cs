@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Chummer.Skills;
 
-namespace Chummer.UI.Shared
+namespace Chummer.UI.Skills
 {
 	public partial class SkillControl2 : UserControl
 	{
