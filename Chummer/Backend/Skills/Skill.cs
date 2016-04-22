@@ -1070,9 +1070,17 @@ namespace Chummer.Skills
 		{
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
-			if(improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillLevel 
-			&& imp.ImprovedName == _name))
+			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillLevel && imp.ImprovedName == _name))
+			{
 				OnPropertyChanged(nameof(PoolModifiers));
+			}
+
+			if (
+				improvements.Any(
+					imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
+			{
+				OnPropertyChanged(nameof(AttributeModifiers));
+			}
 		}
 		
 	}
