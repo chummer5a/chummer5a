@@ -29,14 +29,15 @@
 		private void InitializeComponent()
 		{
 			this.splitSkills = new System.Windows.Forms.SplitContainer();
+			this.lblActiveSkills = new System.Windows.Forms.Label();
 			this.btnExotic = new System.Windows.Forms.Button();
 			this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.btnKnowledge = new System.Windows.Forms.Button();
-			this.lblActiveSkills = new System.Windows.Forms.Label();
-			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
-			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkillPoints = new System.Windows.Forms.Label();
+			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
+			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
+			this.btnKnowledge = new System.Windows.Forms.Button();
+			this.cboSort = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
 			this.splitSkills.Panel2.SuspendLayout();
@@ -56,6 +57,7 @@
 			// splitSkills.Panel1
 			// 
 			this.splitSkills.Panel1.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel1.Controls.Add(this.cboSort);
 			this.splitSkills.Panel1.Controls.Add(this.lblActiveSkills);
 			this.splitSkills.Panel1.Controls.Add(this.btnExotic);
 			this.splitSkills.Panel1.Controls.Add(this.cboDisplayFilter);
@@ -73,6 +75,16 @@
 			this.splitSkills.Size = new System.Drawing.Size(830, 611);
 			this.splitSkills.SplitterDistance = 450;
 			this.splitSkills.TabIndex = 0;
+			// 
+			// lblActiveSkills
+			// 
+			this.lblActiveSkills.AutoSize = true;
+			this.lblActiveSkills.Location = new System.Drawing.Point(256, 21);
+			this.lblActiveSkills.Name = "lblActiveSkills";
+			this.lblActiveSkills.Size = new System.Drawing.Size(64, 13);
+			this.lblActiveSkills.TabIndex = 3;
+			this.lblActiveSkills.Tag = "Label_ActiveSkills";
+			this.lblActiveSkills.Text = "Active Skills";
 			// 
 			// btnExotic
 			// 
@@ -108,36 +120,14 @@
 			this.label1.Tag = "Label_SkillGroups";
 			this.label1.Text = "Skill Groups";
 			// 
-			// btnKnowledge
+			// lblKnowledgeSkillPoints
 			// 
-			this.btnKnowledge.Location = new System.Drawing.Point(3, 21);
-			this.btnKnowledge.Name = "btnKnowledge";
-			this.btnKnowledge.Size = new System.Drawing.Size(75, 23);
-			this.btnKnowledge.TabIndex = 0;
-			this.btnKnowledge.Tag = "Button_AddSkill";
-			this.btnKnowledge.Text = "&Add Skill";
-			this.btnKnowledge.UseVisualStyleBackColor = true;
-			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
-			// 
-			// lblActiveSkills
-			// 
-			this.lblActiveSkills.AutoSize = true;
-			this.lblActiveSkills.Location = new System.Drawing.Point(256, 21);
-			this.lblActiveSkills.Name = "lblActiveSkills";
-			this.lblActiveSkills.Size = new System.Drawing.Size(64, 13);
-			this.lblActiveSkills.TabIndex = 3;
-			this.lblActiveSkills.Tag = "Label_ActiveSkills";
-			this.lblActiveSkills.Text = "Active Skills";
-			// 
-			// lblKnowledgeSkills
-			// 
-			this.lblKnowledgeSkills.AutoSize = true;
-			this.lblKnowledgeSkills.Location = new System.Drawing.Point(0, 5);
-			this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
-			this.lblKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
-			this.lblKnowledgeSkills.TabIndex = 4;
-			this.lblKnowledgeSkills.Tag = "Label_KnowledgeSkills";
-			this.lblKnowledgeSkills.Text = "Knowledge Skills";
+			this.lblKnowledgeSkillPoints.AutoSize = true;
+			this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(310, 5);
+			this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
+			this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
+			this.lblKnowledgeSkillPoints.TabIndex = 38;
+			this.lblKnowledgeSkillPoints.Text = "0 of 0";
 			// 
 			// lblKnowledgeSkillPointsTitle
 			// 
@@ -149,14 +139,38 @@
 			this.lblKnowledgeSkillPointsTitle.Tag = "Label_FreeKnowledgeSkills";
 			this.lblKnowledgeSkillPointsTitle.Text = "Free Knowledge Skill Points Remaining:";
 			// 
-			// lblKnowledgeSkillPoints
+			// lblKnowledgeSkills
 			// 
-			this.lblKnowledgeSkillPoints.AutoSize = true;
-			this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(310, 5);
-			this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
-			this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
-			this.lblKnowledgeSkillPoints.TabIndex = 38;
-			this.lblKnowledgeSkillPoints.Text = "0 of 0";
+			this.lblKnowledgeSkills.AutoSize = true;
+			this.lblKnowledgeSkills.Location = new System.Drawing.Point(0, 5);
+			this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
+			this.lblKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
+			this.lblKnowledgeSkills.TabIndex = 4;
+			this.lblKnowledgeSkills.Tag = "Label_KnowledgeSkills";
+			this.lblKnowledgeSkills.Text = "Knowledge Skills";
+			// 
+			// btnKnowledge
+			// 
+			this.btnKnowledge.Location = new System.Drawing.Point(3, 21);
+			this.btnKnowledge.Name = "btnKnowledge";
+			this.btnKnowledge.Size = new System.Drawing.Size(75, 23);
+			this.btnKnowledge.TabIndex = 0;
+			this.btnKnowledge.Tag = "Button_AddSkill";
+			this.btnKnowledge.Text = "&Add Skill";
+			this.btnKnowledge.UseVisualStyleBackColor = true;
+			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
+			// 
+			// cboSort
+			// 
+			this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSort.FormattingEnabled = true;
+			this.cboSort.IntegralHeight = false;
+			this.cboSort.Location = new System.Drawing.Point(394, 3);
+			this.cboSort.Name = "cboSort";
+			this.cboSort.Size = new System.Drawing.Size(133, 21);
+			this.cboSort.TabIndex = 4;
+			this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
 			// 
 			// SkillsTabUserControl
 			// 
@@ -187,5 +201,6 @@
 		private System.Windows.Forms.Label lblKnowledgeSkillPoints;
 		private System.Windows.Forms.Label lblKnowledgeSkillPointsTitle;
 		private System.Windows.Forms.Label lblKnowledgeSkills;
+		private System.Windows.Forms.ComboBox cboSort;
 	}
 }

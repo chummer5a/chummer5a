@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Skills;
 using Chummer.Skills;
 using Chummer.UI.Shared;
 
@@ -35,6 +36,7 @@ namespace Chummer.UI.Skills
 		private bool _initialized = false;
 		private Character _character;
 		private List<Tuple<string, Func<Skill, bool>>> _dropDownList;
+		private List<Tuple<string, IComparer<Skill>>>  _sortList;
 
 		public Character ObjCharacter
 		{
@@ -72,6 +74,7 @@ namespace Chummer.UI.Skills
 
 			parts.TaskEnd("MakeSkillDisplay()");
 
+
 			if (ObjCharacter.Created)
 			{
 				lblKnowledgeSkillPoints.Visible = false;
@@ -86,6 +89,11 @@ namespace Chummer.UI.Skills
 
 			parts.TaskEnd("GenerateDropDown()");
 
+			_sortList = GenerateSortList();
+
+			parts.TaskEnd("GenerateSortList()");
+
+
 			cboDisplayFilter.DataSource = _dropDownList;
 			cboDisplayFilter.ValueMember = "Item2";
 			cboDisplayFilter.DisplayMember = "Item1";
@@ -94,7 +102,13 @@ namespace Chummer.UI.Skills
 
 			parts.TaskEnd("_ddl databind");
 
-			
+			cboSort.DataSource = _sortList;
+			cboSort.ValueMember = "Item2";
+			cboSort.DisplayMember = "Item1";
+			cboSort.SelectedIndex = 0;
+			cboSort.MaxDropDownItems = _sortList.Count;
+
+			parts.TaskEnd("_sort databind");
 
 			_skills.ChildPropertyChanged += ChildPropertyChanged;
 			_groups.ChildPropertyChanged += ChildPropertyChanged;
@@ -114,6 +128,35 @@ namespace Chummer.UI.Skills
 			//this.PerformLayout();
 		}
 
+		private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
+		{
+			List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
+			{
+				new Tuple<string, IComparer<Skill>>("Alphabetical",
+					new SkillSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
+				new Tuple<string, IComparer<Skill>>("Rating",
+					new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
+				new Tuple<string, IComparer<Skill>>("Dicepool",
+					new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
+				new Tuple<string, IComparer<Skill>>("Smaller Dicepool",
+					new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
+				new Tuple<string, IComparer<Skill>>("Attribute Value",
+					new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
+				new Tuple<string, IComparer<Skill>>("Attribute Name",
+					new SkillSorter((x, y) => x.Attribute.CompareTo(y.Attribute))),
+				new Tuple<string, IComparer<Skill>>("Group Name",
+					new SkillSorter((x, y) => y.SkillGroup.CompareTo(x.SkillGroup))),
+				new Tuple<string, IComparer<Skill>>("Group Rating",
+					new SkillSortBySkillGroup()),
+				new Tuple<string, IComparer<Skill>>("Category",
+					new SkillSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
+			};
+
+
+
+			return ret;
+		}
+		
 		private List<Tuple<string, Func<Skill, bool>>> GenerateDropdownFilter()
 		{
 			List<Tuple<string, Func<Skill, bool>>> ret = new List<Tuple<string, Func<Skill, bool>>>
@@ -173,6 +216,8 @@ namespace Chummer.UI.Skills
 				Location = new Point(265, 39),
 			};
 			
+			
+
 			sw.TaskEnd("_skills");
 
 			splitSkills.Panel1.Controls.Add(_skills);
@@ -224,6 +269,14 @@ namespace Chummer.UI.Skills
 			_skills.Filter(selectedItem.Item2);
 		}
 
+		private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ComboBox csender = (ComboBox)sender;
+			Tuple<string, IComparer<Skill>> selectedItem = (Tuple<string, IComparer<Skill>>)csender.SelectedItem;
+
+			_skills.Sort(selectedItem.Item2);
+		}
+
 		private void btnExotic_Click(object sender, EventArgs e)
 		{
 			if (_character.Options.KarmaNewActiveSkill > _character.Karma)
@@ -258,5 +311,7 @@ namespace Chummer.UI.Skills
 		{
 			ObjCharacter.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
+
+		
 	}
 }

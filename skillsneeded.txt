@@ -60,3 +60,11 @@ Wounds
 Testers bug
 Aspected magicans can take skills they should not be able to take
 Perceptive quality don't give assensing
+Natural Language
+Qualities displayed twice
+Qualities not updating
+Reflex recorder optimization should remove defaulting
+Re-Check rules for skillwires+jacks
+Knowsofts don't do jack shit
+Group not updating karma
+Tooltip for skills broken

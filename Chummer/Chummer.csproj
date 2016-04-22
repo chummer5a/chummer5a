@@ -125,6 +125,7 @@
     <Compile Include="Backend\Skills\Skill.cs" />
     <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
+    <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>

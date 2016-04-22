@@ -127,7 +127,7 @@ namespace Chummer.UI.Shared
 				_map.Add(content, c);
 				_controls.Add(c);
 				c.Location = new Point(999,2999); //Moves it out of visible arear. Otherwise first control will flicker
-				tblContents.Controls.Add(c);
+				tblContents.Controls.Add(c, 0, _controls.Count - 1);
 				
 			}
 			else if (Debugger.IsAttached) Debugger.Break();
@@ -152,6 +152,17 @@ namespace Chummer.UI.Shared
 			{
 				keyValuePair.Value.Visible = predicate?.Invoke(keyValuePair.Key) ?? true;
 
+			}
+			tblContents.ResumeLayout();
+		}
+
+		public void Sort(IComparer<TType> comparison)
+		{
+			tblContents.SuspendLayout();
+			int count = 0;
+			foreach (KeyValuePair<TType, Control> keyValuePair in _map.OrderBy(x => x.Key, comparison))
+			{
+				tblContents.SetRow(keyValuePair.Value, count++);
 			}
 			tblContents.ResumeLayout();
 		}
