@@ -2882,7 +2882,7 @@
 			<rating>6</rating>
 			<avail>14F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2895,7 +2895,7 @@
 			<rating>3</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2908,7 +2908,7 @@
 			<rating>6</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Parent Cost * 0.10</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2921,7 +2921,7 @@
 			<rating>6</rating>
 			<avail>16R</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2934,7 +2934,7 @@
 			<rating>3</rating>
 			<avail>12</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 2000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2947,7 +2947,7 @@
 			<rating>3</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 1000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2960,7 +2960,7 @@
 			<rating>3</rating>
 			<avail>12</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 600</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2973,7 +2973,7 @@
 			<rating>6</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 4000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -2988,7 +2988,7 @@
 			<rating>9</rating>
 			<avail>16F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<bonus>
@@ -3004,7 +3004,7 @@
 			<rating>6</rating>
 			<avail>10F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 3000</cost>
 			<forcegrade>Standard</forcegrade>
 			<bonus>
@@ -3020,7 +3020,7 @@
 			<rating>3</rating>
 			<avail>16F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3033,7 +3033,7 @@
 			<rating>6</rating>
 			<avail>8F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 1500</cost>
 			<forcegrade>Standard</forcegrade>
 			<bonus>
@@ -3049,7 +3049,7 @@
 			<rating>3</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3062,7 +3062,7 @@
 			<rating>3</rating>
 			<avail>14F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3075,7 +3075,7 @@
 			<rating>3</rating>
 			<avail>16F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 7500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3088,7 +3088,7 @@
 			<rating>3</rating>
 			<avail>16F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 7500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3101,7 +3101,7 @@
 			<rating>3</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 3500</cost>
 			<forcegrade>Standard</forcegrade>
 			<bonus>
@@ -3117,7 +3117,7 @@
 			<rating>9</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3130,7 +3130,7 @@
 			<rating>5</rating>
 			<avail>12F</avail>
 			<ess>0</ess>
-			<capacity>0</capacity>
+			<capacity>[0]</capacity>
 			<cost>Rating * 1500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
