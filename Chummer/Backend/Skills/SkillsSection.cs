@@ -29,6 +29,58 @@ namespace Chummer.Skills
 		public SkillsSection(Character character)
 		{
 			_character = character;
+			_character.MAGEnabledChanged += CharacterOnMagEnabledChanged;
+			_character.RESEnabledChanged += CharacterOnResEnabledChanged;
+		}
+
+		private void CharacterOnResEnabledChanged(Character sender)
+		{
+			if (sender.RESEnabled)
+			{
+				MergeIntoSkills(GetSkillList(sender, FilterOptions.Resonance));
+			}
+			else
+			{
+				for (int i = Skills.Count - 1; i >= 0; i--)
+				{
+					if (Skills[i].Attribute == "RES")
+					{
+						Skills.RemoveAt(i); //TODO SAVE FOR SESSION
+											//TODO make KNO if career
+					}
+				}
+			}
+		}
+
+		private void CharacterOnMagEnabledChanged(Character sender)
+		{
+			if (sender.MAGEnabled)
+			{
+				MergeIntoSkills(GetSkillList(sender, FilterOptions.MagicalAll));  //TODO Adepts/Aspected not handled
+			}
+			else
+			{
+				for (int i = Skills.Count - 1; i >= 0; i--)
+				{
+					if (Skills[i].SkillCategory == "Magical Active")
+					{
+						Skills.RemoveAt(i); //TODO SAVE FOR SESSION
+											//TODO make KNO if career
+					}
+				}
+			}
+		}
+
+		private void MergeIntoSkills(IEnumerable<Skill> newSkills)
+		{
+			int mergeIndex = 0;
+			foreach (Skill skill in newSkills)
+			{
+				while (CompareSkills(Skills[mergeIndex], skill) < 0)
+					mergeIndex++;
+
+				Skills.Insert(mergeIndex, skill);
+			}
 		}
 
 		internal void Load(XmlNode skillNode, bool legacy = false)
@@ -194,7 +246,7 @@ namespace Chummer.Skills
 			{
 				if (_skills.Count == 0)
 				{
-					GetSkillList(_character).ForEach(x => _skills.Add(x));
+					GetSkillList(_character, FilterOptions.NonSpecial).ForEach(x => _skills.Add(x));
 				}
 				return _skills;
 			}
@@ -394,7 +446,30 @@ namespace Chummer.Skills
 			}
 		}
 
-		private static IEnumerable<Skill> GetSkillList(Character c)
+		public static int CompareSkills(Skill rhs, Skill lhs)
+		{
+			if (rhs is ExoticSkill)
+			{
+				if (lhs is ExoticSkill)
+				{
+					return (rhs.Specialization ?? "").CompareTo(lhs.Specialization ?? "");
+				}
+				else
+				{
+					return 1;
+				}
+			}
+			else if (lhs is ExoticSkill)
+			{
+				return -1;
+			}
+			else
+			{
+				return rhs.DisplayName.CompareTo(lhs.DisplayName);
+			}
+		}
+
+		private static IEnumerable<Skill> GetSkillList(Character c, FilterOptions filter)
 		{
 			//TODO less retarded way please
 			List<Skill> b = new List<Skill>();
@@ -403,7 +478,7 @@ namespace Chummer.Skills
 
 			// Populate the Skills list.
 			XmlNodeList objXmlSkillList =
-				objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")]");
+				objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
 
 			// First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
 			List<ListItem> lstSkillOrder = new List<ListItem>();
@@ -432,27 +507,42 @@ namespace Chummer.Skills
 			return b;
 		}
 
-		public static int CompareSkills(Skill rhs, Skill lhs)
+		private static string SkillFilter(FilterOptions filter)
 		{
-			if (rhs is ExoticSkill)
+			switch (filter)
 			{
-				if (lhs is ExoticSkill)
-				{
-					return (rhs.Specialization ?? "").CompareTo(lhs.Specialization ?? "");
-				}
-				else
-				{
-					return 1;
-				}
+				case FilterOptions.All:
+					return "";
+				case FilterOptions.NonSpecial:
+					return " and not(category = 'Magical Active') and not(category = 'Resonance Active')";
+				case FilterOptions.MagicalAll:
+					return " and category = 'Magical Active'";
+				case FilterOptions.MagicalSorcery:
+					return " and category = 'Magical Active' and skillgroup = 'Sorcery'";
+				case FilterOptions.MagicalConjuring:
+					return " and category = 'Magical Active' and skillgroup = 'Conjuring'";
+				case FilterOptions.MagicalEnchanting:
+					return " and category = 'Magical Active' and skillgroup = 'Enchanting'";
+				case FilterOptions.MagicalMisc:
+					return " and category = 'Magical Active' and not(skillgroup)";
+				case FilterOptions.Resonance:
+					return " and category = 'Resonance Active'";
+				default:
+					throw new ArgumentOutOfRangeException(nameof(filter), filter, null);
 			}
-			else if (lhs is ExoticSkill)
-			{
-				return -1;
-			}
-			else
-			{
-				return rhs.DisplayName.CompareTo(lhs.DisplayName);
-			}
+		}
+
+
+		internal enum FilterOptions
+		{
+			All,
+			NonSpecial,
+			MagicalAll,
+			MagicalSorcery,
+			MagicalConjuring,
+			MagicalEnchanting,
+			MagicalMisc,
+			Resonance
 		}
 	}
 }

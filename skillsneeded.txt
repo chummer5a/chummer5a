@@ -64,5 +64,4 @@ Natural Language
 Reflex recorder optimization should remove defaulting
 Re-Check rules for skillwires+jacks
 Knowsofts don't do jack shit
-Group not updating karma
 Tooltip for skills broken

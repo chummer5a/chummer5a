@@ -20,7 +20,13 @@ namespace Chummer.UI.Skills
 			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			//Display
+			if (!skill.Default)
+			{
+				lblName.Font = new Font(lblName.Font, FontStyle.Italic);
+			}
+
 			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
+
 			lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
 			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
 				DataSourceUpdateMode.OnPropertyChanged);

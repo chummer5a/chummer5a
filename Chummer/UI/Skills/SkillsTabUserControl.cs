@@ -133,7 +133,7 @@ namespace Chummer.UI.Skills
 			List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
 			{
 				new Tuple<string, IComparer<Skill>>("Alphabetical",
-					new SkillSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
+					new SkillSorter(SkillsSection.CompareSkills)),
 				new Tuple<string, IComparer<Skill>>("Rating",
 					new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
 				new Tuple<string, IComparer<Skill>>("Dicepool",

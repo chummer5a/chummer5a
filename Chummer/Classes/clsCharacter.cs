@@ -27,14 +27,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Annotations;
+﻿﻿using Chummer.Annotations;
 ﻿using Chummer.Backend;
 ﻿using Chummer.Skills;
 
 // MAGEnabledChanged Event Handler
-public delegate void MAGEnabledChangedHandler(Object sender);
+public delegate void MAGEnabledChangedHandler(Chummer.Character sender);
 // RESEnabledChanged Event Handler
-public delegate void RESEnabledChangedHandler(Object sender);
+public delegate void RESEnabledChangedHandler(Chummer.Character sender);
 // DEPEnabledChanged Event Handler
 public delegate void DEPEnabledChangedHandler(Object sender);
 // HomeNodeChanged Event Handler
