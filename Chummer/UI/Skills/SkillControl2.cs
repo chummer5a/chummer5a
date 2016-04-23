@@ -96,7 +96,7 @@ namespace Chummer.UI.Skills
 			if (skill.AllowDelete)
 			{
 				cmdDelete.Visible = true;
-				cmdDelete.Click += (sender, args) => { skill.CharacterObject.Skills.Remove(skill); };
+				cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); };
 
 				if (skill.CharacterObject.Created)
 				{

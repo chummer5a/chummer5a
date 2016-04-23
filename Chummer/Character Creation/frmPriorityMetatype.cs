@@ -1731,7 +1731,7 @@ namespace Chummer
 				// If this is a Mutant Critter, count up the number of Skill points they start with.
 				if (_objCharacter.MetatypeCategory == "Mutant Critters")
 				{
-					foreach (Skill objSkill in _objCharacter.Skills)
+					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 						_objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 				}
 
@@ -1929,8 +1929,8 @@ namespace Chummer
                 objXmlPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue + "\"]");
                 if (objXmlPriorityList[0]["skills"] != null)
                 {
-					_objCharacter.SkillPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
-					_objCharacter.SkillGroupPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skillgroups"].InnerText);
+					_objCharacter.SkillsSection.SkillPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
+					_objCharacter.SkillsSection.SkillGroupPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skillgroups"].InnerText);
                 }
 
 				// Load the Priority information.

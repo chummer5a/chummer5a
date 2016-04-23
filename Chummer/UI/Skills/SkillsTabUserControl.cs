@@ -190,7 +190,7 @@ namespace Chummer.UI.Skills
 
 			ret.AddRange(
 				from SkillGroup @group
-				in _character.SkillGroups
+				in _character.SkillsSection.SkillGroups
 				select new Tuple<string, Func<Skill, bool>>(
 					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
 					skill => skill.SkillGroupObject == @group));
@@ -201,7 +201,7 @@ namespace Chummer.UI.Skills
 		private void MakeSkillDisplays()
 		{
 			Stopwatch sw = Stopwatch.StartNew();
-			_groups = new BindingListDisplay<SkillGroup>(_character.SkillGroups, @group => new SkillGroupControl(@group))
+			_groups = new BindingListDisplay<SkillGroup>(_character.SkillsSection.SkillGroups, @group => new SkillGroupControl(@group))
 			{
 				Location = new Point(0, 15),
 			};
@@ -211,7 +211,7 @@ namespace Chummer.UI.Skills
 
 			sw.TaskEnd("_group add");
 
-			_skills = new BindingListDisplay<Skill>(_character.Skills, skill => new SkillControl2(skill))
+			_skills = new BindingListDisplay<Skill>(_character.SkillsSection.Skills, skill => new SkillControl2(skill))
 			{
 				Location = new Point(265, 39),
 			};
@@ -224,7 +224,7 @@ namespace Chummer.UI.Skills
 
 			sw.TaskEnd("_skills add");
 
-			_knoSkills = new BindingListDisplay<KnowledgeSkill>(_character.KnowledgeSkills,
+			_knoSkills = new BindingListDisplay<KnowledgeSkill>(_character.SkillsSection.KnowledgeSkills,
 				knoSkill => new KnowledgeSkillControl(knoSkill))
 			{
 				Location = new Point(3, 50),
@@ -299,17 +299,17 @@ namespace Chummer.UI.Skills
 			ExoticSkill skill = new ExoticSkill(ObjCharacter, node);
 			skill.Specializations.Add(new SkillSpecialization(frmPickExoticSkill.SelectedExoticSkillSpecialisation, true));
 			skill.Upgrade();
-			ObjCharacter.Skills.Add(skill);
+			ObjCharacter.SkillsSection.Skills.Add(skill);
 		}
 
 		private void UpdateKnoSkillRemaining()
 		{
-			lblKnowledgeSkillPoints.Text = $"{ObjCharacter.KnowledgeSkillPointsRemain} {LanguageManager.Instance.GetString("String_Of")} {ObjCharacter.KnowledgeSkillPoints}";
+			lblKnowledgeSkillPoints.Text = $"{ObjCharacter.SkillsSection.KnowledgeSkillPointsRemain} {LanguageManager.Instance.GetString("String_Of")} {ObjCharacter.SkillsSection.KnowledgeSkillPoints}";
 		}
 
 		private void btnKnowledge_Click(object sender, EventArgs e)
 		{
-			ObjCharacter.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
+			ObjCharacter.SkillsSection.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
 
 		

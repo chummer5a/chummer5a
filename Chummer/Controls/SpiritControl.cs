@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -850,7 +850,7 @@ namespace Chummer
 			// If this is a Mutant Critter, count up the number of Skill points they start with.
 			if (objCharacter.MetatypeCategory == "Mutant Critters")
 			{
-				foreach (Skill objSkill in objCharacter.Skills)
+				foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
 					objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 			}
 

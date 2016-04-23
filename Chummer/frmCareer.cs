@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,8 +77,8 @@ namespace Chummer
 			_objCharacter.MagicianTabEnabledChanged += objCharacter_MagicianTabEnabledChanged;
 			_objCharacter.TechnomancerTabEnabledChanged += objCharacter_TechnomancerTabEnabledChanged;
 			_objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-			_objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
-			_objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+			_objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
+			_objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
 			_objCharacter.FameChanged += objCharacter_FameChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
@@ -1172,8 +1172,8 @@ namespace Chummer
 				_objCharacter.MagicianTabEnabledChanged -= objCharacter_MagicianTabEnabledChanged;
 				_objCharacter.TechnomancerTabEnabledChanged -= objCharacter_TechnomancerTabEnabledChanged;
 				_objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-				_objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
-				_objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
+				_objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
+				_objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
 				GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
 				treGear.ItemDrag -= treGear_ItemDrag;
@@ -1814,8 +1814,8 @@ namespace Chummer
 			// Record the status of any flags that normally trigger character events.
 			bool blnMAGEnabled = _objCharacter.MAGEnabled;
 			bool blnRESEnabled = _objCharacter.RESEnabled;
-			bool blnUneducated = _objCharacter.Uneducated;
-			bool blnUncouth = _objCharacter.Uncouth;
+			bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
+			bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
 
 			_blnReapplyImprovements = true;
 
@@ -2265,9 +2265,9 @@ namespace Chummer
 				objCharacter_MAGEnabledChanged(this);
 			if (blnRESEnabled != _objCharacter.RESEnabled)
 				objCharacter_RESEnabledChanged(this);
-			if (blnUneducated != _objCharacter.Uneducated)
+			if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
 				objCharacter_UneducatedChanged(this);
-			if (blnUncouth != _objCharacter.Uncouth)
+			if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
 				objCharacter_UncouthChanged(this);
 
 			_blnIsDirty = true;
@@ -4159,7 +4159,7 @@ namespace Chummer
 			}
 			if (objPowerControl.PowerName == "Improved Ability (skill)")
 			{
-            foreach (Skill objSkill in _objCharacter.Skills)
+            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
             {
                 foreach (Power objPower in _objCharacter.Powers)
                     {
@@ -4383,7 +4383,7 @@ namespace Chummer
 			}
 
 			// Run through the list of Active Skills and pick out the two applicable ones.
-			int intSkillValue = _objCharacter.Skills.Where(x => x.Name == "Spellcasting" || x.Name== "Ritual Spellcasting").Max(x => x.Rating);
+			int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name== "Ritual Spellcasting").Max(x => x.Rating);
 
 			frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
 			frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
@@ -12390,7 +12390,7 @@ namespace Chummer
 				case KarmaExpenseType.SkillSpec:  //I am resonable sure those 2 are the same. Was written looking at old AddSpecialization code
 				case KarmaExpenseType.AddSpecialization:
 					{
-						Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.KnowledgeSkills, _objCharacter.Skills)
+						Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.SkillsSection.KnowledgeSkills, _objCharacter.SkillsSection.Skills)
 							.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
 
 						ContainingSkill.Specializations.Remove(
@@ -12399,16 +12399,16 @@ namespace Chummer
 					break;
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.
-					SkillGroup group = _objCharacter.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
+					SkillGroup group = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
 					if (group != null) group.Karma--; //TODO test this and below, todo handle skill added later, spec and decrease
 
 					//TODO: ImproveSkil[Group] AddSkill[Group] both exist but usage?
 					break;
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
-					Skill skill = _objCharacter.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+					Skill skill = _objCharacter.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 					if (skill == null)
-						skill = _objCharacter.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+						skill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 
 					if(skill != null) skill.Karma--;
 
@@ -14792,7 +14792,7 @@ namespace Chummer
 			}
 
 			// Run through the list of Active Skills and pick out the two applicable ones.
-			int intSkillValue = _objCharacter.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
+			int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
 
 			// The character is still allowed to add Spells, so show the Create Spell window.
 			frmCreateSpell frmSpell = new frmCreateSpell(_objCharacter);

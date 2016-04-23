@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7320,7 +7320,7 @@ namespace Chummer
 
 				// Locate the Active Skill to be used.
 				Skill objSkill = null; 
-				foreach (Skill objCharacterSkill in _objCharacter.Skills)
+				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{
@@ -7448,7 +7448,7 @@ namespace Chummer
 
 				// Locate the Active Skill to be used.
 				Skill objSkill = null;
-				foreach (Skill objCharacterSkill in _objCharacter.Skills)
+				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
 					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{

@@ -19,7 +19,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (Character.Uncouth && HasSocialSkills) return 0;
+				if (Character.SkillsSection.Uncouth && HasSocialSkills) return 0;
 				return _skillFromSp + FreeBase();
 			}
 			set
@@ -47,7 +47,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (Character.Uncouth && HasSocialSkills) return 0;
+				if (Character.SkillsSection.Uncouth && HasSocialSkills) return 0;
 				return _skillFromKarma + FreeLevels();
 			}
 			set
@@ -79,7 +79,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (Character.Uncouth && HasSocialSkills) return false;
+				if (Character.SkillsSection.Uncouth && HasSocialSkills) return false;
 				return _character.BuildMethod.HaveSkillPoints() && !_affectedSkills.Any(x => x.Ibase > 0);
 			}
 		}
@@ -92,7 +92,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				if (Character.Uncouth && HasSocialSkills) return false;
+				if (Character.SkillsSection.Uncouth && HasSocialSkills) return false;
 				int high = _affectedSkills.Max(x => x.Ibase);
 				bool ret = _affectedSkills.Any(x => x.Ibase + x.Ikarma < high);
 
@@ -119,7 +119,7 @@ namespace Chummer.Skills
 					return false;
 				}
 
-				if (Character.Uncouth && HasSocialSkills) return false;
+				if (Character.SkillsSection.Uncouth && HasSocialSkills) return false;
 
 				return _affectedSkills.Max(x => x.LearnedRating) < RatingMaximum;
 			}
@@ -187,7 +187,7 @@ namespace Chummer.Skills
 
 			if (skill.SkillGroup == null) return null;
 
-			foreach (SkillGroup skillGroup in skill.CharacterObject.SkillGroups)
+			foreach (SkillGroup skillGroup in skill.CharacterObject.SkillsSection.SkillGroups)
 			{
 				if (skillGroup._groupName == skill.SkillGroup)
 				{
@@ -201,15 +201,15 @@ namespace Chummer.Skills
 			if (string.IsNullOrWhiteSpace(skill.SkillGroup)) return null;
 
 			SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
-			skill.CharacterObject.SkillGroups.Add(newGroup);
+			skill.CharacterObject.SkillsSection.SkillGroups.Add(newGroup);
 			newGroup.Add(skill);
 
 			//BindingList don't have sort, so we have to play dirty
-			List<SkillGroup> g = new List<SkillGroup>(skill.CharacterObject.SkillGroups.OrderBy(x => x.DisplayName));
-			skill.CharacterObject.SkillGroups.Clear();
+			List<SkillGroup> g = new List<SkillGroup>(skill.CharacterObject.SkillsSection.SkillGroups.OrderBy(x => x.DisplayName));
+			skill.CharacterObject.SkillsSection.SkillGroups.Clear();
 			foreach (SkillGroup skillGroup in g)
 			{
-				skill.CharacterObject.SkillGroups.Add(skillGroup);
+				skill.CharacterObject.SkillsSection.SkillGroups.Add(skillGroup);
 			}
 
 			return newGroup;
@@ -297,7 +297,7 @@ namespace Chummer.Skills
 			_baseBrokenOldValue = BaseUnbroken;
 
 			// ReSharper disable once ExplicitCallerInfoArgument
-			Character.UncouthChanged += sender =>
+			Character.SkillsSection.UncouthChanged += sender =>
 			{
 				if(HasSocialSkills)
 				{

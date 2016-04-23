@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -1204,7 +1204,7 @@ namespace Chummer
 				Log.Info("strSourceName = " + strSourceName);
 
 				// Find the selected Skill.
-				foreach (Skill objSkill in _objCharacter.Skills)
+				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
 					if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
 					    frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
@@ -2559,7 +2559,7 @@ namespace Chummer
 				Log.Info("uneducated = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uneducated, strUnique);
-				_objCharacter.Uneducated = true;
+				_objCharacter.SkillsSection.Uneducated = true;
 			}
 
 			// Check for College Education modifiers.
@@ -2569,7 +2569,7 @@ namespace Chummer
 				Log.Info("collegeeducation = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CollegeEducation, strUnique);
-				_objCharacter.CollegeEducation = true;
+				_objCharacter.SkillsSection.CollegeEducation = true;
 			}
 
 			// Check for Jack Of All Trades modifiers.
@@ -2579,7 +2579,7 @@ namespace Chummer
 				Log.Info("jackofalltrades = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.JackOfAllTrades, strUnique);
-				_objCharacter.JackOfAllTrades = true;
+				_objCharacter.SkillsSection.JackOfAllTrades = true;
 			}
 
 			// Check for Prototype Transhuman modifiers.
@@ -2597,7 +2597,7 @@ namespace Chummer
 				Log.Info("uncouth = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uncouth, strUnique);
-				_objCharacter.Uncouth = true;
+				_objCharacter.SkillsSection.Uncouth = true;
 			}
 
 			// Check for Friends In High Places modifiers.
@@ -2617,7 +2617,7 @@ namespace Chummer
 				Log.Info("schoolofhardknocks = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
-				_objCharacter.SchoolOfHardKnocks = true;
+				_objCharacter.SkillsSection.SchoolOfHardKnocks = true;
 			}
 			// Check for ExCon modifiers.
 			if (bonusNode.LocalName == ("excon"))
@@ -2648,7 +2648,7 @@ namespace Chummer
 				Log.Info("techschool = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TechSchool, strUnique);
-				_objCharacter.TechSchool = true;
+				_objCharacter.SkillsSection.TechSchool = true;
 			}
 			// Check for MadeMan modifiers.
 			if (bonusNode.LocalName == ("mademan"))
@@ -2667,7 +2667,7 @@ namespace Chummer
 				Log.Info("Linguist = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Linguist, strUnique);
-				_objCharacter.Linguist = true;
+				_objCharacter.SkillsSection.Linguist = true;
 			}
 
 			// Check for LightningReflexes modifiers.
@@ -4672,17 +4672,17 @@ namespace Chummer
 
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
 				{
-					for (int i = _objCharacter.Skills.Count - 1; i >= 0; i--)
+					for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
 					{
 						//wrote as foreach first, modify collection, not want rename
-						Skill skill = _objCharacter.Skills[i];
+						Skill skill = _objCharacter.SkillsSection.Skills[i];
 						for (int j = skill.Fold.Count - 1; j >= 0; j--)
 						{
 							Skill fold = skill.Fold[i];
 							if (fold.Id.ToString() == objImprovement.ImprovedName)
 							{
 								skill.Free(fold);
-								_objCharacter.Skills.Remove(fold);
+								_objCharacter.SkillsSection.Skills.Remove(fold);
 							}
 						}
 
@@ -4691,7 +4691,7 @@ namespace Chummer
 							while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
 							//empty list, can't call clear as exposed list is RO
 
-							_objCharacter.Skills.Remove(skill);
+							_objCharacter.SkillsSection.Skills.Remove(skill);
 						}
 					}
 				}
@@ -4972,7 +4972,7 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.Uneducated = false;
+						_objCharacter.SkillsSection.Uneducated = false;
 				}
 
 				// Turn off the Uncouth flag if it is being removed.
@@ -4994,7 +4994,7 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.Uncouth = false;
+						_objCharacter.SkillsSection.Uncouth = false;
                 }
 
                 // Turn off the FriendsInHighPlaces flag if it is being removed.
@@ -5038,7 +5038,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.SchoolOfHardKnocks = false;
+                        _objCharacter.SkillsSection.SchoolOfHardKnocks = false;
                 }
 
                 //Turn off the Ex-Con flag if it is being removed
@@ -5103,7 +5103,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.JackOfAllTrades = false;
+                        _objCharacter.SkillsSection.JackOfAllTrades = false;
 				}
 				// Turn off the prototypetranshuman flag if it is being removed.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
@@ -5145,7 +5145,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.CollegeEducation = false;
+                        _objCharacter.SkillsSection.CollegeEducation = false;
                 }
                 // Turn off the Erased flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Erased)
@@ -5250,7 +5250,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.Linguist = false;
+                        _objCharacter.SkillsSection.Linguist = false;
                 }
                 // Turn off the MadeMan flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
@@ -5334,7 +5334,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.TechSchool = false;
+                        _objCharacter.SkillsSection.TechSchool = false;
                 }
                 // Turn off the TrustFund flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.TrustFund)

@@ -74,17 +74,17 @@ namespace Chummer
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
             _objCharacter.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
-            _objCharacter.UneducatedChanged += objCharacter_UneducatedChanged;
-            _objCharacter.UncouthChanged += objCharacter_UncouthChanged;
+            _objCharacter.SkillsSection.UneducatedChanged += objCharacter_UneducatedChanged;
+            _objCharacter.SkillsSection.UncouthChanged += objCharacter_UncouthChanged;
             _objCharacter.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
-            _objCharacter.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
+            _objCharacter.SkillsSection.SchoolOfHardKnocksChanged += objCharacter_SchoolOfHardKnocksChanged;
             _objCharacter.ExConChanged += objCharacter_ExConChanged;
             _objCharacter.TrustFundChanged += objCharacter_TrustFundChanged;
-            _objCharacter.TechSchoolChanged += objCharacter_TechSchoolChanged;
+            _objCharacter.SkillsSection.TechSchoolChanged += objCharacter_TechSchoolChanged;
             _objCharacter.RestrictedGearChanged += objCharacter_RestrictedGearChanged;
             _objCharacter.OverclockerChanged += objCharacter_OverclockerChanged;
             _objCharacter.MadeManChanged += objCharacter_MadeManChanged;
-            _objCharacter.LinguistChanged += objCharacter_LinguistChanged;
+            _objCharacter.SkillsSection.LinguistChanged += objCharacter_LinguistChanged;
             _objCharacter.LightningReflexesChanged += objCharacter_LightningReflexesChanged;
             _objCharacter.FameChanged += objCharacter_FameChanged;
             _objCharacter.BornRichChanged += objCharacter_BornRichChanged;
@@ -731,7 +731,7 @@ namespace Chummer
 				{
 					if (objPower.Name == "Improved Ability (skill)")
 					{
-                    foreach (Skill objSkill in _objCharacter.Skills)
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 							if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
                         {
                             int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
@@ -1170,10 +1170,10 @@ namespace Chummer
                 _objCharacter.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 _objCharacter.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 _objCharacter.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
-                _objCharacter.UneducatedChanged -= objCharacter_UneducatedChanged;
-                _objCharacter.UncouthChanged -= objCharacter_UncouthChanged;
+                _objCharacter.SkillsSection.UneducatedChanged -= objCharacter_UneducatedChanged;
+                _objCharacter.SkillsSection.UncouthChanged -= objCharacter_UncouthChanged;
                 _objCharacter.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
-                _objCharacter.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
+                _objCharacter.SkillsSection.SchoolOfHardKnocksChanged -= objCharacter_SchoolOfHardKnocksChanged;
                 GlobalOptions.Instance.MRUChanged -= PopulateMRU;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -1636,7 +1636,7 @@ namespace Chummer
                 return;
 
             // Change to the status of SchoolOfHardKnocksChanged being enabled.
-            if (_objCharacter.SchoolOfHardKnocks)
+            if (_objCharacter.SkillsSection.SchoolOfHardKnocks)
             {
             }
             else
@@ -1691,7 +1691,7 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-            if (_objCharacter.TechSchool)
+            if (_objCharacter.SkillsSection.TechSchool)
             {
 
             }
@@ -1755,7 +1755,7 @@ namespace Chummer
                 return;
 
             
-            if (_objCharacter.Linguist)
+            if (_objCharacter.SkillsSection.Linguist)
             {
                 
             }
@@ -1925,7 +1925,7 @@ namespace Chummer
             _objCharacter.RES.MetatypeMinimum = _objCharacter.RES.Value;
 
             // Count the number of Skill points the Critter currently has.
-            foreach (Skill objSkill in _objCharacter.Skills)
+            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                 _objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 
             UpdateCharacterInfo();
@@ -2119,10 +2119,10 @@ namespace Chummer
             // Record the status of any flags that normally trigger character events.
             bool blnMAGEnabled = _objCharacter.MAGEnabled;
             bool blnRESEnabled = _objCharacter.RESEnabled;
-            bool blnUneducated = _objCharacter.Uneducated;
-            bool blnUncouth = _objCharacter.Uncouth;
+            bool blnUneducated = _objCharacter.SkillsSection.Uneducated;
+            bool blnUncouth = _objCharacter.SkillsSection.Uncouth;
             bool blnFriendsInHighPlaces = _objCharacter.FriendsInHighPlaces;
-            bool blnSchoolOfHardKnocks = _objCharacter.SchoolOfHardKnocks;
+            bool blnSchoolOfHardKnocks = _objCharacter.SkillsSection.SchoolOfHardKnocks;
 
             _blnReapplyImprovements = true;
 
@@ -2597,13 +2597,13 @@ namespace Chummer
                 objCharacter_MAGEnabledChanged(this);
             if (blnRESEnabled != _objCharacter.RESEnabled)
                 objCharacter_RESEnabledChanged(this);
-            if (blnUneducated != _objCharacter.Uneducated)
+            if (blnUneducated != _objCharacter.SkillsSection.Uneducated)
                 objCharacter_UneducatedChanged(this);
-            if (blnUncouth != _objCharacter.Uncouth)
+            if (blnUncouth != _objCharacter.SkillsSection.Uncouth)
                 objCharacter_UncouthChanged(this);
             if (blnFriendsInHighPlaces != _objCharacter.FriendsInHighPlaces)
                 objCharacter_FriendsInHighPlacesChanged(this);
-            if (blnSchoolOfHardKnocks != _objCharacter.SchoolOfHardKnocks)
+            if (blnSchoolOfHardKnocks != _objCharacter.SkillsSection.SchoolOfHardKnocks)
                 objCharacter_SchoolOfHardKnocksChanged(this);
 
             _blnIsDirty = true;
@@ -4369,7 +4369,7 @@ namespace Chummer
             SpiritControl objSpiritControl = (SpiritControl)sender;
             
 			// Retrieve the character's Summoning Skill Rating.
-			int intSkillValue = _objCharacter.Skills.FirstOrDefault(x => x.Name == "Summoning")?.Rating ?? 0; //TODO: LOOKUP TABLE
+			int intSkillValue = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == "Summoning")?.Rating ?? 0; //TODO: LOOKUP TABLE
 			
             if (objSpiritControl.ServicesOwed > intSkillValue && !_objCharacter.IgnoreRules)
             {
@@ -4442,7 +4442,7 @@ namespace Chummer
             SpiritControl objSpriteControl = (SpiritControl)sender;
 
 			// Retrieve the character's Compiling Skill Rating.
-	        int intSkillValue = _objCharacter.Skills.FirstOrDefault(x => x.Name == "Compiling")?.Rating ?? 0;
+	        int intSkillValue = _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.Name == "Compiling")?.Rating ?? 0;
 
             if (objSpriteControl.ServicesOwed > intSkillValue && !_objCharacter.IgnoreRules)
             {
@@ -4503,7 +4503,7 @@ namespace Chummer
 
 			if (objPowerControl.PowerName == "Improved Ability (skill)")
 			{
-            foreach (Skill objSkill in _objCharacter.Skills)
+            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
             {
                 foreach (Power objPower in _objCharacter.Powers)
 						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
@@ -4996,7 +4996,7 @@ namespace Chummer
             if (frmPickPower.MaxLevels() > 0)
 				if (objPower.Name == "Improved Ability (skill)")
 				{
-                foreach (Skill objSkill in _objCharacter.Skills)
+                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 					{
 						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
                     {
@@ -10361,7 +10361,7 @@ namespace Chummer
             }
 
             // Run through the list of Active Skills and pick out the two applicable ones.
-            int intSkillValue = _objCharacter.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
+            int intSkillValue = _objCharacter.SkillsSection.Skills.Where(x => x.Name == "Spellcasting" || x.Name == "Ritual Spellcasting").Max(x => x.Rating);
             
             if (intSpellCount >= ((2 * intSkillValue) + _objImprovementManager.ValueOf(Improvement.ImprovementType.SpellLimit)) && !_objCharacter.IgnoreRules)
             {
@@ -14745,24 +14745,24 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Skill Groups.
-            int intSkillGroupsPoints = _objCharacter.SkillGroups.TotalCostKarma();
+            int intSkillGroupsPoints = _objCharacter.SkillsSection.SkillGroups.TotalCostKarma();
 
                 lblSkillGroupsBP.Text = String.Format("{0} " + strPoints, intSkillGroupsPoints.ToString());
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
-			int skillPointsKarma = _objCharacter.Skills.TotalCostKarma();
+			int skillPointsKarma = _objCharacter.SkillsSection.Skills.TotalCostKarma();
 			intKarmaPointsRemain -= skillPointsKarma;
 			lblActiveSkillsBP.Text = $"{skillPointsKarma} {strPoints}";
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = _objCharacter.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
+            int knowledgeKarmaUsed = _objCharacter.SkillsSection.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
 			//TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
 
             // Update the label that displays the number of free Knowledge Skill points remaining.
             lblPBuildKnowledgeSkills.Text =
-		        $"{(_objCharacter.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.KnowledgeSkillPoints}";
+		        $"{(_objCharacter.SkillsSection.KnowledgeSkillPointsRemain)} {LanguageManager.Instance.GetString("String_Of")}  {_objCharacter.SkillsSection.KnowledgeSkillPoints}";
 
 			tabSkillUc.MissingDatabindingsWorkaround();
 
@@ -15035,13 +15035,13 @@ namespace Chummer
 		{
 			//Update Skill Labels
 			//Active skills
-			lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints, _objCharacter.SkillPointsMaximum);
+			lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillPoints, _objCharacter.SkillsSection.SkillPointsMaximum);
 
 			//Knowledge skills
-			lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.KnowledgeSkillPointsRemain, _objCharacter.KnowledgeSkillPoints);
+			lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.KnowledgeSkillPointsRemain, _objCharacter.SkillsSection.KnowledgeSkillPoints);
 
 			//Groups
-			lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillGroupPoints, _objCharacter.SkillGroupPointsMaximum);
+			lblPBuildSkillGroups.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillsSection.SkillGroupPoints, _objCharacter.SkillsSection.SkillGroupPointsMaximum);
 		}
 
         /// <summary>
@@ -15598,7 +15598,7 @@ namespace Chummer
                         intQualityPoints = 0;
 
                     // Run through the Skills the Critter has.
-                    foreach (Skill objSkill in _objCharacter.Skills)
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         intSkillPoints += objSkill.Rating;
 
                     // Subtract the number fo Skill points the Critter had when it mutated.
@@ -19282,24 +19282,24 @@ namespace Chummer
             }
 
             // Check if the character has gone over on Skill Groups
-            if (_objCharacter.SkillGroupPoints < 0)
+            if (_objCharacter.SkillsSection.SkillGroupPoints < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSkillGroupExcess").Replace("{0}", ((_objCharacter.SkillGroupPoints) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSkillGroupExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillGroupPoints) * -1).ToString());
             }
 
             // Check if the character has gone over on Active Skills
-            if (_objCharacter.SkillPoints < 0)
+            if (_objCharacter.SkillsSection.SkillPoints < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidActiveSkillExcess").Replace("{0}", ((_objCharacter.SkillPoints) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidActiveSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillPoints) * -1).ToString());
             }
 
             // Check if the character has gone over on Knowledge Skills
-            if (_objCharacter.KnowledgeSkillPointsRemain < 0)
+            if (_objCharacter.SkillsSection.KnowledgeSkillPointsRemain < 0)
             {
                 blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.KnowledgeSkillPointsRemain) * -1).ToString());
+                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString());
             }
 
             // Check if the character has gone over the Nuyen limit.
@@ -20200,12 +20200,12 @@ namespace Chummer
 			}
 
 			// Check if the character has gone over on Skill Groups
-			if (blnValid && _objCharacter.SkillGroupPoints > 0)
+			if (blnValid && _objCharacter.SkillsSection.SkillGroupPoints > 0)
 			{
 				if (
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
-							.Replace("{0}", _objCharacter.SkillGroupPoints.ToString())
+							.Replace("{0}", _objCharacter.SkillsSection.SkillGroupPoints.ToString())
 							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
@@ -20213,12 +20213,12 @@ namespace Chummer
 			}
 
 			// Check if the character has gone over on Active Skills
-			if (blnValid && _objCharacter.SkillPoints > 0)
+			if (blnValid && _objCharacter.SkillsSection.SkillPoints > 0)
 			{
 				if (
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
-							.Replace("{0}", _objCharacter.SkillPoints.ToString())
+							.Replace("{0}", _objCharacter.SkillsSection.SkillPoints.ToString())
 							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
@@ -20226,12 +20226,12 @@ namespace Chummer
 			}
 
 			// Check if the character has gone over on Knowledge Skills
-			if (blnValid && _objCharacter.KnowledgeSkillPointsUsed > 0)
+			if (blnValid && _objCharacter.SkillsSection.KnowledgeSkillPointsUsed > 0)
 			{
 				if (
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
-							.Replace("{0}", _objCharacter.KnowledgeSkillPointsUsed.ToString())
+							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsUsed.ToString())
 							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
@@ -20357,9 +20357,9 @@ namespace Chummer
                     _objCharacter.Karma = 7;
 
                 // Break any Skill Groups if any of their associated Skills have a Rating while that does not match the Group's.
-                foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+                foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                 {
-                    foreach (Skill objSkill in _objCharacter.Skills)
+                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                     {
                         if (objSkill.Rating != objGroup.Rating && objSkill.SkillGroup == objGroup.Name)
                         {

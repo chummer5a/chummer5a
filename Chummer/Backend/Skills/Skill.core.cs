@@ -358,7 +358,7 @@ namespace Chummer.Skills
 		public virtual int UpgradeKarmaCost()
 		{
 			int masterAdjustment = 0;
-			if (CharacterObject.JackOfAllTrades && CharacterObject.Created)
+			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
 				masterAdjustment = LearnedRating > 5 ? 2 : -1;
 			}
@@ -386,12 +386,12 @@ namespace Chummer.Skills
 		//Character is really bad at this. Uncouth and a social skill or Uneducated and technical skill
 		private bool Unaware()
 		{
-			if (CharacterObject.Uncouth && Category == "Social Active")
+			if (CharacterObject.SkillsSection.Uncouth && Category == "Social Active")
 			{
 				return true;
 			}
 
-			if (CharacterObject.Uneducated && Category == "Technical Active")
+			if (CharacterObject.SkillsSection.Uneducated && Category == "Technical Active")
 			{
 				return true;
 			}

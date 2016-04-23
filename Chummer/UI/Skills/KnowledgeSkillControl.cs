@@ -108,7 +108,7 @@ namespace Chummer.UI.Skills
 			}
 
 
-			cmdDelete.Click += (sender, args) => { skill.CharacterObject.KnowledgeSkills.Remove(skill); };
+			cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
 
 		}
 

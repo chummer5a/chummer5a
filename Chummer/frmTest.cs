@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -803,7 +803,7 @@ namespace Chummer
 						}
 						else
 						{
-							foreach (Skill objSkill in _objCharacter.Skills)
+							foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 							{
 								if (objSkill.Name == objXmlSkill.InnerText)
 								{
@@ -859,7 +859,7 @@ namespace Chummer
 					{
 						int intMaxRating = intForce;
 						// Determine the highest Skill Rating the Critter has.
-						foreach (Skill objSkill in _objCharacter.Skills)
+						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 						{
 							if (objSkill.RatingMaximum > intMaxRating)
 								intMaxRating = objSkill.RatingMaximum;
@@ -872,7 +872,7 @@ namespace Chummer
 						//	objGroup.RatingMaximum = intMaxRating;
 
 						// Set the MaxSkillRating for the character so it can be used later when they add new Knowledge Skills or Exotic Skills.
-						_objCharacter.MaxSkillRating = intMaxRating;
+						
 					}
 
 					// Add any Complex Forms the Critter comes with (typically Sprites)
@@ -918,7 +918,7 @@ namespace Chummer
 					// If this is a Mutant Critter, count up the number of Skill points they start with.
 					if (_objCharacter.MetatypeCategory == "Mutant Critters")
 					{
-						foreach (Skill objSkill in _objCharacter.Skills)
+						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 							_objCharacter.MutantCritterBaseSkills += objSkill.Rating;
 					}
 				}

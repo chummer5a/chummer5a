@@ -128,7 +128,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				int adj = _type == "Language" && CharacterObject.Linguist ? 1 : 0;
+				int adj = _type == "Language" && CharacterObject.SkillsSection.Linguist ? 1 : 0;
 				return base.PoolModifiers + adj + WoundModifier;
 			}
 		}
@@ -178,7 +178,7 @@ namespace Chummer.Skills
 		public override int UpgradeKarmaCost()
 		{
 			int adjustment = 0;
-			if (CharacterObject.JackOfAllTrades && CharacterObject.Created)
+			if (CharacterObject.SkillsSection.JackOfAllTrades && CharacterObject.Created)
 			{
 				adjustment = LearnedRating > 5 ? 2 : -1;
 			}
@@ -240,13 +240,13 @@ namespace Chummer.Skills
 			switch (_type)
 			{
 				case "Language":
-					return CharacterObject.Linguist;
+					return CharacterObject.SkillsSection.Linguist;
 				case "Professional":
-					return CharacterObject.TechSchool;
+					return CharacterObject.SkillsSection.TechSchool;
 				case "Street":
-					return CharacterObject.SchoolOfHardKnocks;
+					return CharacterObject.SkillsSection.SchoolOfHardKnocks;
 				case "Academic":
-					return CharacterObject.CollegeEducation;
+					return CharacterObject.SkillsSection.CollegeEducation;
 				case "Interest":
 					return false; 
 
@@ -261,9 +261,9 @@ namespace Chummer.Skills
 			switch (_type)
 			{
 				case "Professional":
-					return CharacterObject.Uneducated;
+					return CharacterObject.SkillsSection.Uneducated;
 				case "Academic":
-					return CharacterObject.Uneducated;
+					return CharacterObject.SkillsSection.Uneducated;
 
 				default:
 					return false;
