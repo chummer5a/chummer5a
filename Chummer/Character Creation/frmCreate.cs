@@ -14747,7 +14747,8 @@ namespace Chummer
             // Calculate the BP used by Skill Groups.
             int intSkillGroupsPoints = _objCharacter.SkillsSection.SkillGroups.TotalCostKarma();
 
-                lblSkillGroupsBP.Text = String.Format("{0} " + strPoints, intSkillGroupsPoints.ToString());
+                lblSkillGroupsBP.Text = string.Format("{0} " + strPoints, intSkillGroupsPoints);
+			intKarmaPointsRemain -= intSkillGroupsPoints;
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Active Skills.
 			int skillPointsKarma = _objCharacter.SkillsSection.Skills.TotalCostKarma();
