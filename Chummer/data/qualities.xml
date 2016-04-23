@@ -104,7 +104,6 @@
 				<specificskill>
 					<name>Sneaking</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>
@@ -600,12 +599,10 @@
 				<specificskill>
 					<name>Running</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 				<specificskill>
 					<name>Gymnastics</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>

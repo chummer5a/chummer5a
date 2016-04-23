@@ -19,14 +19,16 @@ namespace Chummer.Skills
 		/// Called during save to allow derived classes to save additional infomation required to rebuild state
 		/// </summary>
 		/// <param name="writer"></param>
-		protected virtual void SaveExtendedData(XmlTextWriter writer) { }
+		protected virtual void SaveExtendedData(XmlTextWriter writer)
+		{
+		}
 
 		protected CharacterAttrib AttributeObject; //Attribute this skill primarily depends on
 		private readonly Character _character; //The Character (parent) to this skill
 		protected readonly string Category; //Name of the skill category it belongs to
-		protected readonly string _group;  //Name of the skill group this skill belongs to (remove?)
-		protected string _name;  //English name of this skill
-		protected List<ListItem> SuggestedSpecializations;  //List of suggested specializations for this skill
+		protected readonly string _group; //Name of the skill group this skill belongs to (remove?)
+		protected string _name; //English name of this skill
+		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 
 
@@ -36,14 +38,17 @@ namespace Chummer.Skills
 		{
 			return false;
 		}
-		public void Free(Skill s) { }
+
+		public void Free(Skill s)
+		{
+		}
 
 		public ReadOnlyCollection<Skill> Fold
 		{
 			get { return null; }
 		}
 
-		
+
 		public bool IdImprovement;
 		public bool LockKnowledge;
 
@@ -53,7 +58,10 @@ namespace Chummer.Skills
 
 
 
-		public void Print(XmlWriter xw) { } //Not this one, due grouping, interface?
+		public void Print(XmlWriter xw)
+		{
+		} //Not this one, due grouping, interface?
+
 		#endregion
 
 		#region Factory
@@ -64,7 +72,7 @@ namespace Chummer.Skills
 			writer.WriteElementString("guid", Id.ToString());
 			writer.WriteElementString("suid", SkillId.ToString());
 			writer.WriteElementString("karma", _karma.ToString());
-			writer.WriteElementString("base", _base.ToString());  //this could acctually be saved in karma too during career
+			writer.WriteElementString("base", _base.ToString()); //this could acctually be saved in karma too during career
 
 			if (!CharacterObject.Created)
 			{
@@ -116,7 +124,7 @@ namespace Chummer.Skills
 					? new ExoticSkill(character, node)
 					: new Skill(character, node);
 			}
-			else  //This is ugly but i'm not sure how to make it pretty
+			else //This is ugly but i'm not sure how to make it pretty
 			{
 				KnowledgeSkill knoSkill = new KnowledgeSkill(character);
 				knoSkill.Load(n);
@@ -167,7 +175,8 @@ namespace Chummer.Skills
 			}
 			else
 			{
-				XmlNode data = XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{n["id"].InnerText}']");
+				XmlNode data =
+					XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{n["id"].InnerText}']");
 
 				//Some stuff apparently have a guid of 0000-000... (only exotic?)
 				if (data == null)
@@ -184,12 +193,12 @@ namespace Chummer.Skills
 
 				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
 
-				
+
 			}
 
 			var v = from XmlNode node
-					in n.SelectNodes("skillspecializations/skillspecialization")
-					select SkillSpecialization.Load(node);
+				in n.SelectNodes("skillspecializations/skillspecialization")
+				select SkillSpecialization.Load(node);
 			var q = v.ToList();
 			if (q.Count != 0)
 			{
@@ -199,7 +208,8 @@ namespace Chummer.Skills
 			return skill;
 		}
 
-		protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();  //TODO CACHE INVALIDATE
+		protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
+			//TODO CACHE INVALIDATE
 
 		/// <summary>
 		/// Load a skill from a data file describing said skill
@@ -224,12 +234,12 @@ namespace Chummer.Skills
 			else
 			{
 
-				string category = n["category"].InnerText;  //if missing we have bigger problems, and a nullref is probably prefered
+				string category = n["category"].InnerText; //if missing we have bigger problems, and a nullref is probably prefered
 				bool knoSkill;
 
 				if (SkillTypeCache != null && SkillTypeCache.ContainsKey(category))
 				{
-					knoSkill = SkillTypeCache[category];  //Simple cache, no need to be sloppy
+					knoSkill = SkillTypeCache[category]; //Simple cache, no need to be sloppy
 				}
 				else
 				{
@@ -258,7 +268,7 @@ namespace Chummer.Skills
 				}
 			}
 
-			
+
 			return s;
 		}
 
@@ -266,7 +276,7 @@ namespace Chummer.Skills
 		{
 			_character = character;
 			_group = group;
-			
+
 			_character.PropertyChanged += OnCharacterChanged;
 			SkillGroupObject = Skills.SkillGroup.Get(this);
 			if (SkillGroupObject != null)
@@ -278,7 +288,8 @@ namespace Chummer.Skills
 		}
 
 		//load from data
-		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText) //Ugly hack, needs by then
+		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText)
+			//Ugly hack, needs by then
 		{
 			_name = n["name"].InnerText; //No need to catch errors (for now), if missing we are fsked anyway
 			AttributeObject = CharacterObject.GetAttribute(n["attribute"].InnerText);
@@ -313,7 +324,7 @@ namespace Chummer.Skills
 		{
 			get { return Rating > 0; }
 		}
-		
+
 		public Character CharacterObject
 		{
 			get { return _character; }
@@ -339,14 +350,15 @@ namespace Chummer.Skills
 		}
 
 		private bool _oldEnable = true; //For OnPropertyChanged 
-		
+
 		//TODO handle aspected/adepts who cannot (always) get magic skills
-		public bool Enabled  
+		public bool Enabled
 		{
 			get { return AttributeObject.Value != 0; }
 		}
 
 		private bool _oldUpgrade = false;
+
 		public bool CanUpgradeCareer
 		{
 			get { return CharacterObject.Karma >= UpgradeKarmaCost() && RatingMaximum > LearnedRating; }
@@ -354,10 +366,7 @@ namespace Chummer.Skills
 
 		public virtual bool AllowDelete
 		{
-			get
-			{
-				return false;
-			}
+			get { return false; }
 		}
 
 		public bool Default { get; private set; }
@@ -372,7 +381,7 @@ namespace Chummer.Skills
 			get { return false; }
 			set { } //TODO REFACTOR AWAY
 		}
-		
+
 		public virtual string Name
 		{
 			get { return _name; }
@@ -391,18 +400,25 @@ namespace Chummer.Skills
 		/// </summary>
 		public Guid SkillId { get; private set; } = Guid.Empty;
 
-		public string SkillGroup { get { return _group; } }
+		public string SkillGroup
+		{
+			get { return _group; }
+		}
 
 		public virtual string SkillCategory
 		{
 			get { return Category; }
 		}
 
-		public IReadOnlyList<ListItem> CGLSpecializations { get { return SuggestedSpecializations; } } 
+		public IReadOnlyList<ListItem> CGLSpecializations
+		{
+			get { return SuggestedSpecializations; }
+		}
 
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
 		//Or just ignore support for multiple specizalizations even if the rules say it is possible?
 		public List<SkillSpecialization> Specializations { get; } = new List<SkillSpecialization>();
+
 		public string Specialization
 		{
 			get
@@ -444,10 +460,10 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				
 				if (!Default && !Leveled)
 				{
-					return "You cannot default in this skill"; //TODO translate (could not find it in lang file, did not check old source)
+					return "You cannot default in this skill";
+						//TODO translate (could not find it in lang file, did not check old source)
 				}
 
 				StringBuilder s;
@@ -457,27 +473,68 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillRating")} ({Rating})");
+					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillRating")} ({Rating}");
+
+
+					bool first = true;
+					foreach (Improvement source in RelevantImprovements().Where(x => x.AddToRating))
+					{
+						if (first)
+						{
+							first = false;
+
+							s.Append(" (Base (");
+							s.Append(LearnedRating);
+							s.Append(")");
+						}
+
+						s.Append(" + ");
+						s.Append(source.SourceName);
+						s.Append(" (");
+						s.Append(source.Value);
+						s.Append(")");
+					}
+					if (!first) s.Append(")");
+
+					s.Append(")");
 				}
 
 				s.Append($" + {Attribute} ({AttributeModifiers})");
 
 				if (Default && !Leveled)
 				{
-					s.Append($" - {LanguageManager.Instance.GetString("Tip_Skill_Defaulting")} (1)");
-				}
-				
+					if (DefaultModifier == 0)
+					{
+						s.Append(" Reflex Recorder Optimization ");
+					}
+					else
+					{
+						s.Append($" - {LanguageManager.Instance.GetString("Tip_Skill_Defaulting")} (1)");
+					}
 
-				if (Rating > 0)
-				{
-					s.Append(InsaneOldModifiersMaker());  //TODO: Confirm. Old code hints modifiers are only when not defaulting.
 				}
 
-				int poolmod = PoolModifiers;
-				if (poolmod != 0)
+				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating))
 				{
-					s.Append(" + " + LanguageManager.Instance.GetString("Tip_Skill_RatingModifiers") + " (" + poolmod + ")");
+
+
+
+
+					s.Append(" + ");
+					if (source.ImproveSource == Improvement.ImprovementSource.Quality)
+					{
+						Quality q = _character.Qualities.First(x => x.InternalId == source.SourceName);
+						s.Append(q.DisplayName);
+					}
+					else
+					{
+						s.Append(source.SourceName);
+					}
+					s.Append(" (");
+					s.Append(source.Value);
+					s.Append(")");
 				}
+
 
 				int wound = WoundModifier;
 				if (wound != 0)
@@ -529,7 +586,8 @@ namespace Chummer.Skills
 							{
 								intModifier += objImprovement.Value;
 								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+									             ")";
 							}
 						}
 					}
@@ -540,18 +598,21 @@ namespace Chummer.Skills
 						{
 							intModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 
 					// Improvement for a Skill Group.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == SkillGroup)
+					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup &&
+					    objImprovement.ImprovedName == SkillGroup)
 					{
 						if (!objImprovement.Exclude.Contains(Name))
 						{
 							intModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 
@@ -585,7 +646,8 @@ namespace Chummer.Skills
 							{
 								intModifier += objImprovement.Value;
 								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+									             ")";
 							}
 						}
 					}
@@ -598,19 +660,22 @@ namespace Chummer.Skills
 						{
 							intModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 
 					// Improvement for Enhanced Articulation
 					if (SkillCategory == "Physical Active" &&
-					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
+					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
+					     AttributeObject.Abbrev == "STR"))
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
 						{
 							intModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 				}
@@ -762,7 +827,8 @@ namespace Chummer.Skills
 							{
 								intCustomModifier += objImprovement.Value;
 								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+									             ")";
 							}
 						}
 					}
@@ -773,18 +839,21 @@ namespace Chummer.Skills
 						{
 							intCustomModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 
 					// Improvement for a Skill Group.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == SkillGroup)
+					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup &&
+					    objImprovement.ImprovedName == SkillGroup)
 					{
 						if (!objImprovement.Exclude.Contains(Name))
 						{
 							intCustomModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 					// Improvement for a Skill Category.
@@ -795,7 +864,8 @@ namespace Chummer.Skills
 						{
 							intCustomModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 					// Improvement for a Skill linked to an Attribute.
@@ -806,19 +876,22 @@ namespace Chummer.Skills
 						{
 							intCustomModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 
 					// Improvement for Enhanced Articulation
 					if (SkillCategory == "Physical Active" &&
-					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" || AttributeObject.Abbrev == "STR"))
+					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
+					     AttributeObject.Abbrev == "STR"))
 					{
 						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
 						{
 							intCustomModifier += objImprovement.Value;
 							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
+								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
+								             ")";
 						}
 					}
 				}
@@ -861,12 +934,20 @@ namespace Chummer.Skills
 
 		public string UpgradeToolTip
 		{
-			get { return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost()); ; }
+			get
+			{
+				return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost());
+				;
+			}
 		}
 
 		public string AddSpecToolTip
 		{
-			get { return string.Format(LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization"), CharacterObject.Options.KarmaSpecialization); }
+			get
+			{
+				return string.Format(LanguageManager.Instance.GetString("Tip_Skill_AddSpecialization"),
+					CharacterObject.Options.KarmaSpecialization);
+			}
 		}
 
 		public string SkillToolTip
@@ -880,18 +961,20 @@ namespace Chummer.Skills
 					middle = $"{SkillGroup} {LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}\n";
 				}
 
-				return $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
+				return
+					$"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
 			}
 		}
-		
+
 		public SkillGroup SkillGroupObject { get; }
 
 		public string Page { get; private set; }
 
 		public string Source { get; private set; }
-		
+
 		//Stuff that is RO, that is simply calculated from other things
 		//Move to extension method?
+
 		#region Calculations
 
 		public int AttributeModifiers
@@ -950,14 +1033,15 @@ namespace Chummer.Skills
 			{
 				return hardwire.Max(x => x.Value);
 			}
-			
+
 
 			ImprovementManager manager = new ImprovementManager(CharacterObject);
 
 			int skillWireRating = manager.ValueOf(Improvement.ImprovementType.Skillwire);
 			if (skillWireRating > 0 || (CharacterObject.SkillsoftAccess && KnowledgeSkill))
 			{
-				Func<Gear, int> recusivestuff = null; recusivestuff = (gear) =>
+				Func<Gear, int> recusivestuff = null;
+				recusivestuff = (gear) =>
 				{
 					//TODO this works with translate?
 					if (gear.Equipped && gear.Category == "Skillsofts" &&
@@ -987,23 +1071,24 @@ namespace Chummer.Skills
 		//anything they depend on, also needs to raise OnChanged
 		//This tree keeps track of dependencies
 		private static readonly ReverseTree<string> DependencyTree =
-		
-		new ReverseTree<string>(nameof(DisplayPool),
-			new ReverseTree<string>(nameof(Pool),
-				new ReverseTree<string>(nameof(PoolModifiers)),
-				new ReverseTree<string>(nameof(AttributeModifiers)),
-				new ReverseTree<string>(nameof(Leveled),
-					new ReverseTree<string>(nameof(Rating),
-						new ReverseTree<string>(nameof(Karma)),
-						new ReverseTree<string>(nameof(BaseUnlocked),
-							new ReverseTree<string>(nameof(Base))
+			new ReverseTree<string>(nameof(PoolToolTip),
+				new ReverseTree<string>(nameof(DisplayPool),
+					new ReverseTree<string>(nameof(Pool),
+						new ReverseTree<string>(nameof(PoolModifiers)),
+						new ReverseTree<string>(nameof(AttributeModifiers)),
+						new ReverseTree<string>(nameof(Leveled),
+							new ReverseTree<string>(nameof(Rating),
+								new ReverseTree<string>(nameof(Karma)),
+								new ReverseTree<string>(nameof(BaseUnlocked),
+									new ReverseTree<string>(nameof(Base))
+									)
+								)
+							)
 						)
 					)
-				)
-			)
-		);
-		
-		
+				);
+
+
 		#endregion
 
 		public void ForceEvent(string property)
@@ -1034,7 +1119,7 @@ namespace Chummer.Skills
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
 				KarmaSpecForcedMightChange();
 			}
-			else if(propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
+			else if (propertyChangedEventArg.PropertyName == nameof(Skills.SkillGroup.Karma))
 			{
 				OnPropertyChanged(propertyChangedEventArg.PropertyName);
 				KarmaSpecForcedMightChange();
@@ -1070,7 +1155,11 @@ namespace Chummer.Skills
 		{
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
-			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.SkillLevel && imp.ImprovedName == _name))
+			if (
+				improvements.Any(
+					imp =>
+						(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) &&
+						imp.ImprovedName == _name))
 			{
 				OnPropertyChanged(nameof(PoolModifiers));
 			}
@@ -1082,6 +1171,6 @@ namespace Chummer.Skills
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
 		}
-		
+
 	}
 }

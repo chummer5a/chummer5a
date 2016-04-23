@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -198,9 +199,15 @@ namespace Chummer.Skills
 			}
 			if (Default)
 			{
-				return attribute + PoolModifiers - 1 + WoundModifier;
+				return attribute + PoolModifiers + DefaultModifier + WoundModifier;
 			}
 			return 0;
+		}
+
+		public int DefaultModifier
+		{
+			//TODO: REFLEX RECOREDER OPTIMIZATIOM
+			get { return -1; }
 		}
 
 		/// <summary>
@@ -215,51 +222,40 @@ namespace Chummer.Skills
 
 		private int Bonus(bool AddToRating)
 		{
-			ImprovementManager manager = new ImprovementManager(_character);
+			//Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
+			return RelevantImprovements().Where(x => x.AddToRating == AddToRating).Sum(x => x.Value);
+		}
 
-			int intModifier = 0;
-
-			//Dump loop looking at all improvements
+		private IEnumerable<Improvement> RelevantImprovements()
+		{
 			foreach (Improvement objImprovement in CharacterObject.Improvements)
 			{
-				if (objImprovement.AddToRating ==AddToRating && objImprovement.Enabled)
+				if(!objImprovement.Enabled) continue;
+
+				switch (objImprovement.ImproveType)
 				{
-					// Improvement for an individual Skill.
-					//TODO NOT WORKING FOR EXOTIC SKILLS (when is that needed?)
-					if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-						intModifier += objImprovement.Value;
-
-
-					// Improvement for a Skill Group.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _group)
-					{
-						if (!objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
-							intModifier += objImprovement.Value;
-					}
-					// Improvement for a Skill Category.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == SkillCategory)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-							intModifier += objImprovement.Value;
-					}
-					// Improvement for a Skill linked to an CharacterAttribute.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == AttributeObject.Abbrev)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-							intModifier += objImprovement.Value;
-					}
-					// Improvement for Enhanced Articulation
-					if (Category == "Physical Active" &&
-					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
-					     AttributeObject.Abbrev == "STR"))
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-							intModifier += objImprovement.Value;
-					}
+					case Improvement.ImprovementType.Skill:
+						if (objImprovement.ImprovedName == Name)
+							yield return objImprovement;
+						break;
+					case Improvement.ImprovementType.SkillGroup:
+						if(objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+							yield return objImprovement;
+						break;
+					case Improvement.ImprovementType.SkillCategory:
+						if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
+							yield return objImprovement;
+						break;
+					case Improvement.ImprovementType.SkillAttribute:
+						if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+							yield return objImprovement;
+						break;
+					case Improvement.ImprovementType.EnhancedArticulation:
+						if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+							yield return objImprovement;
+						break;
 				}
 			}
-
-			return intModifier;
 		}
 
 		public int WoundModifier
@@ -463,6 +459,7 @@ namespace Chummer.Skills
 		/// </summary>
 		/// <returns></returns>
 		private int _cachedFreeBase = int.MinValue;
+
 		protected int FreeBase()
 		{
 			if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;

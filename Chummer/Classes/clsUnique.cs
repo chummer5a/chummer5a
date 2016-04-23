@@ -24,7 +24,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+ using System.Threading;
+ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -970,6 +971,19 @@ namespace Chummer
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			
 		}
+		#endregion
+
+		#region static
+
+		private static readonly Lazy<HashSet<string>> _physicalAttributes =
+			new Lazy<HashSet<string>>(() => new HashSet<string>() {"BOD", "AGI", "REA", "STR"},
+				LazyThreadSafetyMode.PublicationOnly);
+		public static HashSet<string> PhysicalAttributes
+		{
+			get { return _physicalAttributes.Value; }
+		}
+
+
 		#endregion
 	}
 

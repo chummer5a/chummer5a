@@ -194,7 +194,7 @@ namespace Chummer.Skills
 			{
 				if (_skills.Count == 0)
 				{
-					GetSkillList(_character).ForEach(x => Skills.Add(x));
+					GetSkillList(_character).ForEach(x => _skills.Add(x));
 				}
 				return _skills;
 			}
