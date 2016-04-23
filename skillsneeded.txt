@@ -60,7 +60,6 @@ Wounds
 
 Testers bug
 Aspected magicans can take skills they should not be able to take
-Perceptive quality don't give assensing
 Natural Language
 Reflex recorder optimization should remove defaulting
 Re-Check rules for skillwires+jacks

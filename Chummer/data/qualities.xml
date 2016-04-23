@@ -2657,10 +2657,14 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<specificskill>
+        <specificskill>
 					<name>Perception</name>
 					<bonus>1</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>1</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -2679,6 +2683,10 @@
 					<name>Perception</name>
 					<bonus>2</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>2</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>
