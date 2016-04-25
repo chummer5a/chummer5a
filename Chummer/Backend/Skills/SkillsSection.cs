@@ -26,87 +26,78 @@ namespace Chummer.Skills
 		private bool _blnTechSchool;
 		private bool _blnLinguist;
 
+		private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>(); 
+
 		public SkillsSection(Character character)
 		{
 			_character = character;
-			_character.MAGEnabledChanged += CharacterOnMagEnabledChanged;
-			_character.RESEnabledChanged += CharacterOnResEnabledChanged;
 		}
 
-		private void CharacterOnResEnabledChanged(Character sender)
+		internal void AddSkills(FilterOptions skills)
 		{
-			if (sender.RESEnabled)
+			var list = GetSkillList(_character, skills);
+
+			//TODO: Handle adept? Only unlocks assencing if s/he has astral perception power
+			Skills.MergeInto(list, CompareSkills);
+		}
+
+		internal void RemoveSkills(FilterOptions skills)
+		{
+			string category;
+			switch (skills)
 			{
-				MergeIntoSkills(GetSkillList(sender, FilterOptions.Resonance));
+				case FilterOptions.Magician:
+				case FilterOptions.Sorcery:
+				case FilterOptions.Conjuring:
+				case FilterOptions.Enhancing:
+				case FilterOptions.Adept:
+					category = "Magical Active";
+					break;
+				case FilterOptions.Technomancer:
+					category = "Resonance Active";
+					break;
+				default:
+					return;
 			}
-			else
+
+			for (int i = Skills.Count - 1; i >= 0; i--)
 			{
-				for (int i = Skills.Count - 1; i >= 0; i--)
+				if (Skills[i].SkillCategory == category)
 				{
-					if (Skills[i].Attribute == "RES")
+					Skill skill = Skills[i];
+					_skillValueBackup[skill.SkillId] = skill;
+					Skills.RemoveAt(i);
+
+					if (_character.Created)
 					{
-						Skills.RemoveAt(i); //TODO SAVE FOR SESSION
-											//TODO make KNO if career
+						KnowledgeSkill kno = new KnowledgeSkill(_character)
+						{
+							Type = skill.Name == "Arcana" ? "Academic" : "Professional",
+							WriteableName = skill.Name,
+							Base = skill.Base,
+							Karma = skill.Karma
+						};
+						kno.Specializations.AddRange(skill.Specializations);
+						KnowledgeSkills.Add(kno);
 					}
 				}
-			}
-		}
-
-		private void CharacterOnMagEnabledChanged(Character sender)
-		{
-			if (sender.MAGEnabled)
-			{
-				MergeIntoSkills(GetSkillList(sender, FilterOptions.MagicalAll));  //TODO Adepts/Aspected not handled
-			}
-			else
-			{
-				for (int i = Skills.Count - 1; i >= 0; i--)
-				{
-					if (Skills[i].SkillCategory == "Magical Active")
-					{
-						Skills.RemoveAt(i); //TODO SAVE FOR SESSION
-											//TODO make KNO if career
-					}
-				}
-			}
-		}
-
-		private void MergeIntoSkills(IEnumerable<Skill> newSkills)
-		{
-			int mergeIndex = 0;
-			foreach (Skill skill in newSkills)
-			{
-				while (CompareSkills(Skills[mergeIndex], skill) < 0)
-					mergeIndex++;
-
-				Skills.Insert(mergeIndex, skill);
 			}
 		}
 
 		internal void Load(XmlNode skillNode, bool legacy = false)
 		{
 			Timekeeper.Start("load_char_skills");
-			
+
 			if (!legacy)
 			{
 				Timekeeper.Start("load_char_skills_groups");
-				(from XmlNode node in skillNode.SelectNodes("groups/group")
-					let @group = SkillGroup.Load(_character, node)
-					where @group != null
-					orderby @group.DisplayName descending
-					select @group).ForEach(x => SkillGroups.Add(x));
+				(from XmlNode node in skillNode.SelectNodes("groups/group") let @group = SkillGroup.Load(_character, node) where @group != null orderby @group.DisplayName descending select @group).ForEach(x => SkillGroups.Add(x));
 
 				Timekeeper.Finish("load_char_skills_groups");
 
 				Timekeeper.Start("load_char_skills_normal");
 				//Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-				List<Skill> loadingSkills =
-					(from XmlNode node
-						in skillNode.SelectNodes("skills/skill")
-						let skill = Skill.Load(_character, node)
-						where skill != null
-						select skill
-						).ToList();
+				List<Skill> loadingSkills = (from XmlNode node in skillNode.SelectNodes("skills/skill") let skill = Skill.Load(_character, node) where skill != null select skill).ToList();
 
 				loadingSkills.Sort(CompareSkills);
 
@@ -118,12 +109,7 @@ namespace Chummer.Skills
 				Timekeeper.Finish("load_char_skills_normal");
 
 				Timekeeper.Start("load_char_skills_kno");
-				List<KnowledgeSkill> knoSkills =
-					(from XmlNode node
-						in skillNode.SelectNodes("knoskills/skill")
-						let skill = (KnowledgeSkill) Skill.Load(_character, node)
-						where skill != null
-						select skill).ToList();
+				List<KnowledgeSkill> knoSkills = (from XmlNode node in skillNode.SelectNodes("knoskills/skill") let skill = (KnowledgeSkill) Skill.Load(_character, node) where skill != null select skill).ToList();
 
 
 				foreach (KnowledgeSkill skill in knoSkills)
@@ -136,14 +122,10 @@ namespace Chummer.Skills
 			{
 				XmlNodeList oldskills = skillNode.SelectNodes("skills/skill");
 
-				List<Skill> tempoerySkillList = (from XmlNode node
-					in oldskills
-					let skill = Skill.LegacyLoad(_character, node)
-					where skill != null
-					select skill).ToList();
-				
+				List<Skill> tempoerySkillList = (from XmlNode node in oldskills let skill = Skill.LegacyLoad(_character, node) where skill != null select skill).ToList();
+
 				List<Skill> unsoredSkills = new List<Skill>();
-				
+
 				foreach (Skill skill in tempoerySkillList)
 				{
 					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
@@ -160,8 +142,6 @@ namespace Chummer.Skills
 				unsoredSkills.Sort(CompareSkills);
 
 				unsoredSkills.ForEach(x => _skills.Add(x));
-
-
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
@@ -196,7 +176,7 @@ namespace Chummer.Skills
 			writer.WriteElementString("jackofalltrades", JackOfAllTrades.ToString());
 			writer.WriteElementString("techschool", TechSchool.ToString());
 			writer.WriteElementString("linguist", Linguist.ToString());
-			
+
 			writer.WriteStartElement("skills");
 			foreach (Skill skill in Skills)
 			{
@@ -212,13 +192,10 @@ namespace Chummer.Skills
 			writer.WriteStartElement("groups");
 			foreach (SkillGroup skillGroup in SkillGroups)
 			{
-
 				skillGroup.WriteTo(writer);
 			}
 			writer.WriteEndElement();
 			writer.WriteEndElement();
-
-			
 		}
 
 		internal void Reset()
@@ -267,11 +244,7 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority ||
-				                     (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) ||
-				                     _character.BuildMethod == CharacterBuildMethod.SumtoTen
-					? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier
-					: 0;
+				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority || (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) || _character.BuildMethod == CharacterBuildMethod.SumtoTen ? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier : 0;
 
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
@@ -362,7 +335,6 @@ namespace Chummer.Skills
 
 				if (blnOldValue != value)
 					JackOfAllTradesChanged?.Invoke(_character);
-
 			}
 		}
 
@@ -477,8 +449,7 @@ namespace Chummer.Skills
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
 			// Populate the Skills list.
-			XmlNodeList objXmlSkillList =
-				objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
+			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
 
 			// First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
 			List<ListItem> lstSkillOrder = new List<ListItem>();
@@ -499,6 +470,8 @@ namespace Chummer.Skills
 			foreach (ListItem objItem in lstSkillOrder)
 			{
 				XmlNode objXmlSkill = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + objItem.Value + "\"]");
+
+				//TODO: read from backup
 				Skill objSkill = Skill.FromData(objXmlSkill, c);
 				b.Add(objSkill);
 			}
@@ -515,34 +488,33 @@ namespace Chummer.Skills
 					return "";
 				case FilterOptions.NonSpecial:
 					return " and not(category = 'Magical Active') and not(category = 'Resonance Active')";
-				case FilterOptions.MagicalAll:
+				case FilterOptions.Magician:
 					return " and category = 'Magical Active'";
-				case FilterOptions.MagicalSorcery:
-					return " and category = 'Magical Active' and skillgroup = 'Sorcery'";
-				case FilterOptions.MagicalConjuring:
-					return " and category = 'Magical Active' and skillgroup = 'Conjuring'";
-				case FilterOptions.MagicalEnchanting:
-					return " and category = 'Magical Active' and skillgroup = 'Enchanting'";
-				case FilterOptions.MagicalMisc:
-					return " and category = 'Magical Active' and not(skillgroup)";
-				case FilterOptions.Resonance:
+				case FilterOptions.Sorcery:
+					return " and category = 'Magical Active' and (skillgroup = 'Sorcery' or skillgroup = '' or not(skillgroup))";
+				case FilterOptions.Conjuring:
+					return " and category = 'Magical Active' and (skillgroup = 'Conjuring' or skillgroup = '' or not(skillgroup))";
+				case FilterOptions.Enhancing:
+					return " and category = 'Magical Active' and (skillgroup = 'Enchanting' or skillgroup = '' or not(skillgroup))";
+				case FilterOptions.Adept:
+					return " and category = 'Magical Active' and (skillgroup = '' or not(skillgroup))";
+				case FilterOptions.Technomancer:
 					return " and category = 'Resonance Active'";
 				default:
 					throw new ArgumentOutOfRangeException(nameof(filter), filter, null);
 			}
 		}
 
-
 		internal enum FilterOptions
 		{
 			All,
 			NonSpecial,
-			MagicalAll,
-			MagicalSorcery,
-			MagicalConjuring,
-			MagicalEnchanting,
-			MagicalMisc,
-			Resonance
+			Magician,
+			Sorcery,
+			Conjuring,
+			Enhancing,
+			Adept,
+			Technomancer
 		}
 	}
 }

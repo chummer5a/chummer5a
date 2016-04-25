@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend;
 
 namespace Chummer.Skills
 {
+	[DebuggerDisplay("{_groupName}")]
 	public class SkillGroup : INotifyPropertyChanged
 	{
 		#region Core calculations
@@ -201,19 +204,12 @@ namespace Chummer.Skills
 			if (string.IsNullOrWhiteSpace(skill.SkillGroup)) return null;
 
 			SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
-			skill.CharacterObject.SkillsSection.SkillGroups.Add(newGroup);
-			newGroup.Add(skill);
-
-			//BindingList don't have sort, so we have to play dirty
-			List<SkillGroup> g = new List<SkillGroup>(skill.CharacterObject.SkillsSection.SkillGroups.OrderBy(x => x.DisplayName));
-			skill.CharacterObject.SkillsSection.SkillGroups.Clear();
-			foreach (SkillGroup skillGroup in g)
-			{
-				skill.CharacterObject.SkillsSection.SkillGroups.Add(skillGroup);
-			}
-
+			skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => l.DisplayName.CompareTo(r.DisplayName));
+			
 			return newGroup;
 		}
+
+		
 
 		private void Add(Skill skill)
 		{
@@ -238,14 +234,12 @@ namespace Chummer.Skills
 		internal static SkillGroup Load(Character character, XmlNode saved)
 		{
 			Guid g;
-
-			SkillGroup group = new SkillGroup(character, saved["name"].InnerText);
+			saved.TryGetField("id", Guid.TryParse, out g);
+			SkillGroup group = new SkillGroup(character, saved["name"].InnerText, g);
 
 			saved.TryGetField("karma", out group._skillFromKarma);
 			saved.TryGetField("base", out group._skillFromSp);
-			saved.TryGetField("id", Guid.TryParse, out g);
-
-			group.Id = g;
+			
 
 
 			return group;
@@ -290,7 +284,7 @@ namespace Chummer.Skills
 		private readonly string _groupName;
 		private readonly Character _character;
 		
-		private SkillGroup(Character character, string groupName)
+		private SkillGroup(Character character, string groupName, Guid guid = default(Guid))
 		{
 			_character = character;
 			_groupName = groupName;
@@ -356,7 +350,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		public Guid Id { get; private set; } = Guid.NewGuid();
+		public Guid Id { get; } = Guid.NewGuid();
 
 
 		#region HasWhateverSkills
@@ -454,7 +448,18 @@ namespace Chummer.Skills
 				return -1;
 			}
 		}
-		
+
+		/// <summary>
+		/// Serves as a hash function for a particular type. 
+		/// </summary>
+		/// <returns>
+		/// A hash code for the current object.
+		/// </returns>
+		public override int GetHashCode()
+		{
+			return Id.GetHashCode();
+		}
+
 		public IEnumerable<Skill> GetEnumerable() //Databinding shits itself if this implements IEnumerable
 		{
 			return _affectedSkills;

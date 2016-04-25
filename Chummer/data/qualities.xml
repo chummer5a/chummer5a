@@ -986,6 +986,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Magician</unlockskills>
+      </bonus>
 			<contributetolimit>no</contributetolimit>
 			<forbidden>
 				<oneof>
@@ -1003,6 +1006,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Adept</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1020,6 +1026,7 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>Magicain</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1037,6 +1044,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Technomancer</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1054,6 +1064,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Sorcery,Conjuring,Enhancing</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>

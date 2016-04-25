@@ -489,7 +489,15 @@ namespace Chummer.Skills
 						}
 
 						s.Append(" + ");
-						s.Append(source.SourceName);
+						if (source.ImproveSource == Improvement.ImprovementSource.Bioware)
+						{
+							Cyberware q = _character.Cyberware.FirstOrDefault(x => x.InternalId == source.SourceName);
+							s.Append(q?.DisplayNameShort);
+						}
+						else
+						{
+							s.Append(source.SourceName);
+						}
 						s.Append(" (");
 						s.Append(source.Value);
 						s.Append(")");
@@ -516,10 +524,6 @@ namespace Chummer.Skills
 
 				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating))
 				{
-
-
-
-
 					s.Append(" + ");
 					if (source.ImproveSource == Improvement.ImprovementSource.Quality)
 					{
@@ -542,394 +546,32 @@ namespace Chummer.Skills
 					s.Append(" - " + LanguageManager.Instance.GetString("Tip_Skill_Wounds") + " (" + wound + ")");
 				}
 
+				if (AttributeObject.Abbrev == "STR" || AttributeObject.Abbrev == "AGI")
+				{
+					foreach (Cyberware cyberware in _character.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
+					{
+						s.Append("\n");
+						s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
+						if (cyberware.Grade != GlobalOptions.CyberwareGrades.GetGrade("Standard"))
+						{
+							s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
+						}
+
+						int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
+
+						if (cyberware.Location == CharacterObject.PrimaryArm)
+						{
+							s.Append(pool);
+						}
+						else
+						{
+							s.AppendFormat("{0} (-2 Off Hand)", pool - 2);
+						}
+					}
+				}
+
 				return s.ToString();
 			}
-		}
-
-		private string InsaneOldModifiersMaker()
-		{
-			List<string> lstUniqueName = new List<string>();
-			List<string[,,]> lstUniquePair = new List<string[,,]>();
-
-			string strReturn = "";
-			int intModifier = 0;
-			foreach (Improvement objImprovement in CharacterObject.Improvements)
-			{
-				if (!objImprovement.AddToRating && objImprovement.Enabled && !objImprovement.Custom)
-				{
-					// Improvement for an individual Skill.
-					if (!ExoticSkill)
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-						{
-							if (objImprovement.UniqueName != "")
-							{
-								// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-								bool blnFound = false;
-								foreach (string strName in lstUniqueName)
-								{
-									if (strName == objImprovement.UniqueName)
-									{
-										blnFound = true;
-										break;
-									}
-								}
-								if (!blnFound)
-									lstUniqueName.Add(objImprovement.UniqueName);
-
-								// Add the values to the UniquePair List so we can check them later.
-								string[,,] strValues = new string[,,]
-								{{{objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName}}};
-								lstUniquePair.Add(strValues);
-							}
-							else
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-									             ")";
-							}
-						}
-					}
-					else
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill &&
-						    objImprovement.ImprovedName == Name + " (" + Specialization + ")")
-						{
-							intModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-
-					// Improvement for a Skill Group.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup &&
-					    objImprovement.ImprovedName == SkillGroup)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							intModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-
-					// Improvement for a Skill Category.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory &&
-					    objImprovement.ImprovedName == SkillCategory)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							if (objImprovement.UniqueName != "")
-							{
-								// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-								bool blnFound = false;
-								foreach (string strName in lstUniqueName)
-								{
-									if (strName == objImprovement.UniqueName)
-									{
-										blnFound = true;
-										break;
-									}
-								}
-								if (!blnFound)
-									lstUniqueName.Add(objImprovement.UniqueName);
-
-								// Add the values to the UniquePair List so we can check them later.
-								string[,,] strValues = new string[,,]
-								{{{objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName}}};
-								lstUniquePair.Add(strValues);
-							}
-							else
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-									             ")";
-							}
-						}
-					}
-
-					// Improvement for a Skill linked to an Attribute.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute &&
-					    objImprovement.ImprovedName == Attribute)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							intModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-
-					// Improvement for Enhanced Articulation
-					if (SkillCategory == "Physical Active" &&
-					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
-					     AttributeObject.Abbrev == "STR"))
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-						{
-							intModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-				}
-			}
-
-			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				string strHighestName = "";
-				int intHighest = -999;
-				foreach (string[,,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0, 0] == "" || (strValues[0, 0, 0] == strName && !strName.StartsWith("precedence")))
-					{
-						if (Convert.ToInt32(strValues[0, 1, 0]) > intHighest)
-						{
-							intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-							strHighestName = strValues[0, 0, 2];
-						}
-					}
-				}
-				if (intHighest == -999)
-					intHighest = 0;
-				intModifier += intHighest;
-
-				if (intHighest != 0)
-				{
-					foreach (Improvement objImprovement in CharacterObject.Improvements)
-					{
-						if (objImprovement.SourceName == strHighestName)
-						{
-							strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-							break;
-						}
-					}
-				}
-			}
-
-			if (lstUniqueName.Contains("precedence2"))
-			{
-				string strHighestName = "";
-				int intHighest = -999;
-				foreach (string[,,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0, 0] == "precedence2")
-					{
-						if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-						{
-							intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-							strHighestName = strValues[0, 0, 2];
-						}
-					}
-				}
-				intModifier += intHighest;
-
-				if (intHighest != 0)
-				{
-					foreach (Improvement objImprovement in CharacterObject.Improvements)
-					{
-						if (objImprovement.SourceName == strHighestName)
-						{
-							strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-							break;
-						}
-					}
-				}
-			}
-
-			if (lstUniqueName.Contains("precedence1"))
-			{
-				intModifier = 0;
-				// Retrieve all of the items that are precedence1 and nothing else.
-				foreach (string[,,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0, 0] == "precedence1")
-						intModifier += Convert.ToInt32(strValues[0, 0, 1]);
-				}
-			}
-
-			if (lstUniqueName.Contains("precedence0"))
-			{
-				// Retrieve only the highest precedence0 value.
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				string strHighestName = "";
-				int intHighest = -999;
-				foreach (string[,,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0, 0] == "precedence0")
-					{
-						if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-						{
-							intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-							strHighestName = strValues[0, 0, 2];
-						}
-					}
-				}
-				intModifier = intHighest;
-
-				if (intHighest != 0)
-				{
-					foreach (Improvement objImprovement in CharacterObject.Improvements)
-					{
-						if (objImprovement.SourceName == strHighestName)
-						{
-							strReturn = " + " + CharacterObject.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-							break;
-						}
-					}
-				}
-				else
-					strReturn = "";
-			}
-
-			// Factor in Custom Improvements.
-			lstUniqueName = new List<string>();
-			lstUniquePair = new List<string[,,]>();
-
-			int intCustomModifier = 0;
-			foreach (Improvement objImprovement in CharacterObject.Improvements)
-			{
-				if (!objImprovement.AddToRating && objImprovement.Enabled && objImprovement.Custom)
-				{
-					// Improvement for an individual Skill.
-					if (!ExoticSkill)
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == Name)
-						{
-							if (objImprovement.UniqueName != "")
-							{
-								// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-								bool blnFound = false;
-								foreach (string strName in lstUniqueName)
-								{
-									if (strName == objImprovement.UniqueName)
-									{
-										blnFound = true;
-										break;
-									}
-								}
-								if (!blnFound)
-									lstUniqueName.Add(objImprovement.UniqueName);
-
-								// Add the values to the UniquePair List so we can check them later.
-								string[,,] strValues = new string[,,]
-								{{{objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName}}};
-								lstUniquePair.Add(strValues);
-							}
-							else
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-									             ")";
-							}
-						}
-					}
-					else
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Skill &&
-						    objImprovement.ImprovedName == Name + " (" + Specialization + ")")
-						{
-							intCustomModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-
-					// Improvement for a Skill Group.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup &&
-					    objImprovement.ImprovedName == SkillGroup)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							intCustomModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-					// Improvement for a Skill Category.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory &&
-					    objImprovement.ImprovedName == SkillCategory)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							intCustomModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-					// Improvement for a Skill linked to an Attribute.
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute &&
-					    objImprovement.ImprovedName == AttributeObject.Abbrev)
-					{
-						if (!objImprovement.Exclude.Contains(Name))
-						{
-							intCustomModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-
-					// Improvement for Enhanced Articulation
-					if (SkillCategory == "Physical Active" &&
-					    (AttributeObject.Abbrev == "BOD" || AttributeObject.Abbrev == "AGI" || AttributeObject.Abbrev == "REA" ||
-					     AttributeObject.Abbrev == "STR"))
-					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-						{
-							intCustomModifier += objImprovement.Value;
-							if (objImprovement.Value != 0)
-								strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() +
-								             ")";
-						}
-					}
-				}
-			}
-
-			// Run through the list of UniqueNames and pick out the highest value for each one.
-			foreach (string strName in lstUniqueName)
-			{
-				string strHighestName = "";
-				int intHighest = -999;
-				foreach (string[,,] strValues in lstUniquePair)
-				{
-					if (strValues[0, 0, 0] == "")
-					{
-						if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-						{
-							intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-							strHighestName = strValues[0, 0, 2];
-						}
-					}
-				}
-				if (intHighest == -999)
-					intHighest = 0;
-				intCustomModifier += intHighest;
-
-				if (intHighest != 0)
-				{
-					foreach (Improvement objImprovement in CharacterObject.Improvements)
-					{
-						if (objImprovement.SourceName == strHighestName)
-						{
-							strReturn += " + " + CharacterObject.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-							break;
-						}
-					}
-				}
-			}
-			return strReturn;
 		}
 
 		public string UpgradeToolTip

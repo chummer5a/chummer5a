@@ -140,6 +140,7 @@ namespace Chummer
         private string _strAlias = "";
         private string _strPlayerName = "";
         private string _strGameNotes = "";
+	    private string _strPrimaryArm = "Right";
 
 		// AI Home Node
 		private bool _blnHasHomeNode = false;
@@ -444,6 +445,7 @@ namespace Chummer
             objWriter.WriteElementString("playername", _strPlayerName);
             // <gamenotes />
             objWriter.WriteElementString("gamenotes", _strGameNotes);
+			objWriter.WriteElementString("primaryarm", _strPrimaryArm);
 
             // <ignorerules />
             if (_blnIgnoreRules)
@@ -1016,6 +1018,7 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("alias", out _strAlias);
 		    objXmlCharacter.TryGetField("playername", out _strPlayerName);
 		    objXmlCharacter.TryGetField("gamenotes", out _strGameNotes);
+	        objXmlCharacter.TryGetField("primaryarm", out _strPrimaryArm, "Right");
 
 		    objXmlCharacter.TryGetField("gameplayoption", out _strGameplayOption);
 		    objXmlCharacter.TryGetField("maxnuyen", out _intMaxNuyen);
@@ -3333,6 +3336,22 @@ namespace Chummer
                 _strGameNotes = value;
             }
         }
+
+		/// <summary>
+		/// What is the Characters prefered hand
+		/// </summary>
+	    public string PrimaryArm
+	    {
+		    get
+		    {
+			    return _strPrimaryArm; 
+			    
+		    }
+		    set
+		    {
+			    _strPrimaryArm = value;
+		    }
+	    }
 
         /// <summary>
         /// Player name.

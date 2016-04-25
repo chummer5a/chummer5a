@@ -163,10 +163,9 @@ namespace Chummer
 			SkillLevel,  //Karma points in skill
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
-			SkillGroupBase //group
-
-
-		}
+			SkillGroupBase, //group
+	        SpecialSkills
+        }
 
         public enum ImprovementSource
         {
@@ -4634,6 +4633,54 @@ namespace Chummer
 					Improvement.ImprovementType.DealerConnection, strUnique);
 			}
 
+			if (bonusNode.LocalName == "unlockskills")
+			{
+				List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
+				string final;
+				if (options.Count == 0)
+				{
+					Utils.BreakIfDebug();
+					return false;
+				}
+				else if (options.Count == 1)
+				{
+					final = options[0];
+				}
+				else
+				{
+					frmSelectItem frmSelect = new frmSelectItem
+					{
+						AllowAutoSelect = true,
+						GeneralItems = options.Select(x => new ListItem(x, x)).ToList()
+					};
+					
+					if (_objCharacter.Pushtext.Count > 0)
+					{
+						frmSelect.ForceItem = _objCharacter.Pushtext.Pop();
+					}
+
+					if (frmSelect.ShowDialog() == DialogResult.Cancel)
+					{
+						return false;
+					}
+
+					final = frmSelect.SelectedItem;
+				}
+				
+				SkillsSection.FilterOptions skills;
+				if (Enum.TryParse(final, out skills))
+				{
+					_objCharacter.SkillsSection.AddSkills(skills);
+					CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, strSourceName,
+						Improvement.ImprovementType.SpecialSkills, strUnique);
+				}
+				else
+				{
+					Utils.BreakIfDebug();
+					Log.Info(new[] {"Failed to parse", "specialskills", bonusNode.OuterXml});
+				}
+			}
+
 			//nothing went wrong, so return true
 			return true;
 		}
@@ -5449,6 +5496,12 @@ namespace Chummer
 				// Decrease the character's Submersion Grade.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Submersion)
 					_objCharacter.SubmersionGrade -= objImprovement.Value;
+				
+				//Remove special (magical/resonance) skills
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
+				{
+					_objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
+				}
 			}
 
             Log.Exit("RemoveImprovements");

@@ -1754,6 +1754,11 @@ namespace Chummer
                     _objCharacter.StartingNuyen = _objCharacter.Nuyen;
                 }
 
+	            if ("Aspected Magician".Equals(cboTalents.SelectedValue))
+	            {
+		            _objCharacter.Pushtext.Push((string) cboSkill1.SelectedValue);
+	            }
+
                 // Set starting positive qualities
                 foreach (XmlNode objXmlQualityItem in objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"" + cboTalents.SelectedValue + "\"]/qualities/quality"))
                 {

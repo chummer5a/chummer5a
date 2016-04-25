@@ -64,4 +64,7 @@ Natural Language
 Reflex recorder optimization should remove defaulting
 Re-Check rules for skillwires+jacks
 Knowsofts don't do jack shit
-Tooltip for skills broken
+Tooltip not updating with cyberarms
+House rule for skill group breaking karma
+
+Group skill probably not working loading legacy
