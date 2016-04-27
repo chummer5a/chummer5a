@@ -489,15 +489,7 @@ namespace Chummer.Skills
 						}
 
 						s.Append(" + ");
-						if (source.ImproveSource == Improvement.ImprovementSource.Bioware)
-						{
-							Cyberware q = _character.Cyberware.FirstOrDefault(x => x.InternalId == source.SourceName);
-							s.Append(q?.DisplayNameShort);
-						}
-						else
-						{
-							s.Append(source.SourceName);
-						}
+						s.Append(GetName(source));
 						s.Append(" (");
 						s.Append(source.Value);
 						s.Append(")");
@@ -525,15 +517,7 @@ namespace Chummer.Skills
 				foreach (Improvement source in RelevantImprovements().Where(x => !x.AddToRating))
 				{
 					s.Append(" + ");
-					if (source.ImproveSource == Improvement.ImprovementSource.Quality)
-					{
-						Quality q = _character.Qualities.First(x => x.InternalId == source.SourceName);
-						s.Append(q.DisplayName);
-					}
-					else
-					{
-						s.Append(source.SourceName);
-					}
+					s.Append(GetName(source));
 					s.Append(" (");
 					s.Append(source.Value);
 					s.Append(")");
@@ -572,6 +556,31 @@ namespace Chummer.Skills
 
 				return s.ToString();
 			}
+		}
+
+		private string GetName(Improvement source)
+		{
+			switch (source.ImproveSource)
+			{
+				case Improvement.ImprovementSource.Bioware:
+				{
+					Cyberware q = _character.Cyberware.FirstOrDefault(x => x.InternalId == source.SourceName);
+					return q?.DisplayNameShort;
+				}
+				case Improvement.ImprovementSource.Quality:
+				{
+					Quality q = _character.Qualities.FirstOrDefault(x => x.InternalId == source.SourceName);
+					return q?.DisplayName;
+				}
+					case Improvement.ImprovementSource.Power:
+				{
+					Power power = _character.Powers.FirstOrDefault(x => x.InternalId == source.SourceName);
+					return power?.DisplayNameShort;
+				}
+				default:
+					return source.SourceName;
+			}
+
 		}
 
 		public string UpgradeToolTip
@@ -658,12 +667,16 @@ namespace Chummer.Skills
 
 		}
 
+		private int _cachedWireRating = int.MinValue;
 		/// <summary>
 		/// The rating this skill have from Skillwires + Skilljack or Active Hardwires
 		/// </summary>
 		/// <returns>Artificial skill rating</returns>
 		public int WireRating()
 		{
+
+			if (_cachedWireRating != int.MinValue) return _cachedWireRating;
+
 			//TODO: method is here, but not used in any form, needs testing (worried about child items...)
 			//this might do hardwires if i understand how they works correctly
 			var hardwire = CharacterObject.Improvements.Where(
@@ -673,14 +686,14 @@ namespace Chummer.Skills
 
 			if (hardwire.Any())
 			{
-				return hardwire.Max(x => x.Value);
+				return _cachedWireRating = hardwire.Max(x => x.Value);
 			}
 
 
 			ImprovementManager manager = new ImprovementManager(CharacterObject);
 
 			int skillWireRating = manager.ValueOf(Improvement.ImprovementType.Skillwire);
-			if (skillWireRating > 0 || (CharacterObject.SkillsoftAccess && KnowledgeSkill))
+			if ((skillWireRating > 0 || KnowledgeSkill) && CharacterObject.SkillsoftAccess)
 			{
 				Func<Gear, int> recusivestuff = null;
 				recusivestuff = (gear) =>
@@ -698,13 +711,12 @@ namespace Chummer.Skills
 					return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
 				};
 
-				return CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+				return _cachedWireRating =  CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
 
 			}
 
-			return 0;
+			return _cachedWireRating = 0;
 		}
-
 		#endregion
 
 		#region Static
@@ -797,6 +809,7 @@ namespace Chummer.Skills
 		{
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
+			_cachedWireRating = int.MinValue;
 			if (
 				improvements.Any(
 					imp =>
@@ -809,6 +822,11 @@ namespace Chummer.Skills
 			if (
 				improvements.Any(
 					imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
+			{
+				OnPropertyChanged(nameof(AttributeModifiers));
+			} else
+
+			if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
