@@ -82,6 +82,7 @@ Application Change:
 - Essence Hole value is not impacted by grade or ware essence cost reductions. You don't get a little essence back each time now. Fixes #673
 - "Test Subject" and "Factory Child Worker" life modules now give bonus nuyen. Fixes #811
 - Fixed a crash caused when saving characters without mugshots.
+- Fixed an incorrect value for binding spirit services. Fixes #827.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

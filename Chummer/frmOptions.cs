@@ -782,7 +782,7 @@ namespace Chummer
             nudKarmaImproveComplexForm.Value = 1;
             nudKarmaComplexFormOption.Value = 2;
             nudKarmaComplexFormSkillsoft.Value = 1;
-            nudKarmaSpirit.Value = 2;
+            nudKarmaSpirit.Value = 1;
             nudKarmaManeuver.Value = 4;
             nudKarmaNuyenPer.Value = 2000;
             nudKarmaContact.Value = 1;

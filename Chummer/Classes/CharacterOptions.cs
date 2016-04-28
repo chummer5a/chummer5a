@@ -144,7 +144,7 @@ namespace Chummer
 		private int _intKarmaQuality = 1;
 		private int _intKarmaSpecialization = 7;
 		private int _intKarmaSpell = 5;
-		private int _intKarmaSpirit = 2;
+		private int _intKarmaSpirit = 1;
 
 		// Karma Foci variables.
 		private int _intKarmaAlchemicalFocus = 3;
