@@ -11951,9 +11951,8 @@ namespace Chummer
 
             if (treGear.SelectedNode.Level > 0)
             {
-                Gear objGear = new Gear(_objCharacter);
-                objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
-
+                Gear objGear = _objFunctions.FindGear(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+				
                 objGear.Rating = Convert.ToInt32(nudGearRating.Value);
                 if (objGear.Bonus != null)
                 {
