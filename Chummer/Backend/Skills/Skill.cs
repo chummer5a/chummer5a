@@ -31,40 +31,7 @@ namespace Chummer.Skills
 		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 
-
-		#region REMOVELATERANDPLACEINCHILDORNEVER?
-
-		public bool Absorb(Skill s)
-		{
-			return false;
-		}
-
-		public void Free(Skill s)
-		{
-		}
-
-		public ReadOnlyCollection<Skill> Fold
-		{
-			get { return null; }
-		}
-
-
-		public bool IdImprovement;
-		public bool LockKnowledge;
-
-		#endregion
-
-		#region REFACTORAWAY_NOTANYMORE_RENAME_MEANING
-
-
-
-		public void Print(XmlWriter xw)
-		{
-		} //Not this one, due grouping, interface?
-
-		#endregion
-
-		#region Factory
+		
 
 		public void WriteTo(XmlTextWriter writer)
 		{
@@ -95,7 +62,12 @@ namespace Chummer.Skills
 
 		}
 
-
+		public void Print(XmlWriter xw)
+		{
+			//TODO
+		}
+		
+		#region Factory
 		/// <summary>
 		/// Load a skill from a xml node from a saved .chum5 file
 		/// </summary>
@@ -105,7 +77,6 @@ namespace Chummer.Skills
 		public static Skill Load(Character character, XmlNode n)
 		{
 			if (n["suid"] == null) return null;
-
 
 			Guid suid;
 			if (!Guid.TryParse(n["suid"].InnerText, out suid))
@@ -126,11 +97,16 @@ namespace Chummer.Skills
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
-				KnowledgeSkill knoSkill = new KnowledgeSkill(character);
-				knoSkill.Load(n);
-
-				skill = knoSkill;
-
+				if (n["forced"] != null)
+				{
+					skill = new KnowledgeSkill(character, n["name"].InnerText);
+				}
+				else
+				{
+					KnowledgeSkill knoSkill = new KnowledgeSkill(character);
+					knoSkill.Load(n);
+					skill = knoSkill;
+				}
 			}
 
 			XmlElement element = n["guid"];
@@ -560,26 +536,37 @@ namespace Chummer.Skills
 
 		private string GetName(Improvement source)
 		{
+			string value = null;
 			switch (source.ImproveSource)
 			{
 				case Improvement.ImprovementSource.Bioware:
 				{
 					Cyberware q = _character.Cyberware.FirstOrDefault(x => x.InternalId == source.SourceName);
-					return q?.DisplayNameShort;
+					value = q?.DisplayNameShort;
 				}
+					break;
 				case Improvement.ImprovementSource.Quality:
 				{
 					Quality q = _character.Qualities.FirstOrDefault(x => x.InternalId == source.SourceName);
-					return q?.DisplayName;
+					value = q?.DisplayName;
 				}
-					case Improvement.ImprovementSource.Power:
+					break;
+				case Improvement.ImprovementSource.Power:
 				{
 					Power power = _character.Powers.FirstOrDefault(x => x.InternalId == source.SourceName);
-					return power?.DisplayNameShort;
+					value = power?.DisplayNameShort;
 				}
+					break;
 				default:
 					return source.SourceName;
 			}
+
+			if (value == null)
+			{
+				Log.Warning(new object[]{"Skill Tooltip GetName value = null", source.SourceName, source.ImproveSource, source.ImproveType, source.ImprovedName});
+			}
+
+			return value ?? source.SourceName;
 
 		}
 
@@ -717,6 +704,9 @@ namespace Chummer.Skills
 
 			return _cachedWireRating = 0;
 		}
+
+
+		
 		#endregion
 
 		#region Static

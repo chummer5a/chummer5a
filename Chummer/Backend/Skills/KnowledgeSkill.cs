@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Chummer.Datastructures;
 
@@ -45,6 +46,13 @@ namespace Chummer.Skills
 			}
 		}
 
+		public static List<ListItem> KnowledgeSkillsWithCategory(params string[] categories)
+		{
+			HashSet<string> set = new HashSet<string>(categories);
+
+			return DefaultKnowledgeSkillCatagories.Where(x => set.Contains(NameCategoryMap[x.Value])).ToList();
+		} 
+
 		public override bool AllowDelete
 		{
 			get { return true; } //TODO LM
@@ -54,12 +62,19 @@ namespace Chummer.Skills
 		private List<ListItem> _knowledgeSkillCatagories;
 		private string _type;
 		private string _skillCategory;
+		public bool ForcedName { get; }
 
 		public KnowledgeSkill(Character character) : base(character, (string)null)
 		{
 			AttributeObject = character.GetAttribute("LOG");
 			_type = "";
 			SuggestedSpecializations = new List<ListItem>();
+		}
+
+		public KnowledgeSkill(Character character, string forcedName) : this(character)
+		{
+			WriteableName = forcedName;
+			ForcedName = true;
 		}
 		
 		public List<ListItem> KnowledgeSkillCatagories
@@ -83,6 +98,7 @@ namespace Chummer.Skills
 			get { return _translator.Read(_name, ref _translated); }
 			set
 			{
+				if (ForcedName) return;
 				_translator.Write(value,ref _name, ref _translated);
 				if (NameCategoryMap.ContainsKey(_name))
 				{
@@ -275,6 +291,7 @@ namespace Chummer.Skills
 			writer.WriteElementString("name", _name);
 			writer.WriteElementString("type", _type);
 			if(_translated != null) writer.WriteElementString(GlobalOptions.Instance.Language, _translated);
+			if(ForcedName) writer.WriteElementString("forced", null);
 		}
 
 		public void Load(XmlNode node)

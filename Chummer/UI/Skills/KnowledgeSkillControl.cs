@@ -73,18 +73,13 @@ namespace Chummer.UI.Skills
 				{
 					chkKarma.Visible = false;
 				}
-
 				
-				
-
 				cboSkill.DataSource = skill.KnowledgeSkillCatagories;
 				cboSkill.DisplayMember = nameof(ListItem.Name);
 				cboSkill.ValueMember = nameof(ListItem.Value);
 				cboSkill.SelectedIndex = -1;
 				cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 				
-
-
 				//dropdown/spec
 				cboSpec.DataSource = skill.CGLSpecializations;
 				cboSpec.DisplayMember = nameof(ListItem.Name);
@@ -107,9 +102,23 @@ namespace Chummer.UI.Skills
 				};
 			}
 
+			if (skill.ForcedName)
+			{
+				nudKarma.Enabled = false;
+				nudSkill.Enabled = false;
+				cboType.Enabled = false;
+				cboSkill.Enabled = false;
+				cboSpec.DataBindings.Clear();
+				cboSpec.Enabled = false;
+				btnAddSpec.Enabled = false;
+				btnCareerIncrease.Enabled = false;
 
-			cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
-
+				cmdDelete.Visible = false;
+			}
+			else
+			{
+				cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(skill); };
+			}
 		}
 
 		private void btnAddSpec_Click(object sender, EventArgs e)

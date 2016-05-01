@@ -3031,7 +3031,12 @@
 				<tag>Knowsoft</tag>
 			</tags>
 			<bonus>
-				<selecttext />
+        <!--<selecttext />-->
+        <knowledgeskilllevel>
+          <pick/>
+          <val>Rating</val>
+          <notgroup>Language</notgroup>
+        </knowledgeskilllevel>
 			</bonus>
 			<avail>4</avail>
 			<cost>Rating * 2000</cost>
@@ -3049,7 +3054,12 @@
 				<tag>Linguasoft</tag>
 			</tags>
 			<bonus>
-				<selecttext />
+        <!--<selecttext />-->
+        <knowledgeskilllevel>
+          <pick/>
+          <val>Rating</val>
+          <group>Language</group>
+        </knowledgeskilllevel>
 			</bonus>
 			<avail>2</avail>
 			<cost>Rating * 1000</cost>

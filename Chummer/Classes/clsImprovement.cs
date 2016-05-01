@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using System.Xml.Linq;
 using Chummer.Skills;
 
 namespace Chummer
@@ -1938,70 +1939,80 @@ namespace Chummer
 				}
 			}
 
-			if (bonusNode.LocalName == "knowledgeskilllevel" && false) //TODO PUT IN AGAIN AND FIX
+			if (bonusNode.LocalName == "knowledgeskilllevel")
 			{
-				Log.Info(new object[] {"knowledgeskilllevel", bonusNode.OuterXml});
-				int value;
-				String group;
-				if (bonusNode.TryGetField("group", out group))
+				//Convert a knowledgeskilllevel to (something)
+				//It is slightly wider execution path than good as orginal goal was
+				//life modules only but they need a rework and it got a few more 
+				//features tackled on as it shared some stuff
+
+				//3 different options <select/> lets the user pick once
+				//<name> gives a specific kno skill
+				//options does strange thing so it gets turned into free knowledge points
+
+				if (bonusNode["options"] != null)
 				{
-					if (!bonusNode.TryGetField("val", out value))
+					//give them free points as this shit is complicated if done well
+				}
+				else
+				{
+					string name;
+					if (!string.IsNullOrWhiteSpace(_strForcedValue))
 					{
-						value = 1;
+						name = _strForcedValue;
 					}
-
-
-
-					Guid id;
-
-					bool blnFound = false;
-
-					if (bonusNode.TryGetField("id", Guid.TryParse, out id, Guid.NewGuid()))
+					else if (bonusNode["pick"] != null)
 					{
-						foreach (Improvement improvement in _objCharacter.Improvements)
+						List<ListItem> types;
+						if (bonusNode["group"] != null)
 						{
-							if (improvement.ImprovedName == id.ToString())
-							{
-								blnFound = true;
-							}
+
+							var v = bonusNode.SelectNodes($"./group");
+							types = KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
+
 						}
-					}
+						else if (bonusNode["notgroup"] != null)
+						{
+							types = KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
+						}
+						else
+						{
+							types = KnowledgeSkill.KnowledgeTypes;
+						}
 
-					if (!blnFound)
+						frmSelectItem select = new frmSelectItem();
+						select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
+
+						select.ShowDialog();
+						if (select.DialogResult == DialogResult.Cancel)
+						{
+							return false;
+						}
+
+						name = select.SelectedItem;
+					}
+					else if (bonusNode["name"] != null)
 					{
-						//Skill objNSkill = new Skill(_objCharacter);
-						////objNSkill.Id = id;
-						//objNSkill.IdImprovement = true;
-						////objNSkill.AllowDelete = false;
-						//objNSkill.KnowledgeSkill = true;
-						//objNSkill.LockKnowledge = true;
-						//objNSkill.SkillCategory = group;
-						//int max;
-						//bonusNode.TryGetField("max", out max, 9);
-						////objNSkill.RatingMaximum = max;
-
-						//String name;
-						//if (bonusNode.TryGetField("name", out name))
-						//{
-						//	//objNSkill.Name = name;
-						//}
-						//if (bonusNode["options"] != null)
-						//{
-						//	List<String> Options = new List<String>();
-						//	foreach (XmlNode node in bonusNode["options"].ChildNodes)
-						//	{
-						//		Options.Add(node.InnerText);
-						//	}
-						//	//objNSkill.KnowledgeSkillCatagories = Options;  //TODO: WTHISTHIS?
-						//}
-
-						//_objCharacter.Skills.Add(objNSkill);
+						name = bonusNode["name"].InnerText;
 					}
+					else
+					{
+						//TODO some kind of error handling
+						Log.Error(new [] { bonusNode.OuterXml, "Missing pick or name"});
+						return false;
+					}
+					_strSelectedValue = name;
 
-					CreateImprovement(id.ToString(), objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillLevel, "", value);
+					int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
 
+					KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
+					
+					
+					CreateImprovement(skill.Id.ToString(), objImprovementSource, strSourceName,
+						Improvement.ImprovementType.FreeKnowledgeSkills, strUnique, 0, val);
+					CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique, val);
 
+					_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
 				}
 			}
 
@@ -4719,27 +4730,39 @@ namespace Chummer
 
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
 				{
-					for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills?
+					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+					//{
+					//	//wrote as foreach first, modify collection, not want rename
+					//	Skill skill = _objCharacter.SkillsSection.Skills[i];
+					//	for (int j = skill.Fold.Count - 1; j >= 0; j--)
+					//	{
+					//		Skill fold = skill.Fold[i];
+					//		if (fold.Id.ToString() == objImprovement.ImprovedName)
+					//		{
+					//			skill.Free(fold);
+					//			_objCharacter.SkillsSection.Skills.Remove(fold);
+					//		}
+					//	}
+
+					//	if (skill.Id.ToString() == objImprovement.ImprovedName)
+					//	{
+					//		while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+					//		//empty list, can't call clear as exposed list is RO
+
+					//		_objCharacter.SkillsSection.Skills.Remove(skill);
+					//	}
+					//}
+				}
+
+				if (objImprovement.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills)
+				{
+					Guid searchId = Guid.Parse(objImprovement.ImprovedName);
+					KnowledgeSkill knowledgeSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Id == searchId);
+
+					if (knowledgeSkill != null)
 					{
-						//wrote as foreach first, modify collection, not want rename
-						Skill skill = _objCharacter.SkillsSection.Skills[i];
-						for (int j = skill.Fold.Count - 1; j >= 0; j--)
-						{
-							Skill fold = skill.Fold[i];
-							if (fold.Id.ToString() == objImprovement.ImprovedName)
-							{
-								skill.Free(fold);
-								_objCharacter.SkillsSection.Skills.Remove(fold);
-							}
-						}
-
-						if (skill.Id.ToString() == objImprovement.ImprovedName)
-						{
-							while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-							//empty list, can't call clear as exposed list is RO
-
-							_objCharacter.SkillsSection.Skills.Remove(skill);
-						}
+						_objCharacter.SkillsSection.KnowledgeSkills.Remove(knowledgeSkill);
 					}
 				}
 

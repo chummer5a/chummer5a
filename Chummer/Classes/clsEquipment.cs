@@ -9795,9 +9795,7 @@ namespace Chummer
 			{
 				// Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
 				// to the character which is incorrect, and once when the Focus is actually Bonded).
-				bool blnApply = true;
-				if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selecttext"))
-					blnApply = false;
+				bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selecttext"));
 
 				if (blnApply)
 				{
