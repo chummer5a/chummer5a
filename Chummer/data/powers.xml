@@ -795,7 +795,7 @@
       <adeptway>0</adeptway>
       <levels>yes</levels>
 			<bonus>
-				<unarmedap>Rating</unarmedap>
+				<unarmedap>-Rating</unarmedap>
 			</bonus>
       <maxlevel>4</maxlevel>
       <limit>1</limit>
