@@ -557,6 +557,11 @@ namespace Chummer.Skills
 					value = power?.DisplayNameShort;
 				}
 					break;
+				case Improvement.ImprovementSource.Custom:
+				{
+					return source.CustomName;
+				}
+					break;
 				default:
 					return source.SourceName;
 			}

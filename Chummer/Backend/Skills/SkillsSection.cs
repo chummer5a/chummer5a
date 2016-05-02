@@ -31,6 +31,7 @@ namespace Chummer.Skills
 		public SkillsSection(Character character)
 		{
 			_character = character;
+			
 		}
 
 		internal void AddSkills(FilterOptions skills)
@@ -104,7 +105,7 @@ namespace Chummer.Skills
 
 				foreach (Skill skill in loadingSkills)
 				{
-					Skills.Add(skill);
+					_skills.Add(skill);
 				}
 				Timekeeper.Finish("load_char_skills_normal");
 
