@@ -59,7 +59,6 @@ Wounds
 -High pain tolerance
 
 Testers bug
-Natural Language
 Reflex recorder optimization should remove defaulting
 Tooltip not updating with cyberarms
 House rule for skill group breaking karma

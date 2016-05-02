@@ -124,6 +124,21 @@ namespace Chummer.Skills
 			get { return Type; }
 		}
 
+		public override string DisplayPool
+		{
+			get
+			{
+				if (Rating == 0 && _type == "Language")
+				{
+					return "N";
+				}
+				else
+				{
+					return base.DisplayPool;
+				}
+			}
+		}
+
 		public string Type
 		{
 			get { return _type; }

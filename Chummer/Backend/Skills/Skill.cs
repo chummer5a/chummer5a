@@ -626,7 +626,7 @@ namespace Chummer.Skills
 			get { return _translatedName ?? Name; }
 		}
 
-		public string DisplayPool
+		public virtual string DisplayPool
 		{
 			get
 			{

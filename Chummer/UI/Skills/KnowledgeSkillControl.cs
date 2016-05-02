@@ -15,7 +15,7 @@ namespace Chummer.UI.Skills
 			InitializeComponent();
 
 			//Display
-			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
+			lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
 			cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
 			cboType.DisplayMember = nameof(ListItem.Name);
