@@ -18065,11 +18065,10 @@ namespace Chummer
 
 				nudVehicleGearQty.Visible = true;
 				lblVehicleGearQtyLabel.Visible = true;
+				
+                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
+				UpdateSensor(objVehicle);
 
-				if (_objOptions.UseCalculatedVehicleSensorRatings)
-                    lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
-                else
-                    lblVehicleSensor.Text = objVehicle.Sensor.ToString();
                 lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
                 string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
                 string strPage = objVehicle.Page;
@@ -18087,8 +18086,21 @@ namespace Chummer
 				DisplayVehicleWeaponStats(false);
 				DisplayVehicleCommlinkStats(false);
 				DisplayVehicleStats(true);
-				DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
-				DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				if (_objOptions.BookEnabled("R5"))
+				{
+					lblVehicleSlotsLabel.Visible = false;
+					lblVehicleSlots.Visible = false;
+
+					DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods);
+					DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Instance.Dronemods));
+				}
+				else
+				{
+					DisplayVehicleMods(false);
+					DisplayVehicleDroneMods(false);
+					lblVehicleSlotsLabel.Visible = true;
+					lblVehicleSlots.Visible = true;
+				}
 				UpdateCharacterInfo();
             }
             else if (treVehicles.SelectedNode.Level == 2)
@@ -20131,12 +20143,33 @@ namespace Chummer
                 // Vehicle Capacity.
                 foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                 {
-                    if (objVehicle.Slots - objVehicle.SlotsUsed < 0)
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objVehicle.Name);
-                        intCapacityOver++;
-                    }
+					if (_objOptions.BookEnabled("R5"))
+					{
+						if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+						{
+							if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
+							{
+								blnOverCapacity = true;
+								lstOverCapacity.Add(objVehicle.Name);
+								intCapacityOver++;
+							}
+						}
+						else
+						{
+							if (objVehicle.OverR5Capacity)
+							{
+								blnOverCapacity = true;
+								lstOverCapacity.Add(objVehicle.Name);
+								intCapacityOver++;
+							}
+						}
+					}
+					else if (objVehicle.Slots < objVehicle.SlotsUsed)
+					{
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objVehicle.Name);
+						intCapacityOver++;
+					}
                     // Check Vehicle Gear.
                     foreach (Gear objGear in objVehicle.Gear)
                     {
@@ -22464,8 +22497,28 @@ namespace Chummer
             lblFly.Left = lblCMPhysical.Left;
         }
 
+
+		/// <summary>
+		/// Recheck all mods to see if Sensor has changed. 
+		/// </summary>
+		/// <param name="objVehicle">Vehicle to modify.</param>
+		private void UpdateSensor(Vehicle objVehicle)
+		{
+			foreach (Gear objGear in objVehicle.Gear)
+			{
+				if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+				{
+					// Update the name of the item in the TreeView.
+					TreeNode objNode = _objFunctions.FindNode(objGear.InternalId, treVehicles);
+					objNode.Text = objGear.DisplayName;
+				}
+			}
+		}
+
+
+
         /// <summary>
-        /// Change the size of a Vehicle's Sensor
+        /// Change the size of a Vehicle's Sensor -- This appears to be obsolete code
         /// </summary>
         /// <param name="objVehicle">Vehicle to modify.</param>
         /// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>

@@ -84,7 +84,6 @@ namespace Chummer
 		private bool _blnTechnomancerAllowAutosoft;
 		private bool _blnUnrestrictedNuyen;
 		private bool _blnUseCalculatedPublicAwareness;
-		private bool _blnUseCalculatedVehicleSensorRatings;
 		private bool _blnUseContactPoints;
 		private bool _blnUsePointsOnBrokenGroups;
 		private bool _blnUseTotalValueForFreeContacts;
@@ -145,7 +144,7 @@ namespace Chummer
 		private int _intKarmaQuality = 1;
 		private int _intKarmaSpecialization = 7;
 		private int _intKarmaSpell = 5;
-		private int _intKarmaSpirit = 2;
+		private int _intKarmaSpirit = 1;
 
 		// Karma Foci variables.
 		private int _intKarmaAlchemicalFocus = 3;
@@ -218,8 +217,11 @@ namespace Chummer
 
 			// <name />
 			objWriter.WriteElementString("name", _strName);
-			// <confirmdelete />
-			objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+			// <recentimagefolder />
+			if (!String.IsNullOrEmpty(_strImageFolder))
+			{
+				objWriter.WriteElementString("recentimagefolder", _strImageFolder.ToString());
+			}
 			// <confirmdelete />
 			objWriter.WriteElementString("confirmdelete", _blnConfirmDelete.ToString());
 			// <licenserestricted />
@@ -320,8 +322,6 @@ namespace Chummer
 			objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString());
 			// <exceednegativequalitieslimit />
 			objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString());
-			// <usecalculatedvehiclesensorratings />
-			objWriter.WriteElementString("usecalculatedvehiclesensorratings", _blnUseCalculatedVehicleSensorRatings.ToString());
 			// <multiplyrestrictedcost />
 			objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString());
 			// <multiplyforbiddencost />
@@ -668,8 +668,6 @@ namespace Chummer
 			objXmlNode.TryGetField("exceednegativequalities", out _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
 			objXmlNode.TryGetField("exceednegativequalitieslimit", out _blnExceedNegativeQualitiesLimit);
-			// Whether or not calculated Vehicle Sensor Ratings should be used.
-			objXmlNode.TryGetField("usecalculatedvehiclesensorratings", out _blnUseCalculatedVehicleSensorRatings);
 			// Whether or not Restricted items have their cost multiplied.
 			objXmlNode.TryGetField("multiplyrestrictedcost", out _blnMultiplyRestrictedCost);
 			// Whether or not Forbidden items have their cost multiplied.
@@ -1981,22 +1979,7 @@ namespace Chummer
 				_blnExceedNegativeQualitiesLimit = value;
 			}
 		}
-
-		/// <summary>
-		/// Whether or not Vehicles should use the average Rating of all of their Sensors instead of the Sensor Rating given to the Vehicle itself.
-		/// </summary>
-		public bool UseCalculatedVehicleSensorRatings
-		{
-			get
-			{
-				return _blnUseCalculatedVehicleSensorRatings;
-			}
-			set
-			{
-				_blnUseCalculatedVehicleSensorRatings = value;
-			}
-		}
-
+		
 		/// <summary>
 		/// Whether or not Restricted items have their cost multiplied.
 		/// </summary>

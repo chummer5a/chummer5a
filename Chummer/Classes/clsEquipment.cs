@@ -13709,6 +13709,7 @@ namespace Chummer
 		private string _strPage = "";
 		private string _strVehicleName = "";
 		private int _intAddSlots = 0;
+		private int _intModSlots = 0;
 		private int _intDeviceRating = 3;
 		private bool _blnHomeNode = false;
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
@@ -13778,7 +13779,15 @@ namespace Chummer
             catch
             {
             }
-            _strAvail = objXmlVehicle["avail"].InnerText;
+			try
+			{
+				_intModSlots = Convert.ToInt32(objXmlVehicle["modslots"].InnerText);
+			}
+			catch (NullReferenceException e)
+			{
+				_intModSlots = _intBody;
+			}
+			_strAvail = objXmlVehicle["avail"].InnerText;
 			_strCost = objXmlVehicle["cost"].InnerText;
             // Check for a Variable Cost.
             if (objXmlVehicle["cost"].InnerText.StartsWith("Variable"))
@@ -14034,6 +14043,7 @@ namespace Chummer
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
+			objWriter.WriteElementString("modslots", _intModSlots.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
@@ -14114,6 +14124,7 @@ namespace Chummer
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			objNode.TryGetField("addslots", out _intAddSlots);
+			objNode.TryGetField("modslots", out _intModSlots);
 			_strSource = objNode["source"].InnerText;
 			objNode.TryGetField("page", out _strPage);
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
@@ -14228,11 +14239,7 @@ namespace Chummer
 			objWriter.WriteElementString("body", TotalBody.ToString());
 			objWriter.WriteElementString("armor", TotalArmor.ToString());
             objWriter.WriteElementString("seats", _intSeats.ToString());
-            if (_objCharacter.Options.UseCalculatedVehicleSensorRatings)
-				objWriter.WriteElementString("sensor", CalculatedSensor.ToString());
-			else
-				objWriter.WriteElementString("sensor", _intSensor.ToString());
-			objWriter.WriteElementString("sensorsignal", SensorSignal.ToString());
+			objWriter.WriteElementString("sensor", _intSensor.ToString());
 			objWriter.WriteElementString("avail", CalculatedAvail);
 			objWriter.WriteElementString("cost", TotalCost.ToString());
 			objWriter.WriteElementString("owncost", OwnCost.ToString());
@@ -14495,7 +14502,7 @@ namespace Chummer
 		/// <summary>
 		/// Sensor.
 		/// </summary>
-		public int Sensor
+		public int BaseSensor
 		{
 			get
 			{
@@ -14749,59 +14756,47 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Sensor's Signal.
-		/// </summary>
-		public int SensorSignal
-		{
-			get
-			{
-				int intReturn = 0;
-				foreach (Gear objGear in _lstGear)
-				{
-                    if (objGear.Category == "Sensors" && objGear.DeviceRating > 0 && objGear.DeviceRating > intReturn)
-                        intReturn = objGear.DeviceRating;
-				}
-				return intReturn;
-			}
-		}
-
-		/// <summary>
 		/// Calculate the Vehicle's Sensor Rating based on the items within its Sensor.
 		/// </summary>
 		public int CalculatedSensor
 		{
 			get
 			{
-				int intReturn = 0;
-				int intCount = 0;
-				foreach (Gear objGear in _lstGear)
+				int intSensor = _intSensor;
+				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objGear.Category == "Sensors" && objGear.DeviceRating > 0)
+					if (!objMod.IncludedInVehicle && objMod.Installed && objMod.Bonus != null)
 					{
-						foreach (Gear objChild in objGear.Children)
+						if (objMod.Bonus.InnerXml.Contains("<sensor>"))
 						{
-							if (objChild.Category == "Sensor Functions")
+							if (objMod.Bonus["sensor"].InnerText.Contains("+"))
 							{
-								if (objChild.Rating > 0)
-								{
-									intCount++;
-									intReturn += objChild.Rating;
-								}
+								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intSensor += Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
+							}
+							else
+							{
+								string strAccel = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).Replace("+", string.Empty);
+								intSensor = Convert.ToInt32(strAccel, GlobalOptions.Instance.CultureInfo);
 							}
 						}
 					}
-					break;
 				}
+				
+				// Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
+				// The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
+					foreach (Gear objGear in _lstGear)
+					{
+						if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+						{
+							if (intSensor != _intSensor)
+							objGear.Rating = intSensor;
+							else objGear.Rating = _intSensor;
+						}
+						break;
+					}
 
-				if (intCount > 0)
-				{
-					decimal decReturn = Convert.ToDecimal(intReturn, GlobalOptions.Instance.CultureInfo);
-					intReturn = Convert.ToInt32(Math.Ceiling(decReturn / intCount));
-				}
-				else
-					intReturn = _intSensor;
-
-				return intReturn;
+				return intSensor;
 			}
 		}
 
@@ -14973,13 +14968,13 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Number of Slots the Drone has for Modifications.
+		/// Total Number of Slots the Drone has for Modifications. (Rigger 5)
 		/// </summary>
 		public int DroneModSlots
 		{
 			get
 			{
-				int intDroneModSlots = TotalBody + _intAddSlots;
+				int intDroneModSlots = _intModSlots;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
@@ -15408,6 +15403,27 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Check if the vehicle is over capacity in any category
+		/// </summary>
+		public bool OverR5Capacity
+		{
+			get
+			{
+				bool blnOverCapacity = false;
+				string[] arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+
+				foreach (string strCategory in arrCategories)
+				{
+					if (CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory))
+						blnOverCapacity = true;
+				}
+
+				return blnOverCapacity;
+			}
+		}
+
+
+		/// <summary>
 		/// Calculate remaining Powertrain slots
 		/// </summary>
 		public int CalcPowertrain
@@ -15418,7 +15434,8 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Powertrain"))
+
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Powertrain"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15441,7 +15458,8 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Protection"))
+
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Protection"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15464,7 +15482,8 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Weapons"))
+
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Weapons"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15487,7 +15506,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Body"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Body"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15510,7 +15529,8 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Electromagnetic"))
+
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Electromagnetic"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15533,7 +15553,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
-					if (objMod.Installed && (objMod.Category == "Cosmetic"))
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Cosmetic"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
 						if (objMod.CalculatedSlots > 0)
@@ -15586,6 +15606,45 @@ namespace Chummer
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Calculate remaining slots by provided Category
+		/// </summary>
+		public int CalcCategoryUsed(string strCategory)
+		{
+			int intBase = 0;
+
+			foreach (VehicleMod objMod in _lstVehicleMods)
+			{
+				if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == strCategory))
+				{
+					// Subtract the Modification's Slots from the Vehicle's base Body.
+					if (objMod.CalculatedSlots > 0)
+						intBase += Convert.ToInt32(objMod.CalculatedSlots);
+				}
+			}
+
+			return intBase;
+		}
+
+		/// <summary>
+		/// Total Number of Slots a Vehicle has used for Modifications. (Rigger 5)
+		/// </summary>
+		public int CalcCategoryAvail(string strCategory)
+		{
+			int intBase = _intBody;
+			foreach (VehicleMod objMod in _lstVehicleMods)
+				{
+					// Mods that are included with a Vehicle by default do not count toward the Slots used.
+					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == strCategory))
+					{
+						if (objMod.CalculatedSlots < 0)
+						intBase -= objMod.CalculatedSlots;
+					}
+				}
+				return intBase;
+		}
+
 		/// <summary>
 		/// Whether or not the Vehicle has the Modular Electronics Vehicle Modification installed.
 		/// </summary>

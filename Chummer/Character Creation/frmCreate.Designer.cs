@@ -8895,7 +8895,7 @@ namespace Chummer
 			// lblVehicleSlots
 			// 
 			this.lblVehicleSlots.AutoSize = true;
-			this.lblVehicleSlots.Location = new System.Drawing.Point(764, 150);
+			this.lblVehicleSlots.Location = new System.Drawing.Point(764, 194);
 			this.lblVehicleSlots.Name = "lblVehicleSlots";
 			this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
 			this.lblVehicleSlots.TabIndex = 58;
@@ -8905,7 +8905,7 @@ namespace Chummer
 			// lblVehicleSlotsLabel
 			// 
 			this.lblVehicleSlotsLabel.AutoSize = true;
-			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(725, 150);
+			this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(725, 194);
 			this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
 			this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblVehicleSlotsLabel.TabIndex = 57;

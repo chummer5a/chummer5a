@@ -9413,13 +9413,37 @@ namespace Chummer
 			objSelectedVehicle.Mods.Add(objMod);
 
 			// Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
-			if (_objOptions.EnforceCapacity && objSelectedVehicle.Slots < objSelectedVehicle.SlotsUsed)
+			if (_objOptions.EnforceCapacity)
 			{
-				MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-				objSelectedVehicle.Mods.Remove(objMod);
-				if (frmPickVehicleMod.AddAgain)
-					tsVehicleAddMod_Click(sender, e);
-				return;
+				bool blnOverCapacity = false;
+				if (_objOptions.BookEnabled("R5"))
+				{
+					if (objSelectedVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+					{
+						if (objSelectedVehicle.DroneModSlotsUsed > objSelectedVehicle.DroneModSlots)
+							blnOverCapacity = true;
+					}
+					else
+					{
+						int intUsed = objSelectedVehicle.CalcCategoryUsed(objMod.Category);
+						int intAvail = objSelectedVehicle.CalcCategoryAvail(objMod.Category);
+						if (intUsed > intAvail)
+							blnOverCapacity = true;
+					}
+				}
+				else if (objSelectedVehicle.Slots < objSelectedVehicle.SlotsUsed)
+				{
+					blnOverCapacity = true;
+				}
+
+				if(blnOverCapacity)
+				{ 
+					MessageBox.Show(LanguageManager.Instance.GetString("Message_CapacityReached"), LanguageManager.Instance.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+					objSelectedVehicle.Mods.Remove(objMod);
+					if (frmPickVehicleMod.AddAgain)
+						tsVehicleAddMod_Click(sender, e);
+					return;
+				}
 			}
 
 			int intCost = objSelectedVehicle.TotalCost - intOriginalCost;
@@ -24112,6 +24136,14 @@ namespace Chummer
 				lblVehicleWeaponRangeLongLabel.Visible = false;
 				lblVehicleWeaponRangeExtremeLabel.Visible = false;
 
+				lblVehicleDroneModSlots.Visible = false;
+				lblVehiclePowertrain.Visible = false;
+				lblVehicleCosmetic.Visible = false;
+				lblVehicleElectromagnetic.Visible = false;
+				lblVehicleBodymod.Visible = false;
+				lblVehicleWeaponsmod.Visible = false;
+				lblVehicleProtection.Visible = false;
+
 				lblVehicleGearQty.Text = "";
 				cmdVehicleGearReduceQty.Enabled = false;
 				cboVehicleWeaponAmmo.Enabled = false;
@@ -24200,11 +24232,80 @@ namespace Chummer
 				lblVehiclePilot.Text = objVehicle.Pilot.ToString();
 				lblVehicleBody.Text = objVehicle.TotalBody.ToString();
 				lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-                if (_objOptions.UseCalculatedVehicleSensorRatings)
-                    lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
-                else
-                    lblVehicleSensor.Text = objVehicle.Sensor.ToString();
-				lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+
+				// Update the vehicle mod slots
+				if (_objOptions.BookEnabled("R5"))
+				{
+					lblVehicleSlots.Text = "";
+					lblVehicleSlotsLabel.Visible = false;
+
+					if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
+					{
+						lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
+						lblVehicleDroneModSlots.Visible = true;
+						lblVehicleDroneModSlotsLabel.Visible = true;
+						lblVehiclePowertrain.Visible = false;
+						lblVehicleCosmetic.Visible = false;
+						lblVehicleElectromagnetic.Visible = false;
+						lblVehicleBodymod.Visible = false;
+						lblVehicleWeaponsmod.Visible = false;
+						lblVehicleProtection.Visible = false;
+						lblVehiclePowertrainLabel.Visible = false;
+						lblVehicleCosmeticLabel.Visible = false;
+						lblVehicleElectromagneticLabel.Visible = false;
+						lblVehicleBodymodLabel.Visible = false;
+						lblVehicleWeaponsmodLabel.Visible = false;
+						lblVehicleProtectionLabel.Visible = false;
+					}
+					else
+					{
+						lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
+						lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
+						lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
+						lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
+						lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
+						lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
+
+						lblVehicleDroneModSlots.Visible = false;
+						lblVehicleDroneModSlotsLabel.Visible = false;
+						lblVehiclePowertrain.Visible = true;
+						lblVehicleCosmetic.Visible = true;
+						lblVehicleElectromagnetic.Visible = true;
+						lblVehicleBodymod.Visible = true;
+						lblVehicleWeaponsmod.Visible = true;
+						lblVehicleProtection.Visible = true;
+						lblVehiclePowertrainLabel.Visible = true;
+						lblVehicleCosmeticLabel.Visible = true;
+						lblVehicleElectromagneticLabel.Visible = true;
+						lblVehicleBodymodLabel.Visible = true;
+						lblVehicleWeaponsmodLabel.Visible = true;
+						lblVehicleProtectionLabel.Visible = true;
+					}
+				}
+				else
+				{
+					lblVehicleDroneModSlots.Text = "";
+					lblVehicleDroneModSlots.Visible = false;
+					lblVehicleDroneModSlotsLabel.Visible = false;
+					lblVehiclePowertrain.Visible = false;
+					lblVehicleCosmetic.Visible = false;
+					lblVehicleElectromagnetic.Visible = false;
+					lblVehicleBodymod.Visible = false;
+					lblVehicleWeaponsmod.Visible = false;
+					lblVehicleProtection.Visible = false;
+					lblVehiclePowertrainLabel.Visible = false;
+					lblVehicleCosmeticLabel.Visible = false;
+					lblVehicleElectromagneticLabel.Visible = false;
+					lblVehicleBodymodLabel.Visible = false;
+					lblVehicleWeaponsmodLabel.Visible = false;
+					lblVehicleProtectionLabel.Visible = false;
+					lblVehicleSlotsLabel.Visible = true;
+					lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+				}
+
+				lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
+				UpdateSensor(objVehicle);
+
 				string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
 				string strPage = objVehicle.Page;
 				lblVehicleSource.Text = strBook + " " + strPage;
@@ -26226,8 +26327,28 @@ namespace Chummer
 			lblCMDamageResistancePool.Left = lblCMPenalty.Left;
 		}
 
+
+
 		/// <summary>
-		/// Change the size of a Vehicle's Sensor
+		/// Recheck all mods to see if Sensor has changed. 
+		/// </summary>
+		/// <param name="objVehicle">Vehicle to modify.</param>
+		private void UpdateSensor(Vehicle objVehicle)
+		{
+			foreach (Gear objGear in objVehicle.Gear)
+			{
+				if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+				{
+					// Update the name of the item in the TreeView.
+					TreeNode objNode = _objFunctions.FindNode(objGear.InternalId, treVehicles);
+					objNode.Text = objGear.DisplayName;
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Change the size of a Vehicle's Sensor -- Obsolete code
 		/// </summary>
 		/// <param name="objVehicle">Vehicle to modify.</param>
 		/// <param name="blnIncrease">True if the Sensor should increase in size, False if it should decrease.</param>

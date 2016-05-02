@@ -108,6 +108,7 @@
 		<category>Hard Nanoware</category>
 		<category>Headware</category>
 		<category>Nanocybernetics</category>
+		<category>Soft Nanoware</category>
 	</categories>
 	<cyberwares>
 		<!-- Region Shadowrun 5 -->
@@ -2873,6 +2874,269 @@
 			<page>151</page>
 		</cyberware>
 		<!-- End Region -->
+		<!-- Region Hard Nanoware -->
+		<cyberware>
+			<id>9b4e4b37-8f0e-4224-82b6-158077551e1b</id>
+			<name>Anti-Rad</name>
+			<category>Hard Nanoware</category>
+			<rating>6</rating>
+			<avail>14F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 6000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>147</page>
+		</cyberware>
+		<cyberware>
+			<id>ae74668d-73f9-420f-9f0a-47e72b7912c1</id>
+			<name>Control Rig Booster</name>
+			<category>Hard Nanoware</category>
+			<rating>3</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 6000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>147</page>
+		</cyberware>
+		<cyberware>
+			<id>e709cb79-e351-41ce-b305-58720993d2c1</id>
+			<name>Implant Medic</name>
+			<category>Hard Nanoware</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Parent Cost * 0.10</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>147</page>
+		</cyberware>
+		<cyberware>
+			<id>e12e99da-d596-4217-8423-797f5210b9eb</id>
+			<name>Nanite Hunters</name>
+			<category>Hard Nanoware</category>
+			<rating>6</rating>
+			<avail>16R</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 5000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>147</page>
+		</cyberware>
+		<cyberware>
+			<id>e1c20168-92ea-492c-bf47-4c7e24a56c65</id>
+			<name>Markers</name>
+			<category>Hard Nanoware</category>
+			<rating>3</rating>
+			<avail>12</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 2000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>148</page>
+		</cyberware>
+		<cyberware>
+			<id>dac0f054-1594-493b-8a2d-a4c7145eb02e</id>
+			<name>Nanotattoos</name>
+			<category>Hard Nanoware</category>
+			<rating>3</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 1000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>148</page>
+		</cyberware>
+		<cyberware>
+			<id>bc70277a-960b-406c-b7d1-891226c6860b</id>
+			<name>Taggants</name>
+			<category>Hard Nanoware</category>
+			<rating>3</rating>
+			<avail>12</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 600</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>148</page>
+		</cyberware>
+		<cyberware>
+			<id>82039f0f-3332-421b-99e6-507cc5773d61</id>
+			<name>Trauma Control System</name>
+			<category>Hard Nanoware</category>
+			<rating>6</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 4000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>148</page>
+		</cyberware>
+		<!-- End Region -->
+		<!-- Region Soft Nanoware -->
+		<cyberware>
+			<id>0cf274b2-bc18-40a6-add1-3e7b9bca7384</id>
+			<name>Anti-Tox</name>
+			<category>Soft Nanoware</category>
+			<rating>9</rating>
+			<avail>16F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 5000</cost>
+			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>2df794cf-5bfd-4875-b803-0f03c6d84aac</id>
+			<name>Carcerand-Plus</name>
+			<category>Soft Nanoware</category>
+			<rating>6</rating>
+			<avail>10F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 3000</cost>
+			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>78177ee3-1aff-46c4-add9-1e31d530805d</id>
+			<name>Nanosymbiotes</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>16F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 6000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>e42916ca-7787-4110-b3b7-777e41b82ca6</id>
+			<name>Nantidotes</name>
+			<category>Soft Nanoware</category>
+			<rating>6</rating>
+			<avail>8F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 1500</cost>
+			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>9890a165-f9b9-4a73-88f2-3b01bc2a9f2e</id>
+			<name>Nanotattoos</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 500</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>a16b2703-f26f-489f-839e-44d10632fcf7</id>
+			<name>Neural Amplifiers (Learning Stimulus)</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>14F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 5000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>6692e089-7aef-4638-addd-a9d455014c15</id>
+			<name>Neural Amplifiers (Limbic)</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>16F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 7500</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>149</page>
+		</cyberware>
+		<cyberware>
+			<id>2a81162a-c6be-46a6-9421-d9380f82e9b3</id>
+			<name>Neural Amplifiers (Neocortical)</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>16F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 7500</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>150</page>
+		</cyberware>
+		<cyberware>
+			<id>834a8517-bfff-457a-95ab-b056454bb4aa</id>
+			<name>Neural Amplifiers (Recall)</name>
+			<category>Soft Nanoware</category>
+			<rating>3</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 3500</cost>
+			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<memory>Rating</memory>
+			</bonus>
+			<source>CF</source>
+			<page>150</page>
+		</cyberware>
+		<cyberware>
+			<id>ad95471d-f301-47e7-b4c5-b789f2111d5f</id>
+			<name>O-Cells</name>
+			<category>Soft Nanoware</category>
+			<rating>9</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 5000</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>150</page>
+		</cyberware>
+		<cyberware>
+			<id>bd3d6bf5-bc70-4378-b84e-244be00faebe</id>
+			<name>Oxyrush</name>
+			<category>Soft Nanoware</category>
+			<rating>5</rating>
+			<avail>12F</avail>
+			<ess>0</ess>
+			<capacity>[0]</capacity>
+			<cost>Rating * 1500</cost>
+			<forcegrade>Standard</forcegrade>
+			<source>CF</source>
+			<page>150</page>
+		</cyberware>
+		<!-- End Region -->
 		<!-- End Region -->
 		<!-- Region Hard Targets -->
 		<cyberware>
@@ -2971,18 +3235,6 @@
 			<cost>750</cost>
 			<source>HT</source>
 			<page>186</page>
-		</cyberware>
-		<cyberware>
-			<id>e709cb79-e351-41ce-b305-58720993d2c1</id>
-			<name>Implant Medic</name>
-			<category>Hard Nanoware</category>
-			<rating>6</rating>
-			<avail>12F</avail>
-			<ess>0</ess>
-			<capacity>[0]</capacity>
-			<cost>Parent Cost * 0.10</cost>
-			<source>CF</source>
-			<page>147</page>
 		</cyberware>
 		<!-- End Region -->
 	</cyberwares>
