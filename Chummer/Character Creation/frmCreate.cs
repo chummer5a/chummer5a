@@ -15775,6 +15775,7 @@ namespace Chummer
             }
             else
             {
+	            bool blnFound = false;
                 foreach (SkillControl objSkillControl in panActiveSkills.Controls)
                 {
                     if (objSkillControl.SkillRating > objSkillControl.SkillRatingMinimum && !objSkillControl.IsGrouped)
@@ -15877,17 +15878,34 @@ namespace Chummer
 
                     // Specialization Cost (Exotic skills do not count since their "Spec" is actually what the Skill is being used for and cannot be Specialized).
                     if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
-                    {
-                        if (objSkillControl.BuyWithKarma)
+					{
+						// Look for the Inspired quality to see if we get a free specialization
+						if (objSkillControl.SkillName == "Artisan")
+						{
+							foreach (Quality objQuality in _objCharacter.Qualities)
+							{
+								if (objQuality.Name == "Inspired")
+									blnFound = true;
+							}
+						}
+						if (objSkillControl.BuyWithKarma)
                         {
                             // Each Specialization costs KarmaSpecialization.
                             intKarmaPointsRemain -= _objOptions.KarmaSpecialization;
                             intActivePointsUsed += _objOptions.KarmaSpecialization;
                         }
                     }
-                }
+				}
 
-                lblActiveSkillsBP.Text = String.Format("{0} " + strPoints, intActivePointsUsed.ToString());
+				// If the character has the Inspired quality and we found an appropriate specialisation in Artisan, refund the karma spent on it.
+				if (blnFound)
+				{
+					// Each Specialization costs KarmaSpecialization.
+					intKarmaPointsRemain += _objOptions.KarmaSpecialization;
+					intActivePointsUsed -= _objOptions.KarmaSpecialization;
+				}
+
+				lblActiveSkillsBP.Text = String.Format("{0} " + strPoints, intActivePointsUsed.ToString());
                 intFreestyleBP += intActivePointsUsed;
             }
 
@@ -16305,23 +16323,10 @@ namespace Chummer
                 else
                     _objCharacter.ContactPoints = 0;
 
-                int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality.Name == "Aged (Rating 1)")
-                        intKnowledgeSkillPoints += 5;
-                    if (objQuality.Name == "Aged (Rating 2)")
-                        intKnowledgeSkillPoints += 10;
-                    if (objQuality.Name == "Aged (Rating 3)")
-                        intKnowledgeSkillPoints += 15;
-                }
-
-                //lblKnowledgeSkillPoints.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
-                lblPBuildKnowledgeSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", intKnowledgeSkillPoints.ToString(), intKnowledgeSkillPoints.ToString());
-
                 // Update the character's Skill information.
                 int intSkills = 0;
-                foreach (SkillControl objSkillControl in panActiveSkills.Controls)
+				bool blnFound = false;
+				foreach (SkillControl objSkillControl in panActiveSkills.Controls)
                 {
                     objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
 	                objSkillControl.SkillBase = objSkillControl.SkillObject.Base;
@@ -16330,22 +16335,23 @@ namespace Chummer
                         intSkills += objSkillControl.SkillBase - objSkillControl.SkillObject.FreeLevels;
                     if (objSkillControl.SkillSpec.Trim() != string.Empty && !objSkillControl.SkillObject.ExoticSkill)
                     {
-                        bool blnFound = false;
                         if (objSkillControl.SkillName == "Artisan")
                         {
                             // Look for the Inspired quality to see if we get a free specialization
                             foreach (Quality objQuality in _objCharacter.Qualities)
                             {
-                                if (objQuality.Name == "Inspired")
+                                if (objQuality.Name == "Inspired" && objSkillControl.BuyWithKarma)
                                     blnFound = true;
                             }
                         }
-                        if (!blnFound && !objSkillControl.BuyWithKarma)
-                        {
-                            intSkills++;
-                        }
+                        intSkills++;
                     }
                 }
+				// If the character has the Inspired quality and we found an appropriate specialisation, refund a skill point.
+	            if (blnFound)
+	            {
+		            intSkills--;
+	            }
                 _objCharacter.SkillPoints = _objCharacter.SkillPointsMaximum - intSkills;
                 lblPBuildActiveSkills.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", _objCharacter.SkillPoints.ToString(), _objCharacter.SkillPointsMaximum.ToString());
 
@@ -16356,10 +16362,10 @@ namespace Chummer
                     intSkills += objSkillControl.SkillBase;
                     objSkillControl.SkillRatingMaximum = objSkillControl.SkillObject.RatingMaximum;
                     objSkillControl.RefreshControl();
-                }
+				}
 
-                intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
-                foreach (Quality objQuality in _objCharacter.Qualities)
+				int intKnowledgeSkillPoints = _objCharacter.KnowledgeSkillPoints;
+				foreach (Quality objQuality in _objCharacter.Qualities)
                 {
                     if (objQuality.Name == "Aged (Rating 1)")
                         intKnowledgeSkillPoints += 5;

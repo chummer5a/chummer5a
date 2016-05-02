@@ -83,6 +83,7 @@ Application Change:
 - "Test Subject" and "Factory Child Worker" life modules now give bonus nuyen. Fixes #811
 - Fixed a crash caused when saving characters without mugshots.
 - Fixed an incorrect value for binding spirit services. Fixes #827.
+- Fixed karma costs for the Inspired quality from Sail Away, Sweet Sister in karmagen. Fixes #828.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -143,6 +144,7 @@ Data Change:
 - Reverted precedence 0 settings for dermal alteration SURGE qualities.
 - Added a missing skillwire rating to Move-By-Wire. 
 - Fixed an incorrect AP value for Stick-n-Shock ammo. Fixes #818.
+- Added an unarmed AP value equal to rating for the adept power Penetrating Strike. Fixes #829.
 
 New Strings:
 - Message_DeleteCalendarWeek
