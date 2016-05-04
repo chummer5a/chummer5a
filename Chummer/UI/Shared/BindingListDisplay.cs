@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace Chummer.UI.Shared
 {
@@ -169,6 +164,8 @@ namespace Chummer.UI.Shared
 
 		private void SkillsDisplay_Resize(object sender, EventArgs e)
 		{
+			//This makes scrollbar look right, but it also allows the user to scroll longer down before all is rendered
+			//AutoScrollMinSize = new Size(Width - SystemInformation.VerticalScrollBarWidth, tblContents.Controls[0].Height * _contents.Count);
 			tblContents.Size = new Size(Width - SystemInformation.VerticalScrollBarWidth, tblContents.PreferredSize.Height);
 		}
 	}
