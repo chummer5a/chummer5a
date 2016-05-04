@@ -811,6 +811,10 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(nameof(PoolModifiers));
 			}
+			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization))
+			{
+				OnPropertyChanged(nameof(PoolModifiers));
+			}
 
 			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
 			{
@@ -820,10 +824,7 @@ namespace Chummer.Skills
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
 			}
-			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization))
-			{
-				OnPropertyChanged(nameof(PoolModifiers));
-			}
+			
 		}
 
 	}
