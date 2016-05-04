@@ -805,25 +805,24 @@ namespace Chummer.Skills
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
 			_cachedWireRating = int.MinValue;
-			if (
-				improvements.Any(
-					imp =>
-						(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) &&
-						imp.ImprovedName == _name))
+			if (improvements.Any(imp => 
+				(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) && 
+				imp.ImprovedName == _name))
 			{
 				OnPropertyChanged(nameof(PoolModifiers));
 			}
 
-			if (
-				improvements.Any(
-					imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
+			if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && imp.ImprovedName == Attribute && imp.Enabled))
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
-			} else
-
-			if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
+			}
+			else if (improvements.Any(imp => imp.ImproveSource == Improvement.ImprovementSource.Cyberware))
 			{
 				OnPropertyChanged(nameof(AttributeModifiers));
+			}
+			else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization))
+			{
+				OnPropertyChanged(nameof(PoolModifiers));
 			}
 		}
 

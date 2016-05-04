@@ -165,8 +165,9 @@ namespace Chummer
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
 			SkillGroupBase, //group
-	        SpecialSkills
-        }
+	        SpecialSkills,
+			ReflexRecorderOptimization
+		}
 
         public enum ImprovementSource
         {
@@ -2223,6 +2224,11 @@ namespace Chummer
 						0,
 						"", blnAddToRating);
 				}
+			}
+
+			if (bonusNode.LocalName == "reflexrecorderoptimization")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ReflexRecorderOptimization, strUnique);
 			}
 
 			// The Improvement adds a martial art

@@ -206,8 +206,23 @@ namespace Chummer.Skills
 
 		public int DefaultModifier
 		{
-			//TODO: REFLEX RECOREDER OPTIMIZATIOM
-			get { return -1; }
+			get
+			{
+				if (CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.ReflexRecorderOptimization))
+					return -1;
+
+				Guid reflexrecorderid = Guid.Parse("17a6ba49-c21c-461b-9830-3beae8a237fc");
+				Cyberware ware = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == reflexrecorderid);
+
+				if (ware == null) return -1;
+
+				bool affected = SkillGroupObject?.GetEnumerable().Any(x => x.Name == ware.Location) ?? false;
+
+				if (affected) return 0;
+				
+
+				return -1;
+			}
 		}
 
 		/// <summary>

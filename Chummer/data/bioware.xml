@@ -1978,6 +1978,9 @@
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>11</avail>
+      <bonus>
+        <reflexrecorderoptimization/>
+      </bonus>
 			<cost>3800</cost>
 			<source>CF</source>
 			<page>165</page>
