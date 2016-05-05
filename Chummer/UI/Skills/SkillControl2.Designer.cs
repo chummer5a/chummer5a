@@ -230,7 +230,6 @@
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "SkillControl2";
 			this.Size = new System.Drawing.Size(789, 23);
-			this.Load += new System.EventHandler(this.SkillControl2_Load);
 			this.ParentChanged += new System.EventHandler(this.cboSpec_ParentChanged);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();

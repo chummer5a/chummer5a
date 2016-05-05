@@ -10,12 +10,14 @@ namespace Chummer.UI.Skills
 {
 	public partial class SkillControl2 : UserControl
 	{
-		private static double total = 0;
-		private Skill skill;
+		private readonly Skill _skill;
+		private readonly Font _normal;
+		private readonly Font _italic;
+		private string _attributeActive;
 
 		public SkillControl2(Skill skill)
 		{
-			this.skill = skill;
+			this._skill = skill;
 			InitializeComponent();
 
 			DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -28,13 +30,10 @@ namespace Chummer.UI.Skills
 
 			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
-			//lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
-			//	DataSourceUpdateMode.OnPropertyChanged);
-
 			skill.PropertyChanged += Skill_PropertyChanged;
 
 			Skill_PropertyChanged(null, null);  //if null it updates all
-			attributeActive = skill.AttributeObject.Abbrev;
+			_attributeActive = skill.AttributeObject.Abbrev;
 			_normal = btnAttribute.Font;
 			_italic = new Font(_normal, FontStyle.Italic);
 			if (skill.CharacterObject.Created)
@@ -59,17 +58,12 @@ namespace Chummer.UI.Skills
 
 				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
 
-				if (skill.ExoticSkill)
+				if (!skill.ExoticSkill)
 				{
-					
-				}
-				else
-				{
-					
 					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
-					DataSourceUpdateMode.OnPropertyChanged);
+						DataSourceUpdateMode.OnPropertyChanged);
 				}
-
+				
 				SetupDropdown();
 			}
 			else
@@ -114,15 +108,7 @@ namespace Chummer.UI.Skills
 				{
 					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y); 
 				}
-
-				//TODO Align?
 			}
-			else
-			{
-				cmdDelete.Visible = false;
-			}
-
-			
 		}
 
 		private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -143,13 +129,13 @@ namespace Chummer.UI.Skills
 					goto case nameof(Skill.PoolToolTip);
 
 				case nameof(Skill.Leveled):
-					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-					btnAddSpec.Visible = skill.CharacterObject.Created && !skill.ExoticSkill;
+					BackColor = _skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+					btnAddSpec.Visible = _skill.CharacterObject.Created && !_skill.ExoticSkill;
 					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 
 				case nameof(Skill.SkillToolTip):
-					tipTooltip.SetToolTip(lblName, skill.SkillToolTip);  //is this the best way?
+					tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);  //is this the best way?
 					//tipTooltip.SetToolTip(this, skill.SkillToolTip);
 					//tipTooltip.SetToolTip(lblAttribute, skill.SkillToolTip);
 					//tipTooltip.SetToolTip(lblCareerSpec, skill.SkillToolTip);
@@ -157,46 +143,39 @@ namespace Chummer.UI.Skills
 
 
 				case nameof(Skill.AddSpecToolTip):
-					tipTooltip.SetToolTip(btnAddSpec, skill.AddSpecToolTip);
+					tipTooltip.SetToolTip(btnAddSpec, _skill.AddSpecToolTip);
 					if (all) { goto case nameof(Skill.PoolToolTip); } break;
 
 
 				case nameof(Skill.PoolToolTip):
-					tipTooltip.SetToolTip(lblModifiedRating, skill.PoolToolTip);
+					tipTooltip.SetToolTip(lblModifiedRating, _skill.PoolToolTip);
 					if (all) { goto case nameof(Skill.UpgradeToolTip); } break;
 
 
 				case nameof(Skill.UpgradeToolTip):
-					tipTooltip.SetToolTip(btnCareerIncrease, skill.UpgradeToolTip);
+					tipTooltip.SetToolTip(btnCareerIncrease, _skill.UpgradeToolTip);
 					if (all) { goto case nameof(Skill.Rating); } break;
 
 				case nameof(Skill.Rating):
 					lblModifiedRating.Text =
-						skill.DisplayOhterAttribue(skill.CharacterObject.GetAttribute(attributeActive).TotalValue);
+						_skill.DisplayOhterAttribue(_skill.CharacterObject.GetAttribute(_attributeActive).TotalValue);
 					break;
 			}
 		}
-
 		
-
-		private void SkillControl2_Load(object sender, EventArgs e)
-		{
-			
-		}
-
 		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
 			frmCareer parrent = ParentForm as frmCareer;
 			if (parrent != null)
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-					skill.DisplayName, skill.Rating + 1, skill.UpgradeKarmaCost());
+					_skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
 					
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
 
-			skill.Upgrade();
+			_skill.Upgrade();
 		}
 
 		private void btnAddSpec_Click(object sender, EventArgs e)
@@ -205,22 +184,22 @@ namespace Chummer.UI.Skills
 			if (parrent != null)
 			{
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"),
-						skill.CharacterObject.Options.KarmaSpecialization);
+						_skill.CharacterObject.Options.KarmaSpecialization);
 
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
 			}
 
-			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			frmSelectSpec selectForm = new frmSelectSpec(_skill);
 			selectForm.ShowDialog();
 
 			if (selectForm.DialogResult != DialogResult.OK) return;
 
-			skill.AddSpecialization(selectForm.SelectedItem);
+			_skill.AddSpecialization(selectForm.SelectedItem);
 
 			//TODO turn this into a databinding, but i don't care enough right now
 			lblCareerSpec.Text = string.Join(", ",
-					(from specialization in skill.Specializations
+					(from specialization in _skill.Specializations
 					 select specialization.Name));
 
 			parrent?.UpdateCharacterInfo();
@@ -234,7 +213,7 @@ namespace Chummer.UI.Skills
 			cboSelectAttribute.ValueMember = "Value";
 			cboSelectAttribute.DisplayMember = "Name";
 			cboSelectAttribute.DataSource = list;
-			cboSelectAttribute.SelectedValue = skill.AttributeObject.Abbrev;
+			cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
 		}
 
 		private void btnAttribute_Click(object sender, EventArgs e)
@@ -257,16 +236,13 @@ namespace Chummer.UI.Skills
 			Width = (Parent?.Width - 2) ?? Width;
 		}
 
-		private readonly Font _normal;
-		private readonly Font _italic;
-		private string attributeActive;
 		private void cboSelectAttribute_Closed(object sender, EventArgs e)
 		{
 			btnAttribute.Visible = true;
 			cboSelectAttribute.Visible = false;
-			attributeActive = (string) cboSelectAttribute.SelectedValue;
+			_attributeActive = (string) cboSelectAttribute.SelectedValue;
 
-			btnAttribute.Font = attributeActive == skill.AttributeObject.Abbrev ? _normal : _italic;
+			btnAttribute.Font = _attributeActive == _skill.AttributeObject.Abbrev ? _normal : _italic;
 			btnAttribute.Text = cboSelectAttribute.Text;
 
 			Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
