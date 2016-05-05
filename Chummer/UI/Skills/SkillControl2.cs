@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -27,14 +28,15 @@ namespace Chummer.UI.Skills
 
 			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
-			lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
-			lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
-				DataSourceUpdateMode.OnPropertyChanged);
+			//lblModifiedRating.DataBindings.Add("Text", skill, nameof(Skill.DisplayPool), false,
+			//	DataSourceUpdateMode.OnPropertyChanged);
 
 			skill.PropertyChanged += Skill_PropertyChanged;
 
 			Skill_PropertyChanged(null, null);  //if null it updates all
-
+			attributeActive = skill.AttributeObject.Abbrev;
+			_normal = btnAttribute.Font;
+			_italic = new Font(_normal, FontStyle.Italic);
 			if (skill.CharacterObject.Created)
 			{
 				lblModifiedRating.Location = new Point(256 - 13, 4);
@@ -53,23 +55,27 @@ namespace Chummer.UI.Skills
 				cboSpec.Visible = false;
 				lblCareerSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
 				lblCareerSpec.Visible = true;
-				
+				lblAttribute.Visible = true;
+
+				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
 
 				if (skill.ExoticSkill)
 				{
-					btnAddSpec.Visible = false;
+					
 				}
 				else
 				{
-					btnAddSpec.Visible = skill.Leveled;
-					skill.PropertyChanged += VisibleDatabindingBrokenWorkaround;
-
+					
 					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
 					DataSourceUpdateMode.OnPropertyChanged);
 				}
+
+				SetupDropdown();
 			}
 			else
 			{
+				lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+				
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -138,6 +144,7 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.Leveled):
 					BackColor = skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
+					btnAddSpec.Visible = skill.CharacterObject.Created && !skill.ExoticSkill;
 					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 
@@ -161,19 +168,16 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.UpgradeToolTip):
 					tipTooltip.SetToolTip(btnCareerIncrease, skill.UpgradeToolTip);
+					if (all) { goto case nameof(Skill.Rating); } break;
+
+				case nameof(Skill.Rating):
+					lblModifiedRating.Text =
+						skill.DisplayOhterAttribue(skill.CharacterObject.GetAttribute(attributeActive).TotalValue);
 					break;
 			}
 		}
 
-		private void VisibleDatabindingBrokenWorkaround(object sender, PropertyChangedEventArgs e)
-		{
-			//TO A FUTURE MAINTAINER: This is only used by btnAddSpec and therefore not added
-			//If the skill is an exotic skill. Hope i saved you some time debugging
-			if (e.PropertyName == nameof(Skill.Leveled))
-			{
-				btnAddSpec.Visible = skill.Leveled;
-			}
-		}
+		
 
 		private void SkillControl2_Load(object sender, EventArgs e)
 		{
@@ -220,6 +224,52 @@ namespace Chummer.UI.Skills
 					 select specialization.Name));
 
 			parrent?.UpdateCharacterInfo();
+		}
+
+		private void SetupDropdown()
+		{
+			List<ListItem> list =  new[] {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"}.Select(
+				x => new ListItem(x, LanguageManager.Instance.GetString($"String_Attribute{x}Short"))).ToList();
+
+			cboSelectAttribute.ValueMember = "Value";
+			cboSelectAttribute.DisplayMember = "Name";
+			cboSelectAttribute.DataSource = list;
+			cboSelectAttribute.SelectedValue = skill.AttributeObject.Abbrev;
+		}
+
+		private void btnAttribute_Click(object sender, EventArgs e)
+		{
+			btnAttribute.Visible = false;
+			cboSelectAttribute.Visible = true;
+			cboSelectAttribute.DroppedDown = true;
+		}
+
+		private Control _parrent = null;
+		private void cboSpec_ParentChanged(object sender, EventArgs e)
+		{
+			if (_parrent != null) _parrent.Resize -= Parent_Resize;
+			_parrent = Parent;
+			if (_parrent != null) _parrent.Resize += Parent_Resize;
+		}
+
+		private void Parent_Resize(object sender, EventArgs e)
+		{
+			Width = (Parent?.Width - 2) ?? Width;
+		}
+
+		private readonly Font _normal;
+		private readonly Font _italic;
+		private string attributeActive;
+		private void cboSelectAttribute_Closed(object sender, EventArgs e)
+		{
+			btnAttribute.Visible = true;
+			cboSelectAttribute.Visible = false;
+			attributeActive = (string) cboSelectAttribute.SelectedValue;
+
+			btnAttribute.Font = attributeActive == skill.AttributeObject.Abbrev ? _normal : _italic;
+			btnAttribute.Text = cboSelectAttribute.Text;
+
+			Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
 		}
 	}
 }

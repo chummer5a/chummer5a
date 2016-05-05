@@ -23,7 +23,7 @@ namespace Chummer.Skills
 		{
 		}
 
-		protected CharacterAttrib AttributeObject; //Attribute this skill primarily depends on
+		public CharacterAttrib AttributeObject { get; protected set; } //Attribute this skill primarily depends on
 		private readonly Character _character; //The Character (parent) to this skill
 		protected readonly string Category; //Name of the skill category it belongs to
 		protected readonly string _group; //Name of the skill group this skill belongs to (remove?)
@@ -633,37 +633,42 @@ namespace Chummer.Skills
 
 		public virtual string DisplayPool
 		{
-			get
-			{
-				if (string.IsNullOrWhiteSpace(Specialization))
-				{
-					return Pool.ToString();
-				}
-				else
-				{
-					//Handler for the Inspired Quality. 
-					if (!KnowledgeSkill && Name == "Artisan")
-					{
-						if (CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
-						{
-							return $"{Pool} ({Pool + 3})";
-						}
-					}
-					else if (ExoticSkill)
-					{
-						return $"{Pool}";
-					}
-					return $"{Pool} ({Pool + 2})";
-				}
+			get {
+				return DisplayOhterAttribue(AttributeObject.TotalValue);
 			}
+		}
 
+		public string DisplayOhterAttribue(int attributeValue)
+		{
+			int pool = PoolOtherAttribute(attributeValue);
+
+			if (string.IsNullOrWhiteSpace(Specialization))
+			{
+				return pool.ToString();
+			}
+			else
+			{
+				//Handler for the Inspired Quality. 
+				if (!KnowledgeSkill && Name == "Artisan")
+				{
+					if (CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
+					{
+						return $"{pool} ({pool + 3})";
+					}
+				}
+				else if (ExoticSkill)
+				{
+					return $"{pool}";
+				}
+				return $"{pool} ({pool + 2})";
+			}
 		}
 
 		private int _cachedWireRating = int.MinValue;
 		/// <summary>
-		/// The rating this skill have from Skillwires + Skilljack or Active Hardwires
+		/// The attributeValue this skill have from Skillwires + Skilljack or Active Hardwires
 		/// </summary>
-		/// <returns>Artificial skill rating</returns>
+		/// <returns>Artificial skill attributeValue</returns>
 		public int WireRating()
 		{
 

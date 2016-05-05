@@ -42,6 +42,8 @@
 			this.lblCareerSpec = new System.Windows.Forms.Label();
 			this.btnAddSpec = new System.Windows.Forms.Button();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.btnAttribute = new System.Windows.Forms.Button();
+			this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
 			this.SuspendLayout();
@@ -58,11 +60,11 @@
 			// lblAttribute
 			// 
 			this.lblAttribute.AutoSize = true;
-			this.lblAttribute.Location = new System.Drawing.Point(127, 4);
+			this.lblAttribute.Location = new System.Drawing.Point(133, 4);
 			this.lblAttribute.Name = "lblAttribute";
-			this.lblAttribute.Size = new System.Drawing.Size(35, 13);
+			this.lblAttribute.Size = new System.Drawing.Size(29, 13);
 			this.lblAttribute.TabIndex = 3;
-			this.lblAttribute.Text = "label1";
+			this.lblAttribute.Text = "ATR";
 			// 
 			// nudKarma
 			// 
@@ -100,17 +102,20 @@
 			// 
 			// cboSpec
 			// 
+			this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.cboSpec.FormattingEnabled = true;
 			this.cboSpec.Location = new System.Drawing.Point(310, 1);
 			this.cboSpec.Name = "cboSpec";
-			this.cboSpec.Size = new System.Drawing.Size(172, 21);
+			this.cboSpec.Size = new System.Drawing.Size(402, 21);
 			this.cboSpec.Sorted = true;
 			this.cboSpec.TabIndex = 17;
 			// 
 			// chkKarma
 			// 
+			this.chkKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.chkKarma.AutoSize = true;
-			this.chkKarma.Location = new System.Drawing.Point(458, 4);
+			this.chkKarma.Location = new System.Drawing.Point(688, 4);
 			this.chkKarma.Name = "chkKarma";
 			this.chkKarma.Size = new System.Drawing.Size(15, 14);
 			this.chkKarma.TabIndex = 18;
@@ -118,7 +123,8 @@
 			// 
 			// cmdDelete
 			// 
-			this.cmdDelete.Location = new System.Drawing.Point(488, 0);
+			this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cmdDelete.Location = new System.Drawing.Point(718, 0);
 			this.cmdDelete.Name = "cmdDelete";
 			this.cmdDelete.Size = new System.Drawing.Size(71, 23);
 			this.cmdDelete.TabIndex = 19;
@@ -132,9 +138,9 @@
 			this.lblCareerRating.AutoSize = true;
 			this.lblCareerRating.Location = new System.Drawing.Point(169, 4);
 			this.lblCareerRating.Name = "lblCareerRating";
-			this.lblCareerRating.Size = new System.Drawing.Size(35, 13);
+			this.lblCareerRating.Size = new System.Drawing.Size(19, 13);
 			this.lblCareerRating.TabIndex = 20;
-			this.lblCareerRating.Text = "label1";
+			this.lblCareerRating.Text = "00";
 			this.lblCareerRating.Visible = false;
 			// 
 			// btnCareerIncrease
@@ -160,8 +166,9 @@
 			// 
 			// btnAddSpec
 			// 
+			this.btnAddSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnAddSpec.Image = global::Chummer.Properties.Resources.add;
-			this.btnAddSpec.Location = new System.Drawing.Point(535, -2);
+			this.btnAddSpec.Location = new System.Drawing.Point(765, -2);
 			this.btnAddSpec.Name = "btnAddSpec";
 			this.btnAddSpec.Size = new System.Drawing.Size(24, 24);
 			this.btnAddSpec.TabIndex = 23;
@@ -178,10 +185,36 @@
 			this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			this.tipTooltip.ToolTipTitle = "Chummer Help";
 			// 
+			// btnAttribute
+			// 
+			this.btnAttribute.FlatAppearance.BorderSize = 0;
+			this.btnAttribute.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnAttribute.Location = new System.Drawing.Point(128, 0);
+			this.btnAttribute.Margin = new System.Windows.Forms.Padding(1);
+			this.btnAttribute.Name = "btnAttribute";
+			this.btnAttribute.Size = new System.Drawing.Size(39, 23);
+			this.btnAttribute.TabIndex = 24;
+			this.btnAttribute.Text = "ATR";
+			this.btnAttribute.UseVisualStyleBackColor = true;
+			this.btnAttribute.Click += new System.EventHandler(this.btnAttribute_Click);
+			// 
+			// cboSelectAttribute
+			// 
+			this.cboSelectAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSelectAttribute.FormattingEnabled = true;
+			this.cboSelectAttribute.Location = new System.Drawing.Point(128, 0);
+			this.cboSelectAttribute.Name = "cboSelectAttribute";
+			this.cboSelectAttribute.Size = new System.Drawing.Size(39, 21);
+			this.cboSelectAttribute.TabIndex = 25;
+			this.cboSelectAttribute.Visible = false;
+			this.cboSelectAttribute.DropDownClosed += new System.EventHandler(this.cboSelectAttribute_Closed);
+			// 
 			// SkillControl2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.cboSelectAttribute);
+			this.Controls.Add(this.btnAttribute);
 			this.Controls.Add(this.btnAddSpec);
 			this.Controls.Add(this.lblCareerSpec);
 			this.Controls.Add(this.btnCareerIncrease);
@@ -196,8 +229,9 @@
 			this.Controls.Add(this.lblName);
 			this.Margin = new System.Windows.Forms.Padding(0);
 			this.Name = "SkillControl2";
-			this.Size = new System.Drawing.Size(559, 23);
+			this.Size = new System.Drawing.Size(789, 23);
 			this.Load += new System.EventHandler(this.SkillControl2_Load);
+			this.ParentChanged += new System.EventHandler(this.cboSpec_ParentChanged);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
 			this.ResumeLayout(false);
@@ -220,5 +254,7 @@
 		private System.Windows.Forms.Label lblCareerSpec;
 		private System.Windows.Forms.Button btnAddSpec;
 		private System.Windows.Forms.ToolTip tipTooltip;
+		private System.Windows.Forms.Button btnAttribute;
+		private System.Windows.Forms.ComboBox cboSelectAttribute;
 	}
 }

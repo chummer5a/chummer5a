@@ -69,3 +69,4 @@ Known limitations
 	Cyberlimb Optimization is not calculated
 	Not removing old untakable skills
 	Skillgroups not quite updating right (DisplayRating)
+	Custom display attributes needs reset button
