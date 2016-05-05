@@ -9,7 +9,7 @@ Known limitations
 
 	Events need unsubscribe or memory leak (wth cares?) (i think)
 
-		Knowsofts don't require skilljack
+	Knowsofts don't require skilljack
 	
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip
 	
@@ -21,3 +21,5 @@ Known limitations
 	Skillgroups not quite updating right (DisplayRating)
 	
 	Custom display attributes needs reset button
+	
+	Exotic Skills is goofed

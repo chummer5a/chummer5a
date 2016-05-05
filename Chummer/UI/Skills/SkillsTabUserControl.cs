@@ -279,7 +279,7 @@ namespace Chummer.UI.Skills
 
 		private void btnExotic_Click(object sender, EventArgs e)
 		{
-			if (_character.Options.KarmaNewActiveSkill > _character.Karma)
+			if (_character.Options.KarmaNewActiveSkill > _character.Karma && _character.Created)
 			{
 				MessageBox.Show(LanguageManager.Instance.GetString("Message_NotEnoughKarma"));
 				return;

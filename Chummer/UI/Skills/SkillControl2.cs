@@ -98,10 +98,19 @@ namespace Chummer.UI.Skills
 				cboSpec.DisplayMember = nameof(ListItem.Name);
 				cboSpec.ValueMember = nameof(ListItem.Value);
 
-				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
+				
 
 				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				cboSpec.SelectedIndex = -1;
+				if (skill.ExoticSkill)
+				{
+					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
+						DataSourceUpdateMode.OnPropertyChanged);
+				}
+				else
+				{
+					cboSpec.Enabled = false;
+				}
 			}
 
 			//Delete button
