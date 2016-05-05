@@ -157,7 +157,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				return (_character.Created ? 12 : 6);
+				return (_character.Created || _character.IgnoreRules ? 12 : 6);
 			}
 		}
 

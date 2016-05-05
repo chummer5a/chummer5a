@@ -201,7 +201,7 @@ namespace Chummer.Skills
 					x.ImproveType == Improvement.ImprovementType.Skill &&
 					x.ImprovedName == Name).Sum(x => x.Maximum);
 									
-				return (_character.Created 
+				return (_character.Created  || _character.IgnoreRules
 					? 12
 					: (KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
 			}
