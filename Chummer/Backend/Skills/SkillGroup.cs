@@ -335,6 +335,19 @@ namespace Chummer.Skills
 			} 
 		}
 
+		public string DisplayRating
+		{
+			get
+			{
+				if (_character.Created && !CareerIncrease)
+				{
+					return "";
+				}
+				return GetEnumerable().Min(x => x.LearnedRating).ToString();
+
+			}
+		}
+
 		private string _toolTip = null;
 		public string ToolTip
 		{
@@ -348,6 +361,11 @@ namespace Chummer.Skills
 
 				return _toolTip;
 			}
+		}
+
+		public string UpgradeToolTip
+		{
+			get { return string.Format(LanguageManager.Instance.GetString("Tip_ImproveItem"), GetEnumerable().Min(x => x.LearnedRating) + 1, UpgradeKarmaCost()); }
 		}
 
 		public Guid Id { get; } = Guid.NewGuid();
@@ -435,13 +453,15 @@ namespace Chummer.Skills
 
 		public int UpgradeKarmaCost()
 		{
-			if (Rating == 0)
+			int rating = GetEnumerable().Min(x => x.LearnedRating);
+
+			if (rating == 0)
 			{
 				return Character.Options.KarmaNewSkillGroup;
 			}
-			else if (RatingMaximum > Rating)
+			else if (RatingMaximum > rating)
 			{
-				return (Rating + 1)*Character.Options.KarmaImproveSkillGroup;
+				return (rating + 1)*Character.Options.KarmaImproveSkillGroup;
 			}
 			else
 			{

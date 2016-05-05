@@ -75,9 +75,10 @@
 			// lblGroupRating
 			// 
 			this.lblGroupRating.AutoSize = true;
+			this.lblGroupRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblGroupRating.Location = new System.Drawing.Point(131, 4);
 			this.lblGroupRating.Name = "lblGroupRating";
-			this.lblGroupRating.Size = new System.Drawing.Size(35, 13);
+			this.lblGroupRating.Size = new System.Drawing.Size(41, 13);
 			this.lblGroupRating.TabIndex = 7;
 			this.lblGroupRating.Text = "label1";
 			this.lblGroupRating.Visible = false;

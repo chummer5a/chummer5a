@@ -62,10 +62,10 @@ Testers bug
 Tooltip not updating with cyberarms
 House rule for skill group breaking karma
 
-Group skill probably not working loading legacy
-
 
 Known limitations
 	Updating gear don't trigger skill rating change and requires either a reload of character or manually changing skill rating and back
 	Knowsofts don't require skilljack
 	Cyberlimb Optimization is not calculated
+	Not removing old untakable skills
+	Skillgroups not quite updating right (DisplayRating)
