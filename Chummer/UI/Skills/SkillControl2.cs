@@ -76,11 +76,14 @@ namespace Chummer.UI.Skills
 
 				nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
 					DataSourceUpdateMode.OnPropertyChanged);
-
+				nudKarma.DataBindings.Add("Enabled", skill, nameof(Skill.KarmaUnlocked), false,
+					DataSourceUpdateMode.OnPropertyChanged);
+				
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints())
 				{
 					chkKarma.DataBindings.Add("Checked", skill, nameof(Skill.BuyWithKarma), false,
 						DataSourceUpdateMode.OnPropertyChanged);
+					chkKarma.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
 				}
 				else
 				{
@@ -92,7 +95,7 @@ namespace Chummer.UI.Skills
 				cboSpec.DisplayMember = nameof(ListItem.Name);
 				cboSpec.ValueMember = nameof(ListItem.Value);
 
-				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
+				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				cboSpec.SelectedIndex = -1;

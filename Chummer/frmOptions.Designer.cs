@@ -248,7 +248,6 @@
 			this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
 			this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
-			this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
 			this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
 			this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
 			this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
@@ -257,6 +256,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkStrictSkillGroups = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -696,7 +696,7 @@
 			this.lblKarmaAttribute.AutoSize = true;
 			this.lblKarmaAttribute.Location = new System.Drawing.Point(8, 188);
 			this.lblKarmaAttribute.Name = "lblKarmaAttribute";
-			this.lblKarmaAttribute.Size = new System.Drawing.Size(110, 13);
+			this.lblKarmaAttribute.Size = new System.Drawing.Size(156, 13);
 			this.lblKarmaAttribute.TabIndex = 17;
 			this.lblKarmaAttribute.Tag = "Label_Options_ImproveAttribute";
 			this.lblKarmaAttribute.Text = "Improve CharacterAttribute by 1";
@@ -2395,7 +2395,7 @@
 			this.chkAlternateMatrixAttribute.AutoSize = true;
 			this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(366, 190);
 			this.chkAlternateMatrixAttribute.Name = "chkAlternateMatrixAttribute";
-			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
+			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(248, 17);
 			this.chkAlternateMatrixAttribute.TabIndex = 12;
 			this.chkAlternateMatrixAttribute.Tag = "Checkbox_Options_AlternateMatrixAttribute";
 			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix CharacterAttribute (UN 39)";
@@ -2532,11 +2532,11 @@
 			this.chkCapSkillRating.AutoSize = true;
 			this.chkCapSkillRating.Location = new System.Drawing.Point(366, 6);
 			this.chkCapSkillRating.Name = "chkCapSkillRating";
-			this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
+			this.chkCapSkillRating.Size = new System.Drawing.Size(446, 17);
 			this.chkCapSkillRating.TabIndex = 2;
 			this.chkCapSkillRating.Tag = "Checkbox_Options_LimitSkills";
-			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural CharacterAttribute + Skill Rating), whichever is h" +
-    "igher";
+			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural CharacterAttribute + Skill Rating), which" +
+    "ever is higher";
 			this.chkCapSkillRating.UseVisualStyleBackColor = true;
 			this.chkCapSkillRating.Visible = false;
 			// 
@@ -2555,6 +2555,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkStrictSkillGroups);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeContacts);
 			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
@@ -2573,7 +2574,6 @@
 			this.tabHouseRules.Controls.Add(this.chkFreeKarmaContacts);
 			this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
-			this.tabHouseRules.Controls.Add(this.chkUsePointsOnBrokenGroups);
 			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityPurchases);
 			this.tabHouseRules.Controls.Add(this.chkCyberlegMovement);
 			this.tabHouseRules.Controls.Add(this.chkIgnoreArt);
@@ -2811,18 +2811,6 @@
 			this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Allows Initiation/Submersion using Karma during Create mode.");
 			this.chkAllowInitiation.UseVisualStyleBackColor = true;
 			// 
-			// chkUsePointsOnBrokenGroups
-			// 
-			this.chkUsePointsOnBrokenGroups.AutoSize = true;
-			this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(8, 118);
-			this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
-			this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
-			this.chkUsePointsOnBrokenGroups.TabIndex = 6;
-			this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
-			this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
-			this.tipTooltip.SetToolTip(this.chkUsePointsOnBrokenGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
-			this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
-			// 
 			// chkDontDoubleQualityPurchases
 			// 
 			this.chkDontDoubleQualityPurchases.AutoSize = true;
@@ -2904,6 +2892,17 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// chkStrictSkillGroups
+			// 
+			this.chkStrictSkillGroups.AutoSize = true;
+			this.chkStrictSkillGroups.Location = new System.Drawing.Point(8, 118);
+			this.chkStrictSkillGroups.Name = "chkStrictSkillGroups";
+			this.chkStrictSkillGroups.Size = new System.Drawing.Size(304, 17);
+			this.chkStrictSkillGroups.TabIndex = 24;
+			this.chkStrictSkillGroups.Tag = "Checkbox_Options_StrictSkillGroups";
+			this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
+			this.chkStrictSkillGroups.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 
@@ -3197,7 +3196,6 @@
         private System.Windows.Forms.CheckBox chkIgnoreArt;
         private System.Windows.Forms.CheckBox chkCyberlegMovement;
         private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
-        private System.Windows.Forms.CheckBox chkUsePointsOnBrokenGroups;
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
@@ -3226,5 +3224,6 @@
 		private System.Windows.Forms.CheckBox chkDronemods;
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeContacts;
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeKnowledge;
+		private System.Windows.Forms.CheckBox chkStrictSkillGroups;
 	}
 }

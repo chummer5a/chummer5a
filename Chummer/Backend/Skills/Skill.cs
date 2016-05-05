@@ -301,6 +301,8 @@ namespace Chummer.Skills
 			get { return Rating > 0; }
 		}
 
+		public bool CanHaveSpecs => Leveled && KarmaUnlocked;
+
 		public Character CharacterObject
 		{
 			get { return _character; }
@@ -730,17 +732,19 @@ namespace Chummer.Skills
 					new ReverseTree<string>(nameof(Pool),
 						new ReverseTree<string>(nameof(PoolModifiers)),
 						new ReverseTree<string>(nameof(AttributeModifiers)),
-						new ReverseTree<string>(nameof(Leveled),
-							new ReverseTree<string>(nameof(Rating),
-								new ReverseTree<string>(nameof(Karma)),
-								new ReverseTree<string>(nameof(BaseUnlocked),
-									new ReverseTree<string>(nameof(Base))
+						new ReverseTree<string>(nameof(CanHaveSpecs),
+							new ReverseTree<string>(nameof(Leveled),
+								new ReverseTree<string>(nameof(Rating),
+									new ReverseTree<string>(nameof(Karma)),
+									new ReverseTree<string>(nameof(BaseUnlocked),
+										new ReverseTree<string>(nameof(Base))
 									)
 								)
 							)
 						)
-					)
-				);
+					)			
+				)
+			);
 
 
 		#endregion

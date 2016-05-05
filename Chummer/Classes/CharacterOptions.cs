@@ -37,7 +37,7 @@ namespace Chummer
 		private bool _blnArmorSuitCapacity;
 		private bool _blnAutomaticCopyProtection = true;
 		private bool _blnAutomaticRegistration = true;
-		private bool _blnBreakSkillGroupsInCreateMode;
+		private bool _blnStrictSkillGroupsInCreateMode;
 		private bool _blnCalculateCommlinkResponse = true;
 		private bool _blnCapSkillRating;
 		private bool _blnConfirmDelete = true;
@@ -98,7 +98,7 @@ namespace Chummer
 		private int _intNuyenPerBP = 2000;
 		private int _intRestrictedCostMultiplier = 1;
 		private bool _automaticBackstory = true;
-
+		
 		private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = "";
 		private string _strExcludeLimbSlot = "";
@@ -357,7 +357,7 @@ namespace Chummer
 			// <usecontactpoints />
 			objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
 			// <breakskillgroupsincreatemode />
-			objWriter.WriteElementString("breakskillgroupsincreatemode", _blnBreakSkillGroupsInCreateMode.ToString());
+			objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
 			// <extendanydetectionspell />
 			objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
 			// <allowskilldicerolling />
@@ -703,7 +703,7 @@ namespace Chummer
 			// Whether or not contact points are used instead of fixed contacts.
 			objXmlNode.TryGetField("usecontactpoints", out _blnUseContactPoints);
 			// Whether or not the user can break Skill Groups while in Create Mode.
-			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnBreakSkillGroupsInCreateMode);
+			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnStrictSkillGroupsInCreateMode);
 			// Whether or not any Detection Spell can be taken as Extended range version.
 			objXmlNode.TryGetField("extendanydetectionspell", out _blnExtendAnyDetectionSpell);
 			// Whether or not dice rolling id allowed for Skills.
@@ -2238,15 +2238,15 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the user is allowed to break Skill Groups while in Create Mode.
 		/// </summary>
-		public bool BreakSkillGroupsInCreateMode
+		public bool StrictSkillGroupsInCreateMode
 		{
 			get
 			{
-				return _blnBreakSkillGroupsInCreateMode;
+				return _blnStrictSkillGroupsInCreateMode;
 			}
 			set
 			{
-				_blnBreakSkillGroupsInCreateMode = value;
+				_blnStrictSkillGroupsInCreateMode = value;
 			}
 		}
 

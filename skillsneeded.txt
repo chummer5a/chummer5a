@@ -1,72 +1,23 @@
-Considder stetching a bit UI. Autoscale. UI elements have fixed size in width. We might want to try and scale with chummer width. OnResizeXXX event. 
-
-Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)  (think this works)
-
-Undo expense mostly working. (skills working (history not, needfix? i guess), skillgroups not working, dunremember baut specs)
-
-Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever created without user doing it manually, but it is a thing and we (probably) have to support it. Also kinda usefull.
-
-Knoskills LM not working
-
-Skill grouping button in options
-
-Events need unsubscribe or memory leak (wth cares?) (i think)
-
-To test
-Ware
--Mnemonic Enhancer
--Reflex recorder
--Skillwires
--Move by wire
--Skilljack
--Active Hardwires
--Infrasonic Generator (might need 1 -> Rating)
-
-
-Magic
--Improved Ability
--Lots of skill specific powers such as Enhanced Perception
--Mentor spirits
-
-Qualities
--Catlike
--Double-Jointed
--Natural Athlete
--Perfect Time
--Sense of direction
--Water sprite
--Trustworthy
--Grease Monkey
--Vehicle Empathy
--Jack of all trades
--Linguist
--Technical school education
--School of hard knocks
--Aged
--Dimmer Bulb
--Illiterate
--Incompetent
--Loss of confidence
--Oblivious
--Quasimodo
--Superhuman psychosis
--Uncouth
--Uneducated
-
-
-Wounds
--Damage compensator
--High pain tolerance
-
-Testers bug
-Tooltip not updating with cyberarms
-House rule for skill group breaking karma
-
-
 Known limitations
+	Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)  (think this works)
+
+	Undo expense mostly working. (skills working (history not, needfix? i guess), skillgroups not working, dunremember baut specs)
+
+	Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever created without user doing it manually, but it is a thing and we (probably) have to support it. Also kinda usefull.
+
+	Knoskills LM not working
+
+	Events need unsubscribe or memory leak (wth cares?) (i think)
+
+		Knowsofts don't require skilljack
+	
+	Cyberlimb Optimization is not included in cyberlimb pool tooltip
+	
+	Tooltip not updating with cyberarms
 	Updating gear don't trigger skill rating change and requires either a reload of character or manually changing skill rating and back
-	Knowsofts don't require skilljack
-	Cyberlimb Optimization is not calculated
+		
 	Not removing old untakable skills
+	
 	Skillgroups not quite updating right (DisplayRating)
+	
 	Custom display attributes needs reset button

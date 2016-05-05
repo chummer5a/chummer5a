@@ -47,6 +47,22 @@ namespace Chummer.Skills
 		}
 
 		/// <summary>
+		/// Is it possible to place points in Karma or is it prevented a stricter interprentation of the rules
+		/// </summary>
+		public bool KarmaUnlocked
+		{
+			get
+			{
+				if (CharacterObject.Options.StrictSkillGroupsInCreateMode)
+				{
+					return (SkillGroupObject == null || SkillGroupObject.Rating <= 0);
+				}
+
+				return true;
+			}
+		}
+
+		/// <summary>
 		/// The amount of points this skill have from skill points and bonuses
 		/// to the skill rating that would be optained in some points of character creation
 		/// </summary>
@@ -104,6 +120,13 @@ namespace Chummer.Skills
 		{
 			get
 			{
+				if (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0))
+				{
+					_karma = 0;
+					Specializations.RemoveAll(x => !x.Free);
+					return SkillGroupObject?.Karma ?? 0;
+
+				}
 				return _karma + FreeKarma() + (SkillGroupObject?.Karma ?? 0);
 			}
 			set
@@ -499,7 +522,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		private bool UnForceBuyWithKarma()
 		{
-			return LearnedRating == 0;
+			return LearnedRating == 0 || (CharacterObject.Options.StrictSkillGroupsInCreateMode && ((SkillGroupObject?.Karma ?? 0) > 0));
 		}
 
 		/// <summary>

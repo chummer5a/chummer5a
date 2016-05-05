@@ -3411,6 +3411,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_OptionsAllowInitiation</key>
 			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
 		</string>
+    <string>
+      <key>Tip_OptionStrictSkillGroups</key>
+      <text>Disallow breaking of skill groups with karma during create mode</text>
+    </string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
 			<text>Augmented Attribute value.</text>
@@ -4483,6 +4487,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
 		</string>
+    <string>
+      <key>Checkbox_Options_StrictSkillGroups</key>
+      <text>Strict interprentation of breaking skill groups in create mode</text>
+    </string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
