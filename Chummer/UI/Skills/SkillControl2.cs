@@ -13,7 +13,7 @@ namespace Chummer.UI.Skills
 		private readonly Skill _skill;
 		private readonly Font _normal;
 		private readonly Font _italic;
-		private string _attributeActive;
+		private CharacterAttrib _attributeActive;
 
 		public SkillControl2(Skill skill)
 		{
@@ -32,8 +32,11 @@ namespace Chummer.UI.Skills
 
 			skill.PropertyChanged += Skill_PropertyChanged;
 
+			_attributeActive = skill.AttributeObject;
+			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
 			Skill_PropertyChanged(null, null);  //if null it updates all
-			_attributeActive = skill.AttributeObject.Abbrev;
+			
+			
 			_normal = btnAttribute.Font;
 			_italic = new Font(_normal, FontStyle.Italic);
 			if (skill.CharacterObject.Created)
@@ -161,7 +164,7 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.Rating):
 					lblModifiedRating.Text =
-						_skill.DisplayOhterAttribue(_skill.CharacterObject.GetAttribute(_attributeActive).TotalValue);
+						_skill.DisplayOhterAttribue(_attributeActive.TotalValue);
 					break;
 			}
 		}
@@ -243,11 +246,18 @@ namespace Chummer.UI.Skills
 		{
 			btnAttribute.Visible = true;
 			cboSelectAttribute.Visible = false;
-			_attributeActive = (string) cboSelectAttribute.SelectedValue;
+			_attributeActive.PropertyChanged -= AttributeActiveOnPropertyChanged;
+			_attributeActive = _skill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
 
-			btnAttribute.Font = _attributeActive == _skill.AttributeObject.Abbrev ? _normal : _italic;
+			btnAttribute.Font = _attributeActive == _skill.AttributeObject ? _normal : _italic;
 			btnAttribute.Text = cboSelectAttribute.Text;
 
+			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
+			AttributeActiveOnPropertyChanged(null, null);
+		}
+
+		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
 			Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
 		}
 	}
