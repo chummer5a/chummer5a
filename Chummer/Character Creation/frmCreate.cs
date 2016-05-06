@@ -11585,6 +11585,8 @@ namespace Chummer
                     }
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName;
+
+	                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
                 }
                 else
                 {
@@ -11977,6 +11979,7 @@ namespace Chummer
                 _objController.PopulateFocusList(treFoci);
                 RefreshSelectedGear();
                 UpdateCharacterInfo();
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Rating));
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
@@ -17289,6 +17292,7 @@ namespace Chummer
             _blnSkipRefresh = false;
 
             _blnIsDirty = true;
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
             PopulateGearList();
             UpdateWindowTitle();
 

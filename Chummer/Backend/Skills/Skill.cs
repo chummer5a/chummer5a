@@ -749,7 +749,7 @@ namespace Chummer.Skills
 
 		#endregion
 
-		public void ForceEvent(string property)
+		internal void ForceEvent(string property)
 		{
 			foreach (string s in DependencyTree.Find(property))
 			{

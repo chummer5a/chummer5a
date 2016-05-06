@@ -517,5 +517,13 @@ namespace Chummer.Skills
 			Adept,
 			Technomancer
 		}
+
+		internal void ForceProperyChangedNotificationAll(string name)
+		{
+			foreach (Skill skill in Skills)
+			{
+				skill.ForceEvent(name);
+			}
+		}
 	}
 }
