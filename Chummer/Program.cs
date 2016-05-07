@@ -21,18 +21,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+﻿using System.Threading;
+﻿using System.Windows.Forms;
+﻿using Chummer.Backend.Debugging;
 
 namespace Chummer
 {
-    static class Program
-    {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
+	static class Program
+	{
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main()
+		{
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
 			{
@@ -42,44 +44,38 @@ namespace Chummer
 			//Various init stuff (that mostly "can" be removed as they serve 
 			//debugging more than function
 
-			//crash handler that will offer to send a mail
-			AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
 			
-			//Needs to be called before Log is setup, as it moves where log might be.
-	        FixCwd();
+				//Needs to be called before Log is setup, as it moves where log might be.
+				FixCwd();
 
 
-			//Log exceptions that is caught. Wanting to know about this cause of performance
-	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+				//Log exceptions that is caught. Wanting to know about this cause of performance
+				AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
 
-			Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow, Environment.CommandLine) );
+				Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}",
+					System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow,
+					Environment.CommandLine));
 
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+				Application.ThreadException += ApplicationOnThreadException;
+				Application.EnableVisualStyles();
+				Application.SetCompatibleTextRenderingDefault(false);
 
+				//GlobalOptions.Instance.Language = "de";
+				LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+				// Make sure the default language has been loaded before attempting to open the Main Form.
 
+				
+				if (LanguageManager.Instance.Loaded)
+					Application.Run(new frmMain());
+				else
+					Application.Exit();
+			
+		}
 
-
-#if LEGACY
-	        DialogResult result =
-		        MessageBox.Show(
-			        "Chummer5a is currently running in legacy mode.\n While this is possible, the Chummer5a team won't provide support if anything goes wrong\n This feature may be removed without warning",
-			        "Legacy mode", MessageBoxButtons.OKCancel);
-
-	        if (result == DialogResult.Cancel)
-	        {
-		        Application.Exit();
-	        }
-#endif
-
-            //GlobalOptions.Instance.Language = "de";
-			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-            // Make sure the default language has been loaded before attempting to open the Main Form.
-            if (LanguageManager.Instance.Loaded)
-				Application.Run(new frmMain());
-			else
-				Application.Exit();
-        }
+		private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs threadExceptionEventArgs)
+		{
+			CrashHandler.WebMiniDumpHandler(threadExceptionEventArgs.Exception);
+		}
 
 		static void FixCwd()
 		{
@@ -98,5 +94,5 @@ namespace Chummer
 			Environment.CurrentDirectory = Application.StartupPath;
 
 		}
-    }
+	}
 }

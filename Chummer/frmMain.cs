@@ -968,5 +968,10 @@ namespace Chummer
 			}
 		}
 		#endregion
+
+		private void crashToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			throw new Exception();
+		}
 	}
 }

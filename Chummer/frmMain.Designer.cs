@@ -88,6 +88,7 @@
 			this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.tabForms = new System.Windows.Forms.TabControl();
+			this.crashToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -434,7 +435,8 @@
             this.toolStripSeparator5,
             this.optionsToolStripMenuItem,
             this.mnuToolsUpdate,
-            this.mnuToolsOmae});
+            this.mnuToolsOmae,
+            this.crashToolStripMenuItem});
 			this.toolsMenu.Name = "toolsMenu";
 			this.toolsMenu.Size = new System.Drawing.Size(47, 20);
 			this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -665,6 +667,13 @@
 			this.tabForms.Visible = false;
 			this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
 			// 
+			// crashToolStripMenuItem
+			// 
+			this.crashToolStripMenuItem.Name = "crashToolStripMenuItem";
+			this.crashToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+			this.crashToolStripMenuItem.Text = "Crash";
+			this.crashToolStripMenuItem.Click += new System.EventHandler(this.crashToolStripMenuItem_Click);
+			// 
 			// frmMain
 			// 
 			this.AllowDrop = true;
@@ -754,6 +763,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem mnuToolsOmae;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpDumpshock;
+		private System.Windows.Forms.ToolStripMenuItem crashToolStripMenuItem;
 	}
 }
 
