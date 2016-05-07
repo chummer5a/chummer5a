@@ -145,6 +145,8 @@ Data Change:
 - Added a missing skillwire rating to Move-By-Wire. 
 - Fixed an incorrect AP value for Stick-n-Shock ammo. Fixes #818.
 - Added an unarmed AP value equal to rating for the adept power Penetrating Strike. Fixes #829.
+- Fixed incorrect Essence values for bio-tattoos. Fixes #834.
+- Altered the improvements for the Missile Mastery power. Fixes #832.
 
 New Strings:
 - Message_DeleteCalendarWeek
