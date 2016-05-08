@@ -297,7 +297,7 @@ namespace Chummer.UI.Skills
 				document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
 			ExoticSkill skill = new ExoticSkill(ObjCharacter, node);
-			skill.Specializations.Add(new SkillSpecialization(frmPickExoticSkill.SelectedExoticSkillSpecialisation, true));
+			skill.Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
 			skill.Upgrade();
 			ObjCharacter.SkillsSection.Skills.Add(skill);
 		}

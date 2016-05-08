@@ -7322,7 +7322,7 @@ namespace Chummer
 				Skill objSkill = null; 
 				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
+					if (objCharacterSkill.Name == strSkill)
 					{
 						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
                         {
@@ -7356,7 +7356,7 @@ namespace Chummer
 				strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
-				if (objSkill.Specializations.Count > 0 && !objSkill.ExoticSkill)
+				if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " (" + (intRating + 2).ToString() + ")";
@@ -7450,7 +7450,7 @@ namespace Chummer
 				Skill objSkill = null;
 				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
+					if (!objCharacterSkill.IsKnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{
                         if (strSpec == "" || (strSpec != "" && objCharacterSkill.HasSpecialization(strSpec)))
 						{
@@ -7462,7 +7462,7 @@ namespace Chummer
 
 				strReturn = strSkill + " (" + objSkill.Pool + ")";
 
-				if (objSkill.Specialization != "" && !objSkill.ExoticSkill)
+				if (objSkill.Specialization != "" && !objSkill.IsExoticSkill)
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + " (2)";

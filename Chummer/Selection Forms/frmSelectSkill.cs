@@ -125,7 +125,7 @@ namespace Chummer
 				// Add in any Exotic Skills the character has.
 				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (objSkill.ExoticSkill)
+					if (objSkill.IsExoticSkill)
 					{
 						bool blnAddSkill = true;
 						if (_strForceSkill != "")
@@ -164,7 +164,7 @@ namespace Chummer
 				// Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
 				foreach (Skill objKnow in _objCharacter.SkillsSection.Skills)
 				{
-					if (objKnow.KnowledgeSkill)
+					if (objKnow.IsKnowledgeSkill)
 					{
 						ListItem objSkill = new ListItem();
 						objSkill.Value = objKnow.Name;

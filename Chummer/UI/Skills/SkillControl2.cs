@@ -55,13 +55,13 @@ namespace Chummer.UI.Skills
 				chkKarma.Visible = false;
 
 				cboSpec.Visible = false;
-				lblCareerSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
+				lblCareerSpec.Text = skill.IsExoticSkill ? ((ExoticSkill)skill).Specific : string.Join(", ", skill.Specializations.Select(x => x.Name));
 				lblCareerSpec.Visible = true;
 				lblAttribute.Visible = true;
 
 				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
 
-				if (!skill.ExoticSkill)
+				if (!skill.IsExoticSkill)
 				{
 					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
 						DataSourceUpdateMode.OnPropertyChanged);
@@ -100,16 +100,18 @@ namespace Chummer.UI.Skills
 
 				
 
-				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
-				cboSpec.SelectedIndex = -1;
-				if (skill.ExoticSkill)
+				
+				if (skill.IsExoticSkill)
 				{
-					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
-						DataSourceUpdateMode.OnPropertyChanged);
+					cboSpec.Enabled = false;
+					cboSpec.Text = ((ExoticSkill) skill).Specific;
 				}
 				else
 				{
-					cboSpec.Enabled = false;
+					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
+						DataSourceUpdateMode.OnPropertyChanged);
+					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+					cboSpec.SelectedIndex = -1;
 				}
 			}
 
@@ -145,7 +147,7 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.Leveled):
 					BackColor = _skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-					btnAddSpec.Visible = _skill.CharacterObject.Created && !_skill.ExoticSkill;
+					btnAddSpec.Visible = _skill.CharacterObject.Created && !_skill.IsExoticSkill;
 					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 

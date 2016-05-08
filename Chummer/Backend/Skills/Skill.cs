@@ -91,9 +91,7 @@ namespace Chummer.Skills
 
 				if (node == null) return null;
 
-				skill = node["exotic"]?.InnerText == "Yes"
-					? new ExoticSkill(character, node)
-					: new Skill(character, node);
+				skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) { Specific = node["specific"].InnerText } : new Skill(character, node);
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
@@ -163,13 +161,18 @@ namespace Chummer.Skills
 
 
 				skill = Skill.FromData(data, character);
-
 				n.TryGetField("base", out skill._base);
 				n.TryGetField("karma", out skill._karma);
 
+				ExoticSkill exoticSkill = skill as ExoticSkill;
+				if (exoticSkill != null)
+				{
+					exoticSkill.Specific = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
+					//don't need to do more load then.
+					return skill;
+				}
+
 				skill._buyWithKarma = n.TryCheckValue("buywithkarma", "True");
-
-
 			}
 
 			var v = from XmlNode node
@@ -199,12 +202,7 @@ namespace Chummer.Skills
 			if (n["exotic"] != null && n["exotic"].InnerText == "Yes")
 			{
 				//load exotic skill
-				//TODO FINISH THIS
-				if (Debugger.IsAttached)
-					Debugger.Break();
-
 				ExoticSkill s2 = new ExoticSkill(character, n);
-
 				s = s2;
 			}
 			else
@@ -349,15 +347,14 @@ namespace Chummer.Skills
 
 		public bool Default { get; private set; }
 
-		public virtual bool ExoticSkill
+		public virtual bool IsExoticSkill
 		{
 			get { return false; }
 		}
 
-		public virtual bool KnowledgeSkill
+		public virtual bool IsKnowledgeSkill
 		{
 			get { return false; }
-			set { } //TODO REFACTOR AWAY
 		}
 
 		public virtual string Name
@@ -651,14 +648,14 @@ namespace Chummer.Skills
 			else
 			{
 				//Handler for the Inspired Quality. 
-				if (!KnowledgeSkill && Name == "Artisan")
+				if (!IsKnowledgeSkill && Name == "Artisan")
 				{
 					if (CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired"))
 					{
 						return $"{pool} ({pool + 3})";
 					}
 				}
-				else if (ExoticSkill)
+				else if (IsExoticSkill)
 				{
 					return $"{pool}";
 				}
@@ -692,7 +689,7 @@ namespace Chummer.Skills
 			ImprovementManager manager = new ImprovementManager(CharacterObject);
 
 			int skillWireRating = manager.ValueOf(Improvement.ImprovementType.Skillwire);
-			if ((skillWireRating > 0 || KnowledgeSkill) && CharacterObject.SkillsoftAccess)
+			if ((skillWireRating > 0 || IsKnowledgeSkill) && CharacterObject.SkillsoftAccess)
 			{
 				Func<Gear, int> recusivestuff = null;
 				recusivestuff = (gear) =>

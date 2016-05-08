@@ -262,7 +262,7 @@ namespace Chummer
 				// Active Skills.
 				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (objSkill.KnowledgeSkill)
+					if (objSkill.IsKnowledgeSkill)
 					{
 						// <skill>
 						objWriter.WriteStartElement("skill");

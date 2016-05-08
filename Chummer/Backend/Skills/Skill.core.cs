@@ -203,7 +203,7 @@ namespace Chummer.Skills
 									
 				return (_character.Created  || _character.IgnoreRules
 					? 12
-					: (KnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
+					: (IsKnowledgeSkill && _character.BuildMethod == CharacterBuildMethod.LifeModule ? 9 : 6)) + otherbonus;
 			}
 		}
 

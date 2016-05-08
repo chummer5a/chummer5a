@@ -732,7 +732,7 @@ namespace Chummer
 					if (objPower.Name == "Improved Ability (skill)")
 					{
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
+							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
                         {
                             int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                             if (intImprovedAbilityMaximum == 0)
@@ -4506,7 +4506,7 @@ namespace Chummer
             foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
             {
                 foreach (Power objPower in _objCharacter.Powers)
-						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
+						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
                     {
                         double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                         intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
@@ -4998,7 +4998,7 @@ namespace Chummer
 				{
                 foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 					{
-						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
+						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
                     {
                         int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                         if (intImprovedAbilityMaximum == 0)

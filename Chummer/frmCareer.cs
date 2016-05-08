@@ -4163,7 +4163,7 @@ namespace Chummer
             {
                 foreach (Power objPower in _objCharacter.Powers)
                     {
-						if (objPower.Extra == objSkill.Name || (objSkill.ExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization +")")))
+						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization +")")))
 							{
                         double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                         intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));

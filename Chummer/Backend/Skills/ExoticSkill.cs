@@ -9,7 +9,7 @@ namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{
-		//private bool _allowVisible;
+		private string _specific;
 
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
@@ -42,6 +42,29 @@ namespace Chummer.Skills
 		public override int CurrentKarmaCost()
 		{
 			return RangeCost(Base + FreeKarma(), LearnedRating);
+		}
+
+		public override bool IsExoticSkill
+		{
+			get { return true; }
+		}
+
+		/// <summary>
+		/// Called during save to allow derived classes to save additional infomation required to rebuild state
+		/// </summary>
+		/// <param name="writer"></param>
+		protected override void SaveExtendedData(XmlTextWriter writer)
+		{
+			writer.WriteElementString("specific", _specific);
+		}
+
+		public string Specific {
+			get { return _specific; }
+			set
+			{
+				_specific = value;
+				OnPropertyChanged();
+			}
 		}
 	}
 }
