@@ -23302,6 +23302,8 @@ namespace Chummer
 			RefreshSelectedCyberware();
 			PopulateGearList();
 
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+
 			if (frmPickCyberware.DialogResult != DialogResult.Cancel)
 			{
 				_blnIsDirty = true;

@@ -69,7 +69,7 @@ namespace Chummer.Skills
 					_skillValueBackup[skill.SkillId] = skill;
 					Skills.RemoveAt(i);
 
-					if (_character.Created)
+					if (_character.Created && skill.LearnedRating > 0)
 					{
 						KnowledgeSkill kno = new KnowledgeSkill(_character)
 						{

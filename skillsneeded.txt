@@ -21,5 +21,3 @@ Known limitations
 	Skillgroups not quite updating right (DisplayRating)
 	
 	Custom display attributes needs reset button
-	
-	Exotic Skills is goofed
