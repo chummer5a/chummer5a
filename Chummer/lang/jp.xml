@@ -120,6 +120,10 @@
       <key>Label_Karma</key>
       <text>カルマ:</text>
     </string>
+	<string>
+		<key>Label_LP</key>
+		<text>カルマ:</text>
+	</string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>残りカルマ:</text>

@@ -403,6 +403,10 @@
 			<text>Karma:</text>
 		</string>
 		<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
+		</string>
+		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>Karma Remaining:</text>
 		</string>

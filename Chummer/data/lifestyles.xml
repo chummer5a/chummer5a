@@ -139,6 +139,44 @@
 			<page>218</page>
 		</lifestyle>
 	</lifestyles>
+	<lifestylePoints>
+		<lifestylePoint>
+			<name>Bolt Hole</name>
+			<amount>4</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Street</name>
+			<amount>2</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Squatter</name>
+			<amount>2</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Low</name>
+			<amount>3</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Medium</name>
+			<amount>4</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>High</name>
+			<amount>6</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Luxury</name>
+			<amount>12</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Commercial</name>
+			<amount>4</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Traveler</name>
+			<amount>2</amount>
+		</lifestylePoint>
+	</lifestylePoints>
 	<comforts>
 		<comfort>
 			<name>Bolt Hole</name>
@@ -178,6 +216,11 @@
 		<comfort>
 			<name>Commercial</name>
 			<minimum>3</minimum>
+			<limit>4</limit>
+		</comfort>
+		<comfort>
+			<name>Traveler</name>
+			<minimum>2</minimum>
 			<limit>4</limit>
 		</comfort>
 	</comforts>
@@ -222,6 +265,11 @@
 			<minimum>4</minimum>
 			<limit>6</limit>
 		</neighborhood>
+		<neighborhood>
+			<name>Traveler</name>
+			<minimum>2</minimum>
+			<limit>4</limit>
+		</neighborhood>
 	</neighborhoods>
 	<securities>
 		<security>
@@ -263,6 +311,11 @@
 			<name>Commercial</name>
 			<minimum>4</minimum>
 			<limit>6</limit>
+		</security>
+		<security>
+			<name>Traveler</name>
+			<minimum>2</minimum>
+			<limit>4</limit>
 		</security>
 	</securities>
 	<qualities>
@@ -783,6 +836,10 @@
 					<characterquality>SINner (Corporate Limited)</characterquality>
 				</oneof>
 			</required>
+			<security>1</security>
+			<securityMinimum>1</securityMinimum>
+			<comforts>1</comforts>
+			<comfortsMinimum>1</comfortsMinimum>
 			<source>RF</source>
 			<page>225</page>
 		</quality>
