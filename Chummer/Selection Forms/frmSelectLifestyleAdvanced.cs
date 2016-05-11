@@ -639,6 +639,8 @@ namespace Chummer
                 return;
             else
             {
+                String strQualityName = treLifestyleQualities.SelectedNode.Name;
+                _objLifestyle.LifestyleQualities.Remove(_objLifestyle.LifestyleQualities.Where(x => x.Name.Equals(strQualityName)).First());
                 treLifestyleQualities.SelectedNode.Remove();
                 CalculateValues();
             }
