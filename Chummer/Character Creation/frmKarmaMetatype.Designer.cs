@@ -1,4 +1,7 @@
-﻿namespace Chummer
+﻿using System.Windows;
+using System.Windows.Forms;
+
+namespace Chummer
 {
     partial class frmKarmaMetatype
     {
@@ -474,6 +477,7 @@
 			this.lstMetatypes.Sorted = true;
 			this.lstMetatypes.TabIndex = 35;
 			this.lstMetatypes.SelectedIndexChanged += new System.EventHandler(this.lstMetatypes_SelectedIndexChanged);
+            this.lstMetatypes.MouseDoubleClick += new MouseEventHandler(this.lstMetatypes_DoubleClick);
 			// 
 			// frmKarmaMetatype
 			// 
