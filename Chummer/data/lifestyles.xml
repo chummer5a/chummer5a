@@ -44,7 +44,7 @@
 			<dice>1</dice>
 			<multiplier>20</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>9367556e-f82f-4f9d-840e-24c8f824ca68</id>
@@ -53,7 +53,7 @@
 			<dice>2</dice>
 			<multiplier>40</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>451eef87-d18e-4bee-a972-1ee165b08522</id>
@@ -62,7 +62,7 @@
 			<dice>3</dice>
 			<multiplier>60</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
@@ -71,7 +71,7 @@
 			<dice>4</dice>
 			<multiplier>100</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4a37d519-c9be-4ecc-97bb-e9d78708c374</id>
@@ -80,7 +80,7 @@
 			<dice>5</dice>
 			<multiplier>500</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4b513ac9-9eb3-471b-931b-839a04873b84</id>
@@ -89,7 +89,7 @@
 			<dice>6</dice>
 			<multiplier>1000</multiplier>
 			<source>SR5</source>
-			<page>267</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
@@ -107,7 +107,7 @@
 			<dice>1</dice>
 			<multiplier>0</multiplier>
 			<source>RF</source>
-			<page>217</page>
+			<page>216</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
@@ -117,7 +117,7 @@
 			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
-			<page>373</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
@@ -127,7 +127,16 @@
 			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
-			<page>373</page>
+			<page>369</page>
+		</lifestyle>
+		<lifestyle>
+			<id>ed775c22-8f0c-40a0-bc6f-5dbb980cedba</id>
+			<name>Traveler</name>
+			<cost>3000</cost>
+			<dice>0</dice>
+			<multiplier>0</multiplier>
+			<source>RF</source>
+			<page>218</page>
 		</lifestyle>
 	</lifestyles>
 	<comforts>
