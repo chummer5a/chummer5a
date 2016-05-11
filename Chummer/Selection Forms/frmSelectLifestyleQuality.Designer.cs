@@ -163,7 +163,6 @@
             this.lblBPLabel.TabIndex = 2;
             this.lblBPLabel.Tag = "Label_Karma";
             this.lblBPLabel.Text = "LP:";
-            this.lblBPLabel.Click += new System.EventHandler(this.lblBPLabel_Click);
             // 
             // chkFree
             // 
