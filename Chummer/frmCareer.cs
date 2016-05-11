@@ -12262,7 +12262,7 @@ namespace Chummer
 
 		private void tsUndoKarmaExpense_Click(object sender, EventArgs e)
 		{
-			ListViewItem objItem = new ListViewItem();
+			ListViewItem objItem;
 
 			try
 			{
@@ -12434,7 +12434,14 @@ namespace Chummer
 					if (skill == null)
 						skill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 
-					if(skill != null) skill.Karma--;
+					if (skill != null)
+					{
+						skill.Karma--;
+						if (skill.LearnedRating == 0)
+						{
+							
+						}
+					}
 
 					break;
 				case KarmaExpenseType.AddMetamagic:

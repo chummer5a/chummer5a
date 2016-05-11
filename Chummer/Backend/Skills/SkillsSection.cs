@@ -143,11 +143,14 @@ namespace Chummer.Skills
 				unsoredSkills.Sort(CompareSkills);
 
 				unsoredSkills.ForEach(x => _skills.Add(x));
+
+				UpdateUndoList(skillNode);
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
 			if (skillNode["skillptsmax"] == null)
 			{
+				
 				skillNode = skillNode.OwnerDocument["character"];
 			}
 
@@ -162,6 +165,40 @@ namespace Chummer.Skills
 			skillNode.TryGetField("linguist", out _blnLinguist);
 
 			Timekeeper.Finish("load_char_skills");
+		}
+
+		private void UpdateUndoList(XmlNode skillNode)
+		{
+			//Hacky way of converting Expense entries to guid based skill identification
+			//specs allready did?
+			//First create dictionary mapping name=>guid
+
+			var skills = Skills.Select(x => new {name = x.Name, id = x.Id});
+			var knoSkills = KnowledgeSkills.Select(x => new {name = x.Name, id = x.Id});
+			var groups = SkillGroups.Select(x => new {name = x.Name, id = x.Id});
+
+			
+			Dictionary<string, Guid> map = skills.Concat(knoSkills).Concat(groups)  //All 3 collections
+				//Create group for each name, if 2 skills share name next step would crash
+				.GroupBy(arg => arg.name).Select(group => group.First())  
+				.ToDictionary(x => x.name, x => x.id);  
+
+			//Build a crazy xpath to get everything we want to convert
+			KarmaExpenseType[] typesRequreingConverting =
+			{
+				KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill,
+				KarmaExpenseType.ImproveSkillGroup
+			};
+
+			string xpath = $"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
+
+			//Find everything
+			XmlNodeList nodesToChange = skillNode.OwnerDocument.SelectNodes(xpath);
+
+			for (var i = 0; i < nodesToChange.Count; i++)
+			{
+				nodesToChange[i].InnerText = map[nodesToChange[i].InnerText].ToString();
+			}
 		}
 
 		internal void Save(XmlTextWriter writer)

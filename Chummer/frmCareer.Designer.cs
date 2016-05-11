@@ -252,7 +252,7 @@ namespace Chummer
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
 			this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
 			this.tabSkills = new System.Windows.Forms.TabPage();
-			this.tabSkillsUc = new SkillsTabUserControl();
+			this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
 			this.lblAstral = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
@@ -697,6 +697,20 @@ namespace Chummer
 			this.panPets = new System.Windows.Forms.FlowLayoutPanel();
 			this.cmdAddPet = new System.Windows.Forms.Button();
 			this.tabVehicles = new System.Windows.Forms.TabPage();
+			this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
+			this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
+			this.lblVehicleCosmetic = new System.Windows.Forms.Label();
+			this.lblVehicleElectromagnetic = new System.Windows.Forms.Label();
+			this.lblVehicleBodymod = new System.Windows.Forms.Label();
+			this.lblVehicleWeaponsmod = new System.Windows.Forms.Label();
+			this.lblVehicleProtection = new System.Windows.Forms.Label();
+			this.lblVehiclePowertrain = new System.Windows.Forms.Label();
+			this.lblVehicleCosmeticLabel = new System.Windows.Forms.Label();
+			this.lblVehicleElectromagneticLabel = new System.Windows.Forms.Label();
+			this.lblVehicleBodymodLabel = new System.Windows.Forms.Label();
+			this.lblVehicleWeaponsmodLabel = new System.Windows.Forms.Label();
+			this.lblVehicleProtectionLabel = new System.Windows.Forms.Label();
+			this.lblVehiclePowertrainLabel = new System.Windows.Forms.Label();
 			this.cboVehicleGearDataProcessing = new System.Windows.Forms.ComboBox();
 			this.cboVehicleGearFirewall = new System.Windows.Forms.ComboBox();
 			this.cboVehicleGearSleaze = new System.Windows.Forms.ComboBox();
@@ -1163,20 +1177,6 @@ namespace Chummer
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.lblVehicleDroneModSlots = new System.Windows.Forms.Label();
-			this.lblVehicleDroneModSlotsLabel = new System.Windows.Forms.Label();
-			this.lblVehicleCosmetic = new System.Windows.Forms.Label();
-			this.lblVehicleElectromagnetic = new System.Windows.Forms.Label();
-			this.lblVehicleBodymod = new System.Windows.Forms.Label();
-			this.lblVehicleWeaponsmod = new System.Windows.Forms.Label();
-			this.lblVehicleProtection = new System.Windows.Forms.Label();
-			this.lblVehiclePowertrain = new System.Windows.Forms.Label();
-			this.lblVehicleCosmeticLabel = new System.Windows.Forms.Label();
-			this.lblVehicleElectromagneticLabel = new System.Windows.Forms.Label();
-			this.lblVehicleBodymodLabel = new System.Windows.Forms.Label();
-			this.lblVehicleWeaponsmodLabel = new System.Windows.Forms.Label();
-			this.lblVehicleProtectionLabel = new System.Windows.Forms.Label();
-			this.lblVehiclePowertrainLabel = new System.Windows.Forms.Label();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -8812,6 +8812,141 @@ namespace Chummer
 			this.tabVehicles.Tag = "Tab_Vehicles";
 			this.tabVehicles.Text = "Vehicles & Drones";
 			// 
+			// lblVehicleDroneModSlots
+			// 
+			this.lblVehicleDroneModSlots.AutoSize = true;
+			this.lblVehicleDroneModSlots.Location = new System.Drawing.Point(788, 176);
+			this.lblVehicleDroneModSlots.Name = "lblVehicleDroneModSlots";
+			this.lblVehicleDroneModSlots.Size = new System.Drawing.Size(57, 13);
+			this.lblVehicleDroneModSlots.TabIndex = 224;
+			this.lblVehicleDroneModSlots.Text = "[ModSlots]";
+			this.lblVehicleDroneModSlots.Visible = false;
+			// 
+			// lblVehicleDroneModSlotsLabel
+			// 
+			this.lblVehicleDroneModSlotsLabel.AutoSize = true;
+			this.lblVehicleDroneModSlotsLabel.Location = new System.Drawing.Point(725, 176);
+			this.lblVehicleDroneModSlotsLabel.Name = "lblVehicleDroneModSlotsLabel";
+			this.lblVehicleDroneModSlotsLabel.Size = new System.Drawing.Size(57, 13);
+			this.lblVehicleDroneModSlotsLabel.TabIndex = 223;
+			this.lblVehicleDroneModSlotsLabel.Tag = "Label_DroneModSlots";
+			this.lblVehicleDroneModSlotsLabel.Text = "Mod Slots:";
+			this.lblVehicleDroneModSlotsLabel.Visible = false;
+			// 
+			// lblVehicleCosmetic
+			// 
+			this.lblVehicleCosmetic.AutoSize = true;
+			this.lblVehicleCosmetic.Location = new System.Drawing.Point(675, 198);
+			this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
+			this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
+			this.lblVehicleCosmetic.TabIndex = 222;
+			this.lblVehicleCosmetic.Text = "[Cosmetic]";
+			// 
+			// lblVehicleElectromagnetic
+			// 
+			this.lblVehicleElectromagnetic.AutoSize = true;
+			this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(573, 198);
+			this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
+			this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
+			this.lblVehicleElectromagnetic.TabIndex = 221;
+			this.lblVehicleElectromagnetic.Text = "[Elec]";
+			// 
+			// lblVehicleBodymod
+			// 
+			this.lblVehicleBodymod.AutoSize = true;
+			this.lblVehicleBodymod.Location = new System.Drawing.Point(486, 198);
+			this.lblVehicleBodymod.Name = "lblVehicleBodymod";
+			this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
+			this.lblVehicleBodymod.TabIndex = 220;
+			this.lblVehicleBodymod.Text = "[Body]";
+			// 
+			// lblVehicleWeaponsmod
+			// 
+			this.lblVehicleWeaponsmod.AutoSize = true;
+			this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(487, 176);
+			this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
+			this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
+			this.lblVehicleWeaponsmod.TabIndex = 219;
+			this.lblVehicleWeaponsmod.Text = "[Weap]";
+			// 
+			// lblVehicleProtection
+			// 
+			this.lblVehicleProtection.AutoSize = true;
+			this.lblVehicleProtection.Location = new System.Drawing.Point(573, 176);
+			this.lblVehicleProtection.Name = "lblVehicleProtection";
+			this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
+			this.lblVehicleProtection.TabIndex = 218;
+			this.lblVehicleProtection.Text = "[Prot]";
+			// 
+			// lblVehiclePowertrain
+			// 
+			this.lblVehiclePowertrain.AutoSize = true;
+			this.lblVehiclePowertrain.Location = new System.Drawing.Point(675, 176);
+			this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
+			this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
+			this.lblVehiclePowertrain.TabIndex = 217;
+			this.lblVehiclePowertrain.Text = "[Power]";
+			// 
+			// lblVehicleCosmeticLabel
+			// 
+			this.lblVehicleCosmeticLabel.AutoSize = true;
+			this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(626, 198);
+			this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
+			this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
+			this.lblVehicleCosmeticLabel.TabIndex = 216;
+			this.lblVehicleCosmeticLabel.Tag = "Label_Cosmetic";
+			this.lblVehicleCosmeticLabel.Text = "Cosmetic:";
+			// 
+			// lblVehicleElectromagneticLabel
+			// 
+			this.lblVehicleElectromagneticLabel.AutoSize = true;
+			this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(533, 198);
+			this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
+			this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
+			this.lblVehicleElectromagneticLabel.TabIndex = 215;
+			this.lblVehicleElectromagneticLabel.Tag = "Label_Electromagnetic";
+			this.lblVehicleElectromagneticLabel.Text = "Elec:";
+			// 
+			// lblVehicleBodymodLabel
+			// 
+			this.lblVehicleBodymodLabel.AutoSize = true;
+			this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(417, 198);
+			this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
+			this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
+			this.lblVehicleBodymodLabel.TabIndex = 214;
+			this.lblVehicleBodymodLabel.Tag = "Label_Bodymod";
+			this.lblVehicleBodymodLabel.Text = "Body Mods:";
+			// 
+			// lblVehicleWeaponsmodLabel
+			// 
+			this.lblVehicleWeaponsmodLabel.AutoSize = true;
+			this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(417, 176);
+			this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
+			this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
+			this.lblVehicleWeaponsmodLabel.TabIndex = 213;
+			this.lblVehicleWeaponsmodLabel.Tag = "Label_Weapons";
+			this.lblVehicleWeaponsmodLabel.Text = "Weapons:";
+			// 
+			// lblVehicleProtectionLabel
+			// 
+			this.lblVehicleProtectionLabel.AutoSize = true;
+			this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(533, 176);
+			this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
+			this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
+			this.lblVehicleProtectionLabel.TabIndex = 212;
+			this.lblVehicleProtectionLabel.Tag = "Label_Protection";
+			this.lblVehicleProtectionLabel.Text = "Prot:";
+			// 
+			// lblVehiclePowertrainLabel
+			// 
+			this.lblVehiclePowertrainLabel.AutoSize = true;
+			this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(626, 176);
+			this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
+			this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
+			this.lblVehiclePowertrainLabel.TabIndex = 211;
+			this.lblVehiclePowertrainLabel.Tag = "Label_Powertrain";
+			this.lblVehiclePowertrainLabel.Text = "Power:";
+			// 
 			// cboVehicleGearDataProcessing
 			// 
 			this.cboVehicleGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -13272,14 +13407,14 @@ namespace Chummer
             this.tsUndoKarmaExpense,
             this.tsEditKarmaExpense});
 			this.cmsUndoKarmaExpense.Name = "contextMenuStrip1";
-			this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(149, 48);
+			this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(153, 70);
 			this.cmsUndoKarmaExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
 			// 
 			// tsUndoKarmaExpense
 			// 
 			this.tsUndoKarmaExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
 			this.tsUndoKarmaExpense.Name = "tsUndoKarmaExpense";
-			this.tsUndoKarmaExpense.Size = new System.Drawing.Size(148, 22);
+			this.tsUndoKarmaExpense.Size = new System.Drawing.Size(152, 22);
 			this.tsUndoKarmaExpense.Tag = "Menu_UndoExpense";
 			this.tsUndoKarmaExpense.Text = "Undo Expense";
 			this.tsUndoKarmaExpense.Click += new System.EventHandler(this.tsUndoKarmaExpense_Click);
@@ -13288,7 +13423,7 @@ namespace Chummer
 			// 
 			this.tsEditKarmaExpense.Image = global::Chummer.Properties.Resources.pencil;
 			this.tsEditKarmaExpense.Name = "tsEditKarmaExpense";
-			this.tsEditKarmaExpense.Size = new System.Drawing.Size(148, 22);
+			this.tsEditKarmaExpense.Size = new System.Drawing.Size(152, 22);
 			this.tsEditKarmaExpense.Tag = "Button_EditExpense";
 			this.tsEditKarmaExpense.Text = "Edit Expense";
 			this.tsEditKarmaExpense.Click += new System.EventHandler(this.tsEditKarmaExpense_Click);
@@ -13895,141 +14030,6 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Tag = "Menu_Notes";
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
-			// 
-			// lblVehicleDroneModSlots
-			// 
-			this.lblVehicleDroneModSlots.AutoSize = true;
-			this.lblVehicleDroneModSlots.Location = new System.Drawing.Point(788, 176);
-			this.lblVehicleDroneModSlots.Name = "lblVehicleDroneModSlots";
-			this.lblVehicleDroneModSlots.Size = new System.Drawing.Size(57, 13);
-			this.lblVehicleDroneModSlots.TabIndex = 224;
-			this.lblVehicleDroneModSlots.Text = "[ModSlots]";
-			this.lblVehicleDroneModSlots.Visible = false;
-			// 
-			// lblVehicleDroneModSlotsLabel
-			// 
-			this.lblVehicleDroneModSlotsLabel.AutoSize = true;
-			this.lblVehicleDroneModSlotsLabel.Location = new System.Drawing.Point(725, 176);
-			this.lblVehicleDroneModSlotsLabel.Name = "lblVehicleDroneModSlotsLabel";
-			this.lblVehicleDroneModSlotsLabel.Size = new System.Drawing.Size(57, 13);
-			this.lblVehicleDroneModSlotsLabel.TabIndex = 223;
-			this.lblVehicleDroneModSlotsLabel.Tag = "Label_DroneModSlots";
-			this.lblVehicleDroneModSlotsLabel.Text = "Mod Slots:";
-			this.lblVehicleDroneModSlotsLabel.Visible = false;
-			// 
-			// lblVehicleCosmetic
-			// 
-			this.lblVehicleCosmetic.AutoSize = true;
-			this.lblVehicleCosmetic.Location = new System.Drawing.Point(675, 198);
-			this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
-			this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
-			this.lblVehicleCosmetic.TabIndex = 222;
-			this.lblVehicleCosmetic.Text = "[Cosmetic]";
-			// 
-			// lblVehicleElectromagnetic
-			// 
-			this.lblVehicleElectromagnetic.AutoSize = true;
-			this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(573, 198);
-			this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
-			this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
-			this.lblVehicleElectromagnetic.TabIndex = 221;
-			this.lblVehicleElectromagnetic.Text = "[Elec]";
-			// 
-			// lblVehicleBodymod
-			// 
-			this.lblVehicleBodymod.AutoSize = true;
-			this.lblVehicleBodymod.Location = new System.Drawing.Point(486, 198);
-			this.lblVehicleBodymod.Name = "lblVehicleBodymod";
-			this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
-			this.lblVehicleBodymod.TabIndex = 220;
-			this.lblVehicleBodymod.Text = "[Body]";
-			// 
-			// lblVehicleWeaponsmod
-			// 
-			this.lblVehicleWeaponsmod.AutoSize = true;
-			this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(487, 176);
-			this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
-			this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
-			this.lblVehicleWeaponsmod.TabIndex = 219;
-			this.lblVehicleWeaponsmod.Text = "[Weap]";
-			// 
-			// lblVehicleProtection
-			// 
-			this.lblVehicleProtection.AutoSize = true;
-			this.lblVehicleProtection.Location = new System.Drawing.Point(573, 176);
-			this.lblVehicleProtection.Name = "lblVehicleProtection";
-			this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
-			this.lblVehicleProtection.TabIndex = 218;
-			this.lblVehicleProtection.Text = "[Prot]";
-			// 
-			// lblVehiclePowertrain
-			// 
-			this.lblVehiclePowertrain.AutoSize = true;
-			this.lblVehiclePowertrain.Location = new System.Drawing.Point(675, 176);
-			this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
-			this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
-			this.lblVehiclePowertrain.TabIndex = 217;
-			this.lblVehiclePowertrain.Text = "[Power]";
-			// 
-			// lblVehicleCosmeticLabel
-			// 
-			this.lblVehicleCosmeticLabel.AutoSize = true;
-			this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(626, 198);
-			this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
-			this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
-			this.lblVehicleCosmeticLabel.TabIndex = 216;
-			this.lblVehicleCosmeticLabel.Tag = "Label_Cosmetic";
-			this.lblVehicleCosmeticLabel.Text = "Cosmetic:";
-			// 
-			// lblVehicleElectromagneticLabel
-			// 
-			this.lblVehicleElectromagneticLabel.AutoSize = true;
-			this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(533, 198);
-			this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
-			this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
-			this.lblVehicleElectromagneticLabel.TabIndex = 215;
-			this.lblVehicleElectromagneticLabel.Tag = "Label_Electromagnetic";
-			this.lblVehicleElectromagneticLabel.Text = "Elec:";
-			// 
-			// lblVehicleBodymodLabel
-			// 
-			this.lblVehicleBodymodLabel.AutoSize = true;
-			this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(417, 198);
-			this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
-			this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
-			this.lblVehicleBodymodLabel.TabIndex = 214;
-			this.lblVehicleBodymodLabel.Tag = "Label_Bodymod";
-			this.lblVehicleBodymodLabel.Text = "Body Mods:";
-			// 
-			// lblVehicleWeaponsmodLabel
-			// 
-			this.lblVehicleWeaponsmodLabel.AutoSize = true;
-			this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(417, 176);
-			this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
-			this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
-			this.lblVehicleWeaponsmodLabel.TabIndex = 213;
-			this.lblVehicleWeaponsmodLabel.Tag = "Label_Weapons";
-			this.lblVehicleWeaponsmodLabel.Text = "Weapons:";
-			// 
-			// lblVehicleProtectionLabel
-			// 
-			this.lblVehicleProtectionLabel.AutoSize = true;
-			this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(533, 176);
-			this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
-			this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
-			this.lblVehicleProtectionLabel.TabIndex = 212;
-			this.lblVehicleProtectionLabel.Tag = "Label_Protection";
-			this.lblVehicleProtectionLabel.Text = "Prot:";
-			// 
-			// lblVehiclePowertrainLabel
-			// 
-			this.lblVehiclePowertrainLabel.AutoSize = true;
-			this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(626, 176);
-			this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
-			this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
-			this.lblVehiclePowertrainLabel.TabIndex = 211;
-			this.lblVehiclePowertrainLabel.Tag = "Label_Powertrain";
-			this.lblVehiclePowertrainLabel.Text = "Power:";
 			// 
 			// frmCareer
 			// 
