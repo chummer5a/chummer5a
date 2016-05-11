@@ -127,7 +127,27 @@ namespace Chummer
             if (objXmlQuality["altpage"] != null)
                 strPage = objXmlQuality["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
-
+            if (objXmlQuality["allowed"] != null)
+            {
+                lblMinimum.Text = objXmlQuality["allowed"].InnerText;
+                lblMinimum.Visible = true;
+                lblMinimumLabel.Visible = true;
+            }
+            else
+            {
+                lblMinimum.Visible = false;
+                lblMinimumLabel.Visible = false;
+            }
+            if (objXmlQuality["cost"] != null)
+            {
+                lblCost.Text = String.Format("{0:###,###,##0¥}", objXmlQuality["cost"].InnerText);
+                lblCost.Visible = true;
+                lblCostLabel.Visible = true;
+            } else
+            {
+                lblCost.Visible = false;
+                lblCostLabel.Visible = false;
+            }
             tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
         }
 

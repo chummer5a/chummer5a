@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Entertainments");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -51,10 +51,6 @@
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.cboBaseLifestyle = new System.Windows.Forms.ComboBox();
             this.Label_SelectAdvancedLifestyle_Base_Lifestyle = new System.Windows.Forms.Label();
-            this.nudComfortsEntertainment = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
-            this.nudAreaEntertainment = new System.Windows.Forms.NumericUpDown();
-            this.nudSecurityEntertainment = new System.Windows.Forms.NumericUpDown();
             this.nudSecurity = new System.Windows.Forms.NumericUpDown();
             this.nudArea = new System.Windows.Forms.NumericUpDown();
             this.nudComforts = new System.Windows.Forms.NumericUpDown();
@@ -67,9 +63,6 @@
             this.chkTrustFund = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudComfortsEntertainment)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAreaEntertainment)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSecurityEntertainment)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).BeginInit();
@@ -275,55 +268,6 @@
             this.Label_SelectAdvancedLifestyle_Base_Lifestyle.Tag = "Label_SelectAdvancedLifestyle_Base_Lifestyle";
             this.Label_SelectAdvancedLifestyle_Base_Lifestyle.Text = "Base Lifestyle";
             // 
-            // nudComfortsEntertainment
-            // 
-            this.nudComfortsEntertainment.Location = new System.Drawing.Point(441, 122);
-            this.nudComfortsEntertainment.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudComfortsEntertainment.Name = "nudComfortsEntertainment";
-            this.nudComfortsEntertainment.Size = new System.Drawing.Size(69, 20);
-            this.nudComfortsEntertainment.TabIndex = 33;
-            this.nudComfortsEntertainment.ValueChanged += new System.EventHandler(this.nudComfortsEntertainment_ValueChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(438, 105);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 13);
-            this.label5.TabIndex = 34;
-            this.label5.Tag = "Label_SelectAdvancedLifestyle_Entertainment";
-            this.label5.Text = "Entertainment";
-            // 
-            // nudAreaEntertainment
-            // 
-            this.nudAreaEntertainment.Location = new System.Drawing.Point(441, 147);
-            this.nudAreaEntertainment.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudAreaEntertainment.Name = "nudAreaEntertainment";
-            this.nudAreaEntertainment.Size = new System.Drawing.Size(69, 20);
-            this.nudAreaEntertainment.TabIndex = 35;
-            this.nudAreaEntertainment.ValueChanged += new System.EventHandler(this.nudAreaEntertainment_ValueChanged);
-            // 
-            // nudSecurityEntertainment
-            // 
-            this.nudSecurityEntertainment.Location = new System.Drawing.Point(441, 173);
-            this.nudSecurityEntertainment.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudSecurityEntertainment.Name = "nudSecurityEntertainment";
-            this.nudSecurityEntertainment.Size = new System.Drawing.Size(69, 20);
-            this.nudSecurityEntertainment.TabIndex = 37;
-            this.nudSecurityEntertainment.ValueChanged += new System.EventHandler(this.nudSecurityEntertainment_ValueChanged);
-            // 
             // nudSecurity
             // 
             this.nudSecurity.Location = new System.Drawing.Point(356, 173);
@@ -420,16 +364,16 @@
             // 
             this.treLifestyleQualities.Location = new System.Drawing.Point(1, 8);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode1.Name = "nodPositiveLifestyleQualities";
-            treeNode1.Text = "Positive Qualities";
-            treeNode2.Name = "nodNegativeLifestyleQualities";
-            treeNode2.Text = "Negative Qualities";
-            treeNode3.Name = "nodLifestyleEntertainments";
-            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodPositiveLifestyleQualities";
+            treeNode4.Text = "Positive Qualities";
+            treeNode5.Name = "nodNegativeLifestyleQualities";
+            treeNode5.Text = "Negative Qualities";
+            treeNode6.Name = "nodLifestyleEntertainments";
+            treeNode6.Text = "Entertainments";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
+            treeNode4,
+            treeNode5,
+            treeNode6});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 299);
             this.treLifestyleQualities.TabIndex = 53;
             // 
@@ -462,10 +406,6 @@
             this.Controls.Add(this.nudSecurity);
             this.Controls.Add(this.nudArea);
             this.Controls.Add(this.nudComforts);
-            this.Controls.Add(this.nudSecurityEntertainment);
-            this.Controls.Add(this.nudAreaEntertainment);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.nudComfortsEntertainment);
             this.Controls.Add(this.cboBaseLifestyle);
             this.Controls.Add(this.Label_SelectAdvancedLifestyle_Base_Lifestyle);
             this.Controls.Add(this.nudRoommates);
@@ -495,9 +435,6 @@
             this.Load += new System.EventHandler(this.frmSelectAdvancedLifestyle_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudComfortsEntertainment)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudAreaEntertainment)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSecurityEntertainment)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudArea)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudComforts)).EndInit();
@@ -557,10 +494,6 @@
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.ComboBox cboBaseLifestyle;
         private System.Windows.Forms.Label Label_SelectAdvancedLifestyle_Base_Lifestyle;
-        private System.Windows.Forms.NumericUpDown nudComfortsEntertainment;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown nudAreaEntertainment;
-        private System.Windows.Forms.NumericUpDown nudSecurityEntertainment;
         private System.Windows.Forms.NumericUpDown nudSecurity;
         private System.Windows.Forms.NumericUpDown nudArea;
         private System.Windows.Forms.NumericUpDown nudComforts;
