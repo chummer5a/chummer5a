@@ -159,10 +159,10 @@
             this.lblBPLabel.AutoSize = true;
             this.lblBPLabel.Location = new System.Drawing.Point(293, 38);
             this.lblBPLabel.Name = "lblBPLabel";
-            this.lblBPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblBPLabel.Size = new System.Drawing.Size(23, 13);
             this.lblBPLabel.TabIndex = 2;
             this.lblBPLabel.Tag = "Label_Karma";
-            this.lblBPLabel.Text = "Karma:";
+            this.lblBPLabel.Text = "LP:";
             // 
             // chkFree
             // 
