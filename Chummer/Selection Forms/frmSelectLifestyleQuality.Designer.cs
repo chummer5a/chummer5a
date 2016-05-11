@@ -215,7 +215,6 @@
             this.lblMinimumLabel.Name = "lblMinimumLabel";
             this.lblMinimumLabel.Size = new System.Drawing.Size(51, 13);
             this.lblMinimumLabel.TabIndex = 15;
-            this.lblMinimumLabel.Tag = "Label_Minimum";
             this.lblMinimumLabel.Text = "Minimum:";
             // 
             // lblMinimum

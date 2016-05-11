@@ -140,7 +140,7 @@ namespace Chummer
             }
             if (objXmlQuality["cost"] != null)
             {
-                lblCost.Text = String.Format("{0:###,###,##0¥}", objXmlQuality["cost"].InnerText);
+                lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
                 lblCost.Visible = true;
                 lblCostLabel.Visible = true;
             } else
