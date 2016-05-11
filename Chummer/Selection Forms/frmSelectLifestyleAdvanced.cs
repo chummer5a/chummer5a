@@ -409,6 +409,8 @@ namespace Chummer
 			int intBaseNuyen = 0;
             int intNuyen = 0;
             int intMultiplier = 0;
+            int intExtraCostAssets = 0;
+            int intExtraCostServicesOutings = 0;
 
             // Calculate the limits of the 3 aspects.
             // Comforts. 
@@ -487,7 +489,7 @@ namespace Chummer
 						}
 						if (objXmlAspect["cost"] != null)
 						{
-							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+                            intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
 						}
 					}
 				}
@@ -496,7 +498,7 @@ namespace Chummer
 				{
 					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name + "\"]");
 					string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');
-					int intLifestyleEntertainmentFree = 0;
+					bool blnLifestyleEntertainmentFree = false;
 					if (objXmlAspect != null)
 					{
 						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
@@ -510,15 +512,24 @@ namespace Chummer
 					{
 						if (strLifestyle == cboBaseLifestyle.SelectedValue.ToString())
 						{
-							intLifestyleEntertainmentFree += 1;
+                            blnLifestyleEntertainmentFree = true;
+						    break;
 						}
 					}
 
-					if (intLifestyleEntertainmentFree == 0)
+					if (!blnLifestyleEntertainmentFree)
 					{
 						if (objXmlAspect["cost"] != null)
 						{
-							intNuyen += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						    if (objXmlAspect["category"].InnerText.Equals("Entertainment - Outing") ||
+						        objXmlAspect["category"].InnerText.Equals("Entertainment - Service"))
+						    {
+						        intExtraCostServicesOutings += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						    }
+						    else
+						    {
+						        intExtraCostAssets += Convert.ToInt32(objXmlAspect["cost"].InnerText);
+						    }
 						}
 					}
 				}
@@ -557,13 +568,28 @@ namespace Chummer
 					intMultiplier += objImprovement.Value;
 				}
 			}
+            if (intLP < 0)
+            {
+                intNuyen -= intLP * 5000;
+            }
+            if (cboBaseLifestyle.SelectedValue.ToString() == "Street")
+            {
+                intNuyen += Convert.ToInt32(nudSecurity.Value - intMinSec) * 50;
+                intNuyen += Convert.ToInt32(nudArea.Value - intMinArea) * 50;
+                intNuyen += Convert.ToInt32(nudComforts.Value - intMinComfort) * 50;
+            }
 
 			intMultiplier += Convert.ToInt32(nudRoommates.Value * 10);
+            intMultiplier += Convert.ToInt32(nudSecurity.Value - intMinSec) * 10;
+            intMultiplier += Convert.ToInt32(nudArea.Value - intMinArea) * 10;
+            intMultiplier += Convert.ToInt32(nudComforts.Value - intMinComfort) * 10;
             intBaseNuyen += Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
-            intMultiplier = (intBaseNuyen * intMultiplier) / 100;
-			intNuyen += intMultiplier;
-			intNuyen += intBaseNuyen;
+			intNuyen += Convert.ToInt32(intBaseNuyen * (intMultiplier / 100.0));
+            intNuyen += intBaseNuyen;
+            intNuyen += intExtraCostAssets;
 			intNuyen = Convert.ToInt32(Convert.ToDouble(intNuyen, GlobalOptions.Instance.CultureInfo) * Convert.ToDouble(nudPercentage.Value / 100, GlobalOptions.Instance.CultureInfo));
+            intNuyen = Convert.ToInt32(intNuyen / (Convert.ToInt32(nudRoommates.Value) + 1));
+            intNuyen += intExtraCostServicesOutings;
 			if (chkTrustFund.Checked)
 			{
 				intNuyen -= intBaseNuyen;
