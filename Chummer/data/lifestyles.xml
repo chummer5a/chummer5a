@@ -95,8 +95,8 @@
 			<id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
 			<name>Commercial</name>
 			<cost>8000</cost>
-			<dice>0</dice>
-			<multiplier>0</multiplier>
+			<dice>4</dice>
+			<multiplier>100</multiplier>
 			<source>RF</source>
 			<page>218</page>
 		</lifestyle>
@@ -133,8 +133,8 @@
 			<id>ed775c22-8f0c-40a0-bc6f-5dbb980cedba</id>
 			<name>Traveler</name>
 			<cost>3000</cost>
-			<dice>0</dice>
-			<multiplier>0</multiplier>
+			<dice>3</dice>
+			<multiplier>60</multiplier>
 			<source>RF</source>
 			<page>218</page>
 		</lifestyle>
@@ -1013,6 +1013,7 @@
 			<source>CF</source>
 			<page>78</page>
 		</quality>
+		<!-- Hard Targets -->
 		<quality>
 			<name>Local Grid Subscription</name>
 			<category>Entertainment - Asset</category>
@@ -1035,7 +1036,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering I</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>1</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -1045,7 +1046,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering II</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>2</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -1055,7 +1056,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering III</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>3</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -1065,7 +1066,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering IV</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>4</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -1094,6 +1095,16 @@
 			<id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
 		</quality>
 		<quality>
+			<name>Zombie Maids/Manservants</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>High</allowed>
+			<source>HT</source>
+			<cost>20000</cost>
+			<page>141</page>
+			<id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
+		</quality>
+		<quality>
 			<name>Household Gremlins I</name>
 			<category>Negative</category>
 			<lp>0</lp>
@@ -1109,7 +1120,7 @@
 			<lp>0</lp>
 			<allowed />
 			<source>HT</source>
-			<cost>-600</cost>
+			<cost>-1600</cost>
 			<page>141</page>
 			<id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
 		</quality>
@@ -1137,7 +1148,6 @@
 			<name>Limited Building Space</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1149,6 +1159,7 @@
 			<lp>-1</lp>
 			<allowed />
 			<source>HT</source>
+			<neighborhood>-1</neighborhood>
 			<cost>0</cost>
 			<page>141</page>
 			<id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
@@ -1157,21 +1168,16 @@
 			<name>No Masters</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
+			<forbidden>
+				<oneof>
+					<characterquality>SINner (Corporate)</characterquality>
+					<characterquality>SINner (Corporate Limited)</characterquality>
+				</oneof>
+			</forbidden>
 			<source>HT</source>
 			<multiplier>-10</multiplier>
 			<page>141</page>
 			<id>23dcd584-9650-44b0-9273-896873ba6f61</id>
-		</quality>
-		<quality>
-			<name>Zombie Maids/Manservants</name>
-			<category>Entertainment - Asset</category>
-			<lp>1</lp>
-			<allowed>High,Luxury</allowed>
-			<source>HT</source>
-			<cost>20000</cost>
-			<page>141</page>
-			<id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
-		</quality>		
+		</quality>	
 	</qualities>
 </chummer>
