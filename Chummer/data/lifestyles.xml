@@ -142,7 +142,7 @@
 	<lifestylePoints>
 		<lifestylePoint>
 			<name>Bolt Hole</name>
-			<amount>4</amount>
+			<amount>3</amount>
 		</lifestylePoint>
 		<lifestylePoint>
 			<name>Street</name>
@@ -181,7 +181,7 @@
 		<comfort>
 			<name>Bolt Hole</name>
 			<minimum>1</minimum>
-			<limit>2</limit>
+			<limit>3</limit>
 		</comfort>
 		<comfort>
 			<name>Street</name>
@@ -363,7 +363,6 @@
 			<name>Discreet Cleaning Entertainment - Service</name>
 			<category>Entertainment - Service</category>
 			<lp>4</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>10000</cost>
 			<page>221</page>
@@ -373,7 +372,6 @@
 			<name>Discreet Deliveryman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>100</cost>
 			<page>221</page>
@@ -383,7 +381,6 @@
 			<name>Discreet Candyman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>1000</cost>
 			<page>221</page>
@@ -435,7 +432,7 @@
 			<lp>4</lp>
 			<allowed>Luxury</allowed>
 			<source>RF</source>
-			<cost>900</cost>
+			<cost>9000</cost>
 			<page>221</page>
 		</quality>
 		<quality>
@@ -485,7 +482,7 @@
 			<lp>4</lp>
 			<allowed>Luxury</allowed>
 			<source>RF</source>
-			<cost>1000</cost>
+			<cost>10000</cost>
 			<page>221</page>
 		</quality>
 		<quality>
@@ -1108,7 +1105,6 @@
 			<name>Household Gremlins I</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>-300</cost>
 			<page>141</page>
@@ -1118,17 +1114,15 @@
 			<name>Household Gremlins II</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>-1600</cost>
 			<page>141</page>
 			<id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
 		</quality>
 		<quality>
-			<name>Dug A Hole</name>
+			<name>Dug a Hole</name>
 			<category>Positive</category>
 			<lp>0</lp>
-			<allowed>Bolthole</allowed>
 			<source>HT</source>
 			<cost>2000</cost>
 			<page>141</page>
@@ -1138,7 +1132,6 @@
 			<name>Lax Security</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1157,7 +1150,6 @@
 			<name>Rough Neighborhood</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
 			<neighborhood>-1</neighborhood>
 			<cost>0</cost>
