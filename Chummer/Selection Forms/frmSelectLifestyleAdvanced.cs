@@ -255,8 +255,8 @@ namespace Chummer
 				{
 				    if (cboBaseLifestyle.SelectedValue.ToString() == "Traveler")
 				    {
-				        Random rndTavelerLP = new Random();
-				        _intTravelerRdmLP = rndTavelerLP.Next(1, 7);
+				        Random rndTavelerLp = new Random();
+				        _intTravelerRdmLP = rndTavelerLp.Next(1, 7);
 				    }
                     //Characters with the Trust Fund Quality can have the lifestyle discounted.
 					if (_objCharacter.TrustFund == 1 && cboBaseLifestyle.SelectedValue.ToString() == "Medium")
@@ -497,27 +497,29 @@ namespace Chummer
 				else if (objNode.Type == QualityType.Entertainment)
 				{
 					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name + "\"]");
-					string[] strLifestyleEntertainments = objXmlAspect["allowed"].InnerText.Split(',');
-					bool blnLifestyleEntertainmentFree = false;
+					string strLifestyleEntertainments = objXmlAspect["allowed"].InnerText;					
 					if (objXmlAspect != null)
 					{
 						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
-						if (objXmlAspect["multiplier"] != null)
-						{
-							intMultiplier += Convert.ToInt32(objXmlAspect["multiplier"].InnerText); ;
-						}
 					}
+				    string strLifestyleEquivalent = cboBaseLifestyle.SelectedValue.ToString();
+				    if (strLifestyleEquivalent == "Bolt Hole")
+				    {
+				        strLifestyleEquivalent = "Squatter";
+				    } else if (strLifestyleEquivalent == "Traveler")
+				    {
+                        strLifestyleEquivalent = "Low";
+                    } else if (strLifestyleEquivalent == "Commercial")
+				    {
+                        strLifestyleEquivalent = "Medium";
+                    } else if (strLifestyleEquivalent.StartsWith("Hospitalized"))
+				    {
+                        strLifestyleEquivalent = "High";
+                    }
+				    bool blnEntertainmentFree = strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString());
+				    bool blnEntertainmentFreeEqui = strLifestyleEntertainments.Contains(strLifestyleEquivalent); 
 
-					foreach (string strLifestyle in strLifestyleEntertainments)
-					{
-						if (strLifestyle == cboBaseLifestyle.SelectedValue.ToString())
-						{
-                            blnLifestyleEntertainmentFree = true;
-						    break;
-						}
-					}
-
-					if (!blnLifestyleEntertainmentFree)
+					if (!(blnEntertainmentFreeEqui || blnEntertainmentFree))
 					{
 						if (objXmlAspect["cost"] != null)
 						{
@@ -648,7 +650,7 @@ namespace Chummer
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter);
+            frmSelectLifestyleQuality frmSelectLifestyleQuality = new frmSelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString());
             frmSelectLifestyleQuality.ShowDialog(this);
 
                         // Don't do anything else if the form was canceled.
@@ -708,6 +710,10 @@ namespace Chummer
             else
             {
                 String strQualityName = treLifestyleQualities.SelectedNode.Name;
+                if (strQualityName == "Not a Home" && cboBaseLifestyle.SelectedValue.ToString() == "Bolt Hole")
+                {
+                    return;
+                }
                 _objLifestyle.LifestyleQualities.Remove(_objLifestyle.LifestyleQualities.Where(x => x.Name.Equals(strQualityName)).First());
                 treLifestyleQualities.SelectedNode.Remove();
                 CalculateValues();
