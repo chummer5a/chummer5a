@@ -283,19 +283,31 @@ namespace Chummer
 
 					foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities.ToList())
 					{
-						if (objQuality.Name == "Not a Home")
-						{
-							_objLifestyle.LifestyleQualities.Remove(objQuality);
-							foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
-							{
-								//Bolt Holes automatically come with the Not a Home quality.
-								if (objNode.Text == "Not a Home")
-								{
-									treLifestyleQualities.Nodes[1].Nodes.Remove(objNode);
-								}
-							}
-						}
-					}
+                        if (objQuality.Name == "Not a Home")
+                        {
+                            _objLifestyle.LifestyleQualities.Remove(objQuality);
+                            foreach (TreeNode objNode in treLifestyleQualities.Nodes[1].Nodes)
+                            {
+                                //Bolt Holes automatically come with the Not a Home quality.
+                                if (objNode.Text == "Not a Home")
+                                {
+                                    treLifestyleQualities.Nodes[1].Nodes.Remove(objNode);
+                                }
+                            }
+                        } else if (objQuality.Name == "Dug a Hole")
+                        {
+                            _objLifestyle.LifestyleQualities.Remove(objQuality);
+                            foreach (TreeNode objNode in treLifestyleQualities.Nodes[0].Nodes)
+                            {
+                                //Bolt Holes automatically come with the Not a Home quality.
+                                if (objNode.Text == "Dug a Hole")
+                                {
+                                    treLifestyleQualities.Nodes[1].Nodes.Remove(objNode);
+                                }
+                            }
+                        }
+
+                    }
 				}
 			}
 			CalculateValues(); 
@@ -714,7 +726,7 @@ namespace Chummer
                 {
                     return;
                 }
-                _objLifestyle.LifestyleQualities.Remove(_objLifestyle.LifestyleQualities.Where(x => x.Name.Equals(strQualityName)).First());
+                _objLifestyle.LifestyleQualities.Remove(_objLifestyle.LifestyleQualities.First(x => x.Name.Equals(strQualityName)));
                 treLifestyleQualities.SelectedNode.Remove();
                 CalculateValues();
             }
@@ -724,6 +736,39 @@ namespace Chummer
         {
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             objCommon.OpenPDF(lblSource.Text);
+        }
+
+        private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            // Locate the selected Quality.
+            lblQualitySource.Text = "";
+            lblQualityLp.Text = "";
+            tipTooltip.SetToolTip(lblQualitySource, null);
+            try
+            {
+                if (treLifestyleQualities.SelectedNode.Level == 0)
+                    return;
+            }
+            catch
+            {
+                return;
+            }
+
+            string strLifestyleQualityName = treLifestyleQualities.SelectedNode.Text;
+            XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strLifestyleQualityName + "\"]");
+
+
+            string strBook = objXmlAspect["source"].InnerText;
+            string strPage = objXmlAspect["page"].InnerText;
+            lblQualitySource.Text = strBook + " " + strPage;
+            tipTooltip.SetToolTip(lblQualitySource, strBook + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+            lblQualityLp.Text = objXmlAspect["lp"].InnerText;
+        }
+
+        private void lblQualitySource_Click(object sender, EventArgs e)
+        {
+            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
+            objCommon.OpenPDF(lblQualitySource.Text);
         }
     }
 }

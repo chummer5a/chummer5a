@@ -29,9 +29,9 @@
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Entertainments");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -61,6 +61,10 @@
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.treLifestyleQualities = new System.Windows.Forms.TreeView();
             this.chkTrustFund = new System.Windows.Forms.CheckBox();
+            this.lblQualityLp = new System.Windows.Forms.Label();
+            this.lblQualityBPLabel = new System.Windows.Forms.Label();
+            this.lblQualitySource = new System.Windows.Forms.Label();
+            this.lblQualitySourceLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -342,7 +346,7 @@
             // 
             // cmdAddQuality
             // 
-            this.cmdAddQuality.Location = new System.Drawing.Point(1, 313);
+            this.cmdAddQuality.Location = new System.Drawing.Point(1, 7);
             this.cmdAddQuality.Name = "cmdAddQuality";
             this.cmdAddQuality.Size = new System.Drawing.Size(122, 23);
             this.cmdAddQuality.TabIndex = 51;
@@ -352,7 +356,7 @@
             // 
             // cmdDeleteQuality
             // 
-            this.cmdDeleteQuality.Location = new System.Drawing.Point(129, 313);
+            this.cmdDeleteQuality.Location = new System.Drawing.Point(129, 7);
             this.cmdDeleteQuality.Name = "cmdDeleteQuality";
             this.cmdDeleteQuality.Size = new System.Drawing.Size(122, 23);
             this.cmdDeleteQuality.TabIndex = 52;
@@ -362,20 +366,21 @@
             // 
             // treLifestyleQualities
             // 
-            this.treLifestyleQualities.Location = new System.Drawing.Point(1, 8);
+            this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode4.Name = "nodPositiveLifestyleQualities";
-            treeNode4.Text = "Positive Qualities";
-            treeNode5.Name = "nodNegativeLifestyleQualities";
-            treeNode5.Text = "Negative Qualities";
-            treeNode6.Name = "nodLifestyleEntertainments";
-            treeNode6.Text = "Entertainments";
+            treeNode7.Name = "nodPositiveLifestyleQualities";
+            treeNode7.Text = "Positive Qualities";
+            treeNode8.Name = "nodNegativeLifestyleQualities";
+            treeNode8.Text = "Negative Qualities";
+            treeNode9.Name = "nodLifestyleEntertainments";
+            treeNode9.Text = "Entertainments";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5,
-            treeNode6});
-            this.treLifestyleQualities.Size = new System.Drawing.Size(249, 299);
+            treeNode7,
+            treeNode8,
+            treeNode9});
+            this.treLifestyleQualities.Size = new System.Drawing.Size(249, 286);
             this.treLifestyleQualities.TabIndex = 53;
+            this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
             // 
             // chkTrustFund
             // 
@@ -389,6 +394,49 @@
             this.chkTrustFund.Visible = false;
             this.chkTrustFund.CheckedChanged += new System.EventHandler(this.chkTrustFund_Changed);
             // 
+            // lblQualityLp
+            // 
+            this.lblQualityLp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualityLp.AutoSize = true;
+            this.lblQualityLp.Location = new System.Drawing.Point(41, 325);
+            this.lblQualityLp.Name = "lblQualityLp";
+            this.lblQualityLp.Size = new System.Drawing.Size(26, 13);
+            this.lblQualityLp.TabIndex = 71;
+            this.lblQualityLp.Text = "[LP]";
+            // 
+            // lblQualityBPLabel
+            // 
+            this.lblQualityBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualityBPLabel.AutoSize = true;
+            this.lblQualityBPLabel.Location = new System.Drawing.Point(12, 325);
+            this.lblQualityBPLabel.Name = "lblQualityBPLabel";
+            this.lblQualityBPLabel.Size = new System.Drawing.Size(23, 13);
+            this.lblQualityBPLabel.TabIndex = 70;
+            this.lblQualityBPLabel.Tag = "Label_LP";
+            this.lblQualityBPLabel.Text = "LP:";
+            // 
+            // lblQualitySource
+            // 
+            this.lblQualitySource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualitySource.AutoSize = true;
+            this.lblQualitySource.Location = new System.Drawing.Point(185, 325);
+            this.lblQualitySource.Name = "lblQualitySource";
+            this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
+            this.lblQualitySource.TabIndex = 69;
+            this.lblQualitySource.Text = "[Source]";
+            this.lblQualitySource.Click += new System.EventHandler(this.lblQualitySource_Click);
+            // 
+            // lblQualitySourceLabel
+            // 
+            this.lblQualitySourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualitySourceLabel.AutoSize = true;
+            this.lblQualitySourceLabel.Location = new System.Drawing.Point(135, 325);
+            this.lblQualitySourceLabel.Name = "lblQualitySourceLabel";
+            this.lblQualitySourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblQualitySourceLabel.TabIndex = 68;
+            this.lblQualitySourceLabel.Tag = "Label_Source";
+            this.lblQualitySourceLabel.Text = "Source:";
+            // 
             // frmSelectLifestyleAdvanced
             // 
             this.AcceptButton = this.cmdOK;
@@ -396,6 +444,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(572, 342);
+            this.Controls.Add(this.lblQualityLp);
+            this.Controls.Add(this.lblQualityBPLabel);
+            this.Controls.Add(this.lblQualitySource);
+            this.Controls.Add(this.lblQualitySourceLabel);
             this.Controls.Add(this.chkTrustFund);
             this.Controls.Add(this.treLifestyleQualities);
             this.Controls.Add(this.cmdDeleteQuality);
@@ -504,5 +556,9 @@
         private System.Windows.Forms.Button cmdDeleteQuality;
         private System.Windows.Forms.TreeView treLifestyleQualities;
 		private System.Windows.Forms.CheckBox chkTrustFund;
-	}
+        private System.Windows.Forms.Label lblQualityLp;
+        private System.Windows.Forms.Label lblQualityBPLabel;
+        private System.Windows.Forms.Label lblQualitySource;
+        private System.Windows.Forms.Label lblQualitySourceLabel;
+    }
 }
