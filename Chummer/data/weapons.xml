@@ -2829,7 +2829,7 @@
 			<ap>-4</ap>
 			<mode>FA</mode>
 			<rc>0</rc>
-			<ammo>40(c) or belt</ammo>
+			<ammo>50(c) or belt</ammo>
 			<avail>16F</avail>
 			<cost>16300</cost>
 			<allowaccessory>true</allowaccessory>

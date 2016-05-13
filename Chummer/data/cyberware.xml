@@ -2009,7 +2009,7 @@
 		</cyberware>
 		<cyberware>
 			<id>1c89a29c-ce58-483f-8777-b5b1f6a733c1</id>
-			<name>Small LED Tatoo</name>
+			<name>Small LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.05</ess>
 			<capacity>1</capacity>
@@ -2020,7 +2020,7 @@
 		</cyberware>
 		<cyberware>
 			<id>a5eac202-c61b-4757-826b-f4ae00c8b87f</id>
-			<name>Medium LED Tatoo</name>
+			<name>Medium LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.1</ess>
 			<capacity>2</capacity>
@@ -2031,7 +2031,7 @@
 		</cyberware>
 		<cyberware>
 			<id>5578f51e-fb72-4247-9126-a4b626a12308</id>
-			<name>Large LED Tatoo</name>
+			<name>Large LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.2</ess>
 			<capacity>[4]</capacity>

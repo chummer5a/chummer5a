@@ -147,6 +147,8 @@ Data Change:
 - Added an unarmed AP value equal to rating for the adept power Penetrating Strike. Fixes #829.
 - Fixed incorrect Essence values for bio-tattoos. Fixes #834.
 - Altered the improvements for the Missile Mastery power. Fixes #832.
+- Fixed a typo in the name for LED tattoos.
+- Fixed an incorrect ammo value for the RPK HMG.
 
 New Strings:
 - Message_DeleteCalendarWeek
