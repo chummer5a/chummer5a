@@ -33,10 +33,13 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = "";
+        private string _strSelectedLifestyle = "";
 
         private XmlDocument _objXmlDocument = new XmlDocument();
 
         private List<ListItem> _lstCategory = new List<ListItem>();
+        private List<string> _lstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
+        private string[] _strLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
         private static string _strSelectCategory = "";
 
@@ -44,11 +47,12 @@ namespace Chummer
         private readonly XmlDocument _objCritterDocument = new XmlDocument();
 
         #region Control Events
-        public frmSelectLifestyleQuality(Character objCharacter)
+        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle)
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
             _objCharacter = objCharacter;
+            _strSelectedLifestyle = strSelectedLifestyle;
 
             _objMetatypeDocument = XmlManager.Instance.Load("metatypes.xml");
             _objCritterDocument = XmlManager.Instance.Load("critters.xml");
@@ -58,8 +62,6 @@ namespace Chummer
 
         private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
         {
-            _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
-
             foreach (Label objLabel in this.Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith("["))
@@ -70,9 +72,9 @@ namespace Chummer
             _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
             // Populate the Quality Category list.
-            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");           
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
+            {                
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlCategory.InnerText;
                 if (objXmlCategory.Attributes != null)
@@ -101,7 +103,7 @@ namespace Chummer
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.Created)
-                lblBPLabel.Text = LanguageManager.Instance.GetString("Label_Karma");
+                lblBPLabel.Text = LanguageManager.Instance.GetString("Label_LP");
 
             BuildQualityList();
         }
@@ -127,8 +129,45 @@ namespace Chummer
             if (objXmlQuality["altpage"] != null)
                 strPage = objXmlQuality["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
-
+            if (objXmlQuality["allowed"] != null)
+            {
+                lblMinimum.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);
+                lblMinimum.Visible = true;
+                lblMinimumLabel.Visible = true;
+            }
+            else
+            {
+                lblMinimum.Visible = false;
+                lblMinimumLabel.Visible = false;
+            }
+            if (objXmlQuality["cost"] != null)
+            {
+                lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32(objXmlQuality["cost"].InnerText));
+                lblCost.Visible = true;
+                lblCostLabel.Visible = true;
+            } else
+            {
+                lblCost.Visible = false;
+                lblCostLabel.Visible = false;
+            }
             tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText) + " " + LanguageManager.Instance.GetString("String_Page") + " " + strPage);
+        }
+
+        private string GetMinimumRequirement(string strAllowedLifestyles)
+        {           
+            if (_strLifestyleSpecific.Contains(strAllowedLifestyles))
+            {
+                return strAllowedLifestyles;
+            }
+            int intMin = int.MaxValue;
+            foreach (string strLifesytle in strAllowedLifestyles.Split(','))
+            {
+                if (_lstLifestylesSorted.Contains(strLifesytle) && _lstLifestylesSorted.IndexOf(strLifesytle) < intMin)
+                {
+                    intMin = _lstLifestylesSorted.IndexOf(strLifesytle);
+                }
+            }
+            return _lstLifestylesSorted[intMin];
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -295,6 +334,10 @@ namespace Chummer
                 XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
                 foreach (XmlNode objXmlQuality in objXmlQualityList)
                 {
+                    if (_strSelectedLifestyle != "Bolt Hole" && objXmlQuality["name"].InnerText == "Dug a Hole")
+                    {
+                        continue;
+                    }
                     if (objXmlQuality["hide"] == null)
                     {
                         if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
@@ -330,6 +373,10 @@ namespace Chummer
 
                 foreach (XmlNode objXmlQuality in _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strXPath + "]"))
                 {
+                    if (_strSelectedLifestyle != "Bolt Hole" && objXmlQuality["name"].InnerText == "Dug a Hole")
+                    {
+                        continue;
+                    }
                     if (objXmlQuality["name"].InnerText.StartsWith("Infected"))
                     {
                     }
