@@ -196,6 +196,7 @@
 			this.btnAttribute.TabIndex = 24;
 			this.btnAttribute.Text = "ATR";
 			this.btnAttribute.UseVisualStyleBackColor = true;
+			this.btnAttribute.Visible = false;
 			this.btnAttribute.Click += new System.EventHandler(this.btnAttribute_Click);
 			// 
 			// cboSelectAttribute

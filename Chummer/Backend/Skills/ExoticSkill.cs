@@ -10,7 +10,7 @@ namespace Chummer.Skills
 	class ExoticSkill : Skill
 	{
 		private string _specific;
-
+		
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
 			//SuggestedSpecializations.Clear();
@@ -65,6 +65,11 @@ namespace Chummer.Skills
 				_specific = value;
 				OnPropertyChanged();
 			}
+		}
+
+		public override string DisplaySpecialization
+		{
+			get { return Specific; }
 		}
 	}
 }

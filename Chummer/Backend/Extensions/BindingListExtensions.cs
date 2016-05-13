@@ -41,5 +41,25 @@ namespace Chummer.Backend
 			list.Insert(mergeIndex, item);
 
 		}
+
+		internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)
+		{
+			for (int i = list.Count - 1; i >= 0; i--)
+			{
+				if (predicate(list[i]))
+				{
+					list.RemoveAt(i);
+				}
+			}
+		}
+
+		internal static void AddRange<T>(this BindingList<T> list, IEnumerable<T> range)
+		{
+			foreach (T item in range)
+			{
+				list.Add(item);
+			}
+		}
+
 	}
 }

@@ -173,27 +173,33 @@ namespace Chummer.Skills
 			//specs allready did?
 			//First create dictionary mapping name=>guid
 
-			var skills = Skills.Select(x => new {name = x.Name, id = x.Id});
-			var knoSkills = KnowledgeSkills.Select(x => new {name = x.Name, id = x.Id});
-			var groups = SkillGroups.Select(x => new {name = x.Name, id = x.Id});
+			Dictionary<string, Guid> groups =
+				SkillGroups.Where(group => group.Rating > 0)
+					.GroupBy(arg => arg.Name)
+					.Select(group => group.First())
+					.ToDictionary(x => x.Name, x => x.Id);
 
+			Dictionary<string, Guid> skills =
+				Skills.Where(skill => skill.LearnedRating > 0)
+					.Concat(KnowledgeSkills)
+					//Next 2 lines prevent dictionary throwing exception in the unlikly case that player have both
+					.GroupBy(skill => skill.Name)
+					.Select(group => group.First())
+					.ToDictionary(x => x.Name, x => x.Id);
 			
-			Dictionary<string, Guid> map = skills.Concat(knoSkills).Concat(groups)  //All 3 collections
-				//Create group for each name, if 2 skills share name next step would crash
-				.GroupBy(arg => arg.name).Select(group => group.First())  
-				.ToDictionary(x => x.name, x => x.id);  
+			UpdateUndoSpecific(skillNode.OwnerDocument, skills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill});
+			UpdateUndoSpecific(skillNode.OwnerDocument, groups, new[] { KarmaExpenseType.ImproveSkillGroup });
+		}
 
+		private static void UpdateUndoSpecific(XmlDocument doc, Dictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
+		{
 			//Build a crazy xpath to get everything we want to convert
-			KarmaExpenseType[] typesRequreingConverting =
-			{
-				KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill,
-				KarmaExpenseType.ImproveSkillGroup
-			};
 
-			string xpath = $"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
+			string xpath =
+				$"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
 
 			//Find everything
-			XmlNodeList nodesToChange = skillNode.OwnerDocument.SelectNodes(xpath);
+			XmlNodeList nodesToChange = doc.SelectNodes(xpath);
 
 			for (var i = 0; i < nodesToChange.Count; i++)
 			{

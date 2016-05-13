@@ -55,11 +55,15 @@ namespace Chummer.UI.Skills
 				chkKarma.Visible = false;
 
 				cboSpec.Visible = false;
-				lblCareerSpec.Text = skill.IsExoticSkill ? ((ExoticSkill)skill).Specific : string.Join(", ", skill.Specializations.Select(x => x.Name));
+
+
+				lblCareerSpec.DataBindings.Add("Text", skill, nameof(skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				lblCareerSpec.Visible = true;
-				lblAttribute.Visible = true;
+
+				lblAttribute.Visible = false;  //Was true, cannot think it should be
 
 				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+				btnAttribute.Visible = true;
 
 				if (!skill.IsExoticSkill)
 				{
@@ -92,25 +96,21 @@ namespace Chummer.UI.Skills
 				{
 					chkKarma.Visible = false;
 				}
-				
-				//dropdown/spec
-				cboSpec.DataSource = skill.CGLSpecializations;
-				cboSpec.DisplayMember = nameof(ListItem.Name);
-				cboSpec.ValueMember = nameof(ListItem.Value);
 
-				
+				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
-				
 				if (skill.IsExoticSkill)
 				{
 					cboSpec.Enabled = false;
-					cboSpec.Text = ((ExoticSkill) skill).Specific;
 				}
 				else
 				{
+					//dropdown/spec
+					cboSpec.DataSource = skill.CGLSpecializations;
+					cboSpec.DisplayMember = nameof(ListItem.Name);
+					cboSpec.ValueMember = nameof(ListItem.Value);
 					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
 						DataSourceUpdateMode.OnPropertyChanged);
-					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 					cboSpec.SelectedIndex = -1;
 				}
 			}
