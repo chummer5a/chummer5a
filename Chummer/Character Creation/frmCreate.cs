@@ -15610,12 +15610,18 @@ namespace Chummer
             intNegativeQualities -= intNegativeFree;
             intPositiveQualities -= intPositiveFree;
 
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.		    
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativeQualities < -1 * _objCharacter.MaxKarma)
+                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+                     _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+                    intNegativeQualities < -1*_objCharacter.MaxKarma)
                 {
-                    intNegativeQualities = -1 * _objCharacter.MaxKarma;
+                    intNegativeQualities = -1*_objCharacter.MaxKarma;
+                }
+                else
+                {
+                    intNegativeQualities = Math.Max(intNegativeQualities,-1 * _objCharacter.GameplayOptionQualityLimit);
                 }
             }
 
