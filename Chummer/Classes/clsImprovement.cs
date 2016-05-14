@@ -4702,9 +4702,56 @@ namespace Chummer
 
 	                }
                 }
-
-				// Determine if access to any Special Attributes have been lost.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
+                {
+                    Attribute objChangedAttribute = null;
+                    switch (objImprovement.ImprovedName)
+                    {
+                        case "AGI":
+                            objChangedAttribute = _objCharacter.AGI;
+                            break;
+                        case "REA":
+                            objChangedAttribute = _objCharacter.REA;
+                            break;
+                        case "STR":
+                            objChangedAttribute = _objCharacter.STR;
+                            break;
+                        case "CHA":
+                            objChangedAttribute = _objCharacter.CHA;
+                            break;
+                        case "INT":
+                            objChangedAttribute = _objCharacter.INT;
+                            break;
+                        case "LOG":
+                            objChangedAttribute = _objCharacter.LOG;
+                            break;
+                        case "WIL":
+                            objChangedAttribute = _objCharacter.WIL;
+                            break;
+                        case "EDG":
+                            objChangedAttribute = _objCharacter.EDG;
+                            break;
+                        case "MAG":
+                            objChangedAttribute = _objCharacter.MAG;
+                            break;
+                        case "RES":
+                            objChangedAttribute = _objCharacter.RES;
+                            break;
+                        case "DEP":
+                            objChangedAttribute = _objCharacter.DEP;
+                            break;
+                        case "BOD":
+                        default:
+                            objChangedAttribute = _objCharacter.BOD;
+                            break;
+                    }
+                    if (objImprovement.Minimum > 0)
+                    {
+                        objChangedAttribute.Value -= objImprovement.Minimum;
+                    }
+                }
+                // Determine if access to any Special Attributes have been lost.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
 				    objImprovement.UniqueName == "enableattribute")
 				{
 					if (objImprovement.ImprovedName == "MAG")
