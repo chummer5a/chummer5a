@@ -15250,7 +15250,15 @@ namespace Chummer
                 }
                 for (int i = 1; i <= nudKSTR.Value; i++)
                 {
-			    intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    if (_objCharacter.Cyberware.Find(x =>
+                        x.Name == "Myostatin Inhibitor") != null)
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
+                    }
+                    else
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    }
                 }
                 for (int i = 1; i <= nudKCHA.Value; i++)
                 {
