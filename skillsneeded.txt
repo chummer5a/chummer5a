@@ -1,8 +1,6 @@
 Canfix
 	sorting is not re-evaluated when skills change
 	
-	Changing filter during load fucks up stuff
-	
 	Custom display attributes needs reset button
 	
 	Tooltip not updating with cyberarms
