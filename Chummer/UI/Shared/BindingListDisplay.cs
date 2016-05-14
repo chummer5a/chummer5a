@@ -166,7 +166,7 @@ namespace Chummer.UI.Shared
 		{
 			//This makes scrollbar look right, but it also allows the user to scroll longer down before all is rendered
 			//AutoScrollMinSize = new Size(Width - SystemInformation.VerticalScrollBarWidth, tblContents.Controls[0].Height * _contents.Count);
-			tblContents.Size = new Size(Width - SystemInformation.VerticalScrollBarWidth, tblContents.PreferredSize.Height);
+			tblContents.Size = new Size(Width - SystemInformation.VerticalScrollBarWidth, tblContents.Controls[0].Height * tblContents.Controls.Count);
 		}
 	}
 }

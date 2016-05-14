@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using Chummer.Skills;
 
 namespace Chummer.UI.Skills
 {
+	[DebuggerDisplay("{_skill.Name} {Visible}")]
 	public partial class SkillControl2 : UserControl
 	{
 		private readonly Skill _skill;

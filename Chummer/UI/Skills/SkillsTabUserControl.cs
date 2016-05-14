@@ -47,20 +47,21 @@ namespace Chummer.UI.Skills
 			}
 			get { return _character; }
 		}
+
 		private void SkillsTabUserControl_Load(object sender, EventArgs e)
 		{
 			_loadCalled = true;
 			RealLoad();
 		}
 
-		private void RealLoad() //Ensure loaded and got character obj
+		private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
 		{
 			if (_initialized) return;
 
 			if (!(_character != null && _loadCalled)) return;
 
-			_initialized = true;
-			Stopwatch sw = Stopwatch.StartNew();
+			_initialized = true;  //Only do once
+			Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
 			Stopwatch parts = Stopwatch.StartNew();
 			//Keep everything visible until ready to display everything. This 
 			//seems to prevent redrawing everything each time anything is added

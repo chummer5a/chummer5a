@@ -17,8 +17,6 @@ Canfix
 	Knoskills LM not working
 	
 	UI needs a few labels
-	
-	Spec undo entries not removed when decreasing skills
 
 Known limitations
 	Events need unsubscribe or memory leak (wth cares?) (i think)

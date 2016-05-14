@@ -12424,9 +12424,7 @@ namespace Chummer
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.
 					SkillGroup group = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
-					if (group != null) group.Karma--; //TODO test this and below, todo handle skill added later, spec and decrease
-
-					//TODO: ImproveSkil[Group] AddSkill[Group] both exist but usage?
+					if (group != null) group.Karma--;
 					break;
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
@@ -12437,10 +12435,6 @@ namespace Chummer
 					if (skill != null)
 					{
 						skill.Karma--;
-						if (skill.LearnedRating == 0)
-						{
-							
-						}
 					}
 
 					break;
