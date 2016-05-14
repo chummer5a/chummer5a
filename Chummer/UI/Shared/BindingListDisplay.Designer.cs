@@ -28,37 +28,33 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tblContents = new System.Windows.Forms.TableLayoutPanel();
+			this.pnlDisplay = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
 			// 
-			// tblContents
+			// pnlDisplay
 			// 
-			this.tblContents.ColumnCount = 1;
-			this.tblContents.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tblContents.Location = new System.Drawing.Point(0, 0);
-			this.tblContents.Margin = new System.Windows.Forms.Padding(0);
-			this.tblContents.Name = "tblContents";
-			this.tblContents.RowCount = 1;
-			this.tblContents.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblContents.Size = new System.Drawing.Size(606, 433);
-			this.tblContents.TabIndex = 0;
+			this.pnlDisplay.Location = new System.Drawing.Point(0, 0);
+			this.pnlDisplay.Name = "pnlDisplay";
+			this.pnlDisplay.Size = new System.Drawing.Size(606, 433);
+			this.pnlDisplay.TabIndex = 0;
 			// 
 			// BindingListDisplay
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
-			this.Controls.Add(this.tblContents);
+			this.Controls.Add(this.pnlDisplay);
 			this.Name = "BindingListDisplay";
 			this.Size = new System.Drawing.Size(606, 433);
 			this.Load += new System.EventHandler(this.SkillsDisplay_Load);
-			this.Resize += new System.EventHandler(this.SkillsDisplay_Resize);
+			this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
+			this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TableLayoutPanel tblContents;
+		private System.Windows.Forms.Panel pnlDisplay;
 	}
 }

@@ -9,7 +9,7 @@ using Chummer.Skills;
 
 namespace Chummer.UI.Skills
 {
-	[DebuggerDisplay("{_skill.Name} {Visible}")]
+	[DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
 	public partial class SkillControl2 : UserControl
 	{
 		private readonly Skill _skill;
@@ -67,12 +67,6 @@ namespace Chummer.UI.Skills
 				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
 				btnAttribute.Visible = true;
 
-				if (!skill.IsExoticSkill)
-				{
-					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
-						DataSourceUpdateMode.OnPropertyChanged);
-				}
-				
 				SetupDropdown();
 			}
 			else
@@ -149,7 +143,7 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.Leveled):
 					BackColor = _skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-					btnAddSpec.Visible = _skill.CharacterObject.Created && !_skill.IsExoticSkill;
+					btnAddSpec.Visible = _skill.CharacterObject.Created && _skill.Leveled &&  !_skill.IsExoticSkill;
 					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 

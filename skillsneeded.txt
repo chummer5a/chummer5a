@@ -1,5 +1,5 @@
 Canfix
-	Visibility/sorting is not re-evaluated when skills change
+	sorting is not re-evaluated when skills change
 	
 	Changing filter during load fucks up stuff
 	

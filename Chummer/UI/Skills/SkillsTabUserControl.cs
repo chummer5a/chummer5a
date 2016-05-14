@@ -35,7 +35,7 @@ namespace Chummer.UI.Skills
 		private bool _loadCalled = false;
 		private bool _initialized = false;
 		private Character _character;
-		private List<Tuple<string, Func<Skill, bool>>> _dropDownList;
+		private List<Tuple<string, Predicate<Skill>>> _dropDownList;
 		private List<Tuple<string, IComparer<Skill>>>  _sortList;
 
 		public Character ObjCharacter
@@ -158,16 +158,16 @@ namespace Chummer.UI.Skills
 			return ret;
 		}
 		
-		private List<Tuple<string, Func<Skill, bool>>> GenerateDropdownFilter()
+		private List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
 		{
-			List<Tuple<string, Func<Skill, bool>>> ret = new List<Tuple<string, Func<Skill, bool>>>
+			List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
 			{
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
 					skill => skill.Rating > 0),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
 					skill => skill.Pool > 0),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
 					skill => skill.Rating == 0)
 			};
 			//TODO: TRANSLATIONS
@@ -178,21 +178,21 @@ namespace Chummer.UI.Skills
 				from XmlNode objNode 
 				in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
 				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
 					skill => skill.SkillCategory == objNode.InnerText));
 
 			ret.AddRange(
 				from string attribute
 				in new[]{"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"} //TODO: This should be somewhere in Character or CharacterAttrib i think
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
 					skill => skill.Attribute == attribute));
 
 			ret.AddRange(
 				from SkillGroup @group
 				in _character.SkillsSection.SkillGroups
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
 					skill => skill.SkillGroupObject == @group));
 
@@ -216,8 +216,8 @@ namespace Chummer.UI.Skills
 			{
 				Location = new Point(265, 39),
 			};
-			
-			
+
+
 
 			sw.TaskEnd("_skills");
 
@@ -232,7 +232,7 @@ namespace Chummer.UI.Skills
 			};
 
 			splitSkills.Panel2.Controls.Add(_knoSkills);
-			
+
 		}
 
 
@@ -265,7 +265,7 @@ namespace Chummer.UI.Skills
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox) sender;
-			Tuple<string, Func<Skill, bool>> selectedItem = (Tuple<string, Func<Skill, bool>>)csender.SelectedItem;
+			Tuple<string, Predicate<Skill>> selectedItem = (Tuple<string, Predicate<Skill>>)csender.SelectedItem;
 
 			_skills.Filter(selectedItem.Item2);
 		}

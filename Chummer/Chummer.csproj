@@ -118,6 +118,7 @@
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
+    <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
     <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
