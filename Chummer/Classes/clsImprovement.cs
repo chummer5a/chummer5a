@@ -2022,7 +2022,7 @@ namespace Chummer
 				Log.Info("physicallimit");
 				Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, "",
+			    CreateImprovement("Physical", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2032,7 +2032,7 @@ namespace Chummer
 				Log.Info("mentallimit");
 				Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, "",
+				CreateImprovement("Mental", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2042,7 +2042,7 @@ namespace Chummer
 				Log.Info("sociallimit");
 				Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, "",
+				CreateImprovement("Social", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2217,6 +2217,10 @@ namespace Chummer
 				LimitModifier objLimitMod = new LimitModifier(_objCharacter);
 				string strLimit = bonusNode["limit"].InnerText;
 				string strBonus = bonusNode["value"].InnerText;
+			    if (strBonus == "Rating")
+			    {
+			        strBonus = intRating.ToString();
+			    }
 				string strCondition = "";
 				try
 				{
