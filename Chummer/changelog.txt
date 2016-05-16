@@ -96,6 +96,7 @@ Application Change:
 - Rewrote RedlinerCheck
 - Added Redliner/Cyber-Singularity Seeker Quality names to ToolTip
 - Added Redliner bonus to cyberlimbs
+- Added backwards Compability with old Redliner implementation (Only need to load once with the new Version to remove artifacts)
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

@@ -68,7 +68,8 @@ namespace Chummer
 				from improvement in _objCharacter.Improvements
 				where (improvement.ImproveType == Improvement.ImprovementType.Attribute ||
 				       improvement.ImproveType == Improvement.ImprovementType.PhysicalCM )&&
-				       improvement.SourceName.StartsWith(strSeekerImprovPrefix)
+				       (improvement.SourceName.StartsWith(strSeekerImprovPrefix) ||
+                       improvement.SourceName.StartsWith("__SEEKER")) //for backwards compability
 				select improvement);
 
 			//if neither contains anything, it is safe to exit
