@@ -84,6 +84,7 @@ Application Change:
 - Fixed a crash caused when saving characters without mugshots.
 - Fixed an incorrect value for binding spirit services. Fixes #827.
 - Fixed karma costs for the Inspired quality from Sail Away, Sweet Sister in karmagen. Fixes #828.
+- Added a close icon for the Options window, allows you to cancel out of saving any changes you make. Should fix #700.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -167,6 +168,7 @@ New Strings:
 - Checkbox_Options_UseCalculatedPublicAwareness
 - Checkbox_Options_UseTotalValueForFreeKnowledge
 - Checkbox_Options_UseTotalValueForFreeContacts
+- Message_Options_SaveForms
 
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities
