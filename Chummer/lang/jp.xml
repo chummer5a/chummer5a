@@ -5011,6 +5011,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>カルマと新円の支出を印刷する</text>
     </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>増補属性を計算するためCyberlimbsを使用しないでください</text>
+		</string>	
     <string>
       <key>Label_Options_BPAttribute</key>
       <text>能力値</text>

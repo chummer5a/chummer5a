@@ -480,7 +480,7 @@ namespace Chummer
 				}
 
 				// If this is AGI or STR, factor in any Cyberlimbs.
-                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                if (!_objCharacter.Options.DontUseCyberlimbCalculation && (_strAbbrev == "AGI" || _strAbbrev == "STR"))
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {

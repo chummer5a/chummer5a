@@ -75,6 +75,7 @@ namespace Chummer
 			_characterOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
             _characterOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
             _characterOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
             _characterOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
@@ -597,6 +598,7 @@ namespace Chummer
 			chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
 			chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
 			chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
+            chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
 			chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
 			chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
 			chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
