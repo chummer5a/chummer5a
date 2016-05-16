@@ -480,7 +480,7 @@ namespace Chummer
 				}
 
 				// If this is AGI or STR, factor in any Cyberlimbs.
-                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                if (!_objCharacter.Options.DontUseCyberlimbCalculation && (_strAbbrev == "AGI" || _strAbbrev == "STR"))
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
@@ -560,7 +560,7 @@ namespace Chummer
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
                 {
                     int intLimbTotal = 0;
                     int intLimbCount = 0;

@@ -85,6 +85,14 @@ Application Change:
 - Fixed an incorrect value for binding spirit services. Fixes #827.
 - Fixed karma costs for the Inspired quality from Sail Away, Sweet Sister in karmagen. Fixes #828.
 - Added a close icon for the Options window, allows you to cancel out of saving any changes you make. Should fix #700.
+- Chummer now correctly uses the "Characters don't gain Karma after Quality Limit" option in Karma and Life Module mode.
+- Removing the "MEtagenetic Improvement" quality now works correctly in Karma and Life Module mode. Fixes #234.
+- Myostatin Inhibitor now correctly reduces Karma Cost of raising Strength. Fixes #365.
+- Chummer now correctly uses the "Ignore Art requirement" option for showing metamagics. Fixes #614.
+- Fixed crash when checking "Limited Spell" without selecting a Spell.
+- All Armors, Cyberware, Bioware, and Gear should now add correct limit modifiers. Fixes #625.
+- Added Attribute Display for Cyberlimbs.
+- Added option to not use Cyberlimbs for augmented Attribute calculation.
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
@@ -150,6 +158,7 @@ Data Change:
 - Altered the improvements for the Missile Mastery power. Fixes #832.
 - Fixed a typo in the name for LED tattoos.
 - Fixed an incorrect ammo value for the RPK HMG.
+- Added German Street Grimoire to books List. Fixes #841.
 
 New Strings:
 - Message_DeleteCalendarWeek
@@ -169,7 +178,7 @@ New Strings:
 - Checkbox_Options_UseTotalValueForFreeKnowledge
 - Checkbox_Options_UseTotalValueForFreeContacts
 - Message_Options_SaveForms
-
+- Checkbox_Options_UseCyberlimbCalculation
 Removed Strings:
 - Checkbox_Options_DontDoubleQualities
 - Tip_OptionsDontDoubleQualities

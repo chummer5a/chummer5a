@@ -28,7 +28,8 @@ namespace Chummer
 		private bool _blnAllowInitiationInCreateMode;
 		private bool _blnAllowObsolescentUpgrade;
 		private bool _blnAllowSkillDiceRolling;
-		private bool _blnAllowSkillRegrouping = true;
+	    private bool _blnDontUseCyberlimbCalculation;
+        private bool _blnAllowSkillRegrouping = true;
 		private bool _blnAlternateArmorEncumbrance;
 		private bool _blnAlternateComplexFormCost;
 		private bool _blnAlternateMatrixAttribute;
@@ -362,6 +363,8 @@ namespace Chummer
 			objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
 			// <allowskilldicerolling />
 			objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString());
+            //<dontusecyberlimbcalculation />
+            objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString());
 			// <alternatemetatypeattributekarma />
 			objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
 			// <createbackuponcareer />
@@ -708,6 +711,8 @@ namespace Chummer
 			objXmlNode.TryGetField("extendanydetectionspell", out _blnExtendAnyDetectionSpell);
 			// Whether or not dice rolling id allowed for Skills.
 			objXmlNode.TryGetField("allowskilldicerolling", out _blnAllowSkillDiceRolling);
+            // Whether or not cyberlimbs are used for augmeneted attribute calculation.
+		    objXmlNode.TryGetField("dontusecyberlimbcalculation", out _blnDontUseCyberlimbCalculation);
 			// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
 			objXmlNode.TryGetField("alternatemetatypeattributekarma", out _blnAlternateMetatypeAttributeKarma);
 			// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
@@ -2280,10 +2285,25 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+        /// <summary>
+		/// Whether or not cyberlimbs stats are used in attribute calculation
 		/// </summary>
-		public bool AlternateMetatypeAttributeKarma
+		public bool DontUseCyberlimbCalculation
+        {
+            get
+            {
+                return _blnDontUseCyberlimbCalculation;
+            }
+            set
+            {
+                _blnDontUseCyberlimbCalculation = value;
+            }
+        }
+
+        /// <summary>
+        /// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+        /// </summary>
+        public bool AlternateMetatypeAttributeKarma
 		{
 			get
 			{
