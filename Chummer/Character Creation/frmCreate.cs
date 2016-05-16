@@ -15250,7 +15250,15 @@ namespace Chummer
                 }
                 for (int i = 1; i <= nudKSTR.Value; i++)
                 {
-			    intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    if (_objCharacter.Cyberware.Find(x =>
+                        x.Name == "Myostatin Inhibitor") != null)
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
+                    }
+                    else
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    }
                 }
                 for (int i = 1; i <= nudKCHA.Value; i++)
                 {
@@ -15610,12 +15618,18 @@ namespace Chummer
             intNegativeQualities -= intNegativeFree;
             intPositiveQualities -= intPositiveFree;
 
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.		    
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativeQualities < -1 * _objCharacter.MaxKarma)
+                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+                     _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+                    intNegativeQualities < -1*_objCharacter.MaxKarma)
                 {
-                    intNegativeQualities = -1 * _objCharacter.MaxKarma;
+                    intNegativeQualities = -1*_objCharacter.MaxKarma;
+                }
+                else
+                {
+                    intNegativeQualities = Math.Max(intNegativeQualities,-1 * _objCharacter.GameplayOptionQualityLimit);
                 }
             }
 
@@ -17312,7 +17326,7 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _objCharacter.Improvements)
             {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
+                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit || objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit || objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
                 {
                     treLimit.Add(objImprovement, cmsLimitModifier);
                 }

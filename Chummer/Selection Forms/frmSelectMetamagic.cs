@@ -507,6 +507,9 @@ namespace Chummer
                         else
                             break;
                     }
+                } else if (_objCharacter.Options.IgnoreArt)
+                {
+                    blnOneOfRequirementMet = true;
                 }
 
                 if (!blnOneOfRequirementMet)

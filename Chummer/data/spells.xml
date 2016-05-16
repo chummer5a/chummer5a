@@ -4081,7 +4081,7 @@
       <range>LOS(A)</range>
       <damage>0</damage>
       <duration>S</duration>
-      <dv>F11</dv>
+      <dv>F-1</dv>
       <source>SSP</source>
       <page>21</page>
     </spell>

@@ -3796,9 +3796,20 @@ namespace Chummer
 
 		private void cmdImproveSTR_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the Attribute.
-			int intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
+            // Make sure the character has enough Karma to improve the Attribute.
+		    int intKarmaCost;
+            if (_objCharacter.Cyberware.Find(x =>
+		        x.Name == "Myostatin Inhibitor") != null)
+		    {
+		        intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1)*
+		                           _objOptions.KarmaAttribute - 2;
+		    }
+		    else
+		    {
+                intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) *
+                                    _objOptions.KarmaAttribute;
+            }
+		    if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.STR.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -22454,8 +22465,15 @@ namespace Chummer
 					tipTooltip.SetToolTip(cmdImproveAGI, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveREA, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
+                    if (_objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
+                    {
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute - 2).ToString());
+                    }
+                    else
+                    {
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
+                    }
+                    tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveCHA, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
