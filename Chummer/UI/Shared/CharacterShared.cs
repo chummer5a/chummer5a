@@ -76,8 +76,7 @@ namespace Chummer
 			//BUG might happen here
 			//Calculate bonus from cyberlimbs
 			//Taking advantage of the fact only full limbs get a limb slot (it seems) 
-			int count = _objCharacter.Cyberware.Count(c => c.LimbSlot != "");
-			count = Math.Min((count)/2, 2);
+			int count = Math.Max(_objCharacter.Cyberware.Count(c => c.LimbSlot != "") / 2,2);
 
 			List<KeyValuePair<string, Improvement>> pairs = new List<KeyValuePair<string, Improvement>>();
 
