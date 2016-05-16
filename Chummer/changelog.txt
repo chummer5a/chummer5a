@@ -93,6 +93,9 @@ Application Change:
 - All Armors, Cyberware, Bioware, and Gear should now add correct limit modifiers. Fixes #625.
 - Added Attribute Display for Cyberlimbs.
 - Added option to not use Cyberlimbs for augmented Attribute calculation.
+- Rewrote RedlinerCheck
+- Added Redliner/Cyber-Singularity Seeker Quality names to ToolTip
+- Added Redliner bonus to cyberlimbs
 
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.

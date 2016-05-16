@@ -17124,8 +17124,6 @@ namespace Chummer
                     lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
                     lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
                     lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
-
-
                 }
                 else
                 {

@@ -4367,7 +4367,7 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
+				return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
 			}
 		}
 
@@ -4423,8 +4423,8 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
-			}
+                return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
+            }
 		}
 
 		/// <summary>
