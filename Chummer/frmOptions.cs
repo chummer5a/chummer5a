@@ -25,6 +25,7 @@ using System.Xml;
 using Octokit;
 using System.Collections.Specialized;
 using System.Net;
+﻿using System.Runtime.Remoting.Channels;
 
 namespace Chummer
 {
@@ -385,10 +386,29 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(null);
             objCommon.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
-        #endregion
+		
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+			string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
 
-        #region Methods
-        private void MoveControls()
+			switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+			{
+				case DialogResult.Yes:
+					cmdOK_Click(cmdOK, e);
+					break;
+				case DialogResult.Cancel:
+					e.Cancel = true;
+					break;
+				default:
+					break;
+			}
+		}
+
+		#endregion
+
+		#region Methods
+		private void MoveControls()
         {
             int intWidth = 0;
 
