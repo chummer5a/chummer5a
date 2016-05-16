@@ -295,26 +295,27 @@ namespace Chummer.UI.Shared
 					changes = true;
 					_visible = !_visible;
 				}
-				else if (_visible != null && _visible.Value)
-				{
-					int displayIndex = _parrent._displayIndex.FindIndex(x => _parrent._contentList[x] == this);
+				//TODO: Add this back in, but it is spamming updates like crazy right now and not updating right
+				//else if (_visible != null && _visible.Value)
+				//{
+				//	int displayIndex = _parrent._displayIndex.FindIndex(x => _parrent._contentList[x] == this);
 
-					if (displayIndex > 0)
-					{
-						if(_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex - 1]].Item) > 0)
-						{
-							changes = true;
-						}
-					}
-					if(_parrent._displayIndex.Count - 1 > displayIndex)
-					{
-						if (_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex + 1]].Item) < 0)
-						{
-							changes = true;
-						}
-					}
+				//	if (displayIndex > 0)
+				//	{
+				//		if(_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex - 1]].Item) > 0)
+				//		{
+				//			changes = true;
+				//		}
+				//	}
+				//	if(_parrent._displayIndex.Count - 1 > displayIndex)
+				//	{
+				//		if (_parrent._comparison.Compare(Item, _parrent._contentList[_parrent._displayIndex[displayIndex + 1]].Item) < 0)
+				//		{
+				//			changes = true;
+				//		}
+				//	}
 
-				}
+				//}
 
 				if (changes)
 				{

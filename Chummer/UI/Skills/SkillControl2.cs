@@ -261,6 +261,21 @@ namespace Chummer.UI.Skills
 
 			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
 			AttributeActiveOnPropertyChanged(null, null);
+
+			CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		public event EventHandler CustomAttributeChanged;
+
+		public bool CustomAttributeSet => _attributeActive != _skill.AttributeObject;
+
+		public void ResetSelectAttribute()
+		{
+			if (CustomAttributeSet)
+			{
+				cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
+				cboSelectAttribute_Closed(null, null);
+			}
 		}
 
 		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

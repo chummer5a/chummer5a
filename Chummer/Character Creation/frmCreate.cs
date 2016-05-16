@@ -5228,7 +5228,9 @@ namespace Chummer
                     if (objParent != null)
                         objParent.Children.Remove(objCyberware);
                 }
-                RefreshSelectedCyberware();
+
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+				RefreshSelectedCyberware();
             }
             catch
             {
@@ -5813,7 +5815,9 @@ namespace Chummer
                         objParent.Children.Remove(objGear);
                 }
                 _objController.PopulateFocusList(treFoci);
-                UpdateCharacterInfo();
+
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+				UpdateCharacterInfo();
                 RefreshSelectedGear();
 
                 _blnIsDirty = true;

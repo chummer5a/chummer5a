@@ -584,7 +584,6 @@ namespace Chummer.Skills
 				{
 					return source.CustomName;
 				}
-					break;
 				default:
 					return source.SourceName;
 			}

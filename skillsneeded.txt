@@ -1,11 +1,6 @@
 Canfix
 	sorting is not re-evaluated when skills change
 	
-	Custom display attributes needs reset button
-	
-	Tooltip not updating with cyberarms
-	Updating gear don't trigger skill rating change and requires either a reload of character or manually changing skill rating and back
-		
 	Not removing old untakable skills
 	
 	Skillgroups not quite updating right (DisplayRating)
@@ -14,8 +9,12 @@ Canfix
 
 	Knoskills LM not working
 	
-	UI needs a few labels
-
+	Done something fucked with knoskills in career
+	
+	Specs price fuked too
+	
+	Something is wrong with knoskill sp + databinding
+	
 Known limitations
 	Events need unsubscribe or memory leak (wth cares?) (i think)
 
@@ -24,3 +23,5 @@ Known limitations
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip
 	
 	Old skills and knowledgeskills sharing name will always undo real skill
+	
+	Sorting is not aware of selected attributes

@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Backend;
 
 namespace Chummer.Skills
 {
-	public class SkillsSection
+	public class SkillsSection : INotifyPropertyChanged
 	{
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event JackOfAllTradesChangedHandler JackOfAllTradesChanged;
@@ -31,7 +32,9 @@ namespace Chummer.Skills
 		public SkillsSection(Character character)
 		{
 			_character = character;
-			
+			_character.LOG.PropertyChanged += (sender, args) => KnoChanged();
+			_character.INT.PropertyChanged += (sender, args) => KnoChanged();
+
 		}
 
 		internal void AddSkills(FilterOptions skills)
@@ -280,6 +283,8 @@ namespace Chummer.Skills
 		/// </summary>
 		public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
+		public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
+
 		/// <summary>
 		/// Number of free Knowledge Skill Points the character has.
 		/// </summary>
@@ -288,7 +293,11 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority || (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) || _character.BuildMethod == CharacterBuildMethod.SumtoTen ? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier : 0;
+				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority ||
+				                     (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) ||
+				                     _character.BuildMethod == CharacterBuildMethod.SumtoTen
+					? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier
+					: 0;
 
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
@@ -461,7 +470,6 @@ namespace Chummer.Skills
 					LinguistChanged?.Invoke(_character);
 			}
 		}
-
 		public static int CompareSkills(Skill rhs, Skill lhs)
 		{
 			if (rhs is ExoticSkill)
@@ -568,5 +576,16 @@ namespace Chummer.Skills
 				skill.ForceEvent(name);
 			}
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
+		internal void KnoChanged()
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+		}
+
+		
 	}
 }

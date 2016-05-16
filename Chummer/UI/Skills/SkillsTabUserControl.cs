@@ -37,6 +37,7 @@ namespace Chummer.UI.Skills
 		private Character _character;
 		private List<Tuple<string, Predicate<Skill>>> _dropDownList;
 		private List<Tuple<string, IComparer<Skill>>>  _sortList;
+		private List<SkillControl2> controls = new List<SkillControl2>();
 
 		public Character ObjCharacter
 		{
@@ -127,6 +128,22 @@ namespace Chummer.UI.Skills
 			//this.Update();
 			//this.ResumeLayout(true);
 			//this.PerformLayout();
+
+			if (!_character.Created)
+			{
+				lblKnoKarma.Visible = true;
+				lblActiveKarma.Visible = true;
+				lblGroupKarma.Visible = true;
+
+				if (_character.BuildMethod.HaveSkillPoints())
+				{
+					lblActiveSp.Visible = true;
+					lblBuyWithKarma.Visible = true;
+				}
+
+				lblKnoSp.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+				lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+			}
 		}
 
 		private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
@@ -212,9 +229,9 @@ namespace Chummer.UI.Skills
 
 			sw.TaskEnd("_group add");
 
-			_skills = new BindingListDisplay<Skill>(_character.SkillsSection.Skills, skill => new SkillControl2(skill))
+			_skills = new BindingListDisplay<Skill>(_character.SkillsSection.Skills, MakeActiveSkill)
 			{
-				Location = new Point(265, 39),
+				Location = new Point(265, 42),
 			};
 
 
@@ -235,6 +252,18 @@ namespace Chummer.UI.Skills
 
 		}
 
+		private Control MakeActiveSkill(Skill arg)
+		{
+			SkillControl2 control = new SkillControl2(arg);
+			controls.Add(control);
+			control.CustomAttributeChanged += Control_CustomAttributeChanged;
+			return control;
+		}
+
+		private void Control_CustomAttributeChanged(object sender, EventArgs e)
+		{
+			btnResetCustomDisplayAttribute.Visible = controls.Any(x => x.CustomAttributeSet);
+		}
 
 		private void Panel1_Resize(object sender, EventArgs e)
 		{
@@ -313,6 +342,12 @@ namespace Chummer.UI.Skills
 			ObjCharacter.SkillsSection.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
 
-		
+		private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
+		{
+			foreach (SkillControl2 control2 in controls.Where(x => x.CustomAttributeSet))
+			{
+				control2.ResetSelectAttribute();
+			}
+		}
 	}
 }
