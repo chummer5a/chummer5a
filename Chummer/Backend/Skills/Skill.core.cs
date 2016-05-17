@@ -157,7 +157,7 @@ namespace Chummer.Skills
 		{
 			get
 			{
-				int skillWire = WireRating();
+				int skillWire = CyberwareRating();
 
 				return Math.Max(skillWire, LearnedRating + Bonus(true));
 			}

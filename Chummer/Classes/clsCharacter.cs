@@ -259,6 +259,7 @@ namespace Chummer
 
         // Lists.
         private List<Improvement> _lstImprovements = new List<Improvement>();
+        private List<KnowledgeSkill> _lstKnowsoftSkills = new List<KnowledgeSkill>();
 	    private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private List<Spell> _lstSpells = new List<Spell>();
@@ -862,6 +863,17 @@ namespace Chummer
             // </improvements>
             objWriter.WriteEndElement();
 
+            // <knowsoftImprovementBuffer>
+            objWriter.WriteStartElement("knowsoftImprovementBuffer");
+            foreach (Skill objSkill in _lstKnowsoftSkills)
+            {
+                objWriter.WriteStartElement("knowledgeSkill");
+                objWriter.WriteElementString("name", objSkill.Name);
+                objWriter.WriteEndElement();
+            }
+            // </knowsoftImprovementBuffer>
+            objWriter.WriteEndElement();
+
             // <expenses>
             objWriter.WriteStartElement("expenses");
             foreach (ExpenseLogEntry objExpenseLogEntry in _lstExpenseLog)
@@ -1123,7 +1135,7 @@ namespace Chummer
             {
             }
 	        Timekeeper.Finish("load_char_misc");
-			Timekeeper.Start("load_char_imp");
+            Timekeeper.Start("load_char_imp");
             // Improvements.
             XmlNodeList objXmlImprovementList = objXmlDocument.SelectNodes("/character/improvements/improvement");
             foreach (XmlNode objXmlImprovement in objXmlImprovementList)
@@ -1132,8 +1144,17 @@ namespace Chummer
                 objImprovement.Load(objXmlImprovement);
                 _lstImprovements.Add(objImprovement);
             }
-	        Timekeeper.Finish("load_char_imp");
-			Timekeeper.Start("load_char_quality");
+            Timekeeper.Finish("load_char_imp");
+            Timekeeper.Start("load_char_knowsoft_buffer");
+            // Knowsoft Buffer.
+            XmlNodeList objXmlKnowsoftBuffer = objXmlDocument.SelectNodes("/character/knowsoftImprovementBuffer/knowledgeSkill");
+            foreach (XmlNode objXmlSkill in objXmlKnowsoftBuffer)
+            {
+                string strName = objXmlSkill["name"].InnerText;
+                _lstKnowsoftSkills.Add(new KnowledgeSkill(this, strName));
+            }
+            Timekeeper.Finish("load_char_knowsoft_buffer");
+            Timekeeper.Start("load_char_quality");
             // Qualities
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
             bool blnHasOldQualities = false;
@@ -2607,6 +2628,7 @@ namespace Chummer
             // Reset all of the Lists.
 			// This kills the GC
             _lstImprovements = new List<Improvement>();
+            _lstKnowsoftSkills = new List<KnowledgeSkill>();
 	        
             _lstContacts = new List<Contact>();
             _lstSpirits = new List<Spirit>();
@@ -5042,7 +5064,18 @@ namespace Chummer
             }
         }
 
-	    /// <summary>
+        /// <summary>
+        /// KnowsoftSkills.
+        /// </summary>
+        public List<KnowledgeSkill> KnowsoftSkills
+        {
+            get
+            {
+                return _lstKnowsoftSkills;
+            }
+        }
+
+        /// <summary>
         /// Contacts and Enemies.
         /// </summary>
         public List<Contact> Contacts

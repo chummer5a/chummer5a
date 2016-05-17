@@ -2004,16 +2004,17 @@ namespace Chummer
 					}
 					_strSelectedValue = name;
 
-					int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
-
 					KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
-					
-					
-					CreateImprovement(skill.Id.ToString(), objImprovementSource, strSourceName,
-						Improvement.ImprovementType.FreeKnowledgeSkills, strUnique, 0, val);
-					CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique, val);
-
-					_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                    _objCharacter.KnowsoftSkills.Add(skill);
+                    CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique);
+                    //Check if Skilljack
+                    if (_objCharacter.Cyberware.Where(x => x.Name.Contains("Skilljack")).Any())
+                    {
+                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.Name == name).Any())
+                        {
+                            _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);                           
+                        }
+                    }				
 				}
 			}
 
@@ -4292,6 +4293,13 @@ namespace Chummer
 				Log.Info("skillsoftaccess = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SkillsoftAccess, "");
+			    foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
+			    {
+                    if (!_objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.Name == skill.Name).Any())
+                    {
+                        _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                    }
+                }
 			}
 
 			// Check for Quickening Metamagic.
@@ -4771,6 +4779,24 @@ namespace Chummer
 						_objCharacter.SkillsSection.KnowledgeSkills.Remove(knowledgeSkill);
 					}
 				}
+
+			    if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
+			    {
+			        foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
+			        {
+			            _objCharacter.SkillsSection.KnowledgeSkills.Remove(
+			                _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == skill.Name));
+			        }
+			    }
+
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillBase)
+                {
+                    foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
+                    {
+                        _objCharacter.SkillsSection.KnowledgeSkills.Remove(
+                            _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName));
+                    }
+                }
 
                 // Remove "free" adept powers if any.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)

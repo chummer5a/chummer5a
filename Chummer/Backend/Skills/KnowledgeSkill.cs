@@ -139,7 +139,38 @@ namespace Chummer.Skills
 			}
 		}
 
-		public string Type
+        /// <summary>
+        /// The attributeValue this skill have from Skilljacks + Knowsoft
+        /// </summary>
+        /// <returns>Artificial skill attributeValue</returns>
+        public override int CyberwareRating()
+        {
+
+            if (_cachedWareRating != int.MinValue) return _cachedWareRating;
+
+            if (IsKnowledgeSkill && CharacterObject.SkillsoftAccess)
+            {
+                Func<Gear, int> recusivestuff = null;
+                recusivestuff = (gear) =>
+                {
+                    //TODO this works with translate?
+                    if (gear.Equipped && gear.Category == "Skillsofts" &&
+                        (gear.Extra == Name ||
+                         gear.Extra == Name + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
+                    {
+                        return gear.Rating;
+                    }
+                    return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
+                };
+
+                return _cachedWareRating = CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+
+            }
+
+            return _cachedWareRating = 0;
+        }
+
+        public string Type
 		{
 			get { return _type; }
 			set
@@ -315,5 +346,10 @@ namespace Chummer.Skills
 			node.TryGetField("type", out _type);
 			node.TryGetField(GlobalOptions.Instance.Language, out _translated);
 		}
-	}
+
+        public override bool IsKnowledgeSkill
+        {
+            get { return true; }
+        }
+    }
 }

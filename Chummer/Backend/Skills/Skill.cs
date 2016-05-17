@@ -442,9 +442,9 @@ namespace Chummer.Skills
 				}
 
 				StringBuilder s;
-				if (WireRating() > LearnedRating)
+				if (CyberwareRating() > LearnedRating)
 				{
-					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({WireRating()})");
+					s = new StringBuilder($"{LanguageManager.Instance.GetString("Tip_Skill_SkillsoftRating")} ({CyberwareRating()})");
 				}
 				else
 				{
@@ -663,15 +663,15 @@ namespace Chummer.Skills
 			}
 		}
 
-		private int _cachedWireRating = int.MinValue;
+		protected int _cachedWareRating = int.MinValue;
 		/// <summary>
 		/// The attributeValue this skill have from Skillwires + Skilljack or Active Hardwires
 		/// </summary>
 		/// <returns>Artificial skill attributeValue</returns>
-		public int WireRating()
+		public virtual int CyberwareRating()
 		{
 
-			if (_cachedWireRating != int.MinValue) return _cachedWireRating;
+			if (_cachedWareRating != int.MinValue) return _cachedWareRating;
 
 			//TODO: method is here, but not used in any form, needs testing (worried about child items...)
 			//this might do hardwires if i understand how they works correctly
@@ -682,7 +682,7 @@ namespace Chummer.Skills
 
 			if (hardwire.Any())
 			{
-				return _cachedWireRating = hardwire.Max(x => x.Value);
+				return _cachedWareRating = hardwire.Max(x => x.Value);
 			}
 
 
@@ -707,11 +707,11 @@ namespace Chummer.Skills
 					return gear.Children.Select(child => recusivestuff(child)).FirstOrDefault(returned => returned > 0);
 				};
 
-				return _cachedWireRating =  CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
+				return _cachedWareRating =  CharacterObject.Gear.Select(child => recusivestuff(child)).FirstOrDefault(val => val > 0);
 
 			}
 
-			return _cachedWireRating = 0;
+			return _cachedWareRating = 0;
 		}
 
 
@@ -810,7 +810,7 @@ namespace Chummer.Skills
 		{
 			_cachedFreeBase = int.MinValue;
 			_cachedFreeKarma = int.MinValue;
-			_cachedWireRating = int.MinValue;
+			_cachedWareRating = int.MinValue;
 			if (improvements.Any(imp => 
 				(imp.ImproveType == Improvement.ImprovementType.SkillLevel || imp.ImproveType == Improvement.ImprovementType.Skill) && 
 				imp.ImprovedName == _name))
