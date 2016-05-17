@@ -4,25 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Chummer;
+using Chummer.Datastructures;
 
 namespace Chummer.Skills
 { 
 	class ExoticSkill : Skill
 	{
+		private static TranslatedField<string> _specificTranslator = new TranslatedField<string>();
 		private string _specific;
-		
+		private string _translated;
+
+		static ExoticSkill()
+		{
+			XmlNodeList exotic = 
+				 XmlManager.Instance.Load("weapons.xml").SelectNodes("/chummer/weapons/weapon");
+
+			var elem = exotic.OfType<XmlNode>()
+				.Select(
+					x => new Tuple<string, string>(x["name"].InnerText, x.Attributes["translate"]?.InnerText ?? x["name"].InnerText));
+
+			_specificTranslator.AddRange(elem);
+		}
+
+
 		public ExoticSkill(Character character, XmlNode node) : base(character, node)
 		{
-			//SuggestedSpecializations.Clear();
+			
+		}
 
-			//// Look through the Weapons file and grab the names of items that are part of the appropriate Exotic Category or use the matching Exoctic Skill.
-			//XmlDocument objXmlWeaponDocument = XmlManager.Instance.Load("weapons.xml");
-			//XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes($"/chummer/weapons/weapon[category = \"{node["name"].InnerText}s\" or useskill = \"{node["name"].InnerText}\"]");
-			//foreach (XmlNode objXmlWeapon in objXmlWeaponList)
-			//	SuggestedSpecializations.Add(new ListItem(objXmlWeapon["name"].InnerText, 
-			//		objXmlWeapon.Attributes["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText));
-
-			//_allowVisible = !CharacterObject.Created;
+		public void Load(XmlNode node)
+		{
+			_specific = node["specific"].InnerText;
+			_translated = node["translated"]?.InnerText;
 		}
 
 		public override bool AllowDelete
@@ -56,13 +69,15 @@ namespace Chummer.Skills
 		protected override void SaveExtendedData(XmlTextWriter writer)
 		{
 			writer.WriteElementString("specific", _specific);
+
+			if(_translated != null) writer.WriteElementString("translated", _translated);
 		}
 
 		public string Specific {
-			get { return _specific; }
+			get { return _specificTranslator.Read(_specific, ref _translated); }
 			set
 			{
-				_specific = value;
+				_specificTranslator.Write(value, ref _specific, ref _translated);
 				OnPropertyChanged();
 			}
 		}

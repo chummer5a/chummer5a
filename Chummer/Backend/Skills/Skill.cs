@@ -92,7 +92,16 @@ namespace Chummer.Skills
 
 				if (node == null) return null;
 
-				skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) { Specific = node["specific"].InnerText } : new Skill(character, node);
+				if (node["exotic"]?.InnerText == "Yes")
+				{
+					ExoticSkill exotic = new ExoticSkill(character, node);
+					exotic.Load(n);
+					skill = exotic;
+				}
+				else
+				{
+					skill = new Skill(character, node);
+				}
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
@@ -172,8 +181,10 @@ namespace Chummer.Skills
 				ExoticSkill exoticSkill = skill as ExoticSkill;
 				if (exoticSkill != null)
 				{
-					exoticSkill.Specific = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
+					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
 					//don't need to do more load then.
+
+					exoticSkill.Specific = name;
 					return skill;
 				}
 
