@@ -115,7 +115,7 @@
 			// 
 			this.chkKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.chkKarma.AutoSize = true;
-			this.chkKarma.Location = new System.Drawing.Point(688, 4);
+			this.chkKarma.Location = new System.Drawing.Point(723, 4);
 			this.chkKarma.Name = "chkKarma";
 			this.chkKarma.Size = new System.Drawing.Size(15, 14);
 			this.chkKarma.TabIndex = 18;
@@ -196,6 +196,7 @@
 			this.btnAttribute.TabIndex = 24;
 			this.btnAttribute.Text = "ATR";
 			this.btnAttribute.UseVisualStyleBackColor = true;
+			this.btnAttribute.Visible = false;
 			this.btnAttribute.Click += new System.EventHandler(this.btnAttribute_Click);
 			// 
 			// cboSelectAttribute

@@ -1,23 +1,27 @@
-Known limitations
-	Loading of legacy not loading specs. Everything else seems to work. Might give errors with non english exotic weapons (Or my problem might be localized, but check exotic melee)  (think this works)
-
-	Undo expense mostly working. (skills working (history not, needfix? i guess), skillgroups not working, dunremember baut specs)
-
-	Improvement.ImprovementType.SwapSkillAttribute is ignored. Not sure it is ever created without user doing it manually, but it is a thing and we (probably) have to support it. Also kinda usefull.
+Canfix
+	sorting is not re-evaluated when skills change
+	
+	Not removing old untakable skills
+	
+	Skillgroups not quite updating right (DisplayRating)
+	
+	Loading of legacy not loading translating specs.
 
 	Knoskills LM not working
-
+	
+	Done something fucked with knoskills in career
+	
+	Specs price fuked too
+	
+	Something is wrong with knoskill sp + databinding
+	
+Known limitations
 	Events need unsubscribe or memory leak (wth cares?) (i think)
 
 	Knowsofts don't require skilljack
 	
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip
 	
-	Tooltip not updating with cyberarms
-	Updating gear don't trigger skill rating change and requires either a reload of character or manually changing skill rating and back
-		
-	Not removing old untakable skills
+	Old skills and knowledgeskills sharing name will always undo real skill
 	
-	Skillgroups not quite updating right (DisplayRating)
-	
-	Custom display attributes needs reset button
+	Sorting is not aware of selected attributes

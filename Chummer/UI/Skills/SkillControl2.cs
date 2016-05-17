@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using Chummer.Skills;
 
 namespace Chummer.UI.Skills
 {
+	[DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
 	public partial class SkillControl2 : UserControl
 	{
 		private readonly Skill _skill;
@@ -55,18 +57,16 @@ namespace Chummer.UI.Skills
 				chkKarma.Visible = false;
 
 				cboSpec.Visible = false;
-				lblCareerSpec.Text = skill.IsExoticSkill ? ((ExoticSkill)skill).Specific : string.Join(", ", skill.Specializations.Select(x => x.Name));
+
+
+				lblCareerSpec.DataBindings.Add("Text", skill, nameof(skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				lblCareerSpec.Visible = true;
-				lblAttribute.Visible = true;
+
+				lblAttribute.Visible = false;  //Was true, cannot think it should be
 
 				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+				btnAttribute.Visible = true;
 
-				if (!skill.IsExoticSkill)
-				{
-					btnAddSpec.DataBindings.Add("Enabled", skill.CharacterObject, nameof(Character.CanAffordSpecialization), false,
-						DataSourceUpdateMode.OnPropertyChanged);
-				}
-				
 				SetupDropdown();
 			}
 			else
@@ -92,25 +92,21 @@ namespace Chummer.UI.Skills
 				{
 					chkKarma.Visible = false;
 				}
-				
-				//dropdown/spec
-				cboSpec.DataSource = skill.CGLSpecializations;
-				cboSpec.DisplayMember = nameof(ListItem.Name);
-				cboSpec.ValueMember = nameof(ListItem.Value);
 
-				
+				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
-				
 				if (skill.IsExoticSkill)
 				{
 					cboSpec.Enabled = false;
-					cboSpec.Text = ((ExoticSkill) skill).Specific;
 				}
 				else
 				{
+					//dropdown/spec
+					cboSpec.DataSource = skill.CGLSpecializations;
+					cboSpec.DisplayMember = nameof(ListItem.Name);
+					cboSpec.ValueMember = nameof(ListItem.Value);
 					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
 						DataSourceUpdateMode.OnPropertyChanged);
-					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 					cboSpec.SelectedIndex = -1;
 				}
 			}
@@ -147,7 +143,7 @@ namespace Chummer.UI.Skills
 
 				case nameof(Skill.Leveled):
 					BackColor = _skill.Leveled ? SystemColors.ButtonHighlight : SystemColors.Control;
-					btnAddSpec.Visible = _skill.CharacterObject.Created && !_skill.IsExoticSkill;
+					btnAddSpec.Visible = _skill.CharacterObject.Created && _skill.Leveled &&  !_skill.IsExoticSkill;
 					if (all) { goto case nameof(Skill.SkillToolTip); }  break;
 
 
@@ -265,6 +261,21 @@ namespace Chummer.UI.Skills
 
 			_attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
 			AttributeActiveOnPropertyChanged(null, null);
+
+			CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
+		}
+
+		public event EventHandler CustomAttributeChanged;
+
+		public bool CustomAttributeSet => _attributeActive != _skill.AttributeObject;
+
+		public void ResetSelectAttribute()
+		{
+			if (CustomAttributeSet)
+			{
+				cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
+				cboSelectAttribute_Closed(null, null);
+			}
 		}
 
 		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

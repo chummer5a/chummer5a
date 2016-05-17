@@ -35,8 +35,9 @@ namespace Chummer.UI.Skills
 		private bool _loadCalled = false;
 		private bool _initialized = false;
 		private Character _character;
-		private List<Tuple<string, Func<Skill, bool>>> _dropDownList;
+		private List<Tuple<string, Predicate<Skill>>> _dropDownList;
 		private List<Tuple<string, IComparer<Skill>>>  _sortList;
+		private List<SkillControl2> controls = new List<SkillControl2>();
 
 		public Character ObjCharacter
 		{
@@ -47,20 +48,21 @@ namespace Chummer.UI.Skills
 			}
 			get { return _character; }
 		}
+
 		private void SkillsTabUserControl_Load(object sender, EventArgs e)
 		{
 			_loadCalled = true;
 			RealLoad();
 		}
 
-		private void RealLoad() //Ensure loaded and got character obj
+		private void RealLoad() //Cannot be called before both Loaded are called and it have a character object
 		{
 			if (_initialized) return;
 
 			if (!(_character != null && _loadCalled)) return;
 
-			_initialized = true;
-			Stopwatch sw = Stopwatch.StartNew();
+			_initialized = true;  //Only do once
+			Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release 
 			Stopwatch parts = Stopwatch.StartNew();
 			//Keep everything visible until ready to display everything. This 
 			//seems to prevent redrawing everything each time anything is added
@@ -126,6 +128,22 @@ namespace Chummer.UI.Skills
 			//this.Update();
 			//this.ResumeLayout(true);
 			//this.PerformLayout();
+
+			if (!_character.Created)
+			{
+				lblKnoKarma.Visible = true;
+				lblActiveKarma.Visible = true;
+				lblGroupKarma.Visible = true;
+
+				if (_character.BuildMethod.HaveSkillPoints())
+				{
+					lblActiveSp.Visible = true;
+					lblBuyWithKarma.Visible = true;
+				}
+
+				lblKnoSp.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+				lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+			}
 		}
 
 		private List<Tuple<string, IComparer<Skill>>> GenerateSortList()
@@ -157,16 +175,16 @@ namespace Chummer.UI.Skills
 			return ret;
 		}
 		
-		private List<Tuple<string, Func<Skill, bool>>> GenerateDropdownFilter()
+		private List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter()
 		{
-			List<Tuple<string, Func<Skill, bool>>> ret = new List<Tuple<string, Func<Skill, bool>>>
+			List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
 			{
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
 					skill => skill.Rating > 0),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterTotalRatingAboveZero"),
 					skill => skill.Pool > 0),
-				new Tuple<string, Func<Skill, bool>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingZero"),
 					skill => skill.Rating == 0)
 			};
 			//TODO: TRANSLATIONS
@@ -177,21 +195,21 @@ namespace Chummer.UI.Skills
 				from XmlNode objNode 
 				in XmlManager.Instance.Load("skills.xml").SelectNodes("/chummer/categories/category[@type = \"active\"]")
 				let displayName = objNode.Attributes["translate"]?.InnerText ?? objNode.InnerText
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("Label_Category")} {displayName}", 
 					skill => skill.SkillCategory == objNode.InnerText));
 
 			ret.AddRange(
 				from string attribute
 				in new[]{"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "MAG", "RES"} //TODO: This should be somewhere in Character or CharacterAttrib i think
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("String_ExpenseAttribute")}: {LanguageManager.Instance.GetString($"String_Attribute{attribute}Short")}",
 					skill => skill.Attribute == attribute));
 
 			ret.AddRange(
 				from SkillGroup @group
 				in _character.SkillsSection.SkillGroups
-				select new Tuple<string, Func<Skill, bool>>(
+				select new Tuple<string, Predicate<Skill>>(
 					$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}: {@group.DisplayName}", 
 					skill => skill.SkillGroupObject == @group));
 
@@ -211,12 +229,12 @@ namespace Chummer.UI.Skills
 
 			sw.TaskEnd("_group add");
 
-			_skills = new BindingListDisplay<Skill>(_character.SkillsSection.Skills, skill => new SkillControl2(skill))
+			_skills = new BindingListDisplay<Skill>(_character.SkillsSection.Skills, MakeActiveSkill)
 			{
-				Location = new Point(265, 39),
+				Location = new Point(265, 42),
 			};
-			
-			
+
+
 
 			sw.TaskEnd("_skills");
 
@@ -231,9 +249,21 @@ namespace Chummer.UI.Skills
 			};
 
 			splitSkills.Panel2.Controls.Add(_knoSkills);
-			
+
 		}
 
+		private Control MakeActiveSkill(Skill arg)
+		{
+			SkillControl2 control = new SkillControl2(arg);
+			controls.Add(control);
+			control.CustomAttributeChanged += Control_CustomAttributeChanged;
+			return control;
+		}
+
+		private void Control_CustomAttributeChanged(object sender, EventArgs e)
+		{
+			btnResetCustomDisplayAttribute.Visible = controls.Any(x => x.CustomAttributeSet);
+		}
 
 		private void Panel1_Resize(object sender, EventArgs e)
 		{
@@ -264,7 +294,7 @@ namespace Chummer.UI.Skills
 		private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox csender = (ComboBox) sender;
-			Tuple<string, Func<Skill, bool>> selectedItem = (Tuple<string, Func<Skill, bool>>)csender.SelectedItem;
+			Tuple<string, Predicate<Skill>> selectedItem = (Tuple<string, Predicate<Skill>>)csender.SelectedItem;
 
 			_skills.Filter(selectedItem.Item2);
 		}
@@ -312,6 +342,12 @@ namespace Chummer.UI.Skills
 			ObjCharacter.SkillsSection.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
 		}
 
-		
+		private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
+		{
+			foreach (SkillControl2 control2 in controls.Where(x => x.CustomAttributeSet))
+			{
+				control2.ResetSelectAttribute();
+			}
+		}
 	}
 }

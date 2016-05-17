@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend;
 using Chummer.Datastructures;
 
 namespace Chummer.Skills
@@ -91,7 +92,16 @@ namespace Chummer.Skills
 
 				if (node == null) return null;
 
-				skill = node["exotic"]?.InnerText == "Yes" ? new ExoticSkill(character, node) { Specific = node["specific"].InnerText } : new Skill(character, node);
+				if (node["exotic"]?.InnerText == "Yes")
+				{
+					ExoticSkill exotic = new ExoticSkill(character, node);
+					exotic.Load(n);
+					skill = exotic;
+				}
+				else
+				{
+					skill = new Skill(character, node);
+				}
 			}
 			else //This is ugly but i'm not sure how to make it pretty
 			{
@@ -136,12 +146,16 @@ namespace Chummer.Skills
 
 			Skill skill;
 
+			int baseRating = int.Parse(n["base"].InnerText);
+			int fullRating = int.Parse(n["rating"].InnerText);
+			int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
+
 			if (n.TryCheckValue("knowledge", "True"))
 			{
 				Skills.KnowledgeSkill kno = new KnowledgeSkill(character);
 				kno.WriteableName = n["name"].InnerText;
-				kno.Base = Int32.Parse(n["base"].InnerText);
-				kno.Karma = Int32.Parse(n["karma"].InnerText);
+				kno.Base = baseRating;
+				kno.Karma = karmaRating;
 
 				kno.Type = n["skillcategory"].InnerText;
 
@@ -161,14 +175,16 @@ namespace Chummer.Skills
 
 
 				skill = Skill.FromData(data, character);
-				n.TryGetField("base", out skill._base);
-				n.TryGetField("karma", out skill._karma);
+				skill._base = baseRating;
+				skill._karma = karmaRating;
 
 				ExoticSkill exoticSkill = skill as ExoticSkill;
 				if (exoticSkill != null)
 				{
-					exoticSkill.Specific = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
+					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
 					//don't need to do more load then.
+
+					exoticSkill.Specific = name;
 					return skill;
 				}
 
@@ -259,7 +275,9 @@ namespace Chummer.Skills
 			}
 
 			character.ImprovementEvent += OnImprovementEvent;
+			Specializations.ListChanged += SpecializationsOnListChanged;
 		}
+
 
 		//load from data
 		protected Skill(Character character, XmlNode n) : this(character, n["skillgroup"].InnerText)
@@ -390,9 +408,15 @@ namespace Chummer.Skills
 			get { return SuggestedSpecializations; }
 		}
 
+		private string _cachedStringSpec = null;
+		public virtual string DisplaySpecialization
+		{
+			get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.Name)); }
+		}
+
 		//TODO A unit test here?, I know we don't have them, but this would be improved by some
 		//Or just ignore support for multiple specizalizations even if the rules say it is possible?
-		public List<SkillSpecialization> Specializations { get; } = new List<SkillSpecialization>();
+		public BindingList<SkillSpecialization> Specializations { get; } = new BindingList<SkillSpecialization>();
 
 		public string Specialization
 		{
@@ -403,7 +427,6 @@ namespace Chummer.Skills
 					return ""; //Unleveled skills cannot have a specialization;
 				}
 
-				Specializations.Sort((x, y) => x.Free == y.Free ? 0 : (x.Free ? 1 : -1));
 				if (Specializations.Count > 0)
 				{
 					return Specializations[0].Name;
@@ -413,7 +436,19 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (Specializations.Count == 0)
+				if (string.IsNullOrWhiteSpace(value) && Specializations.Count != 0)
+				{
+					int index = -1;
+					for (int i = 0; i < Specializations.Count; i++)
+					{
+						if (Specializations[i].Free) continue;
+						index = i;
+						break;
+					}
+
+					if(index >= 0) Specializations.RemoveAt(index);
+				}
+				else if (Specializations.Count == 0 && !string.IsNullOrWhiteSpace(value))
 				{
 					Specializations.Add(new SkillSpecialization(value, false));
 				}
@@ -421,7 +456,7 @@ namespace Chummer.Skills
 				{
 					if (Specializations[0].Free)
 					{
-						Specializations.Add(new SkillSpecialization(value, false));
+						Specializations.MergeInto(new SkillSpecialization(value, false), (x, y) => x.Free == y.Free ? 0 : (x.Free ? 1 : -1));
 					}
 					else
 					{
@@ -560,7 +595,6 @@ namespace Chummer.Skills
 				{
 					return source.CustomName;
 				}
-					break;
 				default:
 					return source.SourceName;
 			}
@@ -743,7 +777,6 @@ namespace Chummer.Skills
 				)
 			);
 
-
 		#endregion
 
 		internal void ForceEvent(string property)
@@ -794,7 +827,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		private void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
 			OnPropertyChanged(nameof(AttributeModifiers));
 			if (Enabled != _oldEnable)
@@ -803,6 +836,13 @@ namespace Chummer.Skills
 				_oldEnable = Enabled;
 			}
 
+		}
+
+		private void SpecializationsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
+		{
+			_cachedStringSpec = null;
+			OnPropertyChanged(nameof(Specialization));
+			OnPropertyChanged(nameof(DisplaySpecialization));
 		}
 
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]

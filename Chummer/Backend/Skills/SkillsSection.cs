@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Backend;
 
 namespace Chummer.Skills
 {
-	public class SkillsSection
+	public class SkillsSection : INotifyPropertyChanged
 	{
 		public event CollegeEducationChangedHandler CollegeEducationChanged;
 		public event JackOfAllTradesChangedHandler JackOfAllTradesChanged;
@@ -31,7 +32,9 @@ namespace Chummer.Skills
 		public SkillsSection(Character character)
 		{
 			_character = character;
-			
+			_character.LOG.PropertyChanged += (sender, args) => KnoChanged();
+			_character.INT.PropertyChanged += (sender, args) => KnoChanged();
+
 		}
 
 		internal void AddSkills(FilterOptions skills)
@@ -143,11 +146,14 @@ namespace Chummer.Skills
 				unsoredSkills.Sort(CompareSkills);
 
 				unsoredSkills.ForEach(x => _skills.Add(x));
+
+				UpdateUndoList(skillNode);
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
 			if (skillNode["skillptsmax"] == null)
 			{
+				
 				skillNode = skillNode.OwnerDocument["character"];
 			}
 
@@ -162,6 +168,46 @@ namespace Chummer.Skills
 			skillNode.TryGetField("linguist", out _blnLinguist);
 
 			Timekeeper.Finish("load_char_skills");
+		}
+
+		private void UpdateUndoList(XmlNode skillNode)
+		{
+			//Hacky way of converting Expense entries to guid based skill identification
+			//specs allready did?
+			//First create dictionary mapping name=>guid
+
+			Dictionary<string, Guid> groups =
+				SkillGroups.Where(group => group.Rating > 0)
+					.GroupBy(arg => arg.Name)
+					.Select(group => group.First())
+					.ToDictionary(x => x.Name, x => x.Id);
+
+			Dictionary<string, Guid> skills =
+				Skills.Where(skill => skill.LearnedRating > 0)
+					.Concat(KnowledgeSkills)
+					//Next 2 lines prevent dictionary throwing exception in the unlikly case that player have both
+					.GroupBy(skill => skill.Name)
+					.Select(group => group.First())
+					.ToDictionary(x => x.Name, x => x.Id);
+			
+			UpdateUndoSpecific(skillNode.OwnerDocument, skills, new[] { KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill});
+			UpdateUndoSpecific(skillNode.OwnerDocument, groups, new[] { KarmaExpenseType.ImproveSkillGroup });
+		}
+
+		private static void UpdateUndoSpecific(XmlDocument doc, Dictionary<string, Guid> map, KarmaExpenseType[] typesRequreingConverting)
+		{
+			//Build a crazy xpath to get everything we want to convert
+
+			string xpath =
+				$"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
+
+			//Find everything
+			XmlNodeList nodesToChange = doc.SelectNodes(xpath);
+
+			for (var i = 0; i < nodesToChange.Count; i++)
+			{
+				nodesToChange[i].InnerText = map[nodesToChange[i].InnerText].ToString();
+			}
 		}
 
 		internal void Save(XmlTextWriter writer)
@@ -237,6 +283,8 @@ namespace Chummer.Skills
 		/// </summary>
 		public BindingList<SkillGroup> SkillGroups { get; } = new BindingList<SkillGroup>();
 
+		public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
+
 		/// <summary>
 		/// Number of free Knowledge Skill Points the character has.
 		/// </summary>
@@ -245,7 +293,11 @@ namespace Chummer.Skills
 			get
 			{
 				// Calculate Free Knowledge Skill Points. Free points = (INT + LOG) * 2.
-				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority || (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) || _character.BuildMethod == CharacterBuildMethod.SumtoTen ? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier : 0;
+				var fromAttributes = _character.BuildMethod == CharacterBuildMethod.Priority ||
+				                     (_character.BuildMethod == CharacterBuildMethod.Karma && _character.Options.FreeKarmaKnowledge) ||
+				                     _character.BuildMethod == CharacterBuildMethod.SumtoTen
+					? (_character.INT.Value + _character.LOG.Value)*_character.Options.FreeKnowledgeMultiplier
+					: 0;
 
 
 				int val = _character.ObjImprovementManager.ValueOf(Improvement.ImprovementType.FreeKnowledgeSkills);
@@ -418,7 +470,6 @@ namespace Chummer.Skills
 					LinguistChanged?.Invoke(_character);
 			}
 		}
-
 		public static int CompareSkills(Skill rhs, Skill lhs)
 		{
 			if (rhs is ExoticSkill)
@@ -525,5 +576,16 @@ namespace Chummer.Skills
 				skill.ForceEvent(name);
 			}
 		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		[Obsolete("Should be private and stuff. Play a little once improvementManager gets events")]
+		internal void KnoChanged()
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+		}
+
+		
 	}
 }

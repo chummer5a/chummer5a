@@ -4825,7 +4825,9 @@ namespace Chummer
 					if (objParent != null)
 						objParent.Children.Remove(objCyberware);
 				}
+
 				RefreshSelectedCyberware();
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
 
 				_blnIsDirty = true;
 				UpdateWindowTitle();
@@ -5594,6 +5596,7 @@ namespace Chummer
 				_objController.PopulateFocusList(treFoci);
 				UpdateCharacterInfo();
 				RefreshSelectedGear();
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
 
 				_blnIsDirty = true;
 				UpdateWindowTitle();
@@ -12262,7 +12265,7 @@ namespace Chummer
 
 		private void tsUndoKarmaExpense_Click(object sender, EventArgs e)
 		{
-			ListViewItem objItem = new ListViewItem();
+			ListViewItem objItem;
 
 			try
 			{
@@ -12424,9 +12427,7 @@ namespace Chummer
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.
 					SkillGroup group = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
-					if (group != null) group.Karma--; //TODO test this and below, todo handle skill added later, spec and decrease
-
-					//TODO: ImproveSkil[Group] AddSkill[Group] both exist but usage?
+					if (group != null) group.Karma--;
 					break;
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
@@ -12434,7 +12435,10 @@ namespace Chummer
 					if (skill == null)
 						skill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 
-					if(skill != null) skill.Karma--;
+					if (skill != null)
+					{
+						skill.Karma--;
+					}
 
 					break;
 				case KarmaExpenseType.AddMetamagic:
@@ -23638,6 +23642,8 @@ namespace Chummer
 				if (objNode.Level < 2)
 					treGear.SelectedNode = objNode;
 			}
+
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
 
 			UpdateCharacterInfo();
 			RefreshSelectedGear();

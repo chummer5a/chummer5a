@@ -47,13 +47,7 @@ namespace Chummer.UI.Skills
 				btnAddSpec.Visible = true;
 				btnCareerIncrease.Visible = true;
 
-				skill.PropertyChanged += (sender, args) =>
-				{
-					if (args.PropertyName == nameof(Skill.Specializations))
-					{
-						lblSpec.Text = string.Join(", ", skill.Specializations.Select(x => x.Name));
-					}
-				};
+				lblSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 			}
 			else
 			{
@@ -61,8 +55,8 @@ namespace Chummer.UI.Skills
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
 
-				nudSkill.DataBindings.Add("Enabled", skill, nameof(Skill.BaseUnlocked), false,
-					DataSourceUpdateMode.OnPropertyChanged);
+				//nudSkill.DataBindings.Add("Enabled", skill, nameof(SkillsSection.HasKnowledgePoints), false,
+				//	DataSourceUpdateMode.OnPropertyChanged);
 
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints() || skill.CharacterObject.Options.FreeKarmaKnowledge)
 				{
@@ -87,7 +81,7 @@ namespace Chummer.UI.Skills
 				cboSpec.SelectedIndex = -1;
 				
 				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
-				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				skill.PropertyChanged += (sender, args) =>
 				{

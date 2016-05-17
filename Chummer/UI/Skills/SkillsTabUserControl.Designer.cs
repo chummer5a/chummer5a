@@ -29,15 +29,24 @@
 		private void InitializeComponent()
 		{
 			this.splitSkills = new System.Windows.Forms.SplitContainer();
+			this.lblGroupKarma = new System.Windows.Forms.Label();
+			this.lblGroupsSp = new System.Windows.Forms.Label();
+			this.lblBuyWithKarma = new System.Windows.Forms.Label();
+			this.lblActiveKarma = new System.Windows.Forms.Label();
+			this.lblActiveSp = new System.Windows.Forms.Label();
+			this.cboSort = new System.Windows.Forms.ComboBox();
 			this.lblActiveSkills = new System.Windows.Forms.Label();
 			this.btnExotic = new System.Windows.Forms.Button();
 			this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
+			this.lblKnoBwk = new System.Windows.Forms.Label();
+			this.lblKnoKarma = new System.Windows.Forms.Label();
+			this.lblKnoSp = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkillPoints = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
 			this.btnKnowledge = new System.Windows.Forms.Button();
-			this.cboSort = new System.Windows.Forms.ComboBox();
+			this.btnResetCustomDisplayAttribute = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
 			this.splitSkills.Panel2.SuspendLayout();
@@ -57,6 +66,12 @@
 			// splitSkills.Panel1
 			// 
 			this.splitSkills.Panel1.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel1.Controls.Add(this.btnResetCustomDisplayAttribute);
+			this.splitSkills.Panel1.Controls.Add(this.lblGroupKarma);
+			this.splitSkills.Panel1.Controls.Add(this.lblGroupsSp);
+			this.splitSkills.Panel1.Controls.Add(this.lblBuyWithKarma);
+			this.splitSkills.Panel1.Controls.Add(this.lblActiveKarma);
+			this.splitSkills.Panel1.Controls.Add(this.lblActiveSp);
 			this.splitSkills.Panel1.Controls.Add(this.cboSort);
 			this.splitSkills.Panel1.Controls.Add(this.lblActiveSkills);
 			this.splitSkills.Panel1.Controls.Add(this.btnExotic);
@@ -67,6 +82,9 @@
 			// splitSkills.Panel2
 			// 
 			this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
+			this.splitSkills.Panel2.Controls.Add(this.lblKnoBwk);
+			this.splitSkills.Panel2.Controls.Add(this.lblKnoKarma);
+			this.splitSkills.Panel2.Controls.Add(this.lblKnoSp);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPoints);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPointsTitle);
 			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkills);
@@ -76,10 +94,78 @@
 			this.splitSkills.SplitterDistance = 450;
 			this.splitSkills.TabIndex = 0;
 			// 
+			// lblGroupKarma
+			// 
+			this.lblGroupKarma.AutoSize = true;
+			this.lblGroupKarma.Location = new System.Drawing.Point(177, 0);
+			this.lblGroupKarma.Name = "lblGroupKarma";
+			this.lblGroupKarma.Size = new System.Drawing.Size(37, 13);
+			this.lblGroupKarma.TabIndex = 52;
+			this.lblGroupKarma.Tag = "String_Karma";
+			this.lblGroupKarma.Text = "Karma";
+			this.lblGroupKarma.Visible = false;
+			// 
+			// lblGroupsSp
+			// 
+			this.lblGroupsSp.AutoSize = true;
+			this.lblGroupsSp.Location = new System.Drawing.Point(136, 0);
+			this.lblGroupsSp.Name = "lblGroupsSp";
+			this.lblGroupsSp.Size = new System.Drawing.Size(36, 13);
+			this.lblGroupsSp.TabIndex = 51;
+			this.lblGroupsSp.Tag = "String_Points";
+			this.lblGroupsSp.Text = "Points";
+			this.lblGroupsSp.Visible = false;
+			// 
+			// lblBuyWithKarma
+			// 
+			this.lblBuyWithKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblBuyWithKarma.AutoSize = true;
+			this.lblBuyWithKarma.Location = new System.Drawing.Point(715, 29);
+			this.lblBuyWithKarma.Name = "lblBuyWithKarma";
+			this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 13);
+			this.lblBuyWithKarma.TabIndex = 50;
+			this.lblBuyWithKarma.Tag = "String_BuyWithKarma";
+			this.lblBuyWithKarma.Text = "Buy With Karma";
+			this.lblBuyWithKarma.Visible = false;
+			// 
+			// lblActiveKarma
+			// 
+			this.lblActiveKarma.AutoSize = true;
+			this.lblActiveKarma.Location = new System.Drawing.Point(473, 27);
+			this.lblActiveKarma.Name = "lblActiveKarma";
+			this.lblActiveKarma.Size = new System.Drawing.Size(37, 13);
+			this.lblActiveKarma.TabIndex = 47;
+			this.lblActiveKarma.Tag = "String_Karma";
+			this.lblActiveKarma.Text = "Karma";
+			this.lblActiveKarma.Visible = false;
+			// 
+			// lblActiveSp
+			// 
+			this.lblActiveSp.AutoSize = true;
+			this.lblActiveSp.Location = new System.Drawing.Point(432, 27);
+			this.lblActiveSp.Name = "lblActiveSp";
+			this.lblActiveSp.Size = new System.Drawing.Size(36, 13);
+			this.lblActiveSp.TabIndex = 46;
+			this.lblActiveSp.Tag = "String_Points";
+			this.lblActiveSp.Text = "Points";
+			this.lblActiveSp.Visible = false;
+			// 
+			// cboSort
+			// 
+			this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboSort.FormattingEnabled = true;
+			this.cboSort.IntegralHeight = false;
+			this.cboSort.Location = new System.Drawing.Point(394, 3);
+			this.cboSort.Name = "cboSort";
+			this.cboSort.Size = new System.Drawing.Size(133, 21);
+			this.cboSort.TabIndex = 4;
+			this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
+			// 
 			// lblActiveSkills
 			// 
 			this.lblActiveSkills.AutoSize = true;
-			this.lblActiveSkills.Location = new System.Drawing.Point(256, 21);
+			this.lblActiveSkills.Location = new System.Drawing.Point(256, 27);
 			this.lblActiveSkills.Name = "lblActiveSkills";
 			this.lblActiveSkills.Size = new System.Drawing.Size(64, 13);
 			this.lblActiveSkills.TabIndex = 3;
@@ -119,6 +205,40 @@
 			this.label1.TabIndex = 0;
 			this.label1.Tag = "Label_SkillGroups";
 			this.label1.Text = "Skill Groups";
+			// 
+			// lblKnoBwk
+			// 
+			this.lblKnoBwk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblKnoBwk.AutoSize = true;
+			this.lblKnoBwk.Location = new System.Drawing.Point(365, 36);
+			this.lblKnoBwk.Name = "lblKnoBwk";
+			this.lblKnoBwk.Size = new System.Drawing.Size(83, 13);
+			this.lblKnoBwk.TabIndex = 53;
+			this.lblKnoBwk.Tag = "String_BuyWithKarma";
+			this.lblKnoBwk.Text = "Buy With Karma";
+			this.lblKnoBwk.Visible = false;
+			// 
+			// lblKnoKarma
+			// 
+			this.lblKnoKarma.AutoSize = true;
+			this.lblKnoKarma.Location = new System.Drawing.Point(250, 36);
+			this.lblKnoKarma.Name = "lblKnoKarma";
+			this.lblKnoKarma.Size = new System.Drawing.Size(37, 13);
+			this.lblKnoKarma.TabIndex = 54;
+			this.lblKnoKarma.Tag = "String_Karma";
+			this.lblKnoKarma.Text = "Karma";
+			this.lblKnoKarma.Visible = false;
+			// 
+			// lblKnoSp
+			// 
+			this.lblKnoSp.AutoSize = true;
+			this.lblKnoSp.Location = new System.Drawing.Point(209, 36);
+			this.lblKnoSp.Name = "lblKnoSp";
+			this.lblKnoSp.Size = new System.Drawing.Size(36, 13);
+			this.lblKnoSp.TabIndex = 53;
+			this.lblKnoSp.Tag = "String_Points";
+			this.lblKnoSp.Text = "Points";
+			this.lblKnoSp.Visible = false;
 			// 
 			// lblKnowledgeSkillPoints
 			// 
@@ -160,17 +280,19 @@
 			this.btnKnowledge.UseVisualStyleBackColor = true;
 			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
 			// 
-			// cboSort
+			// btnResetCustomDisplayAttribute
 			// 
-			this.cboSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.cboSort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboSort.FormattingEnabled = true;
-			this.cboSort.IntegralHeight = false;
-			this.cboSort.Location = new System.Drawing.Point(394, 3);
-			this.cboSort.Name = "cboSort";
-			this.cboSort.Size = new System.Drawing.Size(133, 21);
-			this.cboSort.TabIndex = 4;
-			this.cboSort.SelectedIndexChanged += new System.EventHandler(this.cboSort_SelectedIndexChanged);
+			this.btnResetCustomDisplayAttribute.FlatAppearance.BorderSize = 0;
+			this.btnResetCustomDisplayAttribute.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(373, 28);
+			this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
+			this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
+			this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(75, 15);
+			this.btnResetCustomDisplayAttribute.TabIndex = 53;
+			this.btnResetCustomDisplayAttribute.Text = "Reset all";
+			this.btnResetCustomDisplayAttribute.UseVisualStyleBackColor = true;
+			this.btnResetCustomDisplayAttribute.Visible = false;
+			this.btnResetCustomDisplayAttribute.Click += new System.EventHandler(this.btnResetCustomDisplayAttribute_Click);
 			// 
 			// SkillsTabUserControl
 			// 
@@ -202,5 +324,14 @@
 		private System.Windows.Forms.Label lblKnowledgeSkillPointsTitle;
 		private System.Windows.Forms.Label lblKnowledgeSkills;
 		private System.Windows.Forms.ComboBox cboSort;
+		private System.Windows.Forms.Label lblBuyWithKarma;
+		private System.Windows.Forms.Label lblActiveKarma;
+		private System.Windows.Forms.Label lblActiveSp;
+		private System.Windows.Forms.Label lblGroupKarma;
+		private System.Windows.Forms.Label lblGroupsSp;
+		private System.Windows.Forms.Label lblKnoKarma;
+		private System.Windows.Forms.Label lblKnoSp;
+		private System.Windows.Forms.Label lblKnoBwk;
+		private System.Windows.Forms.Button btnResetCustomDisplayAttribute;
 	}
 }
