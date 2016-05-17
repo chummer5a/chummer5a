@@ -827,7 +827,7 @@ namespace Chummer.Skills
 			}
 		}
 
-		private void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		protected void OnLinkedAttributeChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
 			OnPropertyChanged(nameof(AttributeModifiers));
 			if (Enabled != _oldEnable)
