@@ -22551,7 +22551,12 @@ namespace Chummer
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, 0, false, blnCreateChildren);
+                    int intRating = 0;
+                    if (objXmlArmor["rating"] != null)
+                    {
+                        intRating = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                    }
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intRating, false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.
