@@ -56,7 +56,7 @@ namespace Chummer
 		protected void RedlinerCheck()
 		{
 
-		    string strSeekerImprovPrefix = "SEEKER_";
+		    string strSeekerImprovPrefix = "SEEKER";
             //Get attributes affected by redliner/cyber singularity seeker
 			var attributes = new List<string>(
 				from improvement in _objCharacter.Improvements
@@ -68,8 +68,7 @@ namespace Chummer
 				from improvement in _objCharacter.Improvements
 				where (improvement.ImproveType == Improvement.ImprovementType.Attribute ||
 				       improvement.ImproveType == Improvement.ImprovementType.PhysicalCM )&&
-				       (improvement.SourceName.StartsWith(strSeekerImprovPrefix) ||
-                       improvement.SourceName.StartsWith("__SEEKER")) //for backwards compability
+				       improvement.SourceName.Contains(strSeekerImprovPrefix) //for backwards compability
 				select improvement);
 
 			//if neither contains anything, it is safe to exit
@@ -85,7 +84,7 @@ namespace Chummer
 
 			for (int i = 0; i < attributes.Count; i++)
 		    {
-		        Improvement objImprove = impr.FirstOrDefault(x => x.SourceName == strSeekerImprovPrefix + attributes[i] && x.Value == (attributes[i] == "BOX" ? count * -3 : count));
+		        Improvement objImprove = impr.FirstOrDefault(x => x.SourceName == strSeekerImprovPrefix +"_" + attributes[i] && x.Value == (attributes[i] == "BOX" ? count * -3 : count));
 		        if (objImprove != null)
 		        {
 		            attributes.RemoveAt(i);
@@ -109,13 +108,13 @@ namespace Chummer
 			    if (attribute == "BOX")
 			    {
                     manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
-			            strSeekerImprovPrefix + attribute, Improvement.ImprovementType.PhysicalCM,
+			            strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.PhysicalCM,
 			            Guid.NewGuid().ToString(), count*-3);
 			    }
 			    else
 			    {
 			        manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
-			            strSeekerImprovPrefix + attribute, Improvement.ImprovementType.Attribute,
+			            strSeekerImprovPrefix +"_" + attribute, Improvement.ImprovementType.Attribute,
 			            Guid.NewGuid().ToString(), count, 1, 0, 0, count);
 			    }
 			}
