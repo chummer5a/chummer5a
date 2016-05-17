@@ -98,14 +98,16 @@ namespace Chummer.UI.Skills
 
 			if (skill.ForcedName)
 			{
-				nudKarma.Enabled = false;
-				nudSkill.Enabled = false;
-				cboType.Enabled = false;
+				nudKarma.Visible = false;
+				nudSkill.Visible = false;
 				cboSkill.Enabled = false;
 				cboSpec.DataBindings.Clear();
 				cboSpec.Enabled = false;
 				btnAddSpec.Enabled = false;
 				btnCareerIncrease.Enabled = false;
+
+			    lblRating.Visible = true;
+			    lblRating.Text = skill.CyberwareRating().ToString();
 
 				cmdDelete.Visible = false;
 			}
