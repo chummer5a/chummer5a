@@ -3070,17 +3070,25 @@
 			<page>269</page>
 		</gear>
 		<gear>
-			<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
+			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
+			<name>Swarm</name>
+			<category>Software</category>
+			<rating>0</rating>
+			<avail>0</avail>
+			<cost>600</cost>
+			<source>R5</source>
+			<page>31</page>
+		</gear>
+		<gear>
+			<id>a9c510dd-d710-4f2f-b0a4-81d512ab4af6</id>
 			<name>Smartsoft</name>
 			<category>Software</category>
-			<rating>6</rating>
-			<bonus>
-				<selecttext />
-			</bonus>
+			<rating>3</rating>
+			<minrating>3</minrating>
 			<avail>6</avail>
 			<cost>1500</cost>
 			<source>R5</source>
-			<page>128</page>
+			<page>127</page>
 		</gear>
 		<gear>
 			<id>1a55fbe3-b3c1-4568-882f-abe4dedb8572</id>
