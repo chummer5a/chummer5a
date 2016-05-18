@@ -2068,6 +2068,9 @@
 			<bonus>
 				<selectattribute>
 					<excludeattribute>EDG</excludeattribute>
+					<excludeattribute>MAG</excludeattribute>
+					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
 					<max>1</max>
 				</selectattribute>
 			</bonus>
