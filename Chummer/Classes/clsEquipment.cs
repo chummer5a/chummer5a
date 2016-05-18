@@ -2539,7 +2539,19 @@ namespace Chummer
 			_objImprovementSource = objSource;
 			try
 			{
-				_intMaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+                if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
+                {
+                    _intMaxRating = _objCharacter.STR.TotalMaximum;
+                }
+                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
+                {
+                    _intMaxRating = _objCharacter.AGI.TotalMaximum;
+
+                }
+                else
+                {
+                    _intMaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+                }
 			}
 			catch
 			{
@@ -4355,7 +4367,7 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
+				return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
 			}
 		}
 
@@ -4411,8 +4423,8 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
-			}
+                return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
+            }
 		}
 
 		/// <summary>

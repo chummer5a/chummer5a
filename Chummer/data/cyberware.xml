@@ -1148,7 +1148,7 @@
 			<id>7d61f860-0637-4214-914d-c68022361d24</id>
 			<name>Customized Strength</name>
 			<category>Cyberlimb Enhancement</category>
-			<rating>20</rating>
+			<rating>MaximumSTR</rating>
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
@@ -1162,7 +1162,7 @@
 			<id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
 			<name>Customized Agility</name>
 			<category>Cyberlimb Enhancement</category>
-			<rating>20</rating>
+			<rating>MaximumAGI</rating>
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>

@@ -17050,6 +17050,10 @@ namespace Chummer
                 lblCyberwareEssence.Text = "";
                 lblCyberwareSource.Text = "";
                 tipTooltip.SetToolTip(lblCyberwareSource, null);
+                lblCyberlimbAGI.Visible = false;
+                lblCyberlimbAGILabel.Visible = false;
+                lblCyberlimbSTR.Visible = false;
+                lblCyberlimbSTRLabel.Visible = false;
                 return;
             }
 
@@ -17108,6 +17112,26 @@ namespace Chummer
                 // Cyberware Grade is not available for Genetech items.
                 if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
+
+                if (objCyberware.Category.Equals("Cyberlimb"))
+                {
+                    lblCyberlimbAGI.Visible = true;
+                    lblCyberlimbAGILabel.Visible = true;
+                    lblCyberlimbSTR.Visible = true;
+                    lblCyberlimbSTRLabel.Visible = true;
+
+                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+                    lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+                    lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
+                }
+                else
+                {
+                    lblCyberlimbAGI.Visible = false;
+                    lblCyberlimbAGILabel.Visible = false;
+                    lblCyberlimbSTR.Visible = false;
+                    lblCyberlimbSTRLabel.Visible = false;
+                }
 
                 _blnSkipRefresh = false;
 
@@ -22527,7 +22551,12 @@ namespace Chummer
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, Convert.ToInt32(objXmlArmor["rating"].InnerText), false, blnCreateChildren);
+                    int intArmorRating = 0;
+                    if (objXmlArmor["rating"] != null)
+                    {
+                        intArmorRating = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                    }
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intArmorRating, false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.
@@ -23781,6 +23810,7 @@ namespace Chummer
 
             intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
             intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
+            intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
 
             lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
             lblCyberAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
@@ -23793,6 +23823,10 @@ namespace Chummer
 
             lblCyberwareRatingLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
             nudCyberwareRating.Left = lblCyberwareRatingLabel.Left + intWidth + 6;
+            lblCyberlimbAGILabel.Left = lblCyberwareRatingLabel.Left;
+            lblCyberlimbSTRLabel.Left = lblCyberwareRatingLabel.Left;
+            lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
+            lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
             lblCyberwareCapacityLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
             lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
             lblCyberwareCostLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;

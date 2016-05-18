@@ -23210,7 +23210,11 @@ namespace Chummer
 				lblCyberwareEssence.Text = "";
 				lblCyberwareSource.Text = "";
 				tipTooltip.SetToolTip(lblCyberwareSource, null);
-				return;
+                lblCyberlimbAGI.Visible = false;
+                lblCyberlimbAGILabel.Visible = false;
+                lblCyberlimbSTR.Visible = false;
+                lblCyberlimbSTRLabel.Visible = false;
+                return;
 			}
 				// Locate the selected piece of Cyberware.
 				bool blnFound = false;
@@ -23229,7 +23233,30 @@ namespace Chummer
 				lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
 				lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
-				if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+
+                if (objCyberware.Category.Equals("Cyberlimb"))
+                {
+                    lblCyberlimbAGI.Visible = true;
+                    lblCyberlimbAGILabel.Visible = true;
+                    lblCyberlimbSTR.Visible = true;
+                    lblCyberlimbSTRLabel.Visible = true;
+
+                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+                    lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+                    lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
+
+
+                }
+                else
+                {
+                    lblCyberlimbAGI.Visible = false;
+                    lblCyberlimbAGILabel.Visible = false;
+                    lblCyberlimbSTR.Visible = false;
+                    lblCyberlimbSTRLabel.Visible = false;
+                }
+
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
 				{
 					// Locate the selected Cyberware.
 					TreeNode objCyberwareNode = new TreeNode();
@@ -27364,6 +27391,7 @@ namespace Chummer
 
 			intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
 			intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
+		    intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
 
             lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
 			cboCyberwareGearAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
@@ -27380,6 +27408,10 @@ namespace Chummer
 			lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
 			lblCyberwareCostLabel.Left = lblCyberwareName.Left + 208;
 			lblCyberwareCost.Left = lblCyberwareCostLabel.Left + intWidth + 6;
+		    lblCyberlimbAGILabel.Left = lblCyberwareName.Left + 208;
+		    lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
+		    lblCyberlimbSTRLabel.Left = lblCyberwareName.Left + 208;
+		    lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
 
 			// Street Gear tab.
 			// Lifestyles tab.

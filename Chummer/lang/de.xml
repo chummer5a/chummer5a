@@ -4193,6 +4193,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>Karma und Nuyen Ausgaben mitschreiben</text>
     </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
+		</string>
     <string>
       <key>Label_Options_NewSpecialization</key>
       <text>Neue Spezialisierung</text>
