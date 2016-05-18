@@ -99,6 +99,7 @@ Application Change:
 - Added backwards Compability with old Redliner implementation (Only need to load once with the new Version to remove artifacts)
 - Fixed crashes when adding a PACK. Fixes #843.
 
+
 Data Change:
 - Added missing required values for the Hospitalized lifestyles.
 - The quality Practice, Practice, Practice now excludes Combat Active skills from being selected.
