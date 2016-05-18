@@ -406,12 +406,7 @@ namespace Chummer
             {
                 int intCost = Convert.ToInt32(objXmlVehicle["cost"].InnerText);
 
-				if (chkBlackMarketDiscount.Checked)
-	            {
-					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
-				}
-
-                intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * dblCostModifier));
+				intCost = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * dblCostModifier));
 
                 // Apply the markup if applicable.
                 double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
@@ -419,7 +414,7 @@ namespace Chummer
 
 				if (chkBlackMarketDiscount.Checked)
 				{
-					dblCost = dblCost - (dblCost * 0.90);
+					dblCost *= 0.90;
 				}
 
 				intCost = Convert.ToInt32(dblCost);

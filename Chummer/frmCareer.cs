@@ -6645,6 +6645,7 @@ namespace Chummer
 				objVehicle.Avail = frmPickVehicle.UsedAvail;
 				objVehicle.Cost = frmPickVehicle.UsedCost.ToString();
 			}
+		    objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
 			int intCost = objVehicle.TotalCost;
 			// Apply a markup if applicable.
@@ -24622,9 +24623,9 @@ namespace Chummer
 			if (objCyberware.InternalId == Guid.Empty.ToString())
 				return false;
 
-			
-			
 
+            // Adjust for Black Market Pipeline Discount
+		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";
@@ -24864,7 +24865,10 @@ namespace Chummer
 			if (objNewGear.InternalId == Guid.Empty.ToString())
 				return false;
 
-			// Reduce the cost for Do It Yourself components.
+			//Reduce the Cost for Black Market Pipelin
+		    objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+            
+            // Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
 				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
 

@@ -706,7 +706,7 @@ namespace Chummer
 				dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
 				if (chkBlackMarketDiscount.Checked)
 				{
-					dblCost = dblCost - (dblCost * 0.90);
+					dblCost = dblCost * 0.90;
 				}
 				lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
 				intItemCost = Convert.ToInt32(dblCost);

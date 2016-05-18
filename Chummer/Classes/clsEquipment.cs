@@ -15099,7 +15099,7 @@ namespace Chummer
 			get
 			{
 				int intCost = Convert.ToInt32(_strCost);
-				if (DealerConnectionDiscount)
+				if (BlackMarketDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
 				foreach (VehicleMod objMod in _lstVehicleMods)

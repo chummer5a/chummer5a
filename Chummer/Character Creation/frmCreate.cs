@@ -9389,7 +9389,7 @@ namespace Chummer
                 case "Rigger Command Consoles":
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
+                    objCommlink.DiscountCost = frmPickGear.BlackMarketDiscount;
 
                     objGear = objCommlink;
                     break;
@@ -18830,6 +18830,8 @@ namespace Chummer
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return false;
 
+            // reduce the cost for Black Market Pipeline
+            objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
                 objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
