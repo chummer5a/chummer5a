@@ -1,8 +1,6 @@
 Canfix
 	sorting is not re-evaluated when skills change
 	
-	Not removing old untakable skills
-	
 	Skillgroups not quite updating right (DisplayRating)
 	
 	Loading of legacy not loading translating specs.

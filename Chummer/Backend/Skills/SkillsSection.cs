@@ -130,6 +130,26 @@ namespace Chummer.Skills
 
 				List<Skill> unsoredSkills = new List<Skill>();
 
+				//Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
+				Predicate<Skill> oldSkillFilter = skill =>
+				{
+					if (skill.Rating > 0) return true;
+
+					if (skill.SkillCategory == "Resonance Active" && !_character.RESEnabled)
+					{
+						return false;
+					}
+
+					//This could be more fine grained, but frankly i don't care
+					if (skill.SkillCategory == "Magical Active" && !_character.MAGEnabled)
+					{
+						return false;
+					}
+
+
+					return true;
+				};
+
 				foreach (Skill skill in tempoerySkillList)
 				{
 					KnowledgeSkill knoSkill = skill as KnowledgeSkill;
@@ -137,7 +157,7 @@ namespace Chummer.Skills
 					{
 						KnowledgeSkills.Add(knoSkill);
 					}
-					else
+					else if(oldSkillFilter(skill))
 					{
 						unsoredSkills.Add(skill);
 					}
