@@ -3,11 +3,7 @@ Canfix
 	
 	Skillgroups not quite updating right (DisplayRating)
 	
-	Loading of legacy not loading translating specs.
-
 	Knoskills LM not working
-	
-	Done something fucked with knoskills in career
 	
 	Specs price fuked too
 	
@@ -23,3 +19,5 @@ Known limitations
 	Old skills and knowledgeskills sharing name will always undo real skill
 	
 	Sorting is not aware of selected attributes
+	
+	Old skill specializations are not translated.

@@ -259,6 +259,10 @@ namespace Chummer.UI.Shared
 		{
 			pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
 			pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
+			foreach (Control control in pnlDisplay.Controls)
+			{
+				control.Width = pnlDisplay.Width - 2;
+			}
 		}
 
 		private class ControlWithMetaData
@@ -392,5 +396,7 @@ namespace Chummer.UI.Shared
 				_index = source.Select((x, y) => new {x, y}).ToDictionary(x => x.x, x => x.y);
 			}
 		}
+
+		
 	}
 }

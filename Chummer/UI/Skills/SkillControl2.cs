@@ -236,19 +236,6 @@ namespace Chummer.UI.Skills
 			cboSelectAttribute.DroppedDown = true;
 		}
 
-		private Control _parrent = null;
-		private void cboSpec_ParentChanged(object sender, EventArgs e)
-		{
-			if (_parrent != null) _parrent.Resize -= Parent_Resize;
-			_parrent = Parent;
-			if (_parrent != null) _parrent.Resize += Parent_Resize;
-		}
-
-		private void Parent_Resize(object sender, EventArgs e)
-		{
-			Width = (Parent?.Width - 2) ?? Width;
-		}
-
 		private void cboSelectAttribute_Closed(object sender, EventArgs e)
 		{
 			btnAttribute.Visible = true;

@@ -286,8 +286,8 @@ namespace Chummer.UI.Skills
 		{
 			if (_knoSkills != null)
 			{
-				_knoSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 50);
-				_knoSkills.Height = splitSkills.Panel2.Height - 53;
+				_knoSkills.Size = new Size(splitSkills.Panel2.Width - 6, splitSkills.Panel2.Height - 53);
+				//_knoSkills.Height = splitSkills.Panel2.Height - 53;
 			}
 		}
 
