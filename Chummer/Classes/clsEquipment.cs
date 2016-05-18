@@ -6643,6 +6643,17 @@ namespace Chummer
                 string strRCGroup4 = "";
                 string strRCGroup5 = "";
 
+				int intRCDeployGroup1 = 0;
+				int intRCDeployGroup2 = 0;
+				int intRCDeployGroup3 = 0;
+				int intRCDeployGroup4 = 0;
+				int intRCDeployGroup5 = 0;
+				string strRCDeployGroup1 = "";
+				string strRCDeployGroup2 = "";
+				string strRCDeployGroup3 = "";
+				string strRCDeployGroup4 = "";
+				string strRCDeployGroup5 = "";
+
 				if (_strRC.Contains("("))
 				{
 					if (_strRC.Substring(0, 1) == "(")
@@ -6665,7 +6676,11 @@ namespace Chummer
 					strRCFull = _strRC;
 				}
 
-                strRCTip = "1 + Base (" + strRCBase + ")";
+                strRCTip = "1 ";
+				if (strRCBase != "0")
+				{
+					strRCTip += "+ "+ LanguageManager.Instance.GetString("Label_Base") + "(" + strRCBase + ")";
+                }
 
 				intRCBase = Convert.ToInt32(strRCBase);
 				intRCFull = Convert.ToInt32(strRCFull.Replace("(", string.Empty).Replace(")", string.Empty));
@@ -6679,7 +6694,7 @@ namespace Chummer
 				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 
 				// Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
-				if (AmmoLoaded != "")
+				if (AmmoLoaded != "" && AmmoLoaded != "00000000-0000-0000-0000-000000000000")
 				{
 					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
@@ -6698,7 +6713,7 @@ namespace Chummer
 								intRCBase += Convert.ToInt32(objGear.WeaponBonus["rc"].InnerText);
 								intRCFull += Convert.ToInt32(objGear.WeaponBonus["rc"].InnerText);
 
-                                strRCTip += " + " + objGear.Name + " (" + objGear.WeaponBonus["rc"].InnerText + ")";
+                                strRCTip += " + " + objGear.DisplayName + " (" + objGear.WeaponBonus["rc"].InnerText + ")";
 							}
 						}
 					}
@@ -6706,104 +6721,147 @@ namespace Chummer
 
 				// Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
 				// Only add in the values for items that do not come with the weapon.
-				foreach (WeaponAccessory objAccessory in _lstAccessories)
+				foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objAccessory.RC != "" && objAccessory.Installed))
 				{
-					if (objAccessory.RC != "" && objAccessory.Installed)
+					if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
 					{
-						if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
+						int intItemRC = 0;
+							intItemRC = Convert.ToInt32(objAccessory.RC);
+						if (!objAccessory.RCDeployable)
 						{
-							int intItemRC = 0;
-							if (objAccessory.RC.Contains("("))
-							{
-								intItemRC = Convert.ToInt32(objAccessory.RC.Replace("(", string.Empty).Replace(")", string.Empty));
-							}
-							else
-							{
-								intItemRC = Convert.ToInt32(objAccessory.RC);
-								intItemRC = Convert.ToInt32(objAccessory.RC);
-							}
-
 							switch (objAccessory.RCGroup)
 							{
 								case 1:
-                                    if (intRCGroup1 < intItemRC)
-                                    {
-                                        intRCGroup1 = intItemRC;
-                                        strRCGroup1 = objAccessory.Name;
-                                    }
+									if (intRCGroup1 < intItemRC)
+									{
+										intRCGroup1 = intItemRC;
+										strRCGroup1 = objAccessory.DisplayName;
+									}
 									break;
 								case 2:
 									if (intRCGroup2 < intItemRC)
-                                    {
-                                        intRCGroup2 = intItemRC;
-                                        strRCGroup2 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup2 = intItemRC;
+										strRCGroup2 = objAccessory.DisplayName;
+									}
 									break;
 								case 3:
 									if (intRCGroup3 < intItemRC)
-                                    {
-                                        intRCGroup3 = intItemRC;
-                                        strRCGroup3 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup3 = intItemRC;
+										strRCGroup3 = objAccessory.DisplayName;
+									}
 									break;
 								case 4:
 									if (intRCGroup4 < intItemRC)
-                                    {
-                                        intRCGroup4 = intItemRC;
-                                        strRCGroup4 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup4 = intItemRC;
+										strRCGroup4 = objAccessory.DisplayName;
+									}
 									break;
 								case 5:
 									if (intRCGroup5 < intItemRC)
-                                    {
-                                        intRCGroup5 = intItemRC;
-                                        strRCGroup5 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup5 = intItemRC;
+										strRCGroup5 = objAccessory.DisplayName;
+									}
 									break;
 							}
 						}
 						else
 						{
-							if (objAccessory.RC.Contains("("))
+							switch (objAccessory.RCGroup)
 							{
-								intRCFull += Convert.ToInt32(objAccessory.RC.Replace("(", string.Empty).Replace(")", string.Empty));
-							}
-							else
-							{
-								intRCBase += Convert.ToInt32(objAccessory.RC);
-								intRCFull += Convert.ToInt32(objAccessory.RC);
+								case 1:
+									if (intRCDeployGroup1 < intItemRC)
+									{
+										intRCDeployGroup1 = intItemRC;
+										strRCDeployGroup1 = objAccessory.DisplayName;
+									}
+									break;
+								case 2:
+									if (intRCDeployGroup2 < intItemRC)
+									{
+										intRCDeployGroup2 = intItemRC;
+										strRCDeployGroup2 = objAccessory.DisplayName;
+									}
+									break;
+								case 3:
+									if (intRCDeployGroup3 < intItemRC)
+									{
+										intRCDeployGroup3 = intItemRC;
+										strRCDeployGroup3 = objAccessory.DisplayName;
+									}
+									break;
+								case 4:
+									if (intRCDeployGroup4 < intItemRC)
+									{
+										intRCDeployGroup4 = intItemRC;
+										strRCDeployGroup4 = objAccessory.DisplayName;
+									}
+									break;
+								case 5:
+									if (intRCDeployGroup5 < intItemRC)
+									{
+										intRCDeployGroup5 = intItemRC;
+										strRCDeployGroup5 = objAccessory.DisplayName;
+									}
+									break;
 							}
 						}
+					}
+					else
+					{
+						intRCFull += Convert.ToInt32(objAccessory.RC);
+						if (!objAccessory.RCDeployable)
+						{
+							intRCBase += Convert.ToInt32(objAccessory.RC);
+						}
+						strRCTip += " + " + objAccessory.DisplayName + " (" + objAccessory.RC.ToString() + ")";
 					}
 				}
 
 				// Add in the Recoil Group bonuses.
 				intRCBase += intRCGroup1 + intRCGroup2 + intRCGroup3 + intRCGroup4 + intRCGroup5;
 				intRCFull += intRCGroup1 + intRCGroup2 + intRCGroup3 + intRCGroup4 + intRCGroup5;
+				intRCFull += intRCDeployGroup1 + intRCDeployGroup2 + intRCDeployGroup3 + intRCDeployGroup4 + intRCDeployGroup5;
 
-                if (strRCGroup1 != string.Empty)
+				if (strRCGroup1 != string.Empty)
                     strRCTip += " + " + strRCGroup1 + " (" + intRCGroup1.ToString() + ")";
-
                 if (strRCGroup2 != string.Empty)
                     strRCTip += " + " + strRCGroup2 + " (" + intRCGroup2.ToString() + ")";
-
                 if (strRCGroup3 != string.Empty)
                     strRCTip += " + " + strRCGroup3 + " (" + intRCGroup3.ToString() + ")";
-
                 if (strRCGroup4 != string.Empty)
                     strRCTip += " + " + strRCGroup4 + " (" + intRCGroup4.ToString() + ")";
-
                 if (strRCGroup5 != string.Empty)
                     strRCTip += " + " + strRCGroup5 + " (" + intRCGroup5.ToString() + ")";
 
+				if (strRCDeployGroup1 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup1).Replace("{1}", intRCDeployGroup1.ToString());
+                if (strRCDeployGroup2 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup2).Replace("{1}", intRCDeployGroup2.ToString());
+				if (strRCDeployGroup3 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup3).Replace("{1}", intRCDeployGroup3.ToString());
+				if (strRCDeployGroup4 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup4).Replace("{1}", intRCDeployGroup4.ToString());
+				if (strRCDeployGroup5 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup5).Replace("{1}", intRCDeployGroup5.ToString());
+
 				int intStrRC = ((_objCharacter.STR.TotalValue - 1)/3) + 1;
 
-					intRCBase += intStrRC + 1; //Not understanding this, but leaving it
-                    intRCFull += intStrRC;
-                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue + "] (" + intStrRC + ")";
-
+					intRCBase += intStrRC + 1; 
+                    intRCFull += intStrRC + 1;
+                    strRCTip += " + " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + "[" + _objCharacter.STR.TotalValue + "/3 = " + intStrRC + "]";
 				// If the full RC is not higher than the base, only the base value is shown.
-				strRC = (intRCFull <= intRCBase ? intRCBase : intRCFull).ToString();
+				if (intRCFull > intRCBase)
+				{
+					strRC = (intRCBase + " (" + intRCFull + ")").ToString();
+				}
+				else
+				{
+					strRC = intRCBase.ToString();
+				}
 
                 _strRCTip = strRCTip;
 
@@ -7625,6 +7683,7 @@ namespace Chummer
 		private int _intRating = 0;
 		private int _intRCGroup = 0;
 		private int _intAmmoSlots = 0;
+		private bool _blnDeployable = false;
 		private bool _blnDiscountCost = false;
 		private bool _blnBlackMarketDiscount = false;
 		private bool _blnIncludedInWeapon = false;
@@ -7662,6 +7721,7 @@ namespace Chummer
 			_strPage = objXmlAccessory["page"].InnerText;
 			_nodAllowGear = objXmlAccessory["allowgear"];
 			objXmlAccessory.TryGetField("rc", out _strRC, "");
+			objXmlAccessory.TryGetField("rcdeployable", out _blnDeployable);
 			objXmlAccessory.TryGetField("rcgroup", out _intRCGroup);
 			objXmlAccessory.TryGetField("conceal", out _strConceal, "");
 			objXmlAccessory.TryGetField("ammoslots", out _intAmmoSlots);
@@ -7713,6 +7773,7 @@ namespace Chummer
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
+			objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
 			objWriter.WriteElementString("conceal", _strConceal);
 			if (_strDicePool != "")
 				objWriter.WriteElementString("dicepool", _strDicePool);
@@ -7780,6 +7841,7 @@ namespace Chummer
 			objNode.TryGetField("rating", out _intRating, 0);
 			objNode.TryGetField("rating", out _intRating, 0);
 			objNode.TryGetField("conceal", out _strConceal, "0");
+			objNode.TryGetField("rcdeployable", out _blnDeployable);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
@@ -8137,10 +8199,21 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Accuracy.
-        /// </summary>
-        public int Accuracy
+		/// <summary>
+		/// Whether the Accessory only grants a Recoil Bonus while deployed.
+		/// </summary>
+		public bool RCDeployable
+		{
+			get
+			{
+				return _blnDeployable;
+			}
+		}
+
+		/// <summary>
+		/// Accuracy.
+		/// </summary>
+		public int Accuracy
         {
             get
             {

@@ -561,6 +561,7 @@
           <excludeattribute>MAG</excludeattribute>
           <excludeattribute>RES</excludeattribute>
           <excludeattribute>EDG</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
         </selectattribute>
       </bonus>
       <source>SR5</source>
@@ -608,6 +609,7 @@
           <excludeattribute>MAG</excludeattribute>
           <excludeattribute>RES</excludeattribute>
           <excludeattribute>EDG</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
         </selectattribute>
       </bonus>
       <source>SR5</source>
