@@ -2008,9 +2008,9 @@ namespace Chummer
                     _objCharacter.KnowsoftSkills.Add(skill);
                     CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique);
                     //Check if Skilljack
-                    if (_objCharacter.Cyberware.Where(x => x.Name.Contains("Skilljack")).Any())
+                    if (_objCharacter.Cyberware.Any(x => x.Name.Contains("Skilljack")))
                     {
-                        if (!_objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.Name == name).Any())
+                        if (_objCharacter.SkillsSection.KnowledgeSkills.All(x => x.Name != name))
                         {
                             _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);                           
                         }

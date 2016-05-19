@@ -11,8 +11,6 @@ Canfix
 	
 Known limitations
 	Events need unsubscribe or memory leak (wth cares?) (i think)
-
-	Knowsofts don't require skilljack
 	
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip
 	
