@@ -465,7 +465,7 @@
 			<id>4257a39e-41eb-45ee-976e-41c3c0bf960c</id>
 			<name>Ammo: Capsule Rounds</name>
 			<category>Ammunition</category>
-			<addoncategory>Chemtech</addoncategory>
+			<addoncategory>Drugs</addoncategory>
 			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
 			<avail>2</avail>
@@ -995,7 +995,7 @@
 			<id>06798b15-40bb-4464-b6a8-a01466ee9b9e</id>
 			<name>Grenade: Gas</name>
 			<category>Ammunition</category>
-			<addoncategory>Chemtech</addoncategory>
+			<addoncategory>Drugs</addoncategory>
 			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
 			<avail>4R</avail>
@@ -1074,7 +1074,7 @@
 			<id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
 			<name>Minigrenade: Gas</name>
 			<category>Ammunition</category>
-			<addoncategory>Chemtech</addoncategory>
+			<addoncategory>Drugs</addoncategory>
 			<addoncategory>Toxins</addoncategory>
 			<rating>0</rating>
 			<avail>4R</avail>
@@ -3979,6 +3979,7 @@
 			<minrating>2</minrating>
 			<capacity>8/[6]</capacity>
 			<armorcapacity>[6]</armorcapacity>
+			<addoncategory>Sensor Functions</addoncategory>
 			<avail>7</avail>
 			<cost>Rating * 1000</cost>
 			<source>SR5</source>
@@ -3992,6 +3993,7 @@
 			<minrating>2</minrating>
 			<capacity>1/[1]</capacity>
 			<armorcapacity>[1]</armorcapacity>
+			<addoncategory>Sensor Functions</addoncategory>
 			<avail>5</avail>
 			<cost>Rating * 100</cost>
 			<source>SR5</source>
