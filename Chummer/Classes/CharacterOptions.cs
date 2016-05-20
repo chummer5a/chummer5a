@@ -56,6 +56,7 @@ namespace Chummer
 		private bool _blnExceedPositiveQualities;
 		private bool _blnExtendAnyDetectionSpell;
 		private bool _blnFreeContactsMultiplierEnabled;
+	    private bool _blnDroneArmorMultiplierEnabled;
 		private bool _blnFreeKarmaContacts;
 		private bool _blnFreeKarmaKnowledge;
 		private bool _blnFreeKnowledgeMultiplierEnabled;
@@ -93,6 +94,7 @@ namespace Chummer
 		private int _intForbiddenCostMultiplier = 1;
 		private int _intFreeContactsFlatNumber = 0;
 		private int _intFreeContactsMultiplier = 3;
+	    private int _intDroneArmorMultiplier = 2;
 		private int _intFreeKnowledgeMultiplier = 2;
 		private int _intLimbCount = 6;
 		private int _intMetatypeCostMultiplier = 1;
@@ -269,12 +271,16 @@ namespace Chummer
 			objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString());
 			// <freekarmaknowledgemultiplierenabled />
 			objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString());
-			// <freecontactsmultiplierenabled />
-			objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
-			// <freecontactsflatnumber />
-			objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
-			// <usetotalvalueforknowledge />
-			objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
+            // <freecontactsmultiplierenabled />
+            objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
+            // <freecontactsflatnumber />
+            objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
+            // <dronearmormultiplierenabled />
+            objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString());
+            // <dronearmorflatnumber />
+            objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString());
+            // <usetotalvalueforknowledge />
+            objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
 			// <usetotalvalueforcontacts />
 			objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
 			// <freekarmaknowledge />
@@ -619,6 +625,10 @@ namespace Chummer
 			objXmlNode.TryGetField("usetotalvalueforcontacts", out _blnUseTotalValueForFreeContacts);
 			// Free Contacts Multiplier Enabled
 			objXmlNode.TryGetField("freecontactsmultiplierenabled", out _blnFreeContactsMultiplierEnabled);
+            // Drone Armor Multiplier Enabled
+		    objXmlNode.TryGetField("dronearmormultiplierenabled", out _blnDroneArmorMultiplierEnabled);
+            // Drone Armor Multiplier Value
+		    objXmlNode.TryGetField("dronearmorflatnumber", out _intDroneArmorMultiplier);
 			// Free Knowledge Multiplier Enabled
 			objXmlNode.TryGetField("freekarmaknowledgemultiplierenabled", out _blnFreeKnowledgeMultiplierEnabled);
 			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
@@ -1538,26 +1548,56 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Whether or not characters get a flat number of BP for free Contacts.
+        /// <summary>
+        /// Whether or not characters get a flat number of BP for free Contacts.
+        /// </summary>
+        public bool FreeContactsMultiplierEnabled
+        {
+            get
+            {
+                return _blnFreeContactsMultiplierEnabled;
+            }
+            set
+            {
+                _blnFreeContactsMultiplierEnabled = value;
+            }
+        }
+
+        /// <summary>
+		/// The Drone Body multiplier for maximal Armor
 		/// </summary>
-		public bool FreeContactsMultiplierEnabled
-		{
-			get
-			{
-				return _blnFreeContactsMultiplierEnabled;
-			}
-			set
-			{
-				_blnFreeContactsMultiplierEnabled = value;
-			}
-		}
+		public int DroneArmorMultiplier
+        {
+            get
+            {
+                return _intDroneArmorMultiplier;
+            }
+            set
+            {
+                _intDroneArmorMultiplier = value;
+            }
+        }
+
+        /// <summary>
+		/// Whether or not Armor
+		/// </summary>
+		public bool DroneArmorMultiplierEnabled
+        {
+            get
+            {
+                return _blnDroneArmorMultiplierEnabled;
+            }
+            set
+            {
+                _blnDroneArmorMultiplierEnabled = value;
+            }
+        }
 
 
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		public bool FreeKarmaContacts
+        /// <summary>
+        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
+        /// </summary>
+        public bool FreeKarmaContacts
 		{
 			get
 			{
