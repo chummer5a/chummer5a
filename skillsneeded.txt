@@ -8,8 +8,6 @@ Canfix
 	Something is wrong with knoskill sp + databinding
 	
 Known limitations
-	Events need unsubscribe or memory leak (wth cares?) (i think)
-	
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip
 	
 	Old skills and knowledgeskills sharing name will always undo real skill
