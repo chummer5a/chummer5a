@@ -26,7 +26,6 @@ namespace Chummer.Skills
 		private bool _blnSchoolOfHardKnocks;
 		private bool _blnTechSchool;
 		private bool _blnLinguist;
-
 		private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>(); 
 
 		public SkillsSection(Character character)
@@ -121,6 +120,16 @@ namespace Chummer.Skills
 					KnowledgeSkills.Add(skill);
 				}
 				Timekeeper.Finish("load_char_skills_kno");
+
+				Timekeeper.Start("load_char_knowsoft_buffer");
+				// Knowsoft Buffer.
+				XmlNodeList objXmlKnowsoftBuffer = skillNode.SelectNodes("skilljackknowledgeskills/skill");
+				foreach (XmlNode objXmlSkill in objXmlKnowsoftBuffer)
+				{
+					string strName = objXmlSkill["name"].InnerText;
+					KnowsoftSkills.Add(new KnowledgeSkill(_character, strName));
+				}
+				Timekeeper.Finish("load_char_knowsoft_buffer");
 			}
 			else
 			{
@@ -256,6 +265,14 @@ namespace Chummer.Skills
 				knowledgeSkill.WriteTo(writer);
 			}
 			writer.WriteEndElement();
+
+			writer.WriteStartElement("skilljackknowledgeskills");
+			foreach (KnowledgeSkill objSkill in KnowsoftSkills)
+			{
+				objSkill.WriteTo(writer);
+			}
+			writer.WriteEndElement();
+
 			writer.WriteStartElement("groups");
 			foreach (SkillGroup skillGroup in SkillGroups)
 			{
@@ -272,6 +289,7 @@ namespace Chummer.Skills
 			SkillGroups.Clear();
 			SkillPointsMaximum = 0;
 			SkillGroupPointsMaximum = 0;
+			KnowsoftSkills.Clear();
 		}
 
 		/// <summary>
@@ -297,6 +315,12 @@ namespace Chummer.Skills
 		}
 
 		public BindingList<KnowledgeSkill> KnowledgeSkills { get; } = new BindingList<KnowledgeSkill>();
+
+
+		/// <summary>
+		/// KnowsoftSkills.
+		/// </summary>
+		public List<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
 
 		/// <summary>
 		/// Skill Groups.

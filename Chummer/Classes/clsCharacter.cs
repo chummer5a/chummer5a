@@ -259,7 +259,6 @@ namespace Chummer
 
         // Lists.
         private List<Improvement> _lstImprovements = new List<Improvement>();
-        private List<KnowledgeSkill> _lstKnowsoftSkills = new List<KnowledgeSkill>();
 	    private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
         private List<Spell> _lstSpells = new List<Spell>();
@@ -863,16 +862,7 @@ namespace Chummer
             // </improvements>
             objWriter.WriteEndElement();
 
-            // <knowsoftImprovementBuffer>
-            objWriter.WriteStartElement("knowsoftImprovementBuffer");
-            foreach (Skill objSkill in _lstKnowsoftSkills)
-            {
-                objWriter.WriteStartElement("knowledgeSkill");
-                objWriter.WriteElementString("name", objSkill.Name);
-                objWriter.WriteEndElement();
-            }
-            // </knowsoftImprovementBuffer>
-            objWriter.WriteEndElement();
+           
 
             // <expenses>
             objWriter.WriteStartElement("expenses");
@@ -1145,15 +1135,7 @@ namespace Chummer
                 _lstImprovements.Add(objImprovement);
             }
             Timekeeper.Finish("load_char_imp");
-            Timekeeper.Start("load_char_knowsoft_buffer");
-            // Knowsoft Buffer.
-            XmlNodeList objXmlKnowsoftBuffer = objXmlDocument.SelectNodes("/character/knowsoftImprovementBuffer/knowledgeSkill");
-            foreach (XmlNode objXmlSkill in objXmlKnowsoftBuffer)
-            {
-                string strName = objXmlSkill["name"].InnerText;
-                _lstKnowsoftSkills.Add(new KnowledgeSkill(this, strName));
-            }
-            Timekeeper.Finish("load_char_knowsoft_buffer");
+            
             Timekeeper.Start("load_char_quality");
             // Qualities
             objXmlNodeList = objXmlDocument.SelectNodes("/character/qualities/quality");
@@ -2628,7 +2610,6 @@ namespace Chummer
             // Reset all of the Lists.
 			// This kills the GC
             _lstImprovements = new List<Improvement>();
-            _lstKnowsoftSkills = new List<KnowledgeSkill>();
 	        
             _lstContacts = new List<Contact>();
             _lstSpirits = new List<Spirit>();
@@ -5061,17 +5042,6 @@ namespace Chummer
             get
             {
                 return _lstImprovements;
-            }
-        }
-
-        /// <summary>
-        /// KnowsoftSkills.
-        /// </summary>
-        public List<KnowledgeSkill> KnowsoftSkills
-        {
-            get
-            {
-                return _lstKnowsoftSkills;
             }
         }
 

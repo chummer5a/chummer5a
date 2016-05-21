@@ -25,7 +25,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Linq;
-using Chummer.Skills;
+ using Chummer.Backend;
+ using Chummer.Skills;
 
 namespace Chummer
 {
@@ -165,9 +166,12 @@ namespace Chummer
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
 			SkillGroupBase, //group
-	        SpecialSkills,
-			ReflexRecorderOptimization
-		}
+			SkillKnowledgeForced, //A skill gained from a knowsoft
+
+			SpecialSkills,
+			ReflexRecorderOptimization,
+	        
+        }
 
         public enum ImprovementSource
         {
@@ -1940,88 +1944,96 @@ namespace Chummer
 				}
 			}
 
-			if (bonusNode.LocalName == "knowledgeskilllevel")
+			
+
+			if (bonusNode.LocalName == "knowsoft")
 			{
-				//Convert a knowledgeskilllevel to (something)
-				//It is slightly wider execution path than good as orginal goal was
-				//life modules only but they need a rework and it got a few more 
-				//features tackled on as it shared some stuff
+				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
 
-				//3 different options <select/> lets the user pick once
-				//<name> gives a specific kno skill
-				//options does strange thing so it gets turned into free knowledge points
-
-				if (bonusNode["options"] != null)
+				string name;
+				if (!string.IsNullOrWhiteSpace(_strForcedValue))
 				{
-					//give them free points as this shit is complicated if done well
+					name = _strForcedValue;
 				}
-				else
+				else if (bonusNode["pick"] != null)
 				{
-					string name;
-					if (!string.IsNullOrWhiteSpace(_strForcedValue))
+					List<ListItem> types;
+					if (bonusNode["group"] != null)
 					{
-						name = _strForcedValue;
+						var v = bonusNode.SelectNodes($"./group");
+						types =
+							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
+
 					}
-					else if (bonusNode["pick"] != null)
+					else if (bonusNode["notgroup"] != null)
 					{
-						List<ListItem> types;
-						if (bonusNode["group"] != null)
-						{
-
-							var v = bonusNode.SelectNodes($"./group");
-							types = KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
-
-						}
-						else if (bonusNode["notgroup"] != null)
-						{
-							types = KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
-						}
-						else
-						{
-							types = KnowledgeSkill.KnowledgeTypes;
-						}
-
-						frmSelectItem select = new frmSelectItem();
-						select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
-
-						select.ShowDialog();
-						if (select.DialogResult == DialogResult.Cancel)
-						{
-							return false;
-						}
-
-						name = select.SelectedItem;
-					}
-					else if (bonusNode["name"] != null)
-					{
-						name = bonusNode["name"].InnerText;
+						types =
+							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
 					}
 					else
 					{
-						//TODO some kind of error handling
-						Log.Error(new [] { bonusNode.OuterXml, "Missing pick or name"});
+						types = KnowledgeSkill.KnowledgeTypes;
+					}
+
+					frmSelectItem select = new frmSelectItem();
+					select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
+
+					select.ShowDialog();
+					if (select.DialogResult == DialogResult.Cancel)
+					{
 						return false;
 					}
-					_strSelectedValue = name;
 
-					KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
-                    _objCharacter.KnowsoftSkills.Add(skill);
-                    CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique);
-                    //Check if Skilljack
-                    if (_objCharacter.Cyberware.Any(x => x.Name.Contains("Skilljack")))
-                    {
-                        if (_objCharacter.SkillsSection.KnowledgeSkills.All(x => x.Name != name))
-                        {
-                            _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);                           
-                        }
-                    }				
+					name = select.SelectedItem;
 				}
+				else if (bonusNode["name"] != null)
+				{
+					name = bonusNode["name"].InnerText;
+				}
+				else
+				{
+					//TODO some kind of error handling
+					Log.Error(new[] {bonusNode.OuterXml, "Missing pick or name"});
+					return false;
+				}
+				_strSelectedValue = name;
+
+
+				KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
+
+				bool knowsoft = bonusNode.TryCheckValue("require", "skilljack");
+
+				if (knowsoft)
+				{
+					_objCharacter.SkillsSection.KnowsoftSkills.Add(skill);
+					if (_objCharacter.SkillsoftAccess)
+					{
+						_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+					}
+				}
+				else
+				{
+					_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+				}
+
+				CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique, val);
+				CreateImprovement(skill.Id.ToString(), objImprovementSource, strSourceName,
+					Improvement.ImprovementType.SkillKnowledgeForced, strUnique);
+
+			}
+
+			if (bonusNode.LocalName == "knowledgeskilllevel")
+			{
+				//Theoretically life modules, right now we just give out free points and let people sort it out themselves.
+				//Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
+
+				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", val);
 			}
 
 			if (bonusNode.LocalName == "knowldgeskillpoints")
 			{
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "",
-					ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
 
 			if (bonusNode.LocalName == ("skillgrouplevel"))
@@ -4293,13 +4305,7 @@ namespace Chummer
 				Log.Info("skillsoftaccess = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SkillsoftAccess, "");
-			    foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
-			    {
-                    if (!_objCharacter.SkillsSection.KnowledgeSkills.Where(x => x.Name == skill.Name).Any())
-                    {
-                        _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
-                    }
-                }
+				_objCharacter.SkillsSection.KnowledgeSkills.AddRange(_objCharacter.SkillsSection.KnowsoftSkills);
 			}
 
 			// Check for Quickening Metamagic.
@@ -4769,33 +4775,16 @@ namespace Chummer
 					//}
 				}
 
-				if (objImprovement.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills)
-				{
-					Guid searchId = Guid.Parse(objImprovement.ImprovedName);
-					KnowledgeSkill knowledgeSkill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Id == searchId);
-
-					if (knowledgeSkill != null)
-					{
-						_objCharacter.SkillsSection.KnowledgeSkills.Remove(knowledgeSkill);
-					}
-				}
-
-			    if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
 			    {
-			        foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
-			        {
-			            _objCharacter.SkillsSection.KnowledgeSkills.Remove(
-			                _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == skill.Name));
-			        }
+					_objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(_objCharacter.SkillsSection.KnowsoftSkills.Contains);
 			    }
 
-                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillBase)
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillKnowledgeForced)
                 {
-                    foreach (KnowledgeSkill skill in _objCharacter.KnowsoftSkills)
-                    {
-                        _objCharacter.SkillsSection.KnowledgeSkills.Remove(
-                            _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x => x.Name == objImprovement.ImprovedName));
-                    }
+	                Guid guid = Guid.Parse(objImprovement.ImprovedName);
+	                _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
+	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
                 }
 
                 // Remove "free" adept powers if any.
