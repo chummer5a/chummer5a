@@ -99,6 +99,7 @@ Application Change:
 - Added backwards Compability with old Redliner implementation (Only need to load once with the new Version to remove artifacts)
 - Fixed crashes when adding a PACK. Fixes #843.
 - Fixed Black Market Discount not decreasing Gear/Cyberware/Armor/Weapon/Vehicle Cost. Fixes #845.
+- Fixed Hanuman agility and changed Low-Light to thermographic vision. Fixes #847. Fixes #848.
 
 
 Data Change:
