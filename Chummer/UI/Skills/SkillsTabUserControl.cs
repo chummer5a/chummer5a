@@ -141,8 +141,21 @@ namespace Chummer.UI.Skills
 					lblBuyWithKarma.Visible = true;
 				}
 
-				lblKnoSp.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
-				lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+
+				//Because visible is broken in databindings
+				_character.SkillsSection.PropertyChanged += (o, e) =>
+				{
+					if (e.PropertyName ==
+					    nameof(SkillsSection.HasKnowledgePoints))
+					{
+						lblKnoSp.Visible =
+							_character.SkillsSection.HasKnowledgePoints;
+						lblKnoBwk.Visible = _character.SkillsSection.HasKnowledgePoints;
+					}
+				};
+				//lblKnoSp.Visible = true;
+				//lblKnoSp.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
+				//lblKnoBwk.DataBindings.Add("Visible", _character.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
 			}
 		}
 

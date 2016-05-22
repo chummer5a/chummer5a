@@ -34,6 +34,18 @@ namespace Chummer.Skills
 			_character.LOG.PropertyChanged += (sender, args) => KnoChanged();
 			_character.INT.PropertyChanged += (sender, args) => KnoChanged();
 
+			_character.ImprovementEvent += CharacterOnImprovementEvent;
+
+		}
+
+		private void CharacterOnImprovementEvent(List<Improvement> improvements, ImprovementManager improvementManager)
+		{
+			if (improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPoints)));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KnowledgeSkillPointsRemain)));
+			}
 		}
 
 		internal void AddSkills(FilterOptions skills)

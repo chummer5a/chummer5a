@@ -3,7 +3,7 @@ Canfix
 	
 	Skillgroups not quite updating right (DisplayRating)
 	
-	Something is wrong with knoskill sp + databinding
+	Printing
 	
 Known limitations
 	Cyberlimb Optimization is not included in cyberlimb pool tooltip

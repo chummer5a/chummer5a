@@ -55,8 +55,7 @@ namespace Chummer.UI.Skills
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
 				nudSkill.DataBindings.Add("Value", skill, nameof(Skill.Base), false, DataSourceUpdateMode.OnPropertyChanged);
 
-				//nudSkill.DataBindings.Add("Enabled", skill, nameof(SkillsSection.HasKnowledgePoints), false,
-				//	DataSourceUpdateMode.OnPropertyChanged);
+				nudSkill.DataBindings.Add("Enabled", skill.CharacterObject.SkillsSection, nameof(SkillsSection.HasKnowledgePoints), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				if (skill.CharacterObject.BuildMethod.HaveSkillPoints() || skill.CharacterObject.Options.FreeKarmaKnowledge)
 				{

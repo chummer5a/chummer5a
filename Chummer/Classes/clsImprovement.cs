@@ -5548,7 +5548,10 @@ namespace Chummer
 				}
 			}
 
-            Log.Exit("RemoveImprovements");
+
+			_objCharacter.ImprovementHook(objImprovementList, this);
+
+			Log.Exit("RemoveImprovements");
         }
 
 		/// <summary>
