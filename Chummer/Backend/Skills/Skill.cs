@@ -63,9 +63,56 @@ namespace Chummer.Skills
 
 		}
 
-		public void Print(XmlWriter xw)
+		public void Print(XmlTextWriter objWriter)
 		{
-			//TODO
+			objWriter.WriteStartElement("skill");
+
+			int rating = PoolOtherAttribute(AttributeObject.TotalValue);
+			int specRating = Specializations.Count == 0
+				? rating
+				: (!IsKnowledgeSkill && Name == "Artisan" &&
+				   CharacterObject.Qualities.Any(objQuality => objQuality.Name == "Inspired")
+					? rating + 3
+					: rating + 2);
+
+			int ratingModifiers = 0, dicePoolModifiers = 0;
+
+			objWriter.WriteElementString("name", DisplayName);
+			objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.Instance.GetString("String_None"));
+			objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.Instance.GetString("String_None"));
+			objWriter.WriteElementString("skillcategory", SkillCategory);
+			objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
+			objWriter.WriteElementString("grouped", (SkillGroupObject?.CareerIncrease).ToString());
+			objWriter.WriteElementString("default", Default.ToString());
+			objWriter.WriteElementString("rating", Rating.ToString());
+			objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
+			objWriter.WriteElementString("specializedrating",specRating.ToString());
+			objWriter.WriteElementString("total", PoolOtherAttribute(AttributeObject.TotalValue).ToString());
+			objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString());
+			objWriter.WriteElementString("exotic", IsExoticSkill.ToString());
+			objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
+			objWriter.WriteElementString("base", Base.ToString());
+			objWriter.WriteElementString("karma", Karma.ToString());
+			objWriter.WriteElementString("spec", Specialization);
+			objWriter.WriteElementString("attribute", Attribute);
+			objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
+			objWriter.WriteElementString("page", Page);
+			if (Attribute == "MAG" && CharacterObject.AdeptEnabled && CharacterObject.MagicianEnabled)
+				objWriter.WriteElementString("attributemod", CharacterObject.MAGMagician.ToString());
+			else
+				objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString());
+			objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString());
+			objWriter.WriteElementString("poolmod", dicePoolModifiers.ToString());
+			objWriter.WriteElementString("islanguage", (SkillCategory == "Language").ToString());
+			objWriter.WriteElementString("bp", CurrentKarmaCost().ToString());
+			objWriter.WriteStartElement("skillspecializations");
+			foreach (SkillSpecialization objSpec in Specializations)
+			{
+				objSpec.Print(objWriter);
+			}
+			objWriter.WriteEndElement();
+
+			objWriter.WriteEndElement();
 		}
 		
 		#region Factory

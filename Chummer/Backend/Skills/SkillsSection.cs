@@ -642,6 +642,21 @@ namespace Chummer.Skills
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasKnowledgePoints)));
 		}
 
-		
+
+		public void Print(XmlTextWriter objWriter)
+		{
+			foreach (Skill skill in Skills)
+			{
+				if (_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0)
+				{
+					skill.Print(objWriter);
+				}
+			}
+
+			foreach (KnowledgeSkill skill in KnowledgeSkills)
+			{
+				skill.Print(objWriter);
+			}
+		}
 	}
 }

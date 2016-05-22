@@ -2129,15 +2129,9 @@ namespace Chummer
             objWriter.WriteElementString("carryweight", (_attSTR.TotalValue * 10).ToString());
 
             // <skills>
-			//TODO: SAVE SKILLS
-            //objWriter.WriteStartElement("skills");
-            //foreach (Skill objSkill in _lstSkills)
-            //{
-            //    if (_objOptions.PrintSkillsWithZeroRating || (!_objOptions.PrintSkillsWithZeroRating && objSkill.Rating > 0) || objSkill.KnowledgeSkill)
-            //        objSkill.Print(objWriter);
-            //}
-            //// </skills>
-            //objWriter.WriteEndElement();
+			objWriter.WriteStartElement("skills");
+			SkillsSection.Print(objWriter);
+			objWriter.WriteEndElement();
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
