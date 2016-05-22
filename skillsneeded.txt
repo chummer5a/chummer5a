@@ -3,8 +3,6 @@ Canfix
 	
 	Skillgroups not quite updating right (DisplayRating)
 	
-	Specs price fuked too
-	
 	Something is wrong with knoskill sp + databinding
 	
 Known limitations

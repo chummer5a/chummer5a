@@ -93,11 +93,12 @@ namespace Chummer.UI.Skills
 					chkKarma.Visible = false;
 				}
 
-				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
-
+				
 				if (skill.IsExoticSkill)
 				{
 					cboSpec.Enabled = false;
+					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+
 				}
 				else
 				{
@@ -108,6 +109,9 @@ namespace Chummer.UI.Skills
 					cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.CanHaveSpecs), false,
 						DataSourceUpdateMode.OnPropertyChanged);
 					cboSpec.SelectedIndex = -1;
+
+					cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
+
 				}
 			}
 
@@ -268,6 +272,11 @@ namespace Chummer.UI.Skills
 		private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
 		{
 			Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
+		}
+
+		private void SkillControl2_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
