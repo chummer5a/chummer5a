@@ -101,6 +101,7 @@ Application Change:
 - Fixed Black Market Discount not decreasing Gear/Cyberware/Armor/Weapon/Vehicle Cost. Fixes #845.
 - Fixed Hanuman agility and changed Low-Light to thermographic vision. Fixes #847. Fixes #848.
 - Fixed limitation on Karma to nuyen when ignoring character creation rules. Fixes #846.
+- Fixed crash when loading a character with more than 200 Karma to Nuyen. Fixes #850.
 
 
 Data Change:
