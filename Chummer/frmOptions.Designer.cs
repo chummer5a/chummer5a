@@ -230,6 +230,9 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
+            this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
 			this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkUseTotalValueForFreeContacts = new System.Windows.Forms.CheckBox();
 			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
@@ -312,6 +315,7 @@
 			this.tabOptionalRules.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
 			this.tabHouseRules.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
 			this.SuspendLayout();
@@ -2556,6 +2560,9 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.label4);
+            this.tabHouseRules.Controls.Add(this.nudDroneArmorMultiplier);
+            this.tabHouseRules.Controls.Add(this.chkDroneArmorMultiplier);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeContacts);
 			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
@@ -2586,6 +2593,50 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(304, 234);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(12, 13);
+            this.label4.TabIndex = 27;
+            this.label4.Text = "x";
+            // 
+            // nudDroneArmorMultiplier
+            // 
+            this.nudDroneArmorMultiplier.Enabled = false;
+            this.nudDroneArmorMultiplier.Location = new System.Drawing.Point(322, 232);
+            this.nudDroneArmorMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudDroneArmorMultiplier.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.nudDroneArmorMultiplier.Name = "nudDroneArmorMultiplier";
+            this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(36, 20);
+            this.nudDroneArmorMultiplier.TabIndex = 25;
+            this.nudDroneArmorMultiplier.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // chkDroneArmorMultiplier
+            // 
+            this.chkDroneArmorMultiplier.AutoSize = true;
+            this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(8, 233);
+            this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
+            this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
+            this.chkDroneArmorMultiplier.TabIndex = 24;
+            this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
+            this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
+            this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
+            this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.chkDroneArmorMultiplier_CheckedChanged);
+            // 
 			// chkUseTotalValueForFreeKnowledge
 			// 
 			this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
@@ -2991,6 +3042,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
 			this.tabHouseRules.ResumeLayout(false);
 			this.tabHouseRules.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
 			this.ResumeLayout(false);
@@ -3228,5 +3280,8 @@
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeContacts;
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeKnowledge;
         private System.Windows.Forms.CheckBox chkDontUseCyberlimbCalculation;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown nudDroneArmorMultiplier;
+        private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
     }
 }

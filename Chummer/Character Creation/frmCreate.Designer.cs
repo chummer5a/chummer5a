@@ -3039,1545 +3039,1261 @@ namespace Chummer
 			this.tabInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabInfo.Controls.Add(this.tabBPSummary);
-			this.tabInfo.Controls.Add(this.tabBuildSummary);
-			this.tabInfo.Controls.Add(this.tabOtherInfo);
-			this.tabInfo.Controls.Add(this.tabDefences);
-			this.tabInfo.Location = new System.Drawing.Point(0, 0);
-			this.tabInfo.Name = "tabInfo";
-			this.tabInfo.SelectedIndex = 0;
-			this.tabInfo.Size = new System.Drawing.Size(187, 637);
-			this.tabInfo.TabIndex = 50;
-			// 
-			// tabBPSummary
-			// 
-			this.tabBPSummary.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabBPSummary.Controls.Add(this.lblBuildSpecialAttributes);
-			this.tabBPSummary.Controls.Add(this.lblSpecialAttributesBP);
-			this.tabBPSummary.Controls.Add(this.lblInitiationBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildInitiation);
-			this.tabBPSummary.Controls.Add(this.lblBuildFoci);
-			this.tabBPSummary.Controls.Add(this.lblFociBP);
-			this.tabBPSummary.Controls.Add(this.lblManeuversBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildManeuvers);
-			this.tabBPSummary.Controls.Add(this.lblNuyenBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildNuyen);
-			this.tabBPSummary.Controls.Add(this.lblEnemiesBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildEnemies);
-			this.tabBPSummary.Controls.Add(this.lblKarmaMetatypeBP);
-			this.tabBPSummary.Controls.Add(this.label12);
-			this.tabBPSummary.Controls.Add(this.lblComplexFormsBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildComplexForms);
-			this.tabBPSummary.Controls.Add(this.lblBuildSprites);
-			this.tabBPSummary.Controls.Add(this.lblBuildSpirits);
-			this.tabBPSummary.Controls.Add(this.lblSpiritsBP);
-			this.tabBPSummary.Controls.Add(this.lblSpritesBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildSpells);
-			this.tabBPSummary.Controls.Add(this.lblKnowledgeSkillsBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildKnowledgeSkills);
-			this.tabBPSummary.Controls.Add(this.lblActiveSkillsBP);
-			this.tabBPSummary.Controls.Add(this.lblSpellsBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildActiveSkills);
-			this.tabBPSummary.Controls.Add(this.lblSkillGroupsBP);
-			this.tabBPSummary.Controls.Add(this.lblBuildSkillGroups);
-			this.tabBPSummary.Controls.Add(this.lblBuildContacts);
-			this.tabBPSummary.Controls.Add(this.lblBuildPrimaryAttributes);
-			this.tabBPSummary.Controls.Add(this.lblBuildNegativeQualities);
-			this.tabBPSummary.Controls.Add(this.lblBuildPositiveQualities);
-			this.tabBPSummary.Controls.Add(this.lblPositiveQualitiesBP);
-			this.tabBPSummary.Controls.Add(this.lblNegativeQualitiesBP);
-			this.tabBPSummary.Controls.Add(this.lblAttributesBP);
-			this.tabBPSummary.Controls.Add(this.lblContactsBP);
-			this.tabBPSummary.Location = new System.Drawing.Point(4, 22);
-			this.tabBPSummary.Name = "tabBPSummary";
-			this.tabBPSummary.Padding = new System.Windows.Forms.Padding(3);
-			this.tabBPSummary.Size = new System.Drawing.Size(179, 611);
-			this.tabBPSummary.TabIndex = 0;
-			this.tabBPSummary.Tag = "Tab_BPSummary";
-			this.tabBPSummary.Text = "Build Point Summary";
-			// 
-			// lblSpecialAttributesBP
-			// 
-			this.lblSpecialAttributesBP.AutoSize = true;
-			this.lblSpecialAttributesBP.Location = new System.Drawing.Point(116, 55);
-			this.lblSpecialAttributesBP.Name = "lblSpecialAttributesBP";
-			this.lblSpecialAttributesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblSpecialAttributesBP.TabIndex = 84;
-			this.lblSpecialAttributesBP.Text = "0 BP";
-			// 
-			// lblInitiationBP
-			// 
-			this.lblInitiationBP.AutoSize = true;
-			this.lblInitiationBP.Location = new System.Drawing.Point(116, 375);
-			this.lblInitiationBP.Name = "lblInitiationBP";
-			this.lblInitiationBP.Size = new System.Drawing.Size(30, 13);
-			this.lblInitiationBP.TabIndex = 82;
-			this.lblInitiationBP.Text = "0 BP";
-			// 
-			// lblBuildInitiation
-			// 
-			this.lblBuildInitiation.AutoSize = true;
-			this.lblBuildInitiation.Location = new System.Drawing.Point(6, 375);
-			this.lblBuildInitiation.Name = "lblBuildInitiation";
-			this.lblBuildInitiation.Size = new System.Drawing.Size(106, 13);
-			this.lblBuildInitiation.TabIndex = 83;
-			this.lblBuildInitiation.Tag = "Label_SummaryInitiation";
-			this.lblBuildInitiation.Text = "Initiation/Submersion";
-			// 
-			// lblFociBP
-			// 
-			this.lblFociBP.AutoSize = true;
-			this.lblFociBP.Location = new System.Drawing.Point(116, 283);
-			this.lblFociBP.Name = "lblFociBP";
-			this.lblFociBP.Size = new System.Drawing.Size(30, 13);
-			this.lblFociBP.TabIndex = 80;
-			this.lblFociBP.Text = "0 BP";
-			// 
-			// lblManeuversBP
-			// 
-			this.lblManeuversBP.AutoSize = true;
-			this.lblManeuversBP.Location = new System.Drawing.Point(116, 398);
-			this.lblManeuversBP.Name = "lblManeuversBP";
-			this.lblManeuversBP.Size = new System.Drawing.Size(30, 13);
-			this.lblManeuversBP.TabIndex = 78;
-			this.lblManeuversBP.Text = "0 BP";
-			// 
-			// lblNuyenBP
-			// 
-			this.lblNuyenBP.AutoSize = true;
-			this.lblNuyenBP.Location = new System.Drawing.Point(116, 169);
-			this.lblNuyenBP.Name = "lblNuyenBP";
-			this.lblNuyenBP.Size = new System.Drawing.Size(30, 13);
-			this.lblNuyenBP.TabIndex = 77;
-			this.lblNuyenBP.Text = "0 BP";
-			// 
-			// lblEnemiesBP
-			// 
-			this.lblEnemiesBP.AutoSize = true;
-			this.lblEnemiesBP.Location = new System.Drawing.Point(116, 146);
-			this.lblEnemiesBP.Name = "lblEnemiesBP";
-			this.lblEnemiesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblEnemiesBP.TabIndex = 66;
-			this.lblEnemiesBP.Text = "0 BP";
-			// 
-			// lblKarmaMetatypeBP
-			// 
-			this.lblKarmaMetatypeBP.AutoSize = true;
-			this.lblKarmaMetatypeBP.Location = new System.Drawing.Point(116, 9);
-			this.lblKarmaMetatypeBP.Name = "lblKarmaMetatypeBP";
-			this.lblKarmaMetatypeBP.Size = new System.Drawing.Size(30, 13);
-			this.lblKarmaMetatypeBP.TabIndex = 74;
-			this.lblKarmaMetatypeBP.Text = "0 BP";
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(6, 9);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(51, 13);
-			this.label12.TabIndex = 73;
-			this.label12.Tag = "Label_SummaryMetatype";
-			this.label12.Text = "Metatype";
-			// 
-			// lblComplexFormsBP
-			// 
-			this.lblComplexFormsBP.AutoSize = true;
-			this.lblComplexFormsBP.Location = new System.Drawing.Point(116, 352);
-			this.lblComplexFormsBP.Name = "lblComplexFormsBP";
-			this.lblComplexFormsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblComplexFormsBP.TabIndex = 61;
-			this.lblComplexFormsBP.Text = "0 BP";
-			// 
-			// lblSpiritsBP
-			// 
-			this.lblSpiritsBP.AutoSize = true;
-			this.lblSpiritsBP.Location = new System.Drawing.Point(116, 306);
-			this.lblSpiritsBP.Name = "lblSpiritsBP";
-			this.lblSpiritsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblSpiritsBP.TabIndex = 52;
-			this.lblSpiritsBP.Text = "0 BP";
-			// 
-			// lblSpritesBP
-			// 
-			this.lblSpritesBP.AutoSize = true;
-			this.lblSpritesBP.Location = new System.Drawing.Point(116, 329);
-			this.lblSpritesBP.Name = "lblSpritesBP";
-			this.lblSpritesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblSpritesBP.TabIndex = 58;
-			this.lblSpritesBP.Text = "0 BP";
-			// 
-			// lblKnowledgeSkillsBP
-			// 
-			this.lblKnowledgeSkillsBP.AutoSize = true;
-			this.lblKnowledgeSkillsBP.Location = new System.Drawing.Point(116, 237);
-			this.lblKnowledgeSkillsBP.Name = "lblKnowledgeSkillsBP";
-			this.lblKnowledgeSkillsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblKnowledgeSkillsBP.TabIndex = 68;
-			this.lblKnowledgeSkillsBP.Text = "0 BP";
-			// 
-			// lblActiveSkillsBP
-			// 
-			this.lblActiveSkillsBP.AutoSize = true;
-			this.lblActiveSkillsBP.Location = new System.Drawing.Point(116, 214);
-			this.lblActiveSkillsBP.Name = "lblActiveSkillsBP";
-			this.lblActiveSkillsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblActiveSkillsBP.TabIndex = 67;
-			this.lblActiveSkillsBP.Text = "0 BP";
-			// 
-			// lblSpellsBP
-			// 
-			this.lblSpellsBP.AutoSize = true;
-			this.lblSpellsBP.Location = new System.Drawing.Point(116, 260);
-			this.lblSpellsBP.Name = "lblSpellsBP";
-			this.lblSpellsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblSpellsBP.TabIndex = 51;
-			this.lblSpellsBP.Text = "0 BP";
-			// 
-			// lblSkillGroupsBP
-			// 
-			this.lblSkillGroupsBP.AutoSize = true;
-			this.lblSkillGroupsBP.Location = new System.Drawing.Point(116, 191);
-			this.lblSkillGroupsBP.Name = "lblSkillGroupsBP";
-			this.lblSkillGroupsBP.Size = new System.Drawing.Size(30, 13);
-			this.lblSkillGroupsBP.TabIndex = 65;
-			this.lblSkillGroupsBP.Text = "0 BP";
-			// 
-			// lblPositiveQualitiesBP
-			// 
-			this.lblPositiveQualitiesBP.AutoSize = true;
-			this.lblPositiveQualitiesBP.Location = new System.Drawing.Point(116, 78);
-			this.lblPositiveQualitiesBP.Name = "lblPositiveQualitiesBP";
-			this.lblPositiveQualitiesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblPositiveQualitiesBP.TabIndex = 53;
-			this.lblPositiveQualitiesBP.Text = "0 BP";
-			// 
-			// lblNegativeQualitiesBP
-			// 
-			this.lblNegativeQualitiesBP.AutoSize = true;
-			this.lblNegativeQualitiesBP.Location = new System.Drawing.Point(116, 101);
-			this.lblNegativeQualitiesBP.Name = "lblNegativeQualitiesBP";
-			this.lblNegativeQualitiesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblNegativeQualitiesBP.TabIndex = 55;
-			this.lblNegativeQualitiesBP.Text = "0 BP";
-			// 
-			// lblAttributesBP
-			// 
-			this.lblAttributesBP.AutoSize = true;
-			this.lblAttributesBP.Location = new System.Drawing.Point(116, 32);
-			this.lblAttributesBP.Name = "lblAttributesBP";
-			this.lblAttributesBP.Size = new System.Drawing.Size(30, 13);
-			this.lblAttributesBP.TabIndex = 56;
-			this.lblAttributesBP.Text = "0 BP";
-			// 
-			// lblContactsBP
-			// 
-			this.lblContactsBP.AutoSize = true;
-			this.lblContactsBP.Location = new System.Drawing.Point(116, 123);
-			this.lblContactsBP.Name = "lblContactsBP";
-			this.lblContactsBP.Size = new System.Drawing.Size(46, 13);
-			this.lblContactsBP.TabIndex = 60;
-			this.lblContactsBP.Text = "0 Karma";
-			// 
-			// tabBuildSummary
-			// 
-			this.tabBuildSummary.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabBuildSummary.Controls.Add(this.lblMetatypeBP);
-			this.tabBuildSummary.Controls.Add(this.label18);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildEssenceLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildEssence);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecialLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpecial);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNuyen);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNuyenLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildAttributes);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildAttributesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildComplexForms);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildComplexFormsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpellsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildKnowledgeSkills);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildKnowledgeSkillsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildActiveSkills);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSpells);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildActiveSkillsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSkillGroups);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildSkillGroupsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildContactsLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNegativeQualitiesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildPositiveQualitiesLabel);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildPositiveQualities);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildNegativeQualities);
-			this.tabBuildSummary.Controls.Add(this.lblPBuildContacts);
-			this.tabBuildSummary.Location = new System.Drawing.Point(4, 22);
-			this.tabBuildSummary.Name = "tabBuildSummary";
-			this.tabBuildSummary.Size = new System.Drawing.Size(179, 611);
-			this.tabBuildSummary.TabIndex = 2;
-			this.tabBuildSummary.Text = "Build Summary";
-			// 
-			// lblMetatypeBP
-			// 
-			this.lblMetatypeBP.AutoSize = true;
-			this.lblMetatypeBP.Location = new System.Drawing.Point(123, 9);
-			this.lblMetatypeBP.Name = "lblMetatypeBP";
-			this.lblMetatypeBP.Size = new System.Drawing.Size(30, 13);
-			this.lblMetatypeBP.TabIndex = 125;
-			this.lblMetatypeBP.Text = "0 BP";
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(6, 9);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(51, 13);
-			this.label18.TabIndex = 124;
-			this.label18.Tag = "Label_SummaryMetatype";
-			this.label18.Text = "Metatype";
-			// 
-			// lblPBuildEssence
-			// 
-			this.lblPBuildEssence.AutoSize = true;
-			this.lblPBuildEssence.Location = new System.Drawing.Point(123, 262);
-			this.lblPBuildEssence.Name = "lblPBuildEssence";
-			this.lblPBuildEssence.Size = new System.Drawing.Size(28, 13);
-			this.lblPBuildEssence.TabIndex = 123;
-			this.lblPBuildEssence.Text = "6.00";
-			// 
-			// lblPBuildSpecial
-			// 
-			this.lblPBuildSpecial.AutoSize = true;
-			this.lblPBuildSpecial.Location = new System.Drawing.Point(123, 55);
-			this.lblPBuildSpecial.Name = "lblPBuildSpecial";
-			this.lblPBuildSpecial.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSpecial.TabIndex = 120;
-			this.lblPBuildSpecial.Text = "0 of 0";
-			// 
-			// lblPBuildNuyen
-			// 
-			this.lblPBuildNuyen.AutoSize = true;
-			this.lblPBuildNuyen.Location = new System.Drawing.Point(123, 124);
-			this.lblPBuildNuyen.Name = "lblPBuildNuyen";
-			this.lblPBuildNuyen.Size = new System.Drawing.Size(19, 13);
-			this.lblPBuildNuyen.TabIndex = 113;
-			this.lblPBuildNuyen.Text = "0¥";
-			// 
-			// lblPBuildAttributes
-			// 
-			this.lblPBuildAttributes.AutoSize = true;
-			this.lblPBuildAttributes.Location = new System.Drawing.Point(123, 32);
-			this.lblPBuildAttributes.Name = "lblPBuildAttributes";
-			this.lblPBuildAttributes.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildAttributes.TabIndex = 110;
-			this.lblPBuildAttributes.Text = "0 of 0";
-			// 
-			// lblPBuildAttributesLabel
-			// 
-			this.lblPBuildAttributesLabel.AutoSize = true;
-			this.lblPBuildAttributesLabel.Location = new System.Drawing.Point(6, 32);
-			this.lblPBuildAttributesLabel.Name = "lblPBuildAttributesLabel";
-			this.lblPBuildAttributesLabel.Size = new System.Drawing.Size(88, 13);
-			this.lblPBuildAttributesLabel.TabIndex = 109;
-			this.lblPBuildAttributesLabel.Tag = "Label_SummaryPrimaryAttributes";
-			this.lblPBuildAttributesLabel.Text = "Primary Attributes";
-			// 
-			// lblPBuildComplexForms
-			// 
-			this.lblPBuildComplexForms.AutoSize = true;
-			this.lblPBuildComplexForms.Location = new System.Drawing.Point(123, 239);
-			this.lblPBuildComplexForms.Name = "lblPBuildComplexForms";
-			this.lblPBuildComplexForms.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildComplexForms.TabIndex = 97;
-			this.lblPBuildComplexForms.Text = "0 of 0";
-			// 
-			// lblPBuildKnowledgeSkills
-			// 
-			this.lblPBuildKnowledgeSkills.AutoSize = true;
-			this.lblPBuildKnowledgeSkills.Location = new System.Drawing.Point(123, 193);
-			this.lblPBuildKnowledgeSkills.Name = "lblPBuildKnowledgeSkills";
-			this.lblPBuildKnowledgeSkills.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildKnowledgeSkills.TabIndex = 104;
-			this.lblPBuildKnowledgeSkills.Text = "0 of 0";
-			// 
-			// lblPBuildActiveSkills
-			// 
-			this.lblPBuildActiveSkills.AutoSize = true;
-			this.lblPBuildActiveSkills.Location = new System.Drawing.Point(123, 170);
-			this.lblPBuildActiveSkills.Name = "lblPBuildActiveSkills";
-			this.lblPBuildActiveSkills.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildActiveSkills.TabIndex = 103;
-			this.lblPBuildActiveSkills.Text = "0 of 0";
-			// 
-			// lblPBuildSpells
-			// 
-			this.lblPBuildSpells.AutoSize = true;
-			this.lblPBuildSpells.Location = new System.Drawing.Point(123, 216);
-			this.lblPBuildSpells.Name = "lblPBuildSpells";
-			this.lblPBuildSpells.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSpells.TabIndex = 87;
-			this.lblPBuildSpells.Text = "0 of 0";
-			// 
-			// lblPBuildSkillGroups
-			// 
-			this.lblPBuildSkillGroups.AutoSize = true;
-			this.lblPBuildSkillGroups.Location = new System.Drawing.Point(123, 147);
-			this.lblPBuildSkillGroups.Name = "lblPBuildSkillGroups";
-			this.lblPBuildSkillGroups.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildSkillGroups.TabIndex = 101;
-			this.lblPBuildSkillGroups.Text = "0 of 0";
-			// 
-			// lblPBuildPositiveQualities
-			// 
-			this.lblPBuildPositiveQualities.AutoSize = true;
-			this.lblPBuildPositiveQualities.Location = new System.Drawing.Point(123, 78);
-			this.lblPBuildPositiveQualities.Name = "lblPBuildPositiveQualities";
-			this.lblPBuildPositiveQualities.Size = new System.Drawing.Size(30, 13);
-			this.lblPBuildPositiveQualities.TabIndex = 89;
-			this.lblPBuildPositiveQualities.Text = "0 BP";
-			// 
-			// lblPBuildNegativeQualities
-			// 
-			this.lblPBuildNegativeQualities.AutoSize = true;
-			this.lblPBuildNegativeQualities.Location = new System.Drawing.Point(123, 101);
-			this.lblPBuildNegativeQualities.Name = "lblPBuildNegativeQualities";
-			this.lblPBuildNegativeQualities.Size = new System.Drawing.Size(30, 13);
-			this.lblPBuildNegativeQualities.TabIndex = 91;
-			this.lblPBuildNegativeQualities.Text = "0 BP";
-			// 
-			// lblPBuildContacts
-			// 
-			this.lblPBuildContacts.AutoSize = true;
-			this.lblPBuildContacts.Location = new System.Drawing.Point(123, 284);
-			this.lblPBuildContacts.Name = "lblPBuildContacts";
-			this.lblPBuildContacts.Size = new System.Drawing.Size(34, 13);
-			this.lblPBuildContacts.TabIndex = 96;
-			this.lblPBuildContacts.Text = "0 of 0";
-			// 
-			// tabOtherInfo
-			// 
-			this.tabOtherInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabOtherInfo.Controls.Add(this.lblRiggingINI);
-			this.tabOtherInfo.Controls.Add(this.lblRiggingINILabel);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINIHot);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINIHotLabel);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINICold);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINIColdLabel);
-			this.tabOtherInfo.Controls.Add(this.lblFly);
-			this.tabOtherInfo.Controls.Add(this.lblFlyLabel);
-			this.tabOtherInfo.Controls.Add(this.lblSwim);
-			this.tabOtherInfo.Controls.Add(this.lblSwimLabel);
-			this.tabOtherInfo.Controls.Add(this.lblMemory);
-			this.tabOtherInfo.Controls.Add(this.lblMemoryLabel);
-			this.tabOtherInfo.Controls.Add(this.lblLiftCarry);
-			this.tabOtherInfo.Controls.Add(this.lblLiftCarryLabel);
-			this.tabOtherInfo.Controls.Add(this.lblJudgeIntentions);
-			this.tabOtherInfo.Controls.Add(this.lblJudgeIntentionsLabel);
-			this.tabOtherInfo.Controls.Add(this.lblComposure);
-			this.tabOtherInfo.Controls.Add(this.lblComposureLabel);
-			this.tabOtherInfo.Controls.Add(this.lblMovement);
-			this.tabOtherInfo.Controls.Add(this.lblMovementLabel);
-			this.tabOtherInfo.Controls.Add(this.lblRemainingNuyen);
-			this.tabOtherInfo.Controls.Add(this.lblRemainingNuyenLabel);
-			this.tabOtherInfo.Controls.Add(this.lblESSMax);
-			this.tabOtherInfo.Controls.Add(this.lblESS);
-			this.tabOtherInfo.Controls.Add(this.lblArmor);
-			this.tabOtherInfo.Controls.Add(this.lblArmorLabel);
-			this.tabOtherInfo.Controls.Add(this.lblAstralINI);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINI);
-			this.tabOtherInfo.Controls.Add(this.lblINI);
-			this.tabOtherInfo.Controls.Add(this.lblCMStun);
-			this.tabOtherInfo.Controls.Add(this.lblCMPhysical);
-			this.tabOtherInfo.Controls.Add(this.lblAstralINILabel);
-			this.tabOtherInfo.Controls.Add(this.lblMatrixINILabel);
-			this.tabOtherInfo.Controls.Add(this.lblINILabel);
-			this.tabOtherInfo.Controls.Add(this.lblCMStunLabel);
-			this.tabOtherInfo.Controls.Add(this.lblCMPhysicalLabel);
-			this.tabOtherInfo.Location = new System.Drawing.Point(4, 22);
-			this.tabOtherInfo.Name = "tabOtherInfo";
-			this.tabOtherInfo.Padding = new System.Windows.Forms.Padding(3);
-			this.tabOtherInfo.Size = new System.Drawing.Size(179, 611);
-			this.tabOtherInfo.TabIndex = 1;
-			this.tabOtherInfo.Tag = "Tab_OtherInfo";
-			this.tabOtherInfo.Text = "Other Info";
-			// 
-			// lblRiggingINI
-			// 
-			this.lblRiggingINI.AutoSize = true;
-			this.lblRiggingINI.Location = new System.Drawing.Point(139, 167);
-			this.lblRiggingINI.Name = "lblRiggingINI";
-			this.lblRiggingINI.Size = new System.Drawing.Size(13, 13);
-			this.lblRiggingINI.TabIndex = 76;
-			this.lblRiggingINI.Text = "0";
-			// 
-			// lblMatrixINIHot
-			// 
-			this.lblMatrixINIHot.AutoSize = true;
-			this.lblMatrixINIHot.Location = new System.Drawing.Point(139, 144);
-			this.lblMatrixINIHot.Name = "lblMatrixINIHot";
-			this.lblMatrixINIHot.Size = new System.Drawing.Size(13, 13);
-			this.lblMatrixINIHot.TabIndex = 74;
-			this.lblMatrixINIHot.Text = "0";
-			// 
-			// lblMatrixINICold
-			// 
-			this.lblMatrixINICold.AutoSize = true;
-			this.lblMatrixINICold.Location = new System.Drawing.Point(139, 121);
-			this.lblMatrixINICold.Name = "lblMatrixINICold";
-			this.lblMatrixINICold.Size = new System.Drawing.Size(13, 13);
-			this.lblMatrixINICold.TabIndex = 72;
-			this.lblMatrixINICold.Text = "0";
-			// 
-			// lblFly
-			// 
-			this.lblFly.AutoSize = true;
-			this.lblFly.Location = new System.Drawing.Point(139, 393);
-			this.lblFly.Name = "lblFly";
-			this.lblFly.Size = new System.Drawing.Size(13, 13);
-			this.lblFly.TabIndex = 55;
-			this.lblFly.Text = "0";
-			// 
-			// lblFlyLabel
-			// 
-			this.lblFlyLabel.AutoSize = true;
-			this.lblFlyLabel.Location = new System.Drawing.Point(6, 393);
-			this.lblFlyLabel.Name = "lblFlyLabel";
-			this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
-			this.lblFlyLabel.TabIndex = 54;
-			this.lblFlyLabel.Tag = "Label_OtherFly";
-			this.lblFlyLabel.Text = "Fly:";
-			// 
-			// lblSwim
-			// 
-			this.lblSwim.AutoSize = true;
-			this.lblSwim.Location = new System.Drawing.Point(139, 370);
-			this.lblSwim.Name = "lblSwim";
-			this.lblSwim.Size = new System.Drawing.Size(13, 13);
-			this.lblSwim.TabIndex = 53;
-			this.lblSwim.Text = "0";
-			// 
-			// lblSwimLabel
-			// 
-			this.lblSwimLabel.AutoSize = true;
-			this.lblSwimLabel.Location = new System.Drawing.Point(6, 370);
-			this.lblSwimLabel.Name = "lblSwimLabel";
-			this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
-			this.lblSwimLabel.TabIndex = 52;
-			this.lblSwimLabel.Tag = "Label_OtherSwim";
-			this.lblSwimLabel.Text = "Swim:";
-			// 
-			// lblMemory
-			// 
-			this.lblMemory.AutoSize = true;
-			this.lblMemory.Location = new System.Drawing.Point(139, 324);
-			this.lblMemory.Name = "lblMemory";
-			this.lblMemory.Size = new System.Drawing.Size(13, 13);
-			this.lblMemory.TabIndex = 51;
-			this.lblMemory.Text = "0";
-			// 
-			// lblLiftCarry
-			// 
-			this.lblLiftCarry.AutoSize = true;
-			this.lblLiftCarry.Location = new System.Drawing.Point(139, 301);
-			this.lblLiftCarry.Name = "lblLiftCarry";
-			this.lblLiftCarry.Size = new System.Drawing.Size(13, 13);
-			this.lblLiftCarry.TabIndex = 49;
-			this.lblLiftCarry.Text = "0";
-			// 
-			// lblJudgeIntentions
-			// 
-			this.lblJudgeIntentions.AutoSize = true;
-			this.lblJudgeIntentions.Location = new System.Drawing.Point(139, 278);
-			this.lblJudgeIntentions.Name = "lblJudgeIntentions";
-			this.lblJudgeIntentions.Size = new System.Drawing.Size(13, 13);
-			this.lblJudgeIntentions.TabIndex = 47;
-			this.lblJudgeIntentions.Text = "0";
-			// 
-			// lblComposure
-			// 
-			this.lblComposure.AutoSize = true;
-			this.lblComposure.Location = new System.Drawing.Point(139, 255);
-			this.lblComposure.Name = "lblComposure";
-			this.lblComposure.Size = new System.Drawing.Size(13, 13);
-			this.lblComposure.TabIndex = 45;
-			this.lblComposure.Text = "0";
-			// 
-			// lblMovement
-			// 
-			this.lblMovement.AutoSize = true;
-			this.lblMovement.Location = new System.Drawing.Point(139, 347);
-			this.lblMovement.Name = "lblMovement";
-			this.lblMovement.Size = new System.Drawing.Size(13, 13);
-			this.lblMovement.TabIndex = 43;
-			this.lblMovement.Text = "0";
-			// 
-			// lblMovementLabel
-			// 
-			this.lblMovementLabel.AutoSize = true;
-			this.lblMovementLabel.Location = new System.Drawing.Point(6, 347);
-			this.lblMovementLabel.Name = "lblMovementLabel";
-			this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
-			this.lblMovementLabel.TabIndex = 42;
-			this.lblMovementLabel.Tag = "Label_OtherMovement";
-			this.lblMovementLabel.Text = "Movement:";
-			// 
-			// lblRemainingNuyen
-			// 
-			this.lblRemainingNuyen.AutoSize = true;
-			this.lblRemainingNuyen.Location = new System.Drawing.Point(139, 232);
-			this.lblRemainingNuyen.Name = "lblRemainingNuyen";
-			this.lblRemainingNuyen.Size = new System.Drawing.Size(13, 13);
-			this.lblRemainingNuyen.TabIndex = 37;
-			this.lblRemainingNuyen.Text = "0";
-			// 
-			// lblESSMax
-			// 
-			this.lblESSMax.AutoSize = true;
-			this.lblESSMax.Location = new System.Drawing.Point(139, 209);
-			this.lblESSMax.Name = "lblESSMax";
-			this.lblESSMax.Size = new System.Drawing.Size(13, 13);
-			this.lblESSMax.TabIndex = 35;
-			this.lblESSMax.Text = "0";
-			// 
-			// lblArmor
-			// 
-			this.lblArmor.AutoSize = true;
-			this.lblArmor.Location = new System.Drawing.Point(139, 188);
-			this.lblArmor.Name = "lblArmor";
-			this.lblArmor.Size = new System.Drawing.Size(13, 13);
-			this.lblArmor.TabIndex = 31;
-			this.lblArmor.Text = "0";
-			// 
-			// lblAstralINI
-			// 
-			this.lblAstralINI.AutoSize = true;
-			this.lblAstralINI.Location = new System.Drawing.Point(139, 75);
-			this.lblAstralINI.Name = "lblAstralINI";
-			this.lblAstralINI.Size = new System.Drawing.Size(13, 13);
-			this.lblAstralINI.TabIndex = 29;
-			this.lblAstralINI.Text = "0";
-			// 
-			// lblMatrixINI
-			// 
-			this.lblMatrixINI.AutoSize = true;
-			this.lblMatrixINI.Location = new System.Drawing.Point(139, 98);
-			this.lblMatrixINI.Name = "lblMatrixINI";
-			this.lblMatrixINI.Size = new System.Drawing.Size(13, 13);
-			this.lblMatrixINI.TabIndex = 28;
-			this.lblMatrixINI.Text = "0";
-			// 
-			// lblINI
-			// 
-			this.lblINI.AutoSize = true;
-			this.lblINI.Location = new System.Drawing.Point(139, 53);
-			this.lblINI.Name = "lblINI";
-			this.lblINI.Size = new System.Drawing.Size(13, 13);
-			this.lblINI.TabIndex = 26;
-			this.lblINI.Text = "0";
-			// 
-			// lblCMStun
-			// 
-			this.lblCMStun.AutoSize = true;
-			this.lblCMStun.Location = new System.Drawing.Point(139, 31);
-			this.lblCMStun.Name = "lblCMStun";
-			this.lblCMStun.Size = new System.Drawing.Size(13, 13);
-			this.lblCMStun.TabIndex = 25;
-			this.lblCMStun.Text = "0";
-			// 
-			// lblCMPhysical
-			// 
-			this.lblCMPhysical.AutoSize = true;
-			this.lblCMPhysical.Location = new System.Drawing.Point(139, 9);
-			this.lblCMPhysical.Name = "lblCMPhysical";
-			this.lblCMPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblCMPhysical.TabIndex = 24;
-			this.lblCMPhysical.Text = "0";
-			// 
-			// tabDefences
-			// 
-			this.tabDefences.BackColor = System.Drawing.SystemColors.Control;
-			this.tabDefences.Controls.Add(this.lblCounterspellingDiceLabel);
-			this.tabDefences.Controls.Add(this.nudCounterspellingDice);
-			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysical);
-			this.tabDefences.Controls.Add(this.lbllSpellDefenceManipPhysicalLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMental);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceManipMentalLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysical);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionPhysicalLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionMana);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIllusionManaLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWIL);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOG);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINT);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHA);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTR);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttWILLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttLOGLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttINTLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttCHALabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttSTRLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREALabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGILabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttREA);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttAGI);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBOD);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDecAttBODLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDetection);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDetectionLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysical);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakPhysicalLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakMana);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceDirectSoakManaLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoak);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectSoakLabel);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodge);
-			this.tabDefences.Controls.Add(this.lblSpellDefenceIndirectDodgeLabel);
-			this.tabDefences.Location = new System.Drawing.Point(4, 22);
-			this.tabDefences.Name = "tabDefences";
-			this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDefences.Size = new System.Drawing.Size(179, 611);
-			this.tabDefences.TabIndex = 3;
-			this.tabDefences.Text = "Spell Defence";
-			// 
-			// nudCounterspellingDice
-			// 
-			this.nudCounterspellingDice.Location = new System.Drawing.Point(133, 9);
-			this.nudCounterspellingDice.Name = "nudCounterspellingDice";
-			this.nudCounterspellingDice.Size = new System.Drawing.Size(40, 20);
-			this.nudCounterspellingDice.TabIndex = 61;
-			this.nudCounterspellingDice.ValueChanged += new System.EventHandler(this.nudCounterspellingDice_Changed);
-			// 
-			// lbllSpellDefenceManipPhysical
-			// 
-			this.lbllSpellDefenceManipPhysical.AutoSize = true;
-			this.lbllSpellDefenceManipPhysical.Location = new System.Drawing.Point(160, 352);
-			this.lbllSpellDefenceManipPhysical.Name = "lbllSpellDefenceManipPhysical";
-			this.lbllSpellDefenceManipPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lbllSpellDefenceManipPhysical.TabIndex = 60;
-			this.lbllSpellDefenceManipPhysical.Text = "0";
-			// 
-			// lblSpellDefenceManipMental
-			// 
-			this.lblSpellDefenceManipMental.AutoSize = true;
-			this.lblSpellDefenceManipMental.Location = new System.Drawing.Point(160, 332);
-			this.lblSpellDefenceManipMental.Name = "lblSpellDefenceManipMental";
-			this.lblSpellDefenceManipMental.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceManipMental.TabIndex = 58;
-			this.lblSpellDefenceManipMental.Text = "0";
-			// 
-			// lblSpellDefenceIllusionPhysical
-			// 
-			this.lblSpellDefenceIllusionPhysical.AutoSize = true;
-			this.lblSpellDefenceIllusionPhysical.Location = new System.Drawing.Point(160, 312);
-			this.lblSpellDefenceIllusionPhysical.Name = "lblSpellDefenceIllusionPhysical";
-			this.lblSpellDefenceIllusionPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIllusionPhysical.TabIndex = 56;
-			this.lblSpellDefenceIllusionPhysical.Text = "0";
-			// 
-			// lblSpellDefenceIllusionMana
-			// 
-			this.lblSpellDefenceIllusionMana.AutoSize = true;
-			this.lblSpellDefenceIllusionMana.Location = new System.Drawing.Point(160, 292);
-			this.lblSpellDefenceIllusionMana.Name = "lblSpellDefenceIllusionMana";
-			this.lblSpellDefenceIllusionMana.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIllusionMana.TabIndex = 54;
-			this.lblSpellDefenceIllusionMana.Text = "0";
-			// 
-			// lblSpellDefenceDecAttWIL
-			// 
-			this.lblSpellDefenceDecAttWIL.AutoSize = true;
-			this.lblSpellDefenceDecAttWIL.Location = new System.Drawing.Point(160, 272);
-			this.lblSpellDefenceDecAttWIL.Name = "lblSpellDefenceDecAttWIL";
-			this.lblSpellDefenceDecAttWIL.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttWIL.TabIndex = 52;
-			this.lblSpellDefenceDecAttWIL.Text = "0";
-			// 
-			// lblSpellDefenceDecAttLOG
-			// 
-			this.lblSpellDefenceDecAttLOG.AutoSize = true;
-			this.lblSpellDefenceDecAttLOG.Location = new System.Drawing.Point(160, 252);
-			this.lblSpellDefenceDecAttLOG.Name = "lblSpellDefenceDecAttLOG";
-			this.lblSpellDefenceDecAttLOG.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttLOG.TabIndex = 51;
-			this.lblSpellDefenceDecAttLOG.Text = "0";
-			// 
-			// lblSpellDefenceDecAttINT
-			// 
-			this.lblSpellDefenceDecAttINT.AutoSize = true;
-			this.lblSpellDefenceDecAttINT.Location = new System.Drawing.Point(160, 232);
-			this.lblSpellDefenceDecAttINT.Name = "lblSpellDefenceDecAttINT";
-			this.lblSpellDefenceDecAttINT.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttINT.TabIndex = 50;
-			this.lblSpellDefenceDecAttINT.Text = "0";
-			// 
-			// lblSpellDefenceDecAttCHA
-			// 
-			this.lblSpellDefenceDecAttCHA.AutoSize = true;
-			this.lblSpellDefenceDecAttCHA.Location = new System.Drawing.Point(160, 212);
-			this.lblSpellDefenceDecAttCHA.Name = "lblSpellDefenceDecAttCHA";
-			this.lblSpellDefenceDecAttCHA.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttCHA.TabIndex = 49;
-			this.lblSpellDefenceDecAttCHA.Text = "0";
-			// 
-			// lblSpellDefenceDecAttSTR
-			// 
-			this.lblSpellDefenceDecAttSTR.AutoSize = true;
-			this.lblSpellDefenceDecAttSTR.Location = new System.Drawing.Point(160, 192);
-			this.lblSpellDefenceDecAttSTR.Name = "lblSpellDefenceDecAttSTR";
-			this.lblSpellDefenceDecAttSTR.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttSTR.TabIndex = 48;
-			this.lblSpellDefenceDecAttSTR.Text = "0";
-			// 
-			// lblSpellDefenceDecAttREA
-			// 
-			this.lblSpellDefenceDecAttREA.AutoSize = true;
-			this.lblSpellDefenceDecAttREA.Location = new System.Drawing.Point(160, 172);
-			this.lblSpellDefenceDecAttREA.Name = "lblSpellDefenceDecAttREA";
-			this.lblSpellDefenceDecAttREA.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttREA.TabIndex = 40;
-			this.lblSpellDefenceDecAttREA.Text = "0";
-			// 
-			// lblSpellDefenceDecAttAGI
-			// 
-			this.lblSpellDefenceDecAttAGI.AutoSize = true;
-			this.lblSpellDefenceDecAttAGI.Location = new System.Drawing.Point(160, 152);
-			this.lblSpellDefenceDecAttAGI.Name = "lblSpellDefenceDecAttAGI";
-			this.lblSpellDefenceDecAttAGI.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttAGI.TabIndex = 38;
-			this.lblSpellDefenceDecAttAGI.Text = "0";
-			// 
-			// lblSpellDefenceDecAttBOD
-			// 
-			this.lblSpellDefenceDecAttBOD.AutoSize = true;
-			this.lblSpellDefenceDecAttBOD.Location = new System.Drawing.Point(160, 132);
-			this.lblSpellDefenceDecAttBOD.Name = "lblSpellDefenceDecAttBOD";
-			this.lblSpellDefenceDecAttBOD.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDecAttBOD.TabIndex = 36;
-			this.lblSpellDefenceDecAttBOD.Text = "0";
-			// 
-			// lblSpellDefenceDetection
-			// 
-			this.lblSpellDefenceDetection.AutoSize = true;
-			this.lblSpellDefenceDetection.Location = new System.Drawing.Point(160, 112);
-			this.lblSpellDefenceDetection.Name = "lblSpellDefenceDetection";
-			this.lblSpellDefenceDetection.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDetection.TabIndex = 34;
-			this.lblSpellDefenceDetection.Text = "0";
-			// 
-			// lblSpellDefenceDirectSoakPhysical
-			// 
-			this.lblSpellDefenceDirectSoakPhysical.AutoSize = true;
-			this.lblSpellDefenceDirectSoakPhysical.Location = new System.Drawing.Point(160, 92);
-			this.lblSpellDefenceDirectSoakPhysical.Name = "lblSpellDefenceDirectSoakPhysical";
-			this.lblSpellDefenceDirectSoakPhysical.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDirectSoakPhysical.TabIndex = 32;
-			this.lblSpellDefenceDirectSoakPhysical.Text = "0";
-			// 
-			// lblSpellDefenceDirectSoakMana
-			// 
-			this.lblSpellDefenceDirectSoakMana.AutoSize = true;
-			this.lblSpellDefenceDirectSoakMana.Location = new System.Drawing.Point(160, 72);
-			this.lblSpellDefenceDirectSoakMana.Name = "lblSpellDefenceDirectSoakMana";
-			this.lblSpellDefenceDirectSoakMana.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceDirectSoakMana.TabIndex = 30;
-			this.lblSpellDefenceDirectSoakMana.Text = "0";
-			// 
-			// lblSpellDefenceIndirectSoak
-			// 
-			this.lblSpellDefenceIndirectSoak.AutoSize = true;
-			this.lblSpellDefenceIndirectSoak.Location = new System.Drawing.Point(160, 52);
-			this.lblSpellDefenceIndirectSoak.Name = "lblSpellDefenceIndirectSoak";
-			this.lblSpellDefenceIndirectSoak.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIndirectSoak.TabIndex = 28;
-			this.lblSpellDefenceIndirectSoak.Text = "0";
-			// 
-			// lblSpellDefenceIndirectDodge
-			// 
-			this.lblSpellDefenceIndirectDodge.AutoSize = true;
-			this.lblSpellDefenceIndirectDodge.Location = new System.Drawing.Point(160, 32);
-			this.lblSpellDefenceIndirectDodge.Name = "lblSpellDefenceIndirectDodge";
-			this.lblSpellDefenceIndirectDodge.Size = new System.Drawing.Size(13, 13);
-			this.lblSpellDefenceIndirectDodge.TabIndex = 26;
-			this.lblSpellDefenceIndirectDodge.Text = "0";
-			// 
-			// button3
-			// 
-			this.button3.Location = new System.Drawing.Point(11, 418);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(75, 23);
-			this.button3.TabIndex = 111;
-			this.button3.Tag = "Button_AddSpirit";
-			this.button3.Text = "A&dd Spirit";
-			this.button3.UseVisualStyleBackColor = true;
-			// 
-			// panel1
-			// 
-			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.panel1.AutoScroll = true;
-			this.panel1.Location = new System.Drawing.Point(9, 447);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(824, 156);
-			this.panel1.TabIndex = 110;
-			// 
-			// cmsLimitModifier
-			// 
-			this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotes});
-			this.cmsLimitModifier.Name = "cmsLimitModifier";
-			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 26);
-			// 
-			// tssLimitModifierNotes
-			// 
-			this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
-			this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
-			this.tssLimitModifierNotes.Tag = "Menu_Notes";
-			this.tssLimitModifierNotes.Text = "&Notes";
-			this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
-			// 
-			// cmsInitiationNotes
-			// 
-			this.cmsInitiationNotes.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsInitiationNotes});
-			this.cmsInitiationNotes.Name = "cmsMetamagic";
-			this.cmsInitiationNotes.Size = new System.Drawing.Size(106, 26);
-			// 
-			// tsInitiationNotes
-			// 
-			this.tsInitiationNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tsInitiationNotes.Name = "tsInitiationNotes";
-			this.tsInitiationNotes.Size = new System.Drawing.Size(105, 22);
-			this.tsInitiationNotes.Tag = "Menu_Notes";
-			this.tsInitiationNotes.Text = "&Notes";
-			this.tsInitiationNotes.Click += new System.EventHandler(this.tsInitiationNotes_Click);
-			// 
-			// cmsMetamagic
-			// 
-			this.cmsMetamagic.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsMetamagicAddArt,
-            this.tsMetamagicAddEnchantment,
-            this.tsMetamagicAddEnhancement,
-            this.tsMetamagicAddMetamagic,
-            this.tsMetamagicAddRitual,
-            this.tsMetamagicNotes});
-			this.cmsMetamagic.Name = "cmsMetamagic";
-			this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
-			// 
-			// tsMetamagicAddArt
-			// 
-			this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
-			this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicAddArt.Text = "Add Art";
-			this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
-			// 
-			// tsMetamagicAddEnchantment
-			// 
-			this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
-			this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
-			this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
-			// 
-			// tsMetamagicAddEnhancement
-			// 
-			this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
-			this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
-			this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
-			// 
-			// tsMetamagicAddMetamagic
-			// 
-			this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
-			this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
-			this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
-			// 
-			// tsMetamagicAddRitual
-			// 
-			this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
-			this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicAddRitual.Text = "Add Ritual";
-			this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
-			// 
-			// tsMetamagicNotes
-			// 
-			this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tsMetamagicNotes.Name = "tsMetamagicNotes";
-			this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
-			this.tsMetamagicNotes.Tag = "Menu_Notes";
-			this.tsMetamagicNotes.Text = "&Notes";
-			this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
-			// 
-			// cmsTechnique
-			// 
-			this.cmsTechnique.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAddTechniqueNotes});
-			this.cmsTechnique.Name = "cmsWeapon";
-			this.cmsTechnique.Size = new System.Drawing.Size(106, 26);
-			// 
-			// tsAddTechniqueNotes
-			// 
-			this.tsAddTechniqueNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tsAddTechniqueNotes.Name = "tsAddTechniqueNotes";
-			this.tsAddTechniqueNotes.Size = new System.Drawing.Size(105, 22);
-			this.tsAddTechniqueNotes.Tag = "Menu_Notes";
-			this.tsAddTechniqueNotes.Text = "&Notes";
-			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
-			// 
-			// tabImprovements
-			// 
-			this.tabImprovements.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabImprovements.Controls.Add(this.panImprovements);
-			this.tabImprovements.Location = new System.Drawing.Point(4, 22);
-			this.tabImprovements.Name = "tabImprovements";
-			this.tabImprovements.Size = new System.Drawing.Size(838, 611);
-			this.tabImprovements.TabIndex = 12;
-			this.tabImprovements.Tag = "Tab_Improvements";
-			this.tabImprovements.Text = "Improvements";
-			// 
-			// panImprovements
-			// 
-			this.panImprovements.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabCharacterTabs.Controls.Add(this.tabCommon);
+            this.tabCharacterTabs.Controls.Add(this.tabSkills);
+            this.tabCharacterTabs.Controls.Add(this.tabLimits);
+            this.tabCharacterTabs.Controls.Add(this.tabMartialArts);
+            this.tabCharacterTabs.Controls.Add(this.tabMagician);
+            this.tabCharacterTabs.Controls.Add(this.tabAdept);
+            this.tabCharacterTabs.Controls.Add(this.tabTechnomancer);
+            this.tabCharacterTabs.Controls.Add(this.tabCritter);
+            this.tabCharacterTabs.Controls.Add(this.tabInitiation);
+            this.tabCharacterTabs.Controls.Add(this.tabCyberware);
+            this.tabCharacterTabs.Controls.Add(this.tabStreetGear);
+            this.tabCharacterTabs.Controls.Add(this.tabVehicles);
+            this.tabCharacterTabs.Controls.Add(this.tabCharacterInfo);
+            this.tabCharacterTabs.Controls.Add(this.tabImprovements);
+            this.tabCharacterTabs.Location = new System.Drawing.Point(0, 0);
+            this.tabCharacterTabs.Name = "tabCharacterTabs";
+            this.tabCharacterTabs.SelectedIndex = 0;
+            this.tabCharacterTabs.Size = new System.Drawing.Size(846, 637);
+            this.tabCharacterTabs.TabIndex = 33;
+            this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
+            // 
+            // tabCommon
+            // 
+            this.tabCommon.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCommon.Controls.Add(this.cmdLifeModule);
+            this.tabCommon.Controls.Add(this.tabPeople);
+            this.tabCommon.Controls.Add(this.label7);
+            this.tabCommon.Controls.Add(this.txtAlias);
+            this.tabCommon.Controls.Add(this.lblAlias);
+            this.tabCommon.Controls.Add(this.lblMetatypeSource);
+            this.tabCommon.Controls.Add(this.lblMetatypeSourceLabel);
+            this.tabCommon.Controls.Add(this.nudSignal);
+            this.tabCommon.Controls.Add(this.nudResponse);
+            this.tabCommon.Controls.Add(this.lblSignalLabel);
+            this.tabCommon.Controls.Add(this.lblResponseLabel);
+            this.tabCommon.Controls.Add(this.lblFirewallLabel);
+            this.tabCommon.Controls.Add(this.lblFirewall);
+            this.tabCommon.Controls.Add(this.lblSystemLabel);
+            this.tabCommon.Controls.Add(this.lblSystem);
+            this.tabCommon.Controls.Add(this.lblRatingLabel);
+            this.tabCommon.Controls.Add(this.lblRating);
+            this.tabCommon.Controls.Add(this.lblQualityBP);
+            this.tabCommon.Controls.Add(this.lblQualityBPLabel);
+            this.tabCommon.Controls.Add(this.lblQualitySource);
+            this.tabCommon.Controls.Add(this.lblQualitySourceLabel);
+            this.tabCommon.Controls.Add(this.cmdDeleteQuality);
+            this.tabCommon.Controls.Add(this.cmdAddQuality);
+            this.tabCommon.Controls.Add(this.nudMysticAdeptMAGMagician);
+            this.tabCommon.Controls.Add(this.lblAttributesAug);
+            this.tabCommon.Controls.Add(this.lblMysticAdeptAssignment);
+            this.tabCommon.Controls.Add(this.lblAttributesBase);
+            this.tabCommon.Controls.Add(this.lblAttributesMetatype);
+            this.tabCommon.Controls.Add(this.treQualities);
+            this.tabCommon.Controls.Add(this.lblMetatype);
+            this.tabCommon.Controls.Add(this.lblMetatypeLabel);
+            this.tabCommon.Controls.Add(this.panAttributes);
+            this.tabCommon.Controls.Add(this.lblAttributes);
+            this.tabCommon.Controls.Add(this.nudNuyen);
+            this.tabCommon.Controls.Add(this.lblNuyenTotal);
+            this.tabCommon.Controls.Add(this.lblNuyen);
+            this.tabCommon.Location = new System.Drawing.Point(4, 22);
+            this.tabCommon.Name = "tabCommon";
+            this.tabCommon.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCommon.Size = new System.Drawing.Size(838, 611);
+            this.tabCommon.TabIndex = 0;
+            this.tabCommon.Tag = "Tab_Common";
+            this.tabCommon.Text = "Acc";
+            // 
+            // cmdLifeModule
+            // 
+            this.cmdLifeModule.Location = new System.Drawing.Point(187, 9);
+            this.cmdLifeModule.Name = "cmdLifeModule";
+            this.cmdLifeModule.Size = new System.Drawing.Size(91, 23);
+            this.cmdLifeModule.TabIndex = 95;
+            this.cmdLifeModule.Tag = "String_Life_Module";
+            this.cmdLifeModule.Text = "Life Module";
+            this.cmdLifeModule.UseVisualStyleBackColor = true;
+            this.cmdLifeModule.Visible = false;
+            this.cmdLifeModule.Click += new System.EventHandler(this.cmdLifeModule_Click);
+            // 
+            // tabPeople
+            // 
+            this.tabPeople.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.panImprovements.AutoScroll = true;
-			this.panImprovements.Location = new System.Drawing.Point(11, 9);
-			this.panImprovements.Margin = new System.Windows.Forms.Padding(0);
-			this.panImprovements.Name = "panImprovements";
-			this.panImprovements.Size = new System.Drawing.Size(827, 599);
-			this.panImprovements.TabIndex = 0;
-			// 
-			// tabCharacterInfo
-			// 
-			this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabCharacterInfo.Controls.Add(this.btnCreateBackstory);
-			this.tabCharacterInfo.Controls.Add(this.lblPublicAwareTotal);
-			this.tabCharacterInfo.Controls.Add(this.lblNotorietyTotal);
-			this.tabCharacterInfo.Controls.Add(this.lblStreetCredTotal);
-			this.tabCharacterInfo.Controls.Add(this.lblPublicAware);
-			this.tabCharacterInfo.Controls.Add(this.lblNotoriety);
-			this.tabCharacterInfo.Controls.Add(this.lblStreetCred);
-			this.tabCharacterInfo.Controls.Add(this.lblCharacterName);
-			this.tabCharacterInfo.Controls.Add(this.txtCharacterName);
-			this.tabCharacterInfo.Controls.Add(this.txtPlayerName);
-			this.tabCharacterInfo.Controls.Add(this.txtNotes);
-			this.tabCharacterInfo.Controls.Add(this.txtConcept);
-			this.tabCharacterInfo.Controls.Add(this.txtBackground);
-			this.tabCharacterInfo.Controls.Add(this.txtDescription);
-			this.tabCharacterInfo.Controls.Add(this.txtSkin);
-			this.tabCharacterInfo.Controls.Add(this.txtWeight);
-			this.tabCharacterInfo.Controls.Add(this.txtHeight);
-			this.tabCharacterInfo.Controls.Add(this.txtHair);
-			this.tabCharacterInfo.Controls.Add(this.txtEyes);
-			this.tabCharacterInfo.Controls.Add(this.txtAge);
-			this.tabCharacterInfo.Controls.Add(this.txtSex);
-			this.tabCharacterInfo.Controls.Add(this.lblPlayerName);
-			this.tabCharacterInfo.Controls.Add(this.chkCharacterCreated);
-			this.tabCharacterInfo.Controls.Add(this.lblNotes);
-			this.tabCharacterInfo.Controls.Add(this.cmdDeleteMugshot);
-			this.tabCharacterInfo.Controls.Add(this.cmdAddMugshot);
-			this.tabCharacterInfo.Controls.Add(this.lblMugshot);
-			this.tabCharacterInfo.Controls.Add(this.lblConcept);
-			this.tabCharacterInfo.Controls.Add(this.lblBackground);
-			this.tabCharacterInfo.Controls.Add(this.lblDescription);
-			this.tabCharacterInfo.Controls.Add(this.lblSkin);
-			this.tabCharacterInfo.Controls.Add(this.lblWeight);
-			this.tabCharacterInfo.Controls.Add(this.lblHeight);
-			this.tabCharacterInfo.Controls.Add(this.lblHair);
-			this.tabCharacterInfo.Controls.Add(this.lblEyes);
-			this.tabCharacterInfo.Controls.Add(this.lblAge);
-			this.tabCharacterInfo.Controls.Add(this.lblSex);
-			this.tabCharacterInfo.Controls.Add(this.picMugshot);
-			this.tabCharacterInfo.Location = new System.Drawing.Point(4, 22);
-			this.tabCharacterInfo.Name = "tabCharacterInfo";
-			this.tabCharacterInfo.Size = new System.Drawing.Size(838, 611);
-			this.tabCharacterInfo.TabIndex = 9;
-			this.tabCharacterInfo.Tag = "Tab_CharacterInfo";
-			this.tabCharacterInfo.Text = "Character Info";
-			// 
-			// picMugshot
-			// 
-			this.picMugshot.Location = new System.Drawing.Point(628, 224);
-			this.picMugshot.Name = "picMugshot";
-			this.picMugshot.Size = new System.Drawing.Size(210, 310);
-			this.picMugshot.TabIndex = 20;
-			this.picMugshot.TabStop = false;
-			// 
-			// lblSex
-			// 
-			this.lblSex.AutoSize = true;
-			this.lblSex.Location = new System.Drawing.Point(8, 12);
-			this.lblSex.Name = "lblSex";
-			this.lblSex.Size = new System.Drawing.Size(28, 13);
-			this.lblSex.TabIndex = 0;
-			this.lblSex.Tag = "Label_Sex";
-			this.lblSex.Text = "Sex:";
-			// 
-			// txtSex
-			// 
-			this.txtSex.Location = new System.Drawing.Point(54, 9);
-			this.txtSex.Name = "txtSex";
-			this.txtSex.Size = new System.Drawing.Size(100, 20);
-			this.txtSex.TabIndex = 1;
-			this.txtSex.TextChanged += new System.EventHandler(this.txtSex_TextChanged);
-			// 
-			// lblAge
-			// 
-			this.lblAge.AutoSize = true;
-			this.lblAge.Location = new System.Drawing.Point(172, 12);
-			this.lblAge.Name = "lblAge";
-			this.lblAge.Size = new System.Drawing.Size(29, 13);
-			this.lblAge.TabIndex = 2;
-			this.lblAge.Tag = "Label_Age";
-			this.lblAge.Text = "Age:";
-			// 
-			// txtAge
-			// 
-			this.txtAge.Location = new System.Drawing.Point(222, 9);
-			this.txtAge.Name = "txtAge";
-			this.txtAge.Size = new System.Drawing.Size(100, 20);
-			this.txtAge.TabIndex = 3;
-			this.txtAge.TextChanged += new System.EventHandler(this.txtAge_TextChanged);
-			// 
-			// lblEyes
-			// 
-			this.lblEyes.AutoSize = true;
-			this.lblEyes.Location = new System.Drawing.Point(340, 12);
-			this.lblEyes.Name = "lblEyes";
-			this.lblEyes.Size = new System.Drawing.Size(33, 13);
-			this.lblEyes.TabIndex = 4;
-			this.lblEyes.Tag = "Label_Eyes";
-			this.lblEyes.Text = "Eyes:";
-			// 
-			// txtEyes
-			// 
-			this.txtEyes.Location = new System.Drawing.Point(375, 9);
-			this.txtEyes.Name = "txtEyes";
-			this.txtEyes.Size = new System.Drawing.Size(100, 20);
-			this.txtEyes.TabIndex = 5;
-			this.txtEyes.TextChanged += new System.EventHandler(this.txtEyes_TextChanged);
-			// 
-			// lblHair
-			// 
-			this.lblHair.AutoSize = true;
-			this.lblHair.Location = new System.Drawing.Point(493, 12);
-			this.lblHair.Name = "lblHair";
-			this.lblHair.Size = new System.Drawing.Size(29, 13);
-			this.lblHair.TabIndex = 6;
-			this.lblHair.Tag = "Label_Hair";
-			this.lblHair.Text = "Hair:";
-			// 
-			// txtHair
-			// 
-			this.txtHair.Location = new System.Drawing.Point(543, 8);
-			this.txtHair.Name = "txtHair";
-			this.txtHair.Size = new System.Drawing.Size(100, 20);
-			this.txtHair.TabIndex = 7;
-			this.txtHair.TextChanged += new System.EventHandler(this.txtHair_TextChanged);
-			// 
-			// lblHeight
-			// 
-			this.lblHeight.AutoSize = true;
-			this.lblHeight.Location = new System.Drawing.Point(8, 38);
-			this.lblHeight.Name = "lblHeight";
-			this.lblHeight.Size = new System.Drawing.Size(41, 13);
-			this.lblHeight.TabIndex = 8;
-			this.lblHeight.Tag = "Label_Height";
-			this.lblHeight.Text = "Height:";
-			// 
-			// txtHeight
-			// 
-			this.txtHeight.Location = new System.Drawing.Point(54, 35);
-			this.txtHeight.Name = "txtHeight";
-			this.txtHeight.Size = new System.Drawing.Size(100, 20);
-			this.txtHeight.TabIndex = 9;
-			this.txtHeight.TextChanged += new System.EventHandler(this.txtHeight_TextChanged);
-			// 
-			// lblWeight
-			// 
-			this.lblWeight.AutoSize = true;
-			this.lblWeight.Location = new System.Drawing.Point(172, 38);
-			this.lblWeight.Name = "lblWeight";
-			this.lblWeight.Size = new System.Drawing.Size(44, 13);
-			this.lblWeight.TabIndex = 10;
-			this.lblWeight.Tag = "Label_Weight";
-			this.lblWeight.Text = "Weight:";
-			// 
-			// txtWeight
-			// 
-			this.txtWeight.Location = new System.Drawing.Point(222, 35);
-			this.txtWeight.Name = "txtWeight";
-			this.txtWeight.Size = new System.Drawing.Size(100, 20);
-			this.txtWeight.TabIndex = 11;
-			this.txtWeight.TextChanged += new System.EventHandler(this.txtWeight_TextChanged);
-			// 
-			// lblSkin
-			// 
-			this.lblSkin.AutoSize = true;
-			this.lblSkin.Location = new System.Drawing.Point(340, 38);
-			this.lblSkin.Name = "lblSkin";
-			this.lblSkin.Size = new System.Drawing.Size(31, 13);
-			this.lblSkin.TabIndex = 12;
-			this.lblSkin.Tag = "Label_Skin";
-			this.lblSkin.Text = "Skin:";
-			// 
-			// txtSkin
-			// 
-			this.txtSkin.Location = new System.Drawing.Point(375, 35);
-			this.txtSkin.Name = "txtSkin";
-			this.txtSkin.Size = new System.Drawing.Size(100, 20);
-			this.txtSkin.TabIndex = 13;
-			this.txtSkin.TextChanged += new System.EventHandler(this.txtSkin_TextChanged);
-			// 
-			// lblDescription
-			// 
-			this.lblDescription.AutoSize = true;
-			this.lblDescription.Location = new System.Drawing.Point(8, 64);
-			this.lblDescription.Name = "lblDescription";
-			this.lblDescription.Size = new System.Drawing.Size(63, 13);
-			this.lblDescription.TabIndex = 14;
-			this.lblDescription.Tag = "Label_Description";
-			this.lblDescription.Text = "Description:";
-			// 
-			// txtDescription
-			// 
-			this.txtDescription.Location = new System.Drawing.Point(10, 80);
-			this.txtDescription.Multiline = true;
-			this.txtDescription.Name = "txtDescription";
-			this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtDescription.Size = new System.Drawing.Size(618, 101);
-			this.txtDescription.TabIndex = 15;
-			this.txtDescription.TextChanged += new System.EventHandler(this.txtDescription_TextChanged);
-			this.txtDescription.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-			// 
-			// lblBackground
-			// 
-			this.lblBackground.AutoSize = true;
-			this.lblBackground.Location = new System.Drawing.Point(8, 184);
-			this.lblBackground.Name = "lblBackground";
-			this.lblBackground.Size = new System.Drawing.Size(68, 13);
-			this.lblBackground.TabIndex = 16;
-			this.lblBackground.Tag = "Label_Background";
-			this.lblBackground.Text = "Background:";
-			// 
-			// txtBackground
-			// 
-			this.txtBackground.Location = new System.Drawing.Point(10, 200);
-			this.txtBackground.Multiline = true;
-			this.txtBackground.Name = "txtBackground";
-			this.txtBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtBackground.Size = new System.Drawing.Size(618, 96);
-			this.txtBackground.TabIndex = 17;
-			this.txtBackground.TextChanged += new System.EventHandler(this.txtBackground_TextChanged);
-			this.txtBackground.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-			this.txtBackground.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBackground_KeyPress);
-			// 
-			// lblConcept
-			// 
-			this.lblConcept.AutoSize = true;
-			this.lblConcept.Location = new System.Drawing.Point(8, 299);
-			this.lblConcept.Name = "lblConcept";
-			this.lblConcept.Size = new System.Drawing.Size(50, 13);
-			this.lblConcept.TabIndex = 18;
-			this.lblConcept.Tag = "Label_Concept";
-			this.lblConcept.Text = "Concept:";
-			// 
-			// txtConcept
-			// 
-			this.txtConcept.Location = new System.Drawing.Point(10, 315);
-			this.txtConcept.Multiline = true;
-			this.txtConcept.Name = "txtConcept";
-			this.txtConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtConcept.Size = new System.Drawing.Size(618, 100);
-			this.txtConcept.TabIndex = 19;
-			this.txtConcept.TextChanged += new System.EventHandler(this.txtConcept_TextChanged);
-			this.txtConcept.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-			// 
-			// lblMugshot
-			// 
-			this.lblMugshot.AutoSize = true;
-			this.lblMugshot.Location = new System.Drawing.Point(631, 168);
-			this.lblMugshot.Name = "lblMugshot";
-			this.lblMugshot.Size = new System.Drawing.Size(152, 13);
-			this.lblMugshot.TabIndex = 21;
-			this.lblMugshot.Tag = "Label_Mugshot";
-			this.lblMugshot.Text = "Mugshot:        (210px X 310px)";
-			// 
-			// cmdAddMugshot
-			// 
-			this.cmdAddMugshot.Location = new System.Drawing.Point(634, 195);
-			this.cmdAddMugshot.Name = "cmdAddMugshot";
-			this.cmdAddMugshot.Size = new System.Drawing.Size(95, 23);
-			this.cmdAddMugshot.TabIndex = 22;
-			this.cmdAddMugshot.Tag = "Button_AddMugshot";
-			this.cmdAddMugshot.Text = "Add / Change";
-			this.cmdAddMugshot.UseVisualStyleBackColor = true;
-			this.cmdAddMugshot.Click += new System.EventHandler(this.cmdAddMugshot_Click);
-			// 
-			// cmdDeleteMugshot
-			// 
-			this.cmdDeleteMugshot.Location = new System.Drawing.Point(735, 195);
-			this.cmdDeleteMugshot.Name = "cmdDeleteMugshot";
-			this.cmdDeleteMugshot.Size = new System.Drawing.Size(103, 23);
-			this.cmdDeleteMugshot.TabIndex = 23;
-			this.cmdDeleteMugshot.Tag = "String_Delete";
-			this.cmdDeleteMugshot.Text = "Delete";
-			this.cmdDeleteMugshot.UseVisualStyleBackColor = true;
-			this.cmdDeleteMugshot.Click += new System.EventHandler(this.cmdDeleteMugshot_Click);
-			// 
-			// lblNotes
-			// 
-			this.lblNotes.AutoSize = true;
-			this.lblNotes.Location = new System.Drawing.Point(8, 418);
-			this.lblNotes.Name = "lblNotes";
-			this.lblNotes.Size = new System.Drawing.Size(38, 13);
-			this.lblNotes.TabIndex = 24;
-			this.lblNotes.Tag = "Label_Notes";
-			this.lblNotes.Text = "Notes:";
-			// 
-			// txtNotes
-			// 
-			this.txtNotes.Location = new System.Drawing.Point(10, 434);
-			this.txtNotes.Multiline = true;
-			this.txtNotes.Name = "txtNotes";
-			this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtNotes.Size = new System.Drawing.Size(618, 100);
-			this.txtNotes.TabIndex = 25;
-			this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
-			this.txtNotes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
-			// 
-			// chkCharacterCreated
-			// 
-			this.chkCharacterCreated.AutoSize = true;
-			this.chkCharacterCreated.Location = new System.Drawing.Point(657, 8);
-			this.chkCharacterCreated.Name = "chkCharacterCreated";
-			this.chkCharacterCreated.Size = new System.Drawing.Size(152, 17);
-			this.chkCharacterCreated.TabIndex = 62;
-			this.chkCharacterCreated.Tag = "Checkbox_Created";
-			this.chkCharacterCreated.Text = "Mark character as Created";
-			this.tipTooltip.SetToolTip(this.chkCharacterCreated, "Once a character has been saved as Created it cannot be further modified using th" +
-        "e Build system. The character is put into Career mode where it can be improved w" +
-        "ith Karma and used for play.");
-			this.chkCharacterCreated.UseVisualStyleBackColor = true;
-			// 
-			// lblPlayerName
-			// 
-			this.lblPlayerName.AutoSize = true;
-			this.lblPlayerName.Location = new System.Drawing.Point(654, 38);
-			this.lblPlayerName.Name = "lblPlayerName";
-			this.lblPlayerName.Size = new System.Drawing.Size(39, 13);
-			this.lblPlayerName.TabIndex = 63;
-			this.lblPlayerName.Tag = "Label_Player";
-			this.lblPlayerName.Text = "Player:";
-			// 
-			// txtPlayerName
-			// 
-			this.txtPlayerName.Location = new System.Drawing.Point(705, 35);
-			this.txtPlayerName.Name = "txtPlayerName";
-			this.txtPlayerName.Size = new System.Drawing.Size(100, 20);
-			this.txtPlayerName.TabIndex = 64;
-			this.txtPlayerName.TextChanged += new System.EventHandler(this.txtPlayerName_TextChanged);
-			// 
-			// txtCharacterName
-			// 
-			this.txtCharacterName.Location = new System.Drawing.Point(543, 35);
-			this.txtCharacterName.Name = "txtCharacterName";
-			this.txtCharacterName.Size = new System.Drawing.Size(100, 20);
-			this.txtCharacterName.TabIndex = 66;
-			this.txtCharacterName.TextChanged += new System.EventHandler(this.txtCharacterName_TextChanged);
-			// 
-			// lblCharacterName
-			// 
-			this.lblCharacterName.AutoSize = true;
-			this.lblCharacterName.Location = new System.Drawing.Point(493, 38);
-			this.lblCharacterName.Name = "lblCharacterName";
-			this.lblCharacterName.Size = new System.Drawing.Size(38, 13);
-			this.lblCharacterName.TabIndex = 65;
-			this.lblCharacterName.Tag = "Label_CharacterName";
-			this.lblCharacterName.Text = "Name:";
-			// 
-			// lblStreetCred
-			// 
-			this.lblStreetCred.AutoSize = true;
-			this.lblStreetCred.Location = new System.Drawing.Point(634, 63);
-			this.lblStreetCred.Name = "lblStreetCred";
-			this.lblStreetCred.Size = new System.Drawing.Size(63, 13);
-			this.lblStreetCred.TabIndex = 82;
-			this.lblStreetCred.Tag = "Label_StreetCred";
-			this.lblStreetCred.Text = "Street Cred:";
-			this.tipTooltip.SetToolTip(this.lblStreetCred, "Street Cred is calculated as Career Karma ÷ 10, rounded up, and can be further ad" +
-        "justed by Game Masters.");
-			// 
-			// lblNotoriety
-			// 
-			this.lblNotoriety.AutoSize = true;
-			this.lblNotoriety.Location = new System.Drawing.Point(634, 86);
-			this.lblNotoriety.Name = "lblNotoriety";
-			this.lblNotoriety.Size = new System.Drawing.Size(52, 13);
-			this.lblNotoriety.TabIndex = 84;
-			this.lblNotoriety.Tag = "Label_Notoriety";
-			this.lblNotoriety.Text = "Notoriety:";
-			this.tipTooltip.SetToolTip(this.lblNotoriety, "Notoriety is typically gained through Qualities and can be further adjusted by Ga" +
-        "me Masters. Notoriety can be reduced by 1 point by burning 2 points of Street Cr" +
-        "ed.");
-			// 
-			// lblPublicAware
-			// 
-			this.lblPublicAware.AutoSize = true;
-			this.lblPublicAware.Location = new System.Drawing.Point(634, 109);
-			this.lblPublicAware.Name = "lblPublicAware";
-			this.lblPublicAware.Size = new System.Drawing.Size(72, 13);
-			this.lblPublicAware.TabIndex = 86;
-			this.lblPublicAware.Tag = "Label_PublicAwareness";
-			this.lblPublicAware.Text = "Public Aware:";
-			// 
-			// lblStreetCredTotal
-			// 
-			this.lblStreetCredTotal.AutoSize = true;
-			this.lblStreetCredTotal.Location = new System.Drawing.Point(712, 64);
-			this.lblStreetCredTotal.Name = "lblStreetCredTotal";
-			this.lblStreetCredTotal.Size = new System.Drawing.Size(19, 13);
-			this.lblStreetCredTotal.TabIndex = 88;
-			this.lblStreetCredTotal.Tag = "Label_StreetCred";
-			this.lblStreetCredTotal.Text = "[0]";
-			// 
-			// lblNotorietyTotal
-			// 
-			this.lblNotorietyTotal.AutoSize = true;
-			this.lblNotorietyTotal.Location = new System.Drawing.Point(712, 86);
-			this.lblNotorietyTotal.Name = "lblNotorietyTotal";
-			this.lblNotorietyTotal.Size = new System.Drawing.Size(19, 13);
-			this.lblNotorietyTotal.TabIndex = 89;
-			this.lblNotorietyTotal.Tag = "Label_StreetCred";
-			this.lblNotorietyTotal.Text = "[0]";
-			// 
-			// lblPublicAwareTotal
-			// 
-			this.lblPublicAwareTotal.AutoSize = true;
-			this.lblPublicAwareTotal.Location = new System.Drawing.Point(712, 109);
-			this.lblPublicAwareTotal.Name = "lblPublicAwareTotal";
-			this.lblPublicAwareTotal.Size = new System.Drawing.Size(19, 13);
-			this.lblPublicAwareTotal.TabIndex = 90;
-			this.lblPublicAwareTotal.Tag = "Label_StreetCred";
-			this.lblPublicAwareTotal.Text = "[0]";
-			// 
-			// btnCreateBackstory
-			// 
-			this.btnCreateBackstory.Location = new System.Drawing.Point(634, 125);
-			this.btnCreateBackstory.Name = "btnCreateBackstory";
-			this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
-			this.btnCreateBackstory.TabIndex = 91;
-			this.btnCreateBackstory.Text = "Create Backstory";
-			this.btnCreateBackstory.UseVisualStyleBackColor = true;
-			this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
-			// 
-			// tabVehicles
-			// 
-			this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
-			this.tabVehicles.Controls.Add(this.lblVehicleDroneModSlots);
-			this.tabVehicles.Controls.Add(this.lblVehicleDroneModSlotsLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleCosmetic);
-			this.tabVehicles.Controls.Add(this.lblVehicleElectromagnetic);
-			this.tabVehicles.Controls.Add(this.lblVehicleBodymod);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponsmod);
-			this.tabVehicles.Controls.Add(this.lblVehicleProtection);
-			this.tabVehicles.Controls.Add(this.lblVehiclePowertrain);
-			this.tabVehicles.Controls.Add(this.lblVehicleCosmeticLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleElectromagneticLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleBodymodLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponsmodLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleProtectionLabel);
-			this.tabVehicles.Controls.Add(this.lblVehiclePowertrainLabel);
-			this.tabVehicles.Controls.Add(this.cboVehicleGearDataProcessing);
-			this.tabVehicles.Controls.Add(this.cboVehicleGearFirewall);
-			this.tabVehicles.Controls.Add(this.cboVehicleGearSleaze);
-			this.tabVehicles.Controls.Add(this.cboVehicleGearAttack);
-			this.tabVehicles.Controls.Add(this.lblVehicleFirewallLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleDataProcessingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSleazeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAttackLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeExtreme);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLong);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeMedium);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeShort);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeExtremeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLongLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeMediumLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeShortLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponRangeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAmmo);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAmmoLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponMode);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponModeLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponNameLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponName);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponCategoryLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAP);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponCategory);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponAPLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponDamageLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleWeaponDamage);
-			this.tabVehicles.Controls.Add(this.cmdAddVehicleLocation);
-			this.tabVehicles.Controls.Add(this.chkVehicleHomeNode);
-			this.tabVehicles.Controls.Add(this.lblVehicleDevice);
-			this.tabVehicles.Controls.Add(this.lblVehicleDeviceLabel);
-			this.tabVehicles.Controls.Add(this.nudVehicleGearQty);
-			this.tabVehicles.Controls.Add(this.lblVehicleGearQtyLabel);
-			this.tabVehicles.Controls.Add(this.chkVehicleIncludedInWeapon);
-			this.tabVehicles.Controls.Add(this.chkVehicleWeaponAccessoryInstalled);
-			this.tabVehicles.Controls.Add(this.lblVehicleSource);
-			this.tabVehicles.Controls.Add(this.lblVehicleSourceLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSlots);
-			this.tabVehicles.Controls.Add(this.lblVehicleSlotsLabel);
-			this.tabVehicles.Controls.Add(this.nudVehicleRating);
-			this.tabVehicles.Controls.Add(this.lblVehicleRatingLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleNameLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleName);
-			this.tabVehicles.Controls.Add(this.lblVehicleCategoryLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleCategory);
-			this.tabVehicles.Controls.Add(this.lblVehicleSensor);
-			this.tabVehicles.Controls.Add(this.lblVehicleSensorLabel);
-			this.tabVehicles.Controls.Add(this.lblVehiclePilot);
-			this.tabVehicles.Controls.Add(this.lblVehiclePilotLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleArmor);
-			this.tabVehicles.Controls.Add(this.lblVehicleArmorLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleBody);
-			this.tabVehicles.Controls.Add(this.lblVehicleBodyLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleSpeed);
-			this.tabVehicles.Controls.Add(this.lblVehicleSpeedLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleCost);
-			this.tabVehicles.Controls.Add(this.lblVehicleCostLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAvail);
-			this.tabVehicles.Controls.Add(this.lblVehicleAvailLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAccel);
-			this.tabVehicles.Controls.Add(this.lblVehicleAccelLabel);
-			this.tabVehicles.Controls.Add(this.lblVehicleHandling);
-			this.tabVehicles.Controls.Add(this.lblVehicleHandlingLabel);
-			this.tabVehicles.Controls.Add(this.cmdDeleteVehicle);
-			this.tabVehicles.Controls.Add(this.treVehicles);
-			this.tabVehicles.Controls.Add(this.cmdAddVehicle);
-			this.tabVehicles.Location = new System.Drawing.Point(4, 22);
-			this.tabVehicles.Name = "tabVehicles";
-			this.tabVehicles.Size = new System.Drawing.Size(838, 611);
-			this.tabVehicles.TabIndex = 7;
-			this.tabVehicles.Tag = "Tab_Vehicles";
-			this.tabVehicles.Text = "Vehicles & Drones";
-			this.tabVehicles.Click += new System.EventHandler(this.tabVehicles_Click);
-			// 
-			// cmdAddVehicle
-			// 
-			this.cmdAddVehicle.AutoSize = true;
-			this.cmdAddVehicle.ContextMenuStrip = this.cmsVehicle;
-			this.cmdAddVehicle.Location = new System.Drawing.Point(8, 7);
-			this.cmdAddVehicle.Name = "cmdAddVehicle";
-			this.cmdAddVehicle.Size = new System.Drawing.Size(92, 23);
-			this.cmdAddVehicle.SplitMenuStrip = this.cmsVehicle;
-			this.cmdAddVehicle.TabIndex = 185;
-			this.cmdAddVehicle.Tag = "Button_AddVehicle";
-			this.cmdAddVehicle.Text = "&Add Vehicle";
-			this.cmdAddVehicle.UseVisualStyleBackColor = true;
-			this.cmdAddVehicle.Click += new System.EventHandler(this.cmdAddVehicle_Click);
-			// 
-			// treVehicles
-			// 
-			this.treVehicles.AllowDrop = true;
-			this.treVehicles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabPeople.Controls.Add(this.tabContacts);
+            this.tabPeople.Controls.Add(this.tabEnemies);
+            this.tabPeople.Location = new System.Drawing.Point(288, 375);
+            this.tabPeople.Name = "tabPeople";
+            this.tabPeople.SelectedIndex = 0;
+            this.tabPeople.Size = new System.Drawing.Size(544, 230);
+            this.tabPeople.TabIndex = 94;
+            // 
+            // tabContacts
+            // 
+            this.tabContacts.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabContacts.Controls.Add(this.lblContactPoints);
+            this.tabContacts.Controls.Add(this.lblContactPoints_Label);
+            this.tabContacts.Controls.Add(this.lblContactArchtypeLabel);
+            this.tabContacts.Controls.Add(this.lblContactLocationLabel);
+            this.tabContacts.Controls.Add(this.lblContactNameLabel);
+            this.tabContacts.Controls.Add(this.cmdAddContact);
+            this.tabContacts.Controls.Add(this.panContacts);
+            this.tabContacts.Location = new System.Drawing.Point(4, 22);
+            this.tabContacts.Name = "tabContacts";
+            this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
+            this.tabContacts.Size = new System.Drawing.Size(536, 204);
+            this.tabContacts.TabIndex = 0;
+            this.tabContacts.Text = "Contacts";
+            // 
+            // lblContactPoints
+            // 
+            this.lblContactPoints.AutoSize = true;
+            this.lblContactPoints.Location = new System.Drawing.Point(288, 11);
+            this.lblContactPoints.Name = "lblContactPoints";
+            this.lblContactPoints.Size = new System.Drawing.Size(0, 13);
+            this.lblContactPoints.TabIndex = 48;
+            // 
+            // lblContactPoints_Label
+            // 
+            this.lblContactPoints_Label.AutoSize = true;
+            this.lblContactPoints_Label.Location = new System.Drawing.Point(88, 11);
+            this.lblContactPoints_Label.Name = "lblContactPoints_Label";
+            this.lblContactPoints_Label.Size = new System.Drawing.Size(156, 13);
+            this.lblContactPoints_Label.TabIndex = 47;
+            this.lblContactPoints_Label.Tag = "Label_FreeContactPoints";
+            this.lblContactPoints_Label.Text = "Free Contact Points Remaining:";
+            // 
+            // lblContactArchtypeLabel
+            // 
+            this.lblContactArchtypeLabel.AutoSize = true;
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(255, 32);
+            this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
+            this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblContactArchtypeLabel.TabIndex = 44;
+            this.lblContactArchtypeLabel.Tag = "Label_Archtype";
+            this.lblContactArchtypeLabel.Text = "Archtype:";
+            // 
+            // lblContactLocationLabel
+            // 
+            this.lblContactLocationLabel.AutoSize = true;
+            this.lblContactLocationLabel.Location = new System.Drawing.Point(129, 32);
+            this.lblContactLocationLabel.Name = "lblContactLocationLabel";
+            this.lblContactLocationLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblContactLocationLabel.TabIndex = 43;
+            this.lblContactLocationLabel.Tag = "Label_Location";
+            this.lblContactLocationLabel.Text = "Location:";
+            // 
+            // lblContactNameLabel
+            // 
+            this.lblContactNameLabel.AutoSize = true;
+            this.lblContactNameLabel.Location = new System.Drawing.Point(6, 32);
+            this.lblContactNameLabel.Name = "lblContactNameLabel";
+            this.lblContactNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblContactNameLabel.TabIndex = 42;
+            this.lblContactNameLabel.Tag = "Label_Name";
+            this.lblContactNameLabel.Text = "Name:";
+            // 
+            // cmdAddContact
+            // 
+            this.cmdAddContact.AutoSize = true;
+            this.cmdAddContact.Location = new System.Drawing.Point(6, 6);
+            this.cmdAddContact.Name = "cmdAddContact";
+            this.cmdAddContact.Size = new System.Drawing.Size(76, 23);
+            this.cmdAddContact.TabIndex = 24;
+            this.cmdAddContact.Tag = "Button_AddContact";
+            this.cmdAddContact.Text = "&Add Contact";
+            this.cmdAddContact.UseVisualStyleBackColor = true;
+            this.cmdAddContact.Click += new System.EventHandler(this.cmdAddContact_Click);
+            // 
+            // panContacts
+            // 
+            this.panContacts.AllowDrop = true;
+            this.panContacts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panContacts.AutoScroll = true;
+            this.panContacts.Location = new System.Drawing.Point(3, 48);
+            this.panContacts.Name = "panContacts";
+            this.panContacts.Size = new System.Drawing.Size(530, 154);
+            this.panContacts.TabIndex = 25;
+            this.panContacts.Click += new System.EventHandler(this.panContacts_Click);
+            this.panContacts.DragDrop += new System.Windows.Forms.DragEventHandler(this.panContacts_DragDrop);
+            this.panContacts.DragEnter += new System.Windows.Forms.DragEventHandler(this.panContacts_DragEnter);
+            this.panContacts.DragOver += new System.Windows.Forms.DragEventHandler(this.panContacts_DragOver);
+            // 
+            // tabEnemies
+            // 
+            this.tabEnemies.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabEnemies.Controls.Add(this.label6);
+            this.tabEnemies.Controls.Add(this.label15);
+            this.tabEnemies.Controls.Add(this.label16);
+            this.tabEnemies.Controls.Add(this.panEnemies);
+            this.tabEnemies.Controls.Add(this.cmdAddEnemy);
+            this.tabEnemies.Location = new System.Drawing.Point(4, 22);
+            this.tabEnemies.Name = "tabEnemies";
+            this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
+            this.tabEnemies.Size = new System.Drawing.Size(536, 204);
+            this.tabEnemies.TabIndex = 1;
+            this.tabEnemies.Text = "Enemies";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(255, 32);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(52, 13);
+            this.label6.TabIndex = 49;
+            this.label6.Tag = "Label_Archtype";
+            this.label6.Text = "Archtype:";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(129, 32);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(51, 13);
+            this.label15.TabIndex = 48;
+            this.label15.Tag = "Label_Location";
+            this.label15.Text = "Location:";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(6, 32);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(38, 13);
+            this.label16.TabIndex = 47;
+            this.label16.Tag = "Label_Name";
+            this.label16.Text = "Name:";
+            // 
+            // panEnemies
+            // 
+            this.panEnemies.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panEnemies.AutoScroll = true;
+            this.panEnemies.Location = new System.Drawing.Point(3, 48);
+            this.panEnemies.Name = "panEnemies";
+            this.panEnemies.Size = new System.Drawing.Size(530, 154);
+            this.panEnemies.TabIndex = 41;
+            this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
+            // 
+            // cmdAddEnemy
+            // 
+            this.cmdAddEnemy.AutoSize = true;
+            this.cmdAddEnemy.Location = new System.Drawing.Point(6, 6);
+            this.cmdAddEnemy.Name = "cmdAddEnemy";
+            this.cmdAddEnemy.Size = new System.Drawing.Size(75, 23);
+            this.cmdAddEnemy.TabIndex = 40;
+            this.cmdAddEnemy.Tag = "Button_AddEnemy";
+            this.cmdAddEnemy.Text = "A&dd Enemy";
+            this.cmdAddEnemy.UseVisualStyleBackColor = true;
+            this.cmdAddEnemy.Click += new System.EventHandler(this.cmdAddEnemy_Click);
+            // 
+            // txtAlias
+            // 
+            this.txtAlias.Location = new System.Drawing.Point(326, 6);
+            this.txtAlias.Name = "txtAlias";
+            this.txtAlias.Size = new System.Drawing.Size(252, 20);
+            this.txtAlias.TabIndex = 91;
+            this.txtAlias.TextChanged += new System.EventHandler(this.txtAlias_TextChanged);
+            // 
+            // lblAlias
+            // 
+            this.lblAlias.AutoSize = true;
+            this.lblAlias.Location = new System.Drawing.Point(288, 9);
+            this.lblAlias.Name = "lblAlias";
+            this.lblAlias.Size = new System.Drawing.Size(32, 13);
+            this.lblAlias.TabIndex = 90;
+            this.lblAlias.Tag = "Label_Alias";
+            this.lblAlias.Text = "Alias:";
+            // 
+            // lblMetatypeSource
+            // 
+            this.lblMetatypeSource.AutoSize = true;
+            this.lblMetatypeSource.Location = new System.Drawing.Point(710, 32);
+            this.lblMetatypeSource.Name = "lblMetatypeSource";
+            this.lblMetatypeSource.Size = new System.Drawing.Size(33, 13);
+            this.lblMetatypeSource.TabIndex = 89;
+            this.lblMetatypeSource.Text = "None";
+            this.lblMetatypeSource.Click += new System.EventHandler(this.lblMetatypeSource_Click);
+            // 
+            // lblMetatypeSourceLabel
+            // 
+            this.lblMetatypeSourceLabel.AutoSize = true;
+            this.lblMetatypeSourceLabel.Location = new System.Drawing.Point(650, 32);
+            this.lblMetatypeSourceLabel.Name = "lblMetatypeSourceLabel";
+            this.lblMetatypeSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblMetatypeSourceLabel.TabIndex = 88;
+            this.lblMetatypeSourceLabel.Tag = "Label_Source";
+            this.lblMetatypeSourceLabel.Text = "Source:";
+            // 
+            // nudSignal
+            // 
+            this.nudSignal.Enabled = false;
+            this.nudSignal.Location = new System.Drawing.Point(734, 209);
+            this.nudSignal.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudSignal.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSignal.Name = "nudSignal";
+            this.nudSignal.Size = new System.Drawing.Size(40, 20);
+            this.nudSignal.TabIndex = 75;
+            this.nudSignal.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSignal.Visible = false;
+            this.nudSignal.ValueChanged += new System.EventHandler(this.nudSignal_ValueChanged);
+            // 
+            // nudResponse
+            // 
+            this.nudResponse.Enabled = false;
+            this.nudResponse.Location = new System.Drawing.Point(734, 183);
+            this.nudResponse.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudResponse.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudResponse.Name = "nudResponse";
+            this.nudResponse.Size = new System.Drawing.Size(40, 20);
+            this.nudResponse.TabIndex = 44;
+            this.nudResponse.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudResponse.Visible = false;
+            this.nudResponse.ValueChanged += new System.EventHandler(this.nudResponse_ValueChanged);
+            // 
+            // lblFirewall
+            // 
+            this.lblFirewall.AutoSize = true;
+            this.lblFirewall.Location = new System.Drawing.Point(733, 159);
+            this.lblFirewall.Name = "lblFirewall";
+            this.lblFirewall.Size = new System.Drawing.Size(19, 13);
+            this.lblFirewall.TabIndex = 71;
+            this.lblFirewall.Text = "[0]";
+            this.lblFirewall.Visible = false;
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(733, 133);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(19, 13);
+            this.lblSystem.TabIndex = 69;
+            this.lblSystem.Text = "[0]";
+            this.lblSystem.Visible = false;
+            // 
+            // lblRating
+            // 
+            this.lblRating.AutoSize = true;
+            this.lblRating.Location = new System.Drawing.Point(733, 107);
+            this.lblRating.Name = "lblRating";
+            this.lblRating.Size = new System.Drawing.Size(19, 13);
+            this.lblRating.TabIndex = 45;
+            this.lblRating.Text = "[0]";
+            this.lblRating.Visible = false;
+            // 
+            // lblQualityBP
+            // 
+            this.lblQualityBP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualityBP.AutoSize = true;
+            this.lblQualityBP.Location = new System.Drawing.Point(58, 589);
+            this.lblQualityBP.Name = "lblQualityBP";
+            this.lblQualityBP.Size = new System.Drawing.Size(27, 13);
+            this.lblQualityBP.TabIndex = 67;
+            this.lblQualityBP.Text = "[BP]";
+            // 
+            // lblQualityBPLabel
+            // 
+            this.lblQualityBPLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualityBPLabel.AutoSize = true;
+            this.lblQualityBPLabel.Location = new System.Drawing.Point(8, 589);
+            this.lblQualityBPLabel.Name = "lblQualityBPLabel";
+            this.lblQualityBPLabel.Size = new System.Drawing.Size(40, 13);
+            this.lblQualityBPLabel.TabIndex = 66;
+            this.lblQualityBPLabel.Tag = "Label_Karma";
+            this.lblQualityBPLabel.Text = "Karma:";
+            // 
+            // lblQualitySource
+            // 
+            this.lblQualitySource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualitySource.AutoSize = true;
+            this.lblQualitySource.Location = new System.Drawing.Point(232, 589);
+            this.lblQualitySource.Name = "lblQualitySource";
+            this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
+            this.lblQualitySource.TabIndex = 65;
+            this.lblQualitySource.Text = "[Source]";
+            this.lblQualitySource.Click += new System.EventHandler(this.lblQualitySource_Click);
+            // 
+            // lblQualitySourceLabel
+            // 
+            this.lblQualitySourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblQualitySourceLabel.AutoSize = true;
+            this.lblQualitySourceLabel.Location = new System.Drawing.Point(182, 589);
+            this.lblQualitySourceLabel.Name = "lblQualitySourceLabel";
+            this.lblQualitySourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblQualitySourceLabel.TabIndex = 64;
+            this.lblQualitySourceLabel.Tag = "Label_Source";
+            this.lblQualitySourceLabel.Text = "Source:";
+            // 
+            // cmdDeleteQuality
+            // 
+            this.cmdDeleteQuality.AutoSize = true;
+            this.cmdDeleteQuality.Location = new System.Drawing.Point(101, 9);
+            this.cmdDeleteQuality.Name = "cmdDeleteQuality";
+            this.cmdDeleteQuality.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteQuality.TabIndex = 63;
+            this.cmdDeleteQuality.Tag = "String_Delete";
+            this.cmdDeleteQuality.Text = "Delete";
+            this.cmdDeleteQuality.UseVisualStyleBackColor = true;
+            this.cmdDeleteQuality.Click += new System.EventHandler(this.cmdDeleteQuality_Click);
+            // 
+            // cmdAddQuality
+            // 
+            this.cmdAddQuality.AutoSize = true;
+            this.cmdAddQuality.Location = new System.Drawing.Point(6, 9);
+            this.cmdAddQuality.Name = "cmdAddQuality";
+            this.cmdAddQuality.Size = new System.Drawing.Size(89, 23);
+            this.cmdAddQuality.TabIndex = 62;
+            this.cmdAddQuality.Tag = "Button_AddQuality";
+            this.cmdAddQuality.Text = "Add &Quality";
+            this.cmdAddQuality.UseVisualStyleBackColor = true;
+            this.cmdAddQuality.Click += new System.EventHandler(this.cmdAddQuality_Click);
+            // 
+            // nudMysticAdeptMAGMagician
+            // 
+            this.nudMysticAdeptMAGMagician.Location = new System.Drawing.Point(789, 287);
+            this.nudMysticAdeptMAGMagician.Name = "nudMysticAdeptMAGMagician";
+            this.nudMysticAdeptMAGMagician.Size = new System.Drawing.Size(40, 20);
+            this.nudMysticAdeptMAGMagician.TabIndex = 60;
+            this.nudMysticAdeptMAGMagician.Visible = false;
+            this.nudMysticAdeptMAGMagician.ValueChanged += new System.EventHandler(this.nudMysticAdeptMAGMagician_ValueChanged);
+            // 
+            // lblMysticAdeptAssignment
+            // 
+            this.lblMysticAdeptAssignment.AutoSize = true;
+            this.lblMysticAdeptAssignment.Location = new System.Drawing.Point(650, 289);
+            this.lblMysticAdeptAssignment.Name = "lblMysticAdeptAssignment";
+            this.lblMysticAdeptAssignment.Size = new System.Drawing.Size(133, 13);
+            this.lblMysticAdeptAssignment.TabIndex = 56;
+            this.lblMysticAdeptAssignment.Tag = "Label_MysticAdeptAssignment";
+            this.lblMysticAdeptAssignment.Text = "Mystic Adept Power Points";
+            this.lblMysticAdeptAssignment.Visible = false;
+            // 
+            // treQualities
+            // 
+            this.treQualities.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.treQualities.Indent = 15;
+            this.treQualities.Location = new System.Drawing.Point(6, 38);
+            this.treQualities.Name = "treQualities";
+            treeNode1.Name = "nodPositiveQualityRoot";
+            treeNode1.Tag = "Node_SelectedPositiveQualities";
+            treeNode1.Text = "Selected Positive Qualities";
+            treeNode2.Name = "nodNegativeQualityRoot";
+            treeNode2.Tag = "Node_SelectedNegativeQualities";
+            treeNode2.Text = "Selected Negative Qualities";
+            this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2});
+            this.treQualities.ShowNodeToolTips = true;
+            this.treQualities.ShowPlusMinus = false;
+            this.treQualities.ShowRootLines = false;
+            this.treQualities.Size = new System.Drawing.Size(273, 545);
+            this.treQualities.TabIndex = 33;
+            this.treQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treQualities_AfterSelect);
+            this.treQualities.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treQualities_KeyDown);
+            this.treQualities.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            // 
+            // lblMetatype
+            // 
+            this.lblMetatype.AutoSize = true;
+            this.lblMetatype.Location = new System.Drawing.Point(710, 9);
+            this.lblMetatype.Name = "lblMetatype";
+            this.lblMetatype.Size = new System.Drawing.Size(33, 13);
+            this.lblMetatype.TabIndex = 20;
+            this.lblMetatype.Text = "None";
+            // 
+            // lblMetatypeLabel
+            // 
+            this.lblMetatypeLabel.AutoSize = true;
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(650, 9);
+            this.lblMetatypeLabel.Name = "lblMetatypeLabel";
+            this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
+            this.lblMetatypeLabel.TabIndex = 19;
+            this.lblMetatypeLabel.Tag = "Label_Metatype";
+            this.lblMetatypeLabel.Text = "Metatype:";
+            // 
+            // panAttributes
+            // 
+            this.panAttributes.Controls.Add(this.nudKDEP);
+            this.panAttributes.Controls.Add(this.lblDEPAug);
+            this.panAttributes.Controls.Add(this.lblDEPMetatype);
+            this.panAttributes.Controls.Add(this.nudDEP);
+            this.panAttributes.Controls.Add(this.lblDEPLabel);
+            this.panAttributes.Controls.Add(this.nudKRES);
+            this.panAttributes.Controls.Add(this.nudKMAG);
+            this.panAttributes.Controls.Add(this.nudKEDG);
+            this.panAttributes.Controls.Add(this.nudKWIL);
+            this.panAttributes.Controls.Add(this.nudKLOG);
+            this.panAttributes.Controls.Add(this.nudKINT);
+            this.panAttributes.Controls.Add(this.nudKCHA);
+            this.panAttributes.Controls.Add(this.nudKSTR);
+            this.panAttributes.Controls.Add(this.nudKREA);
+            this.panAttributes.Controls.Add(this.nudKAGI);
+            this.panAttributes.Controls.Add(this.nudKBOD);
+            this.panAttributes.Controls.Add(this.lblRESAug);
+            this.panAttributes.Controls.Add(this.lblMAGAug);
+            this.panAttributes.Controls.Add(this.lblEDGAug);
+            this.panAttributes.Controls.Add(this.lblWILAug);
+            this.panAttributes.Controls.Add(this.lblLOGAug);
+            this.panAttributes.Controls.Add(this.lblINTAug);
+            this.panAttributes.Controls.Add(this.lblCHAAug);
+            this.panAttributes.Controls.Add(this.lblSTRAug);
+            this.panAttributes.Controls.Add(this.lblREAAug);
+            this.panAttributes.Controls.Add(this.lblAGIAug);
+            this.panAttributes.Controls.Add(this.lblBODAug);
+            this.panAttributes.Controls.Add(this.lblRESMetatype);
+            this.panAttributes.Controls.Add(this.nudRES);
+            this.panAttributes.Controls.Add(this.lblRESLabel);
+            this.panAttributes.Controls.Add(this.lblMAGMetatype);
+            this.panAttributes.Controls.Add(this.nudMAG);
+            this.panAttributes.Controls.Add(this.lblMAGLabel);
+            this.panAttributes.Controls.Add(this.lblEDGMetatype);
+            this.panAttributes.Controls.Add(this.nudEDG);
+            this.panAttributes.Controls.Add(this.lblEDGLabel);
+            this.panAttributes.Controls.Add(this.lblWILMetatype);
+            this.panAttributes.Controls.Add(this.nudWIL);
+            this.panAttributes.Controls.Add(this.lblWILLabel);
+            this.panAttributes.Controls.Add(this.lblLOGMetatype);
+            this.panAttributes.Controls.Add(this.nudLOG);
+            this.panAttributes.Controls.Add(this.lblLOGLabel);
+            this.panAttributes.Controls.Add(this.lblINTMetatype);
+            this.panAttributes.Controls.Add(this.nudINT);
+            this.panAttributes.Controls.Add(this.lblINTLabel);
+            this.panAttributes.Controls.Add(this.lblCHAMetatype);
+            this.panAttributes.Controls.Add(this.nudCHA);
+            this.panAttributes.Controls.Add(this.lblCHALabel);
+            this.panAttributes.Controls.Add(this.lblSTRMetatype);
+            this.panAttributes.Controls.Add(this.nudSTR);
+            this.panAttributes.Controls.Add(this.lblSTRLabel);
+            this.panAttributes.Controls.Add(this.lblREAMetatype);
+            this.panAttributes.Controls.Add(this.nudREA);
+            this.panAttributes.Controls.Add(this.lblREALabel);
+            this.panAttributes.Controls.Add(this.lblAGIMetatype);
+            this.panAttributes.Controls.Add(this.nudAGI);
+            this.panAttributes.Controls.Add(this.nudBOD);
+            this.panAttributes.Controls.Add(this.lblBODLabel);
+            this.panAttributes.Controls.Add(this.lblAGILabel);
+            this.panAttributes.Controls.Add(this.lblBODMetatype);
+            this.panAttributes.Location = new System.Drawing.Point(288, 48);
+            this.panAttributes.Name = "panAttributes";
+            this.panAttributes.Size = new System.Drawing.Size(356, 317);
+            this.panAttributes.TabIndex = 6;
+            // 
+            // nudKDEP
+            // 
+            this.nudKDEP.Enabled = false;
+            this.nudKDEP.Location = new System.Drawing.Point(174, 289);
+            this.nudKDEP.Name = "nudKDEP";
+            this.nudKDEP.Size = new System.Drawing.Size(40, 20);
+            this.nudKDEP.TabIndex = 59;
+            this.nudKDEP.ValueChanged += new System.EventHandler(this.nudKDEP_ValueChanged);
+            // 
+            // lblDEPAug
+            // 
+            this.lblDEPAug.Enabled = false;
+            this.lblDEPAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDEPAug.Location = new System.Drawing.Point(222, 289);
+            this.lblDEPAug.Name = "lblDEPAug";
+            this.lblDEPAug.Size = new System.Drawing.Size(60, 17);
+            this.lblDEPAug.TabIndex = 58;
+            this.lblDEPAug.Text = "[0]";
+            // 
+            // lblDEPMetatype
+            // 
+            this.lblDEPMetatype.AutoSize = true;
+            this.lblDEPMetatype.Enabled = false;
+            this.lblDEPMetatype.Location = new System.Drawing.Point(288, 291);
+            this.lblDEPMetatype.Name = "lblDEPMetatype";
+            this.lblDEPMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblDEPMetatype.TabIndex = 57;
+            this.lblDEPMetatype.Text = "0 / 0 (0)";
+            // 
+            // nudDEP
+            // 
+            this.nudDEP.Enabled = false;
+            this.nudDEP.Location = new System.Drawing.Point(128, 289);
+            this.nudDEP.Name = "nudDEP";
+            this.nudDEP.Size = new System.Drawing.Size(40, 20);
+            this.nudDEP.TabIndex = 56;
+            this.nudDEP.ValueChanged += new System.EventHandler(this.nudDEP_ValueChanged);
+            // 
+            // lblDEPLabel
+            // 
+            this.lblDEPLabel.AutoSize = true;
+            this.lblDEPLabel.Enabled = false;
+            this.lblDEPLabel.Location = new System.Drawing.Point(3, 291);
+            this.lblDEPLabel.Name = "lblDEPLabel";
+            this.lblDEPLabel.Size = new System.Drawing.Size(67, 13);
+            this.lblDEPLabel.TabIndex = 55;
+            this.lblDEPLabel.Text = "Depth (DEP)";
+            // 
+            // nudKRES
+            // 
+            this.nudKRES.Enabled = false;
+            this.nudKRES.Location = new System.Drawing.Point(174, 265);
+            this.nudKRES.Name = "nudKRES";
+            this.nudKRES.Size = new System.Drawing.Size(40, 20);
+            this.nudKRES.TabIndex = 54;
+            this.nudKRES.ValueChanged += new System.EventHandler(this.nudKRES_ValueChanged);
+            // 
+            // nudKMAG
+            // 
+            this.nudKMAG.Enabled = false;
+            this.nudKMAG.Location = new System.Drawing.Point(174, 239);
+            this.nudKMAG.Name = "nudKMAG";
+            this.nudKMAG.Size = new System.Drawing.Size(40, 20);
+            this.nudKMAG.TabIndex = 53;
+            this.nudKMAG.ValueChanged += new System.EventHandler(this.nudKMAG_ValueChanged);
+            // 
+            // nudKEDG
+            // 
+            this.nudKEDG.Location = new System.Drawing.Point(174, 213);
+            this.nudKEDG.Name = "nudKEDG";
+            this.nudKEDG.Size = new System.Drawing.Size(40, 20);
+            this.nudKEDG.TabIndex = 52;
+            this.nudKEDG.ValueChanged += new System.EventHandler(this.nudKEDG_ValueChanged);
+            // 
+            // nudKWIL
+            // 
+            this.nudKWIL.Location = new System.Drawing.Point(174, 187);
+            this.nudKWIL.Name = "nudKWIL";
+            this.nudKWIL.Size = new System.Drawing.Size(40, 20);
+            this.nudKWIL.TabIndex = 51;
+            this.nudKWIL.ValueChanged += new System.EventHandler(this.nudKWIL_ValueChanged);
+            // 
+            // nudKLOG
+            // 
+            this.nudKLOG.Location = new System.Drawing.Point(174, 161);
+            this.nudKLOG.Name = "nudKLOG";
+            this.nudKLOG.Size = new System.Drawing.Size(40, 20);
+            this.nudKLOG.TabIndex = 50;
+            this.nudKLOG.ValueChanged += new System.EventHandler(this.nudKLOG_ValueChanged);
+            // 
+            // nudKINT
+            // 
+            this.nudKINT.Location = new System.Drawing.Point(174, 135);
+            this.nudKINT.Name = "nudKINT";
+            this.nudKINT.Size = new System.Drawing.Size(40, 20);
+            this.nudKINT.TabIndex = 49;
+            this.nudKINT.ValueChanged += new System.EventHandler(this.nudKINT_ValueChanged);
+            // 
+            // nudKCHA
+            // 
+            this.nudKCHA.Location = new System.Drawing.Point(174, 109);
+            this.nudKCHA.Name = "nudKCHA";
+            this.nudKCHA.Size = new System.Drawing.Size(40, 20);
+            this.nudKCHA.TabIndex = 48;
+            this.nudKCHA.ValueChanged += new System.EventHandler(this.nudKCHA_ValueChanged);
+            // 
+            // nudKSTR
+            // 
+            this.nudKSTR.Location = new System.Drawing.Point(174, 83);
+            this.nudKSTR.Name = "nudKSTR";
+            this.nudKSTR.Size = new System.Drawing.Size(40, 20);
+            this.nudKSTR.TabIndex = 47;
+            this.nudKSTR.ValueChanged += new System.EventHandler(this.nudKSTR_ValueChanged);
+            // 
+            // nudKREA
+            // 
+            this.nudKREA.Location = new System.Drawing.Point(174, 57);
+            this.nudKREA.Name = "nudKREA";
+            this.nudKREA.Size = new System.Drawing.Size(40, 20);
+            this.nudKREA.TabIndex = 46;
+            this.nudKREA.ValueChanged += new System.EventHandler(this.nudKREA_ValueChanged);
+            // 
+            // nudKAGI
+            // 
+            this.nudKAGI.Location = new System.Drawing.Point(174, 31);
+            this.nudKAGI.Name = "nudKAGI";
+            this.nudKAGI.Size = new System.Drawing.Size(40, 20);
+            this.nudKAGI.TabIndex = 45;
+            this.nudKAGI.ValueChanged += new System.EventHandler(this.nudKAGI_ValueChanged);
+            // 
+            // nudKBOD
+            // 
+            this.nudKBOD.Location = new System.Drawing.Point(174, 5);
+            this.nudKBOD.Name = "nudKBOD";
+            this.nudKBOD.Size = new System.Drawing.Size(40, 20);
+            this.nudKBOD.TabIndex = 44;
+            this.nudKBOD.ValueChanged += new System.EventHandler(this.nudKBOD_ValueChanged);
+            // 
+            // lblRESAug
+            // 
+            this.lblRESAug.Enabled = false;
+            this.lblRESAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRESAug.Location = new System.Drawing.Point(222, 265);
+            this.lblRESAug.Name = "lblRESAug";
+            this.lblRESAug.Size = new System.Drawing.Size(60, 17);
+            this.lblRESAug.TabIndex = 43;
+            this.lblRESAug.Text = "[0]";
+            // 
+            // lblMAGAug
+            // 
+            this.lblMAGAug.Enabled = false;
+            this.lblMAGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMAGAug.Location = new System.Drawing.Point(222, 239);
+            this.lblMAGAug.Name = "lblMAGAug";
+            this.lblMAGAug.Size = new System.Drawing.Size(60, 17);
+            this.lblMAGAug.TabIndex = 42;
+            this.lblMAGAug.Text = "[0]";
+            // 
+            // lblEDGAug
+            // 
+            this.lblEDGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEDGAug.Location = new System.Drawing.Point(222, 213);
+            this.lblEDGAug.Name = "lblEDGAug";
+            this.lblEDGAug.Size = new System.Drawing.Size(60, 17);
+            this.lblEDGAug.TabIndex = 41;
+            this.lblEDGAug.Text = "[0]";
+            // 
+            // lblWILAug
+            // 
+            this.lblWILAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWILAug.Location = new System.Drawing.Point(222, 187);
+            this.lblWILAug.Name = "lblWILAug";
+            this.lblWILAug.Size = new System.Drawing.Size(60, 17);
+            this.lblWILAug.TabIndex = 40;
+            this.lblWILAug.Text = "[0]";
+            // 
+            // lblLOGAug
+            // 
+            this.lblLOGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLOGAug.Location = new System.Drawing.Point(222, 161);
+            this.lblLOGAug.Name = "lblLOGAug";
+            this.lblLOGAug.Size = new System.Drawing.Size(60, 17);
+            this.lblLOGAug.TabIndex = 39;
+            this.lblLOGAug.Text = "[0]";
+            // 
+            // lblINTAug
+            // 
+            this.lblINTAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblINTAug.Location = new System.Drawing.Point(222, 135);
+            this.lblINTAug.Name = "lblINTAug";
+            this.lblINTAug.Size = new System.Drawing.Size(60, 17);
+            this.lblINTAug.TabIndex = 38;
+            this.lblINTAug.Text = "[0]";
+            // 
+            // lblCHAAug
+            // 
+            this.lblCHAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCHAAug.Location = new System.Drawing.Point(222, 109);
+            this.lblCHAAug.Name = "lblCHAAug";
+            this.lblCHAAug.Size = new System.Drawing.Size(60, 17);
+            this.lblCHAAug.TabIndex = 37;
+            this.lblCHAAug.Text = "[0]";
+            // 
+            // lblSTRAug
+            // 
+            this.lblSTRAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSTRAug.Location = new System.Drawing.Point(222, 83);
+            this.lblSTRAug.Name = "lblSTRAug";
+            this.lblSTRAug.Size = new System.Drawing.Size(60, 17);
+            this.lblSTRAug.TabIndex = 36;
+            this.lblSTRAug.Text = "[0]";
+            // 
+            // lblREAAug
+            // 
+            this.lblREAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblREAAug.Location = new System.Drawing.Point(222, 57);
+            this.lblREAAug.Name = "lblREAAug";
+            this.lblREAAug.Size = new System.Drawing.Size(60, 17);
+            this.lblREAAug.TabIndex = 35;
+            this.lblREAAug.Text = "[0]";
+            // 
+            // lblAGIAug
+            // 
+            this.lblAGIAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAGIAug.Location = new System.Drawing.Point(222, 31);
+            this.lblAGIAug.Name = "lblAGIAug";
+            this.lblAGIAug.Size = new System.Drawing.Size(60, 17);
+            this.lblAGIAug.TabIndex = 34;
+            this.lblAGIAug.Text = "[0]";
+            // 
+            // lblBODAug
+            // 
+            this.lblBODAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBODAug.Location = new System.Drawing.Point(222, 5);
+            this.lblBODAug.Name = "lblBODAug";
+            this.lblBODAug.Size = new System.Drawing.Size(60, 17);
+            this.lblBODAug.TabIndex = 33;
+            this.lblBODAug.Text = "[0]";
+            // 
+            // lblRESMetatype
+            // 
+            this.lblRESMetatype.AutoSize = true;
+            this.lblRESMetatype.Enabled = false;
+            this.lblRESMetatype.Location = new System.Drawing.Point(288, 267);
+            this.lblRESMetatype.Name = "lblRESMetatype";
+            this.lblRESMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblRESMetatype.TabIndex = 32;
+            this.lblRESMetatype.Text = "0 / 0 (0)";
+            // 
+            // nudRES
+            // 
+            this.nudRES.Enabled = false;
+            this.nudRES.Location = new System.Drawing.Point(128, 265);
+            this.nudRES.Name = "nudRES";
+            this.nudRES.Size = new System.Drawing.Size(40, 20);
+            this.nudRES.TabIndex = 31;
+            this.nudRES.ValueChanged += new System.EventHandler(this.nudRES_ValueChanged);
+            // 
+            // lblRESLabel
+            // 
+            this.lblRESLabel.AutoSize = true;
+            this.lblRESLabel.Enabled = false;
+            this.lblRESLabel.Location = new System.Drawing.Point(3, 267);
+            this.lblRESLabel.Name = "lblRESLabel";
+            this.lblRESLabel.Size = new System.Drawing.Size(93, 13);
+            this.lblRESLabel.TabIndex = 30;
+            this.lblRESLabel.Text = "Resonance (RES)";
+            // 
+            // lblMAGMetatype
+            // 
+            this.lblMAGMetatype.AutoSize = true;
+            this.lblMAGMetatype.Enabled = false;
+            this.lblMAGMetatype.Location = new System.Drawing.Point(288, 241);
+            this.lblMAGMetatype.Name = "lblMAGMetatype";
+            this.lblMAGMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblMAGMetatype.TabIndex = 29;
+            this.lblMAGMetatype.Text = "0 / 0 (0)";
+            // 
+            // nudMAG
+            // 
+            this.nudMAG.Enabled = false;
+            this.nudMAG.Location = new System.Drawing.Point(128, 239);
+            this.nudMAG.Name = "nudMAG";
+            this.nudMAG.Size = new System.Drawing.Size(40, 20);
+            this.nudMAG.TabIndex = 28;
+            this.nudMAG.ValueChanged += new System.EventHandler(this.nudMAG_ValueChanged);
+            // 
+            // lblMAGLabel
+            // 
+            this.lblMAGLabel.AutoSize = true;
+            this.lblMAGLabel.Enabled = false;
+            this.lblMAGLabel.Location = new System.Drawing.Point(3, 241);
+            this.lblMAGLabel.Name = "lblMAGLabel";
+            this.lblMAGLabel.Size = new System.Drawing.Size(69, 13);
+            this.lblMAGLabel.TabIndex = 27;
+            this.lblMAGLabel.Text = "Magic (MAG)";
+            // 
+            // lblEDGMetatype
+            // 
+            this.lblEDGMetatype.AutoSize = true;
+            this.lblEDGMetatype.Location = new System.Drawing.Point(288, 215);
+            this.lblEDGMetatype.Name = "lblEDGMetatype";
+            this.lblEDGMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblEDGMetatype.TabIndex = 26;
+            this.lblEDGMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudEDG
+            // 
+            this.nudEDG.Location = new System.Drawing.Point(128, 213);
+            this.nudEDG.Name = "nudEDG";
+            this.nudEDG.Size = new System.Drawing.Size(40, 20);
+            this.nudEDG.TabIndex = 25;
+            this.nudEDG.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEDG.ValueChanged += new System.EventHandler(this.nudEDG_ValueChanged);
+            // 
+            // lblEDGLabel
+            // 
+            this.lblEDGLabel.AutoSize = true;
+            this.lblEDGLabel.Location = new System.Drawing.Point(3, 215);
+            this.lblEDGLabel.Name = "lblEDGLabel";
+            this.lblEDGLabel.Size = new System.Drawing.Size(64, 13);
+            this.lblEDGLabel.TabIndex = 24;
+            this.lblEDGLabel.Text = "Edge (EDG)";
+            // 
+            // lblWILMetatype
+            // 
+            this.lblWILMetatype.AutoSize = true;
+            this.lblWILMetatype.Location = new System.Drawing.Point(288, 189);
+            this.lblWILMetatype.Name = "lblWILMetatype";
+            this.lblWILMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblWILMetatype.TabIndex = 23;
+            this.lblWILMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudWIL
+            // 
+            this.nudWIL.Location = new System.Drawing.Point(128, 187);
+            this.nudWIL.Name = "nudWIL";
+            this.nudWIL.Size = new System.Drawing.Size(40, 20);
+            this.nudWIL.TabIndex = 22;
+            this.nudWIL.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudWIL.ValueChanged += new System.EventHandler(this.nudWIL_ValueChanged);
+            // 
+            // lblWILLabel
+            // 
+            this.lblWILLabel.AutoSize = true;
+            this.lblWILLabel.Location = new System.Drawing.Point(3, 189);
+            this.lblWILLabel.Name = "lblWILLabel";
+            this.lblWILLabel.Size = new System.Drawing.Size(82, 13);
+            this.lblWILLabel.TabIndex = 21;
+            this.lblWILLabel.Text = "Willpower (WIL)";
+            // 
+            // lblLOGMetatype
+            // 
+            this.lblLOGMetatype.AutoSize = true;
+            this.lblLOGMetatype.Location = new System.Drawing.Point(288, 163);
+            this.lblLOGMetatype.Name = "lblLOGMetatype";
+            this.lblLOGMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblLOGMetatype.TabIndex = 20;
+            this.lblLOGMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudLOG
+            // 
+            this.nudLOG.Location = new System.Drawing.Point(128, 161);
+            this.nudLOG.Name = "nudLOG";
+            this.nudLOG.Size = new System.Drawing.Size(40, 20);
+            this.nudLOG.TabIndex = 19;
+            this.nudLOG.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudLOG.ValueChanged += new System.EventHandler(this.nudLOG_ValueChanged);
+            // 
+            // lblLOGLabel
+            // 
+            this.lblLOGLabel.AutoSize = true;
+            this.lblLOGLabel.Location = new System.Drawing.Point(3, 163);
+            this.lblLOGLabel.Name = "lblLOGLabel";
+            this.lblLOGLabel.Size = new System.Drawing.Size(64, 13);
+            this.lblLOGLabel.TabIndex = 18;
+            this.lblLOGLabel.Text = "Logic (LOG)";
+            // 
+            // lblINTMetatype
+            // 
+            this.lblINTMetatype.AutoSize = true;
+            this.lblINTMetatype.Location = new System.Drawing.Point(288, 137);
+            this.lblINTMetatype.Name = "lblINTMetatype";
+            this.lblINTMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblINTMetatype.TabIndex = 17;
+            this.lblINTMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudINT
+            // 
+            this.nudINT.Location = new System.Drawing.Point(128, 135);
+            this.nudINT.Name = "nudINT";
+            this.nudINT.Size = new System.Drawing.Size(40, 20);
+            this.nudINT.TabIndex = 16;
+            this.nudINT.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudINT.ValueChanged += new System.EventHandler(this.nudINT_ValueChanged);
+            // 
+            // lblINTLabel
+            // 
+            this.lblINTLabel.AutoSize = true;
+            this.lblINTLabel.Location = new System.Drawing.Point(3, 137);
+            this.lblINTLabel.Name = "lblINTLabel";
+            this.lblINTLabel.Size = new System.Drawing.Size(71, 13);
+            this.lblINTLabel.TabIndex = 15;
+            this.lblINTLabel.Text = "Intuition (INT)";
+            // 
+            // lblCHAMetatype
+            // 
+            this.lblCHAMetatype.AutoSize = true;
+            this.lblCHAMetatype.Location = new System.Drawing.Point(288, 111);
+            this.lblCHAMetatype.Name = "lblCHAMetatype";
+            this.lblCHAMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblCHAMetatype.TabIndex = 14;
+            this.lblCHAMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudCHA
+            // 
+            this.nudCHA.Location = new System.Drawing.Point(128, 109);
+            this.nudCHA.Name = "nudCHA";
+            this.nudCHA.Size = new System.Drawing.Size(40, 20);
+            this.nudCHA.TabIndex = 13;
+            this.nudCHA.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudCHA.ValueChanged += new System.EventHandler(this.nudCHA_ValueChanged);
+            // 
+            // lblCHALabel
+            // 
+            this.lblCHALabel.AutoSize = true;
+            this.lblCHALabel.Location = new System.Drawing.Point(3, 111);
+            this.lblCHALabel.Name = "lblCHALabel";
+            this.lblCHALabel.Size = new System.Drawing.Size(81, 13);
+            this.lblCHALabel.TabIndex = 12;
+            this.lblCHALabel.Text = "Charisma (CHA)";
+            // 
+            // lblSTRMetatype
+            // 
+            this.lblSTRMetatype.AutoSize = true;
+            this.lblSTRMetatype.Location = new System.Drawing.Point(288, 85);
+            this.lblSTRMetatype.Name = "lblSTRMetatype";
+            this.lblSTRMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblSTRMetatype.TabIndex = 11;
+            this.lblSTRMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudSTR
+            // 
+            this.nudSTR.Location = new System.Drawing.Point(128, 83);
+            this.nudSTR.Name = "nudSTR";
+            this.nudSTR.Size = new System.Drawing.Size(40, 20);
+            this.nudSTR.TabIndex = 10;
+            this.nudSTR.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSTR.ValueChanged += new System.EventHandler(this.nudSTR_ValueChanged);
+            // 
+            // lblSTRLabel
+            // 
+            this.lblSTRLabel.AutoSize = true;
+            this.lblSTRLabel.Location = new System.Drawing.Point(3, 85);
+            this.lblSTRLabel.Name = "lblSTRLabel";
+            this.lblSTRLabel.Size = new System.Drawing.Size(78, 13);
+            this.lblSTRLabel.TabIndex = 9;
+            this.lblSTRLabel.Text = "Strength (STR)";
+            // 
+            // lblREAMetatype
+            // 
+            this.lblREAMetatype.AutoSize = true;
+            this.lblREAMetatype.Location = new System.Drawing.Point(288, 59);
+            this.lblREAMetatype.Name = "lblREAMetatype";
+            this.lblREAMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblREAMetatype.TabIndex = 8;
+            this.lblREAMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudREA
+            // 
+            this.nudREA.Location = new System.Drawing.Point(128, 57);
+            this.nudREA.Name = "nudREA";
+            this.nudREA.Size = new System.Drawing.Size(40, 20);
+            this.nudREA.TabIndex = 7;
+            this.nudREA.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudREA.ValueChanged += new System.EventHandler(this.nudREA_ValueChanged);
+            // 
+            // lblREALabel
+            // 
+            this.lblREALabel.AutoSize = true;
+            this.lblREALabel.Location = new System.Drawing.Point(3, 59);
+            this.lblREALabel.Name = "lblREALabel";
+            this.lblREALabel.Size = new System.Drawing.Size(81, 13);
+            this.lblREALabel.TabIndex = 6;
+            this.lblREALabel.Text = "Reaction (REA)";
+            // 
+            // lblAGIMetatype
+            // 
+            this.lblAGIMetatype.AutoSize = true;
+            this.lblAGIMetatype.Location = new System.Drawing.Point(288, 33);
+            this.lblAGIMetatype.Name = "lblAGIMetatype";
+            this.lblAGIMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblAGIMetatype.TabIndex = 5;
+            this.lblAGIMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudAGI
+            // 
+            this.nudAGI.Location = new System.Drawing.Point(128, 31);
+            this.nudAGI.Name = "nudAGI";
+            this.nudAGI.Size = new System.Drawing.Size(40, 20);
+            this.nudAGI.TabIndex = 4;
+            this.nudAGI.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudAGI.ValueChanged += new System.EventHandler(this.nudAGI_ValueChanged);
+            // 
+            // nudBOD
+            // 
+            this.nudBOD.Location = new System.Drawing.Point(128, 5);
+            this.nudBOD.Name = "nudBOD";
+            this.nudBOD.Size = new System.Drawing.Size(40, 20);
+            this.nudBOD.TabIndex = 1;
+            this.nudBOD.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudBOD.ValueChanged += new System.EventHandler(this.nudBOD_ValueChanged);
+            // 
+            // lblBODLabel
+            // 
+            this.lblBODLabel.AutoSize = true;
+            this.lblBODLabel.Location = new System.Drawing.Point(3, 7);
+            this.lblBODLabel.Name = "lblBODLabel";
+            this.lblBODLabel.Size = new System.Drawing.Size(63, 13);
+            this.lblBODLabel.TabIndex = 0;
+            this.lblBODLabel.Text = "Body (BOD)";
+            // 
+            // lblAGILabel
+            // 
+            this.lblAGILabel.AutoSize = true;
+            this.lblAGILabel.Location = new System.Drawing.Point(3, 33);
+            this.lblAGILabel.Name = "lblAGILabel";
+            this.lblAGILabel.Size = new System.Drawing.Size(61, 13);
+            this.lblAGILabel.TabIndex = 3;
+            this.lblAGILabel.Text = "Agility (AGI)";
+            // 
+            // lblBODMetatype
+            // 
+            this.lblBODMetatype.AutoSize = true;
+            this.lblBODMetatype.Location = new System.Drawing.Point(288, 7);
+            this.lblBODMetatype.Name = "lblBODMetatype";
+            this.lblBODMetatype.Size = new System.Drawing.Size(45, 13);
+            this.lblBODMetatype.TabIndex = 2;
+            this.lblBODMetatype.Text = "1 / 6 (9)";
+            // 
+            // nudNuyen
+            // 
+            this.nudNuyen.Location = new System.Drawing.Point(694, 63);
+            this.nudNuyen.Maximum = new decimal(new int[] {
+            1073704,
+            0,
+            0,
+            0});
+            this.nudNuyen.Name = "nudNuyen";
+            this.nudNuyen.Size = new System.Drawing.Size(46, 20);
+            this.nudNuyen.TabIndex = 17;
+            this.nudNuyen.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.nudNuyen.ValueChanged += new System.EventHandler(this.nudNuyen_ValueChanged);
+            // 
+            // lblNuyenTotal
+            // 
+            this.lblNuyenTotal.AutoSize = true;
+            this.lblNuyenTotal.Location = new System.Drawing.Point(746, 65);
+            this.lblNuyenTotal.Name = "lblNuyenTotal";
+            this.lblNuyenTotal.Size = new System.Drawing.Size(28, 13);
+            this.lblNuyenTotal.TabIndex = 18;
+            this.lblNuyenTotal.Text = "= 0¥";
+            // 
+            // tabSkills
+            // 
+            this.tabSkills.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabSkills.Location = new System.Drawing.Point(4, 22);
+            this.tabSkills.Name = "tabSkills";
+            this.tabSkills.Size = new System.Drawing.Size(838, 611);
+            this.tabSkills.TabIndex = 6;
+            this.tabSkills.Tag = "Tab_Skills";
+            this.tabSkills.Text = "Skills";
+			// 
+            // tabLimits
+            // 
+            this.tabLimits.Controls.Add(this.lblAstralLabel);
+            this.tabLimits.Controls.Add(this.lblAstral);
+            this.tabLimits.Controls.Add(this.lblSocialLabel);
+            this.tabLimits.Controls.Add(this.lblSocial);
+            this.tabLimits.Controls.Add(this.lblMentalLabel);
+            this.tabLimits.Controls.Add(this.lblMental);
+            this.tabLimits.Controls.Add(this.lblPhysicalLabel);
+            this.tabLimits.Controls.Add(this.lblPhysical);
+            this.tabLimits.Controls.Add(this.cmdAddLimitModifier);
+            this.tabLimits.Controls.Add(this.treLimit);
+            this.tabLimits.Controls.Add(this.cmdDeleteLimitModifier);
+            this.tabLimits.Location = new System.Drawing.Point(4, 22);
+            this.tabLimits.Name = "tabLimits";
+            this.tabLimits.Size = new System.Drawing.Size(838, 611);
+            this.tabLimits.TabIndex = 13;
+            this.tabLimits.Tag = "Tab_Limits";
+            this.tabLimits.Text = "Limits";
+            // 
+            // lblAstral
+            // 
+            this.lblAstral.AutoSize = true;
+            this.lblAstral.Location = new System.Drawing.Point(411, 111);
+            this.lblAstral.Name = "lblAstral";
+            this.lblAstral.Size = new System.Drawing.Size(19, 13);
+            this.lblAstral.TabIndex = 79;
+            this.lblAstral.Text = "[0]";
+            // 
+            // lblSocial
+            // 
+            this.lblSocial.AutoSize = true;
+            this.lblSocial.Location = new System.Drawing.Point(411, 84);
+            this.lblSocial.Name = "lblSocial";
+            this.lblSocial.Size = new System.Drawing.Size(19, 13);
+            this.lblSocial.TabIndex = 77;
+            this.lblSocial.Text = "[0]";
+            // 
+            // lblMental
+            // 
+            this.lblMental.AutoSize = true;
+            this.lblMental.Location = new System.Drawing.Point(411, 58);
+            this.lblMental.Name = "lblMental";
+            this.lblMental.Size = new System.Drawing.Size(19, 13);
+            this.lblMental.TabIndex = 75;
+            this.lblMental.Text = "[0]";
+            // 
+            // lblPhysical
+            // 
+            this.lblPhysical.AutoSize = true;
+            this.lblPhysical.Location = new System.Drawing.Point(411, 32);
+            this.lblPhysical.Name = "lblPhysical";
+            this.lblPhysical.Size = new System.Drawing.Size(19, 13);
+            this.lblPhysical.TabIndex = 73;
+            this.lblPhysical.Text = "[0]";
+            // 
+            // cmdAddLimitModifier
+            // 
+            this.cmdAddLimitModifier.AutoSize = true;
+            this.cmdAddLimitModifier.Location = new System.Drawing.Point(8, 4);
+            this.cmdAddLimitModifier.Name = "cmdAddLimitModifier";
+            this.cmdAddLimitModifier.Size = new System.Drawing.Size(100, 23);
+            this.cmdAddLimitModifier.TabIndex = 58;
+            this.cmdAddLimitModifier.Tag = "String_AddLimitModifier";
+            this.cmdAddLimitModifier.Text = "Add Limit Modifier";
+            this.cmdAddLimitModifier.UseVisualStyleBackColor = true;
+            this.cmdAddLimitModifier.Click += new System.EventHandler(this.cmdAddLimitModifier_Click);
+            // 
+            // treLimit
+            // 
+            this.treLimit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.treVehicles.HideSelection = false;
 			this.treVehicles.Location = new System.Drawing.Point(8, 36);
