@@ -12428,13 +12428,14 @@ namespace Chummer
 					break;
 				case KarmaExpenseType.SkillSpec:  //I am resonable sure those 2 are the same. Was written looking at old AddSpecialization code
 				case KarmaExpenseType.AddSpecialization:
-					{
-						Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.SkillsSection.KnowledgeSkills, _objCharacter.SkillsSection.Skills)
+				{
+					Skill ContainingSkill = IEnumerableExtensions.Both(_objCharacter.SkillsSection.KnowledgeSkills, _objCharacter.SkillsSection.Skills)
 							.FirstOrDefault(x => x.Specializations.Any(s => s.InternalId == objEntry.Undo.ObjectId));
 
+					if (ContainingSkill != null)
 						ContainingSkill.Specializations.Remove(
-							ContainingSkill.Specializations.First(x => x.InternalId == objEntry.Undo.ObjectId));
-					}
+							ContainingSkill.Specializations.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId));
+				}
 					break;
 				case KarmaExpenseType.ImproveSkillGroup:
 					// Locate the Skill Group that was affected.
@@ -12443,9 +12444,8 @@ namespace Chummer
 					break;
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
-					Skill skill = _objCharacter.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
-					if (skill == null)
-						skill = _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+					Skill skill = _objCharacter.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId) ??
+					              _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
 
 					if (skill != null)
 					{

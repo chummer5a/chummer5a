@@ -188,10 +188,9 @@ namespace Chummer.Skills
 		public static Skill LegacyLoad(Character character, XmlNode n)
 		{
 			Guid suid;
-			if (!n.TryGetField("id", Guid.TryParse, out suid))
-				return null;
-
 			Skill skill;
+
+			n.TryGetField("id", Guid.TryParse, out suid, Guid.NewGuid());
 
 			int baseRating = int.Parse(n["base"].InnerText);
 			int fullRating = int.Parse(n["rating"].InnerText);
@@ -211,7 +210,7 @@ namespace Chummer.Skills
 			else
 			{
 				XmlNode data =
-					XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{n["id"].InnerText}']");
+					XmlManager.Instance.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
 
 				//Some stuff apparently have a guid of 0000-000... (only exotic?)
 				if (data == null)
@@ -228,9 +227,9 @@ namespace Chummer.Skills
 				ExoticSkill exoticSkill = skill as ExoticSkill;
 				if (exoticSkill != null)
 				{
-					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name").InnerText;
+					string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? "";
 					//don't need to do more load then.
-
+					
 					exoticSkill.Specific = name;
 					return skill;
 				}

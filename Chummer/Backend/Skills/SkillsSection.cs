@@ -247,7 +247,16 @@ namespace Chummer.Skills
 
 			for (var i = 0; i < nodesToChange.Count; i++)
 			{
-				nodesToChange[i].InnerText = map[nodesToChange[i].InnerText].ToString();
+				try
+				{
+					nodesToChange[i].InnerText = map[nodesToChange[i].InnerText].ToString();
+				}
+				catch (Exception ex)
+				{
+					Log.Error(new object[] { "Failed to convert", ex, nodesToChange[i].ParentNode.OuterXml});
+
+					nodesToChange[i].InnerText = new Guid().ToString();  //This creates 00.. guid in default formatting
+				}
 			}
 		}
 
