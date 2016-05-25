@@ -591,7 +591,7 @@ namespace Chummer
             }
             else
             {
-                //nudNuyen.Maximum = decimal.MaxValue;
+                nudNuyen.Maximum = int.MaxValue / 2000 - 75000; // To ensure there is no overflow in character nuyen even with max karma to nuyen and in debt quality
             }
 	        if (_objCharacter.BornRich) nudNuyen.Maximum += 30;
 			nudNuyen.Value = _objCharacter.NuyenBP;
@@ -8817,13 +8817,9 @@ namespace Chummer
                         strCategories += objXmlCategory.InnerText + ",";
                     // Remove the trailing comma.
                     strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                    frmPickGear.AddCategory(strCategories);
+                    frmPickGear.AllowedCategories = strCategories;
                 }
             }
-
-            if (frmPickGear.AllowedCategories != "")
-                frmPickGear.AllowedCategories += objSensor.Category + ",";
-
             frmPickGear.ShowDialog(this);
 
             if (frmPickGear.DialogResult == DialogResult.Cancel)
@@ -10672,11 +10668,8 @@ namespace Chummer
                     strCategories += objXmlCategory.InnerText + ",";
                 // Remove the trailing comma.
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                frmPickGear.AddCategory(strCategories);
+                frmPickGear.AllowedCategories = strCategories;
             }
-
-            if (frmPickGear.AllowedCategories != "")
-                frmPickGear.AllowedCategories += objSensor.Category + ",";
 
             frmPickGear.ShowDialog(this);
 
@@ -10812,11 +10805,8 @@ namespace Chummer
                     strCategories += objXmlCategory.InnerText + ",";
                 // Remove the trailing comma.
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                frmPickGear.AddCategory(strCategories);
+                frmPickGear.AllowedCategories = strCategories;
             }
-
-            if (frmPickGear.AllowedCategories != "")
-                frmPickGear.AllowedCategories += objSensor.Category + ",";
 
             frmPickGear.ShowDialog(this);
 
@@ -11071,11 +11061,8 @@ namespace Chummer
                     strCategories += objXmlCategory.InnerText + ",";
                 // Remove the trailing comma.
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                frmPickGear.AddCategory(strCategories);
+                frmPickGear.AllowedCategories = strCategories;
             }
-
-            if (frmPickGear.AllowedCategories != "")
-                frmPickGear.AllowedCategories += objSensor.Category + ",";
 
             frmPickGear.ShowDialog(this);
 
@@ -11285,11 +11272,8 @@ namespace Chummer
                     strCategories += objXmlCategory.InnerText + ",";
                 // Remove the trailing comma.
                 strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                frmPickGear.AddCategory(strCategories);
+                frmPickGear.AllowedCategories = strCategories;
             }
-
-            if (frmPickGear.AllowedCategories != "")
-                frmPickGear.AllowedCategories += objSensor.Category + ",";
 
             frmPickGear.ShowDialog(this);
 
@@ -17374,11 +17358,8 @@ namespace Chummer
                             strCategories += objXmlCategory.InnerText + ",";
                         // Remove the trailing comma.
                         strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AddCategory(strCategories);
+                        frmPickGear.AllowedCategories = strCategories;
                     }
-
-                    if (frmPickGear.AllowedCategories != "")
-                        frmPickGear.AllowedCategories += objSelectedGear.Category + ",";
 
                     // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                     if (!objSelectedGear.Capacity.Contains('['))
@@ -17590,11 +17571,8 @@ namespace Chummer
                             strCategories += objXmlCategory.InnerText + ",";
                         // Remove the trailing comma.
                         strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AddCategory(strCategories);
+                        frmPickGear.AllowedCategories = strCategories;
                     }
-
-                    if (frmPickGear.AllowedCategories != "")
-                        frmPickGear.AllowedCategories += objSelectedGear.Category + ",";
 
                     // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                     if (!objSelectedGear.Capacity.Contains('['))
@@ -17619,7 +17597,7 @@ namespace Chummer
                             strCategories += objXmlCategory.InnerText + ",";
                         // Remove the trailing comma.
                         strCategories = strCategories.Substring(0, strCategories.Length - 1);
-                        frmPickGear.AddCategory(strCategories);
+                        frmPickGear.AllowedCategories = strCategories;
                     }
                 }
             }

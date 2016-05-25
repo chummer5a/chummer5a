@@ -15479,6 +15479,18 @@ namespace Chummer
 				// Rigger 5 says max armor is Body + starting Armor, p159
 				intReturn = _intBody + _intArmor;
 
+			    if (IsDrone)
+			    {
+			        if (_objCharacter.Options.DroneArmorMultiplierEnabled)
+			        {
+			            intReturn = _intArmor*_objCharacter.Options.DroneArmorMultiplier;
+			        }
+			        else
+			        {
+			            intReturn = _intArmor*2;
+			        }
+			    }
+
 				// If ignoring the rules, do not limit Armor to the Vehicle's standard rules.
 				if (_objCharacter.IgnoreRules)
 					intReturn = 99;

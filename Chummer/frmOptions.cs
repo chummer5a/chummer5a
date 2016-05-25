@@ -107,6 +107,9 @@ namespace Chummer
             _characterOptions.FreeContactsMultiplierEnabled = chkContactMultiplier.Checked;
                 if (chkContactMultiplier.Checked)
                     nudContactMultiplier.Enabled = true;
+            _characterOptions.DroneArmorMultiplier = Convert.ToInt32(nudDroneArmorMultiplier.Value);
+            _characterOptions.DroneArmorMultiplierEnabled = chkDroneArmorMultiplier.Checked;
+            nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
             _characterOptions.FreeKarmaContacts = chkFreeKarmaContacts.Checked;
             _characterOptions.FreeKarmaKnowledge = chkFreeKarmaKnowledge.Checked;
             _characterOptions.FreeKnowledgeMultiplierEnabled = chkKnowledgeMultiplier.Checked;
@@ -273,6 +276,15 @@ namespace Chummer
             {
                 nudKnowledgeMultiplier.Value = 2;
                 nudKnowledgeMultiplier.Enabled = false;
+            }
+        }
+
+        private void chkDroneArmorMultiplier_CheckedChanged(object sender, EventArgs e)
+        {
+            nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
+            if (!chkDroneArmorMultiplier.Checked)
+            {
+                nudDroneArmorMultiplier.Value = 2;
             }
         }
 
@@ -612,6 +624,7 @@ namespace Chummer
 	        chkUseTotalValueForFreeContacts.Checked = _characterOptions.UseTotalValueForFreeContacts;
 	        chkUseTotalValueForFreeKnowledge.Checked = _characterOptions.UseTotalValueForFreeKnowledge;
 			chkContactMultiplier.Checked = _characterOptions.FreeContactsMultiplierEnabled;
+            chkDroneArmorMultiplier.Checked = _characterOptions.DroneArmorMultiplierEnabled;
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
@@ -648,13 +661,12 @@ namespace Chummer
 			chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
-			nudContactMultiplier.Value = 3;
 			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
-			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;
-			nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
-			nudKnowledgeMultiplier.Value = 2;
-			nudKnowledgeMultiplier.Value = _characterOptions.FreeKnowledgeMultiplier;
-			nudMaxAvail.Value = _characterOptions.Availability;
+            nudKnowledgeMultiplier.Enabled = _characterOptions.FreeKnowledgeMultiplierEnabled;
+            nudKnowledgeMultiplier.Value = _characterOptions.FreeKnowledgeMultiplier;
+            nudDroneArmorMultiplier.Enabled = _characterOptions.DroneArmorMultiplierEnabled;
+            nudDroneArmorMultiplier.Value = _characterOptions.DroneArmorMultiplier;
+            nudMaxAvail.Value = _characterOptions.Availability;
 			nudMetatypeCostsKarmaMultiplier.Value = _characterOptions.MetatypeCostsKarmaMultiplier;
 			nudNuyenPerBP.Value = _characterOptions.NuyenPerBP;
 			txtSettingName.Enabled = cboSetting.SelectedValue.ToString() != "default.xml";
@@ -1194,7 +1206,6 @@ namespace Chummer
 			Clipboard.SetText(response);
 			#endif
 		}
-		#endregion
-
-	}
+        #endregion        
+    }
 }
