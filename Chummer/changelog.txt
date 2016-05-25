@@ -1,10 +1,16 @@
 Build 179:
 Application Change:
 - Total rewrite of skills. 
-	* Faster loading of the skills tab.
-	* Easier maintainance
 	* Eliminated a lot (all?) old bugs
+	* Opening the skills tab first time is now signifigantly faster
+	* Custom sorting of skills. Sort by Rating, Dicepool, Category and more
+	* Skill tooltip now display dicepools for cyberarms
+	* In Career mode, it is possible to calculate the dicepool using another attribute that the default one.
+	* Some minor UI changes to acomodate new skill features
+	* Skills that cannot be defaulted has their name in italics.
+	* Easier maintainance
 	* Reduced file size
+	
 - First things first, good news bad news. Good news, automatic updates will be functional again for updates after 179. Bad news, due to a change in implementation of the automatic updates this brings an end to .Net 4.0 support. Chummer will no longer launch without .Net 4.5 or higher installed on your system. 
 - Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
 - Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodereplace nodes of weaponbonus. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
