@@ -4535,7 +4535,7 @@ namespace Chummer
 			this.tabSkills.Name = "tabSkills";
 			this.tabSkills.Size = new System.Drawing.Size(838, 611);
 			this.tabSkills.TabIndex = 14;
-			this.tabSkills.Tag = "Tab_Skill";
+			this.tabSkills.Tag = "Tab_Skills";
 			this.tabSkills.Text = "Skills";
 			this.tabSkills.UseVisualStyleBackColor = true;
 			// 
@@ -4547,6 +4547,7 @@ namespace Chummer
 			this.tabSkillUc.ObjCharacter = null;
 			this.tabSkillUc.Size = new System.Drawing.Size(838, 611);
 			this.tabSkillUc.TabIndex = 0;
+			this.tabSkillUc.Tag = "";
 			// 
 			// tabLimits
 			// 
