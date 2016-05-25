@@ -3415,10 +3415,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_OptionsAllowInitiation</key>
 			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
 		</string>
-    <string>
-      <key>Tip_OptionStrictSkillGroups</key>
-      <text>Disallow breaking of skill groups with karma during create mode</text>
-    </string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
 			<text>Augmented Attribute value.</text>
@@ -3485,10 +3481,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SkillGroups</key>
 			<text>Skill Groups</text>
 		</string>
-    <string>
-      <key>Label_SkillGroup_Broken</key>
-      <text>Broken</text>
-    </string>
 		<string>
 			<key>Label_ActiveSkills</key>
 			<text>Active Skills</text>
@@ -4495,10 +4487,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
 		</string>
-    <string>
-      <key>Checkbox_Options_StrictSkillGroups</key>
-      <text>Strict interprentation of breaking skill groups in create mode</text>
-    </string>
 		<string>
 			<key>Checkbox_Options_UseCyberlimbCalculation</key>
 			<text>Don't use Cyberlimbs for calculating augmented Attributes</text>
@@ -6538,7 +6526,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Option_PrintToFileFirst</key>
 			<text>Apply Linux printing fix</text>
 		</string>
-    <string>
+		<string>
 			<key>Label_Options_EssenceDecimals</key>
 			<text>Number of decimal places to round Essence to:</text>
 		</string>
@@ -6889,17 +6877,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_SelectExoticSkill_Description</key>
 			<text>Select an Exotic Active Skill to add to your character.</text>
-		</string>
-		<!-- End Region-->
-		<!-- Region Select Gear Window -->
-    <!-- Select Skill Specialisation Window -->
- 		<string>
-			<key>Title_SelectSkillSpecialization</key>
- 			<text>Select a Skill Specialization</text>
-		</string>
-		<string>
-			<key>Label_SelectSkillSpecialization_Description</key>
-			<text>Select a Skill Specialization to add to your character.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Gear Window -->

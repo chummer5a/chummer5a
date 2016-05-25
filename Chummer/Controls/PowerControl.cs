@@ -163,7 +163,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Extra Power information (selected CharacterAttribute or Skill name).
+        /// Extra Power information (selected Attribute or Skill name).
         /// </summary>
         public string Extra
         {
@@ -357,7 +357,7 @@ namespace Chummer
         }
 
 		/// <summary>
-		/// Refresh the maximum level for the Power based on the character's MAG CharacterAttribute.
+		/// Refresh the maximum level for the Power based on the character's MAG Attribute.
 		/// </summary>
 		/// <param name="intMAG">MAG value.</param>
 		public void RefreshMaximum(int intMAG)

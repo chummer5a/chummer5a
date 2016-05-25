@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
-using Chummer.Skills;
 
 namespace Chummer
 {
@@ -31,7 +30,7 @@ namespace Chummer
 		private frmOmae _frmOmae;
 		private frmDiceRoller _frmRoller;
 		private frmUpdate _frmUpdate;
-        private Character _objCharacter;
+		private Character _objCharacter;
 
         #region Control Events
         public frmMain()
@@ -55,7 +54,7 @@ namespace Chummer
 			// If Automatic Updates are enabled, check for updates immediately.
 			if (GlobalOptions.Instance.AutomaticUpdate)
 			{
-                frmUpdate frmAutoUpdate = new frmUpdate();
+				frmUpdate frmAutoUpdate = new frmUpdate();
                 frmAutoUpdate.SilentMode = true;
                 frmAutoUpdate.Visible = false;
                 frmAutoUpdate.ShowDialog(this);
@@ -69,7 +68,7 @@ namespace Chummer
 				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
 
 				var result = verCurrentVersion.CompareTo(verLatestVersion);
-				if (result < 0)
+				if (result != 0)
 					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
 #endif
 			}
@@ -183,7 +182,7 @@ namespace Chummer
 				frmUpdate frmUpdate = new frmUpdate();
 				_frmUpdate = frmUpdate;
 				_frmUpdate.Show();
-		}
+			}
 			else
 			{
 				_frmUpdate.Focus();
@@ -531,7 +530,7 @@ namespace Chummer
         private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
         {
             objCharacter = _objCharacter;
-            foreach (Skill objSkill in objCharacter.SkillsSection.Skills)
+            foreach (Skill objSkill in objCharacter.Skills)
             {
                 if (objSkill.Name == "Impersonation")
                 {
@@ -889,8 +888,28 @@ namespace Chummer
 
 		private void objCareer_DiceRollerOpened(Object sender)
 		{
-			MessageBox.Show("This feature is currently disabled. Please open a ticket if this makes the world burn, otherwise it will get re-enabled when somebody gets around to it");
-			//TODO: IMPLEMENT THIS SHIT
+			SkillControl objControl = (SkillControl)sender;
+
+			if (GlobalOptions.Instance.SingleDiceRoller)
+			{
+				if (_frmRoller == null)
+				{
+					frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+					_frmRoller = frmRoller;
+					frmRoller.Show();
+				}
+				else
+				{
+					_frmRoller.Dice = objControl.SkillObject.TotalRating;
+					_frmRoller.Qualities = objControl.SkillObject.CharacterObject.Qualities;
+					_frmRoller.Focus();
+				}
+			}
+			else
+			{
+				frmDiceRoller frmRoller = new frmDiceRoller(this, objControl.SkillObject.CharacterObject.Qualities, objControl.SkillObject.TotalRating);
+				frmRoller.Show();
+			}
 		}
 
 		private void objCareer_DiceRollerOpenedInt(Character objCharacter, int intDice)
