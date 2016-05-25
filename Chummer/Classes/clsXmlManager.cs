@@ -630,7 +630,7 @@ namespace Chummer
 										}
 										else if (objChild.InnerText != null)
 										{
-											// The item does not have a name which means it should have a translate CharacterAttribute instead.
+											// The item does not have a name which means it should have a translate Attribute instead.
 											XmlNode objNode = objLanguageRoot.SelectSingleNode(objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerText + "\"]");
 											if (objNode != null)
 											{

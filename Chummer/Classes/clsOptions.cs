@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 ﻿using System.Xml;
-using System.Windows.Forms;
 ﻿using Microsoft.Win32;
 
 // MRUChanged Event Handler.
@@ -134,10 +133,8 @@ namespace Chummer
 		#region Constructor and Instance
 		static GlobalOptions()
 		{
-			if (Utils.IsRunningInVisualStudio()) return;
-
-			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
-			if (!Directory.Exists(settingsDirectoryPath))
+			string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+            if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
 			// Automatic Update.

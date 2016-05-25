@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Skills;
 
 namespace Chummer
 {
@@ -219,37 +218,35 @@ namespace Chummer
 			{
 				// <skills>
 				objWriter.WriteStartElement("skills");
-				
-				//TODO: Figure out what this did?
 				// Active Skills.
-				//foreach (Skill objSkill in _objCharacter.Skills)
-				//{
-				//	if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
-				//	{
-				//		// <skill>
-				//		objWriter.WriteStartElement("skill");
-				//		objWriter.WriteElementString("name", objSkill.Name);
-				//		objWriter.WriteElementString("rating", objSkill.Rating.ToString());
-				//		if (objSkill.Specialization != "")
-				//			objWriter.WriteElementString("spec", objSkill.Specialization);
-				//		// </skill>
-				//		objWriter.WriteEndElement();
-				//	}
-				//}  
+				foreach (Skill objSkill in _objCharacter.Skills)
+				{
+					if (!objSkill.KnowledgeSkill && !objSkill.IsGrouped && objSkill.Rating > 0)
+					{
+						// <skill>
+						objWriter.WriteStartElement("skill");
+						objWriter.WriteElementString("name", objSkill.Name);
+						objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+						if (objSkill.Specialization != "")
+							objWriter.WriteElementString("spec", objSkill.Specialization);
+						// </skill>
+						objWriter.WriteEndElement();
+					}
+				}
 
 				// Skill Groups.
-				//foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
-				//{
-				//	if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
-				//	{
-				//		// <skillgroup>
-				//		objWriter.WriteStartElement("skillgroup");
-				//		objWriter.WriteElementString("name", objSkillGroup.Name);
-				//		objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
-				//		// </skillgroup>
-				//		objWriter.WriteEndElement();
-				//	}
-				//}
+				foreach (SkillGroup objSkillGroup in _objCharacter.SkillGroups)
+				{
+					if (!objSkillGroup.Broken && objSkillGroup.Rating > 0)
+					{
+						// <skillgroup>
+						objWriter.WriteStartElement("skillgroup");
+						objWriter.WriteElementString("name", objSkillGroup.Name);
+						objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+						// </skillgroup>
+						objWriter.WriteEndElement();
+					}
+				}
 				// </skills>
 				objWriter.WriteEndElement();
 			}
@@ -260,9 +257,9 @@ namespace Chummer
 				// <knowledgeskills>
 				objWriter.WriteStartElement("knowledgeskills");
 				// Active Skills.
-				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+				foreach (Skill objSkill in _objCharacter.Skills)
 				{
-					if (objSkill.IsKnowledgeSkill)
+					if (objSkill.KnowledgeSkill)
 					{
 						// <skill>
 						objWriter.WriteStartElement("skill");

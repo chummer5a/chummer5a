@@ -25,7 +25,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Chummer.Skills;
 
 namespace Chummer
 {
@@ -192,7 +191,22 @@ namespace Chummer
         #endregion
 
         #region Skill tab
-            //TODO fix this
+            FlowLayoutPanel panel = new FlowLayoutPanel();
+            foreach (Skill skill in this.CurrentNPC.Skills)
+            {
+                if (skill.KnowledgeSkill)
+                    continue;   // improvement for knowledge skills goes here
+                // insert new skill control
+                SmallSkillControl ucSkill = new SmallSkillControl(this);
+                ucSkill.Skill = skill;
+                ucSkill.DiceClick += DiceClick_Clicked;
+                // add the skill to the collection of skills to show
+                panel.Controls.Add(ucSkill);
+            }
+            panel.Dock = DockStyle.Fill;
+            panel.AutoScroll = true;
+            panel.MouseEnter += (object sender, EventArgs e) => { panel.Focus(); };
+            this.tabControl.TabPages[(int)DashBoardPages.Skills].Controls.Add(panel);
         #endregion
 
         #region Dice Roller

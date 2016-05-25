@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,11 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-﻿using Chummer.Skills;
 
 namespace Chummer
 {
@@ -123,9 +122,9 @@ namespace Chummer
 				}
 
 				// Add in any Exotic Skills the character has.
-				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+				foreach (Skill objSkill in _objCharacter.Skills)
 				{
-					if (objSkill.IsExoticSkill)
+					if (objSkill.ExoticSkill)
 					{
 						bool blnAddSkill = true;
 						if (_strForceSkill != "")
@@ -162,9 +161,9 @@ namespace Chummer
 			else
 			{
 				// Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
-				foreach (Skill objKnow in _objCharacter.SkillsSection.Skills)
+				foreach (Skill objKnow in _objCharacter.Skills)
 				{
-					if (objKnow.IsKnowledgeSkill)
+					if (objKnow.KnowledgeSkill)
 					{
 						ListItem objSkill = new ListItem();
 						objSkill.Value = objKnow.Name;

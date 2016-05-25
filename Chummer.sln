@@ -29,20 +29,9 @@ Global
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Legacy|x86.ActiveCfg = Release|x86
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Legacy|x86.Build.0 = Release|x86
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.ActiveCfg = Release|x86
-		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.Build.0 = Release|x86
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|Any CPU.Deploy.0 = Release|x86
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|x86.ActiveCfg = Release|x86
 		{95279469-5A3E-42E6-993C-6A403586C86E}.Release|x86.Build.0 = Release|x86
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Debug|x86.Build.0 = Debug|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Legacy|Any CPU.ActiveCfg = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Legacy|Any CPU.Build.0 = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Legacy|x86.ActiveCfg = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Legacy|x86.Build.0 = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Release|x86.ActiveCfg = Release|Any CPU
-		{6076F74A-C6B3-4067-BEE4-A45A37A98F3A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

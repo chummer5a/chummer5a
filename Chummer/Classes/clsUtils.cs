@@ -64,10 +64,5 @@ namespace Chummer
 			
 		}
 
-		public static bool IsRunningInVisualStudio()
-		{
-			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
-		}
-
 	}
 }
