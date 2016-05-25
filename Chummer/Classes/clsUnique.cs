@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,23 +16,28 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
+using System.Runtime.CompilerServices;
+ using System.Threading;
+ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
+using Chummer.Skills;
 
 namespace Chummer
 {
 	/// <summary>
-	/// Character Attribute.
+	/// Character CharacterAttribute.
 	/// </summary>
 	[DebuggerDisplay("{_strAbbrev}")]
-	public class Attribute
+	public class CharacterAttrib : INotifyPropertyChanged
 	{
 		private int _intMetatypeMin = 1;
 		private int _intMetatypeMax = 6;
@@ -44,12 +49,14 @@ namespace Chummer
 		private string _strAbbrev = "";
 		public Character _objCharacter;
 
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		#region Constructor, Save, Load, and Print Methods
 		/// <summary>
-		/// Character Attribute.
+		/// Character CharacterAttribute.
 		/// </summary>
-		/// <param name="strAbbrev">Attribute abbreviation.</param>
-		public Attribute(string strAbbrev)
+		/// <param name="strAbbrev">CharacterAttribute abbreviation.</param>
+		public CharacterAttrib(string strAbbrev)
 		{
 			_strAbbrev = strAbbrev;
 		}
@@ -75,7 +82,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -115,7 +122,7 @@ namespace Chummer
 
 		#region Properties
 		/// <summary>
-		/// Minimum value for the Attribute as set by the character's Metatype.
+		/// Minimum value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeMinimum
 		{
@@ -133,7 +140,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Maximum value for the Attribute as set by the character's Metatype.
+		/// Maximum value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeMaximum
 		{
@@ -151,7 +158,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Maximum augmented value for the Attribute as set by the character's Metatype.
+		/// Maximum augmented value for the CharacterAttribute as set by the character's Metatype.
 		/// </summary>
 		public int MetatypeAugmentedMaximum
 		{
@@ -166,7 +173,7 @@ namespace Chummer
 		}
 
         /// <summary>
-        /// Current base value of the Attribute.
+        /// Current base value of the CharacterAttribute.
         /// </summary>
         public int Base
         {
@@ -177,11 +184,12 @@ namespace Chummer
             set
             {
                 _intBase = value;
+				OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Current karma value of the Attribute.
+        /// Current karma value of the CharacterAttribute.
         /// </summary>
         public int Karma
         {
@@ -192,11 +200,12 @@ namespace Chummer
             set
             {
                 _intKarma = value;
+				OnPropertyChanged();
             }
         }
 
         /// <summary>
-		/// Current value of the Attribute.
+		/// Current value of the CharacterAttribute.
 		/// </summary>
 		public int Value
 		{
@@ -211,11 +220,12 @@ namespace Chummer
 				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
 
 				_intValue = value - (MetatypeMinimum + Math.Min(_objImprovement.ValueOf(Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum));
+				OnPropertyChanged();
 			}
 		}
 
 		/// <summary>
-		/// Augmentation modifier value for the Attribute.
+		/// Augmentation modifier value for the CharacterAttribute.
 		/// </summary>
 		/// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
 		public int AugmentModifier
@@ -227,11 +237,12 @@ namespace Chummer
 			set
 			{
 				_intAugModifier = value;
+				OnPropertyChanged();
 			}
 		}
 
 		/// <summary>
-		/// The Attribute's total value including augmentations.
+		/// The CharacterAttribute's total value including augmentations.
 		/// </summary>
 		/// <remarks>This value should not be saved with the character information. It should instead be re-calculated every time the character is loaded and augmentations are added/removed.</remarks>
 		public int Augmented
@@ -243,7 +254,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's value.
 		/// </summary>
 		public int AttributeModifiers
 		{
@@ -381,7 +392,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that raise the actual value of the Attribute and increase its Karma cost.
+		/// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
 		/// </summary>
 		public int AttributeValueModifiers
 		{
@@ -467,7 +478,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Attribute has any modifiers from Improvements.
+		/// Whether or not the CharacterAttribute has any modifiers from Improvements.
 		/// </summary>
 		public bool HasModifiers
 		{
@@ -493,7 +504,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Minimum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Minimum value.
 		/// </summary>
 		public int MinimumModifiers
 		{
@@ -512,7 +523,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Maximum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
 		/// </summary>
 		public int MaximumModifiers
 		{
@@ -531,7 +542,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The total amount of the modifiers that affect the Attribute's Augmented Maximum value.
+		/// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
 		/// </summary>
 		public int AugmentedMaximumModifiers
 		{
@@ -550,7 +561,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's total value (Value + Modifiers).
+		/// The CharacterAttribute's total value (Value + Modifiers).
 		/// </summary>
 		public int TotalValue
 		{
@@ -596,7 +607,7 @@ namespace Chummer
                     }
                 }
 
-				// Do not let the Attribute go above the Metatype's Augmented Maximum.
+				// Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
 				if (intReturn > TotalAugmentedMaximum)
 					intReturn = TotalAugmentedMaximum;
 
@@ -621,7 +632,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Minimum value (Metatype Minimum + Modifiers).
+		/// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
 		/// </summary>
 		public int TotalMinimum
 		{
@@ -653,7 +664,7 @@ namespace Chummer
 					if (_objCharacter.Options.ESSLossReducesMaximumOnly || _objCharacter.OverrideSpecialAttributeEssenceLoss)
 					{
 						// If the House Rule for Essence Loss Only Affects Maximum MAG/RES is turned on, the minimum should always be 1 unless the total ESS penalty is greater than or equal to
-						// the Attribute's total maximum, in which case the minimum becomes 0.
+						// the CharacterAttribute's total maximum, in which case the minimum becomes 0.
 						if (_objCharacter.EssencePenalty >= _objCharacter.MAG.TotalMaximum)
 							intReturn = 0;
 						else
@@ -672,7 +683,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Maximum value (Metatype Maximum + Modifiers).
+		/// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
 		/// </summary>
 		public int TotalMaximum
 		{
@@ -692,7 +703,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The Attribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
+		/// The CharacterAttribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
 		/// </summary>
 		public int TotalAugmentedMaximum
 		{
@@ -717,7 +728,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Attribute abbreviation.
+		/// CharacterAttribute abbreviation.
 		/// </summary>
 		public string Abbrev
 		{
@@ -730,11 +741,11 @@ namespace Chummer
 
 		#region Methods
 		/// <summary>
-		/// Set the minimum, maximum, and augmented values for the Attribute based on string values from the Metatype XML file.
+		/// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
 		/// </summary>
-		/// <param name="strMin">Metatype's minimum value for the Attribute.</param>
-		/// <param name="strMax">Metatype's maximum value for the Attribute.</param>
-		/// <param name="strAug">Metatype's maximum augmented value for the Attribute.</param>
+		/// <param name="strMin">Metatype's minimum value for the CharacterAttribute.</param>
+		/// <param name="strMax">Metatype's maximum value for the CharacterAttribute.</param>
+		/// <param name="strAug">Metatype's maximum augmented value for the CharacterAttribute.</param>
 		public void AssignLimits(string strMin, string strMax, string strAug)
 		{
 			MetatypeMinimum = Convert.ToInt32(strMin);
@@ -743,7 +754,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// ToolTip that shows how the Attribute is calculating its Modified Rating.
+		/// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
 		/// </summary>
 		public string ToolTip()
 		{
@@ -899,7 +910,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Amount of BP/Karma spent on this Attribute.
+		/// Amount of BP/Karma spent on this CharacterAttribute.
 		/// </summary>
 		private int CalculatedBP()
 		{
@@ -923,7 +934,7 @@ namespace Chummer
 			}
 			else
 			{
-				// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the Attribute is turned on.
+				// Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 				int intEssenceLoss = 0;
 				if (!_objCharacter.Options.ESSLossReducesMaximumOnly && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
 					intEssenceLoss = _objCharacter.EssencePenalty;
@@ -953,6 +964,26 @@ namespace Chummer
 
 			return intBP;
 		}
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			
+		}
+		#endregion
+
+		#region static
+
+		private static readonly Lazy<HashSet<string>> _physicalAttributes =
+			new Lazy<HashSet<string>>(() => new HashSet<string>() {"BOD", "AGI", "REA", "STR"},
+				LazyThreadSafetyMode.PublicationOnly);
+		public static HashSet<string> PhysicalAttributes
+		{
+			get { return _physicalAttributes.Value; }
+		}
+
+
 		#endregion
 	}
 
@@ -1291,7 +1322,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public virtual void Load(XmlNode objNode)
@@ -1431,7 +1462,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -1580,9 +1611,9 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
-					{
+					{  //TODO Getstring dictionary check instead of clusterfuck used
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
 							strReturn += " (" + LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") + ")";
 						else
@@ -1983,2198 +2014,9 @@ namespace Chummer
 
 		#endregion
 
-	}
-
-    
-
-	/// <summary>
-	/// Object that represents a single Skill Group.
-	/// </summary>
-	public class SkillGroup
-	{
-		private string _strName = "";
-		private int _intRating = 0;
-        private int _intBase = 0;
-        private int _intKarma = 0;
-		private int _intRatingMaximum = 6;
-		private bool _blnBroken = false;
-        private int _intFreeLevels = 0;
-
-		#region Save and Load Methods
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
-		{
-			objWriter.WriteStartElement("skillgroup");
-			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("freelevels", _intFreeLevels.ToString());
-            objWriter.WriteElementString("ratingmax", _intRatingMaximum.ToString());
-			objWriter.WriteElementString("broken", _blnBroken.ToString());
-			objWriter.WriteEndElement();
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
-		{
-			_strName = objNode["name"].InnerText;
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			_intRatingMaximum = Convert.ToInt32(objNode["ratingmax"].InnerText);
-            try
-            {
-                _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intBase = Convert.ToInt32(objNode["base"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-            {
-                _intKarma = Convert.ToInt32(objNode["karma"].InnerText);
-            }
-            catch
-            {
-            }
-            try
-			{
-				_blnBroken = Convert.ToBoolean(objNode["broken"].InnerText);
-			}
-			catch
-			{
-			}
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Skill Group's name.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
-		}
-
-		/// <summary>
-		/// The name of the object as it should be displayed in lists. Name (Extra).
-		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				string strReturn = _strName;
-				// Get the translated name if applicable.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + _strName + "\"]");
-					if (objNode != null)
-					{
-						if (objNode.Attributes["translate"] != null)
-							strReturn = objNode.Attributes["translate"].InnerText;
-					}
-				}
-
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Skill Group's current rating.
-		/// </summary>
-		public int Rating
-		{
-			get
-			{
-				return _intRating;
-			}
-			set
-			{
-				_intRating = value;
-			}
-		}
-
-        /// <summary>
-        /// Skill Group's base rating.
-        /// </summary>
-        public int Base
-        {
-            get
-            {
-                return _intBase;
-            }
-            set
-            {
-                _intBase = value;
-            }
-        }
-
-        /// <summary>
-        /// Skill Group's karma rating.
-        /// </summary>
-        public int Karma
-        {
-            get
-            {
-                return _intKarma;
-            }
-            set
-            {
-                _intKarma = value;
-            }
-        }
-
-        /// <summary>
-        /// Skill Group's free levels.
-        /// </summary>
-        public int FreeLevels
-        {
-            get
-            {
-                return _intFreeLevels;
-            }
-            set
-            {
-                _intFreeLevels = value;
-            }
-        }
-
-        /// <summary>
-		/// Skill Group's maximum rating.
-		/// </summary>
-		public int RatingMaximum
-		{
-			get
-			{
-				return _intRatingMaximum;
-			}
-			set
-			{
-				_intRatingMaximum = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has been broken through improving an individual Active Skill.
-		/// </summary>
-		public bool Broken
-		{
-			get
-			{
-				return _blnBroken;
-			}
-			set
-			{
-				_blnBroken = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Technical Active Skills.
-		/// </summary>
-		public bool HasTechnicalSkills
-		{
-			get
-			{
-				return HasSkillType("Technical Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Social Active Skills.
-		/// </summary>
-		public bool HasSocialSkills
-		{
-			get
-			{
-				return HasSkillType("Social Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Physical Active Skills.
-		/// </summary>
-		public bool HasPhysicalSkills
-		{
-			get
-			{
-				return HasSkillType("Physical Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Magical Active Skills.
-		/// </summary>
-		public bool HasMagicalSkills
-		{
-			get
-			{
-				return HasSkillType("Magical Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Resonance Active Skills.
-		/// </summary>
-		public bool HasResonanceSkills
-		{
-			get
-			{
-				return HasSkillType("Resonance Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Combat Active Skills.
-		/// </summary>
-		public bool HasCombatSkills
-		{
-			get
-			{
-				return HasSkillType("Combat Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group has any Vehicle Active Skills.
-		/// </summary>
-		public bool HasVehicleSkills
-		{
-			get
-			{
-				return HasSkillType("Vehicle Active");
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill Group contains a particular Skill Type.
-		/// </summary>
-		/// <param name="strType">Skill Type to check for.</param>
-		private bool HasSkillType(string strType)
-		{
-			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-
-			if (objXmlDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"" + _strName + "\" and category = \"" + strType + "\"]").Count > 0)
-				return true;
-			else
-				return false;
-		}
-		#endregion
-	}
-
-	/// <summary>
-	/// Object that represents a single Skill.
-	/// </summary>
-	[DebuggerDisplay("{_strName}")]
-	public class Skill
-	{
-		private string _strSkillGroup = "";
-		private string _strSkillCategory = "";
-		private bool _blnIsGrouped = false;
-		private bool _blnDefault = false;
-		private string _strName = "";
-		private int _intRating = 0;
-        private int _intBase = 0;
-        private int _intKarma = 0;
-        private int _intFreeLevels = 0;
-		private int _intRatingMaximum = 6;
-		private bool _blnKnowledgeSkill = false;
-		private bool _blnExoticSkill = false;
-		private string _strSkillSpec = "";
-		private bool _blnAllowDelete = false;
-		private string _strAttribute = "";
-		private string _strSource = "";
-		private string _strPage = "";
-        private bool _blnBuyWithKarma = false;
-        private List<SkillSpecialization> _lstSpecializations = new List<SkillSpecialization>();
-		private Guid _id;
-		private readonly Character _objCharacter;
-
-		#region Constructor, Create, Save, Load, and Print Methods
-		public Skill(Character objCharacter)
-		{
-			_objCharacter = objCharacter;
-		}
-
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
-		{
-			objWriter.WriteStartElement("skill");
-			objWriter.WriteElementString("id", Id.ToString());
-			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteElementString("skillgroup", _strSkillGroup);
-			objWriter.WriteElementString("skillcategory", _strSkillCategory);
-			objWriter.WriteElementString("grouped", _blnIsGrouped.ToString());
-			objWriter.WriteElementString("default", _blnDefault.ToString());
-			objWriter.WriteElementString("rating", _intRating.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("freelevels", _intFreeLevels.ToString());
-            objWriter.WriteElementString("ratingmax", _intRatingMaximum.ToString());
-			objWriter.WriteElementString("knowledge", _blnKnowledgeSkill.ToString());
-			objWriter.WriteElementString("exotic", _blnExoticSkill.ToString());
-			objWriter.WriteElementString("spec", "");
-			objWriter.WriteElementString("allowdelete", _blnAllowDelete.ToString());
-            objWriter.WriteElementString("buywithkarma", _blnBuyWithKarma.ToString());
-            objWriter.WriteElementString("attribute", _strAttribute);
-			objWriter.WriteElementString("source", _strSource);
-			objWriter.WriteElementString("page", _strPage);
-
-			if (_fold.Count > 0)
-			{
-				objWriter.WriteStartElement("folded");
-				foreach (Skill skill in _fold)
-				{
-					skill.Save(objWriter);
-				}
-
-				objWriter.WriteEndElement();
-			}
-
-			objWriter.WriteStartElement("skillspecializations");
-            foreach (SkillSpecialization objSpec in _lstSpecializations)
-            {
-                objSpec.Save(objWriter);
-            }
-            objWriter.WriteEndElement();
-            // External reader friendly stuff.
-			objWriter.WriteElementString("totalvalue", TotalRating.ToString());
-			objWriter.WriteEndElement();
-		}
-
-		/// <summary>
-		/// Load the Attribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
-		{
-			string strId;
-			if (objNode.TryGetField("id", out strId))
-			{
-				Id = Guid.Parse(strId);
-			}
-			_strName = objNode["name"].InnerText;
-			_strSkillGroup = objNode["skillgroup"].InnerText;
-			_strSkillCategory = objNode["skillcategory"].InnerText;
-			_blnIsGrouped = Convert.ToBoolean(objNode["grouped"].InnerText);
-            _blnDefault = Convert.ToBoolean(objNode["default"].InnerText);
-			_intRating = Convert.ToInt32(objNode["rating"].InnerText);
-			bool basefail = false;
-            try
-            {
-                _intBase = Convert.ToInt32(objNode["base"].InnerText);
-            }
-            catch
-            {
-                _intBase = _intRating;
-	            basefail = true;
-            }
-            try
-            {
-                _intKarma = Convert.ToInt32(objNode["karma"].InnerText);
-            }
-            catch
-            {
-                _intKarma = 0;
-            }
-
-			if (!basefail)
-			{
-				if (_intRating != _intKarma + _intBase)
-				{
-					_intBase = _intRating - _intKarma;
-				}
-			}
-
-            _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
-            _intRatingMaximum = Convert.ToInt32(objNode["ratingmax"].InnerText);
-			_blnKnowledgeSkill = Convert.ToBoolean(objNode["knowledge"].InnerText);
-			try
-			{
-				_blnExoticSkill = Convert.ToBoolean(objNode["exotic"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-            {
-                _blnBuyWithKarma = Convert.ToBoolean(objNode["buywithkarma"].InnerText);
-            }
-            catch
-            {
-            }
-            if (objNode["spec"].InnerText.Contains("Hold-Outs"))
-				objNode["spec"].InnerText = "Holdouts";
-			_strSkillSpec = objNode["spec"].InnerText;
-
-            if (_strSkillSpec != "")
-            {
-                SkillSpecialization objSpec = new SkillSpecialization(_strSkillSpec);
-                _lstSpecializations.Add(objSpec);
-                _strSkillSpec = "";
-            }
-
-			_blnAllowDelete = Convert.ToBoolean(objNode["allowdelete"].InnerText);
-			_strAttribute = objNode["attribute"].InnerText;
-            if (objNode.InnerXml.Contains("skillspecializations"))
-            {
-                XmlNodeList nodSpecializations = objNode.SelectNodes("skillspecializations/skillspecialization");
-                foreach (XmlNode nodSpecialization in nodSpecializations)
-                {
-                    SkillSpecialization objSpec = new SkillSpecialization("");
-                    objSpec.Load(nodSpecialization);
-                    _lstSpecializations.Add(objSpec);
-                }
-            }
-            try
-			{
-				_strSource = objNode["source"].InnerText;
-				_strPage = objNode["page"].InnerText;
-			}
-			catch
-			{
-			}
-
-			if (objNode["folded"] != null)
-			{
-				foreach (XmlNode foldNode in objNode["folded"].ChildNodes)
-				{
-					Skill s = new Skill(_objCharacter);
-					s.Load(foldNode);
-
-					_fold.Add(s);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
-		{
-			// Get the translated Attribute name.
-			string strAttribute = Attribute;
-			strAttribute = LanguageManager.Instance.GetString("String_Attribute" + strAttribute + "Short");
-
-			// Get the translated Skill Group name.
-			string strSkillGroup = _strSkillGroup;
-			foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-			{
-				if (objGroup.Name == _strSkillGroup)
-					strSkillGroup = objGroup.DisplayName;
-			}
-
-			// Get the translated Skill Category name.
-			string strSkillCategory = _strSkillCategory;
-			XmlDocument objSkillDoc = XmlManager.Instance.Load("skills.xml");
-			XmlNode objSkill = objSkillDoc.SelectSingleNode("/chummer/skills/skill[name = \"" + _strName + "\"]");
-			if (objSkill != null)
-			{
-				XmlNode objCategory = objSkillDoc.SelectSingleNode("/chummer/categories/category[. = \"" + objSkill["category"].InnerText + "\"]");
-				if (objCategory.Attributes["translate"] != null)
-					strSkillCategory = objCategory.Attributes["translate"].InnerText;
-				else
-					strSkillCategory = objSkill["category"].InnerText;
-			}
-			else
-				strSkillCategory = DisplayCategory;
-
-			objWriter.WriteStartElement("skill");
-			objWriter.WriteElementString("name", DisplayName);
-			objWriter.WriteElementString("skillgroup", strSkillGroup);
-			objWriter.WriteElementString("skillgroup_english", _strSkillGroup);
-			objWriter.WriteElementString("skillcategory", strSkillCategory);
-			objWriter.WriteElementString("skillcategory_english", _strSkillCategory);
-			objWriter.WriteElementString("grouped", _blnIsGrouped.ToString());
-			objWriter.WriteElementString("default", Default.ToString());
-			objWriter.WriteElementString("rating", CalculatedRating.ToString());
-			objWriter.WriteElementString("ratingmax", RatingMaximum.ToString());
-            objWriter.WriteElementString("specializedrating", SpecializedRating.ToString());
-            objWriter.WriteElementString("total", TotalRating.ToString());
-			objWriter.WriteElementString("knowledge", _blnKnowledgeSkill.ToString());
-			objWriter.WriteElementString("exotic", _blnExoticSkill.ToString());
-            objWriter.WriteElementString("buywithkarma", _blnBuyWithKarma.ToString());
-            objWriter.WriteElementString("base", _intBase.ToString());
-            objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("spec", Specialization);
-			objWriter.WriteElementString("attribute", strAttribute);
-			objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-			objWriter.WriteElementString("page", Page);
-			if (Attribute == "MAG" && _objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-				objWriter.WriteElementString("attributemod", _objCharacter.MAGMagician.ToString());
-			else
-				objWriter.WriteElementString("attributemod", _objCharacter.GetAttribute(Attribute).TotalValue.ToString());
-			objWriter.WriteElementString("ratingmod", (RatingModifiers + DicePoolModifiers).ToString());
-			objWriter.WriteElementString("poolmod", DicePoolModifiers.ToString());
-			objWriter.WriteElementString("islanguage", (_strSkillCategory == "Language").ToString());
-			objWriter.WriteElementString("bp", CalculatedBP().ToString());
-            objWriter.WriteStartElement("skillspecializations");
-            foreach (SkillSpecialization objSpec in _lstSpecializations)
-            {
-                objSpec.Print(objWriter);
-            }
-            objWriter.WriteEndElement();
-            objWriter.WriteEndElement();
-		}
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// The Character object being used by the Skill.
-		/// </summary>
-		public Character CharacterObject
-		{
-			get
-			{
-				return _objCharacter;
-			}
-		}
-
-        /// <summary>
-        /// The Character object being used by the Skill.
-        /// </summary>
-        public SkillGroup SkillGroupObject
-        {
-            get
-            {
-                foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
-                {
-                    if (objGroup.Name == _strSkillGroup)
-                    {
-                        return objGroup;
-                    }
-                }
-                return null;
-            }
-        }
-
-        /// <summary>
-		/// Skill's name.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
-		}
-
-        /// <summary>
-        /// Selected Skill Specializations.
-        /// </summary>
-        public List<SkillSpecialization> Specializations
-        {
-            get
-            {
-                return _lstSpecializations;
-            }
-        }
-
-        /// <summary>
-		/// The name of the object as it should be displayed in lists. Name (Extra).
-		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				string strReturn = _strName;
-				// Get the translated name if applicable.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					string strXPath = "/chummer/skills/skill";
-					if (_blnKnowledgeSkill)
-						strXPath = "/chummer/knowledgeskills/skill";
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode(strXPath + "[name = \"" + _strName + "\"]");
-					if (objNode != null)
-					{
-						if (objNode["translate"] != null)
-							strReturn = objNode["translate"].InnerText;
-					}
-				}
-				//TODO: FUCKING CACHE THIS
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Skill's current rating.
-		/// </summary>
-		public int Rating
-		{
-			get
-			{
-				return _intRating;
-			}
-			set
-			{
-				_intRating = value;
-			}
-		}
-
-        /// <summary>
-        /// Skill's current base rating.
-        /// </summary>
-        public int Base
-        {
-			get
-			{
-				//This amount of object allocation is uglier than the US national dept, but improvementmanager is due for a rewrite anyway
-				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-				int bonus = _objImprovement.ValueOf(Improvement.ImprovementType.SkillLevel, false, IdImprovement ? Id.ToString() : Name);
-				return _intBase + bonus;
-			}
-			set
-			{
-				ImprovementManager _objImprovement = new ImprovementManager(_objCharacter);
-
-				_intBase = value - _objImprovement.ValueOf(Improvement.ImprovementType.SkillLevel, false, IdImprovement ? Id.ToString() : Name);
-			}
-        }
-
-        /// <summary>
-        /// Skill's current karma rating.
-        /// </summary>
-        public int Karma
-        {
-            get
-            {
-                return _intKarma;
-            }
-            set
-            {
-                _intKarma = value;
-            }
-        }
-
-        /// <summary>
-        /// Skill's current rating.
-        /// </summary>
-        public int SpecializedRating
-        {
-            get
-            {
-                int intRating = TotalRating;
-                if (this.Specialization != "" && !this.ExoticSkill)
-                {
-                    if (this.Name == "Artisan")
-                    {
-                        bool blnFound = false;
-                        foreach (Quality objQuality in _objCharacter.Qualities)
-                        {
-                            if (objQuality.Name == "Inspired")
-                                blnFound = true;
-                        }
-                        if (blnFound)
-                            intRating += 3;
-                        else
-                            intRating += 2;
-                    }
-                    else
-                    {
-                        intRating += 2;
-                    }
-                }
-                return intRating;
-            }
-        }
-
-        /// <summary>
-        /// Skill's free levels.
-        /// </summary>
-        public int FreeLevels
-        {
-	        get
-	        {
-		        return _intFreeLevels;
-	        }
-	        set
-	        {
-		        _intFreeLevels = value;
-	        }
-        }
-
-        /// <summary>
-		/// Is this Skill a Knowledge Skill?
-		/// </summary>
-		public bool KnowledgeSkill
-		{
-			get
-			{
-				return _blnKnowledgeSkill;
-			}
-			set
-			{
-				_blnKnowledgeSkill = value;
-			}
-		}
-
-        /// <summary>
-        /// Is this skill specialization bought with karma?
-        /// </summary>
-        public bool BuyWithKarma
-        {
-            get
-            {
-                return _blnBuyWithKarma;
-            }
-            set
-            {
-                _blnBuyWithKarma = value;
-            }
-        }
-
-        /// <summary>
-		/// Is this Skill an Exotic Skill?
-		/// </summary>
-		public bool ExoticSkill
-		{
-			get
-			{
-				return _blnExoticSkill;
-			}
-			set
-			{
-				_blnExoticSkill = value;
-			}
-		}
-
-		/// <summary>
-		/// Skill's Specialization (if any).
-		/// </summary>
-		public string Specialization
-		{
-			get
-			{
-                string strSpec = "";
-
-                foreach (SkillSpecialization objSpec in _lstSpecializations)
-                {
-                    if (strSpec != "")
-                        strSpec += "; ";
-					if (GlobalOptions.Instance.Language != "en-us")
-					{
-						strSpec += LanguageManager.Instance.TranslateExtra(objSpec.Name);
-					}
-					else
-					{
-						strSpec += objSpec.Name;
-					}
-                }
-
-                return strSpec;
-			}
-			set
-			{
-				_strSkillSpec = value;
-			}
-		}
-
-        public bool HasSpecialization(string strSpec)
-        {
-            foreach (SkillSpecialization objSpec in _lstSpecializations)
-            {
-                if (objSpec.Name == strSpec)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-		/// <summary>
-		/// Name of the Skill Group the Skill belongs to.
-		/// </summary>
-		public string SkillGroup
-		{
-			get
-			{
-				return _strSkillGroup;
-			}
-			set
-			{
-				_strSkillGroup = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill is currently rolled into its Skill Group.
-		/// </summary>
-		public bool IsGrouped
-		{
-			get
-			{
-				return _blnIsGrouped;
-			}
-			set
-			{
-				_blnIsGrouped = value;
-			}
-		}
-
-		/// <summary>
-		/// Name of the Skill Category the Skill belongs to.
-		/// </summary>
-		public string SkillCategory
-		{
-			get
-			{
-				return _strSkillCategory;
-			}
-			set
-			{
-				_strSkillCategory = value;
-
-				// If this is a Knowledge Skill, determine the Attribute based on the selected Category.
-				if (_blnKnowledgeSkill)
-				{
-					if (value == "Street" || value == "Interest" || value == "Language")
-						_strAttribute = "INT";
-					else
-						_strAttribute = "LOG";
-				}
-			}
-		}
-
-		/// <summary>
-		/// Translated name of the Skill Category the Skill belongs to.
-		/// </summary>
-		public string DisplayCategory
-		{
-			get
-			{
-				string strReturn = _strSkillCategory;
-				// Get the translated name if applicable.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strSkillCategory + "\"]");
-					if (objNode != null)
-					{
-						if (objNode.Attributes["translate"] != null)
-							strReturn = objNode.Attributes["translate"].InnerText;
-					}
-				}
-				//TODO: CACHE THIS SHIT
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Attribute the Skill is linked to.
-		/// </summary>
-		public string Attribute
-		{
-			get
-			{
-				string strAttribute = _strAttribute;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && objImprovement.ImprovedName == _strAttribute && objImprovement.Enabled)
-					{
-						// Swap a Physical Attribute for a Mental Attribute for the Skill.
-						switch (_strAttribute)
-						{
-							case "BOD":
-								strAttribute = "WIL";
-								break;
-							case "AGI":
-								strAttribute = "LOG";
-								break;
-							case "REA":
-								strAttribute = "INT";
-								break;
-							case "STR":
-								strAttribute = "CHA";
-								break;
-						}
-					}
-				}
-
-				return strAttribute;
-			}
-			set
-			{
-				_strAttribute = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not this Skill allows defaulting.
-		/// </summary>
-		public bool Default
-		{
-			get
-			{
-				if (RatingMaximum == 0)
-					return false;
-				else
-					return _blnDefault;
-			}
-			set
-			{
-				_blnDefault = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not the Skill can be deleted.
-		/// </summary>
-		public bool AllowDelete
-		{
-			get
-			{
-				return _blnAllowDelete;
-			}
-			set
-			{
-				_blnAllowDelete = value;
-			}
-		}
-
-		/// <summary>
-		/// Sourcebook.
-		/// </summary>
-		public string Source
-		{
-			get
-			{
-				return _strSource;
-			}
-			set
-			{
-				_strSource = value;
-			}
-		}
-
-		/// <summary>
-		/// Page Number.
-		/// </summary>
-		public string Page
-		{
-			get
-			{
-				string strReturn = _strPage;
-				// Get the translated name if applicable.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-					XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _strName + "\"]");
-					if (objNode != null)
-					{
-						if (objNode["altpage"] != null)
-							strReturn = objNode["altpage"].InnerText;
-					}
-				}
-
-				return strReturn;
-			}
-			set
-			{
-				_strPage = value;
-			}
-		}
-		#endregion
-
-		#region Complex Properties
-		/// <summary>
-		/// Retrieve the highest Rating for the Skill (used only for printing either the Rating or Skillsoft Rating, whichever is lower).
-		/// </summary>
-		private int CalculatedRating
-		{
-			get
-			{
-				int intRating = _intRating;
-				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.ImprovedName == _strName && objImprovement.Enabled)
-					{
-						if (objImprovement.Rating > _intRating)
-						{
-							intRating = objImprovement.Value;
-							break;
-						}
-                    }
-					else if (objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire) > 0 || _objCharacter.SkillsoftAccess)
-					{
-						foreach (Gear objGear in _objCharacter.Gear)
-						{
-							// Look for any Skillsoft that would conflict with the Skill's Rating.
-							if (objGear.Equipped && objGear.Category == "Skillsofts" &&
-							    (objGear.Extra == _strName ||
-							     objGear.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
-							{
-								if (objGear.Rating > _intRating)
-								{
-									// Use the Skillsoft's Rating or Skilwire Rating, whichever is lower.
-									// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-									if (objGear.Name == "Activesoft")
-										intRating = Math.Min(objGear.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
-									else
-										intRating = objGear.Rating;
-									break;
-								}
-							}
-
-							foreach (Gear objChild in objGear.Children)
-							{
-								if (objChild.Equipped && objChild.Category == "Skillsofts" &&
-								    (objChild.Extra == _strName ||
-								     objChild.Extra == _strName + ", " + LanguageManager.Instance.GetString("Label_SelectGear_Hacked")))
-								{
-									if (objChild.Rating > _intRating)
-									{
-										// Use the Skillsoft's Rating or Skillwire Rating, whichever is lower.
-										// If this is a Knowsoft or Linguasoft, it is not limited to the Skillwire Rating.
-										if (objChild.Name == "Activesoft")
-											intRating = Math.Min(objChild.Rating, objImprovementManager.ValueOf(Improvement.ImprovementType.Skillwire));
-										else
-											intRating = objChild.Rating;
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
-
-				return intRating;
-			}
-		}
-
-		/// <summary>
-		/// Skill's total Rating (Rating + Modifiers).
-		/// </summary>
-		public int TotalRating
-		{
-			get
-			{
-				string strAttribute = _strAttribute;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && objImprovement.ImprovedName == _strAttribute && objImprovement.Enabled)
-					{
-						switch (_strAttribute)
-						{
-							case "BOD":
-								strAttribute = "WIL";
-								break;
-							case "AGI":
-								strAttribute = "LOG";
-								break;
-							case "REA":
-								strAttribute = "INT";
-								break;
-							case "STR":
-								strAttribute = "CHA";
-								break;
-						}
-					}
-				}
-
-				int intRating = CalculatedRating;
-
-				int intTotal = 0;
-				int intAttribute = _objCharacter.GetAttribute(strAttribute).TotalValue;
-
-				// If the Attribute is MAG and the character is a Mystic Adept, then only the Magician's portion of MAG counts towards the Skill.
-                //if (strAttribute == "MAG" && _objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
-                //    intAttribute = _objCharacter.MAGMagician;
-
-				// If defaulting is allowed and the Skill has a Rating of 0, then use the Attribute - 1 as the total.
-				if (Default && intRating == 0)
-				{
-					intTotal = intAttribute - 1;
-					// If the Options to include Modifiers when Defaulting is turned on, include the Modifiers.
-					if (_objCharacter.Options.SkillDefaultingIncludesModifiers)
-						intTotal += RatingModifiers + DicePoolModifiers;
-
-					// If the option to cap Skill dice pools to 20 or 2 x (Natural Attribute + Rating) is on, enforce it.
-					if (_objCharacter.Options.CapSkillRating)
-					{
-						int intMax = (_objCharacter.GetAttribute(strAttribute).Value + _intRating) * 2;
-						intMax = Math.Max(20, intMax);
-						intTotal = Math.Min(intMax, intTotal);
-					}
-
-					intTotal += _objCharacter.WoundModifiers;
-				}
-				else
-				{
-					intTotal = intRating;
-					intTotal += RatingModifiers;
-
-					// If the option to enforce the maximum modified Skill Rating is turned on, make sure the total value (less Attribute) does
-					// not exceed 1.5X the current Rating. The maximum modifier should be rounded down. According to SR4 118, the maximum possible Rating 9 , or 10 with the Aptitude Quality.
-					if (_objCharacter.Options.EnforceMaximumSkillRatingModifier)
-					{
-						if (intTotal > Convert.ToInt32(Math.Floor(Convert.ToDouble(intRating, GlobalOptions.Instance.CultureInfo) * 1.5)))
-							intTotal = Convert.ToInt32(Math.Floor(Convert.ToDouble(intRating, GlobalOptions.Instance.CultureInfo) * 1.5));
-					}
-					intTotal += DicePoolModifiers;
-
-					// Add the linked Attribute's total.
-					intTotal += intAttribute;
-
-					// If the option to cap Skill dice pools to 20 or 2 x (Natural Attribute + Rating) is on, enforce it.
-					if (_objCharacter.Options.CapSkillRating)
-					{
-						if (intRating > 0)
-						{
-						}
-						int intMax = (_objCharacter.GetAttribute(strAttribute).Value + _intRating) * 2;
-						intMax = Math.Max(20, intMax);
-						intTotal = Math.Min(intMax, intTotal);
-					}
-
-					// Subtract Wound Modifiers.
-					intTotal += _objCharacter.WoundModifiers;
-				}
-
-				// If defaulting is not allowed and the Skill has a Rating of 0, the Skill's total should also be 0.
-				if (!Default && intRating == 0)
-					intTotal = 0;
-
-				// Skills cannot have a negative dice pool.
-				if (intTotal < 0)
-					intTotal = 0;
-
-				return intTotal;
-			}
-		}
-
-		/// <summary>
-		/// Skill's Modifiers that come from its linked Attribute.
-		/// </summary>
-		public int AttributeModifiers
-		{
-			get
-			{
-				return _objCharacter.GetAttribute(Attribute).TotalValue;
-			}
-		}
-
-		/// <summary>
-		/// Skill's Rating Modifiers.
-		/// </summary>
-		public int RatingModifiers
-		{
-			get
-			{
-				int intModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.AddToRating && objImprovement.Enabled)
-					{
-						// Improvement for an individual Skill.
-						if (!_blnExoticSkill)
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName)
-								intModifier += objImprovement.Value;
-						}
-						else
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName + " (" + _strSkillSpec + ")")
-								intModifier += objImprovement.Value;
-						}
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _strSkillGroup)
-						{
-							if (!objImprovement.Exclude.Contains(_strName) && !objImprovement.Exclude.Contains(_strSkillCategory))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _strSkillCategory)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill linked to an Attribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intModifier += objImprovement.Value;
-						}
-						// Improvement for Enhanced Articulation
-						if (_strSkillCategory == "Physical Active" && (_strAttribute == "BOD" || _strAttribute == "AGI" || _strAttribute == "REA" || _strAttribute == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-								intModifier += objImprovement.Value;
-						}
-					}
-				}
-
-				return intModifier;
-			}
-		}
-
-		/// <summary>
-		/// Skill's Dice Pool Modifiers.
-		/// </summary>
-		public int DicePoolModifiers
-		{
-			get
-			{
-				List<string> lstUniqueName = new List<string>();
-				List<string[,]> lstUniquePair = new List<string[,]>();
-
-				int intModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (!objImprovement.AddToRating && objImprovement.Enabled && !objImprovement.Custom)
-					{
-						// Improvement for an individual Skill.
-						if (!_blnExoticSkill)
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName)
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,] strValues = new string[,] { { objImprovement.UniqueName, objImprovement.Value.ToString() } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-									intModifier += objImprovement.Value;
-							}
-						}
-						else
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName + " (" + _strSkillSpec + ")")
-								intModifier += objImprovement.Value;
-						}
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _strSkillGroup)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intModifier += objImprovement.Value;
-						}
-
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _strSkillCategory)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,] strValues = new string[,] { { objImprovement.UniqueName, objImprovement.Value.ToString() } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-									intModifier += objImprovement.Value;
-							}
-						}
-
-						// Improvement for a Skill linked to an Attribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,] strValues = new string[,] { { objImprovement.UniqueName, objImprovement.Value.ToString() } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-									intModifier += objImprovement.Value;
-							}
-						}
-
-						// Improvement for Enhanced Articulation
-						if (_strSkillCategory == "Physical Active" && (_strAttribute == "BOD" || _strAttribute == "AGI" || _strAttribute == "REA" || _strAttribute == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-								intModifier += objImprovement.Value;
-						}
-					}
-				}
-
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				foreach (string strName in lstUniqueName)
-				{
-					int intHighest = -999;
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "" || (strValues[0, 0] == strName && !strName.StartsWith("precedence")))
-						{
-							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-								intHighest = Convert.ToInt32(strValues[0, 1]);
-						}
-					}
-					if (intHighest == -999)
-						intHighest = 0;
-					intModifier += intHighest;
-				}
-
-				if (lstUniqueName.Contains("precedence2"))
-				{
-					int intHighest = -999;
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "precedence2")
-						{
-							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-								intHighest = Convert.ToInt32(strValues[0, 1]);
-						}
-					}
-					intModifier += intHighest;
-				}
-
-				if (lstUniqueName.Contains("precedence1"))
-				{
-					intModifier = 0;
-					// Retrieve all of the items that are precedence1 and nothing else.
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "precedence1")
-							intModifier += Convert.ToInt32(strValues[0, 1]);
-					}
-				}
-
-				if (lstUniqueName.Contains("precedence0"))
-				{
-					// Retrieve only the highest precedence0 value.
-					// Run through the list of UniqueNames and pick out the highest value for each one.
-					int intHighest = -999;
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "precedence0")
-						{
-							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-								intHighest = Convert.ToInt32(strValues[0, 1]);
-						}
-					}
-					intModifier = intHighest;
-				}
-
-				// Factor in Custom Improvements.
-				lstUniqueName = new List<string>();
-				lstUniquePair = new List<string[,]>();
-
-				int intCustomModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (!objImprovement.AddToRating && objImprovement.Enabled && objImprovement.Custom)
-					{
-						// Improvement for an individual Skill.
-						if (!_blnExoticSkill)
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName)
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,] strValues = new string[,] { { objImprovement.UniqueName, objImprovement.Value.ToString() } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-									intCustomModifier += objImprovement.Value;
-							}
-						}
-						else
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName + " (" + _strSkillSpec + ")")
-								intCustomModifier += objImprovement.Value;
-						}
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _strSkillGroup)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intCustomModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _strSkillCategory)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intCustomModifier += objImprovement.Value;
-						}
-						// Improvement for a Skill linked to an Attribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-								intCustomModifier += objImprovement.Value;
-						}
-
-						// Improvement for Enhanced Articulation
-						if (_strSkillCategory == "Physical Active" && (_strAttribute == "BOD" || _strAttribute == "AGI" || _strAttribute == "REA" || _strAttribute == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-								intCustomModifier += objImprovement.Value;
-						}
-					}
-				}
-
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				foreach (string strName in lstUniqueName)
-				{
-					int intHighest = -999;
-					foreach (string[,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0] == "")
-						{
-							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
-								intHighest = Convert.ToInt32(strValues[0, 1]);
-						}
-					}
-					if (intHighest == -999)
-						intHighest = 0;
-					intCustomModifier += intHighest;
-				}
-
-				return intModifier + intCustomModifier;
-			}
-		}
-
-		/// <summary>
-		/// Skill's Dice Pool Modifiers Tooltip.
-		/// </summary>
-		public string DicePoolModifiersTooltip
-		{
-			get
-			{
-				List<string> lstUniqueName = new List<string>();
-				List<string[,,]> lstUniquePair = new List<string[,,]>();
-
-				string strReturn = "";
-				int intModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (!objImprovement.AddToRating && objImprovement.Enabled && !objImprovement.Custom)
-					{
-						// Improvement for an individual Skill.
-						if (!_blnExoticSkill)
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName)
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[, ,] strValues = new string[,,] { { { objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName } } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-								{
-									intModifier += objImprovement.Value;
-									if (objImprovement.Value != 0)
-										strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-								}
-							}
-						}
-						else
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName + " (" + _strSkillSpec + ")")
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _strSkillGroup)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _strSkillCategory)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,,] strValues = new string[,,] { { { objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName } } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-								{
-									intModifier += objImprovement.Value;
-									if (objImprovement.Value != 0)
-										strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-								}
-							}
-						}
-
-						// Improvement for a Skill linked to an Attribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-
-						// Improvement for Enhanced Articulation
-						if (_strSkillCategory == "Physical Active" && (_strAttribute == "BOD" || _strAttribute == "AGI" || _strAttribute == "REA" || _strAttribute == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-							{
-								intModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-					}
-				}
-
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				foreach (string strName in lstUniqueName)
-				{
-					string strHighestName = "";
-					int intHighest = -999;
-					foreach (string[,,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0, 0] == "" || (strValues[0, 0, 0] == strName && !strName.StartsWith("precedence")))
-						{
-							if (Convert.ToInt32(strValues[0, 1, 0]) > intHighest)
-							{
-								intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-								strHighestName = strValues[0, 0, 2];
-							}
-						}
-					}
-					if (intHighest == -999)
-						intHighest = 0;
-					intModifier += intHighest;
-
-					if (intHighest != 0)
-					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-							if (objImprovement.SourceName == strHighestName)
-							{
-								strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-								break;
-							}
-						}
-					}
-				}
-
-				if (lstUniqueName.Contains("precedence2"))
-				{
-					string strHighestName = "";
-					int intHighest = -999;
-					foreach (string[,,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0, 0] == "precedence2")
-						{
-							if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-							{
-								intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-								strHighestName = strValues[0, 0, 2];
-							}
-						}
-					}
-					intModifier += intHighest;
-
-					if (intHighest != 0)
-					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-							if (objImprovement.SourceName == strHighestName)
-							{
-								strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-								break;
-							}
-						}
-					}
-				}
-
-				if (lstUniqueName.Contains("precedence1"))
-				{
-					intModifier = 0;
-					// Retrieve all of the items that are precedence1 and nothing else.
-					foreach (string[,,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0, 0] == "precedence1")
-							intModifier += Convert.ToInt32(strValues[0, 0, 1]);
-					}
-				}
-
-				if (lstUniqueName.Contains("precedence0"))
-				{
-					// Retrieve only the highest precedence0 value.
-					// Run through the list of UniqueNames and pick out the highest value for each one.
-					string strHighestName = "";
-					int intHighest = -999;
-					foreach (string[,,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0, 0] == "precedence0")
-						{
-							if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-							{
-								intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-								strHighestName = strValues[0, 0, 2];
-							}
-						}
-					}
-					intModifier = intHighest;
-
-					if (intHighest != 0)
-					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-							if (objImprovement.SourceName == strHighestName)
-							{
-								strReturn = " + " + _objCharacter.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-								break;
-							}
-						}
-					}
-					else
-						strReturn = "";
-				}
-
-				// Factor in Custom Improvements.
-				lstUniqueName = new List<string>();
-				lstUniquePair = new List<string[,,]>();
-
-				int intCustomModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (!objImprovement.AddToRating && objImprovement.Enabled && objImprovement.Custom)
-					{
-						// Improvement for an individual Skill.
-						if (!_blnExoticSkill)
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName)
-							{
-								if (objImprovement.UniqueName != "")
-								{
-									// If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-									bool blnFound = false;
-									foreach (string strName in lstUniqueName)
-									{
-										if (strName == objImprovement.UniqueName)
-										{
-											blnFound = true;
-											break;
-										}
-									}
-									if (!blnFound)
-										lstUniqueName.Add(objImprovement.UniqueName);
-
-									// Add the values to the UniquePair List so we can check them later.
-									string[,,] strValues = new string[,,] { { { objImprovement.UniqueName, objImprovement.Value.ToString(), objImprovement.SourceName } } };
-									lstUniquePair.Add(strValues);
-								}
-								else
-								{
-									intCustomModifier += objImprovement.Value;
-									if (objImprovement.Value != 0)
-										strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-								}
-							}
-						}
-						else
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName + " (" + _strSkillSpec + ")")
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-
-						// Improvement for a Skill Group.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillGroup && objImprovement.ImprovedName == _strSkillGroup)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-						// Improvement for a Skill Category.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillCategory && objImprovement.ImprovedName == _strSkillCategory)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-						// Improvement for a Skill linked to an Attribute.
-						if (objImprovement.ImproveType == Improvement.ImprovementType.SkillAttribute && objImprovement.ImprovedName == _strAttribute)
-						{
-							if (!objImprovement.Exclude.Contains(_strName))
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-
-						// Improvement for Enhanced Articulation
-						if (_strSkillCategory == "Physical Active" && (_strAttribute == "BOD" || _strAttribute == "AGI" || _strAttribute == "REA" || _strAttribute == "STR"))
-						{
-							if (objImprovement.ImproveType == Improvement.ImprovementType.EnhancedArticulation)
-							{
-								intCustomModifier += objImprovement.Value;
-								if (objImprovement.Value != 0)
-									strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")";
-							}
-						}
-					}
-				}
-
-				// Run through the list of UniqueNames and pick out the highest value for each one.
-				foreach (string strName in lstUniqueName)
-				{
-					string strHighestName = "";
-					int intHighest = -999;
-					foreach (string[,,] strValues in lstUniquePair)
-					{
-						if (strValues[0, 0, 0] == "")
-						{
-							if (Convert.ToInt32(strValues[0, 0, 1]) > intHighest)
-							{
-								intHighest = Convert.ToInt32(strValues[0, 0, 1]);
-								strHighestName = strValues[0, 0, 2];
-							}
-						}
-					}
-					if (intHighest == -999)
-						intHighest = 0;
-					intCustomModifier += intHighest;
-
-					if (intHighest != 0)
-					{
-						foreach (Improvement objImprovement in _objCharacter.Improvements)
-						{
-							if (objImprovement.SourceName == strHighestName)
-							{
-								strReturn += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + intHighest.ToString() + ")";
-								break;
-							}
-						}
-					}
-				}
-
-				return strReturn;
-			}
-		}
-
-		/// <summary>
-		/// Maximum Rating for the Skill.
-		/// </summary>
-		public int RatingMaximum
-		{
-			get
-			{
-				int intModifier = 0;
-				foreach (Improvement objImprovement in _objCharacter.Improvements)
-				{
-					if (objImprovement.ImproveType == Improvement.ImprovementType.Skill && objImprovement.ImprovedName == _strName && objImprovement.Enabled)
-						intModifier += objImprovement.Maximum;
-				}
-				return _intRatingMaximum + intModifier;
-			}
-			set
-			{
-				_intRatingMaximum = value;
-			}
-		}
-
-		/// <summary>
-		/// Translated Attribute.
-		/// </summary>
-		public string DisplayAttribute
-		{
-			get
-			{
-				string strReturn = "";
-				strReturn = LanguageManager.Instance.GetString("String_Attribute" + Attribute + "Short");
-
-				return strReturn;
-			}
-		}
-
-		public Guid Id
-		{
-			get
-			{
-				if (_id == null)
-				{
-					_id = Guid.Empty;
-				}
-				return _id;
-			}
-			set { _id = value; }
-		}
-
-		public bool IdImprovement { get; set; }
-		public bool LockKnowledge { get; internal set; }
-		private List<Skill> _fold = new List<Skill>();
-		private ReadOnlyCollection<Skill> _foldRo;
-		public ReadOnlyCollection<Skill> Fold
-		{
-			get
-			{
-				if (_foldRo == null)
-				{
-					_foldRo = _fold.AsReadOnly();
-				}
-				return _foldRo;
-			}
-		}
-
-		private List<String> _knowledgeSkillCatagories;
-
-		public List<String> KnowledgeSkillCatagories
-		{
-			get { return _knowledgeSkillCatagories == null ? DefaultKnowledgeSkillCatagories : _knowledgeSkillCatagories; }
-			set { _knowledgeSkillCatagories = value; }
-		}
-
-		public static List<String> DefaultKnowledgeSkillCatagories
-		{
-			get
-			{
-				XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
-				XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
-				List<String> Items = new List<String>();
-				foreach (XmlNode objXmlSkill in objXmlSkillList)
-				{
-					if (objXmlSkill["translate"] != null)
-						Items.Add(objXmlSkill["translate"].InnerText);
-					else
-						Items.Add((objXmlSkill["name"].InnerText) + " (" + (objXmlSkill["category"].InnerText) + ")");
-				}
-				//TODO: Cache
-				return Items;
-			}
-		}
-		#endregion
-
-		#region Methods
-
-		public bool Absorb(Skill skill)
-		{
-			if (CharacterObject.Skills.Remove(skill))
-			{
-				_fold.Add(skill);
-				Karma += skill.Karma;	  //This is not a question about if, but when this will cause bugs
-				Base += skill.Base;		 //but i hope nothing will show until after rewrite of clsImprovement
-				Rating += skill.Rating; //then skill will need rewrite anyway to use features
-			}						   //Removing life modules will probably give bugs here
-									  //Easier fix, expand all when removing? Might not happen all that often?
-									 //Save state and recollect later? Dirty as fuck, but might just be the duct
-									//tape this codebase deserves? Not the duct tape it needs... Yeah, batman reference
-								   //But this have more shit that Gotham, as long as we don't count The Joker. The Joker is awesome.
-
-									 //sudden toughts, don't even need to expand all, if remove does a check if it exists in objCharacter.Skills or a sub
-
-			return false;
-		}
-
-		public void Free(Skill skill)
-		{
-			if (_fold.Remove(skill))
-			{
-				CharacterObject.Skills.Add(skill);
-				Karma -= skill.Karma;
-				Base -= skill.Base;
-				Rating -= skill.Rating;
-			}
-		}
-
-		/// <summary>
-		/// Calculate the amount of BP/Karma spent on the Skill.
-		/// </summary>
-		private int CalculatedBP()
-		{
-			int intBP = 0;
-
-			if (_intRating > 0 && !_blnIsGrouped)
-			{
-                if (_intFreeLevels > 0)
-                {
-                    for (int i = _intFreeLevels + 1; i <= _intRating; i++)
-                    {
-                        if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
-                        {
-                            intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill * 2);
-                            // Karma cost is doubled when increasing a Skill's Rating above 6.
-                            if (i > 6)
-                                intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill) * 2;
-                        }
-                        else
-                        {
-                            intBP += i * _objCharacter.Options.KarmaImproveActiveSkill;
-                            // Karma cost is doubled when increasing a Skill's Rating above 6.
-                            if (i > 6)
-                                intBP += i * _objCharacter.Options.KarmaImproveActiveSkill;
-                        }
-                    }
-                }
-                else
-                {
-				    // The first point in a Skill costs KarmaNewActiveSkill.
-				    // Each additional beyond 1 costs i x KarmaImproveActiveSkill.
-				    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
-					    intBP += _objCharacter.Options.KarmaNewActiveSkill * 2;
-				    else
-					    intBP += _objCharacter.Options.KarmaNewActiveSkill;
-				    for (int i = 2; i <= _intRating; i++)
-				    {
-					    if ((_objCharacter.Uneducated && _strSkillCategory == "Technical Active") || (_objCharacter.Uncouth && _strSkillCategory == "Social Active"))
-					    {
-						    intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill * 2);
-						    // Karma cost is doubled when increasing a Skill's Rating above 6.
-						    if (i > 6)
-							    intBP += (i * _objCharacter.Options.KarmaImproveActiveSkill) * 2;
-					    }
-					    else
-					    {
-						    intBP += i * _objCharacter.Options.KarmaImproveActiveSkill;
-						    // Karma cost is doubled when increasing a Skill's Rating above 6.
-						    if (i > 6)
-							    intBP += i * _objCharacter.Options.KarmaImproveActiveSkill;
-					    }
-				    }
-                }
-			}
-
-			// Specialization Cost (Exotic skills do not count since their "Spec" is actually what the Skill is being used for and cannot be Specialized).
-			if (_strSkillSpec.Trim() != string.Empty && !_blnExoticSkill)
-			{
-				// Each Specialization costs KarmaSpecialization.
-				intBP += _objCharacter.Options.KarmaSpecialization;
-			}
-
-			return intBP;
-		}
-		#endregion
-	}
-
-    /// <summary>
-    /// Type of Specialization
-    /// </summary>
-    public class SkillSpecialization
-    {
-		private Guid _guiID = new Guid();
-		private string _strName = "";
-		private string _strDisplayName = "";
-
-		#region Constructor, Create, Save, Load, and Print Methods
-		public SkillSpecialization(string strName)
-		{
-            _strName = strName;
-            _guiID = Guid.NewGuid();
-		}
-
-		/// <summary>
-		/// Save the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Save(XmlTextWriter objWriter)
-		{
-			objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString());
-			//objWriter.WriteElementString("displayname", _strDisplayName.ToString());
-			objWriter.WriteElementString("name", _strName);
-			objWriter.WriteEndElement();
-		}
-
-		/// <summary>
-		/// Load the Attribute from the XmlNode.
-		/// </summary>
-		/// <param name="objNode">XmlNode to load.</param>
-		public void Load(XmlNode objNode)
-		{
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _strName = objNode["name"].InnerText;
-			objNode.TryGetField("displayname", out _strDisplayName);
-		}
-
-		/// <summary>
-		/// Print the object's XML to the XmlWriter.
-		/// </summary>
-		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter)
-		{
-
-			objWriter.WriteStartElement("skillspecialization");
-			objWriter.WriteElementString("displayname", Name);
-			objWriter.WriteEndElement();
-		}
-		#endregion
-
-		#region Properties
-        /// <summary>
-        /// Internal identifier which will be used to identify this Spell in the Improvement system.
-        /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
-
-        /// <summary>
-		/// Skill Specialization's name.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _strName;
-			}
-			set
-			{
-				_strName = value;
-			}
-		}
-
-		/// <summary>
-		/// Skill Specialization's name.
-		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				string strReturn = _strName;
-
-				// Get the translated name if applicable.
-				if (GlobalOptions.Instance.Language != "en-us")
-				{
-					strReturn = LanguageManager.Instance.TranslateExtra(_strName);
-				}
-				return strReturn;
-			}
-			set
-			{
-				_strDisplayName = value;
-			}
-		}
-
-		#endregion
-	}
-
-	/// <summary>
 	/// Type of Spirit.
 	/// </summary>
 	public enum SpiritType
@@ -5485,7 +3327,7 @@ namespace Chummer
                     strReturn += " (" + LanguageManager.Instance.GetString("String_SpellAlchemical") + ")";
                 if (_strExtra != "")
 				{
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -5512,32 +3354,32 @@ namespace Chummer
 			get
 			{
 				int intReturn = 0;
-				foreach (Skill objSkill in _objCharacter.Skills)
+				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
                     if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
 					{
-						intReturn = objSkill.TotalRating;
+						intReturn = objSkill.Pool;
 						// Add any Specialization bonus if applicable.
 						if (objSkill.HasSpecialization(_strCategory))
 							intReturn += 2;
 					}
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
-                        intReturn = objSkill.TotalRating;
+                        intReturn = objSkill.Pool;
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             intReturn += 2;
@@ -5561,32 +3403,32 @@ namespace Chummer
 			{
 				string strReturn = "";
 
-				foreach (Skill objSkill in _objCharacter.Skills)
+				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
                     if (objSkill.Name == "Spellcasting" && !_blnAlchemical && _strCategory != "Rituals" && _strCategory != "Enchantments")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Ritual Spellcasting" && !_blnAlchemical && _strCategory == "Rituals")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Artificing" && !_blnAlchemical && _strCategory == "Enchantments")
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
                     }
                     if (objSkill.Name == "Alchemy" && _blnAlchemical)
                     {
-                        strReturn = objSkill.DisplayName + " (" + objSkill.TotalRating.ToString() + ")";
+                        strReturn = objSkill.GetDisplayName() + " (" + objSkill.Pool.ToString() + ")";
                         // Add any Specialization bonus if applicable.
                         if (objSkill.HasSpecialization(_strCategory))
                             strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
@@ -7140,7 +4982,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -7199,7 +5041,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -7331,14 +5173,14 @@ namespace Chummer
                     decimal decReturn = (_intRating - _intFreeLevels) * PointsPerLevel;
                     decReturn -= Discount;
 
-                    // Look at the Improvements created by the Power and determine if it has taken an Attribute above its Metatype Maximum.
+                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
                     //if (_blnDoubleCost)
                     //{
                     //    foreach (Improvement objImprovement in _objCharacter.Improvements)
                     //    {
-                    //        if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
+                    //        if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.CharacterAttribute && objImprovement.Enabled)
                     //        {
-                    //            Attribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+                    //            CharacterAttribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                     //            if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
                     //            {
                     //                // Use the lower of the difference between Augmented Maximum and the Power's Rating.
@@ -7519,7 +5361,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Whether or not the Power Point cost is doubled when an Attribute exceeds its Metatype Maximum.
+		/// Whether or not the Power Point cost is doubled when an CharacterAttribute exceeds its Metatype Maximum.
 		/// </summary>
 		public bool DoubleCost
 		{
@@ -7534,7 +5376,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum Attribute values.
+		/// The number of Power Points that have been doubled because of exceeding the Metatype's Maximum CharacterAttribute values.
 		/// </summary>
 		public int DoubledPoints
 		{
@@ -7548,14 +5390,14 @@ namespace Chummer
                     decReturn -= Discount;
                     int intDoubledPoints = 0;
 
-                    // Look at the Improvements created by the Power and determine if it has taken an Attribute above its Metatype Maximum.
+                    // Look at the Improvements created by the Power and determine if it has taken an CharacterAttribute above its Metatype Maximum.
                     if (_blnDoubleCost)
                     {
                         foreach (Improvement objImprovement in _objCharacter.Improvements)
                         {
                             if (objImprovement.SourceName == InternalId && objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.Enabled)
                             {
-                                Attribute objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
+                                CharacterAttrib objAttribute = _objCharacter.GetAttribute(objImprovement.ImprovedName);
                                 if (objAttribute.Value + objAttribute.AttributeValueModifiers > objAttribute.MetatypeMaximum + objAttribute.MaximumModifiers)
                                 {
                                     // Use the lower of the difference between Augmented Maximum and the Power's Rating.
@@ -9561,7 +7403,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")
@@ -9580,7 +7422,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{

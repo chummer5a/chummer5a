@@ -96,7 +96,7 @@
       <attribute>CHA</attribute>
       <category>Physical Active</category>
       <default>Yes</default>
-      <skillgroup>Animal Husbandry</skillgroup>
+      <skillgroup />
       <specs>
         <spec>Herding</spec>
         <spec>Riding</spec>

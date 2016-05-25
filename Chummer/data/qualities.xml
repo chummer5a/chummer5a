@@ -104,7 +104,6 @@
 				<specificskill>
 					<name>Sneaking</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>
@@ -600,12 +599,10 @@
 				<specificskill>
 					<name>Running</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 				<specificskill>
 					<name>Gymnastics</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>
@@ -989,6 +986,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Magician</unlockskills>
+      </bonus>
 			<contributetolimit>no</contributetolimit>
 			<forbidden>
 				<oneof>
@@ -1006,6 +1006,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Adept</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1023,6 +1026,7 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>Magicain</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1040,6 +1044,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Technomancer</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1057,6 +1064,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Sorcery,Conjuring,Enhancing</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -2660,10 +2670,14 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<specificskill>
+        <specificskill>
 					<name>Perception</name>
 					<bonus>1</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>1</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -2682,6 +2696,10 @@
 					<name>Perception</name>
 					<bonus>2</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>2</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>

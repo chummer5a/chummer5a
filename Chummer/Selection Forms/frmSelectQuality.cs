@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+﻿using Chummer.Skills;
 
 namespace Chummer
 {
@@ -765,7 +766,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "skill")
 						{
 							// Check if the character has the required Skill.
-							foreach (Skill objSkill in _objCharacter.Skills)
+							foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 							{
 								if (objSkill.Name == objXmlRequired["name"].InnerText)
 								{
@@ -780,7 +781,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "attribute")
 						{
 							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{
@@ -818,7 +819,7 @@ namespace Chummer
 							string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
 							for (int i = 0; i <= strGroups.Length - 1; i++)
 							{
-								foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+								foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
 								{
 									if (objGroup.Name == strGroups[i])
 									{
@@ -1070,7 +1071,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "skill")
 						{
 							// Check if the character has the required Skill.
-							foreach (Skill objSkill in _objCharacter.Skills)
+							foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 							{
 								if (objSkill.Name == objXmlRequired["name"].InnerText)
 								{
@@ -1085,7 +1086,7 @@ namespace Chummer
 						else if (objXmlRequired.Name == "attribute")
 						{
 							// Check to see if an Attribute meets a requirement.
-							Attribute objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+							CharacterAttrib objAttribute = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
 
 							if (objXmlRequired["total"] != null)
 							{
@@ -1123,7 +1124,7 @@ namespace Chummer
 							string[] strGroups = objXmlRequired["skillgroups"].InnerText.Split('+');
 							for (int i = 0; i <= strGroups.Length - 1; i++)
 							{
-								foreach (SkillGroup objGroup in _objCharacter.SkillGroups)
+								foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
 								{
 									if (objGroup.Name == strGroups[i])
 									{
