@@ -114,6 +114,10 @@
       <key>Label_Karma</key>
       <text>Karma :</text>
     </string>
+	<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
+	</string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>Karma restant :</text>
@@ -4966,6 +4970,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Mises à jour automatiques</text>
     </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Ne pas utiliser cybernétiques pour le calcul des attributs augmentés</text>
+		</string>
     <string>
       <key>Checkbox_Options_ConfirmDelete</key>
       <text>Demander confirmation avant d'effacer un article</text>

@@ -68,8 +68,12 @@ namespace Chummer
 				{
 					blnAdd = false;
 				}
+			    if (!_objCharacter.Options.Books.Contains(objXmlLifestyle["source"].InnerText))
+			    {
+			        blnAdd = false;
+			    }
 
-				if (blnAdd)
+                if (blnAdd)
 				{
 					ListItem objItem = new ListItem();
 				objItem.Value = objXmlLifestyle["name"].InnerText;
@@ -90,6 +94,8 @@ namespace Chummer
 			}
 			if (cboLifestyle.SelectedIndex == -1)
 				cboLifestyle.SelectedIndex = 0;
+
+            
 
 			// Fill the Options list.
 			foreach (XmlNode objXmlOption in _objXmlDocument.SelectNodes("/chummer/qualities/quality[source = \"" + "SR5" + "\"]"))
@@ -261,8 +267,8 @@ namespace Chummer
 		private void AcceptForm()
 		{
 			XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
-			_objLifestyle.Source = "SR5";
-			_objLifestyle.Page = "373";
+			_objLifestyle.Source = Convert.ToString(objXmlAspect["source"].InnerText);
+			_objLifestyle.Page = Convert.ToString(objXmlAspect["page"].InnerText);
 			_objLifestyle.Name = txtLifestyleName.Text;
 			_objLifestyle.BaseLifestyle = cboLifestyle.SelectedValue.ToString();
 			_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);

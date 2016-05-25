@@ -489,27 +489,32 @@ namespace Chummer
                         break;
                 }
 
-                if (blnStreetGrimoire && !_objCharacter.Options.IgnoreArt)
-                {
-                    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
-                    {
-                        foreach (Art objArt in _objCharacter.Arts)
-                        {
-                            if (objArt.Name == objXmlArt.InnerText)
-                            {
-                                blnOneOfRequirementMet = true;
-                                break;
-                            }
-                        }
 
-                        if (!blnOneOfRequirementMet)
-                            strOneOfRequirement += "\n\t" + objXmlArt.InnerText;
-                        else
-                            break;
+			    foreach (XmlNode objXmlArt in objXmlCheckMetamagic.SelectNodes("required/oneof/art"))
+			    {
+			        if (!blnStreetGrimoire || _objCharacter.Options.IgnoreArt)
+			        {
+                        blnOneOfRequirementMet = true;
+                        break;
                     }
-                }
+                    foreach (Art objArt in _objCharacter.Arts)
+			        {
+			            if (objArt.Name == objXmlArt.InnerText)
+			            {
+			                blnOneOfRequirementMet = true;
+			                break;
+			            }
+			        }
 
-                if (!blnOneOfRequirementMet)
+			        if (!blnOneOfRequirementMet)
+			            strOneOfRequirement += "\n\t" + objXmlArt.InnerText;
+			        else
+			            break;
+			    }
+
+
+
+			    if (!blnOneOfRequirementMet)
                 {
                     blnRequirementMet = false;
                     strRequirement += strOneOfRequirement;

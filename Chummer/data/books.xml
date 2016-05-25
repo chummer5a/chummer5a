@@ -18,75 +18,80 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-380</version>
-  <books>
-    <book>
-      <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
-      <name>Assassin's Primer</name>
-      <code>AP</code>
-    </book>
-    <book>
-      <id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
-      <name>Gun Heaven 3</name>
-      <code>GH3</code>
-    </book>
-    <book>
-      <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
-      <name>Run and Gun</name>
-      <code>RG</code>
-    </book>
-    <book>
-      <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
-      <name>Shadowrun 5th Edition</name>
-      <code>SR5</code>
-    </book>
-    <book>
-      <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-      <name>Shadowrun 5th Edition (German)</name>
-      <code>SR5G</code>
-    </book>
-    <book>
-      <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
-      <name>Street Grimoire</name>
-      <code>SG</code>
-    </book>
-    <book>
-      <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
-      <name>Bullets &amp; Bandages</name>
-      <code>BB</code>
-    </book>
-    <book>
-      <id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
-      <name>Sail Away, Sweet Sister</name>
-      <code>SASS</code>
-    </book>
-    <book>
-      <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
-      <name>Stolen Souls</name>
-      <code>SS</code>
-    </book>
-    <book>
-      <name>Run Faster</name>
-      <code>RF</code>
-    </book>
-	<book>
-	<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-      <name>Run Faster German</name>
-      <code>RFG</code>
-    </book>
-    <book>
-      <name>Shadow Spells</name>
-      <code>SSP</code>
-    </book>
-    <book>
-      <name>Nothing Personal</name>
-      <code>NP</code>
-    </book>
-    <book>
-      <id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
-      <name>Data Trails</name>
-      <code>DT</code>
-    </book>
+	<version>-380</version>
+	<books>
+		<book>
+			<id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
+			<name>Assassin's Primer</name>
+			<code>AP</code>
+		</book>
+		<book>
+			<id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
+			<name>Gun Heaven 3</name>
+			<code>GH3</code>
+		</book>
+		<book>
+			<id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
+			<name>Run and Gun</name>
+			<code>RG</code>
+		</book>
+		<book>
+			<id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
+			<name>Shadowrun 5th Edition</name>
+			<code>SR5</code>
+		</book>
+		<book>
+			<id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
+			<name>Shadowrun 5th Edition (German)</name>
+			<code>SR5G</code>
+		</book>
+		<book>
+			<id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
+			<name>Street Grimoire</name>
+			<code>SG</code>
+		</book>
+		<book>
+			<id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
+			<name>Street Grimoire (German)</name>
+			<code>SGG</code>
+		</book>
+		<book>
+			<id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
+			<name>Bullets &amp; Bandages</name>
+			<code>BB</code>
+		</book>
+		<book>
+			<id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
+			<name>Sail Away, Sweet Sister</name>
+			<code>SASS</code>
+		</book>
+		<book>
+			<id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
+			<name>Stolen Souls</name>
+			<code>SS</code>
+		</book>
+		<book>
+			<name>Run Faster</name>
+			<code>RF</code>
+		</book>
+		<book>
+			<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
+			<name>Run Faster (German)</name>
+			<code>RFG</code>
+		</book>
+		<book>
+			<name>Shadow Spells</name>
+			<code>SSP</code>
+		</book>
+		<book>
+			<name>Nothing Personal</name>
+			<code>NP</code>
+		</book>
+		<book>
+			<id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
+			<name>Data Trails</name>
+			<code>DT</code>
+		</book>
 		<book>
 			<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
 			<name>Chrome Flesh</name>
@@ -97,11 +102,11 @@
 			<name>Hard Targets</name>
 			<code>HT</code>
 		</book>
-    <book>
-      <id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
-      <name>Bloody Business</name>
-      <code>BLB</code>
-    </book>
+		<book>
+			<id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
+			<name>Bloody Business</name>
+			<code>BLB</code>
+		</book>
 		<book>
 			<id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
 			<name>Schattenhandbuch (German Handbook)</name>
@@ -112,5 +117,5 @@
 			<name>Rigger 5.0</name>
 			<code>R5</code>
 		</book>
-  </books>
+	</books>
 </chummer>

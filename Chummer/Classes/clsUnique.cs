@@ -491,7 +491,7 @@ namespace Chummer
 				}
 
 				// If this is AGI or STR, factor in any Cyberlimbs.
-                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                if (!_objCharacter.Options.DontUseCyberlimbCalculation && (_strAbbrev == "AGI" || _strAbbrev == "STR"))
                 {
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
@@ -571,7 +571,7 @@ namespace Chummer
 				int intReturn = intMeat;
 
                 //// If this is AGI or STR, factor in any Cyberlimbs.
-                if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+                if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
                 {
                     int intLimbTotal = 0;
                     int intLimbCount = 0;
@@ -834,7 +834,7 @@ namespace Chummer
 							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
 							{
 								intHighest = Convert.ToInt32(strValues[0, 1]);
-								strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+								strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
 							}
 						}
 					}
@@ -892,7 +892,7 @@ namespace Chummer
 
             //// If this is AGI or STR, factor in any Cyberlimbs.
             string strCyberlimb = "";
-            if (_strAbbrev == "AGI" || _strAbbrev == "STR")
+            if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
             {
                 foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                 {

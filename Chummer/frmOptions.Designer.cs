@@ -127,6 +127,7 @@
 			this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
 			this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.chkDontUseCyberlimbCalculation = new System.Windows.Forms.CheckBox();
 			this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
 			this.cboEssenceDecimals = new System.Windows.Forms.ComboBox();
 			this.lblEssenceDecimals = new System.Windows.Forms.Label();
@@ -215,7 +216,6 @@
 			this.chkContactPoints = new System.Windows.Forms.CheckBox();
 			this.chkMayBuyQualities = new System.Windows.Forms.CheckBox();
 			this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
-			this.chkBreakSkillGroupsInCreateMode = new System.Windows.Forms.CheckBox();
 			this.chkAlternateMatrixAttribute = new System.Windows.Forms.CheckBox();
 			this.chkAllowCustomTransgenics = new System.Windows.Forms.CheckBox();
 			this.chkAlternateComplexFormCost = new System.Windows.Forms.CheckBox();
@@ -248,6 +248,7 @@
 			this.chkFreeKarmaContacts = new System.Windows.Forms.CheckBox();
 			this.chkFreeKarmaKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
+			this.chkStrictSkillGroups = new System.Windows.Forms.CheckBox();
 			this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
 			this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
 			this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
@@ -256,7 +257,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkStrictSkillGroups = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -319,6 +319,7 @@
 			// cmdOK
 			// 
 			this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cmdOK.Location = new System.Drawing.Point(370, 626);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -696,10 +697,10 @@
 			this.lblKarmaAttribute.AutoSize = true;
 			this.lblKarmaAttribute.Location = new System.Drawing.Point(8, 188);
 			this.lblKarmaAttribute.Name = "lblKarmaAttribute";
-			this.lblKarmaAttribute.Size = new System.Drawing.Size(156, 13);
+			this.lblKarmaAttribute.Size = new System.Drawing.Size(110, 13);
 			this.lblKarmaAttribute.TabIndex = 17;
 			this.lblKarmaAttribute.Tag = "Label_Options_ImproveAttribute";
-			this.lblKarmaAttribute.Text = "Improve CharacterAttribute by 1";
+			this.lblKarmaAttribute.Text = "Improve Attribute by 1";
 			// 
 			// lblKarmaImproveSkillGroupExtra
 			// 
@@ -853,7 +854,7 @@
 			// chkPrintSkillsWithZeroRating
 			// 
 			this.chkPrintSkillsWithZeroRating.AutoSize = true;
-			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(10, 161);
+			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(11, 200);
 			this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
 			this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(259, 17);
 			this.chkPrintSkillsWithZeroRating.TabIndex = 11;
@@ -887,7 +888,7 @@
 			// lblNuyenPerBP
 			// 
 			this.lblNuyenPerBP.AutoSize = true;
-			this.lblNuyenPerBP.Location = new System.Drawing.Point(7, 316);
+			this.lblNuyenPerBP.Location = new System.Drawing.Point(8, 355);
 			this.lblNuyenPerBP.Name = "lblNuyenPerBP";
 			this.lblNuyenPerBP.Size = new System.Drawing.Size(112, 13);
 			this.lblNuyenPerBP.TabIndex = 2;
@@ -897,7 +898,7 @@
 			// 
 			// nudNuyenPerBP
 			// 
-			this.nudNuyenPerBP.Location = new System.Drawing.Point(136, 314);
+			this.nudNuyenPerBP.Location = new System.Drawing.Point(137, 353);
 			this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -938,7 +939,7 @@
 			// chkPrintExpenses
 			// 
 			this.chkPrintExpenses.AutoSize = true;
-			this.chkPrintExpenses.Location = new System.Drawing.Point(10, 184);
+			this.chkPrintExpenses.Location = new System.Drawing.Point(11, 223);
 			this.chkPrintExpenses.Name = "chkPrintExpenses";
 			this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
 			this.chkPrintExpenses.TabIndex = 12;
@@ -1299,6 +1300,7 @@
 			// tabPage2
 			// 
 			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Controls.Add(this.chkDontUseCyberlimbCalculation);
 			this.tabPage2.Controls.Add(this.chkPrintToFileFirst);
 			this.tabPage2.Controls.Add(this.cboEssenceDecimals);
 			this.tabPage2.Controls.Add(this.lblEssenceDecimals);
@@ -1323,10 +1325,21 @@
 			this.tabPage2.Tag = "Tab_Options_Character";
 			this.tabPage2.Text = "Character and Printing";
 			// 
+			// chkDontUseCyberlimbCalculation
+			// 
+			this.chkDontUseCyberlimbCalculation.AutoSize = true;
+			this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(12, 36);
+			this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
+			this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(270, 17);
+			this.chkDontUseCyberlimbCalculation.TabIndex = 19;
+			this.chkDontUseCyberlimbCalculation.Tag = "Checkbox_Options_UseCyberlimbCalculation";
+			this.chkDontUseCyberlimbCalculation.Text = "Use Cyberlimbs for calculating augmented Attributes";
+			this.chkDontUseCyberlimbCalculation.UseVisualStyleBackColor = true;
+			// 
 			// chkPrintToFileFirst
 			// 
 			this.chkPrintToFileFirst.AutoSize = true;
-			this.chkPrintToFileFirst.Location = new System.Drawing.Point(10, 230);
+			this.chkPrintToFileFirst.Location = new System.Drawing.Point(11, 269);
 			this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
 			this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
 			this.chkPrintToFileFirst.TabIndex = 18;
@@ -1338,7 +1351,7 @@
 			// 
 			this.cboEssenceDecimals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboEssenceDecimals.FormattingEnabled = true;
-			this.cboEssenceDecimals.Location = new System.Drawing.Point(244, 266);
+			this.cboEssenceDecimals.Location = new System.Drawing.Point(245, 305);
 			this.cboEssenceDecimals.Name = "cboEssenceDecimals";
 			this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
 			this.cboEssenceDecimals.TabIndex = 17;
@@ -1346,7 +1359,7 @@
 			// lblEssenceDecimals
 			// 
 			this.lblEssenceDecimals.AutoSize = true;
-			this.lblEssenceDecimals.Location = new System.Drawing.Point(8, 269);
+			this.lblEssenceDecimals.Location = new System.Drawing.Point(9, 308);
 			this.lblEssenceDecimals.Name = "lblEssenceDecimals";
 			this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
 			this.lblEssenceDecimals.TabIndex = 16;
@@ -1356,7 +1369,7 @@
 			// chkPrintNotes
 			// 
 			this.chkPrintNotes.AutoSize = true;
-			this.chkPrintNotes.Location = new System.Drawing.Point(10, 207);
+			this.chkPrintNotes.Location = new System.Drawing.Point(11, 246);
 			this.chkPrintNotes.Name = "chkPrintNotes";
 			this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
 			this.chkPrintNotes.TabIndex = 15;
@@ -1377,7 +1390,7 @@
 			// chkAllowSkillDiceRolling
 			// 
 			this.chkAllowSkillDiceRolling.AutoSize = true;
-			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(10, 128);
+			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(11, 167);
 			this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
 			this.chkAllowSkillDiceRolling.TabIndex = 10;
@@ -1388,7 +1401,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(7, 40);
+			this.label36.Location = new System.Drawing.Point(8, 79);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(140, 13);
 			this.label36.TabIndex = 4;
@@ -1397,7 +1410,7 @@
 			// 
 			// nudBP
 			// 
-			this.nudBP.Location = new System.Drawing.Point(103, 65);
+			this.nudBP.Location = new System.Drawing.Point(104, 104);
 			this.nudBP.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -1416,7 +1429,7 @@
 			// 
 			this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboBuildMethod.FormattingEnabled = true;
-			this.cboBuildMethod.Location = new System.Drawing.Point(8, 65);
+			this.cboBuildMethod.Location = new System.Drawing.Point(9, 104);
 			this.cboBuildMethod.Name = "cboBuildMethod";
 			this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
 			this.cboBuildMethod.TabIndex = 5;
@@ -1425,7 +1438,7 @@
 			// lblMaxAvail
 			// 
 			this.lblMaxAvail.AutoSize = true;
-			this.lblMaxAvail.Location = new System.Drawing.Point(38, 95);
+			this.lblMaxAvail.Location = new System.Drawing.Point(39, 134);
 			this.lblMaxAvail.Name = "lblMaxAvail";
 			this.lblMaxAvail.Size = new System.Drawing.Size(59, 13);
 			this.lblMaxAvail.TabIndex = 7;
@@ -1434,7 +1447,7 @@
 			// 
 			// nudMaxAvail
 			// 
-			this.nudMaxAvail.Location = new System.Drawing.Point(103, 92);
+			this.nudMaxAvail.Location = new System.Drawing.Point(104, 131);
 			this.nudMaxAvail.Name = "nudMaxAvail";
 			this.nudMaxAvail.Size = new System.Drawing.Size(42, 20);
 			this.nudMaxAvail.TabIndex = 8;
@@ -2299,7 +2312,6 @@
 			this.tabOptionalRules.Controls.Add(this.chkContactPoints);
 			this.tabOptionalRules.Controls.Add(this.chkMayBuyQualities);
 			this.tabOptionalRules.Controls.Add(this.chkExtendAnyDetectionSpell);
-			this.tabOptionalRules.Controls.Add(this.chkBreakSkillGroupsInCreateMode);
 			this.tabOptionalRules.Controls.Add(this.chkAlternateMatrixAttribute);
 			this.tabOptionalRules.Controls.Add(this.chkAllowCustomTransgenics);
 			this.tabOptionalRules.Controls.Add(this.chkAlternateComplexFormCost);
@@ -2324,7 +2336,7 @@
 			// chkDronemods
 			// 
 			this.chkDronemods.AutoSize = true;
-			this.chkDronemods.Location = new System.Drawing.Point(8, 98);
+			this.chkDronemods.Location = new System.Drawing.Point(8, 75);
 			this.chkDronemods.Name = "chkDronemods";
 			this.chkDronemods.Size = new System.Drawing.Size(206, 17);
 			this.chkDronemods.TabIndex = 34;
@@ -2335,7 +2347,7 @@
 			// chkMissions
 			// 
 			this.chkMissions.AutoSize = true;
-			this.chkMissions.Location = new System.Drawing.Point(8, 75);
+			this.chkMissions.Location = new System.Drawing.Point(8, 52);
 			this.chkMissions.Name = "chkMissions";
 			this.chkMissions.Size = new System.Drawing.Size(197, 17);
 			this.chkMissions.TabIndex = 33;
@@ -2379,26 +2391,15 @@
 			this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
 			this.chkExtendAnyDetectionSpell.Visible = false;
 			// 
-			// chkBreakSkillGroupsInCreateMode
-			// 
-			this.chkBreakSkillGroupsInCreateMode.AutoSize = true;
-			this.chkBreakSkillGroupsInCreateMode.Location = new System.Drawing.Point(8, 52);
-			this.chkBreakSkillGroupsInCreateMode.Name = "chkBreakSkillGroupsInCreateMode";
-			this.chkBreakSkillGroupsInCreateMode.Size = new System.Drawing.Size(339, 17);
-			this.chkBreakSkillGroupsInCreateMode.TabIndex = 29;
-			this.chkBreakSkillGroupsInCreateMode.Tag = "Checkbox_Options_BreakSkillGroupsInCreateMode";
-			this.chkBreakSkillGroupsInCreateMode.Text = "Allow Skill Groups to be broken during character creation (SR4 68)";
-			this.chkBreakSkillGroupsInCreateMode.UseVisualStyleBackColor = true;
-			// 
 			// chkAlternateMatrixAttribute
 			// 
 			this.chkAlternateMatrixAttribute.AutoSize = true;
 			this.chkAlternateMatrixAttribute.Location = new System.Drawing.Point(366, 190);
 			this.chkAlternateMatrixAttribute.Name = "chkAlternateMatrixAttribute";
-			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(248, 17);
+			this.chkAlternateMatrixAttribute.Size = new System.Drawing.Size(202, 17);
 			this.chkAlternateMatrixAttribute.TabIndex = 12;
 			this.chkAlternateMatrixAttribute.Tag = "Checkbox_Options_AlternateMatrixAttribute";
-			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix CharacterAttribute (UN 39)";
+			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix Attribute (UN 39)";
 			this.chkAlternateMatrixAttribute.UseVisualStyleBackColor = true;
 			this.chkAlternateMatrixAttribute.Visible = false;
 			// 
@@ -2532,11 +2533,11 @@
 			this.chkCapSkillRating.AutoSize = true;
 			this.chkCapSkillRating.Location = new System.Drawing.Point(366, 6);
 			this.chkCapSkillRating.Name = "chkCapSkillRating";
-			this.chkCapSkillRating.Size = new System.Drawing.Size(446, 17);
+			this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
 			this.chkCapSkillRating.TabIndex = 2;
 			this.chkCapSkillRating.Tag = "Checkbox_Options_LimitSkills";
-			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural CharacterAttribute + Skill Rating), which" +
-    "ever is higher";
+			this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is h" +
+    "igher";
 			this.chkCapSkillRating.UseVisualStyleBackColor = true;
 			this.chkCapSkillRating.Visible = false;
 			// 
@@ -2555,7 +2556,6 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
-			this.tabHouseRules.Controls.Add(this.chkStrictSkillGroups);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeContacts);
 			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
@@ -2574,6 +2574,7 @@
 			this.tabHouseRules.Controls.Add(this.chkFreeKarmaContacts);
 			this.tabHouseRules.Controls.Add(this.chkFreeKarmaKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkAllowInitiation);
+			this.tabHouseRules.Controls.Add(this.chkStrictSkillGroups);
 			this.tabHouseRules.Controls.Add(this.chkDontDoubleQualityPurchases);
 			this.tabHouseRules.Controls.Add(this.chkCyberlegMovement);
 			this.tabHouseRules.Controls.Add(this.chkIgnoreArt);
@@ -2811,6 +2812,18 @@
 			this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Allows Initiation/Submersion using Karma during Create mode.");
 			this.chkAllowInitiation.UseVisualStyleBackColor = true;
 			// 
+			// chkStrictSkillGroups
+			// 
+			this.chkStrictSkillGroups.AutoSize = true;
+			this.chkStrictSkillGroups.Location = new System.Drawing.Point(8, 118);
+			this.chkStrictSkillGroups.Name = "chkStrictSkillGroups";
+			this.chkStrictSkillGroups.Size = new System.Drawing.Size(304, 17);
+			this.chkStrictSkillGroups.TabIndex = 6;
+			this.chkStrictSkillGroups.Tag = "Checkbox_Options_StrictSkillGroups";
+			this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
+			this.tipTooltip.SetToolTip(this.chkStrictSkillGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
+			this.chkStrictSkillGroups.UseVisualStyleBackColor = true;
+			// 
 			// chkDontDoubleQualityPurchases
 			// 
 			this.chkDontDoubleQualityPurchases.AutoSize = true;
@@ -2893,24 +2906,12 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkStrictSkillGroups
-			// 
-			this.chkStrictSkillGroups.AutoSize = true;
-			this.chkStrictSkillGroups.Location = new System.Drawing.Point(8, 118);
-			this.chkStrictSkillGroups.Name = "chkStrictSkillGroups";
-			this.chkStrictSkillGroups.Size = new System.Drawing.Size(304, 17);
-			this.chkStrictSkillGroups.TabIndex = 24;
-			this.chkStrictSkillGroups.Tag = "Checkbox_Options_StrictSkillGroups";
-			this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
-			this.chkStrictSkillGroups.UseVisualStyleBackColor = true;
-			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(815, 661);
-			this.ControlBox = false;
 			this.Controls.Add(this.txtSettingName);
 			this.Controls.Add(this.lblSettingName);
 			this.Controls.Add(this.cboSetting);
@@ -2918,6 +2919,8 @@
 			this.Controls.Add(this.tabControl1);
 			this.Controls.Add(this.cmdOK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(16, 667);
 			this.Name = "frmOptions";
 			this.ShowInTaskbar = false;
@@ -3184,7 +3187,6 @@
 		private System.Windows.Forms.Label lblPDFLocation;
 		private System.Windows.Forms.Button cmdPDFTest;
 		private System.Windows.Forms.CheckBox chkDatesIncludeTime;
-		private System.Windows.Forms.CheckBox chkBreakSkillGroupsInCreateMode;
 		private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
 		private System.Windows.Forms.CheckBox chkPrintToFileFirst;
 		private System.Windows.Forms.CheckBox chkLocalisedUpdatesOnly;
@@ -3196,6 +3198,7 @@
         private System.Windows.Forms.CheckBox chkIgnoreArt;
         private System.Windows.Forms.CheckBox chkCyberlegMovement;
         private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
+        private System.Windows.Forms.CheckBox chkStrictSkillGroups;
         private System.Windows.Forms.ToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
@@ -3224,6 +3227,6 @@
 		private System.Windows.Forms.CheckBox chkDronemods;
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeContacts;
 		private System.Windows.Forms.CheckBox chkUseTotalValueForFreeKnowledge;
-		private System.Windows.Forms.CheckBox chkStrictSkillGroups;
-	}
+        private System.Windows.Forms.CheckBox chkDontUseCyberlimbCalculation;
+    }
 }

@@ -25,6 +25,7 @@ using System.Xml;
 using Octokit;
 using System.Collections.Specialized;
 using System.Net;
+﻿using System.Runtime.Remoting.Channels;
 
 namespace Chummer
 {
@@ -74,13 +75,13 @@ namespace Chummer
 			_characterOptions.AllowCyberwareESSDiscounts = chkAllowCyberwareESSDiscounts.Checked;
             _characterOptions.AllowInitiationInCreateMode = chkAllowInitiation.Checked;
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
+            _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
             _characterOptions.AlternateMatrixAttribute = chkAlternateMatrixAttribute.Checked;
             _characterOptions.AlternateComplexFormCost = chkAlternateComplexFormCost.Checked;
             _characterOptions.ArmorDegradation = chkArmorDegradation.Checked;
             _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
             _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
-            _characterOptions.StrictSkillGroupsInCreateMode = chkBreakSkillGroupsInCreateMode.Checked;
             _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
             _characterOptions.CapSkillRating = chkCapSkillRating.Checked;
             _characterOptions.ConfirmDelete = chkConfirmDelete.Checked;
@@ -385,10 +386,29 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(null);
             objCommon.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
-        #endregion
+		
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+			string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
 
-        #region Methods
-        private void MoveControls()
+			switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+			{
+				case DialogResult.Yes:
+					cmdOK_Click(cmdOK, e);
+					break;
+				case DialogResult.Cancel:
+					e.Cancel = true;
+					break;
+				default:
+					break;
+			}
+		}
+
+		#endregion
+
+		#region Methods
+		private void MoveControls()
         {
             int intWidth = 0;
 
@@ -577,6 +597,7 @@ namespace Chummer
 			chkAllowCyberwareESSDiscounts.Checked = _characterOptions.AllowCyberwareESSDiscounts;
 			chkAllowInitiation.Checked = _characterOptions.AllowInitiationInCreateMode;
 			chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
+            chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
 			chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
 			chkAlternateComplexFormCost.Checked = _characterOptions.AlternateComplexFormCost;
 			chkAlternateMatrixAttribute.Checked = _characterOptions.AlternateMatrixAttribute;
@@ -584,7 +605,6 @@ namespace Chummer
 			chkArmorSuitCapacity.Checked = _characterOptions.ArmorSuitCapacity;
 			chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
 			chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
-			chkBreakSkillGroupsInCreateMode.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
 			chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
 			chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
 			chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;

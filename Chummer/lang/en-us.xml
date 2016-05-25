@@ -403,6 +403,10 @@
 			<text>Karma:</text>
 		</string>
 		<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
+		</string>
+		<string>
 			<key>Label_KarmaRemaining</key>
 			<text>Karma Remaining:</text>
 		</string>
@@ -4496,6 +4500,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Strict interprentation of breaking skill groups in create mode</text>
     </string>
 		<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Don't use Cyberlimbs for calculating augmented Attributes</text>
+		</string>
+		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
 		</string>
@@ -4846,6 +4854,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Tip_DiceRoller</key>
 			<text>Open Dice Roller</text>
+		</string>
+		<string>
+			<key>Tip_RecoilAccessories</key>
+			<text> + {0} ({1} (Deployable))</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region ASDF Attributes-->
@@ -6545,7 +6557,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Message_Options_CloseForms</key>
 			<text>Options are only enumerated on character load. Should we close the current open characters?</text>
-		</string>		
+		</string>
+		<string>
+			<key>Message_Options_SaveForms</key>
+			<text>Would you like to save any changes made to your options?</text>
+		</string>
 		<string>
 			<key>MessageTitle_Options_CloseForms</key>
 			<text>Close Forms</text>
@@ -7961,5 +7977,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Condition</key>
 			<text>Condition:</text>
 		</string>
+		<!-- End Region -->
+		<!-- End Region -->
 	</strings>
 </chummer>

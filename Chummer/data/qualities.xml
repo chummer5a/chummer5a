@@ -5764,6 +5764,7 @@
 					<excludeattribute>EDG</excludeattribute>
 					<excludeattribute>MAG</excludeattribute>
 					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
 					<max>1</max>
 					<min>1</min>
 				</selectattribute>
@@ -6643,6 +6644,7 @@
 					<excludeattribute>EDG</excludeattribute>
 					<excludeattribute>MAG</excludeattribute>
 					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
 					<max>-2</max>
 				</selectattribute>
 			</bonus>

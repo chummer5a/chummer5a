@@ -8660,7 +8660,7 @@ namespace Chummer
                 case "Rigger Command Consoles":
                     Commlink objCommlink = new Commlink(_objCharacter);
                     objCommlink.Create(objXmlGear, _objCharacter, objNode, frmPickGear.SelectedRating, false);
-                    objCommlink.Quantity = frmPickGear.SelectedQty;
+                    objCommlink.DiscountCost = frmPickGear.BlackMarketDiscount;
 
                     objGear = objCommlink;
                     break;
@@ -14345,7 +14345,15 @@ namespace Chummer
                 }
                 for (int i = 1; i <= nudKSTR.Value; i++)
                 {
-			    intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    if (_objCharacter.Cyberware.Find(x =>
+                        x.Name == "Myostatin Inhibitor") != null)
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
+                    }
+                    else
+                    {
+                        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+                    }
                 }
                 for (int i = 1; i <= nudKCHA.Value; i++)
                 {
@@ -14692,12 +14700,18 @@ namespace Chummer
             intNegativeQualities -= intNegativeFree;
             intPositiveQualities -= intPositiveFree;
 
-            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+            // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.		    
             if (_objOptions.ExceedNegativeQualitiesLimit)
             {
-                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority) && intNegativeQualities < -1 * _objCharacter.MaxKarma)
+                if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+                     _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+                    intNegativeQualities < -1*_objCharacter.MaxKarma)
                 {
-                    intNegativeQualities = -1 * _objCharacter.MaxKarma;
+                    intNegativeQualities = -1*_objCharacter.MaxKarma;
+                }
+                else
+                {
+                    intNegativeQualities = Math.Max(intNegativeQualities,-1 * _objCharacter.GameplayOptionQualityLimit);
                 }
             }
 
@@ -15769,6 +15783,10 @@ namespace Chummer
                 lblCyberwareEssence.Text = "";
                 lblCyberwareSource.Text = "";
                 tipTooltip.SetToolTip(lblCyberwareSource, null);
+                lblCyberlimbAGI.Visible = false;
+                lblCyberlimbAGILabel.Visible = false;
+                lblCyberlimbSTR.Visible = false;
+                lblCyberlimbSTRLabel.Visible = false;
                 return;
             }
 
@@ -15827,6 +15845,26 @@ namespace Chummer
                 // Cyberware Grade is not available for Genetech items.
                 if (objCyberware.Category.StartsWith("Genetech:") || objCyberware.Category == "Symbiont" || objCyberware.Category == "Genetic Infusions" || objCyberware.Category == "Genemods")
                     cboCyberwareGrade.Enabled = false;
+
+                if (objCyberware.Category.Equals("Cyberlimb"))
+                {
+                    lblCyberlimbAGI.Visible = true;
+                    lblCyberlimbAGILabel.Visible = true;
+                    lblCyberlimbSTR.Visible = true;
+                    lblCyberlimbSTRLabel.Visible = true;
+
+                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+                    lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+                    lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
+                }
+                else
+                {
+                    lblCyberlimbAGI.Visible = false;
+                    lblCyberlimbAGILabel.Visible = false;
+                    lblCyberlimbSTR.Visible = false;
+                    lblCyberlimbSTRLabel.Visible = false;
+                }
 
                 _blnSkipRefresh = false;
 
@@ -16045,7 +16083,7 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _objCharacter.Improvements)
             {
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
+                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit || objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit || objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
                 {
                     treLimit.Add(objImprovement, cmsLimitModifier);
                 }
@@ -17425,6 +17463,8 @@ namespace Chummer
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return false;
 
+            // reduce the cost for Black Market Pipeline
+            objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
             // Reduce the cost for Do It Yourself components.
             if (frmPickGear.DoItYourself)
                 objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
@@ -20974,7 +21014,12 @@ namespace Chummer
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
-                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, Convert.ToInt32(objXmlArmor["rating"].InnerText), false, blnCreateChildren);
+                    int intArmorRating = 0;
+                    if (objXmlArmor["rating"] != null)
+                    {
+                        intArmorRating = Convert.ToInt32(objXmlArmor["rating"].InnerText);
+                    }
+                    objArmor.Create(objXmlArmorNode, objNode, cmsArmorMod, intArmorRating, false, blnCreateChildren);
                     _objCharacter.Armor.Add(objArmor);
 
                     // Look for Armor Mods.
@@ -22219,6 +22264,7 @@ namespace Chummer
 
             intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
             intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
+            intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
 
             lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
             lblCyberAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
@@ -22231,6 +22277,10 @@ namespace Chummer
 
             lblCyberwareRatingLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
             nudCyberwareRating.Left = lblCyberwareRatingLabel.Left + intWidth + 6;
+            lblCyberlimbAGILabel.Left = lblCyberwareRatingLabel.Left;
+            lblCyberlimbSTRLabel.Left = lblCyberwareRatingLabel.Left;
+            lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
+            lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
             lblCyberwareCapacityLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
             lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
             lblCyberwareCostLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;

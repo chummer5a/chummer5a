@@ -2069,7 +2069,7 @@ namespace Chummer
 				Log.Info("physicallimit");
 				Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, "",
+			    CreateImprovement("Physical", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2079,7 +2079,7 @@ namespace Chummer
 				Log.Info("mentallimit");
 				Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, "",
+				CreateImprovement("Mental", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2089,7 +2089,7 @@ namespace Chummer
 				Log.Info("sociallimit");
 				Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, "",
+				CreateImprovement("Social", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2269,6 +2269,10 @@ namespace Chummer
 				LimitModifier objLimitMod = new LimitModifier(_objCharacter);
 				string strLimit = bonusNode["limit"].InnerText;
 				string strBonus = bonusNode["value"].InnerText;
+			    if (strBonus == "Rating")
+			    {
+			        strBonus = intRating.ToString();
+			    }
 				string strCondition = "";
 				try
 				{
@@ -4827,9 +4831,56 @@ namespace Chummer
 
 	                }
                 }
-
-				// Determine if access to any Special Attributes have been lost.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
+                {
+                    CharacterAttrib objChangedAttribute = null;
+                    switch (objImprovement.ImprovedName)
+                    {
+                        case "AGI":
+                            objChangedAttribute = _objCharacter.AGI;
+                            break;
+                        case "REA":
+                            objChangedAttribute = _objCharacter.REA;
+                            break;
+                        case "STR":
+                            objChangedAttribute = _objCharacter.STR;
+                            break;
+                        case "CHA":
+                            objChangedAttribute = _objCharacter.CHA;
+                            break;
+                        case "INT":
+                            objChangedAttribute = _objCharacter.INT;
+                            break;
+                        case "LOG":
+                            objChangedAttribute = _objCharacter.LOG;
+                            break;
+                        case "WIL":
+                            objChangedAttribute = _objCharacter.WIL;
+                            break;
+                        case "EDG":
+                            objChangedAttribute = _objCharacter.EDG;
+                            break;
+                        case "MAG":
+                            objChangedAttribute = _objCharacter.MAG;
+                            break;
+                        case "RES":
+                            objChangedAttribute = _objCharacter.RES;
+                            break;
+                        case "DEP":
+                            objChangedAttribute = _objCharacter.DEP;
+                            break;
+                        case "BOD":
+                        default:
+                            objChangedAttribute = _objCharacter.BOD;
+                            break;
+                    }
+                    if (objImprovement.Minimum > 0)
+                    {
+                        objChangedAttribute.Value -= objImprovement.Minimum;
+                    }
+                }
+                // Determine if access to any Special Attributes have been lost.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
 				    objImprovement.UniqueName == "enableattribute")
 				{
 					if (objImprovement.ImprovedName == "MAG")

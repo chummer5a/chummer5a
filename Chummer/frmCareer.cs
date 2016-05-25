@@ -3305,9 +3305,20 @@ namespace Chummer
 
 		private void cmdImproveSTR_Click(object sender, EventArgs e)
 		{
-			// Make sure the character has enough Karma to improve the CharacterAttribute.
-			int intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
-			if (_objOptions.AlternateMetatypeAttributeKarma)
+            // Make sure the character has enough Karma to improve the Attribute.
+		    int intKarmaCost;
+            if (_objCharacter.Cyberware.Find(x =>
+		        x.Name == "Myostatin Inhibitor") != null)
+		    {
+		        intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1)*
+		                           _objOptions.KarmaAttribute - 2;
+		    }
+		    else
+		    {
+                intKarmaCost = (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) *
+                                    _objOptions.KarmaAttribute;
+            }
+		    if (_objOptions.AlternateMetatypeAttributeKarma)
 				intKarmaCost -= (_objCharacter.STR.MetatypeMinimum - 1) * _objOptions.KarmaAttribute;
 			if (intKarmaCost > _objCharacter.Karma)
 			{
@@ -5629,6 +5640,7 @@ namespace Chummer
 				objVehicle.Avail = frmPickVehicle.UsedAvail;
 				objVehicle.Cost = frmPickVehicle.UsedCost.ToString();
 			}
+		    objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
 			int intCost = objVehicle.TotalCost;
 			// Apply a markup if applicable.
@@ -21117,8 +21129,15 @@ namespace Chummer
 					tipTooltip.SetToolTip(cmdImproveAGI, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.REA.Value + _objCharacter.REA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveREA, strTooltip);
-					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
-					tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
+                    if (_objCharacter.Cyberware.Find(x => x.Name == "Myostatin Inhibitor") != null)
+                    {
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute - 2).ToString());
+                    }
+                    else
+                    {
+                        strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.STR.Value + _objCharacter.STR.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
+                    }
+                    tipTooltip.SetToolTip(cmdImproveSTR, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.CHA.Value + _objCharacter.CHA.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveCHA, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.INT.Value + _objCharacter.INT.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
@@ -21834,7 +21853,11 @@ namespace Chummer
 				lblCyberwareEssence.Text = "";
 				lblCyberwareSource.Text = "";
 				tipTooltip.SetToolTip(lblCyberwareSource, null);
-				return;
+                lblCyberlimbAGI.Visible = false;
+                lblCyberlimbAGILabel.Visible = false;
+                lblCyberlimbSTR.Visible = false;
+                lblCyberlimbSTRLabel.Visible = false;
+                return;
 			}
 				// Locate the selected piece of Cyberware.
 				bool blnFound = false;
@@ -21853,7 +21876,30 @@ namespace Chummer
 				lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
 				lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
-				if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+
+                if (objCyberware.Category.Equals("Cyberlimb"))
+                {
+                    lblCyberlimbAGI.Visible = true;
+                    lblCyberlimbAGILabel.Visible = true;
+                    lblCyberlimbSTR.Visible = true;
+                    lblCyberlimbSTRLabel.Visible = true;
+
+                    lblCyberlimbAGILabel.Text = lblAGILabel.Text + ":";
+                    lblCyberlimbSTRLabel.Text = lblSTRLabel.Text + ":";
+                    lblCyberlimbAGI.Text = objCyberware.TotalAgility.ToString();
+                    lblCyberlimbSTR.Text = objCyberware.TotalStrength.ToString();
+
+
+                }
+                else
+                {
+                    lblCyberlimbAGI.Visible = false;
+                    lblCyberlimbAGILabel.Visible = false;
+                    lblCyberlimbSTR.Visible = false;
+                    lblCyberlimbSTRLabel.Visible = false;
+                }
+
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
 				{
 					// Locate the selected Cyberware.
 					TreeNode objCyberwareNode = new TreeNode();
@@ -23210,9 +23256,9 @@ namespace Chummer
 			if (objCyberware.InternalId == Guid.Empty.ToString())
 				return false;
 
-			
-			
 
+            // Adjust for Black Market Pipeline Discount
+		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";
@@ -23454,7 +23500,10 @@ namespace Chummer
 			if (objNewGear.InternalId == Guid.Empty.ToString())
 				return false;
 
-			// Reduce the cost for Do It Yourself components.
+			//Reduce the Cost for Black Market Pipelin
+		    objNewGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+            
+            // Reduce the cost for Do It Yourself components.
 			if (frmPickGear.DoItYourself)
 				objNewGear.Cost = (Convert.ToDouble(objNewGear.Cost, GlobalOptions.Instance.CultureInfo) * 0.5).ToString();
 
@@ -25981,6 +26030,7 @@ namespace Chummer
 
 			intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
 			intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
+		    intWidth = Math.Max(intWidth, lblCyberlimbSTRLabel.Width);
 
             lblCyberAttackLabel.Left = lblCyberDeviceRating.Left + lblCyberDeviceRating.Width + 20;
 			cboCyberwareGearAttack.Left = lblCyberAttackLabel.Left + lblCyberAttackLabel.Width + 6;
@@ -25997,6 +26047,10 @@ namespace Chummer
 			lblCyberwareCapacity.Left = lblCyberwareCapacityLabel.Left + intWidth + 6;
 			lblCyberwareCostLabel.Left = lblCyberwareName.Left + 208;
 			lblCyberwareCost.Left = lblCyberwareCostLabel.Left + intWidth + 6;
+		    lblCyberlimbAGILabel.Left = lblCyberwareName.Left + 208;
+		    lblCyberlimbAGI.Left = lblCyberlimbAGILabel.Left + intWidth + 6;
+		    lblCyberlimbSTRLabel.Left = lblCyberwareName.Left + 208;
+		    lblCyberlimbSTR.Left = lblCyberlimbSTRLabel.Left + intWidth + 6;
 
 			// Street Gear tab.
 			// Lifestyles tab.

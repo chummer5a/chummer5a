@@ -122,6 +122,7 @@ namespace Chummer
         private int _intContactPoints = 0;
         private int _intContactPointsUsed = 0;
         private int _intMetageneticLimit = 0;
+        private int _intRedlinerBonus = 0;
 
         // General character info.
         private string _strName = "";
@@ -2785,6 +2786,13 @@ namespace Chummer
                     }
                     break;
                 case Improvement.ImprovementSource.Quality:
+                    if (objImprovement.SourceName == "SEEKER_WIL")
+                    {
+                        strReturn = "Cyber-Singularty Seeker";
+                    } else if (objImprovement.SourceName.StartsWith("SEEKER"))
+                    {
+                        strReturn = "Redliner";
+                    }
                     foreach (Quality objQuality in _lstQualities)
                     {
                         if (objQuality.InternalId == objImprovement.SourceName)
@@ -7232,6 +7240,12 @@ namespace Chummer
 		    get { return _objImprovementManager; }
 	    }
 
+
+		public int RedlinerBonus
+        {
+            get { return _intRedlinerBonus; }
+            set { _intRedlinerBonus = value; }
+        }
 	    #endregion
 
 	    public event PropertyChangedEventHandler PropertyChanged;

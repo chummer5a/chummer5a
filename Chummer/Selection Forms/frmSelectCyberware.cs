@@ -280,8 +280,19 @@ namespace Chummer
 			if (objXmlCyberware.InnerXml.Contains("<rating>"))
 			{
 				nudRating.Enabled = true;
-				nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
-				if (objXmlCyberware["minrating"] != null)
+			    if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
+			    {
+                    nudRating.Maximum = _objCharacter.STR.TotalMaximum;
+                } else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
+			    {
+			        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
+
+			    }
+			    else
+			    {
+			        nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+			    }
+			    if (objXmlCyberware["minrating"] != null)
 					nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
 				else
 					nudRating.Minimum = 1;

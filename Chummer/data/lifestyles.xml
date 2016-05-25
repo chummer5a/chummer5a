@@ -44,7 +44,7 @@
 			<dice>1</dice>
 			<multiplier>20</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>9367556e-f82f-4f9d-840e-24c8f824ca68</id>
@@ -53,7 +53,7 @@
 			<dice>2</dice>
 			<multiplier>40</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>451eef87-d18e-4bee-a972-1ee165b08522</id>
@@ -62,7 +62,7 @@
 			<dice>3</dice>
 			<multiplier>60</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
@@ -71,7 +71,7 @@
 			<dice>4</dice>
 			<multiplier>100</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4a37d519-c9be-4ecc-97bb-e9d78708c374</id>
@@ -80,7 +80,7 @@
 			<dice>5</dice>
 			<multiplier>500</multiplier>
 			<source>SR5</source>
-			<page>268</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4b513ac9-9eb3-471b-931b-839a04873b84</id>
@@ -89,14 +89,14 @@
 			<dice>6</dice>
 			<multiplier>1000</multiplier>
 			<source>SR5</source>
-			<page>267</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
 			<name>Commercial</name>
 			<cost>8000</cost>
-			<dice>0</dice>
-			<multiplier>0</multiplier>
+			<dice>4</dice>
+			<multiplier>100</multiplier>
 			<source>RF</source>
 			<page>218</page>
 		</lifestyle>
@@ -107,7 +107,7 @@
 			<dice>1</dice>
 			<multiplier>0</multiplier>
 			<source>RF</source>
-			<page>217</page>
+			<page>216</page>
 		</lifestyle>
 		<lifestyle>
 			<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
@@ -117,7 +117,7 @@
 			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
-			<page>373</page>
+			<page>369</page>
 		</lifestyle>
 		<lifestyle>
 			<id>2be1a0f7-6133-4966-be57-720ed9b927a9</id>
@@ -127,14 +127,61 @@
 			<multiplier>0</multiplier>
 			<increment>day</increment>
 			<source>SR5</source>
-			<page>373</page>
+			<page>369</page>
+		</lifestyle>
+		<lifestyle>
+			<id>ed775c22-8f0c-40a0-bc6f-5dbb980cedba</id>
+			<name>Traveler</name>
+			<cost>3000</cost>
+			<dice>3</dice>
+			<multiplier>60</multiplier>
+			<source>RF</source>
+			<page>218</page>
 		</lifestyle>
 	</lifestyles>
+	<lifestylePoints>
+		<lifestylePoint>
+			<name>Bolt Hole</name>
+			<amount>3</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Street</name>
+			<amount>2</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Squatter</name>
+			<amount>2</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Low</name>
+			<amount>3</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Medium</name>
+			<amount>4</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>High</name>
+			<amount>6</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Luxury</name>
+			<amount>12</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Commercial</name>
+			<amount>4</amount>
+		</lifestylePoint>
+		<lifestylePoint>
+			<name>Traveler</name>
+			<amount>2</amount>
+		</lifestylePoint>
+	</lifestylePoints>
 	<comforts>
 		<comfort>
 			<name>Bolt Hole</name>
 			<minimum>1</minimum>
-			<limit>2</limit>
+			<limit>3</limit>
 		</comfort>
 		<comfort>
 			<name>Street</name>
@@ -169,6 +216,11 @@
 		<comfort>
 			<name>Commercial</name>
 			<minimum>3</minimum>
+			<limit>4</limit>
+		</comfort>
+		<comfort>
+			<name>Traveler</name>
+			<minimum>2</minimum>
 			<limit>4</limit>
 		</comfort>
 	</comforts>
@@ -213,6 +265,11 @@
 			<minimum>4</minimum>
 			<limit>6</limit>
 		</neighborhood>
+		<neighborhood>
+			<name>Traveler</name>
+			<minimum>2</minimum>
+			<limit>4</limit>
+		</neighborhood>
 	</neighborhoods>
 	<securities>
 		<security>
@@ -254,6 +311,11 @@
 			<name>Commercial</name>
 			<minimum>4</minimum>
 			<limit>6</limit>
+		</security>
+		<security>
+			<name>Traveler</name>
+			<minimum>2</minimum>
+			<limit>4</limit>
 		</security>
 	</securities>
 	<qualities>
@@ -301,7 +363,6 @@
 			<name>Discreet Cleaning Entertainment - Service</name>
 			<category>Entertainment - Service</category>
 			<lp>4</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>10000</cost>
 			<page>221</page>
@@ -311,7 +372,6 @@
 			<name>Discreet Deliveryman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>100</cost>
 			<page>221</page>
@@ -321,7 +381,6 @@
 			<name>Discreet Candyman</name>
 			<category>Entertainment - Service</category>
 			<lp>3</lp>
-			<allowed />
 			<source>RF</source>
 			<cost>1000</cost>
 			<page>221</page>
@@ -373,7 +432,7 @@
 			<lp>4</lp>
 			<allowed>Luxury</allowed>
 			<source>RF</source>
-			<cost>900</cost>
+			<cost>9000</cost>
 			<page>221</page>
 		</quality>
 		<quality>
@@ -423,7 +482,7 @@
 			<lp>4</lp>
 			<allowed>Luxury</allowed>
 			<source>RF</source>
-			<cost>1000</cost>
+			<cost>10000</cost>
 			<page>221</page>
 		</quality>
 		<quality>
@@ -774,6 +833,10 @@
 					<characterquality>SINner (Corporate Limited)</characterquality>
 				</oneof>
 			</required>
+			<security>1</security>
+			<securityMinimum>1</securityMinimum>
+			<comforts>1</comforts>
+			<comfortsMinimum>1</comfortsMinimum>
 			<source>RF</source>
 			<page>225</page>
 		</quality>
@@ -947,6 +1010,7 @@
 			<source>CF</source>
 			<page>78</page>
 		</quality>
+		<!-- Hard Targets -->
 		<quality>
 			<name>Local Grid Subscription</name>
 			<category>Entertainment - Asset</category>
@@ -969,7 +1033,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering I</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>1</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -979,7 +1043,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering II</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>2</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -989,7 +1053,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering III</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>3</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -999,7 +1063,7 @@
 		</quality>
 		<quality>
 			<name>Subsistance Hunting/Gathering IV</name>
-			<category>Entertainment - Asset</category>
+			<category>Entertainment - Outing</category>
 			<lp>4</lp>
 			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
 			<source>HT</source>
@@ -1028,10 +1092,19 @@
 			<id>1b2218d6-d4a3-4978-b941-8358159e4e3b</id>
 		</quality>
 		<quality>
+			<name>Zombie Maids/Manservants</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>High</allowed>
+			<source>HT</source>
+			<cost>20000</cost>
+			<page>141</page>
+			<id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
+		</quality>
+		<quality>
 			<name>Household Gremlins I</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>-300</cost>
 			<page>141</page>
@@ -1041,17 +1114,15 @@
 			<name>Household Gremlins II</name>
 			<category>Negative</category>
 			<lp>0</lp>
-			<allowed />
 			<source>HT</source>
-			<cost>-600</cost>
+			<cost>-1600</cost>
 			<page>141</page>
 			<id>a7d85c5f-74b9-4f02-ab00-916cd7337d47</id>
 		</quality>
 		<quality>
-			<name>Dug A Hole</name>
+			<name>Dug a Hole</name>
 			<category>Positive</category>
 			<lp>0</lp>
-			<allowed>Bolthole</allowed>
 			<source>HT</source>
 			<cost>2000</cost>
 			<page>141</page>
@@ -1061,7 +1132,6 @@
 			<name>Lax Security</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1071,7 +1141,6 @@
 			<name>Limited Building Space</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
 			<cost>0</cost>
 			<page>141</page>
@@ -1081,8 +1150,8 @@
 			<name>Rough Neighborhood</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
 			<source>HT</source>
+			<neighborhood>-1</neighborhood>
 			<cost>0</cost>
 			<page>141</page>
 			<id>7868fea6-f3b9-4db8-baee-60fd16f322cc</id>
@@ -1091,21 +1160,16 @@
 			<name>No Masters</name>
 			<category>Negative</category>
 			<lp>-1</lp>
-			<allowed />
+			<forbidden>
+				<oneof>
+					<characterquality>SINner (Corporate)</characterquality>
+					<characterquality>SINner (Corporate Limited)</characterquality>
+				</oneof>
+			</forbidden>
 			<source>HT</source>
 			<multiplier>-10</multiplier>
 			<page>141</page>
 			<id>23dcd584-9650-44b0-9273-896873ba6f61</id>
-		</quality>
-		<quality>
-			<name>Zombie Maids/Manservants</name>
-			<category>Entertainment - Asset</category>
-			<lp>1</lp>
-			<allowed>High,Luxury</allowed>
-			<source>HT</source>
-			<cost>20000</cost>
-			<page>141</page>
-			<id>7e962b91-51c3-4a88-a7da-70044ef665db</id>
-		</quality>		
+		</quality>	
 	</qualities>
 </chummer>

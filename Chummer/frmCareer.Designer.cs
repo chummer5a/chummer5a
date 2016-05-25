@@ -1,5 +1,4 @@
 ﻿using Chummer.helpers;
-using Chummer.UI.Skills;
 
 namespace Chummer
 {
@@ -251,8 +250,6 @@ namespace Chummer
 			this.treQualities = new Chummer.helpers.TreeView();
 			this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
 			this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
-			this.tabSkills = new System.Windows.Forms.TabPage();
-			this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
 			this.lblAstral = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
@@ -396,6 +393,10 @@ namespace Chummer
 			this.treMetamagic = new System.Windows.Forms.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
+			this.lblCyberlimbSTR = new System.Windows.Forms.Label();
+			this.lblCyberlimbAGI = new System.Windows.Forms.Label();
+			this.lblCyberlimbSTRLabel = new System.Windows.Forms.Label();
+			this.lblCyberlimbAGILabel = new System.Windows.Forms.Label();
 			this.cboCyberwareGearOverclocker = new System.Windows.Forms.ComboBox();
 			this.lblCyberwareGearOverclocker = new System.Windows.Forms.Label();
 			this.cboCyberwareGearDataProcessing = new System.Windows.Forms.ComboBox();
@@ -1177,6 +1178,8 @@ namespace Chummer
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tabSkills = new System.Windows.Forms.TabPage();
+			this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -1186,7 +1189,6 @@ namespace Chummer
 			this.tabEnemies.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).BeginInit();
-			this.tabSkills.SuspendLayout();
 			this.tabLimits.SuspendLayout();
 			this.tabMartialArts.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
@@ -1286,6 +1288,7 @@ namespace Chummer
 			this.cmsLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
+			this.tabSkills.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -3510,27 +3513,6 @@ namespace Chummer
 			this.lblMysticAdeptMAGAdept.Text = "[0]";
 			this.lblMysticAdeptMAGAdept.Visible = false;
 			// 
-			// tabSkills
-			// 
-			this.tabSkills.Controls.Add(this.tabSkillsUc);
-			this.tabSkills.Location = new System.Drawing.Point(4, 22);
-			this.tabSkills.Name = "tabSkills";
-			this.tabSkills.Padding = new System.Windows.Forms.Padding(3);
-			this.tabSkills.Size = new System.Drawing.Size(838, 611);
-			this.tabSkills.TabIndex = 17;
-			this.tabSkills.Tag = "Tab_Skills";
-			this.tabSkills.Text = "Skills";
-			this.tabSkills.UseVisualStyleBackColor = true;
-			// 
-			// tabSkillsUc
-			// 
-			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabSkillsUc.Location = new System.Drawing.Point(3, 3);
-			this.tabSkillsUc.Name = "tabSkillsUc";
-			this.tabSkillsUc.ObjCharacter = null;
-			this.tabSkillsUc.Size = new System.Drawing.Size(832, 605);
-			this.tabSkillsUc.TabIndex = 1;
-			// 
 			// tabLimits
 			// 
 			this.tabLimits.BackColor = System.Drawing.SystemColors.ButtonFace;
@@ -5213,6 +5195,10 @@ namespace Chummer
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCyberware.Controls.Add(this.lblCyberlimbSTR);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbAGI);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbSTRLabel);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbAGILabel);
 			this.tabCyberware.Controls.Add(this.cboCyberwareGearOverclocker);
 			this.tabCyberware.Controls.Add(this.lblCyberwareGearOverclocker);
 			this.tabCyberware.Controls.Add(this.cboCyberwareGearDataProcessing);
@@ -5261,6 +5247,47 @@ namespace Chummer
 			this.tabCyberware.TabIndex = 4;
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
+			// 
+			// lblCyberlimbSTR
+			// 
+			this.lblCyberlimbSTR.AutoSize = true;
+			this.lblCyberlimbSTR.Location = new System.Drawing.Point(682, 174);
+			this.lblCyberlimbSTR.Name = "lblCyberlimbSTR";
+			this.lblCyberlimbSTR.Size = new System.Drawing.Size(19, 13);
+			this.lblCyberlimbSTR.TabIndex = 220;
+			this.lblCyberlimbSTR.Text = "[0]";
+			this.lblCyberlimbSTR.Visible = false;
+			// 
+			// lblCyberlimbAGI
+			// 
+			this.lblCyberlimbAGI.AutoSize = true;
+			this.lblCyberlimbAGI.Location = new System.Drawing.Point(682, 151);
+			this.lblCyberlimbAGI.Name = "lblCyberlimbAGI";
+			this.lblCyberlimbAGI.Size = new System.Drawing.Size(19, 13);
+			this.lblCyberlimbAGI.TabIndex = 219;
+			this.lblCyberlimbAGI.Text = "[0]";
+			this.lblCyberlimbAGI.Visible = false;
+			// 
+			// lblCyberlimbSTRLabel
+			// 
+			this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(595, 174);
+			this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
+			this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
+			this.lblCyberlimbSTRLabel.TabIndex = 218;
+			this.lblCyberlimbSTRLabel.Tag = "";
+			this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
+			this.lblCyberlimbSTRLabel.Visible = false;
+			// 
+			// lblCyberlimbAGILabel
+			// 
+			this.lblCyberlimbAGILabel.AutoSize = true;
+			this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(595, 151);
+			this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
+			this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
+			this.lblCyberlimbAGILabel.TabIndex = 217;
+			this.lblCyberlimbAGILabel.Tag = "";
+			this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
+			this.lblCyberlimbAGILabel.Visible = false;
 			// 
 			// cboCyberwareGearOverclocker
 			// 
@@ -13407,14 +13434,14 @@ namespace Chummer
             this.tsUndoKarmaExpense,
             this.tsEditKarmaExpense});
 			this.cmsUndoKarmaExpense.Name = "contextMenuStrip1";
-			this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(153, 70);
+			this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(149, 48);
 			this.cmsUndoKarmaExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
 			// 
 			// tsUndoKarmaExpense
 			// 
 			this.tsUndoKarmaExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
 			this.tsUndoKarmaExpense.Name = "tsUndoKarmaExpense";
-			this.tsUndoKarmaExpense.Size = new System.Drawing.Size(152, 22);
+			this.tsUndoKarmaExpense.Size = new System.Drawing.Size(148, 22);
 			this.tsUndoKarmaExpense.Tag = "Menu_UndoExpense";
 			this.tsUndoKarmaExpense.Text = "Undo Expense";
 			this.tsUndoKarmaExpense.Click += new System.EventHandler(this.tsUndoKarmaExpense_Click);
@@ -13423,7 +13450,7 @@ namespace Chummer
 			// 
 			this.tsEditKarmaExpense.Image = global::Chummer.Properties.Resources.pencil;
 			this.tsEditKarmaExpense.Name = "tsEditKarmaExpense";
-			this.tsEditKarmaExpense.Size = new System.Drawing.Size(152, 22);
+			this.tsEditKarmaExpense.Size = new System.Drawing.Size(148, 22);
 			this.tsEditKarmaExpense.Tag = "Button_EditExpense";
 			this.tsEditKarmaExpense.Text = "Edit Expense";
 			this.tsEditKarmaExpense.Click += new System.EventHandler(this.tsEditKarmaExpense_Click);
@@ -14031,6 +14058,26 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
+			// tabSkills
+			// 
+			this.tabSkills.Controls.Add(this.tabSkillsUc);
+			this.tabSkills.Location = new System.Drawing.Point(4, 22);
+			this.tabSkills.Name = "tabSkills";
+			this.tabSkills.Size = new System.Drawing.Size(838, 611);
+			this.tabSkills.TabIndex = 17;
+			this.tabSkills.Tag = "Tab_Skills";
+			this.tabSkills.Text = "Skills";
+			this.tabSkills.UseVisualStyleBackColor = true;
+			// 
+			// tabSkillsUc
+			// 
+			this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
+			this.tabSkillsUc.Name = "tabSkillsUc";
+			this.tabSkillsUc.ObjCharacter = null;
+			this.tabSkillsUc.Size = new System.Drawing.Size(838, 611);
+			this.tabSkillsUc.TabIndex = 0;
+			// 
 			// frmCareer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -14064,7 +14111,6 @@ namespace Chummer
 			this.tabEnemies.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudSignal)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudResponse)).EndInit();
-			this.tabSkills.ResumeLayout(false);
 			this.tabLimits.ResumeLayout(false);
 			this.tabLimits.PerformLayout();
 			this.tabMartialArts.ResumeLayout(false);
@@ -14191,6 +14237,7 @@ namespace Chummer
 			this.cmsLimitModifier.ResumeLayout(false);
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
+			this.tabSkills.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -15299,8 +15346,6 @@ namespace Chummer
 		private System.Windows.Forms.ComboBox cboGearAttack;
 		private System.Windows.Forms.ComboBox cboCyberwareGearOverclocker;
 		private System.Windows.Forms.Label lblCyberwareGearOverclocker;
-		private System.Windows.Forms.TabPage tabSkills;
-	    private SkillsTabUserControl tabSkillsUc;
 		private System.Windows.Forms.Label lblVehicleDroneModSlots;
 		private System.Windows.Forms.Label lblVehicleDroneModSlotsLabel;
 		private System.Windows.Forms.Label lblVehicleCosmetic;
@@ -15315,6 +15360,12 @@ namespace Chummer
 		private System.Windows.Forms.Label lblVehicleWeaponsmodLabel;
 		private System.Windows.Forms.Label lblVehicleProtectionLabel;
 		private System.Windows.Forms.Label lblVehiclePowertrainLabel;
-    }
+        private System.Windows.Forms.Label lblCyberlimbSTR;
+        private System.Windows.Forms.Label lblCyberlimbAGI;
+        private System.Windows.Forms.Label lblCyberlimbSTRLabel;
+        private System.Windows.Forms.Label lblCyberlimbAGILabel;
+		private System.Windows.Forms.TabPage tabSkills;
+		private UI.Skills.SkillsTabUserControl tabSkillsUc;
+	}
 }
 
