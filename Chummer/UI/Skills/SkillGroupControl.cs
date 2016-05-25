@@ -25,10 +25,8 @@ namespace Chummer.UI.Skills
 				nudSkill.Visible = false;
 
 				btnCareerIncrease.Visible = true;
-				btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
+				btnCareerIncrease.DataBindings.Add("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease), false, DataSourceUpdateMode.OnPropertyChanged);
 				tipToolTip.SetToolTip(btnCareerIncrease, skillGroup.UpgradeToolTip);
-
-
 
 				lblGroupRating.Visible = true;
 				lblGroupRating.DataBindings.Add("Text", _skillGroup, nameof(SkillGroup.DisplayRating), false,

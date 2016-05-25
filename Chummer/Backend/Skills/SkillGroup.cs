@@ -128,6 +128,16 @@ namespace Chummer.Skills
 			}
 		}
 
+		public bool CareerCanIncrease
+		{
+			get
+			{
+				if (UpgradeKarmaCost() > Character.Karma) return false;
+
+				return CareerIncrease;
+			}
+		}
+
 		public int Rating
 		{
 			get { return Karma + Base; }
@@ -177,7 +187,7 @@ namespace Chummer.Skills
 
 			Character.ExpenseEntries.Add(entry);
 
-			Karma = +1;
+			Karma += 1;
 			Character.Karma -= price;
 		}
 
@@ -274,6 +284,7 @@ namespace Chummer.Skills
 			{
 				_careerIncreaseOldValue = CareerIncrease;
 				OnPropertyChanged(nameof(CareerIncrease));
+				OnPropertyChanged(nameof(CareerCanIncrease));
 			}
 		}
 
@@ -302,7 +313,10 @@ namespace Chummer.Skills
 			};
 
 			character.ImprovementEvent += OnImprovementEvent;
+			character.PropertyChanged += Character_PropertyChanged;
 		}
+
+		
 
 		public Character Character
 		{
@@ -341,7 +355,7 @@ namespace Chummer.Skills
 			{
 				if (_character.Created && !CareerIncrease)
 				{
-					return "";
+					return LanguageManager.Instance.GetString("Label_SkillGroup_Broken");
 				}
 				return GetEnumerable().Min(x => x.LearnedRating).ToString();
 
@@ -430,6 +444,10 @@ namespace Chummer.Skills
 				//OnPropertyChanged(nameof(Base));
 			}
 
+		}
+		private void Character_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			OnPropertyChanged(nameof(CareerCanIncrease));
 		}
 
 		public int CurrentSpCost()
