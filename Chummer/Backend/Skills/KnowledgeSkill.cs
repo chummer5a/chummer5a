@@ -284,7 +284,7 @@ namespace Chummer.Skills
 		{
 			if (HasRelatedBoost())
 			{
-				return (Ibase - 1)/2 + 1;
+				return (Ibase + 1)/2;
 			}
 			else
 			{
