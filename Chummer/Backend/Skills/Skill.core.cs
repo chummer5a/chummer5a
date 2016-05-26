@@ -450,7 +450,7 @@ namespace Chummer.Skills
 			
 			CharacterObject.ExpenseEntries.Add(entry);
 
-			Karma =+ 1;
+			Karma += 1;
 			CharacterObject.Karma -= price;
 		}
 
