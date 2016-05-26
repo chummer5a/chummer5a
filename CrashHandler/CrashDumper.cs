@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -227,8 +228,6 @@ namespace CrashHandler
 
 		private string Upload(byte[] payload)
 		{
-			return "www.example.com/test.aes256";
-
 			HttpClient client = new HttpClient();
 			ByteArrayContent subContent = new ByteArrayContent(payload);
 			subContent.Headers.ContentDisposition =   
@@ -238,11 +237,16 @@ namespace CrashHandler
 
 			MultipartFormDataContent content = new MultipartFormDataContent {subContent};
 			HttpResponseMessage responce = client.PostAsync(@"https://mixtape.moe/upload.php", content).Result;
-			if (responce.IsSuccessStatusCode)
-			{
-				return responce.Content.ReadAsStringAsync().Result;
-			}
 			
+			return ExtractUrl(responce.Content.ReadAsStringAsync().Result);
+		}
+
+		private string ExtractUrl(string input)
+		{
+			Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
+			Dictionary<string, object> files = (Dictionary<string, object>)((ArrayList)top["files"])[0];
+			string ret = (string) files["url"];
+			return ret;
 		}
 
 		private void UploadToAws()
@@ -260,7 +264,7 @@ namespace CrashHandler
 
 		private void Clean()
 		{
-			Directory.Delete(WorkingDirectory);
+			Directory.Delete(WorkingDirectory, true);
 		}
 
 		//public void StartPoint(string[] args)
