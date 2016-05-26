@@ -48,7 +48,7 @@ namespace CrashHandler
 
 		private void llblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			_dumper.doCleanUp = false;
+			_dumper.DoCleanUp = false;
 			Process.Start("explorer.exe", _dumper.WorkingDirectory);
 		}
 
