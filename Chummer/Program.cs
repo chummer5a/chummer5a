@@ -44,32 +44,40 @@ namespace Chummer
 			//Various init stuff (that mostly "can" be removed as they serve 
 			//debugging more than function
 
-			
-				//Needs to be called before Log is setup, as it moves where log might be.
-				FixCwd();
+
+			//Needs to be called before Log is setup, as it moves where log might be.
+			FixCwd();
 
 
-				//Log exceptions that is caught. Wanting to know about this cause of performance
-				AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+			//Log exceptions that is caught. Wanting to know about this cause of performance
+			AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
 
-				Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}",
-					System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow,
-					Environment.CommandLine));
+			Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}",
+				System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow,
+				Environment.CommandLine));
 
-				Application.ThreadException += ApplicationOnThreadException;
-				Application.EnableVisualStyles();
-				Application.SetCompatibleTextRenderingDefault(false);
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
 
-				//GlobalOptions.Instance.Language = "de";
-				LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-				// Make sure the default language has been loaded before attempting to open the Main Form.
+			//GlobalOptions.Instance.Language = "de";
+			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+			// Make sure the default language has been loaded before attempting to open the Main Form.
 
-				
-				if (LanguageManager.Instance.Loaded)
+
+			if (LanguageManager.Instance.Loaded)
+			{
+				try
+				{
 					Application.Run(new frmMain());
-				else
-					Application.Exit();
-			
+				}
+				catch (Exception ex)
+				{
+					CrashHandler.WebMiniDumpHandler(ex);
+				}
+			}
+			else
+				Application.Exit();
+
 		}
 
 		private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs threadExceptionEventArgs)

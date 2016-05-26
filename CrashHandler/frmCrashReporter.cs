@@ -13,7 +13,7 @@ namespace CrashHandler
 {
 	public partial class frmCrashReporter : Form
 	{
-		delegate void ChangeDesc(string desc);
+		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
 
 		public frmCrashReporter(CrashDumper dumper)
@@ -33,16 +33,22 @@ namespace CrashHandler
 
 		private void DumperOnCrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
 		{
-			Invoke(new ChangeDesc(ChangeProgress), args.Progress.GetDescription());
+			Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
 		}
 
-		private void ChangeProgress(string desc)
+		private void ChangeProgress(CrashDumperProgress progress, string desc)
 		{
+			if (progress == CrashDumperProgress.FinishedSending)
+			{
+				Application.Exit();
+			}
+
 			statusCollectionProgess.Text = desc;
 		}
 
 		private void llblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
+			_dumper.doCleanUp = false;
 			Process.Start("explorer.exe", _dumper.WorkingDirectory);
 		}
 
@@ -58,7 +64,7 @@ namespace CrashHandler
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
-
+			_dumper.AllowSending();
 		}
 
 		

@@ -4,8 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
@@ -21,13 +25,15 @@ namespace CrashHandler
 		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
 
+		public bool DoCleanUp { get; set; } = true;
+
 		readonly List<string> _filesList;
 		private readonly Dictionary<string, string> pretendFiles;
 		readonly Dictionary<string, string> _attributes;
 		short procId;
 		private volatile CrashDumperProgress _progress;
 		private Thread worker;
-
+		private ManualResetEvent startSendEvent = new ManualResetEvent(false);
 
 		public CrashDumper(string b64Json)
 		{
@@ -38,6 +44,11 @@ namespace CrashHandler
 
 			WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
 			Directory.CreateDirectory(WorkingDirectory);
+		}
+
+		public void AllowSending()
+		{
+			startSendEvent.Set();
 		}
 
 		private string GenerateFolderName()
@@ -63,7 +74,11 @@ namespace CrashHandler
 			try
 			{
 				SetProgress(CrashDumperProgress.CreateDmp);
-				if (CreateDump()) return;
+				if (CreateDump())
+				{
+					SetProgress(CrashDumperProgress.Error);
+					return;
+				}
 
 				SetProgress(CrashDumperProgress.CreateFiles);
 				GetValue();
@@ -72,8 +87,31 @@ namespace CrashHandler
 				CopyFiles();
 
 				SetProgress(CrashDumperProgress.FinishedCollecting);
+				startSendEvent.WaitOne();
 
+				SetProgress(CrashDumperProgress.Compressing);
+				byte[] zip = GetZip();
 
+				SetProgress(CrashDumperProgress.Encrypting);
+				byte[] iv, key;
+				byte[] encrypted = Encrypt(zip, out iv, out key);
+
+				SetProgress(CrashDumperProgress.Uploading);
+				string location = Upload(encrypted);
+
+				SetProgress(CrashDumperProgress.Saving);
+				Attributes["visible-key"] = MakeStringKey(iv, key);
+				Attributes["visible-location"] = location;
+
+				UploadToAws();
+
+				SetProgress(CrashDumperProgress.Cleanup);
+				if (DoCleanUp)
+				{
+					Clean();
+				}
+
+				SetProgress(CrashDumperProgress.FinishedSending);
 			}
 			catch (Exception)
 			{
@@ -81,40 +119,7 @@ namespace CrashHandler
 			}
 		}
 
-		private void CopyFiles()
-		{
-			foreach (string file in _filesList)
-			{
-				if(!File.Exists(file)) continue;
-
-				string name = Path.GetFileName(file);
-				string destination = Path.Combine(WorkingDirectory, name);
-				File.Copy(file, destination);
-			}
-		}
-
 		
-			
-		
-
-		private void GetValue()
-		{
-			StringBuilder sb = new StringBuilder();
-			foreach (KeyValuePair<string, string> keyValuePair in Attributes)
-			{
-				sb.Append("\"");
-				sb.Append(keyValuePair.Key);
-				sb.Append("\"-\"");
-				sb.Append(keyValuePair.Value);
-				sb.AppendLine("\"");
-			}
-			pretendFiles.Add("attributes.txt", sb.ToString());
-
-			foreach (KeyValuePair<string, string> pair in PretendFiles)
-			{
-				File.WriteAllText(Path.Combine(WorkingDirectory, pair.Key), pair.Value);
-			}
-		}
 
 		private bool CreateDump()
 		{
@@ -147,9 +152,115 @@ namespace CrashHandler
 			return ret;
 		}
 
-		public void StartUploading()
+		private void GetValue()
 		{
+			StringBuilder sb = new StringBuilder();
+			foreach (KeyValuePair<string, string> keyValuePair in Attributes)
+			{
+				sb.Append("\"");
+				sb.Append(keyValuePair.Key);
+				sb.Append("\"-\"");
+				sb.Append(keyValuePair.Value);
+				sb.AppendLine("\"");
+			}
+			pretendFiles.Add("attributes.txt", sb.ToString());
+
+			foreach (KeyValuePair<string, string> pair in PretendFiles)
+			{
+				File.WriteAllText(Path.Combine(WorkingDirectory, pair.Key), pair.Value);
+			}
+		}
+
+		private void CopyFiles()
+		{
+			foreach (string file in _filesList)
+			{
+				if(!File.Exists(file)) continue;
+
+				string name = Path.GetFileName(file);
+				string destination = Path.Combine(WorkingDirectory, name);
+				File.Copy(file, destination);
+			}
+		}
+
+		private byte[] GetZip()
+		{
+			using (MemoryStream mem = new MemoryStream())
+			{
+				using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, true))
+				{
+					foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
+					{
+						archive.CreateEntryFromFile(file, Path.GetFileName(file));
+					}
+				}
+
+				return mem.ToArray();
+			}
+		}
+
+		private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
+		{
+			byte[] encrypted;
+			using (AesManaged managed = new AesManaged())
+			{
+				Iv = managed.IV;
+				Key = managed.Key;
+
+				// Create a decrytor to perform the stream transform.
+				ICryptoTransform encryptor = managed.CreateEncryptor(managed.Key, managed.IV);
+
+				// Create the streams used for encryption.
+				using (MemoryStream msEncrypt = new MemoryStream())
+				{
+					using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+					{
+						csEncrypt.Write(unencrypted, 0, unencrypted.Length);
+					}
+
+					encrypted = msEncrypt.ToArray();
+				}
+			}
+
+			return encrypted;
+		}
+
+		private string Upload(byte[] payload)
+		{
+			return "www.example.com/test.aes256";
+
+			HttpClient client = new HttpClient();
+			ByteArrayContent subContent = new ByteArrayContent(payload);
+			subContent.Headers.ContentDisposition =   
+				ContentDispositionHeaderValue.Parse($"form-data; name=\"files[]\"; filename=\"{Attributes["visible-crash-id"]}.zip.aes256\"");
+						
+			//subContent.Headers.ContentDisposition.FileName = ""
+
+			MultipartFormDataContent content = new MultipartFormDataContent {subContent};
+			HttpResponseMessage responce = client.PostAsync(@"https://mixtape.moe/upload.php", content).Result;
+			if (responce.IsSuccessStatusCode)
+			{
+				return responce.Content.ReadAsStringAsync().Result;
+			}
 			
+		}
+
+		private void UploadToAws()
+		{
+			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace("-","_"), x => x.Value);
+			string payload = new JavaScriptSerializer().Serialize(upload);
+
+			HttpClient client = new HttpClient();
+			HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
+				new StringContent(payload)).Result;
+
+			string result = msg.Content.ReadAsStringAsync().Result;
+
+		}
+
+		private void Clean()
+		{
+			Directory.Delete(WorkingDirectory);
 		}
 
 		//public void StartPoint(string[] args)
@@ -160,10 +271,10 @@ namespace CrashHandler
 		//			return ;
 		//		}
 		//	}
-			
+
 		//	 return;
 
-			
+
 		//	Process process = Process.GetProcessById(procId);
 
 		//	FileStream file = File.Create("dump.dmp");
@@ -176,7 +287,7 @@ namespace CrashHandler
 		//		MINIDUMP_TYPE.MiniDumpWithThreadInfo |
 		//		MINIDUMP_TYPE.MiniDumpWithUnloadedModules, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 		//	{
-				
+
 		//	}
 		//	else
 		//	{
@@ -216,6 +327,11 @@ namespace CrashHandler
 			attributes = null;
 
 			return false;
+		}
+
+		private static string MakeStringKey(byte[] iv, byte[] key)
+		{
+			return string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
 		}
 	}
 
