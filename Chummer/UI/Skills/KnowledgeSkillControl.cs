@@ -80,7 +80,7 @@ namespace Chummer.UI.Skills
 				cboSpec.SelectedIndex = -1;
 				
 				cboSpec.DataBindings.Add("Enabled", skill, nameof(Skill.Leveled), false, DataSourceUpdateMode.OnPropertyChanged);
-				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+				cboSpec.DataBindings.Add("Text", skill, nameof(Skill.Specialization), false, DataSourceUpdateMode.OnPropertyChanged);
 
 				skill.PropertyChanged += (sender, args) =>
 				{
