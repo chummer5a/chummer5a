@@ -1932,13 +1932,24 @@ namespace Chummer
 
                 // Set Skills and Skill Groups
                 objXmlPriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Skills\" and value = \"" + cboSkills.SelectedValue + "\"]");
-                if (objXmlPriorityList[0]["skills"] != null)
+                foreach (XmlNode objXmlNode in objXmlPriorityList)
                 {
-					_objCharacter.SkillsSection.SkillPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skills"].InnerText);
-					_objCharacter.SkillsSection.SkillGroupPointsMaximum = Convert.ToInt32(objXmlPriorityList[0]["skillgroups"].InnerText);
+                    if (objXmlNode["gameplayoption"] != null &&
+                        objXmlNode["gameplayoption"].InnerText != _objCharacter.GameplayOption)
+                    {
+                        continue;
+                    }
+                    if (objXmlNode["skills"] != null)
+                    {
+                        _objCharacter.SkillsSection.SkillPointsMaximum =
+                            Convert.ToInt32(objXmlNode["skills"].InnerText);
+                        _objCharacter.SkillsSection.SkillGroupPointsMaximum =
+                            Convert.ToInt32(objXmlNode["skillgroups"].InnerText);
+                        break;
+                    }
                 }
 
-				// Load the Priority information.
+                // Load the Priority information.
 				XmlDocument objXmlDocumentGameplayOptions = XmlManager.Instance.Load("gameplayoptions.xml");
 				XmlNode objXmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _objCharacter.GameplayOption + "\"]");
 				string strKarma = objXmlGameplayOption["karma"].InnerText;
