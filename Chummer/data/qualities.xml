@@ -5580,10 +5580,7 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>2</value>
-				</limitmodifier>
+				<sociallimit>2</sociallimit>
 				<skillcategory>
 					<name>Social Active</name>
 					<bonus>1</bonus>
