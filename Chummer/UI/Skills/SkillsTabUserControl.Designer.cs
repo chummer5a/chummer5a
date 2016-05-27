@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.splitSkills = new System.Windows.Forms.SplitContainer();
+			this.btnResetCustomDisplayAttribute = new System.Windows.Forms.Button();
 			this.lblGroupKarma = new System.Windows.Forms.Label();
 			this.lblGroupsSp = new System.Windows.Forms.Label();
 			this.lblBuyWithKarma = new System.Windows.Forms.Label();
@@ -46,7 +47,6 @@
 			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
 			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
 			this.btnKnowledge = new System.Windows.Forms.Button();
-			this.btnResetCustomDisplayAttribute = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
 			this.splitSkills.Panel1.SuspendLayout();
 			this.splitSkills.Panel2.SuspendLayout();
@@ -93,6 +93,20 @@
 			this.splitSkills.Size = new System.Drawing.Size(830, 611);
 			this.splitSkills.SplitterDistance = 450;
 			this.splitSkills.TabIndex = 0;
+			// 
+			// btnResetCustomDisplayAttribute
+			// 
+			this.btnResetCustomDisplayAttribute.FlatAppearance.BorderSize = 0;
+			this.btnResetCustomDisplayAttribute.FlatStyle = System.Windows.Forms.FlatStyle.System;
+			this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(373, 28);
+			this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
+			this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
+			this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(75, 15);
+			this.btnResetCustomDisplayAttribute.TabIndex = 53;
+			this.btnResetCustomDisplayAttribute.Text = "Reset all";
+			this.btnResetCustomDisplayAttribute.UseVisualStyleBackColor = true;
+			this.btnResetCustomDisplayAttribute.Visible = false;
+			this.btnResetCustomDisplayAttribute.Click += new System.EventHandler(this.btnResetCustomDisplayAttribute_Click);
 			// 
 			// lblGroupKarma
 			// 
@@ -195,6 +209,7 @@
 			this.cboDisplayFilter.Size = new System.Drawing.Size(201, 21);
 			this.cboDisplayFilter.TabIndex = 1;
 			this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
+			this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
 			// 
 			// label1
 			// 
@@ -279,20 +294,6 @@
 			this.btnKnowledge.Text = "&Add Skill";
 			this.btnKnowledge.UseVisualStyleBackColor = true;
 			this.btnKnowledge.Click += new System.EventHandler(this.btnKnowledge_Click);
-			// 
-			// btnResetCustomDisplayAttribute
-			// 
-			this.btnResetCustomDisplayAttribute.FlatAppearance.BorderSize = 0;
-			this.btnResetCustomDisplayAttribute.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(373, 28);
-			this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
-			this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
-			this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(75, 15);
-			this.btnResetCustomDisplayAttribute.TabIndex = 53;
-			this.btnResetCustomDisplayAttribute.Text = "Reset all";
-			this.btnResetCustomDisplayAttribute.UseVisualStyleBackColor = true;
-			this.btnResetCustomDisplayAttribute.Visible = false;
-			this.btnResetCustomDisplayAttribute.Click += new System.EventHandler(this.btnResetCustomDisplayAttribute_Click);
 			// 
 			// SkillsTabUserControl
 			// 

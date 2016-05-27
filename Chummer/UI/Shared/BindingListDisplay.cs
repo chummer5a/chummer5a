@@ -195,9 +195,9 @@ namespace Chummer.UI.Shared
 			}
 		}
 
-		public void Filter(Predicate<TType> predicate)
+		public void Filter(Predicate<TType> predicate, bool forceRefresh = false)
 		{
-			if (_visibleFilter == predicate) return;
+			if (_visibleFilter == predicate && !forceRefresh) return;
 			_visibleFilter = predicate;
 
 			ClearAllCache();

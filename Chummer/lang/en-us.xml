@@ -22,6 +22,10 @@
 	<name>English (US)</name>
 	<strings>
 		<!-- Region Common Strings -->
+    <string>
+      <key>String_Search</key>
+      <text>Search:</text>
+    </string>
 		<string>
 			<key>String_Limit</key>
 			<text>Limit:</text>

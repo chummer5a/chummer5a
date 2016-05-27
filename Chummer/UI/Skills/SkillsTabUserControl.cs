@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -38,6 +39,7 @@ namespace Chummer.UI.Skills
 		private List<Tuple<string, Predicate<Skill>>> _dropDownList;
 		private List<Tuple<string, IComparer<Skill>>>  _sortList;
 		private List<SkillControl2> controls = new List<SkillControl2>();
+		private bool _searchMode;
 
 		public Character ObjCharacter
 		{
@@ -99,7 +101,7 @@ namespace Chummer.UI.Skills
 			cboDisplayFilter.DataSource = _dropDownList;
 			cboDisplayFilter.ValueMember = "Item2";
 			cboDisplayFilter.DisplayMember = "Item1";
-			cboDisplayFilter.SelectedIndex = 0;
+			cboDisplayFilter.SelectedIndex = 1;
 			cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
 
 			parts.TaskEnd("_ddl databind");
@@ -192,6 +194,7 @@ namespace Chummer.UI.Skills
 		{
 			List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>
 			{
+				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_Search"), null),
 				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterAll"), skill => true),
 				new Tuple<string, Predicate<Skill>>(LanguageManager.Instance.GetString("String_SkillFilterRatingAboveZero"),
 					skill => skill.Rating > 0),
@@ -309,7 +312,18 @@ namespace Chummer.UI.Skills
 			ComboBox csender = (ComboBox) sender;
 			Tuple<string, Predicate<Skill>> selectedItem = (Tuple<string, Predicate<Skill>>)csender.SelectedItem;
 
-			_skills.Filter(selectedItem.Item2);
+			if (selectedItem.Item2 == null)
+			{
+				csender.DropDownStyle = ComboBoxStyle.DropDown;
+				_searchMode = true;
+				
+			}
+			else
+			{
+				csender.DropDownStyle = ComboBoxStyle.DropDownList;
+				_searchMode = false;
+				_skills.Filter(selectedItem.Item2);
+			}
 		}
 
 		private void cboSort_SelectedIndexChanged(object sender, EventArgs e)
@@ -360,6 +374,14 @@ namespace Chummer.UI.Skills
 			foreach (SkillControl2 control2 in controls.Where(x => x.CustomAttributeSet))
 			{
 				control2.ResetSelectAttribute();
+			}
+		}
+
+		private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+		{
+			if (_searchMode)
+			{
+				_skills.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
 			}
 		}
 	}
