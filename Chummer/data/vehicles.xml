@@ -5581,7 +5581,7 @@
 			<name>Rigger Cocoon</name>
 			<category>Powertrain</category>
 			<rating>0</rating>
-			<slots>4</slots>
+			<slots>2</slots>
 			<avail>8</avail>
 			<cost>1500</cost>
 			<source>R5</source>

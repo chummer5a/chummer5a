@@ -3644,7 +3644,7 @@
 			<name>Camera, Micro</name>
 			<category>Vision Devices</category>
 			<rating>1</rating>
-			<capacity>[1]</capacity>
+			<capacity>1</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
 			<source>SR5</source>
@@ -4121,7 +4121,7 @@
 		</gear>
 		<gear>
 			<id>c763fac2-8b08-4c61-8dc2-6291d905a2df</id>
-			<name>Olfactory Sensor</name>
+			<name>Olfactory Scanner</name>
 			<category>Sensor Functions</category>
 			<rating>8</rating>
 			<capacity>[1]</capacity>
@@ -4199,6 +4199,7 @@
 			<category>Tools of the Trade</category>
 			<rating>0</rating>
 			<armorcapacity>[1]</armorcapacity>
+			<capacity>[1]</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
 			<source>HT</source>

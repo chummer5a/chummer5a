@@ -113,6 +113,7 @@ Application Change:
 - Fixed Hanuman agility and changed Low-Light to thermographic vision. Fixes #847. Fixes #848.
 - Fixed limitation on Karma to nuyen when ignoring character creation rules. Fixes #846.
 - Fixed crash when loading a character with more than 200 Karma to Nuyen. Fixes #850.
+- Fixed issue where cyberlimb stats were increased with cyber-singularity seeker. Fixes #857.
 
 
 Data Change:
