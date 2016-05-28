@@ -68,14 +68,19 @@ namespace Chummer
 
 			if (LanguageManager.Instance.Loaded)
 			{
+				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+				Application.ThreadException += ApplicationOnThreadException;
+
+				frmMain main = new frmMain();
+
 				try
 				{
-					Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-					Application.ThreadException += ApplicationOnThreadException;
-					Application.Run(new frmMain());
+					Application.Run(main);
 				}
 				catch (Exception ex)
 				{
+					main.Hide();
+					main.ShowInTaskbar = false;
 					CrashHandler.WebMiniDumpHandler(ex);
 				}
 			}
