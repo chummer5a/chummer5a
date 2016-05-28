@@ -21,19 +21,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using Chummer.Debugging;
+﻿using System.Threading;
+﻿using System.Windows.Forms;
+﻿using Chummer.Backend.Debugging;
+﻿using Chummer.Debugging;
 
 namespace Chummer
 {
-    static class Program
-    {
+	static class Program
+	{
 		/// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main()
+		{
 			Stopwatch sw = Stopwatch.StartNew();
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
@@ -44,13 +46,10 @@ namespace Chummer
 			//Various init stuff (that mostly "can" be removed as they serve 
 			//debugging more than function
 
-			//crash handler that will offer to send a mail
-			AppDomain.CurrentDomain.UnhandledException += CrashReport.BuildFromException;
-			
-	        sw.TaskEnd("appdomain 1");
 
 			//Needs to be called before Log is setup, as it moves where log might be.
-	        FixCwd();
+			FixCwd();
+
 
 	        sw.TaskEnd("fixcwd");
 			//Log exceptions that is caught. Wanting to know about this cause of performance
@@ -62,7 +61,7 @@ namespace Chummer
 
 	        string info =
 		        $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
-
+			
 	        sw.TaskEnd("infogen");
 
 			Log.Info( info);
@@ -79,15 +78,37 @@ namespace Chummer
 
 	        sw.TaskEnd("Startup");
 			if (LanguageManager.Instance.Loaded)
-				Application.Run(new frmMain());
+			{
+				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+				Application.ThreadException += ApplicationOnThreadException;
+
+				frmMain main = new frmMain();
+
+				try
+				{
+					Application.Run(main);
+				}
+				catch (Exception ex)
+				{
+					main.Hide();
+					main.ShowInTaskbar = false;
+					CrashHandler.WebMiniDumpHandler(ex);
+				}
+			}
 			else
 				Application.Exit();
 
 			string ExceptionMap = heatmap.GenerateInfo();
 			Log.Info(ExceptionMap);
-        }
+		}
 
 		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
+
+
+		private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs threadExceptionEventArgs)
+		{
+			CrashHandler.WebMiniDumpHandler(threadExceptionEventArgs.Exception);
+		}
 
 		static void FixCwd()
 		{
@@ -105,5 +126,5 @@ namespace Chummer
 
 			Environment.CurrentDirectory = Application.StartupPath;
 		}
-    }
+	}
 }

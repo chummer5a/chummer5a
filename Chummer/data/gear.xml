@@ -19,7 +19,7 @@
 -->
 <chummer>
 	<!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
-	<version>-380</version>
+	<version>0</version>
 	<categories>
 		<category>Ammunition</category>
 		<category>Armor Enhancements</category>

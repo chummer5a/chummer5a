@@ -495,7 +495,7 @@
 			// newWindowToolStripMenuItem
 			// 
 			this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-			this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+			this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
 			this.newWindowToolStripMenuItem.Text = "&New Window";
 			this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
@@ -503,7 +503,7 @@
 			// closeAllToolStripMenuItem
 			// 
 			this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-			this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+			this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
 			this.closeAllToolStripMenuItem.Text = "C&lose All";
 			this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
