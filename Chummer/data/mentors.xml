@@ -753,7 +753,7 @@
 							<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
 							<selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
 						</selectpowers>
-				</bonus>
+					</bonus>
 				</choice>
 			</choices>
 			<source>SG</source>
@@ -1305,7 +1305,8 @@
 			<bonus>
 				<specificskill>
 					<name>Tracking</name>
-					<val>2</val>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
 			<choices>
@@ -1373,7 +1374,8 @@
 			<bonus>
 				<specificskill>
 					<name>Nautical Mechanic</name>
-					<val>2</val>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
 			<choices>
@@ -1459,14 +1461,15 @@
 			<id/>
 			<name>Tatzelwurm</name>
 			<advantage>All: +2 dice to Unarmed Combat.</advantage>
-			<disadvantage/>
+			<disadvantage>Combat Junkie quality is gained for free.</disadvantage>
 			<addqualities>
 				<addquality>Combat Junkie</addquality>
 			</addqualities>
 			<bonus>
 				<specificskill>
 					<name>Unarmed Combat</name>
-					<val>2</val>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
 			<choices>
@@ -1514,6 +1517,267 @@
 			</choices>
 			<source>SGG</source>
 			<page>234</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Boar</name>
+			<advantage>All: Home Ground Quality is gained for free.</advantage>
+			<addqualities>
+				<addquality>Home Ground</addquality>
+			</addqualities>
+			<disadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower’s friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</disadvantage>
+			<choices>
+				<choice>
+					<name>Magician: +1 to the number of services gained when successfully summoning a spirit</name>
+				</choice>
+				<choice>
+					<name>Adept: Gains Rooting (2) power for free.</name>
+					<bonus>
+						<specificpower>
+							<name>Rooting</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>41</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Giraffe</name>
+			<advantage>All: +2 Assensing skill tests or +2 to Judge Intentions test (choose one)</advantage>
+			<disadvantage>A follower of Giraffe stumbles through social etiquette, as she believes the small talk and chitchat that are the core of social chatter are fundamentally dishonest and not worthy of her efforts. She can make a wide range of situations awkward and receives –2 dice for Etiquette skill tests. </disadvantage>
+			<choices>
+				<choice>
+					<name>+2 dice on Assensing Tets</name>
+					<bonus>
+						<specificskill>
+							<name>Assensing</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 on Judge Intentions Tests</name>
+					<bonus>
+						<judgeintentions>2</judgeintentions>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 to Conjuring skill tests of air spirits</name>
+				</choice>
+				<choice set="2">
+					<name>Adept: 2 free levels of Piercing Senses</name>
+					<bonus>
+						<specificpower>
+							<name>Piercing Senses</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>42</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Dolphin</name>
+			<advantage>All: +2 dice on Artisan skill tests or Pilot (Watercraft) skill tests (choose one)</advantage>
+			<disadvantage>Followers are altruistic when it comes to helping people and cannot turn a blind eye to those who they believe deserve their help. It is difficult for them not to get involved when they see someone being bullied or obviously polluting the environment. If they see such a situation, it takes a Charisma + Willpower (3) Test for a follower of Dolphin not to intervene. If the job that the follower of Dolphin is on involves polluting the environment or becoming the bully/enforcer on those less deserving, then the follower loses 2 dice after each such deed until she atones. Atonement is up to the gamemaster but can involve time and money spent with charities.</disadvantage>
+			<choices>
+				<choice>
+					<name>+2 dice on Artisan tests</name>
+					<bonus>
+						<specificskill>
+							<name>Artisan</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 on Pilot (Watercraft) Tests</name>
+					<bonus>
+						<specificskill>
+							<name>Pilot (Watercraft)</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
+					<spellcategory>
+						<name>Health</name>
+						<val>2</val>
+					</spellcategory>
+				</choice>
+				<choice set="2">
+					<name>Adept: Gain Flexibility (2) power for free</name>
+					<bonus>
+						<specificpower>
+							<name>Flexibility</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>43</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Whale</name>
+			<advantage>All: +2 dice to Swimming or Pilot (Watercraft) skill tests (choose one)</advantage>
+			<disadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</disadvantage>
+			<choices>
+				<choice>
+					<name>+2 dice on Swimming tests</name>
+					<bonus>
+						<specificskill>
+							<name>Swimming</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 on Pilot (Watercraft) Tests</name>
+					<bonus>
+						<specificskill>
+							<name>Pilot (Watercraft)</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 to Conjuring skill tests for spirits of water</name>
+				</choice>
+				<choice set="2">
+					<name>Adept: Receive 2 ranks in Iron Lungs or free.</name>
+					<bonus>
+						<specificpower>
+							<name>Iron Lungs</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>43</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Horse</name>
+			<advantage>All: +2 dice to Running or Pilot Ground Craft) tests (choose one)</advantage>
+			<disadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</disadvantage>
+			<choices>
+				<choice>
+					<name>+2 dice on Running tests</name>
+					<bonus>
+						<specificskill>
+							<name>Running</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 on Pilot (Groundcraft) Tests</name>
+					<bonus>
+						<specificskill>
+							<name>Pilot (Groundcraft)</name>
+							<bonus>2</bonus>
+							<applytorating>no</applytorating>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: Reduce Drain Value from Reckless Summoning by 1</name>
+				</choice>
+				<choice set="2">
+					<name>Adept: May learn to use the Movement critter power as a metamagic (self only, 3 times a day)</name>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>46</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Raccoon</name>
+			<advantage>All: +2 to Palming skill tests</advantage>
+			<disadvantage>The Raccoon is commonly one of the Thief totems, so the followers can tend to err on the side of greed. A follower of Raccoon must make a Charisma + Willpower (3) Test to resist the urge to open that next locked door to look for something to steal, or to follow that Matrix rabbit trail in the quest for more paydata.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Palming</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for spells, preparations, and spell rituals in the Manipulation category.</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: 2 Improved Sense powers</name>
+					<bonus>
+						<specificpower>
+							<name>Improved Sense</name>
+							<selecttext/>
+						</specificpower>						
+						<specificpower>
+							<name>Improved Sense</name>
+							<selecttext/>
+						</specificpower>						
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>46</page>
+		</mentor>
+		<mentor>
+			<id/>
+			<name>Spider</name>
+			<advantage>All:+2 dice to Computer skill tests</advantage>
+			<disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such detailsfrom casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamas in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theatres, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
+			<bonus>
+				<specificskill>
+					<name>Computer</name>
+					<bonus>2</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
+			<choices>
+				<choice>
+					<name>Magician: +2 dice for Illusion spells</name>
+					<bonus>
+						<spellcategory>
+							<name>Illusion</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Hang time (2)</name>
+					<bonus>
+						<specificpower>
+							<name>Hang Time</name>
+							<val>2</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+			<source>HS</source>
+			<page>46</page>
 		</mentor>
 	</mentors>
 </chummer>
