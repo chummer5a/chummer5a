@@ -3,7 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95279469-5A3E-42E6-993C-6A403586C86E}</ProjectGuid>
@@ -33,6 +32,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -44,6 +44,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -79,6 +80,16 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Legacy|x86'">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Legacy\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;LEGACY</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Octokit, Version=0.17.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Octokit.0.17.0\lib\net45\Octokit.dll</HintPath>
@@ -104,7 +115,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Debugging\CrashHandler.cs" />
+    <Compile Include="Backend\Datastructures\ReverseTree.cs" />
+    <Compile Include="Backend\Datastructures\TranslatedField.cs" />
+	<Compile Include="Backend\Debugging\CrashHandler.cs" />
+    <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
+    <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
+    <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Backend\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
+    <Compile Include="Backend\Skills\ExoticSkill.cs" />
+    <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
+    <Compile Include="Backend\Skills\Skill.core.cs" />
+    <Compile Include="Backend\Skills\Skill.cs" />
+    <Compile Include="Backend\Skills\SkillExtensions.cs" />
+    <Compile Include="Backend\Skills\SkillGroup.cs" />
+    <Compile Include="Backend\Skills\SkillSorters.cs" />
+    <Compile Include="Backend\Skills\SkillsSection.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +157,7 @@
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
+    <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -151,12 +178,6 @@
     <Compile Include="Controls\DiceRollerControl.Designer.cs">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -174,12 +195,6 @@
     </Compile>
     <Compile Include="frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmCreateCustomDrug.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmCreateCustomDrug.Designer.cs">
-      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCreateCyberwareSuite.cs">
       <SubType>Form</SubType>
@@ -235,19 +250,50 @@
     <Compile Include="Selection Forms\frmSelectLifestyleQuality.Designer.cs">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmUpdate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmUpdate.Designer.cs">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
-    </Compile>
     <Compile Include="lang\language.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>language.xsd</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Selection Forms\frmSelectSkillSpec.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
+      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
+    <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Skills\KnowledgeSkillControl.Designer.cs">
+      <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Skills\SkillControl2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Skills\SkillControl2.Designer.cs">
+      <DependentUpon>SkillControl2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Skills\SkillGroupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Skills\SkillGroupControl.Designer.cs">
+      <DependentUpon>SkillGroupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Shared\BindingListDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
+      <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Skills\SkillsTabUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Skills\SkillsTabUserControl.Designer.cs">
+      <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\frmDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -632,6 +678,12 @@
     <Compile Include="frmTest.Designer.cs">
       <DependentUpon>frmTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\frmUpdate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utilities\frmUpdate.Designer.cs">
+      <DependentUpon>frmUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -673,12 +725,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Controls\SkillGroupControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SkillGroupControl.Designer.cs">
-      <DependentUpon>SkillGroupControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Character Creation\frmCreate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -705,18 +751,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\SkillControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SkillControl.Designer.cs">
-      <DependentUpon>SkillControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SmallSkillControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SmallSkillControl.Designer.cs">
-      <DependentUpon>SmallSkillControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\SpiritControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -775,8 +809,23 @@
     <EmbeddedResource Include="Selection Forms\frmSelectLifestyleQuality.resx">
       <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmUpdate.resx">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
+      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
+      <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Skills\SkillControl2.resx">
+      <DependentUpon>SkillControl2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Skills\SkillGroupControl.resx">
+      <DependentUpon>SkillGroupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
+      <DependentUpon>BindingListDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
+      <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Utilities\frmDiceHits.resx">
       <DependentUpon>frmDiceHits.cs</DependentUpon>
@@ -973,6 +1022,9 @@
     <EmbeddedResource Include="frmTest.resx">
       <DependentUpon>frmTest.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Utilities\frmUpdate.resx">
+      <DependentUpon>frmUpdate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmViewer.resx">
       <DependentUpon>frmViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -987,9 +1039,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PowerControl.resx">
       <DependentUpon>PowerControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SkillGroupControl.resx">
-      <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Character Creation\frmCreate.resx">
       <DependentUpon>frmCreate.cs</DependentUpon>
@@ -1014,12 +1063,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Controls\SkillControl.resx">
-      <DependentUpon>SkillControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SmallSkillControl.resx">
-      <DependentUpon>SmallSkillControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1494,7 +1537,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="data\drugcomponents.xml" />
     <Content Include="data\echoes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1544,6 +1586,7 @@
     </Content>
     <Content Include="data\priorities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\programs.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1557,6 +1600,7 @@
     </Content>
     <Content Include="data\skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

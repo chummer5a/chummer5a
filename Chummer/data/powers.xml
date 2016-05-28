@@ -722,26 +722,23 @@
       <source>SG</source>
       <page>172</page>
     </power>
-    <power>
-      <id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
-      <name>Missile Mastery</name>
-      <points>1</points>
-      <adeptway>.5</adeptway>
-      <levels>no</levels>
-      <limit>1</limit>
-      <bonus>
-        <weaponcategorydv>
-          <name>Throwing Weapons</name>
-          <bonus>1</bonus>
-        </weaponcategorydv>
-        <specificskill>
-          <name>Throwing Weapons</name>
-          <bonus>1</bonus>
-        </specificskill>
-      </bonus>
-      <source>SG</source>
-      <page>172</page>
-    </power>
+		<power>
+			<id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
+			<name>Missile Mastery</name>
+			<points>1</points>
+			<adeptway>.5</adeptway>
+			<levels>no</levels>
+			<limit>1</limit>
+			<bonus>
+				<throwstr>1</throwstr>
+				<specificskill>
+					<name>Throwing Weapons</name>
+					<bonus>1</bonus>
+				</specificskill>
+			</bonus>
+			<source>SG</source>
+			<page>172</page>
+		</power>
     <power>
       <id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
       <name>Motion Sense</name>

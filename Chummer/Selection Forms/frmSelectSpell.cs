@@ -102,6 +102,7 @@ namespace Chummer
 			}
 
 			treSpells.TreeViewNodeSorter = new SortByName();
+            treSpells.SelectedNode = treSpells.Nodes[0];
             foreach (XmlNode objXmlSpell in objXmlNodeList)
             {
                 TreeNode nodSpell = new TreeNode();
@@ -543,6 +544,8 @@ namespace Chummer
 
 			foreach (TreeNode nodNode in lstRemove)
 				treSpells.Nodes.Remove(nodNode);
+
+		    treSpells.SelectedNode = treSpells.Nodes[0];
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)

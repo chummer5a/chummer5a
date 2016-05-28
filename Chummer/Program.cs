@@ -24,6 +24,7 @@ using System.Linq;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
 ﻿using Chummer.Backend.Debugging;
+﻿using Chummer.Debugging;
 
 namespace Chummer
 {
@@ -35,12 +36,13 @@ namespace Chummer
 		[STAThread]
 		static void Main()
 		{
+			Stopwatch sw = Stopwatch.StartNew();
 			//If debuging and launched from other place (Bootstrap), launch debugger
 			if (Environment.GetCommandLineArgs().Contains("/debug") && !Debugger.IsAttached)
 			{
 				Debugger.Launch();
 			}
-
+	        sw.TaskEnd("dbgchk");
 			//Various init stuff (that mostly "can" be removed as they serve 
 			//debugging more than function
 
@@ -49,23 +51,32 @@ namespace Chummer
 			FixCwd();
 
 
+	        sw.TaskEnd("fixcwd");
+			//Log exceptions that is caught. Wanting to know about this cause of performance
+	        AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+			AppDomain.CurrentDomain.FirstChanceException += heatmap.OnException;
 			
 
-			Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}",
-				System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow,
-				Environment.CommandLine));
+			sw.TaskEnd("appdomain 2");
+
+	        string info =
+		        $"Application Chummer5a build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version} started at {DateTime.UtcNow} with command line arguments {Environment.CommandLine}";
 			
-			//Log exceptions that is caught. Wanting to know about this cause of performance
-			AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+	        sw.TaskEnd("infogen");
+
+			Log.Info( info);
+			
+	        sw.TaskEnd("infoprnt");
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			//GlobalOptions.Instance.Language = "de";
+
+	        sw.TaskEnd("languagefreestartup");
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
 			// Make sure the default language has been loaded before attempting to open the Main Form.
 
-
+	        sw.TaskEnd("Startup");
 			if (LanguageManager.Instance.Loaded)
 			{
 				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -87,7 +98,12 @@ namespace Chummer
 			else
 				Application.Exit();
 
+			string ExceptionMap = heatmap.GenerateInfo();
+			Log.Info(ExceptionMap);
 		}
+
+		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
+
 
 		private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs threadExceptionEventArgs)
 		{
@@ -109,7 +125,6 @@ namespace Chummer
 			}
 
 			Environment.CurrentDirectory = Application.StartupPath;
-
 		}
 	}
 }

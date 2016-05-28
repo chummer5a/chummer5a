@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,6 +24,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Skills;
 
 namespace Chummer
 {
@@ -200,7 +201,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -660,7 +661,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -971,7 +972,7 @@ namespace Chummer
 			_intRating = intRating;
 			if (objXmlArmorNode["rating"] != null)
 				_intMaxRating = Convert.ToInt32(objXmlArmorNode["rating"].InnerText);
-			_strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
+            _strArmorCapacity = objXmlArmorNode["armorcapacity"].InnerText;
 			_strAvail = objXmlArmorNode["avail"].InnerText;
 			_strSource = objXmlArmorNode["source"].InnerText;
 			_strPage = objXmlArmorNode["page"].InnerText;
@@ -1188,7 +1189,7 @@ namespace Chummer
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rating", _intMaxRating.ToString());
 			objWriter.WriteStartElement("armormods");
-            foreach (ArmorMod objMod in _lstArmorMods)
+			foreach (ArmorMod objMod in _lstArmorMods)
 			{
 				objMod.Save(objWriter);
 			}
@@ -1223,7 +1224,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -1247,7 +1248,7 @@ namespace Chummer
 			objNode.TryGetField("location", out _strLocation);
 			objNode.TryGetField("notes", out _strNotes);
 			objNode.TryGetField("discountedcost", out _blnDiscountCost);
-            try
+			try
 			{
 				_nodBonus = objNode["bonus"];
 			}
@@ -1284,7 +1285,7 @@ namespace Chummer
 							_lstGear.Add(objGear);
 							break;
 					}
-				}
+			}
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -1567,8 +1568,8 @@ namespace Chummer
 				}
 				else
 				{
-					return _strArmorCapacity;
-				}
+				return _strArmorCapacity;
+			}
 			}
 			set
 			{
@@ -1620,7 +1621,7 @@ namespace Chummer
 				else
 				{
 					return Convert.ToInt32(_strCost);
-				}
+			}
 			}
 			set
 			{
@@ -1892,7 +1893,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -2539,7 +2540,19 @@ namespace Chummer
 			_objImprovementSource = objSource;
 			try
 			{
-				_intMaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+                if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
+                {
+                    _intMaxRating = _objCharacter.STR.TotalMaximum;
+                }
+                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
+                {
+                    _intMaxRating = _objCharacter.AGI.TotalMaximum;
+
+                }
+                else
+                {
+                    _intMaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
+                }
 			}
 			catch
 			{
@@ -2807,7 +2820,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -3179,7 +3192,7 @@ namespace Chummer
 				if (_strLocation != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strLocation + "Short") != "")
@@ -3566,7 +3579,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -4355,7 +4368,7 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
+				return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.STR.TotalAugmentedMaximum);
 			}
 		}
 
@@ -4411,8 +4424,8 @@ namespace Chummer
 						intBonus = objChild.Rating;
 				}
 
-				return intAttribute + intBonus;
-			}
+                return Math.Min(intAttribute + intBonus + _objCharacter.RedlinerBonus, _objCharacter.AGI.TotalAugmentedMaximum);
+            }
 		}
 
 		/// <summary>
@@ -4744,7 +4757,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -5642,7 +5655,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -6386,8 +6399,8 @@ namespace Chummer
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-				XmlNodeList objXmlMountList = objAccessoryNode.SelectNodes("accessorymounts/mount");
 				string strMounts = "";
+				XmlNodeList objXmlMountList = objAccessoryNode?.SelectNodes("accessorymounts/mount");
 
 				if (objXmlMountList != null)
 				{
@@ -6631,6 +6644,17 @@ namespace Chummer
                 string strRCGroup4 = "";
                 string strRCGroup5 = "";
 
+				int intRCDeployGroup1 = 0;
+				int intRCDeployGroup2 = 0;
+				int intRCDeployGroup3 = 0;
+				int intRCDeployGroup4 = 0;
+				int intRCDeployGroup5 = 0;
+				string strRCDeployGroup1 = "";
+				string strRCDeployGroup2 = "";
+				string strRCDeployGroup3 = "";
+				string strRCDeployGroup4 = "";
+				string strRCDeployGroup5 = "";
+
 				if (_strRC.Contains("("))
 				{
 					if (_strRC.Substring(0, 1) == "(")
@@ -6653,7 +6677,11 @@ namespace Chummer
 					strRCFull = _strRC;
 				}
 
-                strRCTip = "1 + Base (" + strRCBase + ")";
+                strRCTip = "1 ";
+				if (strRCBase != "0")
+				{
+					strRCTip += "+ "+ LanguageManager.Instance.GetString("Label_Base") + "(" + strRCBase + ")";
+                }
 
 				intRCBase = Convert.ToInt32(strRCBase);
 				intRCFull = Convert.ToInt32(strRCFull.Replace("(", string.Empty).Replace(")", string.Empty));
@@ -6667,7 +6695,7 @@ namespace Chummer
 				CommonFunctions objFunctions = new CommonFunctions(_objCharacter);
 
 				// Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
-				if (AmmoLoaded != "")
+				if (AmmoLoaded != "" && AmmoLoaded != "00000000-0000-0000-0000-000000000000")
 				{
 					Gear objGear = objFunctions.FindGear(AmmoLoaded, _objCharacter.Gear);
 					if (objGear == null)
@@ -6686,7 +6714,7 @@ namespace Chummer
 								intRCBase += Convert.ToInt32(objGear.WeaponBonus["rc"].InnerText);
 								intRCFull += Convert.ToInt32(objGear.WeaponBonus["rc"].InnerText);
 
-                                strRCTip += " + " + objGear.Name + " (" + objGear.WeaponBonus["rc"].InnerText + ")";
+                                strRCTip += " + " + objGear.DisplayName + " (" + objGear.WeaponBonus["rc"].InnerText + ")";
 							}
 						}
 					}
@@ -6694,104 +6722,147 @@ namespace Chummer
 
 				// Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
 				// Only add in the values for items that do not come with the weapon.
-				foreach (WeaponAccessory objAccessory in _lstAccessories)
+				foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objAccessory.RC != "" && objAccessory.Installed))
 				{
-					if (objAccessory.RC != "" && objAccessory.Installed)
+					if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
 					{
-						if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
+						int intItemRC = 0;
+							intItemRC = Convert.ToInt32(objAccessory.RC);
+						if (!objAccessory.RCDeployable)
 						{
-							int intItemRC = 0;
-							if (objAccessory.RC.Contains("("))
-							{
-								intItemRC = Convert.ToInt32(objAccessory.RC.Replace("(", string.Empty).Replace(")", string.Empty));
-							}
-							else
-							{
-								intItemRC = Convert.ToInt32(objAccessory.RC);
-								intItemRC = Convert.ToInt32(objAccessory.RC);
-							}
-
 							switch (objAccessory.RCGroup)
 							{
 								case 1:
-                                    if (intRCGroup1 < intItemRC)
-                                    {
-                                        intRCGroup1 = intItemRC;
-                                        strRCGroup1 = objAccessory.Name;
-                                    }
+									if (intRCGroup1 < intItemRC)
+									{
+										intRCGroup1 = intItemRC;
+										strRCGroup1 = objAccessory.DisplayName;
+									}
 									break;
 								case 2:
 									if (intRCGroup2 < intItemRC)
-                                    {
-                                        intRCGroup2 = intItemRC;
-                                        strRCGroup2 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup2 = intItemRC;
+										strRCGroup2 = objAccessory.DisplayName;
+									}
 									break;
 								case 3:
 									if (intRCGroup3 < intItemRC)
-                                    {
-                                        intRCGroup3 = intItemRC;
-                                        strRCGroup3 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup3 = intItemRC;
+										strRCGroup3 = objAccessory.DisplayName;
+									}
 									break;
 								case 4:
 									if (intRCGroup4 < intItemRC)
-                                    {
-                                        intRCGroup4 = intItemRC;
-                                        strRCGroup4 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup4 = intItemRC;
+										strRCGroup4 = objAccessory.DisplayName;
+									}
 									break;
 								case 5:
 									if (intRCGroup5 < intItemRC)
-                                    {
-                                        intRCGroup5 = intItemRC;
-                                        strRCGroup5 = objAccessory.Name;
-                                    }
+									{
+										intRCGroup5 = intItemRC;
+										strRCGroup5 = objAccessory.DisplayName;
+									}
 									break;
 							}
 						}
 						else
 						{
-							if (objAccessory.RC.Contains("("))
+							switch (objAccessory.RCGroup)
 							{
-								intRCFull += Convert.ToInt32(objAccessory.RC.Replace("(", string.Empty).Replace(")", string.Empty));
-							}
-							else
-							{
-								intRCBase += Convert.ToInt32(objAccessory.RC);
-								intRCFull += Convert.ToInt32(objAccessory.RC);
+								case 1:
+									if (intRCDeployGroup1 < intItemRC)
+									{
+										intRCDeployGroup1 = intItemRC;
+										strRCDeployGroup1 = objAccessory.DisplayName;
+									}
+									break;
+								case 2:
+									if (intRCDeployGroup2 < intItemRC)
+									{
+										intRCDeployGroup2 = intItemRC;
+										strRCDeployGroup2 = objAccessory.DisplayName;
+									}
+									break;
+								case 3:
+									if (intRCDeployGroup3 < intItemRC)
+									{
+										intRCDeployGroup3 = intItemRC;
+										strRCDeployGroup3 = objAccessory.DisplayName;
+									}
+									break;
+								case 4:
+									if (intRCDeployGroup4 < intItemRC)
+									{
+										intRCDeployGroup4 = intItemRC;
+										strRCDeployGroup4 = objAccessory.DisplayName;
+									}
+									break;
+								case 5:
+									if (intRCDeployGroup5 < intItemRC)
+									{
+										intRCDeployGroup5 = intItemRC;
+										strRCDeployGroup5 = objAccessory.DisplayName;
+									}
+									break;
 							}
 						}
+					}
+					else
+					{
+						intRCFull += Convert.ToInt32(objAccessory.RC);
+						if (!objAccessory.RCDeployable)
+						{
+							intRCBase += Convert.ToInt32(objAccessory.RC);
+						}
+						strRCTip += " + " + objAccessory.DisplayName + " (" + objAccessory.RC.ToString() + ")";
 					}
 				}
 
 				// Add in the Recoil Group bonuses.
 				intRCBase += intRCGroup1 + intRCGroup2 + intRCGroup3 + intRCGroup4 + intRCGroup5;
 				intRCFull += intRCGroup1 + intRCGroup2 + intRCGroup3 + intRCGroup4 + intRCGroup5;
+				intRCFull += intRCDeployGroup1 + intRCDeployGroup2 + intRCDeployGroup3 + intRCDeployGroup4 + intRCDeployGroup5;
 
-                if (strRCGroup1 != string.Empty)
+				if (strRCGroup1 != string.Empty)
                     strRCTip += " + " + strRCGroup1 + " (" + intRCGroup1.ToString() + ")";
-
                 if (strRCGroup2 != string.Empty)
                     strRCTip += " + " + strRCGroup2 + " (" + intRCGroup2.ToString() + ")";
-
                 if (strRCGroup3 != string.Empty)
                     strRCTip += " + " + strRCGroup3 + " (" + intRCGroup3.ToString() + ")";
-
                 if (strRCGroup4 != string.Empty)
                     strRCTip += " + " + strRCGroup4 + " (" + intRCGroup4.ToString() + ")";
-
                 if (strRCGroup5 != string.Empty)
                     strRCTip += " + " + strRCGroup5 + " (" + intRCGroup5.ToString() + ")";
 
+				if (strRCDeployGroup1 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup1).Replace("{1}", intRCDeployGroup1.ToString());
+                if (strRCDeployGroup2 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup2).Replace("{1}", intRCDeployGroup2.ToString());
+				if (strRCDeployGroup3 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup3).Replace("{1}", intRCDeployGroup3.ToString());
+				if (strRCDeployGroup4 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup4).Replace("{1}", intRCDeployGroup4.ToString());
+				if (strRCDeployGroup5 != string.Empty)
+					strRCTip += LanguageManager.Instance.GetString("Tip_RecoilAccessories").Replace("{0}", strRCDeployGroup5).Replace("{1}", intRCDeployGroup5.ToString());
+
 				int intStrRC = ((_objCharacter.STR.TotalValue - 1)/3) + 1;
 
-					intRCBase += intStrRC + 1; //Not understanding this, but leaving it
-                    intRCFull += intStrRC;
-                    strRCTip += " + STR [" + _objCharacter.STR.TotalValue + "] (" + intStrRC + ")";
-
+					intRCBase += intStrRC + 1; 
+                    intRCFull += intStrRC + 1;
+                    strRCTip += " + " + LanguageManager.Instance.GetString("String_AttributeSTRShort") + "[" + _objCharacter.STR.TotalValue + "/3 = " + intStrRC + "]";
 				// If the full RC is not higher than the base, only the base value is shown.
-				strRC = (intRCFull <= intRCBase ? intRCBase : intRCFull).ToString();
+				if (intRCFull > intRCBase)
+				{
+					strRC = (intRCBase + " (" + intRCFull + ")").ToString();
+				}
+				else
+				{
+					strRC = intRCBase.ToString();
+				}
 
                 _strRCTip = strRCTip;
 
@@ -7318,10 +7389,10 @@ namespace Chummer
 				}
 
 				// Locate the Active Skill to be used.
-				Skill objSkill = new Skill(_objCharacter);
-				foreach (Skill objCharacterSkill in _objCharacter.Skills)
+				Skill objSkill = null; 
+				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
+					if (objCharacterSkill.Name == strSkill)
 					{
 						if (strSpec == "" || (objCharacterSkill.HasSpecialization(strSpec)))
                         {
@@ -7351,11 +7422,11 @@ namespace Chummer
 					}
 				}
 
-				int intRating = objSkill.TotalRating + intSmartlinkBonus + intDicePoolModifier;
+				int intRating = objSkill.Pool + intSmartlinkBonus + intDicePoolModifier;
 				strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
-				if (objSkill.Specializations.Count > 0 && !objSkill.ExoticSkill)
+				if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " (" + (intRating + 2).ToString() + ")";
@@ -7446,10 +7517,10 @@ namespace Chummer
 					strSkill = _strUseSkill;
 
 				// Locate the Active Skill to be used.
-				Skill objSkill = new Skill(_objCharacter);
-				foreach (Skill objCharacterSkill in _objCharacter.Skills)
+				Skill objSkill = null;
+				foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
 				{
-					if (!objCharacterSkill.KnowledgeSkill && objCharacterSkill.Name == strSkill)
+					if (!objCharacterSkill.IsKnowledgeSkill && objCharacterSkill.Name == strSkill)
 					{
                         if (strSpec == "" || (strSpec != "" && objCharacterSkill.HasSpecialization(strSpec)))
 						{
@@ -7459,9 +7530,9 @@ namespace Chummer
 					}
 				}
 
-				strReturn = strSkill + " (" + objSkill.TotalRating + ")";
+				strReturn = strSkill + " (" + objSkill.Pool + ")";
 
-				if (objSkill.Specialization != "" && !objSkill.ExoticSkill)
+				if (objSkill.Specialization != "" && !objSkill.IsExoticSkill)
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + " (2)";
@@ -7613,6 +7684,7 @@ namespace Chummer
 		private int _intRating = 0;
 		private int _intRCGroup = 0;
 		private int _intAmmoSlots = 0;
+		private bool _blnDeployable = false;
 		private bool _blnDiscountCost = false;
 		private bool _blnBlackMarketDiscount = false;
 		private bool _blnIncludedInWeapon = false;
@@ -7650,6 +7722,7 @@ namespace Chummer
 			_strPage = objXmlAccessory["page"].InnerText;
 			_nodAllowGear = objXmlAccessory["allowgear"];
 			objXmlAccessory.TryGetField("rc", out _strRC, "");
+			objXmlAccessory.TryGetField("rcdeployable", out _blnDeployable);
 			objXmlAccessory.TryGetField("rcgroup", out _intRCGroup);
 			objXmlAccessory.TryGetField("conceal", out _strConceal, "");
 			objXmlAccessory.TryGetField("ammoslots", out _intAmmoSlots);
@@ -7701,6 +7774,7 @@ namespace Chummer
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("rating", _intRating.ToString());
 			objWriter.WriteElementString("rcgroup", _intRCGroup.ToString());
+			objWriter.WriteElementString("rcdeployable", _blnDeployable.ToString());
 			objWriter.WriteElementString("conceal", _strConceal);
 			if (_strDicePool != "")
 				objWriter.WriteElementString("dicepool", _strDicePool);
@@ -7752,7 +7826,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		/// <param name="blnCopy">Whether another node is being copied.</param>
@@ -7768,6 +7842,7 @@ namespace Chummer
 			objNode.TryGetField("rating", out _intRating, 0);
 			objNode.TryGetField("rating", out _intRating, 0);
 			objNode.TryGetField("conceal", out _strConceal, "0");
+			objNode.TryGetField("rcdeployable", out _blnDeployable);
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
@@ -7780,13 +7855,15 @@ namespace Chummer
 			{
 			}
 			_strSource = objNode["source"].InnerText;
+
 			objNode.TryGetField("page", out _strPage, "0");
 			objNode.TryGetField("dicepool", out _strDicePool, "0");
 			
 			if (objNode.InnerXml.Contains("ammoslots"))
 			{
-				objNode.TryGetField("ammoslots", out _intAmmoSlots, 0);
+				objNode.TryGetField("ammoslots", out _intAmmoSlots, 0);  //TODO: Might work if 0 -> 1
 			}
+
 
 			if (objNode.InnerXml.Contains("<gears>"))
 			{
@@ -8012,7 +8089,32 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// The accessory replaces the weapon's Armor Penetration.
+		/// Whether the Accessory only grants a Recoil Bonus while deployed.
+		/// </summary>
+		public bool RCDeployable
+		{
+			get
+			{
+				return _blnDeployable;
+			}
+		}
+
+		/// <summary>
+		/// Accuracy.
+		/// </summary>
+		public int Accuracy
+        {
+            get
+            {
+                if (_blnInstalled)
+                    return _intAccuracy;
+                else
+                    return 0;
+            }
+        }
+
+        /// <summary>
+		/// Concealability.
 		/// </summary>
 		public string APReplacement
 		{
@@ -8124,20 +8226,6 @@ namespace Chummer
 				return _intRCGroup;
 			}
 		}
-
-        /// <summary>
-        /// Accuracy.
-        /// </summary>
-        public int Accuracy
-        {
-            get
-            {
-                if (_blnInstalled)
-                    return _intAccuracy;
-                else
-                    return 0;
-            }
-        }
 
         /// <summary>
 		/// Concealability.
@@ -8398,7 +8486,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -8772,7 +8860,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
@@ -9792,9 +9880,7 @@ namespace Chummer
 			{
 				// Do not apply the Improvements if this is a Focus, unless we're speicifically creating a Weapon Focus. This is to avoid creating the Foci's Improvements twice (once when it's first added
 				// to the character which is incorrect, and once when the Focus is actually Bonded).
-				bool blnApply = true;
-				if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selecttext"))
-					blnApply = false;
+				bool blnApply = !((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && !objXmlGear["bonus"].InnerXml.Contains("selecttext"));
 
 				if (blnApply)
 				{
@@ -11027,7 +11113,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -12224,7 +12310,7 @@ namespace Chummer
             objWriter.WriteElementString("attack", _intAttack.ToString());
             objWriter.WriteElementString("sleaze", _intSleaze.ToString());
             objWriter.WriteElementString("dataprocessing", _intDataProcessing.ToString());
-			objWriter.WriteElementString("firewall", _intFirewall.ToString());
+            objWriter.WriteElementString("firewall", _intFirewall.ToString());
             objWriter.WriteElementString("gearname", _strGearName);
 			objWriter.WriteStartElement("children");
 			foreach (Gear objGear in _objChildren)
@@ -13431,7 +13517,7 @@ namespace Chummer
 		{
 			get
 			{
-				return _blnDiscountCost;
+					return _blnDiscountCost;
 			}
 			set
 			{
@@ -13462,7 +13548,7 @@ namespace Chummer
 					_strAvail = strValues[Convert.ToInt32(_intRating) - 1];
 				}
 
-                if (_strAvail.Contains("Rating"))
+				if (_strAvail.Contains("Rating"))
 				{
 					// If the availability is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -15087,7 +15173,7 @@ namespace Chummer
 			get
 			{
 				int intCost = Convert.ToInt32(_strCost);
-				if (DealerConnectionDiscount)
+				if (BlackMarketDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
@@ -15393,6 +15479,18 @@ namespace Chummer
 				// Rigger 5 says max armor is Body + starting Armor, p159
 				intReturn = _intBody + _intArmor;
 
+			    if (IsDrone)
+			    {
+			        if (_objCharacter.Options.DroneArmorMultiplierEnabled)
+			        {
+			            intReturn = _intArmor*_objCharacter.Options.DroneArmorMultiplier;
+			        }
+			        else
+			        {
+			            intReturn = _intArmor*2;
+			        }
+			    }
+
 				// If ignoring the rules, do not limit Armor to the Vehicle's standard rules.
 				if (_objCharacter.IgnoreRules)
 					intReturn = 99;
@@ -15433,6 +15531,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
+
 					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Powertrain"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
@@ -15456,6 +15555,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
+
 					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Protection"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
@@ -15479,6 +15579,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
+
 					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Weapons"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
@@ -15525,6 +15626,7 @@ namespace Chummer
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
+
 					if (!objMod.IncludedInVehicle && objMod.Installed && (objMod.Category == "Electromagnetic"))
 					{
 						// Subtract the Modification's Slots from the Vehicle's base Body.
@@ -15874,7 +15976,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -15985,7 +16087,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Extra information that should be applied to the name, like a linked Attribute.
+		/// Extra information that should be applied to the name, like a linked CharacterAttribute.
 		/// </summary>
 		public string Extra
 		{
@@ -16120,7 +16222,7 @@ namespace Chummer
 				if (_strExtra != "")
 				{
 					LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-					// Attempt to retrieve the Attribute name.
+					// Attempt to retrieve the CharacterAttribute name.
 					try
 					{
 						if (LanguageManager.Instance.GetString("String_Attribute" + _strExtra + "Short") != "")

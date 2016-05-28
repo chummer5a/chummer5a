@@ -56,7 +56,8 @@ namespace Chummer
 		protected void RedlinerCheck()
 		{
 
-			//Get attributes affected by redliner/cyber singularity seeker
+		    string strSeekerImprovPrefix = "SEEKER";
+            //Get attributes affected by redliner/cyber singularity seeker
 			var attributes = new List<string>(
 				from improvement in _objCharacter.Improvements
 				where improvement.ImproveType == Improvement.ImprovementType.Seeker
@@ -67,77 +68,67 @@ namespace Chummer
 				from improvement in _objCharacter.Improvements
 				where (improvement.ImproveType == Improvement.ImprovementType.Attribute ||
 				       improvement.ImproveType == Improvement.ImprovementType.PhysicalCM )&&
-				       improvement.SourceName.StartsWith("__SEEKER__")
+				       improvement.SourceName.Contains(strSeekerImprovPrefix) //for backwards compability
 				select improvement);
 
 			//if neither contains anything, it is safe to exit
-			if(impr.Count == 0 && attributes.Count == 0) return;
+		    if (impr.Count == 0 && attributes.Count == 0)
+		    {
+		        _objCharacter.RedlinerBonus = 0;
+                return;
+		    }
 
-			//BUG might happen here
 			//Calculate bonus from cyberlimbs
-			//Taking advantage of the fact only full limbs get a limb slot (it seems) 
-			int count = _objCharacter.Cyberware.Count(c => c.LimbSlot != "");
-			count = Math.Min((count)/2, 2);
+			int count = Math.Min(_objCharacter.Cyberware.Count(c => c.LimbSlot != "" && c.Name.Contains("Full")) / 2,2);
+		    if (impr.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
+		    {
+		        _objCharacter.RedlinerBonus = count;
+		    }
+		    else
+		    {
+                _objCharacter.RedlinerBonus = 0;
+            }
 
-			List<KeyValuePair<string, Improvement>> pairs = new List<KeyValuePair<string, Improvement>>();
-
-			//Merge all pairs where we find coresponding improvement and attribute, removing them from the orginal list
-			for (int i = attributes.Count - 1; i >= 0; i--)
-			{
-				string _ref = attributes[i]; //easy reference, could be refactored out
-				Improvement im = impr.FirstOrDefault(x => x.SourceName==$"__SEEKER__{_ref}");
-				if(im == null) continue;
-				
-				pairs.Add(new  KeyValuePair<string, Improvement>(_ref, im));
-				impr.Remove(im);
-				attributes.RemoveAt(i);
-			}
-
-			//we now have a list of pairs, that might have the wrong value
-			//a lost of attributes that don't have an improvement
-			//and a list of improvements that don't have an attribute
-
+		    for (int i = 0; i < attributes.Count; i++)
+		    {
+		        Improvement objImprove = impr.FirstOrDefault(x => x.SourceName == strSeekerImprovPrefix +"_" + attributes[i] && x.Value == (attributes[i] == "BOX" ? count * -3 : count));
+		        if (objImprove != null)
+		        {
+		            attributes.RemoveAt(i);
+		            impr.Remove(objImprove);
+		        }
+		    }			
 			//Improvement manager defines the functions we need to manipulate improvements
 			//When the locals (someday) gets moved to this class, this can be removed and use
 			//the local
 			Lazy<ImprovementManager> manager = new Lazy<ImprovementManager>(() => new ImprovementManager(_objCharacter));
 
-			foreach (string attribute in attributes)
+            // Remove which qualites have been removed or which values have changed
+            foreach (Improvement improvement in impr)
+            {
+                manager.Value.RemoveImprovements(improvement.ImproveSource, improvement.SourceName);
+            }
+
+            // Add new improvements or old improvements with new values
+            foreach (string attribute in attributes)
 			{
-				manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
-					$"__SEEKER__{attribute}",  //Sourcename, as we cannot track dependent improvements, we have to hack it this way
-					Improvement.ImprovementType.Attribute,
-					Guid.NewGuid().ToString(), (attribute == "BOX" ? count * -3 : 1), 1, 0, 0, count * (attribute == "BOX" ? 0 : 1)); //count is argumented value
+			    if (attribute == "BOX")
+			    {
+                    manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+			            strSeekerImprovPrefix + "_" + attribute, Improvement.ImprovementType.PhysicalCM,
+			            Guid.NewGuid().ToString(), count*-3);
+			    }
+			    else
+			    {
+			        manager.Value.CreateImprovement(attribute, Improvement.ImprovementSource.Quality,
+			            strSeekerImprovPrefix +"_" + attribute, Improvement.ImprovementType.Attribute,
+			            Guid.NewGuid().ToString(), count, 1, 0, 0, count);
+			    }
 			}
-
-			foreach (Improvement improvement in impr)
-			{
-				manager.Value.RemoveImprovements(improvement.ImproveSource, improvement.SourceName);
-			}
-
-			foreach (KeyValuePair<string, Improvement> pair in pairs)
-			{
-				if(pair.Key == "BOX" ? pair.Value.Value == count * -3 : pair.Value.Augmented == count) continue;
-
-				manager.Value.RemoveImprovements(pair.Value.ImproveSource, pair.Value.SourceName);
-				manager.Value.CreateImprovement(
-					pair.Key == "BOX" ? "" : pair.Key, Improvement.ImprovementSource.Quality, //Attribute name AGI, BOD etc
-					$"__SEEKER__{pair.Key}",  //Sourcename, as we cannot track dependent improvements, we have to hack it this way
-					pair.Key == "BOX" ? Improvement.ImprovementType.PhysicalCM : Improvement.ImprovementType.Attribute,
-					Guid.NewGuid().ToString(),
-					count * (pair.Key == "BOX" ? -3 : 1),
-					1, 0, 0,  //because effective improvement is somehow multiplied by rating...?
-					count * (pair.Key == "BOX" ? 0 : 1)); //count is argumented value
-
-				
-			}
-
-			if (manager.IsValueCreated)
+            if (manager.IsValueCreated)
 			{
 				manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
 			}
-
-
-		}
+        }
 	}
 }

@@ -120,6 +120,10 @@
       <key>Label_Karma</key>
       <text>カルマ:</text>
     </string>
+	<string>
+		<key>Label_LP</key>
+		<text>カルマ:</text>
+	</string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>残りカルマ:</text>
@@ -5007,6 +5011,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>カルマと新円の支出を印刷する</text>
     </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>増補属性を計算するためCyberlimbsを使用しないでください</text>
+		</string>	
     <string>
       <key>Label_Options_BPAttribute</key>
       <text>能力値</text>
@@ -7211,6 +7219,10 @@
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>ドローンアーマーにドローンアーマー強化を制限</text>
+		</string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Qualities</key>
       <text>Qualities</text>

@@ -18,353 +18,353 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>-380</version>
-  <traditions>
-    <tradition>
-      <id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
-      <name>Custom</name>
-      <drain />
-      <spirits />
-      <source>SR5</source>
-      <page>279</page>
-    </tradition>
-    <tradition>
-      <id>19320625-bc1a-492f-8904-da6a847e5700</id>
-      <name>Hermetic</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Man</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Earth</spirit>
-      </spirits>
-      <source>SR5</source>
-      <page>279</page>
-    </tradition>
-    <tradition>
-      <id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
-      <name>Shamanic</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Man</spirit>
-      </spirits>
-      <source>SR5</source>
-      <page>279</page>
-    </tradition>
-    <tradition>
-      <id>4fba452f-a240-4530-82b6-5ffd4bb83f28</id>
-      <name>Aztec</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Guardian Spirit</spirit>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Beasts</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>41</page>
-    </tradition>
-    <tradition>
-      <id>66ceefed-2cb1-4027-96ca-756ab4eed7ad</id>
-      <name>Black Magic</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Man</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>41</page>
-    </tradition>
-    <tradition>
-      <id>a283220f-2197-4526-b15a-331b9185b326</id>
-      <name>Buddhism</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>43</page>
-    </tradition>
-    <tradition>
-      <id>20b8e39f-a956-49bd-b417-6e1bd4a14604</id>
-      <name>Chaos Magic</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Man</spirit>
-        <spirit>Spirit of Water</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>44</page>
-    </tradition>
-    <tradition>
-      <id>5d98ea69-29b1-4fb4-b9f3-56396d1dce16</id>
-      <name>Christian Theurgy</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Guidance Spirit</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>44</page>
-    </tradition>
-    <tradition>
-      <id>fb6f9683-47bb-4b04-9d15-4b59a003bf69</id>
-      <name>Druid</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>45</page>
-    </tradition>
-    <tradition>
-      <id>2c924aa1-2298-4b02-b28b-946d0769dbd3</id>
-      <name>Hinduism</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>46</page>
-    </tradition>
-    <tradition>
-      <id>9acc0a3e-3209-4274-9c98-4cbc42c456a7</id>
-      <name>Islam</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Guardian Spirit</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Fire</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>46</page>
-    </tradition>
-    <tradition>
-      <id>7f6073fd-e7f3-41f5-a40f-2a5b1cde382e</id>
-      <name>Path of the Wheel</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Fire</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>47</page>
-    </tradition>
-    <tradition>
-      <id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
-      <name>Qabbalism</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Task Spirit</spirit>
-      </spirits>
-      <spiritform>Possession</spiritform>
-      <source>SG</source>
-      <page>48</page>
-    </tradition>
-    <tradition>
-      <id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
-      <name>Shinto</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Spirit of Man</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>48</page>
-    </tradition>
-    <tradition>
-      <id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
-      <name>Sioux</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Guardian Spirit</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>49</page>
-    </tradition>
-    <tradition>
-      <id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
-      <name>Vodou</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Guardian Spirit</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Man</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Task Spirit</spirit>
-      </spirits>
-      <spiritform>Possession</spiritform>
-      <source>SG</source>
-      <page>50</page>
-    </tradition>
-    <tradition>
-      <id>24601762-ef67-44d8-b974-03f626db848a</id>
-      <name>Wicca, Gardnerian</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>50</page>
-    </tradition>
-    <tradition>
-      <id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
-      <name>Wicca, Goddess</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Earth</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>50</page>
-    </tradition>
-    <tradition>
-      <id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
-      <name>Wuxing</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Guidance Spirit</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>51</page>
-    </tradition>
-    <tradition>
-      <id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
-      <name>Zoroastrianism</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Man</spirit>
-        <spirit>Spirit of Water</spirit>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Plant Spirit</spirit>
-      </spirits>
-      <source>SG</source>
-      <page>52</page>
-    </tradition>
-    <tradition>
-      <id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
-      <name>Insect Shaman</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Soldier</spirit>
-        <spirit>Scout</spirit>
-        <spirit>Caretaker</spirit>
-        <spirit>Nymph</spirit>
-        <spirit>Worker</spirit>
-      </spirits>
-      <spiritform>Inhabitation</spiritform>
-      <source>SG</source>
-      <page>94</page>
-    </tradition>
-    <tradition>
-      <name>Aboriginal</name>
-      <drain>WIL + CHA</drain>
-      <spirits>
-        <spirit>Spirit of Beasts</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-      </spirits>
-      <source>SSP</source>
-      <page>3</page>
-    </tradition>
-    <tradition>
-      <name>Egyptian</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Spirit of Water</spirit>
-      </spirits>
-      <spiritform>Possession</spiritform>
-      <source>SSP</source>
-      <page>3</page>
-    </tradition>
-    <tradition>
-      <name>Norse</name>
-      <drain>WIL + LOG</drain>
-      <spirits>
-        <spirit>Spirit of Guardian</spirit>
-        <spirit>Spirit of Earth</spirit>
-        <spirit>Plant Spirit</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Fire</spirit>
-      </spirits>
-      <source>SSP</source>
-      <page>4</page>
-    </tradition>
-    <tradition>
-      <name>Psionic</name>
-      <drain>WIL + INT</drain>
-      <spirits>
-        <spirit>Spirit of Fire</spirit>
-        <spirit>Spirit of Air</spirit>
-        <spirit>Spirit of Man</spirit>
-        <spirit>Guidance Spirit</spirit>
-        <spirit>Task Spirit</spirit>
-      </spirits>
-      <spiritform>Possession</spiritform>
-      <source>SSP</source>
-      <page>5</page>
-    </tradition>
+	<version>-380</version>
+	<traditions>
+		<tradition>
+			<id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
+			<name>Custom</name>
+			<drain />
+			<spirits />
+			<source>SR5</source>
+			<page>279</page>
+		</tradition>
+		<tradition>
+			<id>19320625-bc1a-492f-8904-da6a847e5700</id>
+			<name>Hermetic</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SR5</source>
+			<page>279</page>
+		</tradition>
+		<tradition>
+			<id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
+			<name>Shamanic</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Man</spirit>
+			</spirits>
+			<source>SR5</source>
+			<page>279</page>
+		</tradition>
+		<tradition>
+			<id>4fba452f-a240-4530-82b6-5ffd4bb83f28</id>
+			<name>Aztec</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Guardian Spirit</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Beasts</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>41</page>
+		</tradition>
+		<tradition>
+			<id>66ceefed-2cb1-4027-96ca-756ab4eed7ad</id>
+			<name>Black Magic</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Man</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>41</page>
+		</tradition>
+		<tradition>
+			<id>a283220f-2197-4526-b15a-331b9185b326</id>
+			<name>Buddhism</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>43</page>
+		</tradition>
+		<tradition>
+			<id>20b8e39f-a956-49bd-b417-6e1bd4a14604</id>
+			<name>Chaos Magic</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Water</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>44</page>
+		</tradition>
+		<tradition>
+			<id>5d98ea69-29b1-4fb4-b9f3-56396d1dce16</id>
+			<name>Christian Theurgy</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Guidance Spirit</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>44</page>
+		</tradition>
+		<tradition>
+			<id>fb6f9683-47bb-4b04-9d15-4b59a003bf69</id>
+			<name>Druid</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>45</page>
+		</tradition>
+		<tradition>
+			<id>2c924aa1-2298-4b02-b28b-946d0769dbd3</id>
+			<name>Hinduism</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>46</page>
+		</tradition>
+		<tradition>
+			<id>9acc0a3e-3209-4274-9c98-4cbc42c456a7</id>
+			<name>Islam</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Guardian Spirit</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Fire</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>46</page>
+		</tradition>
+		<tradition>
+			<id>7f6073fd-e7f3-41f5-a40f-2a5b1cde382e</id>
+			<name>Path of the Wheel</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Fire</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>47</page>
+		</tradition>
+		<tradition>
+			<id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
+			<name>Qabbalism</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Task Spirit</spirit>
+			</spirits>
+			<spiritform>Possession</spiritform>
+			<source>SG</source>
+			<page>48</page>
+		</tradition>
+		<tradition>
+			<id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
+			<name>Shinto</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Man</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>48</page>
+		</tradition>
+		<tradition>
+			<id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
+			<name>Sioux</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Guardian Spirit</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>49</page>
+		</tradition>
+		<tradition>
+			<id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
+			<name>Vodou</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Guardian Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Task Spirit</spirit>
+			</spirits>
+			<spiritform>Possession</spiritform>
+			<source>SG</source>
+			<page>50</page>
+		</tradition>
+		<tradition>
+			<id>24601762-ef67-44d8-b974-03f626db848a</id>
+			<name>Wicca, Gardnerian</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>50</page>
+		</tradition>
+		<tradition>
+			<id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
+			<name>Wicca, Goddess</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>50</page>
+		</tradition>
+		<tradition>
+			<id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
+			<name>Wuxing</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Guidance Spirit</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>51</page>
+		</tradition>
+		<tradition>
+			<id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
+			<name>Zoroastrianism</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Plant Spirit</spirit>
+			</spirits>
+			<source>SG</source>
+			<page>52</page>
+		</tradition>
+		<tradition>
+			<id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
+			<name>Insect Shaman</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Soldier</spirit>
+				<spirit>Scout</spirit>
+				<spirit>Caretaker</spirit>
+				<spirit>Nymph</spirit>
+				<spirit>Worker</spirit>
+			</spirits>
+			<spiritform>Inhabitation</spiritform>
+			<source>SG</source>
+			<page>94</page>
+		</tradition>
+		<tradition>
+			<name>Aboriginal</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+			</spirits>
+			<source>SSP</source>
+			<page>3</page>
+		</tradition>
+		<tradition>
+			<name>Egyptian</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+			</spirits>
+			<spiritform>Possession</spiritform>
+			<source>SSP</source>
+			<page>3</page>
+		</tradition>
+		<tradition>
+			<name>Norse</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Spirit of Guardian</spirit>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Fire</spirit>
+			</spirits>
+			<source>SSP</source>
+			<page>4</page>
+		</tradition>
+		<tradition>
+			<name>Psionic</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Task Spirit</spirit>
+			</spirits>
+			<spiritform>Possession</spiritform>
+			<source>SSP</source>
+			<page>5</page>
+		</tradition>
 		<tradition>
 			<id>acbf5a08-cd21-410d-8d04-4e12cca8a927</id>
 			<name>Obeah</name>
@@ -393,1012 +393,1068 @@
 			<source>HT</source>
 			<page>130</page>
 		</tradition>
-  </traditions>
-  <spirits>
-    <!--Corebook spirits-->
-    <spirit>
-      <id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
-      <name>Spirit of Air</name>
-      <bod>F-2</bod>
-      <agi>F+3</agi>
-      <rea>F+4</rea>
-      <str>F-3</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+4</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="str">Running</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Engulf</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Elemental Attack</power>
-        <power>Energy Aura</power>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Noxious Breath</power>
-        <power>Psychokinesis</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>303</page>
-    </spirit>
-    <spirit>
-      <id>2a0352be-9b13-4e1e-a610-af480f6a1841</id>
-      <name>Spirit of Earth</name>
-      <bod>F+4</bod>
-      <agi>F-2</agi>
-      <rea>F-1</rea>
-      <str>F+4</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F-1</log>
-      <wil>F+0</wil>
-      <ini>(F*2)-1</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Binding</power>
-        <power>Guard</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Engulf</power>
-        <power>Elemental Attack</power>
-        <power>Fear</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>303</page>
-    </spirit>
-    <spirit>
-      <id>c5e35ac9-5737-4003-8c9e-eb016d2bccd2</id>
-      <name>Spirit of Beasts</name>
-      <bod>F+2</bod>
-      <agi>F+1</agi>
-      <rea>F+0</rea>
-      <str>F+2</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control</power>
-        <power>Astral Form</power>
-        <power>Enhanced Senses (Hearing)</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Fear</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Guard</power>
-        <power>Natural Weapon</power>
-        <power>Noxious Breath</power>
-        <power>Search</power>
-        <power>Venom</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>303</page>
-    </spirit>
-    <spirit>
-      <id>c0178bf8-1fc5-4c56-9ce1-92a3ae1adc45</id>
-      <name>Spirit of Fire</name>
-      <bod>F+1</bod>
-      <agi>F+2</agi>
-      <rea>F+3</rea>
-      <str>F-2</str>
-      <cha>F+0</cha>
-      <int>F+1</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="agi">Flight</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Confusion</power>
-        <power>Elemental Attack</power>
-        <power>Energy Aura</power>
-        <power>Engulf</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Noxious Breath</power>
-        <power>Search</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Water, Severe)</weakness>
-      </weaknesses>
-      <source>SR5</source>
-      <page>303</page>
-    </spirit>
-    <spirit>
-      <id>d590d5ad-df91-486c-abb1-21a08a5b8a50</id>
-      <name>Spirit of Man</name>
-      <bod>F+1</bod>
-      <agi>F+0</agi>
-      <rea>F+2</rea>
-      <str>F-2</str>
-      <cha>F+0</cha>
-      <int>F+1</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+2</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="mag">Spellcasting</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Guard</power>
-        <power>Influence</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Fear</power>
-        <power>Innate Spell</power>
-        <power>Movement</power>
-        <power>Psychokinesis</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SR5</source>
-      <page>304</page>
-    </spirit>
-    <spirit>
-      <id>5f284fc2-13dc-42cc-9cd9-231f815ea0bf</id>
-      <name>Spirit of Water</name>
-      <bod>F+0</bod>
-      <agi>F+1</agi>
-      <rea>F+2</rea>
-      <str>F+0</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+2</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Engulf</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Accident</power>
-        <power>Binding</power>
-        <power>Elemental Attack</power>
-        <power>Energy Aura</power>
-        <power>Guard</power>
-        <power>Weather Control</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Fire, Severe)</weakness>
-      </weaknesses>
-      <source>SR5</source>
-      <page>304</page>
-    </spirit>
-    <!--SG normal spirits-->
-    <spirit>
-      <id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
-      <name>Guardian Spirit</name>
-      <bod>F+1</bod>
-      <agi>F+2</agi>
-      <rea>F+3</rea>
-      <str>F+2</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+1</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Blades</skill>
-        <skill attr="agi">Clubs</skill>
-        <skill attr="mag">Counterspelling</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Magical Guard</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Animal Control</power>
-        <power>Concealment</power>
-        <power>Elemental Attack</power>
-        <power>Natural Weaponry</power>
-        <power>Psychokinesis</power>
-        <power>Skill (any Combat skill)</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>193</page>
-    </spirit>
-    <spirit>
-      <id>12028356-5d37-406b-83d1-d25ef18030d1</id>
-      <name>Guidance Spirit</name>
-      <bod>F+3</bod>
-      <agi>F-1</agi>
-      <rea>F+2</rea>
-      <str>F+1</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="log">Arcana</skill>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="mag">Counterspelling</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Confusion</power>
-        <power>Divining</power>
-        <power>Guard</power>
-        <power>Magical Guard</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-        <power>Search</power>
-        <power>Shadow Cloak</power>
-      </powers>
-      <optionalpowers>
-        <power>Engulf</power>
-        <power>Enhanced Senses (Hearing)</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Fear</power>
-        <power>Influence</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>193</page>
-    </spirit>
-    <spirit>
-      <id>22efb7b7-b822-4243-9fa3-6d87d407e9e5</id>
-      <name>Plant Spirit</name>
-      <bod>F+2</bod>
-      <agi>F-1</agi>
-      <rea>F+0</rea>
-      <str>F+1</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F-1</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="mag">Counterspelling</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Engulf</power>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Magical Guard</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-        <power>Silence</power>
-      </powers>
-      <optionalpowers>
-        <power>Accident</power>
-        <power>Confusion</power>
-        <power>Movement</power>
-        <power>Noxious Breath</power>
-        <power>Search</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>193</page>
-    </spirit>
-    <spirit>
-      <id>a6906b58-489e-4100-a84d-866a3af4e37a</id>
-      <name>Task Spirit</name>
-      <bod>F+0</bod>
-      <agi>F+0</agi>
-      <rea>F+2</rea>
-      <str>F+2</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
-      <skills>
-        <skill attr="int">Artisan</skill>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Binding</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Enhanced Senses (Hearing)</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Influence</power>
-        <power>Psychokinesis</power>
-        <power>Skill (any Technical or Physical skill)</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>193</page>
-    </spirit>
-    <!--Toxic Spirits-->
-    <spirit>
-      <id></id>
-      <name>Noxious</name>
-      <bod>F-2</bod>
-      <agi>F+3</agi>
-      <rea>F+4</rea>
-      <str>F-3</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+4</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="str">Running</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Engulf (Air)</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Noxious Breath</power>
-        <power>Psychokinesis</power>
-        <power>Weather Control</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>387</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Barren</name>
-      <bod>F+4</bod>
-      <agi>F-2</agi>
-      <rea>F-1</rea>
-      <str>F+4</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F-1</log>
-      <wil>F+0</wil>
-      <ini>(F*2)-1</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Binding</power>
-        <power>Elemental Attack (Pollutant)</power>
-        <power>Engulf (Earth)</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Accident</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Fear</power>
-        <power>Guard</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Clean Earth, Severe)</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>88</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Abomination</name>
-      <bod>F+2</bod>
-      <agi>F+1</agi>
-      <rea>F+0</rea>
-      <str>F+2</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="agi">Gymnastics</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Running</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Toxic Critters)</power>
-        <power>Astral Form</power>
-        <power>Enhanced Senses (Hearing)</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Mutagen</power>
-        <power>Natural Weapon</power>
-        <power>Pestilence</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Corrosive Spit</power>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Mimicry</power>
-        <power>Search</power>
-        <power>Venom</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>87</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Nuclear</name>
-      <bod>F+1</bod>
-      <agi>F+2</agi>
-      <rea>F+3</rea>
-      <str>F-2</str>
-      <cha>F+0</cha>
-      <int>F+1</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="agi">Flight</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Elemental Attack (Radiation)</power>
-        <power>Energy Aura (Radiation)</power>
-        <power>Engulf (Fire)</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Confusion</power>
-        <power>Fear</power>
-        <power>Guard</power>
-        <power>Search</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>88</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Plague</name>
-      <bod>F+0</bod>
-      <agi>F+0</agi>
-      <rea>F+2</rea>
-      <str>F-2</str>
-      <cha>F+0</cha>
-      <int>F+1</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+2</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="mag">Spellcasting</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Desire Reflection</power>
-        <power>Enhanced Senses (Low-Light Vision)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Fear</power>
-        <power>Materialization</power>
-        <power>Mutagen</power>
-        <power>Pestilence</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Guard</power>
-        <power>Innate Spell</power>
-        <power>Movement</power>
-        <power>Psychokinesis</power>
-      </optionalpowers>
-      <weaknesses></weaknesses>
-      <source>SG</source>
-      <page>88</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Sludge</name>
-      <bod>F+0</bod>
-      <agi>F+1</agi>
-      <rea>F+2</rea>
-      <str>F+0</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+2</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Binding</power>
-        <power>Elemental Attack (Pollutant)</power>
-        <power>Engulf (Water)</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Mutagen</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Accident</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Fear</power>
-        <power>Guard</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Clean Water, Severe)</weakness>
-      </weaknesses>
-      <source>SR5</source>
-      <page>304</page>
-    </spirit>
-    <!--Blood Spirits-->
-    <spirit>
-      <id></id>
-      <name>Blood Spirit</name>
-      <bod>F+2</bod>
-      <agi>F+2</agi>
-      <rea>F+0</rea>
-      <str>F+2</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F-1</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="str">Running</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Astral Form</power>
-        <power>Binding</power>
-        <power>Energy Drain (Essence, Touch, Physical Damage)</power>
-        <power>Fear</power>
-        <power>Materialization</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Guard</power>
-        <power>Movement</power>
-        <power>Natural Weapon</power>
-        <power>Noxious Breath</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Essence Loss (1 point per day)</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>91</page>
-    </spirit>
-    <!--Insect Spirits-->
-    <spirit>
-      <id></id>
-      <name>Caretaker</name>
-      <bod>F+0</bod>
-      <agi>F+1</agi>
-      <rea>F+1</rea>
-      <str>F+0</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+1</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="cha">Leadership</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Form</power>
-        <power>Guard</power>
-        <power>Hive Mind</power>
-        <power>Inhabitation (Living Vessels)</power>
-        <power>Innate Spell (Physical Barrier)</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Binding</power>
-        <power>Confusion</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Ultrasound)</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-        <weakness>Evanescence</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>98</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Nymph</name>
-      <bod>F-1</bod>
-      <agi>F+0</agi>
-      <rea>F+3</rea>
-      <str>F-1</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+3</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Gymnastics</skill>
-        <skill attr="int">Spellcasting</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Form</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Ultrasound)</power>
-        <power>Hive Mind</power>
-        <power>Inhabitation (Living Vessels)</power>
-        <power>Innate Spell (Illusion Spell)</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Compulsion</power>
-        <power>Fear</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-        <weakness>Evanescence</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>98</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Scout</name>
-      <bod>F+0</bod>
-      <agi>F+2</agi>
-      <rea>F+2</rea>
-      <str>F+0</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+2</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="agi">Gymnastics</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Sneaking</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Form</power>
-        <power>Concealment</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Ultrasound)</power>
-        <power>Hive Mind</power>
-        <power>Inhabitation (Living Vessels)</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Confusion</power>
-        <power>Guard</power>
-        <power>Natural Weapon</power>
-        <power>Noxious Breath</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-        <weakness>Evanescence</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>98</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Soldier</name>
-      <bod>F+3</bod>
-      <agi>F+1</agi>
-      <rea>F+1</rea>
-      <str>F+3</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)+1</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="mag">Counterspelling</skill>
-        <skill attr="agi">Exotic Ranged Weapon</skill>
-        <skill attr="agi">Gymnastics</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Form</power>
-        <power>Fear</power>
-        <power>Hive Mind</power>
-        <power>Inhabitation (Living Vessels)</power>
-        <power>Natural Weapon  Sapience</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Binding</power>
-        <power>Magical Guard</power>
-        <power>Noxious Breath</power>
-        <power>Skill (any combat skill)</power>
-        <power>Venom</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-        <weakness>Evanescence</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>98</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Worker</name>
-      <bod>F+0</bod>
-      <agi>F+0</agi>
-      <rea>F+0</rea>
-      <str>F+1</str>
-      <cha>F+0</cha>
-      <int>F+0</int>
-      <log>F+0</log>
-      <wil>F+0</wil>
-      <ini>(F*2)</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Form</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Hive Mind</power>
-        <power>Inhabitation (Living Vessels)</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Enhanced Senses (Ultrasound)</power>
-        <power>Venom</power>
-        <power>Skill (any Technical or Physical skill )</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-        <weakness>Evanescence</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>99</page>
-    </spirit>
-    <spirit>
-      <id></id>
-      <name>Queen</name>
-      <bod>F+5</bod>
-      <agi>F+3</agi>
-      <rea>F+4</rea>
-      <str>F+5</str>
-      <cha>F+0</cha>
-      <int>F+1</int>
-      <log>F+1</log>
-      <wil>F+1</wil>
-      <ini>(F*2)+5</ini>
-      <skills>
-        <skill attr="int">Assensing</skill>
-        <skill attr="wil">Astral Combat</skill>
-        <skill attr="cha">Con</skill>
-        <skill attr="mag">Counterspelling</skill>
-        <skill attr="agi">Gymnastics</skill>
-        <skill attr="cha">Leadership</skill>
-        <skill attr="cha">Negotiation</skill>
-        <skill attr="int">Perception</skill>
-        <skill attr="mag">Spellcasting</skill>
-        <skill attr="agi">Unarmed Combat</skill>
-      </skills>
-      <powers>
-        <power>Animal Control (Insect Type)</power>
-        <power>Astral Gateway</power>
-        <power>Banishing Resistance</power>
-        <power>Compulsion</power>
-        <power>Enhanced Senses (Smell)</power>
-        <power>Enhanced Senses (Thermographic Vision)</power>
-        <power>Enhanced Senses (Ultrasound)</power>
-        <power>Fear</power>
-        <power>Hive Mind</power>
-        <power>Sapience</power>
-        <power>Search</power>
-        <power>Spirit Pact</power>
-        <power>Wealth</power>
-      </powers>
-      <optionalpowers>
-        <power>Concealment</power>
-        <power>Guard</power>
-        <power>Natural Weapon</power>
-        <power>Noxious Breath</power>
-        <power>Venom</power>
-      </optionalpowers>
-      <weaknesses>
-        <weakness>Allergy (Insecticides, Severe)</weakness>
-      </weaknesses>
-      <source>SG</source>
-      <page>99</page>
-    </spirit>
-  </spirits>
-  <drainattributes>
-    <drainattribute>
-      <id>f10d9639-45c8-4c45-87b9-6af0fef73723</id>
-      <name>WIL + CHA</name>
-    </drainattribute>
-    <drainattribute>
-      <id>06b8b7da-1301-4963-aba7-4862024559a8</id>
-      <name>WIL + INT</name>
-    </drainattribute>
-    <drainattribute>
-      <id>aca1fd74-0c25-41d5-b621-434c3892cfb3</id>
-      <name>WIL + LOG</name>
-    </drainattribute>
-  </drainattributes>
+		<tradition>
+			<id>e4308e13-9e29-4d44-bb6e-015bcca41559</id>
+			<name>Brocken Witches</name>
+			<drain>WIL + INT</drain>
+			<spirits>
+				<spirit>Plant Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Beasts</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+			</spirits>
+			<source>SGG</source>
+			<page>42</page>
+		</tradition>
+		<tradition>
+			<id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
+			<name>Faustianer</name>
+			<drain>WIL + LOG</drain>
+			<spirits>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Earth</spirit>
+			</spirits>
+			<source>SGG</source>
+			<page>45</page>
+		</tradition>
+		<tradition>
+			<id>241cbc2e-5411-43af-a3c1-7fd3a2709fa2</id>
+			<name>Sorbic Theurgy</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Spirit of Earth</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Man</spirit>
+				<spirit>Spirit of Beasts</spirit>
+			</spirits>
+			<source>SGG</source>
+			<page>51</page>
+		</tradition>
+		<tradition>
+			<id>72374b26-89da-4ca3-aab7-b25a58c7a130</id>
+			<name>Street Witches</name>
+			<drain>WIL + CHA</drain>
+			<spirits>
+				<spirit>Guidance Spirit</spirit>
+				<spirit>Spirit of Water</spirit>
+				<spirit>Spirit of Fire</spirit>
+				<spirit>Spirit of Air</spirit>
+				<spirit>Spirit of Man</spirit>
+			</spirits>
+			<source>SGG</source>
+			<page>52</page>
+		</tradition>
+	</traditions>
+	<spirits>
+		<!--Corebook spirits-->
+		<spirit>
+			<id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
+			<name>Spirit of Air</name>
+			<bod>F-2</bod>
+			<agi>F+3</agi>
+			<rea>F+4</rea>
+			<str>F-3</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+4</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="str">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Psychokinesis</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SR5</source>
+			<page>303</page>
+		</spirit>
+		<spirit>
+			<id>2a0352be-9b13-4e1e-a610-af480f6a1841</id>
+			<name>Spirit of Earth</name>
+			<bod>F+4</bod>
+			<agi>F-2</agi>
+			<rea>F-1</rea>
+			<str>F+4</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)-1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Guard</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Elemental Attack</power>
+				<power>Fear</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SR5</source>
+			<page>303</page>
+		</spirit>
+		<spirit>
+			<id>c5e35ac9-5737-4003-8c9e-eb016d2bccd2</id>
+			<name>Spirit of Beasts</name>
+			<bod>F+2</bod>
+			<agi>F+1</agi>
+			<rea>F+0</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control</power>
+				<power>Astral Form</power>
+				<power>Enhanced Senses (Hearing)</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Fear</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Guard</power>
+				<power>Natural Weapon</power>
+				<power>Noxious Breath</power>
+				<power>Search</power>
+				<power>Venom</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SR5</source>
+			<page>303</page>
+		</spirit>
+		<spirit>
+			<id>c0178bf8-1fc5-4c56-9ce1-92a3ae1adc45</id>
+			<name>Spirit of Fire</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+3</rea>
+			<str>F-2</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+3</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Flight</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Confusion</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Search</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Water, Severe)</weakness>
+			</weaknesses>
+			<source>SR5</source>
+			<page>303</page>
+		</spirit>
+		<spirit>
+			<id>d590d5ad-df91-486c-abb1-21a08a5b8a50</id>
+			<name>Spirit of Man</name>
+			<bod>F+1</bod>
+			<agi>F+0</agi>
+			<rea>F+2</rea>
+			<str>F-2</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="mag">Spellcasting</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Guard</power>
+				<power>Influence</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Fear</power>
+				<power>Innate Spell</power>
+				<power>Movement</power>
+				<power>Psychokinesis</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SR5</source>
+			<page>304</page>
+		</spirit>
+		<spirit>
+			<id>5f284fc2-13dc-42cc-9cd9-231f815ea0bf</id>
+			<name>Spirit of Water</name>
+			<bod>F+0</bod>
+			<agi>F+1</agi>
+			<rea>F+2</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Binding</power>
+				<power>Elemental Attack</power>
+				<power>Energy Aura</power>
+				<power>Guard</power>
+				<power>Weather Control</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Fire, Severe)</weakness>
+			</weaknesses>
+			<source>SR5</source>
+			<page>304</page>
+		</spirit>
+		<!--SG normal spirits-->
+		<spirit>
+			<id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
+			<name>Guardian Spirit</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+3</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Blades</skill>
+				<skill attr="agi">Clubs</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Magical Guard</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Animal Control</power>
+				<power>Concealment</power>
+				<power>Elemental Attack</power>
+				<power>Natural Weaponry</power>
+				<power>Psychokinesis</power>
+				<power>Skill (any Combat skill)</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>193</page>
+		</spirit>
+		<spirit>
+			<id>12028356-5d37-406b-83d1-d25ef18030d1</id>
+			<name>Guidance Spirit</name>
+			<bod>F+3</bod>
+			<agi>F-1</agi>
+			<rea>F+2</rea>
+			<str>F+1</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="log">Arcana</skill>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Confusion</power>
+				<power>Divining</power>
+				<power>Guard</power>
+				<power>Magical Guard</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Search</power>
+				<power>Shadow Cloak</power>
+			</powers>
+			<optionalpowers>
+				<power>Engulf</power>
+				<power>Enhanced Senses (Hearing)</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Fear</power>
+				<power>Influence</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>193</page>
+		</spirit>
+		<spirit>
+			<id>22efb7b7-b822-4243-9fa3-6d87d407e9e5</id>
+			<name>Plant Spirit</name>
+			<bod>F+2</bod>
+			<agi>F-1</agi>
+			<rea>F+0</rea>
+			<str>F+1</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Engulf</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Magical Guard</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+				<power>Silence</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Confusion</power>
+				<power>Movement</power>
+				<power>Noxious Breath</power>
+				<power>Search</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>193</page>
+		</spirit>
+		<spirit>
+			<id>a6906b58-489e-4100-a84d-866a3af4e37a</id>
+			<name>Task Spirit</name>
+			<bod>F+0</bod>
+			<agi>F+0</agi>
+			<rea>F+2</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+3</ini>
+			<skills>
+				<skill attr="int">Artisan</skill>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Enhanced Senses (Hearing)</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Influence</power>
+				<power>Psychokinesis</power>
+				<power>Skill (any Technical or Physical skill)</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>193</page>
+		</spirit>
+		<!--Toxic Spirits-->
+		<spirit>
+			<id></id>
+			<name>Noxious</name>
+			<bod>F-2</bod>
+			<agi>F+3</agi>
+			<rea>F+4</rea>
+			<str>F-3</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+4</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="str">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Engulf (Air)</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Noxious Breath</power>
+				<power>Psychokinesis</power>
+				<power>Weather Control</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>387</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Barren</name>
+			<bod>F+4</bod>
+			<agi>F-2</agi>
+			<rea>F-1</rea>
+			<str>F+4</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)-1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Elemental Attack (Pollutant)</power>
+				<power>Engulf (Earth)</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Fear</power>
+				<power>Guard</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Clean Earth, Severe)</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>88</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Abomination</name>
+			<bod>F+2</bod>
+			<agi>F+1</agi>
+			<rea>F+0</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Gymnastics</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Toxic Critters)</power>
+				<power>Astral Form</power>
+				<power>Enhanced Senses (Hearing)</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Mutagen</power>
+				<power>Natural Weapon</power>
+				<power>Pestilence</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Corrosive Spit</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Mimicry</power>
+				<power>Search</power>
+				<power>Venom</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>87</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Nuclear</name>
+			<bod>F+1</bod>
+			<agi>F+2</agi>
+			<rea>F+3</rea>
+			<str>F-2</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+3</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Flight</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Elemental Attack (Radiation)</power>
+				<power>Energy Aura (Radiation)</power>
+				<power>Engulf (Fire)</power>
+				<power>Materialization</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Confusion</power>
+				<power>Fear</power>
+				<power>Guard</power>
+				<power>Search</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>88</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Plague</name>
+			<bod>F+0</bod>
+			<agi>F+0</agi>
+			<rea>F+2</rea>
+			<str>F-2</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="mag">Spellcasting</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Accident</power>
+				<power>Astral Form</power>
+				<power>Desire Reflection</power>
+				<power>Enhanced Senses (Low-Light Vision)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Fear</power>
+				<power>Materialization</power>
+				<power>Mutagen</power>
+				<power>Pestilence</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Guard</power>
+				<power>Innate Spell</power>
+				<power>Movement</power>
+				<power>Psychokinesis</power>
+			</optionalpowers>
+			<weaknesses></weaknesses>
+			<source>SG</source>
+			<page>88</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Sludge</name>
+			<bod>F+0</bod>
+			<agi>F+1</agi>
+			<rea>F+2</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Elemental Attack (Pollutant)</power>
+				<power>Engulf (Water)</power>
+				<power>Materialization</power>
+				<power>Movement</power>
+				<power>Mutagen</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Accident</power>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Fear</power>
+				<power>Guard</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Clean Water, Severe)</weakness>
+			</weaknesses>
+			<source>SR5</source>
+			<page>304</page>
+		</spirit>
+		<!--Blood Spirits-->
+		<spirit>
+			<id></id>
+			<name>Blood Spirit</name>
+			<bod>F+2</bod>
+			<agi>F+2</agi>
+			<rea>F+0</rea>
+			<str>F+2</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F-1</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="str">Running</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Astral Form</power>
+				<power>Binding</power>
+				<power>Energy Drain (Essence, Touch, Physical Damage)</power>
+				<power>Fear</power>
+				<power>Materialization</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Confusion</power>
+				<power>Guard</power>
+				<power>Movement</power>
+				<power>Natural Weapon</power>
+				<power>Noxious Breath</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Essence Loss (1 point per day)</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>91</page>
+		</spirit>
+		<!--Insect Spirits-->
+		<spirit>
+			<id></id>
+			<name>Caretaker</name>
+			<bod>F+0</bod>
+			<agi>F+1</agi>
+			<rea>F+1</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="cha">Leadership</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Form</power>
+				<power>Guard</power>
+				<power>Hive Mind</power>
+				<power>Inhabitation (Living Vessels)</power>
+				<power>Innate Spell (Physical Barrier)</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Binding</power>
+				<power>Confusion</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Ultrasound)</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+				<weakness>Evanescence</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>98</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Nymph</name>
+			<bod>F-1</bod>
+			<agi>F+0</agi>
+			<rea>F+3</rea>
+			<str>F-1</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+3</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Gymnastics</skill>
+				<skill attr="int">Spellcasting</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Form</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Ultrasound)</power>
+				<power>Hive Mind</power>
+				<power>Inhabitation (Living Vessels)</power>
+				<power>Innate Spell (Illusion Spell)</power>
+				<power>Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Compulsion</power>
+				<power>Fear</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+				<weakness>Evanescence</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>98</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Scout</name>
+			<bod>F+0</bod>
+			<agi>F+2</agi>
+			<rea>F+2</rea>
+			<str>F+0</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+2</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="agi">Gymnastics</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Sneaking</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Form</power>
+				<power>Concealment</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Ultrasound)</power>
+				<power>Hive Mind</power>
+				<power>Inhabitation (Living Vessels)</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Confusion</power>
+				<power>Guard</power>
+				<power>Natural Weapon</power>
+				<power>Noxious Breath</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+				<weakness>Evanescence</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>98</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Soldier</name>
+			<bod>F+3</bod>
+			<agi>F+1</agi>
+			<rea>F+1</rea>
+			<str>F+3</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)+1</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="agi">Exotic Ranged Weapon</skill>
+				<skill attr="agi">Gymnastics</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Form</power>
+				<power>Fear</power>
+				<power>Hive Mind</power>
+				<power>Inhabitation (Living Vessels)</power>
+				<power>Natural Weapon  Sapience</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Binding</power>
+				<power>Magical Guard</power>
+				<power>Noxious Breath</power>
+				<power>Skill (any combat skill)</power>
+				<power>Venom</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+				<weakness>Evanescence</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>98</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Worker</name>
+			<bod>F+0</bod>
+			<agi>F+0</agi>
+			<rea>F+0</rea>
+			<str>F+1</str>
+			<cha>F+0</cha>
+			<int>F+0</int>
+			<log>F+0</log>
+			<wil>F+0</wil>
+			<ini>(F*2)</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Form</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Hive Mind</power>
+				<power>Inhabitation (Living Vessels)</power>
+				<power>Movement</power>
+				<power>Sapience</power>
+				<power>Search</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Enhanced Senses (Ultrasound)</power>
+				<power>Venom</power>
+				<power>Skill (any Technical or Physical skill )</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+				<weakness>Evanescence</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>99</page>
+		</spirit>
+		<spirit>
+			<id></id>
+			<name>Queen</name>
+			<bod>F+5</bod>
+			<agi>F+3</agi>
+			<rea>F+4</rea>
+			<str>F+5</str>
+			<cha>F+0</cha>
+			<int>F+1</int>
+			<log>F+1</log>
+			<wil>F+1</wil>
+			<ini>(F*2)+5</ini>
+			<skills>
+				<skill attr="int">Assensing</skill>
+				<skill attr="wil">Astral Combat</skill>
+				<skill attr="cha">Con</skill>
+				<skill attr="mag">Counterspelling</skill>
+				<skill attr="agi">Gymnastics</skill>
+				<skill attr="cha">Leadership</skill>
+				<skill attr="cha">Negotiation</skill>
+				<skill attr="int">Perception</skill>
+				<skill attr="mag">Spellcasting</skill>
+				<skill attr="agi">Unarmed Combat</skill>
+			</skills>
+			<powers>
+				<power>Animal Control (Insect Type)</power>
+				<power>Astral Gateway</power>
+				<power>Banishing Resistance</power>
+				<power>Compulsion</power>
+				<power>Enhanced Senses (Smell)</power>
+				<power>Enhanced Senses (Thermographic Vision)</power>
+				<power>Enhanced Senses (Ultrasound)</power>
+				<power>Fear</power>
+				<power>Hive Mind</power>
+				<power>Sapience</power>
+				<power>Search</power>
+				<power>Spirit Pact</power>
+				<power>Wealth</power>
+			</powers>
+			<optionalpowers>
+				<power>Concealment</power>
+				<power>Guard</power>
+				<power>Natural Weapon</power>
+				<power>Noxious Breath</power>
+				<power>Venom</power>
+			</optionalpowers>
+			<weaknesses>
+				<weakness>Allergy (Insecticides, Severe)</weakness>
+			</weaknesses>
+			<source>SG</source>
+			<page>99</page>
+		</spirit>
+	</spirits>
+	<drainattributes>
+		<drainattribute>
+			<id>f10d9639-45c8-4c45-87b9-6af0fef73723</id>
+			<name>WIL + CHA</name>
+		</drainattribute>
+		<drainattribute>
+			<id>06b8b7da-1301-4963-aba7-4862024559a8</id>
+			<name>WIL + INT</name>
+		</drainattribute>
+		<drainattribute>
+			<id>aca1fd74-0c25-41d5-b621-434c3892cfb3</id>
+			<name>WIL + LOG</name>
+		</drainattribute>
+	</drainattributes>
 </chummer>

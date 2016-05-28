@@ -22,6 +22,10 @@
 	<name>English (US)</name>
 	<strings>
 		<!-- Region Common Strings -->
+    <string>
+      <key>String_Search</key>
+      <text>Search:</text>
+    </string>
 		<string>
 			<key>String_Limit</key>
 			<text>Limit:</text>
@@ -401,6 +405,10 @@
 		<string>
 			<key>Label_Karma</key>
 			<text>Karma:</text>
+		</string>
+		<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
 		</string>
 		<string>
 			<key>Label_KarmaRemaining</key>
@@ -3411,6 +3419,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_OptionsAllowInitiation</key>
 			<text>Allows Initiation/Submersion using Karma in Create mode.</text>
 		</string>
+    <string>
+      <key>Tip_OptionStrictSkillGroups</key>
+      <text>Disallow breaking of skill groups with karma during create mode</text>
+    </string>
 		<string>
 			<key>Tip_CommonAttributesAug</key>
 			<text>Augmented Attribute value.</text>
@@ -3477,6 +3489,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_SkillGroups</key>
 			<text>Skill Groups</text>
 		</string>
+    <string>
+      <key>Label_SkillGroup_Broken</key>
+      <text>Broken</text>
+    </string>
 		<string>
 			<key>Label_ActiveSkills</key>
 			<text>Active Skills</text>
@@ -4483,6 +4499,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Options_UseCalculatedPublicAwareness</key>
 			<text>Public Awareness should be (Street Cred + Notoriety /3)</text>
 		</string>
+    <string>
+      <key>Checkbox_Options_StrictSkillGroups</key>
+      <text>Strict interprentation of breaking skill groups in create mode</text>
+    </string>
+		<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Don't use Cyberlimbs for calculating augmented Attributes</text>
+		</string>
 		<string>
 			<key>String_SelectBP_LifeModuleSummary</key>
 			<text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
@@ -4834,6 +4858,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Tip_DiceRoller</key>
 			<text>Open Dice Roller</text>
+		</string>
+		<string>
+			<key>Tip_RecoilAccessories</key>
+			<text> + {0} ({1} (Deployable))</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region ASDF Attributes-->
@@ -6413,7 +6441,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
 			<text>Use Restrictions to Recoil Compensation (RG 53)</text>
-		</string>
+		</string>		
 		<string>
 			<key>Checkbox_Options_AutomaticCopyProtection</key>
 			<text>Automatically add Copy Protection plugin to Matrix Programs (requires Unwired)</text>
@@ -6514,7 +6542,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Checkbox_Option_PrintToFileFirst</key>
 			<text>Apply Linux printing fix</text>
 		</string>
-		<string>
+    <string>
 			<key>Label_Options_EssenceDecimals</key>
 			<text>Number of decimal places to round Essence to:</text>
 		</string>
@@ -6531,9 +6559,17 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Technomancers may select Autosofts as Complex Forms</text>
 		</string>
 		<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
+		</string>
+		<string>
 			<key>Message_Options_CloseForms</key>
 			<text>Options are only enumerated on character load. Should we close the current open characters?</text>
-		</string>		
+		</string>
+		<string>
+			<key>Message_Options_SaveForms</key>
+			<text>Would you like to save any changes made to your options?</text>
+		</string>
 		<string>
 			<key>MessageTitle_Options_CloseForms</key>
 			<text>Close Forms</text>
@@ -6857,6 +6893,17 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_SelectExoticSkill_Description</key>
 			<text>Select an Exotic Active Skill to add to your character.</text>
+		</string>
+		<!-- End Region-->
+		<!-- Region Select Gear Window -->
+    <!-- Select Skill Specialisation Window -->
+ 		<string>
+			<key>Title_SelectSkillSpecialization</key>
+ 			<text>Select a Skill Specialization</text>
+		</string>
+		<string>
+			<key>Label_SelectSkillSpecialization_Description</key>
+			<text>Select a Skill Specialization to add to your character.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Select Gear Window -->
@@ -7938,5 +7985,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Label_Condition</key>
 			<text>Condition:</text>
 		</string>
+		<!-- End Region -->
+		<!-- End Region -->
 	</strings>
 </chummer>

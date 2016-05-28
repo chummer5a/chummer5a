@@ -201,6 +201,10 @@ namespace Chummer
             }
             catch { }
 			dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+            if (chkBlackMarketDiscount.Checked)
+            {
+                dblCost = dblCost*0.90;
+            }
 			lblWeaponCost.Text = String.Format("{0:###,###,##0¥}", dblCost);
 			try
 			{

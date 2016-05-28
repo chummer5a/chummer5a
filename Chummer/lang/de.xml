@@ -101,6 +101,10 @@
       <key>Label_Karma</key>
       <text>Karma:</text>
     </string>
+	<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
+		</string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>verbleibendes Karma:</text>
@@ -4189,6 +4193,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>Karma und Nuyen Ausgaben mitschreiben</text>
     </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
+		</string>
     <string>
       <key>Label_Options_NewSpecialization</key>
       <text>Neue Spezialisierung</text>
@@ -7241,6 +7249,10 @@
       <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+		</string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>

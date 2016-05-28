@@ -338,6 +338,13 @@
 			<rating>6</rating>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<bonus>
+				<specificskill>
+					<name>Impersonation</name>
+					<bonus>Rating</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<avail>Rating * 3F</avail>
 			<cost>Rating * 5000</cost>
 			<source>SR5</source>
@@ -449,6 +456,13 @@
 			<capacity>[Rating]</capacity>
 			<avail>Rating * 3</avail>
 			<cost>Rating * 4000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>Rating</value>
+					<condition>Only with appropriate corp, Must be visible</condition>
+				</limitmodifier>
+			</bonus>
 			<source>SR5</source>
 			<page>453</page>
 		</cyberware>
@@ -487,6 +501,13 @@
 			<capacity>[Rating]</capacity>
 			<avail>Rating * 3</avail>
 			<cost>Rating * 4000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>Rating</value>
+					<condition>Only with audio Perception</condition>
+				</limitmodifier>
+			</bonus>
 			<source>SR5</source>
 			<page>453</page>
 		</cyberware>
@@ -543,6 +564,13 @@
 			<capacity>[2]</capacity>
 			<avail>8</avail>
 			<cost>4000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>2</value>
+					<condition>Only with Perception to find the source of a sound</condition>
+				</limitmodifier>
+			</bonus>
 			<source>SR5</source>
 			<page>454</page>
 		</cyberware>
@@ -1127,7 +1155,7 @@
 			<id>7d61f860-0637-4214-914d-c68022361d24</id>
 			<name>Customized Strength</name>
 			<category>Cyberlimb Enhancement</category>
-			<rating>20</rating>
+			<rating>MaximumSTR</rating>
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
@@ -1141,7 +1169,7 @@
 			<id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
 			<name>Customized Agility</name>
 			<category>Cyberlimb Enhancement</category>
-			<rating>20</rating>
+			<rating>MaximumAGI</rating>
 			<minrating>4</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
@@ -1219,6 +1247,13 @@
 			<capacity>[Rating]</capacity>
 			<avail>9</avail>
 			<cost>Rating * 2500</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>Rating</value>
+					<condition>Only with Jumping and Sprinting</condition>
+				</limitmodifier>
+			</bonus>
 			<source>SR5</source>
 			<page>457</page>
 		</cyberware>
@@ -1421,6 +1456,13 @@
 			<capacity>[1]</capacity>
 			<avail>8</avail>
 			<cost>3000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>1</value>
+					<condition>Only for Perception</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>78</page>
 		</cyberware>
@@ -1453,6 +1495,13 @@
 			<category>Headware</category>
 			<ess>0.5</ess>
 			<capacity>0</capacity>
+			<bonus>
+				<specificskill>
+					<name>Disguise</name>
+					<bonus>4</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<avail>12R</avail>
 			<cost>20000</cost>
 			<source>CF</source>
@@ -1489,6 +1538,13 @@
 			<capacity>[1]</capacity>
 			<avail>4</avail>
 			<cost>500</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>2</value>
+					<condition>Only for Navigation</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>80</page>
 		</cyberware>
@@ -1512,6 +1568,13 @@
 			<capacity>[1]</capacity>
 			<avail>4</avail>
 			<cost>1000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>2</value>
+					<condition>Only for Performance, Must use linked synthtrument</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>81</page>
 		</cyberware>
@@ -1547,6 +1610,12 @@
 			<capacity>[2]</capacity>
 			<avail>8</avail>
 			<cost>1000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-1</value>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>75</page>
 		</cyberware>
@@ -1787,6 +1856,13 @@
 			<capacity>[1]</capacity>
 			<avail>8</avail>
 			<cost>500</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-1</value>
+					<condition>Only for making repairs, typing, dancing etc, Must be engaged</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>83</page>
 		</cyberware>
@@ -1820,6 +1896,13 @@
 			<capacity>[3]</capacity>
 			<avail>10</avail>
 			<cost>2000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only for Knockdown Test, Must be engaged</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>84</page>
 		</cyberware>
@@ -1875,6 +1958,13 @@
 			<capacity>[2]</capacity>
 			<avail>8</avail>
 			<cost>2000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only wfor climbing</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -1886,6 +1976,18 @@
 			<capacity>0</capacity>
 			<avail>8</avail>
 			<cost>6000</cost>
+			<bonus>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>2</value>
+					<condition>Only for Escape Artist and Grapple, Must be loosened</condition>
+				</limitmodifier>
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only for test involving endurance, Must be tightened</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -1916,7 +2018,7 @@
 					<name precedence="1">REA</name>
 					<val>Rating</val>
 				</specificattribute>
-				<skillwire>Rating*2</skillwire>
+        <skillwire>Rating * 2</skillwire>
 			</bonus>
 			<source>CF</source>
 			<page>84</page>
@@ -2009,7 +2111,7 @@
 		</cyberware>
 		<cyberware>
 			<id>1c89a29c-ce58-483f-8777-b5b1f6a733c1</id>
-			<name>Small LED Tatoo</name>
+			<name>Small LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.05</ess>
 			<capacity>1</capacity>
@@ -2020,7 +2122,7 @@
 		</cyberware>
 		<cyberware>
 			<id>a5eac202-c61b-4757-826b-f4ae00c8b87f</id>
-			<name>Medium LED Tatoo</name>
+			<name>Medium LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.1</ess>
 			<capacity>2</capacity>
@@ -2031,7 +2133,7 @@
 		</cyberware>
 		<cyberware>
 			<id>5578f51e-fb72-4247-9126-a4b626a12308</id>
-			<name>Large LED Tatoo</name>
+			<name>Large LED Tattoo</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.2</ess>
 			<capacity>[4]</capacity>
@@ -2092,6 +2194,11 @@
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>2000</cost>
+			<limitmodifier>
+					<limit>Physical</limit>
+					<value>2</value>
+					<condition>Only for Sneaking, Must be loosened</condition>
+				</limitmodifier>
 			<source>CF</source>
 			<page>74</page>
 		</cyberware>
@@ -2309,6 +2416,11 @@
 			<ess>0.25</ess>
 			<bonus>
 				<selectside />
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only for Stealth group, Must be in Pairs</condition>
+				</limitmodifier>
 			</bonus>
 			<capacity>[4]</capacity>
 			<avail>+4</avail>
@@ -2352,6 +2464,11 @@
 			<ess>0.3</ess>
 			<bonus>
 				<selectside />
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-1</value>
+					<condition>Only when used as hand</condition>
+				</limitmodifier>
 			</bonus>
 			<capacity>[2]</capacity>
 			<avail>8</avail>
@@ -2366,6 +2483,11 @@
 			<ess>0.5</ess>
 			<bonus>
 				<selectside />
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-1</value>
+					<condition>Only when attacking with the legs</condition>
+				</limitmodifier>
 			</bonus>
 			<addweapon>Raptor Foot</addweapon>
 			<capacity>[4]</capacity>
@@ -2381,6 +2503,11 @@
 			<ess>0</ess>
 			<bonus>
 				<selectside />
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>-1</value>
+					<condition>Only when in use</condition>
+				</limitmodifier>
 			</bonus>
 			<capacity>[2]</capacity>
 			<avail>4</avail>
@@ -2413,6 +2540,11 @@
 			<ess>0</ess>
 			<bonus>
 				<selectside />
+				<limitmodifier>
+					<limit>Physical</limit>
+					<value>1</value>
+					<condition>Only with manual dexterity</condition>
+				</limitmodifier>
 			</bonus>
 			<capacity>[2]</capacity>
 			<avail>6</avail>
@@ -2793,19 +2925,27 @@
 			<ess>0.2</ess>
 			<rating>6</rating>
 			<capacity>0</capacity>
+			<bonus>
+				<specificskill>
+					<name>Impersonation</name>
+					<bonus>Rating</bonus>
+					<applytorating>no</applytorating>
+				</specificskill>
+			</bonus>
 			<avail>16F</avail>
 			<cost>Rating * 20000</cost>
 			<source>CF</source>
-			<page>151</page>
+			<page>152</page>
 		</cyberware>
 		<cyberware>
 			<id>2b7745f6-96ca-4f15-ad32-db216e7d5aac</id>
 			<name>Dynamic Handprints</name>
 			<category>Nanocybernetics</category>
 			<ess>0.2</ess>
+			<rating>6</rating>
 			<capacity>0</capacity>
 			<avail>12F</avail>
-			<cost>21000</cost>
+			<cost>21000 * Rating</cost>
 			<source>CF</source>
 			<page>151</page>
 		</cyberware>
@@ -2856,8 +2996,9 @@
 			<category>Nanocybernetics</category>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<rating>6</rating>
 			<avail>16F</avail>
-			<cost>19000</cost>
+			<cost>19000 * Rating</cost>
 			<source>CF</source>
 			<page>151</page>
 		</cyberware>
@@ -3078,6 +3219,13 @@
 			<capacity>[0]</capacity>
 			<cost>Rating * 7500</cost>
 			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>Rating</value>
+					<condition>Only with Intuition-linked skills</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>149</page>
 		</cyberware>
@@ -3091,6 +3239,13 @@
 			<capacity>[0]</capacity>
 			<cost>Rating * 7500</cost>
 			<forcegrade>Standard</forcegrade>
+			<bonus>
+				<limitmodifier>
+					<limit>Mental</limit>
+					<value>1</value>
+					<condition>Only with Logic-based skills</condition>
+				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>150</page>
 		</cyberware>
@@ -3159,7 +3314,7 @@
 			<bonus>
 				<specificskill>
 					<name>Intimidation</name>
-					<bonus>1</bonus>
+					<bonus>Rating</bonus>
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>

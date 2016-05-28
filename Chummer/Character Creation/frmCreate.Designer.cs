@@ -79,9 +79,6 @@ namespace Chummer
 			this.lblAttributesMetatype = new System.Windows.Forms.Label();
 			this.lblAttributes = new System.Windows.Forms.Label();
 			this.lblNuyen = new System.Windows.Forms.Label();
-			this.lblSkillGroups = new System.Windows.Forms.Label();
-			this.lblActiveSkills = new System.Windows.Forms.Label();
-			this.lblKnowledgeSkills = new System.Windows.Forms.Label();
 			this.lblSpirits = new System.Windows.Forms.Label();
 			this.lblComplexForms = new System.Windows.Forms.Label();
 			this.lblSprites = new System.Windows.Forms.Label();
@@ -156,12 +153,6 @@ namespace Chummer
 			this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
 			this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
 			this.lblPublicAware = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label13 = new System.Windows.Forms.Label();
-			this.label14 = new System.Windows.Forms.Label();
 			this.lblSocialLabel = new System.Windows.Forms.Label();
 			this.lblMentalLabel = new System.Windows.Forms.Label();
 			this.lblPhysicalLabel = new System.Windows.Forms.Label();
@@ -397,17 +388,7 @@ namespace Chummer
 			this.nudNuyen = new System.Windows.Forms.NumericUpDown();
 			this.lblNuyenTotal = new System.Windows.Forms.Label();
 			this.tabSkills = new System.Windows.Forms.TabPage();
-			this.splitSkills = new System.Windows.Forms.SplitContainer();
-			this.cmdAddExoticSkill = new System.Windows.Forms.Button();
-			this.lblBuyWithKarma = new System.Windows.Forms.Label();
-			this.cboSkillFilter = new System.Windows.Forms.ComboBox();
-			this.panActiveSkills = new System.Windows.Forms.FlowLayoutPanel();
-			this.panSkillGroups = new System.Windows.Forms.Panel();
-			this.label2 = new System.Windows.Forms.Label();
-			this.lblKnowledgeSkillPoints = new System.Windows.Forms.Label();
-			this.panKnowledgeSkills = new System.Windows.Forms.Panel();
-			this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
-			this.cmdAddKnowledgeSkill = new System.Windows.Forms.Button();
+			this.tabSkillUc = new Chummer.UI.Skills.SkillsTabUserControl();
 			this.tabLimits = new System.Windows.Forms.TabPage();
 			this.lblAstral = new System.Windows.Forms.Label();
 			this.lblSocial = new System.Windows.Forms.Label();
@@ -532,6 +513,10 @@ namespace Chummer
 			this.treMetamagic = new Chummer.helpers.TreeView();
 			this.cmdAddMetamagic = new System.Windows.Forms.Button();
 			this.tabCyberware = new System.Windows.Forms.TabPage();
+			this.lblCyberlimbSTR = new System.Windows.Forms.Label();
+			this.lblCyberlimbAGI = new System.Windows.Forms.Label();
+			this.lblCyberlimbSTRLabel = new System.Windows.Forms.Label();
+			this.lblCyberlimbAGILabel = new System.Windows.Forms.Label();
 			this.lblCyberFirewall = new System.Windows.Forms.Label();
 			this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
 			this.lblCyberDataProcessing = new System.Windows.Forms.Label();
@@ -1011,10 +996,6 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudBOD)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).BeginInit();
 			this.tabSkills.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
-			this.splitSkills.Panel1.SuspendLayout();
-			this.splitSkills.Panel2.SuspendLayout();
-			this.splitSkills.SuspendLayout();
 			this.tabLimits.SuspendLayout();
 			this.tabMartialArts.SuspendLayout();
 			this.tabMagician.SuspendLayout();
@@ -1265,41 +1246,6 @@ namespace Chummer
 			this.lblNuyen.Tag = "Label_Nuyen";
 			this.lblNuyen.Text = "Nuyen";
 			this.tipTooltip.SetToolTip(this.lblNuyen, "The amount of Nuyen your character has to purchase equipment. 1 BP = 5,000¥.");
-			// 
-			// lblSkillGroups
-			// 
-			this.lblSkillGroups.AutoSize = true;
-			this.lblSkillGroups.Location = new System.Drawing.Point(3, 7);
-			this.lblSkillGroups.Name = "lblSkillGroups";
-			this.lblSkillGroups.Size = new System.Drawing.Size(63, 13);
-			this.lblSkillGroups.TabIndex = 31;
-			this.lblSkillGroups.Tag = "Label_SkillGroups";
-			this.lblSkillGroups.Text = "Skill Groups";
-			this.tipTooltip.SetToolTip(this.lblSkillGroups, "Skill Groups cost 10 BP per point.");
-			// 
-			// lblActiveSkills
-			// 
-			this.lblActiveSkills.AutoSize = true;
-			this.lblActiveSkills.Location = new System.Drawing.Point(268, 31);
-			this.lblActiveSkills.Name = "lblActiveSkills";
-			this.lblActiveSkills.Size = new System.Drawing.Size(64, 13);
-			this.lblActiveSkills.TabIndex = 33;
-			this.lblActiveSkills.Tag = "Label_ActiveSkills";
-			this.lblActiveSkills.Text = "Active Skills";
-			this.tipTooltip.SetToolTip(this.lblActiveSkills, "Skills cost 4 BP per point and 2 BP for a Specialization. Characters may have up " +
-        "to 1 Active Skill at Rating 6 or two at Rating 5. The rest must be at Rating 4 o" +
-        "r lower.");
-			// 
-			// lblKnowledgeSkills
-			// 
-			this.lblKnowledgeSkills.AutoSize = true;
-			this.lblKnowledgeSkills.Location = new System.Drawing.Point(0, 5);
-			this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
-			this.lblKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
-			this.lblKnowledgeSkills.TabIndex = 35;
-			this.lblKnowledgeSkills.Tag = "Label_KnowledgeSkills";
-			this.lblKnowledgeSkills.Text = "Knowledge Skills";
-			this.tipTooltip.SetToolTip(this.lblKnowledgeSkills, resources.GetString("lblKnowledgeSkills.ToolTip"));
 			// 
 			// lblSpirits
 			// 
@@ -2140,66 +2086,6 @@ namespace Chummer
 			this.lblPublicAware.TabIndex = 86;
 			this.lblPublicAware.Tag = "Label_PublicAwareness";
 			this.lblPublicAware.Text = "Public Aware:";
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(474, 31);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(36, 13);
-			this.label8.TabIndex = 45;
-			this.label8.Tag = "String_Points";
-			this.label8.Text = "Points";
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(523, 31);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(37, 13);
-			this.label9.TabIndex = 46;
-			this.label9.Tag = "String_Karma";
-			this.label9.Text = "Karma";
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(255, 31);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(37, 13);
-			this.label10.TabIndex = 48;
-			this.label10.Tag = "String_Karma";
-			this.label10.Text = "Karma";
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(206, 31);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(36, 13);
-			this.label11.TabIndex = 47;
-			this.label11.Tag = "String_Points";
-			this.label11.Text = "Points";
-			// 
-			// label13
-			// 
-			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(204, 7);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(37, 13);
-			this.label13.TabIndex = 48;
-			this.label13.Tag = "String_Karma";
-			this.label13.Text = "Karma";
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(157, 7);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(36, 13);
-			this.label14.TabIndex = 47;
-			this.label14.Tag = "String_Points";
-			this.label14.Text = "Points";
 			// 
 			// lblSocialLabel
 			// 
@@ -4619,7 +4505,7 @@ namespace Chummer
 			// 
 			this.nudNuyen.Location = new System.Drawing.Point(694, 63);
 			this.nudNuyen.Maximum = new decimal(new int[] {
-            200,
+            1073704,
             0,
             0,
             0});
@@ -4644,163 +4530,24 @@ namespace Chummer
 			// 
 			// tabSkills
 			// 
-			this.tabSkills.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.tabSkills.Controls.Add(this.splitSkills);
+			this.tabSkills.Controls.Add(this.tabSkillUc);
 			this.tabSkills.Location = new System.Drawing.Point(4, 22);
 			this.tabSkills.Name = "tabSkills";
 			this.tabSkills.Size = new System.Drawing.Size(838, 611);
-			this.tabSkills.TabIndex = 6;
+			this.tabSkills.TabIndex = 14;
 			this.tabSkills.Tag = "Tab_Skills";
 			this.tabSkills.Text = "Skills";
+			this.tabSkills.UseVisualStyleBackColor = true;
 			// 
-			// splitSkills
+			// tabSkillUc
 			// 
-			this.splitSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.splitSkills.BackColor = System.Drawing.SystemColors.InactiveCaption;
-			this.splitSkills.Location = new System.Drawing.Point(0, 0);
-			this.splitSkills.Name = "splitSkills";
-			this.splitSkills.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitSkills.Panel1
-			// 
-			this.splitSkills.Panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.splitSkills.Panel1.Controls.Add(this.cmdAddExoticSkill);
-			this.splitSkills.Panel1.Controls.Add(this.lblBuyWithKarma);
-			this.splitSkills.Panel1.Controls.Add(this.cboSkillFilter);
-			this.splitSkills.Panel1.Controls.Add(this.label13);
-			this.splitSkills.Panel1.Controls.Add(this.label14);
-			this.splitSkills.Panel1.Controls.Add(this.label9);
-			this.splitSkills.Panel1.Controls.Add(this.label8);
-			this.splitSkills.Panel1.Controls.Add(this.panActiveSkills);
-			this.splitSkills.Panel1.Controls.Add(this.lblSkillGroups);
-			this.splitSkills.Panel1.Controls.Add(this.lblActiveSkills);
-			this.splitSkills.Panel1.Controls.Add(this.panSkillGroups);
-			this.splitSkills.Panel1.Resize += new System.EventHandler(this.splitSkills_Panel1_Resize);
-			// 
-			// splitSkills.Panel2
-			// 
-			this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
-			this.splitSkills.Panel2.Controls.Add(this.label2);
-			this.splitSkills.Panel2.Controls.Add(this.label10);
-			this.splitSkills.Panel2.Controls.Add(this.label11);
-			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkills);
-			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPoints);
-			this.splitSkills.Panel2.Controls.Add(this.panKnowledgeSkills);
-			this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPointsTitle);
-			this.splitSkills.Panel2.Controls.Add(this.cmdAddKnowledgeSkill);
-			this.splitSkills.Panel2.Resize += new System.EventHandler(this.splitSkills_Panel2_Resize);
-			this.splitSkills.Size = new System.Drawing.Size(838, 611);
-			this.splitSkills.SplitterDistance = 450;
-			this.splitSkills.TabIndex = 41;
-			// 
-			// cmdAddExoticSkill
-			// 
-			this.cmdAddExoticSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.cmdAddExoticSkill.AutoSize = true;
-			this.cmdAddExoticSkill.Location = new System.Drawing.Point(537, 3);
-			this.cmdAddExoticSkill.Name = "cmdAddExoticSkill";
-			this.cmdAddExoticSkill.Size = new System.Drawing.Size(91, 23);
-			this.cmdAddExoticSkill.TabIndex = 40;
-			this.cmdAddExoticSkill.Tag = "Button_AddExoticSkill";
-			this.cmdAddExoticSkill.Text = "Add Exotic Skill";
-			this.cmdAddExoticSkill.UseVisualStyleBackColor = true;
-			this.cmdAddExoticSkill.Click += new System.EventHandler(this.cmdAddExoticSkill_Click);
-			// 
-			// lblBuyWithKarma
-			// 
-			this.lblBuyWithKarma.AutoSize = true;
-			this.lblBuyWithKarma.Location = new System.Drawing.Point(780, 31);
-			this.lblBuyWithKarma.Name = "lblBuyWithKarma";
-			this.lblBuyWithKarma.Size = new System.Drawing.Size(83, 13);
-			this.lblBuyWithKarma.TabIndex = 49;
-			this.lblBuyWithKarma.Tag = "String_BuyWithKarma";
-			this.lblBuyWithKarma.Text = "Buy With Karma";
-			// 
-			// cboSkillFilter
-			// 
-			this.cboSkillFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.cboSkillFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboSkillFilter.FormattingEnabled = true;
-			this.cboSkillFilter.Location = new System.Drawing.Point(634, 5);
-			this.cboSkillFilter.Name = "cboSkillFilter";
-			this.cboSkillFilter.Size = new System.Drawing.Size(201, 21);
-			this.cboSkillFilter.TabIndex = 43;
-			this.cboSkillFilter.SelectedIndexChanged += new System.EventHandler(this.cboSkillFilter_SelectedIndexChanged);
-			// 
-			// panActiveSkills
-			// 
-			this.panActiveSkills.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.panActiveSkills.AutoScroll = true;
-			this.panActiveSkills.Location = new System.Drawing.Point(271, 47);
-			this.panActiveSkills.Margin = new System.Windows.Forms.Padding(0);
-			this.panActiveSkills.Name = "panActiveSkills";
-			this.panActiveSkills.Size = new System.Drawing.Size(565, 396);
-			this.panActiveSkills.TabIndex = 44;
-			this.panActiveSkills.Click += new System.EventHandler(this.panActiveSkills_Click);
-			// 
-			// panSkillGroups
-			// 
-			this.panSkillGroups.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.panSkillGroups.AutoScroll = true;
-			this.panSkillGroups.Location = new System.Drawing.Point(6, 23);
-			this.panSkillGroups.Name = "panSkillGroups";
-			this.panSkillGroups.Size = new System.Drawing.Size(264, 421);
-			this.panSkillGroups.TabIndex = 32;
-			this.panSkillGroups.Click += new System.EventHandler(this.panSkillGroups_Click);
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(512, 31);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(83, 13);
-			this.label2.TabIndex = 50;
-			this.label2.Tag = "String_BuyWithKarma";
-			this.label2.Text = "Buy With Karma";
-			// 
-			// lblKnowledgeSkillPoints
-			// 
-			this.lblKnowledgeSkillPoints.AutoSize = true;
-			this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(310, 5);
-			this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
-			this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
-			this.lblKnowledgeSkillPoints.TabIndex = 37;
-			this.lblKnowledgeSkillPoints.Text = "0 of 0";
-			// 
-			// panKnowledgeSkills
-			// 
-			this.panKnowledgeSkills.AutoScroll = true;
-			this.panKnowledgeSkills.Location = new System.Drawing.Point(3, 50);
-			this.panKnowledgeSkills.Name = "panKnowledgeSkills";
-			this.panKnowledgeSkills.Size = new System.Drawing.Size(835, 104);
-			this.panKnowledgeSkills.TabIndex = 39;
-			this.panKnowledgeSkills.Click += new System.EventHandler(this.panKnowledgeSkills_Click);
-			// 
-			// lblKnowledgeSkillPointsTitle
-			// 
-			this.lblKnowledgeSkillPointsTitle.AutoSize = true;
-			this.lblKnowledgeSkillPointsTitle.Location = new System.Drawing.Point(110, 5);
-			this.lblKnowledgeSkillPointsTitle.Name = "lblKnowledgeSkillPointsTitle";
-			this.lblKnowledgeSkillPointsTitle.Size = new System.Drawing.Size(194, 13);
-			this.lblKnowledgeSkillPointsTitle.TabIndex = 36;
-			this.lblKnowledgeSkillPointsTitle.Tag = "Label_FreeKnowledgeSkills";
-			this.lblKnowledgeSkillPointsTitle.Text = "Free Knowledge Skill Points Remaining:";
-			// 
-			// cmdAddKnowledgeSkill
-			// 
-			this.cmdAddKnowledgeSkill.Location = new System.Drawing.Point(3, 21);
-			this.cmdAddKnowledgeSkill.Name = "cmdAddKnowledgeSkill";
-			this.cmdAddKnowledgeSkill.Size = new System.Drawing.Size(75, 23);
-			this.cmdAddKnowledgeSkill.TabIndex = 38;
-			this.cmdAddKnowledgeSkill.Tag = "Button_AddSkill";
-			this.cmdAddKnowledgeSkill.Text = "&Add Skill";
-			this.cmdAddKnowledgeSkill.UseVisualStyleBackColor = true;
-			this.cmdAddKnowledgeSkill.Click += new System.EventHandler(this.cmdAddKnowledgeSkill_Click);
+			this.tabSkillUc.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabSkillUc.Location = new System.Drawing.Point(0, 0);
+			this.tabSkillUc.Name = "tabSkillUc";
+			this.tabSkillUc.ObjCharacter = null;
+			this.tabSkillUc.Size = new System.Drawing.Size(838, 611);
+			this.tabSkillUc.TabIndex = 0;
+			this.tabSkillUc.Tag = "";
 			// 
 			// tabLimits
 			// 
@@ -6275,6 +6022,10 @@ namespace Chummer
 			// tabCyberware
 			// 
 			this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.tabCyberware.Controls.Add(this.lblCyberlimbSTR);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbAGI);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbSTRLabel);
+			this.tabCyberware.Controls.Add(this.lblCyberlimbAGILabel);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewall);
 			this.tabCyberware.Controls.Add(this.lblCyberFirewallLabel);
 			this.tabCyberware.Controls.Add(this.lblCyberDataProcessing);
@@ -6320,6 +6071,47 @@ namespace Chummer
 			this.tabCyberware.TabIndex = 4;
 			this.tabCyberware.Tag = "Tab_Cyberware";
 			this.tabCyberware.Text = "Cyberware and Bioware";
+			// 
+			// lblCyberlimbSTR
+			// 
+			this.lblCyberlimbSTR.AutoSize = true;
+			this.lblCyberlimbSTR.Location = new System.Drawing.Point(685, 174);
+			this.lblCyberlimbSTR.Name = "lblCyberlimbSTR";
+			this.lblCyberlimbSTR.Size = new System.Drawing.Size(19, 13);
+			this.lblCyberlimbSTR.TabIndex = 225;
+			this.lblCyberlimbSTR.Text = "[0]";
+			this.lblCyberlimbSTR.Visible = false;
+			// 
+			// lblCyberlimbAGI
+			// 
+			this.lblCyberlimbAGI.AutoSize = true;
+			this.lblCyberlimbAGI.Location = new System.Drawing.Point(685, 151);
+			this.lblCyberlimbAGI.Name = "lblCyberlimbAGI";
+			this.lblCyberlimbAGI.Size = new System.Drawing.Size(19, 13);
+			this.lblCyberlimbAGI.TabIndex = 224;
+			this.lblCyberlimbAGI.Text = "[0]";
+			this.lblCyberlimbAGI.Visible = false;
+			// 
+			// lblCyberlimbSTRLabel
+			// 
+			this.lblCyberlimbSTRLabel.Location = new System.Drawing.Point(598, 174);
+			this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
+			this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
+			this.lblCyberlimbSTRLabel.TabIndex = 223;
+			this.lblCyberlimbSTRLabel.Tag = "";
+			this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
+			this.lblCyberlimbSTRLabel.Visible = false;
+			// 
+			// lblCyberlimbAGILabel
+			// 
+			this.lblCyberlimbAGILabel.AutoSize = true;
+			this.lblCyberlimbAGILabel.Location = new System.Drawing.Point(598, 151);
+			this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
+			this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
+			this.lblCyberlimbAGILabel.TabIndex = 222;
+			this.lblCyberlimbAGILabel.Tag = "";
+			this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
+			this.lblCyberlimbAGILabel.Visible = false;
 			// 
 			// lblCyberFirewall
 			// 
@@ -10954,12 +10746,6 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudBOD)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudNuyen)).EndInit();
 			this.tabSkills.ResumeLayout(false);
-			this.splitSkills.Panel1.ResumeLayout(false);
-			this.splitSkills.Panel1.PerformLayout();
-			this.splitSkills.Panel2.ResumeLayout(false);
-			this.splitSkills.Panel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitSkills)).EndInit();
-			this.splitSkills.ResumeLayout(false);
 			this.tabLimits.ResumeLayout(false);
 			this.tabLimits.PerformLayout();
 			this.tabMartialArts.ResumeLayout(false);
@@ -11107,15 +10893,6 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudCyberwareRating;
         private System.Windows.Forms.Button cmdDeleteCyberware;
         private System.Windows.Forms.Button cmdAddBioware;
-        private System.Windows.Forms.TabPage tabSkills;
-        private System.Windows.Forms.Panel panSkillGroups;
-        private System.Windows.Forms.Label lblSkillGroups;
-        private System.Windows.Forms.Label lblKnowledgeSkillPoints;
-        private System.Windows.Forms.Label lblKnowledgeSkillPointsTitle;
-        private System.Windows.Forms.Button cmdAddKnowledgeSkill;
-        private System.Windows.Forms.Panel panKnowledgeSkills;
-        private System.Windows.Forms.Label lblKnowledgeSkills;
-        private System.Windows.Forms.Label lblActiveSkills;
         private System.Windows.Forms.TabControl tabInfo;
         private System.Windows.Forms.TabPage tabBPSummary;
         private System.Windows.Forms.Label lblEnemiesBP;
@@ -11370,7 +11147,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblLifestyleComfortsLabel;
         private System.Windows.Forms.Label lblLifestyleQualities;
         private System.Windows.Forms.Label lblLifestyleQualitiesLabel;
-        private System.Windows.Forms.Button cmdAddExoticSkill;
         private System.Windows.Forms.TextBox txtPlayerName;
         private System.Windows.Forms.Label lblPlayerName;
         private System.Windows.Forms.CheckBox chkWeaponAccessoryInstalled;
@@ -11412,7 +11188,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblFadingAttributesValue;
         private System.Windows.Forms.Label lblFadingAttributes;
         private System.Windows.Forms.Label lblFadingAttributesLabel;
-        private System.Windows.Forms.SplitContainer splitSkills;
         private System.Windows.Forms.ContextMenuStrip cmsComplexForm;
         private System.Windows.Forms.ToolStripMenuItem tsAddComplexFormOption;
         private System.Windows.Forms.NumericUpDown nudVehicleGearQty;
@@ -11509,8 +11284,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblSwim;
         private System.Windows.Forms.Label lblSwimLabel;
         private System.Windows.Forms.Button cmdAddLocation;
-        private System.Windows.Forms.ComboBox cboSkillFilter;
-        private System.Windows.Forms.FlowLayoutPanel panActiveSkills;
         private System.Windows.Forms.Label lblGearAP;
         private System.Windows.Forms.Label lblGearAPLabel;
         private System.Windows.Forms.Label lblGearDamage;
@@ -11800,12 +11573,6 @@ namespace Chummer
         internal System.Windows.Forms.NumericUpDown nudKREA;
         internal System.Windows.Forms.NumericUpDown nudKAGI;
         internal System.Windows.Forms.NumericUpDown nudKBOD;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
         private System.Windows.Forms.Button cmdAddContact;
@@ -11813,8 +11580,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabEnemies;
         private System.Windows.Forms.FlowLayoutPanel panEnemies;
         private System.Windows.Forms.Button cmdAddEnemy;
-        private System.Windows.Forms.Label lblBuyWithKarma;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox chkInitiationSchooling;
         private System.Windows.Forms.ContextMenuStrip cmsInitiationNotes;
         private System.Windows.Forms.ToolStripMenuItem tsInitiationNotes;
@@ -11907,6 +11672,12 @@ namespace Chummer
 		private System.Windows.Forms.Label lblVehicleElectromagnetic;
 		private System.Windows.Forms.Label lblVehicleDroneModSlots;
 		private System.Windows.Forms.Label lblVehicleDroneModSlotsLabel;
+        private System.Windows.Forms.Label lblCyberlimbSTR;
+        private System.Windows.Forms.Label lblCyberlimbAGI;
+        private System.Windows.Forms.Label lblCyberlimbSTRLabel;
+        private System.Windows.Forms.Label lblCyberlimbAGILabel;
+		private System.Windows.Forms.TabPage tabSkills;
+		private UI.Skills.SkillsTabUserControl tabSkillUc;
 	}
 }
 

@@ -41,10 +41,13 @@
             this.lblBP = new System.Windows.Forms.Label();
             this.lblBPLabel = new System.Windows.Forms.Label();
             this.chkFree = new System.Windows.Forms.CheckBox();
-            this.chkMetagenetic = new System.Windows.Forms.CheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.lblMinimumLabel = new System.Windows.Forms.Label();
+            this.lblMinimum = new System.Windows.Forms.Label();
+            this.lblCostLabel = new System.Windows.Forms.Label();
+            this.lblCost = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lstLifestyleQualities
@@ -136,7 +139,7 @@
             this.chkLimitList.AutoSize = true;
             this.chkLimitList.Checked = true;
             this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkLimitList.Location = new System.Drawing.Point(296, 111);
+            this.chkLimitList.Location = new System.Drawing.Point(296, 168);
             this.chkLimitList.Name = "chkLimitList";
             this.chkLimitList.Size = new System.Drawing.Size(169, 17);
             this.chkLimitList.TabIndex = 6;
@@ -159,15 +162,15 @@
             this.lblBPLabel.AutoSize = true;
             this.lblBPLabel.Location = new System.Drawing.Point(293, 38);
             this.lblBPLabel.Name = "lblBPLabel";
-            this.lblBPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblBPLabel.Size = new System.Drawing.Size(23, 13);
             this.lblBPLabel.TabIndex = 2;
-            this.lblBPLabel.Tag = "Label_Karma";
-            this.lblBPLabel.Text = "Karma:";
+            this.lblBPLabel.Tag = "Label_LP";
+            this.lblBPLabel.Text = "LP:";
             // 
             // chkFree
             // 
             this.chkFree.AutoSize = true;
-            this.chkFree.Location = new System.Drawing.Point(296, 134);
+            this.chkFree.Location = new System.Drawing.Point(296, 191);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(50, 17);
             this.chkFree.TabIndex = 8;
@@ -175,18 +178,6 @@
             this.chkFree.Text = "Free!";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
-            // 
-            // chkMetagenetic
-            // 
-            this.chkMetagenetic.AutoSize = true;
-            this.chkMetagenetic.Location = new System.Drawing.Point(296, 180);
-            this.chkMetagenetic.Name = "chkMetagenetic";
-            this.chkMetagenetic.Size = new System.Drawing.Size(180, 17);
-            this.chkMetagenetic.TabIndex = 7;
-            this.chkMetagenetic.Tag = "Checkbox_SelectQuality_Metagenetic";
-            this.chkMetagenetic.Text = "Show only Metagenetic Qualities";
-            this.chkMetagenetic.UseVisualStyleBackColor = true;
-            this.chkMetagenetic.CheckedChanged += new System.EventHandler(this.chkMetagenetic_CheckedChanged);
             // 
             // txtSearch
             // 
@@ -217,6 +208,43 @@
             this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.tipTooltip.ToolTipTitle = "Chummer Help";
             // 
+            // lblMinimumLabel
+            // 
+            this.lblMinimumLabel.AutoSize = true;
+            this.lblMinimumLabel.Location = new System.Drawing.Point(293, 84);
+            this.lblMinimumLabel.Name = "lblMinimumLabel";
+            this.lblMinimumLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblMinimumLabel.TabIndex = 15;
+            this.lblMinimumLabel.Text = "Minimum:";
+            // 
+            // lblMinimum
+            // 
+            this.lblMinimum.AutoSize = true;
+            this.lblMinimum.Location = new System.Drawing.Point(344, 84);
+            this.lblMinimum.Name = "lblMinimum";
+            this.lblMinimum.Size = new System.Drawing.Size(54, 13);
+            this.lblMinimum.TabIndex = 16;
+            this.lblMinimum.Text = "[Minimum]";
+            // 
+            // lblCostLabel
+            // 
+            this.lblCostLabel.AutoSize = true;
+            this.lblCostLabel.Location = new System.Drawing.Point(293, 108);
+            this.lblCostLabel.Name = "lblCostLabel";
+            this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblCostLabel.TabIndex = 17;
+            this.lblCostLabel.Tag = "Label_Cost";
+            this.lblCostLabel.Text = "Cost:";
+            // 
+            // lblCost
+            // 
+            this.lblCost.AutoSize = true;
+            this.lblCost.Location = new System.Drawing.Point(344, 108);
+            this.lblCost.Name = "lblCost";
+            this.lblCost.Size = new System.Drawing.Size(34, 13);
+            this.lblCost.TabIndex = 18;
+            this.lblCost.Text = "[Cost]";
+            // 
             // frmSelectLifestyleQuality
             // 
             this.AcceptButton = this.cmdOK;
@@ -224,9 +252,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(517, 454);
+            this.Controls.Add(this.lblCost);
+            this.Controls.Add(this.lblCostLabel);
+            this.Controls.Add(this.lblMinimum);
+            this.Controls.Add(this.lblMinimumLabel);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.lblSearchLabel);
-            this.Controls.Add(this.chkMetagenetic);
             this.Controls.Add(this.chkFree);
             this.Controls.Add(this.lblBP);
             this.Controls.Add(this.lblBPLabel);
@@ -267,9 +298,12 @@
 		private System.Windows.Forms.Label lblBP;
 		private System.Windows.Forms.Label lblBPLabel;
 		private System.Windows.Forms.CheckBox chkFree;
-		private System.Windows.Forms.CheckBox chkMetagenetic;
 		private System.Windows.Forms.TextBox txtSearch;
 		private System.Windows.Forms.Label lblSearchLabel;
 		private System.Windows.Forms.ToolTip tipTooltip;
-	}
+        private System.Windows.Forms.Label lblMinimumLabel;
+        private System.Windows.Forms.Label lblMinimum;
+        private System.Windows.Forms.Label lblCostLabel;
+        private System.Windows.Forms.Label lblCost;
+    }
 }

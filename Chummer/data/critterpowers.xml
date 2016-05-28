@@ -238,6 +238,9 @@
 			<category>Paranormal</category>
 			<rating>yes</rating>
 			<type>P</type>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
@@ -1683,14 +1686,14 @@
 		</power>
 		<power>
 			<id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
-			<name>Shift (Drake)</name>
+			<name>Shift (Dracoform)</name>
 			<category>Shapeshifter</category>
 			<type>M</type>
 			<action>Complex</action>
 			<range>Self</range>
 			<duration>Special</duration>
-			<source>RC</source>
-			<page>76</page>
+			<source>HS</source>
+			<page>194</page>
 		</power>
 		<power>
 			<id>2c0e624f-b1e7-4519-ab11-509406e53b19</id>
@@ -2259,6 +2262,46 @@
 			<duration>Always</duration>
 			<source>SR5</source>
 			<page>394</page>
-		</power>	
+		</power>
+		<power>
+			<id>28e8f9d8-6e2d-4bbe-bba3-e7195508a027</id>
+			<name>Hardened Mystic Armor</name>
+			<category>Paranormal</category>
+			<rating>yes</rating>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>SR5</source>
+			<page>397</page>
+		</power>
+		<power>
+			<id>28e8f9d8-6e2d-4bbe-bba3-e7195508a027</id>
+			<name>Vestigial Wings</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>28e8f9d8-6e2d-4bbe-bba3-e7195508a027</id>
+			<name>Underwater Adapation</name>
+			<category>Paranormal</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<bonus>
+				<specificskill>
+					<name>Swimming</name>
+					<bonus>4</bonus>
+				</specificskill>
+			</bonus>
+			<duration>Always</duration>
+			<source>HS</source>
+			<page>164</page>
+		</power>
 	</powers>
 </chummer>

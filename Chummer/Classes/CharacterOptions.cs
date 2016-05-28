@@ -28,7 +28,8 @@ namespace Chummer
 		private bool _blnAllowInitiationInCreateMode;
 		private bool _blnAllowObsolescentUpgrade;
 		private bool _blnAllowSkillDiceRolling;
-		private bool _blnAllowSkillRegrouping = true;
+	    private bool _blnDontUseCyberlimbCalculation;
+        private bool _blnAllowSkillRegrouping = true;
 		private bool _blnAlternateArmorEncumbrance;
 		private bool _blnAlternateComplexFormCost;
 		private bool _blnAlternateMatrixAttribute;
@@ -37,7 +38,7 @@ namespace Chummer
 		private bool _blnArmorSuitCapacity;
 		private bool _blnAutomaticCopyProtection = true;
 		private bool _blnAutomaticRegistration = true;
-		private bool _blnBreakSkillGroupsInCreateMode;
+		private bool _blnStrictSkillGroupsInCreateMode;
 		private bool _blnCalculateCommlinkResponse = true;
 		private bool _blnCapSkillRating;
 		private bool _blnConfirmDelete = true;
@@ -55,6 +56,7 @@ namespace Chummer
 		private bool _blnExceedPositiveQualities;
 		private bool _blnExtendAnyDetectionSpell;
 		private bool _blnFreeContactsMultiplierEnabled;
+	    private bool _blnDroneArmorMultiplierEnabled;
 		private bool _blnFreeKarmaContacts;
 		private bool _blnFreeKarmaKnowledge;
 		private bool _blnFreeKnowledgeMultiplierEnabled;
@@ -92,13 +94,14 @@ namespace Chummer
 		private int _intForbiddenCostMultiplier = 1;
 		private int _intFreeContactsFlatNumber = 0;
 		private int _intFreeContactsMultiplier = 3;
+	    private int _intDroneArmorMultiplier = 2;
 		private int _intFreeKnowledgeMultiplier = 2;
 		private int _intLimbCount = 6;
 		private int _intMetatypeCostMultiplier = 1;
 		private int _intNuyenPerBP = 2000;
 		private int _intRestrictedCostMultiplier = 1;
 		private bool _automaticBackstory = true;
-
+		
 		private readonly XmlDocument _objBookDoc = new XmlDocument();
 		private string _strBookXPath = "";
 		private string _strExcludeLimbSlot = "";
@@ -268,12 +271,16 @@ namespace Chummer
 			objWriter.WriteElementString("freekarmaknowledgemultiplier", _intFreeKnowledgeMultiplier.ToString());
 			// <freekarmaknowledgemultiplierenabled />
 			objWriter.WriteElementString("freekarmaknowledgemultiplierenabled", _blnFreeKnowledgeMultiplierEnabled.ToString());
-			// <freecontactsmultiplierenabled />
-			objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
-			// <freecontactsflatnumber />
-			objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
-			// <usetotalvalueforknowledge />
-			objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
+            // <freecontactsmultiplierenabled />
+            objWriter.WriteElementString("freecontactsmultiplierenabled", _blnFreeContactsMultiplierEnabled.ToString());
+            // <freecontactsflatnumber />
+            objWriter.WriteElementString("freecontactsflatnumber", _intFreeContactsFlatNumber.ToString());
+            // <dronearmormultiplierenabled />
+            objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString());
+            // <dronearmorflatnumber />
+            objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString());
+            // <usetotalvalueforknowledge />
+            objWriter.WriteElementString("usetotalvalueforknowledge", _blnUseTotalValueForFreeKnowledge.ToString());
 			// <usetotalvalueforcontacts />
 			objWriter.WriteElementString("usetotalvalueforcontacts", _blnUseTotalValueForFreeContacts.ToString());
 			// <freekarmaknowledge />
@@ -357,11 +364,13 @@ namespace Chummer
 			// <usecontactpoints />
 			objWriter.WriteElementString("usecontactpoints", _blnUseContactPoints.ToString());
 			// <breakskillgroupsincreatemode />
-			objWriter.WriteElementString("breakskillgroupsincreatemode", _blnBreakSkillGroupsInCreateMode.ToString());
+			objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString());
 			// <extendanydetectionspell />
 			objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString());
 			// <allowskilldicerolling />
 			objWriter.WriteElementString("allowskilldicerolling", _blnAllowSkillDiceRolling.ToString());
+            //<dontusecyberlimbcalculation />
+            objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString());
 			// <alternatemetatypeattributekarma />
 			objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString());
 			// <createbackuponcareer />
@@ -616,6 +625,10 @@ namespace Chummer
 			objXmlNode.TryGetField("usetotalvalueforcontacts", out _blnUseTotalValueForFreeContacts);
 			// Free Contacts Multiplier Enabled
 			objXmlNode.TryGetField("freecontactsmultiplierenabled", out _blnFreeContactsMultiplierEnabled);
+            // Drone Armor Multiplier Enabled
+		    objXmlNode.TryGetField("dronearmormultiplierenabled", out _blnDroneArmorMultiplierEnabled);
+            // Drone Armor Multiplier Value
+		    objXmlNode.TryGetField("dronearmorflatnumber", out _intDroneArmorMultiplier);
 			// Free Knowledge Multiplier Enabled
 			objXmlNode.TryGetField("freekarmaknowledgemultiplierenabled", out _blnFreeKnowledgeMultiplierEnabled);
 			objXmlNode.TryGetField("freekarmacontactsmultiplier", out _intFreeContactsMultiplier);
@@ -703,11 +716,13 @@ namespace Chummer
 			// Whether or not contact points are used instead of fixed contacts.
 			objXmlNode.TryGetField("usecontactpoints", out _blnUseContactPoints);
 			// Whether or not the user can break Skill Groups while in Create Mode.
-			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnBreakSkillGroupsInCreateMode);
+			objXmlNode.TryGetField("breakskillgroupsincreatemode", out _blnStrictSkillGroupsInCreateMode);
 			// Whether or not any Detection Spell can be taken as Extended range version.
 			objXmlNode.TryGetField("extendanydetectionspell", out _blnExtendAnyDetectionSpell);
 			// Whether or not dice rolling id allowed for Skills.
 			objXmlNode.TryGetField("allowskilldicerolling", out _blnAllowSkillDiceRolling);
+            // Whether or not cyberlimbs are used for augmeneted attribute calculation.
+		    objXmlNode.TryGetField("dontusecyberlimbcalculation", out _blnDontUseCyberlimbCalculation);
 			// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
 			objXmlNode.TryGetField("alternatemetatypeattributekarma", out _blnAlternateMetatypeAttributeKarma);
 			// Whether or not a backup copy of the character should be created before they are placed into Career Mode.
@@ -1533,26 +1548,56 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Whether or not characters get a flat number of BP for free Contacts.
+        /// <summary>
+        /// Whether or not characters get a flat number of BP for free Contacts.
+        /// </summary>
+        public bool FreeContactsMultiplierEnabled
+        {
+            get
+            {
+                return _blnFreeContactsMultiplierEnabled;
+            }
+            set
+            {
+                _blnFreeContactsMultiplierEnabled = value;
+            }
+        }
+
+        /// <summary>
+		/// The Drone Body multiplier for maximal Armor
 		/// </summary>
-		public bool FreeContactsMultiplierEnabled
-		{
-			get
-			{
-				return _blnFreeContactsMultiplierEnabled;
-			}
-			set
-			{
-				_blnFreeContactsMultiplierEnabled = value;
-			}
-		}
+		public int DroneArmorMultiplier
+        {
+            get
+            {
+                return _intDroneArmorMultiplier;
+            }
+            set
+            {
+                _intDroneArmorMultiplier = value;
+            }
+        }
+
+        /// <summary>
+		/// Whether or not Armor
+		/// </summary>
+		public bool DroneArmorMultiplierEnabled
+        {
+            get
+            {
+                return _blnDroneArmorMultiplierEnabled;
+            }
+            set
+            {
+                _blnDroneArmorMultiplierEnabled = value;
+            }
+        }
 
 
-		/// <summary>
-		/// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
-		/// </summary>
-		public bool FreeKarmaContacts
+        /// <summary>
+        /// Whether or not characters in Karma build mode receive free Knowledge Skills in the same manner as Priority characters.
+        /// </summary>
+        public bool FreeKarmaContacts
 		{
 			get
 			{
@@ -2238,15 +2283,15 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the user is allowed to break Skill Groups while in Create Mode.
 		/// </summary>
-		public bool BreakSkillGroupsInCreateMode
+		public bool StrictSkillGroupsInCreateMode
 		{
 			get
 			{
-				return _blnBreakSkillGroupsInCreateMode;
+				return _blnStrictSkillGroupsInCreateMode;
 			}
 			set
 			{
-				_blnBreakSkillGroupsInCreateMode = value;
+				_blnStrictSkillGroupsInCreateMode = value;
 			}
 		}
 
@@ -2280,10 +2325,25 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+        /// <summary>
+		/// Whether or not cyberlimbs stats are used in attribute calculation
 		/// </summary>
-		public bool AlternateMetatypeAttributeKarma
+		public bool DontUseCyberlimbCalculation
+        {
+            get
+            {
+                return _blnDontUseCyberlimbCalculation;
+            }
+            set
+            {
+                _blnDontUseCyberlimbCalculation = value;
+            }
+        }
+
+        /// <summary>
+        /// House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+        /// </summary>
+        public bool AlternateMetatypeAttributeKarma
 		{
 			get
 			{

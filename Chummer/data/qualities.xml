@@ -104,7 +104,6 @@
 				<specificskill>
 					<name>Sneaking</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>
@@ -600,12 +599,10 @@
 				<specificskill>
 					<name>Running</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 				<specificskill>
 					<name>Gymnastics</name>
 					<bonus>2</bonus>
-					<applytorating>yes</applytorating>
 				</specificskill>
 			</bonus>
 			<source>SR5</source>
@@ -989,6 +986,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Magician</unlockskills>
+      </bonus>
 			<contributetolimit>no</contributetolimit>
 			<forbidden>
 				<oneof>
@@ -1006,6 +1006,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Adept</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1023,6 +1026,7 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>Magicain</bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1040,6 +1044,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Technomancer</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -1057,6 +1064,9 @@
 			<category>Positive</category>
 			<source>SR5</source>
 			<page>69</page>
+      <bonus>
+        <unlockskills>Sorcery,Conjuring,Enhancing</unlockskills>
+      </bonus>
 			<forbidden>
 				<oneof>
 					<quality>Magician</quality>
@@ -2660,10 +2670,14 @@
 			<karma>5</karma>
 			<category>Positive</category>
 			<bonus>
-				<specificskill>
+        <specificskill>
 					<name>Perception</name>
 					<bonus>1</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>1</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -2682,6 +2696,10 @@
 					<name>Perception</name>
 					<bonus>2</bonus>
 				</specificskill>
+        <specificskill>
+          <name>Assensing</name>
+          <bonus>2</bonus>
+        </specificskill>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -5562,10 +5580,7 @@
 			<karma>12</karma>
 			<category>Positive</category>
 			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>2</value>
-				</limitmodifier>
+				<sociallimit>2</sociallimit>
 				<skillcategory>
 					<name>Social Active</name>
 					<bonus>1</bonus>
@@ -5746,6 +5761,7 @@
 					<excludeattribute>EDG</excludeattribute>
 					<excludeattribute>MAG</excludeattribute>
 					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
 					<max>1</max>
 					<min>1</min>
 				</selectattribute>
@@ -6625,6 +6641,7 @@
 					<excludeattribute>EDG</excludeattribute>
 					<excludeattribute>MAG</excludeattribute>
 					<excludeattribute>RES</excludeattribute>
+					<excludeattribute>DEP</excludeattribute>
 					<max>-2</max>
 				</selectattribute>
 			</bonus>
@@ -6877,11 +6894,11 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Adaptive Coloration</power>
 				<power select="Sunlight, Mild">Allergy</power>
 				<power select="Sasquatch Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -6926,7 +6943,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
@@ -6935,7 +6952,7 @@
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Silver">Vulnerability</power>
 				<power select="Wood">Vulnerability</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -7029,7 +7046,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
@@ -7037,7 +7054,7 @@
 				<power>Essence Loss</power>
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7136,14 +7153,14 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Corrosive Secretions</power>
 				<power>Magical Guard</power>
 				<power>Dual Natured</power>
 				<power select="Air Pollution, Moderate">Allergy</power>
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7244,13 +7261,13 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Dual Natured</power>
 				<power select="Hearing">Enhanced Senses</power>
 				<power select="Smell">Enhanced Senses</power>
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7345,14 +7362,14 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Dual Natured</power>
 				<power select="Toxins">Immunity</power>
 				<power>Noxious Breath</power>
 				<power>Paralyzing Touch</power>
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Bone">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -7465,7 +7482,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Dual Natured</power>
 				<power select="Toxins">Immunity</power>
 				<power>Noxious Breath</power>
@@ -7473,7 +7490,7 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Bone">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7576,7 +7593,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Animal Control</power>
 				<power>Concealment</power>
 				<power>Dual Natured</power>
@@ -7586,7 +7603,7 @@
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
 				<power select="Iron">Vulnerability</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7690,14 +7707,14 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Movement</power>
 				<power select="Thermographic Vision">Enhanced Senses</power>
 				<power>Dual Natured</power>
 				<power select="Silver, Moderate">Allergy</power>
 				<power select="Sunlight, Moderate">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7802,7 +7819,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Movement</power>
 				<power select="Hearing">Enhanced Senses</power>
 				<power select="Low-Light Vision">Enhanced Senses</power>
@@ -7812,7 +7829,7 @@
 				<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7940,7 +7957,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
 				<power>Essence Loss</power>
@@ -7949,7 +7966,7 @@
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8058,7 +8075,7 @@
 			<addqualities>
 				<addquality>Mystic Adept</addquality>
 			</addqualities>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
 				<power>Essence Loss</power>
@@ -8067,7 +8084,7 @@
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8176,7 +8193,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
 				<power>Essence Loss</power>
@@ -8185,7 +8202,7 @@
 				<power select="Wood, Severe">Allergy</power>
 				<power select="Sunlight, Extreme">Severe</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8289,7 +8306,7 @@
 					<page>137</page>
 				</naturalweapon>
 			</naturalweapons>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8299,7 +8316,7 @@
 				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8403,7 +8420,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8413,7 +8430,7 @@
 				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8519,7 +8536,7 @@
 			<addqualities>
 				<addquality>Magician</addquality>
 			</addqualities>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8529,7 +8546,7 @@
 				<power select="Sunlight, Extreme">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>139</page>
 		</quality>
@@ -8625,7 +8642,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power select="Age">Immunity</power>
 				<power>Essence Loss</power>
@@ -8635,7 +8652,7 @@
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>140</page>
 		</quality>
@@ -8736,7 +8753,7 @@
 				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
 				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
 			</addqualities>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8747,7 +8764,7 @@
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Blood">Dietary Requirement</power>
 				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>140</page>
 		</quality>
@@ -8860,7 +8877,7 @@
 			<addqualities>
 				<addquality>Magician</addquality>
 			</addqualities>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8870,7 +8887,7 @@
 				<power select="Ferrous Metals, Moderate">Allergy</power>
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>140</page>
 		</quality>
@@ -8981,7 +8998,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -8991,7 +9008,7 @@
 				<power select="Ferrous Metals, Moderate">Allergy</power>
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>140</page>
 		</quality>
@@ -9099,7 +9116,7 @@
 					<metatypecategory>Shapeshifter</metatypecategory>
 				</oneof>
 			</forbidden>
-			<powers>
+			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
 				<power select="Age">Immunity</power>
@@ -9109,7 +9126,7 @@
 				<power select="Ferrous Metals, Moderate">Allergy</power>
 				<power select="Sunlight, Severe">Allergy</power>
 				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</powers>
+			</critterpowers>
 			<source>RF</source>
 			<page>140</page>
 		</quality>
@@ -10233,6 +10250,224 @@
 			<id>06dcf1f7-cf5b-4a4e-81dd-5f177b1ea26a</id>
 		</quality>
 		<!-- End Region -->
+		<!-- End Region -->
+		<!-- Region Howling Shadows -->
+		<quality>
+			<id>3a8006d6-72c2-4655-9200-45ec21cad760</id>
+			<name>Dracoform (Eastern Drake)</name>
+			<karma>75</karma>
+			<stagedpurchase>True</stagedpurchase>
+			<contributetolimit>no</contributetolimit>
+			<limit>no</limit>
+			<category>Positive</category>
+			<addqualities>
+				<addquality contributetobp="false">Wanted</addquality>
+			</addqualities>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power>Shift (Dracoform)</power>
+				<power>Vestigial Wings</power>
+				<power rating="2">Hardened Armor</power>
+				<power rating="2">Hardened Mystic Armor</power>
+				<power select="Fire">Elemental Attack</power>
+			</critterpowers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<specificattribute>
+					<name>BOD</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>STR</name>
+					<val>2</val>
+				</specificattribute>
+				<specificattribute>
+					<name>AGI</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>LOG</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+				<naturalweapons>
+					<naturalweapon>
+						<name>Dracoform Claws</name>
+						<reach>0</reach>
+						<damage>(STR+1)P</damage>
+						<ap>-1</ap>
+						<useskill>Unarmed</useskill>
+						<source>HS</source>
+						<page>163</page>
+					</naturalweapon>
+				</naturalweapons>
+			<source>HS</source>
+			<page>163</page>
+		</quality>
+		<quality>
+			<id>f257ce85-fc27-4fa1-8d34-6eb4102e7614</id>
+			<name>Dracoform (Western Drake)</name>
+			<karma>75</karma>
+			<stagedpurchase>True</stagedpurchase>
+			<contributetolimit>no</contributetolimit>
+			<limit>no</limit>
+			<category>Positive</category>
+			<addqualities>
+				<addquality contributetobp="false">Wanted</addquality>
+			</addqualities>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power>Shift (Dracoform)</power>
+				<power>Vestigial Wings</power>
+				<power rating="2">Hardened Armor</power>
+				<power rating="2">Hardened Mystic Armor</power>
+				<power select="Fire">Elemental Attack</power>
+			</critterpowers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<specificattribute>
+					<name>BOD</name>
+					<val>2</val>
+				</specificattribute>
+				<specificattribute>
+					<name>STR</name>
+					<val>2</val>
+				</specificattribute>
+				<specificattribute>
+					<name>CHA</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Dracoform Horns</name>
+					<reach>0</reach>
+					<damage>(STR+2)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>HS</source>
+					<page>163</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HS</source>
+			<page>163</page>
+		</quality>
+		<quality>
+			<id>90a7cc01-ee0f-4d60-aeb9-05752e68ddf9</id>
+			<name>Dracoform (Feathered Drake)</name>
+			<karma>75</karma>
+			<stagedpurchase>True</stagedpurchase>
+			<contributetolimit>no</contributetolimit>
+			<limit>no</limit>
+			<category>Positive</category>
+			<addqualities>
+				<addquality contributetobp="false">Wanted</addquality>
+			</addqualities>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power>Shift (Dracoform)</power>
+				<power>Vestigial Wings</power>
+				<power rating="2">Hardened Armor</power>
+				<power rating="2">Hardened Mystic Armor</power>
+				<power select="Fire">Elemental Attack</power>
+			</critterpowers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<specificattribute>
+					<name>BOD</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>STR</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>AGI</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>REA</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>WIL</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Dracoform Tail</name>
+					<reach>1</reach>
+					<damage>(STR+3)P</damage>
+					<ap>-1</ap>
+					<useskill>Unarmed</useskill>
+					<source>HS</source>
+					<page>163</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HS</source>
+			<page>163</page>
+		</quality>
+		<quality>
+			<id>c284e172-1d20-4844-b24c-e094d2588b72</id>
+			<name>Dracoform (Sea Drake)</name>
+			<karma>75</karma>
+			<stagedpurchase>True</stagedpurchase>
+			<contributetolimit>no</contributetolimit>
+			<limit>no</limit>
+			<category>Positive</category>
+			<addqualities>
+				<addquality contributetobp="false">Wanted</addquality>
+			</addqualities>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power>Shift (Dracoform)</power>
+				<power>Underwater Adapation</power>
+				<power rating="2">Hardened Armor</power>
+				<power rating="2">Hardened Mystic Armor</power>
+				<power select="Fire">Elemental Attack</power>
+			</critterpowers>
+			<bonus>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<specificattribute>
+					<name>BOD</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>STR</name>
+					<val>1</val>
+				</specificattribute>
+				<specificattribute>
+					<name>REA</name>
+					<val>2</val>
+				</specificattribute>
+				<specificattribute>
+					<name>INT</name>
+					<val>1</val>
+				</specificattribute>
+			</bonus>
+			<naturalweapons>
+				<naturalweapon>
+					<name>Dracoform Fangs</name>
+					<reach>0</reach>
+					<damage>(STR+1)P</damage>
+					<ap>-2</ap>
+					<useskill>Unarmed</useskill>
+					<source>HS</source>
+					<page>163</page>
+				</naturalweapon>
+			</naturalweapons>
+			<source>HS</source>
+			<page>163</page>
+		</quality>
 		<!-- End Region -->
 	</qualities>
 </chummer>

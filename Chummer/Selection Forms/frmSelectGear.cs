@@ -860,6 +860,8 @@ namespace Chummer
 						double dblCost = 0.0;
 						dblCost = Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * dblMultiplier;
 						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+					    if (chkBlackMarketDiscount.Checked)
+					        dblCost *= 0.9;
 						if (chkHacked.Checked)
 							dblCost *= 0.1;
 						lblCost.Text = String.Format("{0:###,###,##0¥}", dblCost * _intCostMultiplier);

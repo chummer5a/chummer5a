@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,175 +16,196 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using System.Xml.Linq;
+ using Chummer.Backend;
+ using Chummer.Skills;
 
 namespace Chummer
 {
+	[DebuggerDisplay("{DisplayDebug()}")]
     public class Improvement
     {
+		private string DisplayDebug()
+		{
+			return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+		}
+
         public enum ImprovementType
         {
-            Skill = 0,
-            Attribute = 1,
-            Text = 2,
-			Armor = 3,
-			Reach = 5,
-			Nuyen = 6,
-			Essence = 7,
-			Reaction = 8,
-			PhysicalCM = 9,
-			StunCM = 10,
-			UnarmedDV = 11,
-			SkillGroup = 12,
-			SkillCategory = 13,
-			SkillAttribute = 14,
-			InitiativePass = 15,
-			MatrixInitiative = 16,
-			MatrixInitiativePass = 17,
-			LifestyleCost = 18,
-			CMThreshold = 19,
-			EnhancedArticulation = 20,
-			WeaponCategoryDV = 21,
-			CyberwareEssCost = 22,
-			SpecialTab = 23,
-			Initiative = 24,
-			Uneducated = 25,
-			LivingPersonaResponse = 26,
-			LivingPersonaSignal = 27,
-			LivingPersonaFirewall = 28,
-			LivingPersonaSystem = 29,
-			LivingPersonaBiofeedback = 30,
-			Smartlink = 31,
-			BiowareEssCost = 32,
-			GenetechCostMultiplier = 33,
-			BasicBiowareEssCost = 34,
-			TransgenicsBiowareCost = 35,
-			SoftWeave = 36,
-			SensitiveSystem = 37,
-			ConditionMonitor = 38,
-			UnarmedDVPhysical = 39,
-			MovementPercent = 40,
-			Adapsin = 41,
-			FreePositiveQualities = 42,
-			FreeNegativeQualities = 43,
-			NuyenMaxBP = 44,
-			CMOverflow = 45,
-			FreeSpiritPowerPoints = 46,
-			AdeptPowerPoints = 47,
-			ArmorEncumbrancePenalty = 48,
-			Uncouth = 49,
-			Initiation = 50,
-			Submersion = 51,
-			Infirm = 52,
-			Skillwire = 53,
-			DamageResistance = 54,
-			RestrictedItemCount = 55,
-			AdeptLinguistics = 56,
-			SwimPercent = 57,
-			FlyPercent = 58,
-			FlySpeed = 59,
-			JudgeIntentions = 60,
-			LiftAndCarry = 61,
-			Memory = 62,
-			Concealability = 63,
-			SwapSkillAttribute = 64,
-			DrainResistance = 65,
-			FadingResistance = 66,
-			MatrixInitiativePassAdd = 67,
-			InitiativePassAdd = 68,
-			Composure = 69,
-			UnarmedAP = 70,
-			CMThresholdOffset = 71,
-			Restricted = 72,
-			Notoriety = 73,
-			SpellCategory = 74,
-			ThrowRange = 75,
-			SkillsoftAccess = 76,
-			AddSprite = 77,
-			BlackMarketDiscount = 78,
-			SelectWeapon = 79,
-			ComplexFormLimit = 80,
-			SpellLimit = 81,
-			QuickeningMetamagic = 82,
-			BasicLifestyleCost = 83,
-			ThrowSTR = 84,
-			IgnoreCMPenaltyStun = 85,
-			IgnoreCMPenaltyPhysical = 86,
-			CyborgEssence = 87,
-			EssenceMax = 88,
-            AdeptPower = 89,
-            SpecificQuality = 90,
-            MartialArt = 91,
-            LimitModifier = 92,
-            PhysicalLimit = 93,
-            MentalLimit = 94,
-            SocialLimit = 95,
-            SchoolOfHardKnocks = 96,
-            FriendsInHighPlaces = 97,
-            JackOfAllTrades = 98,
-            CollegeEducation = 99,
-            Erased = 100,
-            BornRich = 101,
-            Fame = 102,
-            LightningReflexes = 103,
-            Linguist = 104,
-            MadeMan = 105,
-            Overclocker = 106,
-            RestrictedGear = 107,
-            TechSchool = 108,
-            TrustFund = 109,
-            ExCon = 110,
-            ContactMadeMan = 111,
-			SelectArmor = 112,
-			Attributelevel = 113,
-			SkillLevel = 114,
-			SkillGroupLevel = 115,
-			AddContact = 116,
-			Seeker = 117,
-			PublicAwareness = 118,
-			PrototypeTranshuman = 119,
-			Hardwire = 120,
-			DealerConnection = 121
-		}
+            Attribute,
+            Text,
+			Armor,
+			Reach,
+			Nuyen,
+			Essence,
+			Reaction,
+			PhysicalCM,
+			StunCM,
+			UnarmedDV,
+			InitiativePass,
+			MatrixInitiative,
+			MatrixInitiativePass,
+			LifestyleCost,
+			CMThreshold,
+			EnhancedArticulation,
+			WeaponCategoryDV,
+			CyberwareEssCost,
+			SpecialTab,
+			Initiative,
+			Uneducated,
+			LivingPersonaResponse,
+			LivingPersonaSignal,
+			LivingPersonaFirewall,
+			LivingPersonaSystem,
+			LivingPersonaBiofeedback,
+			Smartlink,
+			BiowareEssCost,
+			GenetechCostMultiplier,
+			BasicBiowareEssCost,
+			TransgenicsBiowareCost,
+			SoftWeave,
+			SensitiveSystem,
+			ConditionMonitor,
+			UnarmedDVPhysical,
+			MovementPercent,
+			Adapsin,
+			FreePositiveQualities,
+			FreeNegativeQualities,
+			FreeKnowledgeSkills, 
+			NuyenMaxBP,
+			CMOverflow,
+			FreeSpiritPowerPoints,
+			AdeptPowerPoints,
+			ArmorEncumbrancePenalty,
+			Uncouth,
+			Initiation,
+			Submersion,
+			Infirm,
+			Skillwire,
+			HardWire,
+			DamageResistance,
+			RestrictedItemCount,
+			AdeptLinguistics,
+			SwimPercent,
+			FlyPercent,
+			FlySpeed,
+			JudgeIntentions,
+			LiftAndCarry,
+			Memory,
+			Concealability,
+			SwapSkillAttribute,
+			DrainResistance,
+			FadingResistance,
+			MatrixInitiativePassAdd,
+			InitiativePassAdd,
+			Composure,
+			UnarmedAP,
+			CMThresholdOffset,
+			Restricted,
+			Notoriety,
+			SpellCategory,
+			ThrowRange,
+			SkillsoftAccess, 
+			AddSprite,
+			BlackMarketDiscount,
+			SelectWeapon,
+			ComplexFormLimit,
+			SpellLimit,
+			QuickeningMetamagic,
+			BasicLifestyleCost,
+			ThrowSTR,
+			IgnoreCMPenaltyStun,
+			IgnoreCMPenaltyPhysical,
+			CyborgEssence,
+			EssenceMax,
+            AdeptPower,
+            SpecificQuality,
+            MartialArt,
+            LimitModifier,
+            PhysicalLimit,
+            MentalLimit,
+            SocialLimit,
+            SchoolOfHardKnocks,
+            FriendsInHighPlaces,
+            JackOfAllTrades,
+            CollegeEducation,
+            Erased,
+            BornRich,
+            Fame,
+            LightningReflexes,
+            Linguist,
+            MadeMan,
+            Overclocker,
+            RestrictedGear,
+            TechSchool,
+            TrustFund,
+            ExCon,
+            BlackMarket,
+            ContactMadeMan,
+			SelectArmor,
+			Attributelevel,
+			AddContact,
+			Seeker,
+			PublicAwareness,
+			PrototypeTranshuman,
+			Hardwire,
+            DealerConnection,
+            Skill,  //Improve pool of skill based on name
+			SkillGroup,  //Group
+			SkillCategory, //category
+			SkillAttribute, //attribute
+			SkillLevel,  //Karma points in skill
+			SkillGroupLevel, //group
+			SkillBase,  //base points in skill
+			SkillGroupBase, //group
+			SkillKnowledgeForced, //A skill gained from a knowsoft
+
+			SpecialSkills,
+			ReflexRecorderOptimization,
+	        
+        }
 
         public enum ImprovementSource
         {
-            Quality = 0,
-            Power = 1,
-			Metatype = 2,
-			Cyberware = 3,
-			Metavariant = 4,
-			Bioware = 5,
-			Nanotech = 6,
-			Genetech = 7,
-			ArmorEncumbrance = 8,
-			Gear = 9,
-			Spell = 10,
-			MartialArtAdvantage = 11,
-			Initiation = 12,
-			Submersion = 13,
-			Metamagic = 14,
-			Echo = 15,
-			Armor = 16, 
-			ArmorMod = 17,
-			EssenceLoss = 18,
-			ConditionMonitor = 19,
-			CritterPower = 20,
-			ComplexForm = 21,
-			EdgeUse = 22,
-			MutantCritter = 23,
-			Cyberzombie = 24,
-			StackedFocus = 25,
-			AttributeLoss = 26,
-            Art = 27,
-            Enhancement = 28,
-			Custom = 999,
+            Quality,
+            Power,
+			Metatype,
+			Cyberware,
+			Metavariant,
+			Bioware,
+			Nanotech,
+			Genetech,
+			ArmorEncumbrance,
+			Gear,
+			Spell,
+			MartialArtAdvantage,
+			Initiation,
+			Submersion,
+			Metamagic,
+			Echo,
+			Armor, 
+			ArmorMod,
+			EssenceLoss,
+			ConditionMonitor,
+			CritterPower,
+			ComplexForm,
+			EdgeUse,
+			MutantCritter,
+			Cyberzombie,
+			StackedFocus,
+			AttributeLoss,
+            Art,
+            Enhancement,
+			Custom,
+	        Heritage
         }
 
 		private string _strImprovedName = "";
@@ -270,7 +291,7 @@ namespace Chummer
         }
 
 		/// <summary>
-		/// Load the Attribute from the XmlNode.
+		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
 		public void Load(XmlNode objNode)
@@ -399,7 +420,7 @@ namespace Chummer
 			}
 
         /// <summary>
-        /// Name of the Skill or Attribute that the Improvement is improving.
+        /// Name of the Skill or CharacterAttribute that the Improvement is improving.
         /// </summary>
         public string ImprovedName
         {
@@ -559,7 +580,7 @@ namespace Chummer
 
 		/// <summary>
 		/// Limit what can be selected in Pick forms to a single value. This is typically used when selecting the Qualities for a Metavariant that has a specifiec
-		/// Attribute selection for Qualities like Metagenetic Improvement.
+		/// CharacterAttribute selection for Qualities like Metagenetic Improvement.
 		/// </summary>
 		public string LimitSelection
 		{
@@ -596,14 +617,14 @@ namespace Chummer
 		public int ValueOf(Improvement.ImprovementType objImprovementType, bool blnAddToRating = false,
 			string strImprovedName = null)
 		{
-			Log.Enter("ValueOf");
-			Log.Info("objImprovementType = " + objImprovementType.ToString());
-			Log.Info("blnAddToRating = " + blnAddToRating.ToString());
-			Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+			//Log.Enter("ValueOf");
+			//Log.Info("objImprovementType = " + objImprovementType.ToString());
+			//Log.Info("blnAddToRating = " + blnAddToRating.ToString());
+			//Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
 
             if (_objCharacter == null)
             {
-                Log.Exit("ValueOf");
+                //Log.Exit("ValueOf");
                 return 0;
             }
 
@@ -765,7 +786,7 @@ namespace Chummer
 				intCustomValue += intHighest;
 			}
 
-            Log.Exit("ValueOf");
+            //Log.Exit("ValueOf");
 
 			return intValue + intCustomValue;
 		}
@@ -777,15 +798,15 @@ namespace Chummer
 		/// <param name="intRating">Integer value to replace "Rating" with.</param>
 		private int ValueToInt(string strValue, int intRating)
 		{
-            Log.Enter("ValueToInt");
-            Log.Info("strValue = " + strValue);
-			Log.Info("intRating = " + intRating.ToString());
+   //         Log.Enter("ValueToInt");
+   //         Log.Info("strValue = " + strValue);
+			//Log.Info("intRating = " + intRating.ToString());
             
 			if (strValue.Contains("Rating") || strValue.Contains("BOD") || strValue.Contains("AGI") || strValue.Contains("REA") ||
 			    strValue.Contains("STR") || strValue.Contains("CHA") || strValue.Contains("INT") || strValue.Contains("LOG") ||
 			    strValue.Contains("WIL") || strValue.Contains("EDG") || strValue.Contains("MAG") || strValue.Contains("RES"))
 			{
-				// If the value contain an Attribute name, replace it with the character's Attribute.
+				// If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
 				strValue = strValue.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
 				strValue = strValue.Replace("AGI", _objCharacter.AGI.TotalValue.ToString());
 				strValue = strValue.Replace("REA", _objCharacter.REA.TotalValue.ToString());
@@ -801,8 +822,8 @@ namespace Chummer
 				XmlDocument objXmlDocument = new XmlDocument();
 				XPathNavigator nav = objXmlDocument.CreateNavigator();
 				string strReturn = strValue.Replace("Rating", intRating.ToString());
-                Log.Info("strValue = " + strValue);
-                Log.Info("strReturn = " + strReturn);
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
                 XPathExpression xprValue = nav.Compile(strReturn);
 
 				// Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
@@ -810,12 +831,12 @@ namespace Chummer
 				decValue = Math.Floor(decValue);
 				int intValue = Convert.ToInt32(decValue);
 
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
 				return Convert.ToInt32(intValue);
 			}
 			else
 			{
-                Log.Exit("ValueToInt");
+                //Log.Exit("ValueToInt");
                 if (strValue.Contains("FixedValues"))
 				{
 					string[] strValues = strValue.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
@@ -833,9 +854,9 @@ namespace Chummer
 		/// <param name="strName">Name of the XmlNode to look for.</param>
 		private bool NodeExists(XmlNode objXmlNode, string strName)
 		{
-            Log.Enter("NodeExists");
-			Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
-            Log.Info("strName = " + strName);
+   //         Log.Enter("NodeExists");
+			//Log.Info("objXmlNode = " + objXmlNode.OuterXml.ToString());
+   //         Log.Info("strName = " + strName);
 
             bool blnReturn = false;
 			try
@@ -1129,6 +1150,7 @@ namespace Chummer
 			// Select a Skill.
 			if (bonusNode.LocalName == ("selectskill"))
 			{
+				//TODO this don't work
 				Log.Info("selectskill");
 				if (_strForcedValue == "+2 to a Combat Skill")
 					_strForcedValue = "";
@@ -1187,7 +1209,7 @@ namespace Chummer
 				Log.Info("strSourceName = " + strSourceName);
 
 				// Find the selected Skill.
-				foreach (Skill objSkill in _objCharacter.Skills)
+				foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
 				{
 					if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
 					    frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
@@ -1383,7 +1405,7 @@ namespace Chummer
 						intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("val"))
 						intAug = Convert.ToInt32(objXmlAttribute["val"].InnerText);
-                    if (objXmlAttribute.InnerXml.Contains("max"))
+					if (objXmlAttribute.InnerXml.Contains("max"))
 						intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
 					if (objXmlAttribute.InnerXml.Contains("aug"))
 						intAugMax = Convert.ToInt32(objXmlAttribute["aug"].InnerText);
@@ -1400,7 +1422,7 @@ namespace Chummer
 				}
 			}
 
-			// Select an Attribute.
+			// Select an CharacterAttribute.
 			if (bonusNode.LocalName == ("selectattribute"))
 			{
 				Log.Info("selectattribute");
@@ -1606,7 +1628,7 @@ namespace Chummer
 					intAug, intAugMax);
 			}
 
-			// Select an Attribute to use instead of the default on a skill.
+			// Select an CharacterAttribute to use instead of the default on a skill.
 			if (bonusNode.LocalName == ("swapskillattribute"))
 			{
 				Log.Info("swapskillattribute");
@@ -1823,14 +1845,14 @@ namespace Chummer
 							Improvement.ImprovementType.AddContact, contact.GUID);
 			}
 
-			// Affect a Specific Attribute.
+			// Affect a Specific CharacterAttribute.
 			if (bonusNode.LocalName == ("specificattribute"))
 			{
 				Log.Info("specificattribute");
 
 				if (bonusNode["name"].InnerText != "ESS")
 				{
-					// Display the Select Attribute window and record which Attribute was selected.
+					// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 					// Record the improvement.
 					int intMin = 0;
 					int intAug = 0;
@@ -1922,71 +1944,96 @@ namespace Chummer
 				}
 			}
 
+			
+
+			if (bonusNode.LocalName == "knowsoft")
+			{
+				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
+
+				string name;
+				if (!string.IsNullOrWhiteSpace(_strForcedValue))
+				{
+					name = _strForcedValue;
+				}
+				else if (bonusNode["pick"] != null)
+				{
+					List<ListItem> types;
+					if (bonusNode["group"] != null)
+					{
+						var v = bonusNode.SelectNodes($"./group");
+						types =
+							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
+
+					}
+					else if (bonusNode["notgroup"] != null)
+					{
+						types =
+							KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
+					}
+					else
+					{
+						types = KnowledgeSkill.KnowledgeTypes;
+					}
+
+					frmSelectItem select = new frmSelectItem();
+					select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
+
+					select.ShowDialog();
+					if (select.DialogResult == DialogResult.Cancel)
+					{
+						return false;
+					}
+
+					name = select.SelectedItem;
+				}
+				else if (bonusNode["name"] != null)
+				{
+					name = bonusNode["name"].InnerText;
+				}
+				else
+				{
+					//TODO some kind of error handling
+					Log.Error(new[] {bonusNode.OuterXml, "Missing pick or name"});
+					return false;
+				}
+				_strSelectedValue = name;
+
+
+				KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
+
+				bool knowsoft = bonusNode.TryCheckValue("require", "skilljack");
+
+				if (knowsoft)
+				{
+					_objCharacter.SkillsSection.KnowsoftSkills.Add(skill);
+					if (_objCharacter.SkillsoftAccess)
+					{
+						_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+					}
+				}
+				else
+				{
+					_objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+				}
+
+				CreateImprovement(name, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillBase, strUnique, val);
+				CreateImprovement(skill.Id.ToString(), objImprovementSource, strSourceName,
+					Improvement.ImprovementType.SkillKnowledgeForced, strUnique);
+
+			}
+
 			if (bonusNode.LocalName == "knowledgeskilllevel")
 			{
-				Log.Info(new object[] {"knowledgeskilllevel", bonusNode.OuterXml});
-				int value;
-				String group;
-				if (bonusNode.TryGetField("group", out group))
-				{
-					if (!bonusNode.TryGetField("val", out value))
-					{
-						value = 1;
-					}
+				//Theoretically life modules, right now we just give out free points and let people sort it out themselves.
+				//Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
 
+				int val = bonusNode["val"] != null ? ValueToInt(bonusNode["val"].InnerText, intRating) : 1;
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", val);
+			}
 
-
-					Guid id;
-
-					bool blnFound = false;
-
-					if (bonusNode.TryGetField("id", Guid.TryParse, out id, Guid.NewGuid()))
-					{
-						foreach (Improvement improvement in _objCharacter.Improvements)
-						{
-							if (improvement.ImprovedName == id.ToString())
-							{
-								blnFound = true;
-							}
-						}
-					}
-
-					if (!blnFound)
-					{
-						Skill objNSkill = new Skill(_objCharacter);
-						objNSkill.Id = id;
-						objNSkill.IdImprovement = true;
-						objNSkill.AllowDelete = false;
-						objNSkill.KnowledgeSkill = true;
-						objNSkill.LockKnowledge = true;
-						objNSkill.SkillCategory = group;
-						int max;
-						bonusNode.TryGetField("max", out max, 9);
-						objNSkill.RatingMaximum = max;
-
-						String name;
-						if (bonusNode.TryGetField("name", out name))
-						{
-							objNSkill.Name = name;
-						}
-						if (bonusNode["options"] != null)
-						{
-							List<String> Options = new List<String>();
-							foreach (XmlNode node in bonusNode["options"].ChildNodes)
-							{
-								Options.Add(node.InnerText);
-							}
-							objNSkill.KnowledgeSkillCatagories = Options;
-						}
-
-						_objCharacter.Skills.Add(objNSkill);
-					}
-
-					CreateImprovement(id.ToString(), objImprovementSource, strSourceName,
-						Improvement.ImprovementType.SkillLevel, "", value);
-
-
-				}
+			if (bonusNode.LocalName == "knowldgeskillpoints")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
 
 			if (bonusNode.LocalName == ("skillgrouplevel"))
@@ -2022,7 +2069,7 @@ namespace Chummer
 				Log.Info("physicallimit");
 				Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, "",
+			    CreateImprovement("Physical", objImprovementSource, strSourceName, Improvement.ImprovementType.PhysicalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2032,7 +2079,7 @@ namespace Chummer
 				Log.Info("mentallimit");
 				Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, "",
+				CreateImprovement("Mental", objImprovementSource, strSourceName, Improvement.ImprovementType.MentalLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2042,7 +2089,7 @@ namespace Chummer
 				Log.Info("sociallimit");
 				Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, "",
+				CreateImprovement("Social", objImprovementSource, strSourceName, Improvement.ImprovementType.SocialLimit, strFriendlyName,
 					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
@@ -2192,6 +2239,11 @@ namespace Chummer
 				}
 			}
 
+			if (bonusNode.LocalName == "reflexrecorderoptimization")
+			{
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.ReflexRecorderOptimization, strUnique);
+			}
+
 			// The Improvement adds a martial art
 			if (bonusNode.LocalName == ("martialart"))
 			{
@@ -2217,6 +2269,10 @@ namespace Chummer
 				LimitModifier objLimitMod = new LimitModifier(_objCharacter);
 				string strLimit = bonusNode["limit"].InnerText;
 				string strBonus = bonusNode["value"].InnerText;
+			    if (strBonus == "Rating")
+			    {
+			        strBonus = intRating.ToString();
+			    }
 				string strCondition = "";
 				try
 				{
@@ -2295,7 +2351,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement adjust Skills with the given Attribute.
+			// The Improvement adjust Skills with the given CharacterAttribute.
 			if (bonusNode.LocalName == ("skillattribute"))
 			{
 				Log.Info("skillattribute");
@@ -2327,7 +2383,7 @@ namespace Chummer
 				}
 			}
 
-			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical Attribute).
+			// The Improvement comes from Enhanced Articulation (improves Physical Active Skills linked to a Physical CharacterAttribute).
 			if (bonusNode.LocalName == ("skillarticulation"))
 			{
 				Log.Info("skillarticulation");
@@ -2536,7 +2592,7 @@ namespace Chummer
 				Log.Info("uneducated = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uneducated, strUnique);
-				_objCharacter.Uneducated = true;
+				_objCharacter.SkillsSection.Uneducated = true;
 			}
 
 			// Check for College Education modifiers.
@@ -2546,7 +2602,7 @@ namespace Chummer
 				Log.Info("collegeeducation = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.CollegeEducation, strUnique);
-				_objCharacter.CollegeEducation = true;
+				_objCharacter.SkillsSection.CollegeEducation = true;
 			}
 
 			// Check for Jack Of All Trades modifiers.
@@ -2556,7 +2612,7 @@ namespace Chummer
 				Log.Info("jackofalltrades = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.JackOfAllTrades, strUnique);
-				_objCharacter.JackOfAllTrades = true;
+				_objCharacter.SkillsSection.JackOfAllTrades = true;
 			}
 
 			// Check for Prototype Transhuman modifiers.
@@ -2574,7 +2630,7 @@ namespace Chummer
 				Log.Info("uncouth = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Uncouth, strUnique);
-				_objCharacter.Uncouth = true;
+				_objCharacter.SkillsSection.Uncouth = true;
 			}
 
 			// Check for Friends In High Places modifiers.
@@ -2594,7 +2650,7 @@ namespace Chummer
 				Log.Info("schoolofhardknocks = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SchoolOfHardKnocks, strUnique);
-				_objCharacter.SchoolOfHardKnocks = true;
+				_objCharacter.SkillsSection.SchoolOfHardKnocks = true;
 			}
 			// Check for ExCon modifiers.
 			if (bonusNode.LocalName == ("excon"))
@@ -2625,7 +2681,7 @@ namespace Chummer
 				Log.Info("techschool = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.TechSchool, strUnique);
-				_objCharacter.TechSchool = true;
+				_objCharacter.SkillsSection.TechSchool = true;
 			}
 			// Check for MadeMan modifiers.
 			if (bonusNode.LocalName == ("mademan"))
@@ -2644,7 +2700,7 @@ namespace Chummer
 				Log.Info("Linguist = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.Linguist, strUnique);
-				_objCharacter.Linguist = true;
+				_objCharacter.SkillsSection.Linguist = true;
 			}
 
 			// Check for LightningReflexes modifiers.
@@ -3336,7 +3392,7 @@ namespace Chummer
 						if (_strForcedValue.StartsWith("Adept"))
 							_strForcedValue = "";
 
-						// Display the Select Attribute window and record which Attribute was selected.
+						// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 						frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 						if (strFriendlyName != "")
 							frmPickAttribute.Description =
@@ -3505,55 +3561,66 @@ namespace Chummer
 					Log.Info("_strSelectedValue = " + _strSelectedValue);
 					Log.Info("_strForcedValue = " + _strForcedValue);
 
-                    //Gerry: These unfortunately did not work in any case of multiple bonuses
-                    // Switched the setting of powerpoints and levels to ADDING them
-                    // Remove resetting powerpoints.
-                    bool blnExistingPower = false;
+					//Gerry: These unfortunately did not work in any case of multiple bonuses
+					// Switched the setting of powerpoints and levels to ADDING them
+					// Remove resetting powerpoints.
+					bool blnExistingPower = false;
 					foreach (Power objExistingPower in _objCharacter.Powers)
 					{
-						if (objExistingPower.BonusSource == strSourceName)
+						if (objExistingPower.Name.StartsWith("Improved Reflexes"))
 						{
-								if (objExistingPower.Name.StartsWith("Improved Reflexes"))
+							if (objExistingPower.Name.EndsWith("1"))
+							{
+								if (objExistingPower.Name.EndsWith("1"))
 								{
-									if (objExistingPower.Name.EndsWith("1"))
-									{
-										if (intRating >= 6)
-											objExistingPower.FreePoints += 1.5M;
-										//else
-										//	objExistingPower.FreePoints = 0;
-									}
-									else if (objExistingPower.Name.EndsWith("2"))
-									{
-										if (intRating >= 10)
-											objExistingPower.FreePoints += 2.5M;
-										else if (intRating >= 4)
-											objExistingPower.FreePoints += 1.0M;
-										//else
-										//	objExistingPower.FreePoints = 0;
-									}
-									else
-									{
-										if (intRating >= 14)
-											objExistingPower.FreePoints += 3.5M;
-										else if (intRating >= 8)
-											objExistingPower.FreePoints += 2.0M;
-										else if (intRating >= 4)
-											objExistingPower.FreePoints += 1.0M;
-										//else
-										//	objExistingPower.FreePoints = 0;
-									}
+									if (intRating >= 6)
+										objExistingPower.FreePoints += 1.5M;
+									//else
+									//	objExistingPower.FreePoints = 0;
+								}
+								else if (objExistingPower.Name.EndsWith("2"))
+								{
+									if (intRating >= 10)
+										objExistingPower.FreePoints += 2.5M;
+									else if (intRating >= 4)
+										objExistingPower.FreePoints += 1.0M;
+									//else
+									//	objExistingPower.FreePoints = 0;
 								}
 								else
 								{
-									// we have to adjust the number of free levels.
-									decimal decLevels = Convert.ToDecimal(intRating)/4;
-									decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
-									objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
-									if (objExistingPower.Rating < intRating)
-										objExistingPower.Rating = objExistingPower.FreeLevels;
-									break;
+									if (intRating >= 14)
+										objExistingPower.FreePoints += 3.5M;
+									else if (intRating >= 8)
+										objExistingPower.FreePoints += 2.0M;
+									else if (intRating >= 4)
+										objExistingPower.FreePoints += 1.0M;
+									//else
+									//	objExistingPower.FreePoints = 0;
 								}
 							}
+							else
+							{
+								// we have to adjust the number of free levels.
+								decimal decLevels = Convert.ToDecimal(intRating)/4;
+								decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
+								objExistingPower.FreeLevels += Convert.ToInt32(decLevels);
+								if (objExistingPower.Rating < intRating)
+									objExistingPower.Rating = objExistingPower.FreeLevels;
+								break;
+							}
+						}
+						else
+						{
+							// we have to adjust the number of free levels.
+							decimal decLevels = Convert.ToDecimal(intRating)/4;
+							decLevels = Math.Floor(decLevels/objExistingPower.PointsPerLevel);
+							objExistingPower.FreeLevels = Convert.ToInt32(decLevels);
+							if (objExistingPower.Rating < intRating)
+								objExistingPower.Rating = objExistingPower.FreeLevels;
+							break;
+						}
+						//}
 					}
 
 					if (!blnExistingPower)
@@ -3752,7 +3819,7 @@ namespace Chummer
 								if (_strForcedValue.StartsWith("Adept"))
 									_strForcedValue = "";
 
-								// Display the Select Attribute window and record which Attribute was selected.
+								// Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
 								frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
 								if (strFriendlyName != "")
 									frmPickAttribute.Description =
@@ -4242,6 +4309,7 @@ namespace Chummer
 				Log.Info("skillsoftaccess = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.SkillsoftAccess, "");
+				_objCharacter.SkillsSection.KnowledgeSkills.AddRange(_objCharacter.SkillsSection.KnowsoftSkills);
 			}
 
 			// Check for Quickening Metamagic.
@@ -4600,6 +4668,54 @@ namespace Chummer
 					Improvement.ImprovementType.DealerConnection, strUnique);
 			}
 
+			if (bonusNode.LocalName == "unlockskills")
+			{
+				List<string> options = bonusNode.InnerText.Split(',').Select(x => x.Trim()).ToList();
+				string final;
+				if (options.Count == 0)
+				{
+					Utils.BreakIfDebug();
+					return false;
+				}
+				else if (options.Count == 1)
+				{
+					final = options[0];
+				}
+				else
+				{
+					frmSelectItem frmSelect = new frmSelectItem
+					{
+						AllowAutoSelect = true,
+						GeneralItems = options.Select(x => new ListItem(x, x)).ToList()
+					};
+					
+					if (_objCharacter.Pushtext.Count > 0)
+					{
+						frmSelect.ForceItem = _objCharacter.Pushtext.Pop();
+					}
+
+					if (frmSelect.ShowDialog() == DialogResult.Cancel)
+					{
+						return false;
+					}
+
+					final = frmSelect.SelectedItem;
+				}
+				
+				SkillsSection.FilterOptions skills;
+				if (Enum.TryParse(final, out skills))
+				{
+					_objCharacter.SkillsSection.AddSkills(skills);
+					CreateImprovement(skills.ToString(), Improvement.ImprovementSource.Quality, strSourceName,
+						Improvement.ImprovementType.SpecialSkills, strUnique);
+				}
+				else
+				{
+					Utils.BreakIfDebug();
+					Log.Info(new[] {"Failed to parse", "specialskills", bonusNode.OuterXml});
+				}
+			}
+
 			//nothing went wrong, so return true
 			return true;
 		}
@@ -4638,29 +4754,42 @@ namespace Chummer
 
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
 				{
-					for (int i = _objCharacter.Skills.Count - 1; i >= 0; i--)
-					{
-						//wrote as foreach first, modify collection, not want rename
-						Skill skill = _objCharacter.Skills[i];
-						for (int j = skill.Fold.Count - 1; j >= 0; j--)
-						{
-							Skill fold = skill.Fold[i];
-							if (fold.Id.ToString() == objImprovement.ImprovedName)
-							{
-								skill.Free(fold);
-								_objCharacter.Skills.Remove(fold);
-							}
-						}
+					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills?
+					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+					//{
+					//	//wrote as foreach first, modify collection, not want rename
+					//	Skill skill = _objCharacter.SkillsSection.Skills[i];
+					//	for (int j = skill.Fold.Count - 1; j >= 0; j--)
+					//	{
+					//		Skill fold = skill.Fold[i];
+					//		if (fold.Id.ToString() == objImprovement.ImprovedName)
+					//		{
+					//			skill.Free(fold);
+					//			_objCharacter.SkillsSection.Skills.Remove(fold);
+					//		}
+					//	}
 
-						if (skill.Id.ToString() == objImprovement.ImprovedName)
-						{
-							while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-							//empty list, can't call clear as exposed list is RO
+					//	if (skill.Id.ToString() == objImprovement.ImprovedName)
+					//	{
+					//		while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+					//		//empty list, can't call clear as exposed list is RO
 
-							_objCharacter.Skills.Remove(skill);
-						}
-					}
+					//		_objCharacter.SkillsSection.Skills.Remove(skill);
+					//	}
+					//}
 				}
+
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess)
+			    {
+					_objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(_objCharacter.SkillsSection.KnowsoftSkills.Contains);
+			    }
+
+                if (objImprovement.ImproveType == Improvement.ImprovementType.SkillKnowledgeForced)
+                {
+	                Guid guid = Guid.Parse(objImprovement.ImprovedName);
+	                _objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
+	                _objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
+                }
 
                 // Remove "free" adept powers if any.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower)
@@ -4702,9 +4831,56 @@ namespace Chummer
 
 	                }
                 }
-
-				// Determine if access to any Special Attributes have been lost.
-				if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute)
+                {
+                    CharacterAttrib objChangedAttribute = null;
+                    switch (objImprovement.ImprovedName)
+                    {
+                        case "AGI":
+                            objChangedAttribute = _objCharacter.AGI;
+                            break;
+                        case "REA":
+                            objChangedAttribute = _objCharacter.REA;
+                            break;
+                        case "STR":
+                            objChangedAttribute = _objCharacter.STR;
+                            break;
+                        case "CHA":
+                            objChangedAttribute = _objCharacter.CHA;
+                            break;
+                        case "INT":
+                            objChangedAttribute = _objCharacter.INT;
+                            break;
+                        case "LOG":
+                            objChangedAttribute = _objCharacter.LOG;
+                            break;
+                        case "WIL":
+                            objChangedAttribute = _objCharacter.WIL;
+                            break;
+                        case "EDG":
+                            objChangedAttribute = _objCharacter.EDG;
+                            break;
+                        case "MAG":
+                            objChangedAttribute = _objCharacter.MAG;
+                            break;
+                        case "RES":
+                            objChangedAttribute = _objCharacter.RES;
+                            break;
+                        case "DEP":
+                            objChangedAttribute = _objCharacter.DEP;
+                            break;
+                        case "BOD":
+                        default:
+                            objChangedAttribute = _objCharacter.BOD;
+                            break;
+                    }
+                    if (objImprovement.Minimum > 0)
+                    {
+                        objChangedAttribute.Value -= objImprovement.Minimum;
+                    }
+                }
+                // Determine if access to any Special Attributes have been lost.
+                if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
 				    objImprovement.UniqueName == "enableattribute")
 				{
 					if (objImprovement.ImprovedName == "MAG")
@@ -4938,7 +5114,7 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.Uneducated = false;
+						_objCharacter.SkillsSection.Uneducated = false;
 				}
 
 				// Turn off the Uncouth flag if it is being removed.
@@ -4960,7 +5136,7 @@ namespace Chummer
 					}
 
 					if (!blnFound)
-						_objCharacter.Uncouth = false;
+						_objCharacter.SkillsSection.Uncouth = false;
                 }
 
                 // Turn off the FriendsInHighPlaces flag if it is being removed.
@@ -5004,7 +5180,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.SchoolOfHardKnocks = false;
+                        _objCharacter.SkillsSection.SchoolOfHardKnocks = false;
                 }
 
                 //Turn off the Ex-Con flag if it is being removed
@@ -5069,7 +5245,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.JackOfAllTrades = false;
+                        _objCharacter.SkillsSection.JackOfAllTrades = false;
 				}
 				// Turn off the prototypetranshuman flag if it is being removed.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.PrototypeTranshuman)
@@ -5111,7 +5287,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.CollegeEducation = false;
+                        _objCharacter.SkillsSection.CollegeEducation = false;
                 }
                 // Turn off the Erased flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Erased)
@@ -5216,7 +5392,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.Linguist = false;
+                        _objCharacter.SkillsSection.Linguist = false;
                 }
                 // Turn off the MadeMan flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.MadeMan)
@@ -5300,7 +5476,7 @@ namespace Chummer
                     }
 
                     if (!blnFound)
-                        _objCharacter.TechSchool = false;
+                        _objCharacter.SkillsSection.TechSchool = false;
                 }
                 // Turn off the TrustFund flag if it is being removed.
                 if (objImprovement.ImproveType == Improvement.ImprovementType.TrustFund)
@@ -5362,7 +5538,7 @@ namespace Chummer
                         }
                     }
 
-	                if (!blnFound)
+                    if (!blnFound)
 	                {
 		                _objCharacter.BlackMarketDiscount = false;
 	                }
@@ -5415,25 +5591,34 @@ namespace Chummer
 				// Decrease the character's Submersion Grade.
 				if (objImprovement.ImproveType == Improvement.ImprovementType.Submersion)
 					_objCharacter.SubmersionGrade -= objImprovement.Value;
+				
+				//Remove special (magical/resonance) skills
+				if (objImprovement.ImproveType == Improvement.ImprovementType.SpecialSkills)
+				{
+					_objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
+				}
 			}
 
-            Log.Exit("RemoveImprovements");
+
+			_objCharacter.ImprovementHook(objImprovementList, this);
+
+			Log.Exit("RemoveImprovements");
         }
 
 		/// <summary>
 		/// Create a new Improvement and add it to the Character.
 		/// </summary>
-		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an Attribute being improved.</param>
+		/// <param name="strImprovedName">Speicific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
 		/// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
 		/// <param name="strSourceName">Name of the item that grants this Improvement.</param>
 		/// <param name="objImprovementType">Type of object the Improvement applies to.</param>
 		/// <param name="strUnique">Name of the pool this Improvement should be added to - only the single higest value in the pool will be applied to the character.</param>
 		/// <param name="intValue">Set a Value for the Improvement.</param>
 		/// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
-		/// <param name="intMinimum">Improve the Minimum for an Attribute by the given amount.</param>
-		/// <param name="intMaximum">Improve the Maximum for an Attribute by the given amount.</param>
-		/// <param name="intAugmented">Improve the Augmented value for an Attribute by the given amount.</param>
-		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an Attribute by the given amount.</param>
+		/// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+		/// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
 		/// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
 		/// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
 		public void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
@@ -5503,6 +5688,8 @@ namespace Chummer
 		{
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
+
+			_objCharacter.ImprovementHook(_lstTransaction, this);
 			_lstTransaction.Clear();
             Log.Exit("Commit");
         }
@@ -5522,5 +5709,13 @@ namespace Chummer
         }
 
 		#endregion
+	}
+
+	public static class ImprovementExtensions
+	{
+		public static bool HaveSkillPoints(this CharacterBuildMethod method)
+		{
+			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;
+		}
 	}
 }
