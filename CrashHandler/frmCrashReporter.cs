@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace CrashHandler
 {
 	public partial class frmCrashReporter : Form
 	{
+
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
 
@@ -40,7 +42,7 @@ namespace CrashHandler
 		{
 			if (progress == CrashDumperProgress.FinishedSending)
 			{
-				Application.Exit();
+				Close();
 			}
 
 			statusCollectionProgess.Text = desc;
@@ -54,19 +56,49 @@ namespace CrashHandler
 
 		private void txtDesc_TextChanged(object sender, EventArgs e)
 		{
-
+			timerRefreshTextFile.Stop();
+			timerRefreshTextFile.Start();
 		}
 
 		private void btnNo_Click(object sender, EventArgs e)
 		{
-
+			DialogResult = DialogResult.Cancel;
+			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+			Close();
 		}
 
 		private void btnSend_Click(object sender, EventArgs e)
 		{
+			if (timerRefreshTextFile.Enabled)
+			{
+				timerRefreshTextFile.Enabled = false;
+				timerRefreshTextFile_Tick(null, null);
+				fs.Close();
+			}
+			DialogResult = DialogResult.OK;
+			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
 			_dumper.AllowSending();
+			Close();
 		}
 
-		
+		private FileStream fs = null;
+		private void timerRefreshTextFile_Tick(object sender, EventArgs e)
+		{
+			timerRefreshTextFile.Stop();
+
+			if (fs == null)
+			{
+				fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt"));
+			}
+			fs.Seek(0, SeekOrigin.Begin);
+			byte[] bytes = Encoding.UTF8.GetBytes(txtDesc.Text);
+			fs.Write(bytes, 0, bytes.Length);
+			fs.Flush(true);
+		}
+
+		private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			_dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+		}
 	}
 }

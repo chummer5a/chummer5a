@@ -25,7 +25,7 @@ namespace CrashHandler
 		public CrashDumperProgress Progress => _progress;
 		public event CrashDumperProgressChangedEvent CrashDumperProgressChanged;
 		public string WorkingDirectory { get; }
-
+		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
 
 		readonly List<string> _filesList;
@@ -72,11 +72,14 @@ namespace CrashHandler
 
 		private void WorkerEntryPoint()
 		{
+			
 			try
 			{
+				Process = Process.GetProcessById(procId);
 				SetProgress(CrashDumperProgress.CreateDmp);
-				if (CreateDump())
+				if (CreateDump(Process))
 				{
+					Process.Kill();
 					SetProgress(CrashDumperProgress.Error);
 					return;
 				}
@@ -113,21 +116,22 @@ namespace CrashHandler
 				}
 
 				SetProgress(CrashDumperProgress.FinishedSending);
+				Process.Kill();
+
 			}
 			catch (Exception)
 			{
 				SetProgress(CrashDumperProgress.Error);
+				Process?.Kill();
 			}
 		}
 
 		
 
-		private bool CreateDump()
+		private bool CreateDump(Process process)
 		{
 
 			bool ret;
-			Process process = Process.GetProcessById(procId);
-
 			using (FileStream file = File.Create(Path.Combine(WorkingDirectory, "crashdump.dmp")))
 			{
 
@@ -356,7 +360,7 @@ namespace CrashHandler
 		[Description("Started collecting error information")]
 		Started,
 
-		[Description("Saving crash dump")]
+		[Description("Saving crash dump (this might take a while)")]
 		CreateDmp,
 
 		[Description("Saving additional information")]

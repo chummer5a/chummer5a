@@ -15,14 +15,26 @@ namespace CrashHandler
 
 		private static void ShowCrashReport(string[] obj)
 		{
+			CrashDumper dmper = null;
 			try
 			{
-				CrashDumper dmper = new CrashDumper(obj[0]);
-				Application.Run(new frmCrashReporter(dmper));
+				dmper = new CrashDumper(obj[0]);
+				frmCrashReporter reporter = new frmCrashReporter(dmper);
+
+				Application.Run(reporter);
+
+				if (reporter.DialogResult == DialogResult.OK)
+				{
+					Application.Run(new frmNoMoreUserInput(dmper));
+				}
 			}
-			catch
+			finally 
 			{
-				
+				//Last ditch attempt at closing chummer if not done yet
+				try
+				{
+					dmper?.Process?.Kill();
+				} catch { }
 			}
 		}
 

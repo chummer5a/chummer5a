@@ -58,10 +58,19 @@
     <Compile Include="frmCrashReporter.Designer.cs">
       <DependentUpon>frmCrashReporter.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmNoMoreUserInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNoMoreUserInput.Designer.cs">
+      <DependentUpon>frmNoMoreUserInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmCrashReporter.resx">
       <DependentUpon>frmCrashReporter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNoMoreUserInput.resx">
+      <DependentUpon>frmNoMoreUserInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.statusCollectionProgess = new System.Windows.Forms.ToolStripStatusLabel();
 			this.lblTitle = new System.Windows.Forms.Label();
@@ -39,6 +40,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtDesc = new System.Windows.Forms.TextBox();
 			this.lblId = new System.Windows.Forms.Label();
+			this.timerRefreshTextFile = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -157,6 +159,11 @@
 			this.lblId.TabIndex = 9;
 			this.lblId.Text = "[ID]";
 			// 
+			// timerRefreshTextFile
+			// 
+			this.timerRefreshTextFile.Interval = 5000;
+			this.timerRefreshTextFile.Tick += new System.EventHandler(this.timerRefreshTextFile_Tick);
+			// 
 			// frmCrashReporter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -174,6 +181,7 @@
 			this.Controls.Add(this.statusStrip1);
 			this.Name = "frmCrashReporter";
 			this.Text = "Chummer5a Crash Reporter";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCrashReporter_FormClosing);
 			this.Load += new System.EventHandler(this.frmCrashReporter_Load);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
@@ -195,6 +203,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtDesc;
 		private System.Windows.Forms.Label lblId;
+		private System.Windows.Forms.Timer timerRefreshTextFile;
 	}
 }
 
