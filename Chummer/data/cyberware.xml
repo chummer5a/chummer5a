@@ -2942,6 +2942,7 @@
 			<name>Dynamic Handprints</name>
 			<category>Nanocybernetics</category>
 			<ess>0.2</ess>
+			<rating>6</rating>
 			<capacity>0</capacity>
 			<avail>12F</avail>
 			<cost>21000 * Rating</cost>
@@ -2995,6 +2996,7 @@
 			<category>Nanocybernetics</category>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<rating>6</rating>
 			<avail>16F</avail>
 			<cost>19000 * Rating</cost>
 			<source>CF</source>
@@ -3312,7 +3314,7 @@
 			<bonus>
 				<specificskill>
 					<name>Intimidation</name>
-					<bonus>1</bonus>
+					<bonus>Rating</bonus>
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>

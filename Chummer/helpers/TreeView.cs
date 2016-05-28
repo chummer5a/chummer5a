@@ -61,6 +61,15 @@ namespace Chummer.helpers
                 newNode.ForeColor = Color.SaddleBrown;
             newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
             newNode.ContextMenuStrip = strip;
+            if (input.ImprovedName == "")
+            {
+                if (input.ImproveType == Improvement.ImprovementType.SocialLimit)
+                    input.ImprovedName = "Social";
+                else if (input.ImproveType == Improvement.ImprovementType.MentalLimit)
+                    input.ImprovedName = "Mental";
+                else
+                    input.ImprovedName = "Physical";
+            }
 
             TreeNode nodeToAddTo = this.Nodes[(int)Enum.Parse(typeof(LimitType), input.ImprovedName)];
             if (!nodeToAddTo.Nodes.ContainsKey(newNode.Text))
