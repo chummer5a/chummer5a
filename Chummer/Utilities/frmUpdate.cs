@@ -71,7 +71,7 @@ namespace Chummer
 				WebClient wc = new WebClient();
 				wc.Encoding = Encoding.UTF8;
 				Log.Info("Download the changelog");
-				wc.DownloadFile("https://www.dropbox.com/s/0ugjj17dvi1qrr0/changelog.txt?dl=1", Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
+				wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt", Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
 				webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" + File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt")).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />") + "</font>";
 			}
 
