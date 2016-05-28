@@ -1318,8 +1318,8 @@
 					<bodmin>1</bodmin>
 					<bodmax>6</bodmax>
 					<bodaug>10</bodaug>
-					<agimin>2</agimin>
-					<agimax>7</agimax>
+					<agimin>1</agimin>
+					<agimax>6</agimax>
 					<agiaug>11</agiaug>
 					<reamin>1</reamin>
 					<reamax>6</reamax>
@@ -1359,7 +1359,7 @@
 					<sprint>+1m/hit</sprint>					
 					<qualities>
 						<positive>
-							<quality>Low-Light Vision</quality>
+							<quality>Thermographic Vision</quality>
 							<quality select="AGI">Metagenetic Improvement</quality>
 							<quality>Monkey Paws</quality>
 							<quality>Functional Tail (Prehensile)</quality>

@@ -580,7 +580,7 @@ namespace Chummer
             }
             else
             {
-                //nudNuyen.Maximum = decimal.MaxValue;
+                nudNuyen.Maximum = int.MaxValue / 2000 - 75000; // To ensure there is no overflow in character nuyen even with max karma to nuyen and in debt quality
             }
 	        if (_objCharacter.BornRich) nudNuyen.Maximum += 30;
 			nudNuyen.Value = _objCharacter.NuyenBP;

@@ -6425,7 +6425,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
 			<text>Use Restrictions to Recoil Compensation (RG 53)</text>
-		</string>
+		</string>		
 		<string>
 			<key>Checkbox_Options_AutomaticCopyProtection</key>
 			<text>Automatically add Copy Protection plugin to Matrix Programs (requires Unwired)</text>
@@ -6541,6 +6541,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Checkbox_Option_TechnomancerAllowAutosoft</key>
 			<text>Technomancers may select Autosofts as Complex Forms</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Limit Drone Armor Enhance ment to Drone Armor</text>
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>

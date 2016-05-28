@@ -7249,6 +7249,10 @@
       <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+		</string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>

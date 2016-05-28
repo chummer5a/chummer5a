@@ -80,9 +80,16 @@ namespace Chummer
 
 			//Calculate bonus from cyberlimbs
 			int count = Math.Min(_objCharacter.Cyberware.Count(c => c.LimbSlot != "" && c.Name.Contains("Full")) / 2,2);
-		    _objCharacter.RedlinerBonus = count;
+		    if (impr.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
+		    {
+		        _objCharacter.RedlinerBonus = count;
+		    }
+		    else
+		    {
+                _objCharacter.RedlinerBonus = 0;
+            }
 
-			for (int i = 0; i < attributes.Count; i++)
+		    for (int i = 0; i < attributes.Count; i++)
 		    {
 		        Improvement objImprove = impr.FirstOrDefault(x => x.SourceName == strSeekerImprovPrefix +"_" + attributes[i] && x.Value == (attributes[i] == "BOX" ? count * -3 : count));
 		        if (objImprove != null)
@@ -118,8 +125,7 @@ namespace Chummer
 			            Guid.NewGuid().ToString(), count, 1, 0, 0, count);
 			    }
 			}
-			
-			if (manager.IsValueCreated)
+            if (manager.IsValueCreated)
 			{
 				manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
 			}

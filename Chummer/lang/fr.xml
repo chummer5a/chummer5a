@@ -7374,6 +7374,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Limitez Drone Armure Enhancement à Drone Armure</text>
+		</string>
     <string>
       <key>String_Improvement_SelectLimitNamed</key>
       <text>Choose a Limit for {0} to affect.</text>

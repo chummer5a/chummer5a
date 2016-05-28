@@ -7219,6 +7219,10 @@
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>ドローンアーマーにドローンアーマー強化を制限</text>
+		</string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Qualities</key>
       <text>Qualities</text>

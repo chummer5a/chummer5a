@@ -4623,7 +4623,7 @@ namespace Chummer
             // 
             this.nudNuyen.Location = new System.Drawing.Point(694, 63);
             this.nudNuyen.Maximum = new decimal(new int[] {
-            200,
+            1073704,
             0,
             0,
             0});
