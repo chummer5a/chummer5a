@@ -49,12 +49,14 @@ namespace Chummer
 			FixCwd();
 
 
-			//Log exceptions that is caught. Wanting to know about this cause of performance
-			AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
+			
 
 			Log.Info(String.Format("Application Chummer5a build {0} started at {1} with command line arguments {2}",
 				System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(), DateTime.UtcNow,
 				Environment.CommandLine));
+			
+			//Log exceptions that is caught. Wanting to know about this cause of performance
+			AppDomain.CurrentDomain.FirstChanceException += Log.FirstChanceException;
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -68,6 +70,8 @@ namespace Chummer
 			{
 				try
 				{
+					Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+					Application.ThreadException += ApplicationOnThreadException;
 					Application.Run(new frmMain());
 				}
 				catch (Exception ex)
