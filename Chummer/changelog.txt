@@ -1,5 +1,17 @@
 Build 179:
 Application Change:
+- Total rewrite of skills. 
+	* Eliminated a lot (all?) old bugs
+	* Opening the skills tab first time is now signifigantly faster
+	* Searchbox for skills
+	* Custom sorting of skills. Sort by Rating, Dicepool, Category and more
+	* Skill tooltip now display dicepools for cyberarms
+	* In Career mode, it is possible to calculate the dicepool using another attribute that the default one.
+	* Some minor UI changes to acomodate new skill features
+	* Skills that cannot be defaulted has their name in italics.
+	* Easier maintainance
+	* Reduced file size
+	
 - First things first, good news bad news. Good news, automatic updates will be functional again for updates after 179. Bad news, due to a change in implementation of the automatic updates this brings an end to .Net 4.0 support. Chummer will no longer launch without .Net 4.5 or higher installed on your system. 
 - Built-in weapon accessories are automatically assigned to the Internal accessory slot by default. If a weapon accessory should take up a slot naturally, just add a <mount> value to the accessory. This change only affects newly created/purchased weapons, so any existing weapons will need to be altered manually or deleted and re-added. Fixes #566.
 - Ammunition can now add and replace the fire modes of weapons, using the firemode and firemodereplace nodes of weaponbonus. This change only takes effect during career mode, and is currently used exclusively for the Taurus Omni-6's heavy ammo type. Fixes #577.
@@ -352,7 +364,7 @@ Build 173:
 Application Change:
 - Dumpshock link changed to issue tracker.
 - A First-pass effort at adding a filter for Missions-restricted items has been added to the Options menu. Will be getting a later review to enable better filtering of the qualities, but for now it's just a global option.
-- Fixed a bug with life modules where Tír Tairngire wouldn't show demographics.
+- Fixed a bug with life modules where TÃ­r Tairngire wouldn't show demographics.
 - Chummer now handles essence holes automatically. Old items may need to be re-added.
 - College Education/School of Hard Knocks/Linguist and Jack of All Trades work properly for knowledge skills during character creation. Again. 
 - Most of the functionality for Infected has been implemented. Todo: Fix up the free attribute gain to not use qualities because it's ugly, and put in the data files content.
@@ -369,7 +381,7 @@ Data Change:
 - Rank Quality added.
 - The Debug Lifestyle has been hidden.
 - Lifemodules no longer contains a "Magical Education (Archetype)".
-- Tír is now spelled correctly a few more places.
+- TÃ­r is now spelled correctly a few more places.
 - Equipment, Weapon and Ammo PACKs from run faster added.
 	There are a couple of important caveats with this:
 	First, we generally haven't bothered to input PACKs that are a single item. If someone would like to write them up then that's fine, but there's only so many hours of data entry one can do. 
@@ -772,7 +784,7 @@ Application Change:
 
 Build 5.150
 Data change:
-- Nocturna and Xapiri Thëpë quality-related crash fixed.
+- Nocturna and Xapiri ThÃ«pÃ« quality-related crash fixed.
 Application Change:
 - Lazy workaround fix for karmagen attributes not increasing properly.
 
@@ -859,7 +871,7 @@ Build 5.137 (beta)
 - Fixed the AP modifier for Gel Rounds.
 - Changed the Gecko Grip weapon modification to not require that the weapon have a Stock slot.
 - Added the missing Strike the Darkness and Neijia Martial Art Techniques.
-- Fixed the price of the Armanté Suit and Dress.
+- Fixed the price of the ArmantÃ© Suit and Dress.
 - Fixed a formatting problem with the skills list so that the list should now scroll properly.
 - Fixed a bug preventing leftover nuyen from being carried over after character creation.
 - Added the ability to enter notes for Martial Art Techniques which are also shown on the character sheet.

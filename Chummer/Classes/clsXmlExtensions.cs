@@ -103,7 +103,7 @@ namespace Chummer
             catch (Exception)
             {
                 //If we are debugging, great
-                if (Debugger.IsAttached)
+                if (Debugger.IsAttached && false)
                     Debugger.Break();
 
                 //Otherwise just log it
@@ -121,7 +121,6 @@ namespace Chummer
                 read = onError;
                 return false;
             }
-
         }
 
 

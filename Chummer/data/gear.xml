@@ -3031,7 +3031,13 @@
 				<tag>Knowsoft</tag>
 			</tags>
 			<bonus>
-				<selecttext />
+        <!--<selecttext />-->
+        <knowsoft>
+          <pick/>
+          <val>Rating</val>
+          <notgroup>Language</notgroup>
+          <require>skilljack</require>
+        </knowsoft>
 			</bonus>
 			<avail>4</avail>
 			<cost>Rating * 2000</cost>
@@ -3049,7 +3055,13 @@
 				<tag>Linguasoft</tag>
 			</tags>
 			<bonus>
-				<selecttext />
+        <!--<selecttext />-->
+        <knowsoft>
+          <pick/>
+          <val>Rating</val>
+          <group>Language</group>
+          <require>skilljack</require>
+        </knowsoft>
 			</bonus>
 			<avail>2</avail>
 			<cost>Rating * 1000</cost>

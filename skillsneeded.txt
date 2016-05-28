@@ -1,0 +1,10 @@
+Known limitations
+	Cyberlimb Optimization is not included in cyberlimb pool tooltip
+	
+	Old skills and knowledgeskills sharing name will always undo real skill
+	
+	Sorting is not aware of selected attributes
+	
+	Old skill specializations are not translated.
+	
+	Sorting is not re-evaluated when skills change
