@@ -28,6 +28,14 @@
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
 	</file>
 	<file>
+		<name>CrashHandler.exe</name>
+		<type>Application</type>
+		<version>1.0.0.0</version>
+		<description>Chummer</description>
+		<notes>- Chummer Application</notes>
+		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
+	</file>
+	<file>
 		<name>Translator.exe</name>
 		<type>Application</type>
 		<version>0.0.5.103</version>
