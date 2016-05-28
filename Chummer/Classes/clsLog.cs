@@ -330,7 +330,7 @@ namespace Chummer
 			if (!logEnabled)
 				return;
 
-			logWriter.WriteLine("First chance exception: " +e.Exception);
+			logWriter?.WriteLine("First chance exception: " +e?.Exception ?? "null");
 		}
 	}
 }
