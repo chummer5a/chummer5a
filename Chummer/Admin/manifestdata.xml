@@ -22,7 +22,7 @@
 	<file>
 		<name>Chummer5.exe</name>
 		<type>Application</type>
-		<version>0.5.178.0</version>
+		<version>0.5.179.0</version>
 		<description>Chummer</description>
 		<notes>- Chummer Application</notes>
 		<url>https://www.dropbox.com/s/l8yksfl57832c65/Chummer5.exe?dl=1</url>
@@ -220,7 +220,7 @@
 	<file>
 		<name>data/armor.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>0</version>
 		<description>Armor</description>
 		<notes>- Armor data file</notes>
 		<url>https://www.dropbox.com/s/1wp0btv02dcvo7r/armor.xml?dl=1</url>
@@ -228,7 +228,7 @@
 	<file>
 		<name>data/bioware.xml</name>
 		<type>Data Files</type>
-		<version>-355</version>
+		<version>0</version>
 		<description>Bioware</description>
 		<notes>- Bioware data file</notes>
 		<url>https://www.dropbox.com/s/foa4w42i2kkud61/bioware.xml?dl=1</url>
@@ -236,7 +236,7 @@
 	<file>
 		<name>data/books.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>0</version>
 		<description>Books</description>
 		<notes>- Books data file</notes>
 		<url>https://www.dropbox.com/s/qetzzti2r40btx7/books.xml?dl=1</url>
@@ -244,7 +244,7 @@
 	<file>
 		<name>data/complexforms.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>0</version>
 		<description>Complex Forms</description>
 		<notes>- Complex Forms data file</notes>
 		<url>https://www.dropbox.com/s/tujuo04kkxxgf5s/complexforms.xml?dl=1</url>
@@ -252,7 +252,7 @@
 	<file>
 		<name>data/contacts.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Contacts</description>
 		<notes>- Contacts data file</notes>
 		<url>https://www.dropbox.com/s/qd9e59pkkj0gsj7/contacts.xml?dl=1</url>
@@ -260,7 +260,7 @@
 	<file>
 		<name>data/critterpowers.xml</name>
 		<type>Data Files</type>
-		<version>-399</version>
+		<version>0</version>
 		<description>Critter Powers</description>
 		<notes>- Critter Powers data file</notes>
 		<url>https://www.dropbox.com/s/hqfhmtaicyjoxi5/critterpowers.xml?dl=1</url>
@@ -268,7 +268,7 @@
 	<file>
 		<name>data/critters.xml</name>
 		<type>Data Files</type>
-		<version>-395</version>
+		<version>0</version>
 		<description>Critters</description>
 		<notes>- Critters data file</notes>
 		<url>https://www.dropbox.com/s/l5n92nv2szbbw5s/critters.xml?dl=1</url>
@@ -276,7 +276,7 @@
 	<file>
 		<name>data/cyberware.xml</name>
 		<type>Data Files</type>
-		<version>-345</version>
+		<version>0</version>
 		<description>Cyberware</description>
 		<notes>- Cyberware data file</notes>
 		<url>https://www.dropbox.com/s/osmokerg8b0isdx/cyberware.xml?dl=1</url>
@@ -284,7 +284,7 @@
 	<file>
 		<name>data/echoes.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Echoes</description>
 		<notes>- Echoes data file</notes>
 		<url>https://www.dropbox.com/s/2dghsiiz91u0kq1/echoes.xml?dl=1</url>
@@ -292,7 +292,7 @@
 	<file>
 		<name>data/gameplayoptions.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Gameplay Options</description>
 		<notes>- Gameplay Options data file</notes>
 		<url>https://www.dropbox.com/s/j6cw94nwhbvdluu/gameplayoptions.xml?dl=1</url>
@@ -300,7 +300,7 @@
 	<file>
 		<name>data/gear.xml</name>
 		<type>Data Files</type>
-		<version>-375</version>
+		<version>0</version>
 		<description>Gear</description>
 		<notes>- Gear data file</notes>
 		<url>https://www.dropbox.com/s/qp3vbk0jy902ynt/gear.xml?dl=1</url>
@@ -308,7 +308,7 @@
 	<file>
 		<name>data/improvements.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Improvements</description>
 		<notes>- Improvements data file</notes>
 		<url>https://www.dropbox.com/s/i2x6govz1c464hu/improvements.xml?dl=1</url>
@@ -316,7 +316,7 @@
 	<file>
 		<name>data/licenses.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Licenses</description>
 		<notes>- Licenses data file</notes>
 		<url>https://www.dropbox.com/s/n0vkxkw87qd9588/licenses.xml?dl=1</url>
@@ -324,7 +324,7 @@
 	<file>
 		<name>data/lifemodules.xml</name>
 		<type>Data Files</type>
-		<version>-875</version>
+		<version>0</version>
 		<description>Life Modules</description>
 		<notes>- Life Modules data file</notes>
 		<url>https://www.dropbox.com/s/silctczau7k4ijt/lifemodules.xml?dl=1</url>
@@ -332,7 +332,7 @@
 	<file>
 		<name>data/lifestyles.xml</name>
 		<type>Data Files</type>
-		<version>-845</version>
+		<version>0</version>
 		<description>Lifestyles</description>
 		<notes>- Lifestyles data file</notes>
 		<url>https://www.dropbox.com/s/pq4vjdxdp7dg4mr/lifestyles.xml?dl=1</url>
@@ -340,7 +340,7 @@
 	<file>
 		<name>data/martialarts.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Martial Arts</description>
 		<notes>- Martial Arts data file</notes>
 		<url>https://www.dropbox.com/s/y958x3tbn8187gu/martialarts.xml?dl=1</url>
@@ -348,7 +348,7 @@
 	<file>
 		<name>data/mentors.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>0</version>
 		<description>Mentor Spirits</description>
 		<notes>- Mentor Spirits data file</notes>
 		<url>https://www.dropbox.com/s/zb8sowykt8j4ff1/mentors.xml?dl=1</url>
@@ -356,7 +356,7 @@
 	<file>
 		<name>data/metamagic.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Metamagic</description>
 		<notes>- Metamagic data file</notes>
 		<url>https://www.dropbox.com/s/wgzzgmwaih4g7ma/metamagic.xml?dl=1</url>
@@ -364,7 +364,7 @@
 	<file>
 		<name>data/metatypes.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>0</version>
 		<description>Metatypes</description>
 		<notes>- Metatypes data file</notes>
 		<url>https://www.dropbox.com/s/haqoojv28c8dwve/metatypes.xml?dl=1</url>
@@ -372,7 +372,7 @@
 	<file>
 		<name>data/packs.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>PACKS</description>
 		<notes>- PACKS data file</notes>
 		<url>https://www.dropbox.com/s/rv48uwkkc3mfuph/packs.xml?dl=1</url>
@@ -380,7 +380,7 @@
 	<file>
 		<name>data/paragons.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Paragons</description>
 		<notes>- Paragons data file</notes>
 		<url>https://www.dropbox.com/s/hbn002pa652rfxx/paragons.xml?dl=1</url>
@@ -388,7 +388,7 @@
 	<file>
 		<name>data/powers.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>0</version>
 		<description>Powers</description>
 		<notes>- Powers data file</notes>
 		<url>https://www.dropbox.com/s/s6j2l3gnq1hnie4/powers.xml?dl=1</url>
@@ -396,7 +396,7 @@
 	<file>
 		<name>data/priorities.xml</name>
 		<type>Data Files</type>
-		<version>-385</version>
+		<version>0</version>
 		<description>Priorities</description>
 		<notes>- Priorities data file</notes>
 		<url>https://www.dropbox.com/s/sdlxvlmratzy0th/priorities.xml?dl=1</url>
@@ -404,7 +404,7 @@
 	<file>
 		<name>data/programs.xml</name>
 		<type>Data Files</type>
-		<version>-500</version>
+		<version>0</version>
 		<description>Programs</description>
 		<notes>- Programs data file</notes>
 		<url>https://www.dropbox.com/s/8a2laip6lhp9vxa/programs.xml?dl=1</url>
@@ -412,7 +412,7 @@
 	<file>
 		<name>data/qualities.xml</name>
 		<type>Data Files</type>
-		<version>-345</version>
+		<version>0</version>
 		<description>Qualities</description>
 		<notes>- Qualities data file</notes>
 		<url>https://www.dropbox.com/s/xgx48vip4dqhnbc/qualities.xml?dl=1</url>
@@ -420,7 +420,7 @@
 	<file>
 		<name>data/ranges.xml</name>
 		<type>Data Files</type>
-		<version>-500</version>
+		<version>0</version>
 		<description>Ranges</description>
 		<notes>- Weapon Ranges data file</notes>
 		<url>https://www.dropbox.com/s/ejj6u6rgh8i28gs/ranges.xml?dl=1</url>
@@ -428,7 +428,7 @@
 	<file>
 		<name>data/skills.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Skills</description>
 		<notes>- Skills data file</notes>
 		<url>https://www.dropbox.com/s/fism6kejy7ir57s/skills.xml?dl=1</url>
@@ -436,7 +436,7 @@
 	<file>
 		<name>data/spiritpowers.xml</name>
 		<type>Data Files</type>
-		<version>-900</version>
+		<version>0</version>
 		<description>Spirit Powers</description>
 		<notes>- Spirit Power data file</notes>
 		<url>https://www.dropbox.com/s/7xt0bnszurftbzg/spiritpowers.xml?dl=1</url>
@@ -444,7 +444,7 @@
 	<file>
 		<name>data/spells.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>0</version>
 		<description>Spells</description>
 		<notes>- Spells data file</notes>
 		<url>https://www.dropbox.com/s/yheum6i7llvas2u/spells.xml?dl=1</url>
@@ -452,7 +452,7 @@
 	<file>
 		<name>data/streams.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>0</version>
 		<description>Streams</description>
 		<notes>- Streams data file</notes>
 		<url>https://www.dropbox.com/s/r0h6osxsx0zdxfi/streams.xml?dl=1</url>
@@ -460,7 +460,7 @@
 	<file>
 		<name>data/SumtoTen.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>0</version>
 		<description>Sum to Ten Priorities</description>
 		<notes>- Sum to Ten Priority data file</notes>
 		<url>https://www.dropbox.com/s/metwywhddzlmozo/SumtoTen.xml?dl=1</url>
@@ -468,7 +468,7 @@
 	<file>
 		<name>data/traditions.xml</name>
 		<type>Data Files</type>
-		<version>-380</version>
+		<version>0</version>
 		<description>Traditions</description>
 		<notes>- Magic Traditions data file</notes>
 		<url>https://www.dropbox.com/s/fu7j24hxc9cf5h6/traditions.xml?dl=1</url>
@@ -476,7 +476,7 @@
 	<file>
 		<name>data/vehicles.xml</name>
 		<type>Data Files</type>
-		<version>-390</version>
+		<version>0</version>
 		<description>Vehicles</description>
 		<notes>- Vehicles data file</notes>
 		<url>https://www.dropbox.com/s/fgl570x5jzedmr7/vehicles.xml?dl=1</url>
@@ -484,7 +484,7 @@
 	<file>
 		<name>data/vessels.xml</name>
 		<type>Data Files</type>
-		<version>-400</version>
+		<version>0</version>
 		<description>Vessels</description>
 		<notes>- Vessels data file</notes>
 		<url>https://www.dropbox.com/s/hyyxb6j3it0b5zb/vessels.xml?dl=1</url>
@@ -492,7 +492,7 @@
 	<file>
 		<name>data/weapons.xml</name>
 		<type>Data Files</type>
-		<version>-330</version>
+		<version>0</version>
 		<description>Weapons</description>
 		<notes>- Weapons data file</notes>
 		<url>https://www.dropbox.com/s/hhl3jxqviagx9dt/weapons.xml?dl=1</url>
