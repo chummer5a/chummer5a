@@ -6399,8 +6399,8 @@ namespace Chummer
 			{
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("weapons.xml");
 				XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-				XmlNodeList objXmlMountList = objAccessoryNode.SelectNodes("accessorymounts/mount");
 				string strMounts = "";
+				XmlNodeList objXmlMountList = objAccessoryNode?.SelectNodes("accessorymounts/mount");
 
 				if (objXmlMountList != null)
 				{

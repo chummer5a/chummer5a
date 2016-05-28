@@ -7648,11 +7648,11 @@ namespace Chummer
 					}
 				}
 
-				// Add any Critter Powers that are gained through the Quality (Infected).
-				if (objXmlQuality.SelectNodes("powers/power").Count > 0)
+				// Add any Critter Powers that are gained through qualities like Infected or Drake.
+				if (objXmlQuality.SelectNodes("critterpowers/power").Count > 0)
 				{
 					objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-					foreach (XmlNode objXmlPower in objXmlQuality.SelectNodes("powers/power"))
+					foreach (XmlNode objXmlPower in objXmlQuality.SelectNodes("critterpowers/power"))
 					{
 						XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
 						TreeNode objPowerNode = new TreeNode();
