@@ -189,6 +189,15 @@ namespace Chummer.Skills
 				unsoredSkills.ForEach(x => _skills.Add(x));
 
 				UpdateUndoList(skillNode);
+
+				//remove skillgroups whose skills did not make the final cut
+				for (var i = SkillGroups.Count - 1; i >= 0; i--)
+				{
+					if(SkillGroups[i].GetEnumerable().Any(x => Skills.Contains(x)))
+						continue;
+					
+					SkillGroups.RemoveAt(i);
+				}
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
