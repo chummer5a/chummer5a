@@ -214,6 +214,7 @@ namespace Chummer.Skills
 			if (string.IsNullOrWhiteSpace(skill.SkillGroup)) return null;
 
 			SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
+			newGroup.Add(skill);
 			skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => l.DisplayName.CompareTo(r.DisplayName));
 			
 			return newGroup;
