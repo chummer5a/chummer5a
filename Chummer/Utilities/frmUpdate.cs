@@ -37,6 +37,8 @@ namespace Chummer
 		private bool _blnDownloaded = false;
 		private string strDownloadFile = "";
 		private string strLatestVersion = "";
+		private string strTempPath = "";
+        private readonly string strAppPath = Application.StartupPath;
 		private CommonFunctions objFunctions = new CommonFunctions();
 
 		public frmUpdate()
@@ -210,15 +212,13 @@ namespace Chummer
 		private void DownloadUpdates()
 		{
 			Log.Enter("DownloadUpdates");
-			string strAppPath = Application.ExecutablePath;
-			string strArchive = strAppPath + ".old";
-			string strNewPath = Path.Combine(Path.GetTempPath(), ("chummer"+LatestVersion+".zip"));
+			strTempPath = Path.Combine(Path.GetTempPath(), ("chummer"+LatestVersion+".zip"));
 			string strFilePath = Environment.CurrentDirectory + Path.DirectorySeparatorChar;
 			
 			WebClient Client = new WebClient();
 			Client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);
 			Client.DownloadFileCompleted += new AsyncCompletedEventHandler(wc_DownloadCompleted);
-			Client.DownloadFileAsync(new Uri(strDownloadFile), strNewPath);
+			Client.DownloadFileAsync(new Uri(strDownloadFile), strTempPath);
 			cmdUpdate.Enabled = false;
 		}
 		
@@ -245,19 +245,31 @@ namespace Chummer
 			Log.Info("wc_DownloadExeFileCompleted");
 			
 				_blnDownloaded = true;
-
-				// Copy over the executable.
+			
 				try
 				{
-				string appPath = Application.StartupPath;
+				//Create a backup file in the temp directory. 
 				string zipPath = Path.Combine(Path.GetTempPath(), ("chummer"+ CurrentVersion +".zip"));
-				Log.Info("Creating archive from application path: ", appPath);
-				ZipFile.CreateFromDirectory(appPath, zipPath, CompressionLevel.Fastest, true);
-
+				Log.Info("Creating archive from application path: ", strAppPath);
+					if (!File.Exists(zipPath))
+					{
+						ZipFile.CreateFromDirectory(strAppPath, zipPath, CompressionLevel.Fastest, true);
+					}
+				// Delete the old Chummer5 executable.
+				File.Delete(strAppPath + "\\Chummer5.exe.old");
+				// Rename the current Chummer5 executable.
+				File.Move(strAppPath+"\\Chummer5.exe", strAppPath + "\\Chummer5.exe.old");
+				
+				// Copy over the archive from the temp directory.
 				Log.Info("Extracting downloaded archive into application path: ", zipPath);
-				ZipFile.ExtractToDirectory(zipPath, appPath);
-
-				_blnDownloaded = true;
+					using (ZipArchive archive = ZipFile.OpenRead(strTempPath))
+					{
+						foreach (ZipArchiveEntry entry in archive.Entries)
+						{
+							entry.ExtractToFile(Path.Combine(strAppPath, entry.FullName), true);
+						}
+					}
+					_blnDownloaded = true;
 				}
 				catch (Exception ex)
 				{

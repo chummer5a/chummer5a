@@ -100,6 +100,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
@@ -117,7 +118,7 @@
   <ItemGroup>
     <Compile Include="Backend\Datastructures\ReverseTree.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
-	<Compile Include="Backend\Debugging\CrashHandler.cs" />
+    <Compile Include="Backend\Debugging\CrashHandler.cs" />
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
     <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
