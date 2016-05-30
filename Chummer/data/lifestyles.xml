@@ -1017,7 +1017,7 @@
 		<quality>
 			<name>Local Grid Subscription</name>
 			<category>Entertainment - Asset</category>
-			<lp>2</lp>
+			<lp>1</lp>
 			<allowed>Medium,High,Luxury</allowed>
 			<bonus>
 				<selecttext />
@@ -1030,7 +1030,7 @@
 		<quality>
 			<name>Global Grid Subscription</name>
 			<category>Entertainment - Asset</category>
-			<lp>2</lp>
+			<lp>1</lp>
 			<allowed>High,Luxury</allowed>
 			<bonus>
 				<selecttext />
