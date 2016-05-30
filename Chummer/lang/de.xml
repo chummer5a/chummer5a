@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -101,10 +101,10 @@
       <key>Label_Karma</key>
       <text>Karma:</text>
     </string>
-    <string>
-      <key>Label_LP</key>
-      <text>LP:</text>
-    </string>
+	<string>
+			<key>Label_LP</key>
+			<text>LP:</text>
+		</string>
     <string>
       <key>Label_KarmaRemaining</key>
       <text>verbleibendes Karma:</text>
@@ -4193,10 +4193,10 @@
       <key>Checkbox_Options_PrintExpenses</key>
       <text>Karma und Nuyen Ausgaben mitschreiben</text>
     </string>
-    <string>
-      <key>Checkbox_Options_UseCyberlimbCalculation</key>
-      <text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
-    </string>
+	<string>
+			<key>Checkbox_Options_UseCyberlimbCalculation</key>
+			<text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
+		</string>
     <string>
       <key>Label_Options_NewSpecialization</key>
       <text>Neue Spezialisierung</text>
@@ -6913,7 +6913,7 @@
       <key>Message_PriorityComplexFormLimit</key>
       <text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
     </string>
-    <string>
+<string>
       <key>Message_InvalidAttributeExcess</key>
       <text>{0} über erlaubten Attributspunktem</text>
     </string>
@@ -6987,7 +6987,7 @@
     </string>
     <string>
       <key>String_DescBlood</key>
-      <text>Blut</text>
+      <text>Blood</text>
     </string>
     <string>
       <key>String_DescContractual</key>
@@ -7133,7 +7133,7 @@
       <key>Checkbox_InitiationSchooling</key>
       <text>Ausbildung (-10%)</text>
     </string>
-    <string>
+        <string>
       <key>Button_AddInitiateGrade</key>
       <text>Initiatengrad hinzufügen</text>
     </string>
@@ -7183,7 +7183,7 @@
     </string>
     <string>
       <key>Message_Metatype_SelectTalent</key>
-      <text>Sie müssen ein Talent auswählen, um fortfahren zu können.</text>
+      <text>You must select a Talent before continuing.</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>
@@ -7249,10 +7249,10 @@
       <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
-    <string>
-      <key>Checkbox_Options_DroneArmorMultiplier</key>
-      <text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
-    </string>
+	<string>
+			<key>Checkbox_Options_DroneArmorMultiplier</key>
+			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+		</string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
@@ -7367,7 +7367,7 @@
     </string>
     <string>
       <key>String_MetamagicSkillBase</key>
-      <text>Aufgrund Ihrer Talentauswahl dürfenSie folgende Fertigkeiten wählen {0}.</text>
+      <text>Based on your talent selection, you may choose {0}.</text>
     </string>
     <string>
       <key>String_MetamagicSkillMagicianA</key>
