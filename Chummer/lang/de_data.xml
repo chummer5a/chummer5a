@@ -1216,7 +1216,7 @@
 						<book>
 								<id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
 								<name>Rigger 5.0</name>
-								<translate>Rigger 5.0</translate>
+								<translate>Asphaltkrieger</translate>
 			</book>
 		</books>
 	</chummer>
@@ -17402,25 +17402,25 @@
 			<tradition>
 				<id>a283220f-2197-4526-b15a-331b9185b326</id>
 				<name>Buddhism</name>
-				<translate>Buddhismus</translate>
+				<translate>Buddhistisch</translate>
 				<page>43</page>
 			</tradition>
 			<tradition>
 				<id>fb6f9683-47bb-4b04-9d15-4b59a003bf69</id>
 				<name>Druid</name>
-				<translate>Druid</translate>
+				<translate>Druidisch</translate>
 				<page>45</page>
 			</tradition>
 			<tradition>
 				<id>2c924aa1-2298-4b02-b28b-946d0769dbd3</id>
 				<name>Hinduism</name>
-				<translate>Hinduism</translate>
+				<translate>Hinduistisch</translate>
 				<page>46</page>
 			</tradition>
 			<tradition translated="True">
 				<id>9acc0a3e-3209-4274-9c98-4cbc42c456a7</id>
 				<name>Islam</name>
-				<translate>Islam</translate>
+				<translate>Islamisch</translate>
 				<page>46</page>
 			</tradition>
 			<tradition>
@@ -17438,31 +17438,31 @@
 			<tradition>
 				<id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
 				<name>Vodou</name>
-				<translate>Vodou</translate>
+				<translate>Voodoo</translate>
 				<page>50</page>
 			</tradition>
 			<tradition>
 				<id>24601762-ef67-44d8-b974-03f626db848a</id>
 				<name>Wicca, Gardnerian</name>
-				<translate>Wicca, Gardnerian</translate>
+				<translate>Wicca, Gardnerianisch</translate>
 				<page>50</page>
 			</tradition>
 			<tradition>
 				<id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
 				<name>Wicca, Goddess</name>
-				<translate>Wicca, Goddess</translate>
+				<translate>Wicca, Göttin</translate>
 				<page>50</page>
 			</tradition>
 			<tradition>
 				<id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
 				<name>Zoroastrianism</name>
-				<translate>Zoroastrianism</translate>
+				<translate>Zarathustrisch</translate>
 				<page>52</page>
 			</tradition>
 			<tradition>
 				<id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
 				<name>Insect Shaman</name>
-				<translate>Insect Shaman</translate>
+				<translate>Insektenschamanen</translate>
 				<page>94</page>
 			</tradition>
 		</traditions>

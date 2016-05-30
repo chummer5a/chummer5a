@@ -6763,7 +6763,7 @@
     </string>
     <string>
       <key>String_ComplexForms</key>
-      <text>Complex Form Rating Points</text>
+      <text>Stufe der komplexen Form</text>
     </string>
     <string>
       <key>Label_Bonus</key>
@@ -6863,7 +6863,7 @@
     </string>
     <string>
       <key>Message_DeleteInitiateGrade</key>
-      <text>Are you sure you want to delete this Initiate Grade and all of its bonuses?</text>
+      <text>Sind Sie sicher, dass sie diesen Initiatengrad und alle damit verbundenen Boni löschen möchten?</text>
     </string>
     <string>
       <key>Message_DeleteSubmersionGrade</key>
@@ -6875,7 +6875,7 @@
     </string>
     <string>
       <key>Message_DeleteEnhancement</key>
-      <text>Are you sure you want to delete this Enhancement?</text>
+      <text>Sind Sie sicher, dass Sie diese Verbesserung löschen wollen?</text>
     </string>
     <string>
       <key>Message_CannotDeleteLimitModifier</key>
