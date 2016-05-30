@@ -450,10 +450,13 @@ namespace Chummer
                         XmlNodeList objXmlMagicalSkills = GetMagicalSkillList();
                         foreach (XmlNode objXmlSkill in objXmlMagicalSkills)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
+							lstSkills1.Add(objItem);
                             lstSkills2.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
@@ -478,10 +481,13 @@ namespace Chummer
                         XmlNodeList objXmlResonanceSkills = GetResonanceSkillList();
                         foreach (XmlNode objXmlSkill in objXmlResonanceSkills)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
+							lstSkills1.Add(objItem);
                             lstSkills2.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
@@ -515,10 +521,13 @@ namespace Chummer
                         XmlNodeList objXmlMagicalSkills = GetMagicalSkillList();
                         foreach (XmlNode objXmlSkill in objXmlMagicalSkills)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
+							lstSkills1.Add(objItem);
                             lstSkills2.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
@@ -543,10 +552,13 @@ namespace Chummer
                         XmlNodeList objXmlResonanceSkills = GetResonanceSkillList();
                         foreach (XmlNode objXmlSkill in objXmlResonanceSkills)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
+							lstSkills1.Add(objItem);
                             lstSkills2.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
@@ -571,8 +583,11 @@ namespace Chummer
                         foreach (XmlNode objXmlSkill in objXmlActiveSkills)
                         {
                             ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
                             lstSkills1.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
@@ -583,27 +598,26 @@ namespace Chummer
                         cboSkill1.Visible = true;
                         cboSkill2.Visible = false;
                     }
-                    else if (cboTalents.SelectedValue.ToString() == "Aspected Magician")
+                    else if (cboTalents.SelectedValue.ToString().StartsWith("Aspected Magician"))
                     {
                         strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedB"));
                         lblMetatypeSkillSelection.Text = strLabel;
+						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
+						List<ListItem> lstSkills1 = new List<ListItem>();
+	                    XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
+						ListItem objItem = new ListItem();
 
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-
-                        ListItem objItem = new ListItem();
-                        objItem.Value = "Conjuring";
-                        objItem.Name = "Conjuring";
-                        lstSkills1.Add(objItem);
-
-                        objItem = new ListItem();
-                        objItem.Value = "Enchanting";
-                        objItem.Name = "Enchanting";
-                        lstSkills1.Add(objItem);
-
-                        objItem = new ListItem();
-                        objItem.Value = "Sorcery";
-                        objItem.Name = "Sorcery";
-                        lstSkills1.Add(objItem);
+						foreach (XmlNode objXmlSkill in objXmlSkillsList)
+						{
+							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
+							objItem.Value = objNode.InnerText;
+							if (objNode.Attributes["translate"] != null)
+								objItem.Name = objNode.Attributes["translate"].InnerText;
+							else
+								objItem.Name = objNode.InnerText;
+							lstSkills1.Add(objItem);
+							objItem = new ListItem();
+						}
 
                         cboSkill1.ValueMember = "Value";
                         cboSkill1.DisplayMember = "Name";
@@ -631,10 +645,13 @@ namespace Chummer
                         XmlNodeList objXmlActiveSkills = GetActiveSkillList();
                         foreach (XmlNode objXmlSkill in objXmlActiveSkills)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlSkill["name"].InnerText;
-                            objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlSkill["name"].InnerText;
+							if (objXmlSkill["translate"] != null)
+								objItem.Name = objXmlSkill["translate"].InnerText;
+							else
+								objItem.Name = objXmlSkill["name"].InnerText;
+							lstSkills1.Add(objItem);
                         }
                         cboSkill1.ValueMember = "Value";
                         cboSkill1.DisplayMember = "Name";
@@ -649,24 +666,24 @@ namespace Chummer
                         strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedC"));
                         lblMetatypeSkillSelection.Text = strLabel;
 
-                        List<ListItem> lstSkills1 = new List<ListItem>();
+						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
+						List<ListItem> lstSkills1 = new List<ListItem>();
+						XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
+						ListItem objItem = new ListItem();
 
-                        ListItem objItem = new ListItem();
-                        objItem.Value = "Conjuring";
-                        objItem.Name = "Conjuring";
-                        lstSkills1.Add(objItem);
+						foreach (XmlNode objXmlSkill in objXmlSkillsList)
+						{
+							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
+							objItem.Value = objNode.InnerText;
+							if (objNode.Attributes["translate"] != null)
+								objItem.Name = objNode.Attributes["translate"].InnerText;
+							else
+								objItem.Name = objNode.InnerText;
+							lstSkills1.Add(objItem);
+							objItem = new ListItem();
+						}
 
-                        objItem = new ListItem();
-                        objItem.Value = "Enchanting";
-                        objItem.Name = "Enchanting";
-                        lstSkills1.Add(objItem);
-
-                        objItem = new ListItem();
-                        objItem.Value = "Sorcery";
-                        objItem.Name = "Sorcery";
-                        lstSkills1.Add(objItem);
-
-                        cboSkill1.ValueMember = "Value";
+						cboSkill1.ValueMember = "Value";
                         cboSkill1.DisplayMember = "Name";
                         cboSkill1.DataSource = lstSkills1;
 
@@ -683,29 +700,29 @@ namespace Chummer
                 }
                 else if (cboTalent.SelectedValue.ToString() == "D,1")
                 {
-                    if (cboTalents.SelectedValue.ToString() == "Aspected Magician")
-                    {
+					if (cboTalents.SelectedValue.ToString().StartsWith("Aspected Magician"))
+					{
                         strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedD"));
                         lblMetatypeSkillSelection.Text = strLabel;
 
-                        List<ListItem> lstSkills1 = new List<ListItem>();
+						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
+						List<ListItem> lstSkills1 = new List<ListItem>();
+						XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
+						ListItem objItem = new ListItem();
 
-                        ListItem objItem = new ListItem();
-                        objItem.Value = "Conjuring";
-                        objItem.Name = "Conjuring";
-                        lstSkills1.Add(objItem);
+						foreach (XmlNode objXmlSkill in objXmlSkillsList)
+						{
+							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
+							objItem.Value = objNode.InnerText;
+							if (objNode.Attributes["translate"] != null)
+								objItem.Name = objNode.Attributes["translate"].InnerText;
+							else
+								objItem.Name = objNode.InnerText;
+							lstSkills1.Add(objItem);
+							objItem = new ListItem();
+						}
 
-                        objItem = new ListItem();
-                        objItem.Value = "Enchanting";
-                        objItem.Name = "Enchanting";
-                        lstSkills1.Add(objItem);
-
-                        objItem = new ListItem();
-                        objItem.Value = "Sorcery";
-                        objItem.Name = "Sorcery";
-                        lstSkills1.Add(objItem);
-
-                        cboSkill1.ValueMember = "Value";
+						cboSkill1.ValueMember = "Value";
                         cboSkill1.DisplayMember = "Name";
                         cboSkill1.DataSource = lstSkills1;
 
@@ -2055,10 +2072,13 @@ namespace Chummer
             XmlNodeList objXmlPriorityTalentList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent");
             foreach (XmlNode objXmlPriorityTalent in objXmlPriorityTalentList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlPriorityTalent["value"].InnerText;
-                objItem.Name = objXmlPriorityTalent["name"].InnerText;
-                lstTalent.Add(objItem);
+				ListItem objItem = new ListItem();
+				objItem.Value = objXmlPriorityTalent["value"].InnerText;
+				if (objXmlPriorityTalent["translate"] != null)
+					objItem.Name = objXmlPriorityTalent["translate"].InnerText;
+				else
+					objItem.Name = objXmlPriorityTalent["name"].InnerText;
+				lstTalent.Add(objItem);
             }
 
             SortListItem objSort = new SortListItem();
@@ -2217,7 +2237,23 @@ namespace Chummer
             PopulateMetatypes();
         }
 
-        private XmlNodeList GetMagicalSkillList()
+	    private XmlNode GetSpecificSkill(string strSkill)
+	    {
+		    XmlNode objXmlSkill;
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
+			return objXmlSkill;
+		}
+
+		private XmlNode GetSpecificSkillGroup(string strSkill)
+		{
+			XmlNode objXmlSkill;
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
+			return objXmlSkill;
+		}
+
+		private XmlNodeList GetMagicalSkillList()
         {
             XmlNodeList objXmlSkillList;
             XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
