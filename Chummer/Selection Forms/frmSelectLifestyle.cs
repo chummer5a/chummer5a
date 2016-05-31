@@ -333,9 +333,10 @@ namespace Chummer
 			decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText);
 			_objLifestyle.Dice = Convert.ToInt32(objXmlAspect["dice"].InnerText);
 			_objLifestyle.Multiplier = Convert.ToInt32(objXmlAspect["multiplier"].InnerText);
+            lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
-			// Add the flat costs from qualities
-			foreach (TreeNode objNode in treQualities.Nodes)
+            // Add the flat costs from qualities
+            foreach (TreeNode objNode in treQualities.Nodes)
 			{
 				if (objNode.Checked)
 				{

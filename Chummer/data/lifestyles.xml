@@ -360,7 +360,7 @@
 			<page>220</page>
 		</quality>
 		<quality>
-			<name>Discreet Cleaning Entertainment - Service</name>
+			<name>Discreet Cleaning Service</name>
 			<category>Entertainment - Service</category>
 			<lp>4</lp>
 			<source>RF</source>
@@ -501,6 +501,9 @@
 			<category>Entertainment - Asset</category>
 			<lp>1</lp>
 			<allowed>Medium,High,Luxury</allowed>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>RF</source>
 			<cost>50</cost>
 			<page>222</page>
@@ -1014,8 +1017,11 @@
 		<quality>
 			<name>Local Grid Subscription</name>
 			<category>Entertainment - Asset</category>
-			<lp>2</lp>
+			<lp>1</lp>
 			<allowed>Medium,High,Luxury</allowed>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>HT</source>
 			<cost>50</cost>
 			<page>140</page>
@@ -1024,8 +1030,11 @@
 		<quality>
 			<name>Global Grid Subscription</name>
 			<category>Entertainment - Asset</category>
-			<lp>2</lp>
+			<lp>1</lp>
 			<allowed>High,Luxury</allowed>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<source>HT</source>
 			<cost>250</cost>
 			<page>140</page>
