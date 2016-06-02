@@ -4071,7 +4071,7 @@
     </string>
     <string>
       <key>Message_OmaeUpload_UnnamedCharacter</key>
-      <text>Der Charakter braucht einen Namen um hochgeladen werden zu können.</text>
+      <text>Der Charakter braucht einen Namen, um hochgeladen werden zu können.</text>
     </string>
     <string>
       <key>MessageTitle_OmaeUpload_UnnamedCharacter</key>
@@ -4095,7 +4095,7 @@
     </string>
     <string>
       <key>Message_OmaeUpload_FileTooLarge</key>
-      <text>Diese Datei ist zu groß um an Omae gesendet zu werden. Sollte ein Portrait angehängt sein, verkleinern oder entfernen Sie dieses und versuchen Sie es erneut.</text>
+      <text>Diese Datei ist zu groß, um an Omae gesendet zu werden. Sollte ein Portrait angehängt sein, verkleinern oder entfernen Sie dieses und versuchen Sie es erneut.</text>
     </string>
     <string>
       <key>MessageTitle_OmaeUpload_FileTooLarge</key>
@@ -4175,11 +4175,11 @@
     </string>
     <string>
       <key>Checkbox_Options_ConfirmDelete</key>
-      <text>Um Bestätigung fragen beim Entfernen von Gegenständen</text>
+      <text>Um Bestätigung bitten beim Entfernen von Gegenständen</text>
     </string>
     <string>
       <key>Checkbox_Options_ConfirmKarmaExpense</key>
-      <text>Um Bestätigung fragen beim Ausgeben von Karma</text>
+      <text>Um Bestätigung bitten beim Ausgeben von Karma</text>
     </string>
     <string>
       <key>Checkbox_Options_EnforceSkillRating</key>
@@ -4194,9 +4194,9 @@
       <text>Karma und Nuyen Ausgaben mitschreiben</text>
     </string>
 	<string>
-			<key>Checkbox_Options_UseCyberlimbCalculation</key>
-			<text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
-		</string>
+      <key>Checkbox_Options_UseCyberlimbCalculation</key>
+      <text>Nutze Cyber-Gliedmaßen nicht für Attributberechnung</text>
+    </string>
     <string>
       <key>Label_Options_NewSpecialization</key>
       <text>Neue Spezialisierung</text>
@@ -4251,7 +4251,7 @@
     </string>
     <string>
       <key>Label_Options_ImproveActiveSkill</key>
-      <text>Steigere Aktive Fertigkeit um 1</text>
+      <text>Steigere aktive Fertigkeit um 1</text>
     </string>
     <string>
       <key>Label_Options_ImproveSkillGroup</key>
@@ -4530,11 +4530,11 @@
     </string>
     <string>
       <key>String_SelectBP_BPSummary</key>
-      <text>Geben Sie die Menge an Generierungspunkten ein mit der Sie Ihren Charakter erstellen dürfen (Gewöhnlich {0}).</text>
+      <text>Geben Sie die Menge an Generierungspunkten ein, mit der Sie Ihren Charakter erstellen dürfen (Gewöhnlich {0}).</text>
     </string>
     <string>
       <key>String_SelectBP_KarmaSummary</key>
-      <text>Geben Sie die Menge an Karma ein mit der Sie Ihren Charakter erstellen dürfen (Gewöhnlich {0}).</text>
+      <text>Geben Sie die Menge an Karma ein, mit der Sie Ihren Charakter erstellen dürfen (Gewöhnlich {0}).</text>
     </string>
     <string>
       <key>Tip_SelectBP_IgnoreRules</key>
@@ -4602,11 +4602,11 @@
     </string>
     <string>
       <key>String_SelectContactConnection_MagicalMost</key>
-      <text>Die meisten Mitglieder haben Magische Talente</text>
+      <text>Die meisten Mitglieder haben magische Talente</text>
     </string>
     <string>
       <key>String_SelectContactConnection_MagicalVast</key>
-      <text>Unermessliche große magische Quellen</text>
+      <text>Unermesslich große magische Quellen</text>
     </string>
     <string>
       <key>String_SelectContactConnection_MatrixActive</key>
@@ -4614,7 +4614,7 @@
     </string>
     <string>
       <key>String_SelectContactConnection_MatrixBroad</key>
-      <text>Weit-reichende Quellen</text>
+      <text>Weitreichende Quellen</text>
     </string>
     <string>
       <key>String_SelectContactConnection_MatrixPervasive</key>
@@ -4650,7 +4650,7 @@
     </string>
     <string>
       <key>Label_SelectExoticSkill_Description</key>
-      <text>Wählen Sie eine exotische Aktionsfertigkeit um Sie zu Ihrem Charakter hinzuzufügen.</text>
+      <text>Wählen Sie eine exotische Aktionsfertigkeit, um sie zu Ihrem Charakter hinzuzufügen.</text>
     </string>
     <string>
       <key>Title_SelectGear</key>
@@ -4946,7 +4946,7 @@
     </string>
     <string>
       <key>Message_SelectQuality_QualityRequirement</key>
-      <text>Sie erfüllen nicht die Voraussetzungen für diese Gabe. Sie müssen mindestens eines der folgenden Kriterien erfüllen:</text>
+      <text>Sie erfüllen nicht die Voraussetzungen für diese Gabe. Sie müssen mindestens folgendes erfüllen:</text>
     </string>
     <string>
       <key>MessageTitle_SelectQuality_QualityRequirement</key>
@@ -5166,7 +5166,7 @@
     </string>
     <string>
       <key>Message_DeleteMetatypeQuality</key>
-      <text>Wollen Sie diese Metatyp Gabe wirklich für {0} entfernen?</text>
+      <text>Wollen Sie diese Metatyp-Gabe wirklich für {0} entfernen?</text>
     </string>
     <string>
       <key>Label_Options_Force</key>
@@ -5238,7 +5238,7 @@
     </string>
     <string>
       <key>Checkbox_Option_AllowExceedAttributeBP</key>
-      <text>Dem Spieler erlauben mehr als 50% der Punkte für Attribute auszugeben</text>
+      <text>Dem Spieler erlauben, mehr als 50% der Punkte für Attribute auszugeben</text>
     </string>
     <string>
       <key>Checkbox_Option_UnrestrictedNuyen</key>
@@ -5322,7 +5322,7 @@
     </string>
     <string>
       <key>Message_SelectItem</key>
-      <text>Sie müssen einen Gegenstand ausgewählt haben für den der Wert gesetzt werden soll</text>
+      <text>Sie müssen einen Gegenstand ausgewählt haben, für den der Wert gesetzt werden soll</text>
     </string>
     <string>
       <key>MessageTitle_SelectItem</key>
@@ -5484,15 +5484,15 @@
     </string>
     <string>
       <key>Button_CreateStackedFocus</key>
-      <text>Mehrfachfoki herstellen</text>
+      <text>Mehrfachfokus herstellen</text>
     </string>
     <string>
       <key>Message_CannotStackFoci</key>
-      <text>Sie müssen mindestens 2 ungebundene Foki besitzen um einen Mehrfachfoki erstellen zu können</text>
+      <text>Sie müssen mindestens 2 ungebundene Foki besitzen um einen Mehrfachfokus erstellen zu können</text>
     </string>
     <string>
       <key>Message_StackedFocusMinimum</key>
-      <text>Ein Mehrfachfoki muss aus mindestens 2 Foki bestehen.</text>
+      <text>Ein Mehrfachfokus muss aus mindestens 2 Foki bestehen.</text>
     </string>
     <string>
       <key>MessageTitle_CannotStackFoci</key>
@@ -5500,20 +5500,20 @@
     </string>
     <string>
       <key>Message_DeleteStackedFocus</key>
-      <text>Wollen Sie diesen Mehrfachfoki wirklich löschen?</text>
+      <text>Wollen Sie diesen Mehrfachfokus wirklich löschen?</text>
     </string>
     <string>
       <key>String_StackedFocus</key>
-      <text>Mehrfachfoki</text>
+      <text>Mehrfachfokus</text>
     </string>
     <string>
       <key>String_SelectItemFocus</key>
-      <text>Wählen Sie den Foki der zu dem Mehrfachfoki hinzugefügt werden soll. Beenden Sie diese Prozedur mit Abbruch.</text>
+      <text>Wählen Sie den Foki der zu dem Mehrfachfokus hinzugefügt werden soll. Beenden Sie diese Prozedur mit Abbruch.</text>
     </string>
     <!-- Added with Build 303 -->
     <string>
       <key>Message_StackedFocusForce</key>
-      <text>Ein Mehrfachfoki kann zusammen gerechnet keine höhere Kraftstufe als 6 haben.</text>
+      <text>Ein Mehrfachfokus kann zusammen gerechnet keine höhere Kraftstufe als 6 haben.</text>
     </string>
     <string>
       <key>String_SpellOverflowDamage</key>
@@ -5717,11 +5717,11 @@
     </string>
     <string>
       <key>Message_CombatSpellRequirement1</key>
-      <text>Sie müssen auswählen ob der Zauberspruch direkt oder indirekt wirkt</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch direkt oder indirekt wirkt</text>
     </string>
     <string>
       <key>Message_CombatSpellRequirement2</key>
-      <text>Sie müssen auswählen oder Zauberspruch geistigen oder körperlichen Schaden verursacht.</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch geistigen oder körperlichen Schaden verursacht</text>
     </string>
     <string>
       <key>Message_DetectionSpellRequirement1</key>
@@ -5729,23 +5729,23 @@
     </string>
     <string>
       <key>Message_DetectionSpellRequirement2</key>
-      <text>Sie müssen auswählen ob der Zauberspruch aktiv oder passiv wirkt</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch aktiv oder passiv wirkt</text>
     </string>
     <string>
       <key>Message_IllusionSpellRequirement1</key>
-      <text>Sie müssen auswählen ob der Zauberspruch offensichtlich oder realistisch wirkt</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch offensichtlich oder realistisch wirkt</text>
     </string>
     <string>
       <key>Message_IllusionSpellRequirement2</key>
-      <text>Sie müssen auswählen ob der Zauberspruch monosensorisch oder vollsensorisch wirkt</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch monosensorisch oder vollsensorisch wirkt</text>
     </string>
     <string>
       <key>Message_ManipulationSpellRequirement1</key>
-      <text>Sie müssen auswählen ob der Zauberspruch einen Transformations-/Beherrschungs-/Umgebungseffekt hat</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch einen Transformations-/Beherrschungs-/Umgebungseffekt hat</text>
     </string>
     <string>
       <key>Message_ManipulationSpellRequirement2</key>
-      <text>Sie müssen auswählen ob der Zauberspruch eine geringe oder eine starke Veränderung hervorruft</text>
+      <text>Sie müssen auswählen, ob der Zauberspruch eine geringe oder eine starke Veränderung hervorruft</text>
     </string>
     <string>
       <key>Checkbox_Option_AllowHigherStackedFoci</key>
@@ -5922,15 +5922,15 @@
     </string>
     <string>
       <key>Message_Omae_DataDeleteError</key>
-      <text>Beim runterladen der Datei ist ein Fehler aufgetreten. Versuchen Sie es später noch einmal.</text>
+      <text>Beim Herunterladen der Datei ist ein Fehler aufgetreten. Versuchen Sie es später noch einmal.</text>
     </string>
     <string>
       <key>Message_Omae_DataDownloaded</key>
-      <text>Datei erfolgreich runtergeladen. Sie müssen Chummer neu starten um die neuen Daten nutzen zu können.</text>
+      <text>Datei erfolgreich heruntergeladen. Sie müssen Chummer neu starten um die neuen Daten nutzen zu können.</text>
     </string>
     <string>
       <key>MessageTitle_Omae_DataDownloaded</key>
-      <text>Datei erfolgreich runtergeladen</text>
+      <text>Datei erfolgreich heruntergeladen</text>
     </string>
     <string>
       <key>MessageTitle_Omae_DeleteSheet</key>
@@ -6026,7 +6026,7 @@
     </string>
     <string>
       <key>Tip_Power_DoublePoints</key>
-      <text>Die Kraftpunkkosten für diese Kraft wurden erhöht weil das Attribut um {0} über das Metatypmaximum gestiegen ist. Die gesteigerten Kosten beziehen sich nur auf die{0} Punkte die über dem Maximum liegen.</text>
+      <text>Die Kraftpunkkosten für diese Kraft wurden erhöht weil das Attribut um {0} über das Metatypmaximum gestiegen ist. Die gesteigerten Kosten beziehen sich nur auf die{0} Punkte, die über dem Maximum liegen.</text>
     </string>
     <string>
       <key>Message_OmaeUpload_UploadFailed</key>
@@ -6162,7 +6162,7 @@
     <!-- Version 356 -->
     <string>
       <key>Checkbox_Option_CreateBackupOnCareer</key>
-      <text>Kopie des Charakters erstellen bevor er in den Karriere-Modus überführt wird</text>
+      <text>Kopie des Charakters erstellen, bevor er in den Karriere-Modus überführt wird</text>
     </string>
     <string>
       <key>Title_CreateMode</key>
@@ -6615,7 +6615,7 @@
     <!-- Version 455 -->
     <string>
       <key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
-      <text>Erlauben während der Charakter-Erstellung Skillgruppen aufzutrennen</text>
+      <text>Erlauben, während der Charakter-Erstellung Skillgruppen aufzutrennen</text>
     </string>
     <string>
       <key>String_ExpensePurchaseCyberwareSuite</key>
@@ -6623,11 +6623,11 @@
     </string>
     <string>
       <key>Message_IncorrectGameVersion_SR4</key>
-      <text>Diese Sicherungsdatei ist für Shadowrun 4 vorgesehen, während diese Version von Chummer für Shadowrun 5 ist. Bitte benutze die Version für Shadowrun 4 von Chummer um diese Datei zu öffnen.</text>
+      <text>Diese Sicherungsdatei ist für Shadowrun 4 vorgesehen, während diese Version von Chummer für Shadowrun 5 ist. Bitte benutze die Version für Shadowrun 4 von Chummer, um diese Datei zu öffnen.</text>
     </string>
     <string>
       <key>Message_IncorrectGameVersion_SR5</key>
-      <text>Diese Sicherungsdatei ist für Shadowrun 5 vorgesehen, während diese Version von Chummer für Shadowrun 4 ist. Bitte benutze die Version für Shadowrun 5 von Chummer um diese Datei zu öffnen.</text>
+      <text>Diese Sicherungsdatei ist für Shadowrun 5 vorgesehen, während diese Version von Chummer für Shadowrun 4 ist. Bitte benutze die Version für Shadowrun 5 von Chummer, um diese Datei zu öffnen.</text>
     </string>
     <string>
       <key>MessageTitle_IncorrectGameVersion</key>
@@ -6763,7 +6763,7 @@
     </string>
     <string>
       <key>String_ComplexForms</key>
-      <text>Complex Form Rating Points</text>
+      <text>Stufe der komplexen Form</text>
     </string>
     <string>
       <key>Label_Bonus</key>
@@ -6863,7 +6863,7 @@
     </string>
     <string>
       <key>Message_DeleteInitiateGrade</key>
-      <text>Are you sure you want to delete this Initiate Grade and all of its bonuses?</text>
+      <text>Sind Sie sicher, dass sie diesen Initiatengrad und alle damit verbundenen Boni löschen möchten?</text>
     </string>
     <string>
       <key>Message_DeleteSubmersionGrade</key>
@@ -6875,7 +6875,7 @@
     </string>
     <string>
       <key>Message_DeleteEnhancement</key>
-      <text>Are you sure you want to delete this Enhancement?</text>
+      <text>Sind Sie sicher, dass Sie diese Verbesserung löschen wollen?</text>
     </string>
     <string>
       <key>Message_CannotDeleteLimitModifier</key>
@@ -6935,7 +6935,7 @@
     </string>
     <string>
       <key>Message_ExtraNuyen</key>
-      <text>Sie haben {0} verfügbar, aber ist Ihnen nur erlaubt, {1} in den Karrieremodus zu übertragen.\nSind Sie sicher, dass sie diese extra Nuyen verlieren möchten?</text>
+      <text>Sie haben {0} verfügbar, aber ist Ihnen nur erlaubt, {1} in den Karrieremodus zu übertragen. Sind Sie sicher, dass sie diese extra Nuyen verlieren möchten?</text>
     </string>
     <string>
       <key>MessageTitle_ExtraNuyen</key>
@@ -6987,11 +6987,11 @@
     </string>
     <string>
       <key>String_DescBlood</key>
-      <text>Blood</text>
+      <text>Blut</text>
     </string>
     <string>
       <key>String_DescContractual</key>
-      <text>Contractual</text>
+      <text>Vertraglich</text>
     </string>
     <string>
       <key>String_DescGeomancy</key>
@@ -7023,7 +7023,7 @@
     </string>
     <string>
       <key>Tip_OptionsKnucks</key>
-      <text>Aktivierung dieser Hausregel erlaubt es Schlagringen von Boni zu profitieren, die Waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es Schlagringen, von Boni zu profitieren, die Waffenlosen Kampf beeinflussen, inklusive DK Boni.</text>
     </string>
     <string>
       <key>Tip_OptionsIgnoreArt</key>
@@ -7043,7 +7043,7 @@
     </string>
     <string>
       <key>Tip_OptionsExceptionalNotMaxed</key>
-      <text>Aktivierung dieser hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
+      <text>Aktivierung dieser Hausregel erlaubt es, bis zu zwei Attribute and das Metatyp-Limit zu steigern, wenn eines der Attribute durch Aussergewöhnliches Attribut gesteigert wurde.</text>
     </string>
     <string>
       <key>Tip_OptionsUsePointsOnBrokenGroups</key>
@@ -7183,7 +7183,7 @@
     </string>
     <string>
       <key>Message_Metatype_SelectTalent</key>
-      <text>You must select a Talent before continuing.</text>
+      <text>Sie müssen ein Talent auswählen, um fortfahren zu können..</text>
     </string>
     <string>
       <key>MessageTitle_Metatype_SelectTalent</key>
@@ -7250,9 +7250,9 @@
       <text>Allow any Detection Spell to be taken as Extended range version (SM 165)</text>
     </string>
 	<string>
-			<key>Checkbox_Options_DroneArmorMultiplier</key>
-			<text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
-		</string>
+      <key>Checkbox_Options_DroneArmorMultiplier</key>
+      <text>Begrenze Dronen Panzerungsverbesserung auf Dronen-Panzerung</text>
+    </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
       <text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
@@ -7295,15 +7295,15 @@
     </string>
     <string>
       <key>Message_SelectArt_EnchantmentRequirement</key>
-      <text>You do not meet the requirements for this Enchantment. You must meet all of the following criteria:</text>
+      <text>Sie erfüllen nicht alle Anforderungen für diese Verbesserung. Die Anforderungen sind:</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_EnchantmentRequirement</key>
-      <text>Enchantment Requirement</text>
+      <text>Anforderung der Verbesserung</text>
     </string>
     <string>
       <key>Message_SelectArt_EnhancementRequirement</key>
-      <text>You do not meet the requirements for this Enhancement. You must meet all of the following criteria:</text>
+      <text>Sie erfüllen nicht alle Anforderungen für diese Verbesserung. Die Anforderungen sind:</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_EnhancementRequirement</key>
@@ -7311,11 +7311,11 @@
     </string>
     <string>
       <key>Message_SelectArt_RitualRequirement</key>
-      <text>You do not meet the requirements for this Ritual. You must meet all of the following criteria:</text>
+      <text>Sie erfüllen nicht alle Anforderungen für dieses Ritual. Die Anforderungen sind:</text>
     </string>
     <string>
       <key>MessageTitle_SelectArt_RitualRequirement</key>
-      <text>Ritual Requirement</text>
+      <text>Anforderung des Rituals</text>
     </string>
     <string>
       <key>Checkbox_SelectArt_LimitList</key>
@@ -7367,7 +7367,7 @@
     </string>
     <string>
       <key>String_MetamagicSkillBase</key>
-      <text>Based on your talent selection, you may choose {0}.</text>
+      <text>Basierend auf Ihrer Talentauswahl dürfen Sie {0} auswählen.</text>
     </string>
     <string>
       <key>String_MetamagicSkillMagicianA</key>
