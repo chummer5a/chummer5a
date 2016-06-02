@@ -1119,7 +1119,7 @@
     </string>
     <string>
       <key>Message_CannotRemoveVehicleMod</key>
-      <text>Du kannst serienmäßige Ausrüstung nicht vom Fahrzeug entfernen</text>
+      <text>Sie können serienmäßige Ausrüstung nicht vom Fahrzeug entfernen</text>
     </string>
     <string>
       <key>MessageTitle_CannotRemoveVehicleMod</key>
@@ -1175,7 +1175,7 @@
     </string>
     <string>
       <key>Message_SelectCyberware</key>
-      <text>Sie müssen erst eine Cyberware auswählen um einen Einbau hinzuzufügen.</text>
+      <text>Sie müssen erst eine Cyberware auswählen, der Sie einen Einbau hinzufügen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectCyberware</key>
@@ -1187,7 +1187,7 @@
     </string>
     <string>
       <key>Message_SelectWeaponMod</key>
-      <text>Sie müssen erst eine Waffe auswählen um eine Modifikation hinzuzufügen.</text>
+      <text>Sie müssen erst eine Waffe auswählen, der Sie eine Modifikation hinzufügen wollen.</text>
     </string>
     <string>
       <key>Message_SelectWeaponName</key>
@@ -1195,7 +1195,7 @@
     </string>
     <string>
       <key>Message_SelectWeaponUnderbarrel</key>
-      <text>Sie müssen erst eine Waffe auswählen, bevor Sie eine Unterlaufwaffe hinzufügen können.</text>
+      <text>Sie müssen erst die Waffe auswählen, der eine Unterlaufwaffe hinzufügen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectWeapon</key>
@@ -1231,11 +1231,11 @@
     </string>
     <string>
       <key>Message_SelectArmor</key>
-      <text>Sie müssen erst eine Panzerungsteil auswählen um es zu modifizieren.</text>
+      <text>Sie müssen erst ein Panzerungsteil auswählen, das Sie modifizieren wollen.</text>
     </string>
     <string>
       <key>Message_SelectArmorName</key>
-      <text>Sie müssen erst eine Panzerungsteil auswählen um es zu benennen.</text>
+      <text>Sie müssen erst eine Panzerungsteil auswählen, das Sie benennen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectArmor</key>
@@ -1243,7 +1243,7 @@
     </string>
     <string>
       <key>Message_SelectGear</key>
-      <text>Sie müssen erst ein Ausrüstungsgegenstand auswählen um einen Einbau hinzuzufügen.</text>
+      <text>Sie müssen erst ein Ausrüstungsgegenstand auswählen, dem Sie einen Einbau hinzufügen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectGear</key>
@@ -1251,11 +1251,11 @@
     </string>
     <string>
       <key>Message_SelectVehicle</key>
-      <text>Sie müssen erst ein Fahrzeug auswählen um eine Modifikation hinzuzufügen.</text>
+      <text>Sie müssen erst ein Fahrzeug auswählen, dem Sie eine Modifikation hinzufügen wollen.</text>
     </string>
     <string>
       <key>Message_SelectVehicleName</key>
-      <text>Sie müssen erst ein Fahrzeug auswählen um es zu benennen.</text>
+      <text>Sie müssen erst ein Fahrzeug auswählen, das Sie benennen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectVehicle</key>
@@ -1295,7 +1295,7 @@
     </string>
     <string>
       <key>Message_SelectGearVehicle</key>
-      <text>Sie müssen erst das Fahrzeug auswählen um Ausrüstung hinzuzufügen.</text>
+      <text>Sie müssen erst das Fahrzeug auswählen, dem Sie Ausrüstung hinzufügen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectGearVehicle</key>
@@ -1303,7 +1303,7 @@
     </string>
     <string>
       <key>Message_ModifyVehicleGear</key>
-      <text>Sie müssen erst die Ausrüstung auswählen um Sie zu modifizieren.</text>
+      <text>Sie müssen erst die Ausrüstung auswählen, die Sie modifizieren. wollen</text>
     </string>
     <string>
       <key>MessageTitle_ModifyVehicleGear</key>
@@ -1311,7 +1311,7 @@
     </string>
     <string>
       <key>Message_SelectComplexForm</key>
-      <text>Sie müssen erst die komplexe Form auswählen um eine Option hinzuzufügen.</text>
+      <text>Sie müssen erst die komplexe Form auswählen, der Sie eine Option hinzufügen wollen.</text>
     </string>
     <string>
       <key>MessageTitle_SelectComplexForm</key>
@@ -1443,7 +1443,7 @@
     </string>
     <string>
       <key>Message_CannotBurnEdge</key>
-      <text>Sie haben kein Edge mehr übrig, um es zu verheizen.</text>
+      <text>Sie haben kein Edge mehr übrig, das Sie verheizen können.</text>
     </string>
     <string>
       <key>MessageTitle_CannotBurnEdge</key>
@@ -1459,7 +1459,7 @@
     </string>
     <string>
       <key>Message_CannotSpendEdge</key>
-      <text>Sie haben kein Edge mehr übrig, um es auszugeben.</text>
+      <text>Sie haben kein Edge mehr übrig, das Sie ausgeben können.</text>
     </string>
     <string>
       <key>MessageTitle_CannotSpendEdge</key>
@@ -1627,7 +1627,7 @@
     </string>
     <string>
       <key>MessageTitle_CloningMachineNumberRequired</key>
-      <text>Klone kann nicht erstellt werden</text>
+      <text>Klon kann nicht erstellt werden</text>
     </string>
     <string>
       <key>Message_CannotSplitGear</key>
@@ -1647,7 +1647,7 @@
     </string>
     <string>
       <key>Message_SelectLifestyleName</key>
-      <text>Wählen Sie einen Lebensstil der benannt werden soll.</text>
+      <text>Wählen Sie einen Lebensstil, der benannt werden soll.</text>
     </string>
     <string>
       <key>MessageTitle_SelectLifestyle</key>
@@ -1655,7 +1655,7 @@
     </string>
     <string>
       <key>Message_CannotMoveWeapons</key>
-      <text>Sie besitzen keine Fahrzeug mit Waffenhalterung oder mechanischen Armen.</text>
+      <text>Sie besitzen kein Fahrzeug mit Waffenhalterung oder mechanischen Armen.</text>
     </string>
     <string>
       <key>MessageTitle_CannotMoveWeapons</key>
@@ -1687,7 +1687,7 @@
     </string>
     <string>
       <key>String_SpellLimited</key>
-      <text>begrenzt</text>
+      <text>Begrenzt</text>
     </string>
     <string>
       <key>String_AttributePilot</key>
@@ -1939,7 +1939,7 @@
     </string>
     <string>
       <key>String_ExpenseBound</key>
-      <text>gebunden</text>
+      <text>Gebunden</text>
     </string>
     <string>
       <key>String_ExpenseInitiateGrade</key>
@@ -2035,11 +2035,11 @@
     </string>
     <string>
       <key>String_DamageChemical</key>
-      <text>chemisch</text>
+      <text>Chemisch</text>
     </string>
     <string>
       <key>String_DamageSpecial</key>
-      <text>spezial</text>
+      <text>Spezial</text>
     </string>
     <string>
       <key>String_DamageElectric</key>
@@ -2119,7 +2119,7 @@
     </string>
     <string>
       <key>String_AmmoExternalSource</key>
-      <text>externe Quelle</text>
+      <text>Externe Quelle</text>
     </string>
     <string>
       <key>String_AmmoMagazine</key>
@@ -2151,7 +2151,7 @@
     </string>
     <string>
       <key>String_ModeSpecial</key>
-      <text>spezial</text>
+      <text>Spezial</text>
     </string>
     <string>
       <key>String_SpellTypePhysical</key>
@@ -2187,7 +2187,7 @@
     </string>
     <string>
       <key>String_SpellDurationSpecial</key>
-      <text>spezial</text>
+      <text>Spezial</text>
     </string>
     <string>
       <key>String_SpellRangeLineOfSight</key>
@@ -2211,7 +2211,7 @@
     </string>
     <string>
       <key>String_SpellSpecial</key>
-      <text>spezial</text>
+      <text>Spezial</text>
     </string>
     <string>
       <key>String_SpellForce</key>
@@ -2243,7 +2243,7 @@
     </string>
     <string>
       <key>String_DescExtendedArea</key>
-      <text>erhöhte Reichweite</text>
+      <text>Erhöhte Reichweite</text>
     </string>
     <string>
       <key>String_DescIndirect</key>
@@ -2259,7 +2259,7 @@
     </string>
     <string>
       <key>String_DescMultiSense</key>
-      <text>vollsensorisch</text>
+      <text>Vollsensorisch</text>
     </string>
     <string>
       <key>String_DescNegative</key>
@@ -2267,7 +2267,7 @@
     </string>
     <string>
       <key>String_DescObvious</key>
-      <text>offensichtlich</text>
+      <text>Offensichtlich</text>
     </string>
     <string>
       <key>String_DescPassive</key>
@@ -2275,19 +2275,19 @@
     </string>
     <string>
       <key>String_DescPhysical</key>
-      <text>physisch</text>
+      <text>Physisch</text>
     </string>
     <string>
       <key>String_DescPsychic</key>
-      <text>psychisch</text>
+      <text>Psychisch</text>
     </string>
     <string>
       <key>String_DescRealistic</key>
-      <text>realistisch</text>
+      <text>Realistisch</text>
     </string>
     <string>
       <key>String_DescSingleSense</key>
-      <text>monosensorisch</text>
+      <text>Monosensorisch</text>
     </string>
     <string>
       <key>String_DescTouch</key>
@@ -2819,7 +2819,7 @@
     </string>
     <string>
       <key>Tip_WeaponInstalled</key>
-      <text>Angebrachtes Zubehör und Modifikationen werden zu den Waffen Werten hinzugerechnet.</text>
+      <text>Angebrachtes Zubehör und Modifikationen werden zu den Waffenwerten hinzugerechnet.</text>
     </string>
     <string>
       <key>String_WeaponAccessory</key>
