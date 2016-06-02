@@ -6263,7 +6263,7 @@
 			<damage>8P</damage>
 			<ap>-</ap>
 			<mode>BF/FA</mode>
-			<rc>2</rc>
+			<rc>0</rc>
 			<ammo>32(c)</ammo>
 			<avail>6R</avail>
 			<cost>800</cost>
