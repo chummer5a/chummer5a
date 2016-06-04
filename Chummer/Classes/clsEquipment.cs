@@ -7407,6 +7407,7 @@ namespace Chummer
 					}
 				}
 
+				int intDicePool = 0;
 				int intSmartlinkBonus = 0;
 				int intDicePoolModifier = 0;
 
@@ -7422,11 +7423,16 @@ namespace Chummer
 					}
 				}
 
-				int intRating = objSkill.Pool + intSmartlinkBonus + intDicePoolModifier;
+				if (objSkill != null)
+				{
+					intDicePool = objSkill.Pool;
+				}
+
+				int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;
 				strReturn = intRating.ToString();
 
 				// If the character has a Specialization, include it in the Dice Pool string.
-				if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+				if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " (" + (intRating + 2).ToString() + ")";
@@ -7529,10 +7535,15 @@ namespace Chummer
 						}
 					}
 				}
+				int intDicePool = 0;
+				if (objSkill != null)
+				{
+					intDicePool = objSkill.Pool;
+				}
 
-				strReturn = strSkill + " (" + objSkill.Pool + ")";
+				strReturn = strSkill + " (" + intDicePool + ")";
 
-				if (objSkill.Specialization != "" && !objSkill.IsExoticSkill)
+				if (objSkill != null && (objSkill.Specialization != "" && !objSkill.IsExoticSkill))
 				{
                     if (objSkill.HasSpecialization(DisplayNameShort) || objSkill.HasSpecialization(_strName) || objSkill.HasSpecialization(DisplayCategory) || objSkill.HasSpecialization(_strCategory) || (objSkill.Specialization != string.Empty && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
 						strReturn += " + " + LanguageManager.Instance.GetString("String_ExpenseSpecialization") + " (2)";
