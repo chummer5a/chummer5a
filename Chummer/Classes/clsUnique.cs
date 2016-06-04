@@ -1233,6 +1233,7 @@ namespace Chummer
 					objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
 					objWeapon.WeaponType = "Melee";
 					objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
+				    objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
 					objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText; ;
 					objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText; ;
 					objWeapon.Mode = "0";

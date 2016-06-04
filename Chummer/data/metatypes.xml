@@ -140,6 +140,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -149,6 +150,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -363,6 +365,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -372,6 +375,7 @@
 							<damage>(STR+3)P</damage>
 							<ap>-2</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -471,6 +475,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -578,6 +583,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -587,6 +593,7 @@
 							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -984,6 +991,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -993,6 +1001,7 @@
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1110,6 +1119,7 @@
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1208,6 +1218,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1217,6 +1228,7 @@
 							<ap>-1</ap>
 							<reach>0</reach>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1613,6 +1625,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1622,6 +1635,7 @@
 							<ap>-1</ap>
 							<reach>0</reach>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1721,6 +1735,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1730,6 +1745,7 @@
 							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2241,6 +2257,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2250,6 +2267,7 @@
 							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2472,6 +2490,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2481,6 +2500,7 @@
 							<reach>1</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2587,6 +2607,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2596,6 +2617,7 @@
 							<reach>0</reach>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3000,6 +3022,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3009,6 +3032,7 @@
 							<ap>-1</ap>
 							<reach>0</reach>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3104,6 +3128,7 @@
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3113,6 +3138,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<useskill>Unarmed Combat</useskill>
+							<accuracy>Physical</accuracy>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
