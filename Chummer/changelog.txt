@@ -5,6 +5,7 @@ Application Change:
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
+- Changed how existing character sheets render mugshots when saved as HTML. Fixes #817.
 
 Build 179:
 Application Change:

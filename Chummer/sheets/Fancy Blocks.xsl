@@ -442,7 +442,7 @@
 			<tr><td colspan="2"><div class="bigheader">[Mugshot]</div></td></tr>
 			<tr><td colspan="2">
 				<xsl:if test="mugshot != ''">
-					<img src="{mugshot}" />
+					<img src="data:image/png;base64,{mugshotbase64}" />
 				</xsl:if>
 			</td></tr>
 			<xsl:if test="prioritymetatype != ''">
