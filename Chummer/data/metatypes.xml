@@ -129,7 +129,7 @@
 						<power>Dual Natured</power>
 						<power select="Hearing,Smell">Enhanced Senses</power>
 						<power select="Sunlight, Moderate">Allergy</power>
-						<power select="Metahuman Blood">Dietary Requirement</power>
+						<power select="Metahuman Flesh">Dietary Requirement</power>
 						<power select="Blind">Reduced Senses</power>
 						<power>Sapience</power>
 					</powers>
@@ -139,15 +139,16 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
 						<naturalweapon>
 							<name>Infected Claws</name>
+							<reach>0</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -361,7 +362,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -370,7 +371,7 @@
 							<reach>0</reach>
 							<damage>(STR+3)P</damage>
 							<ap>-2</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -469,7 +470,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -576,7 +577,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -585,7 +586,7 @@
 							<damage>(STR+1)P</damage>
 							<reach>0</reach>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -982,7 +983,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -991,7 +992,7 @@
 							<reach>0</reach>
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1108,7 +1109,7 @@
 							<reach>-1</reach>
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1206,7 +1207,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1215,7 +1216,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<reach>0</reach>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1611,7 +1612,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1620,7 +1621,7 @@
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
 							<reach>0</reach>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1719,7 +1720,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -1728,7 +1729,7 @@
 							<damage>(STR+1)P</damage>
 							<reach>0</reach>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2239,7 +2240,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2248,7 +2249,7 @@
 							<damage>(STR+1)P</damage>
 							<reach>0</reach>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2470,7 +2471,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2479,7 +2480,7 @@
 							<damage>(STR+2)P</damage>
 							<reach>1</reach>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2585,7 +2586,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2594,7 +2595,7 @@
 							<damage>(STR+2)P</damage>
 							<reach>0</reach>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -2998,7 +2999,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3006,7 +3007,8 @@
 							<name>Infected Claws</name>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<reach>0</reach>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3101,7 +3103,7 @@
 							<reach>0</reach>
 							<damage>(STR+2)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
@@ -3110,7 +3112,7 @@
 							<reach>-1</reach>
 							<damage>(STR+1)P</damage>
 							<ap>-1</ap>
-							<useskill>Unarmed</useskill>
+							<useskill>Unarmed Combat</useskill>
 							<source>RF</source>
 							<page>137</page>
 						</naturalweapon>
