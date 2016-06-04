@@ -482,7 +482,7 @@ namespace Chummer.Skills
 			}
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value) && Specializations.Count != 0)
+				if (string.IsNullOrWhiteSpace(value))
 				{
 					int index = -1;
 					for (int i = 0; i < Specializations.Count; i++)
