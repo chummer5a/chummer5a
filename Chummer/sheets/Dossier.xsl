@@ -45,7 +45,7 @@
 							<td class="value"><xsl:value-of select="name"/></td>
 							<td rowspan="10" width="40%" align="center">
 								<xsl:if test="mugshot != ''">
-									<img src="{mugshot}" />
+									<img src="data:image/png;base64,{mugshotbase64}" />
 								</xsl:if>
 							</td>
 						</tr>
