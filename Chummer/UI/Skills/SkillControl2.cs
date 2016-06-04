@@ -174,6 +174,7 @@ namespace Chummer.UI.Skills
 					if (all) { goto case nameof(Skill.Rating); } break;
 
 				case nameof(Skill.Rating):
+                case nameof(Skill.Specialization):
 					lblModifiedRating.Text =
 						_skill.DisplayOhterAttribue(_attributeActive.TotalValue);
 					break;
