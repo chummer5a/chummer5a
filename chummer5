@@ -1,0 +1,2 @@
+#!/bin/bash
+mono ./Chummer5.exe

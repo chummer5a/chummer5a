@@ -43,6 +43,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="AfterBuild" command="cp LICENSE.txt Chummer/bin/Debug/" workingdir="${SolutionDir}" />
+        <Command type="AfterBuild" command="cp chummer5 Chummer/bin/Debug/" workingdir="${SolutionDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
