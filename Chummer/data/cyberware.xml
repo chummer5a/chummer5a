@@ -460,7 +460,7 @@
 				<limitmodifier>
 					<limit>Mental</limit>
 					<value>Rating</value>
-					<condition>Only with appropriate corp, Must be visible</condition>
+					<condition>Only for visual Perception</condition>
 				</limitmodifier>
 			</bonus>
 			<source>SR5</source>
