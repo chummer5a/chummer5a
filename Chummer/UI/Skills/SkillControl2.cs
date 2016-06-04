@@ -59,7 +59,7 @@ namespace Chummer.UI.Skills
 				cboSpec.Visible = false;
 
 
-				lblCareerSpec.DataBindings.Add("Text", skill, nameof(skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
+				lblCareerSpec.DataBindings.Add("Text", skill, nameof(Skill.DisplaySpecialization), false, DataSourceUpdateMode.OnPropertyChanged);
 				lblCareerSpec.Visible = true;
 
 				lblAttribute.Visible = false;  //Was true, cannot think it should be

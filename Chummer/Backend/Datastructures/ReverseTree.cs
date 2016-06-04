@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Windows.Navigation;
+//using System.Windows.Navigation;
 
 namespace Chummer.Datastructures
 {
