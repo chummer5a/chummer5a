@@ -9164,22 +9164,7 @@
 			<bonus />
 			<source>DT</source>
 			<page>44</page>
-		</quality>
-		<quality>
-			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
-			<name>Exceptional Entity</name>
-			<karma>25</karma>
-			<implemented>False</implemented>
-			<category>Positive</category>
-			<required>
-				<oneof>
-					<metatype>A.I.</metatype>
-				</oneof>
-			</required>
-			<bonus />
-			<source>DT</source>
-			<page>147</page>
-		</quality>
+		</quality>		
 		<quality>
 			<id>72190f27-8bcf-48c4-bdbd-72bb91aa0dcf</id>
 			<name>Fade to Black</name>
@@ -9208,6 +9193,282 @@
 			<page>44</page>
 		</quality>
 		<quality>
+			<id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
+			<name>I C U</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
+			<name>Ninja Vanish</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>44</page>
+		</quality>
+		<quality>
+			<id>b016006c-129b-450d-b257-9d49a814cfa7</id>
+			<name>Online Fame</name>
+			<karma>4</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>45</page>
+			<nomission/>
+		</quality>
+		<quality>
+			<id>d62880dd-3e28-4b0c-8c71-dc0e4b72397b</id>
+			<name>Otaku to Technomancer</name>
+			<karma>10</karma>
+			<category>Positive</category>
+			<bonus>
+				<fadingresist>2</fadingresist>
+			</bonus>
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>d7b36dd1-6703-46a7-b1d6-c9cd379451f1</id>
+			<name>Pain is Gain</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
+			<name>Prime Datahaven Membership</name>
+			<karma>7</karma>
+			<category>Positive</category>
+			<bonus>
+				<addcontact>
+					<loyality>3</loyality>
+					<connection>5</connection>
+					<free />
+					<group />
+				</addcontact>
+			</bonus>
+			<source>DT</source>
+			<page>45</page>
+		</quality>
+		<quality>
+			<id>ee6703a8-f613-43e0-b2e6-c502af7e82dc</id>
+			<name>Profiler</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>7ba73ee6-ab20-4384-9980-b8d4d3e24374</id>
+			<name>Quick Config</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>		
+		<!-- End Region -->
+		<!--Region Data Trails Negative Qualities -->
+		<quality>
+			<id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
+			<name>Code of Honor: Like a Boss</name>
+			<nomission/>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<nomission/>
+			<required>
+				<oneof>
+					<quality>Technomancer</quality>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
+			<name>Curiosity Killed the Cat</name>
+			<nomission/>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>f573305b-944f-490e-94e1-18f8bb7bc590</id>
+			<name>Data Liberator</name>
+			<nomission/>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>46</page>
+		</quality>
+		<quality>
+			<id>b4e94407-9751-4717-a5eb-2b0838d81fa9</id>
+			<name>Decaying Dissonance</name>
+			<karma>-25</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<quality>Technomancer</quality>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>47</page>
+		</quality>
+		<quality>
+			<id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
+			<name>Electronic Witness</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>38a26727-a736-47a9-803f-cfa762c9b8a0</id>
+			<name>Faraday Himself</name>
+			<karma>-7</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>		
+		<quality>
+			<id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
+			<name>Latest and Greatest</name>
+			<karma>-5</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>e138ecce-6fba-4fe6-be09-1d60dc8c3853</id>
+			<name>Leeeeeeeroy Jenkins</name>
+			<nomission/>
+			<karma>-20</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>b77f30b2-e518-44a9-8a0e-7ef3eddb65cd</id>
+			<name>Nerdrage</name>
+			<karma>-8</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>48</page>
+		</quality>
+		<quality>
+			<id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
+			<name>Prank Warrior</name>
+			<nomission/>
+			<karma>-15</karma>
+			<category>Negative</category>
+			<bonus />
+			<source>DT</source>
+			<page>49</page>
+		</quality>
+		<quality>
+			<id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
+			<name>Wanted by GOD</name>
+			<nomission/>
+			<karma>-12</karma>
+			<category>Negative</category>
+			<bonus />
+			<required>
+				<oneof>
+					<skill>
+						<name>Hacking</name>
+						<val>3</val>
+					</skill>
+				</oneof>
+			</required>
+			<forbidden>
+				<oneof>
+					<quality>Technomancer</quality>
+				</oneof>
+			</forbidden>
+			<source>DT</source>
+			<page>49</page>
+		</quality>
+		<!-- End Region -->
+		<!-- Region Positive AI Qualities -->
+		<quality>
+			<id>829568f2-509f-40a3-a16a-a5994ae8a037</id>
+			<name>Chatty</name>
+			<karma>5</karma>
+			<category>Positive</category>
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>1</value>
+					<condition>Only when communicating via AR or VR</condition>
+				</limitmodifier>
+			</bonus>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>146</page>
+		</quality>
+		<quality>
+			<id>6c403cb7-791b-4fb1-bb5a-2f95a6859cfe</id>
+			<name>Designer</name>
+			<karma>6</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>146</page>
+		</quality>
+		<quality>
+			<id>36464D0B-2F7D-439C-8AE1-7678E530FDA1</id>
+			<name>Exceptional Entity</name>
+			<karma>25</karma>
+			<implemented>False</implemented>
+			<category>Positive</category>
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<bonus />
+			<source>DT</source>
+			<page>147</page>
+		</quality>
+		<quality>
 			<id>0EE4765D-46D6-4AD9-A3EE-33D6A1167D9A</id>
 			<name>Hello World!</name>
 			<karma>8</karma>
@@ -9221,29 +9482,6 @@
 			</required>
 			<source>DT</source>
 			<page>147</page>
-		</quality>
-		<quality>
-			<id>ea23db09-759b-4e49-a7e9-34a232ff558d</id>
-			<name>I C U</name>
-			<karma>6</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>44</page>
-		</quality>
-		<quality>
-			<id></id>
-			<name>Improved Restoration</name>
-			<karma>3</karma>
-			<category>Positive</category>
-			<bonus />
-			<required>
-				<oneof>
-					<metatype>A.I.</metatype>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>149</page>
 		</quality>
 		<quality>
 			<id>36429E96-89FA-4E37-A20A-61A8D35A92AC</id>
@@ -9260,6 +9498,20 @@
 			</required>
 			<source>DT</source>
 			<page>148</page>
+		</quality>
+		<quality>
+			<id></id>
+			<name>Improved Restoration</name>
+			<karma>3</karma>
+			<category>Positive</category>
+			<bonus />
+			<required>
+				<oneof>
+					<metatype>A.I.</metatype>
+				</oneof>
+			</required>
+			<source>DT</source>
+			<page>149</page>
 		</quality>
 		<quality>
 			<id>6a2da674-ba73-4a95-ab3d-e4bbe2eeb926</id>
@@ -9302,45 +9554,6 @@
 			</required>
 			<source>DT</source>
 			<page>149</page>
-		</quality>
-		<quality>
-			<id>ffa26ef9-e2d3-47c2-8fb7-43ad27e85b62</id>
-			<name>Ninja Vanish</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>44</page>
-		</quality>
-		<quality>
-			<id>b016006c-129b-450d-b257-9d49a814cfa7</id>
-			<name>Online Fame</name>
-			<karma>4</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>45</page>
-			<nomission/>
-		</quality>
-		<quality>
-			<id>d62880dd-3e28-4b0c-8c71-dc0e4b72397b</id>
-			<name>Otaku to Technomancer</name>
-			<karma>10</karma>
-			<category>Positive</category>
-			<bonus>
-				<fadingresist>2</fadingresist>
-			</bonus>
-			<source>DT</source>
-			<page>45</page>
-		</quality>
-		<quality>
-			<id>d7b36dd1-6703-46a7-b1d6-c9cd379451f1</id>
-			<name>Pain is Gain</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>45</page>
 		</quality>
 		<quality>
 			<id>b86f54af-cca7-4698-ad6d-21ffca93fb23</id>
@@ -9407,40 +9620,6 @@
 			</required>
 			<source>DT</source>
 			<page>149</page>
-		</quality>
-		<quality>
-			<id>7297d8b0-8bb8-4d7a-ab10-2d4e4381e5d0</id>
-			<name>Prime Datahaven Membership</name>
-			<karma>7</karma>
-			<category>Positive</category>
-			<bonus>
-				<addcontact>
-					<loyality>3</loyality>
-					<connection>5</connection>
-					<free />
-					<group />
-				</addcontact>
-			</bonus>
-			<source>DT</source>
-			<page>45</page>
-		</quality>
-		<quality>
-			<id>ee6703a8-f613-43e0-b2e6-c502af7e82dc</id>
-			<name>Profiler</name>
-			<karma>3</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>46</page>
-		</quality>
-		<quality>
-			<id>7ba73ee6-ab20-4384-9980-b8d4d3e24374</id>
-			<name>Quick Config</name>
-			<karma>5</karma>
-			<category>Positive</category>
-			<bonus />
-			<source>DT</source>
-			<page>46</page>
 		</quality>
 		<quality>
 			<id>364CDB2A-C405-488C-8E08-631EF02EBCF2</id>
@@ -9515,29 +9694,9 @@
 			</required>
 			<source>DT</source>
 			<page>151</page>
-		</quality>
-		<!-- End Region -->
-		<!--Region Data Trails Negative Qualities -->
-		<quality>
-			<id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
-			<name>Code of Honor: Like a Boss</name>
-			<nomission/>
-			<karma>-15</karma>
-			<category>Negative</category>
-			<bonus />
-			<nomission/>
-			<required>
-				<oneof>
-					<quality>Technomancer</quality>
-					<skill>
-						<name>Hacking</name>
-						<val>3</val>
-					</skill>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>46</page>
-		</quality>
+		</quality>		
+		<!-- End Region-->
+		<!-- Region Negative AI Qualities -->
 		<quality>
 			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
 			<name>Corruptor</name>
@@ -9555,48 +9714,6 @@
 			<page>151</page>
 		</quality>
 		<quality>
-			<id>263c4fc6-65b1-4d10-b1aa-5cccaefa26f3</id>
-			<name>Curiosity Killed the Cat</name>
-			<nomission/>
-			<karma>-7</karma>
-			<category>Negative</category>
-			<bonus />
-			<required>
-				<oneof>
-					<skill>
-						<name>Hacking</name>
-						<val>3</val>
-					</skill>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>46</page>
-		</quality>
-		<quality>
-			<id>f573305b-944f-490e-94e1-18f8bb7bc590</id>
-			<name>Data Liberator</name>
-			<nomission/>
-			<karma>-12</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>46</page>
-		</quality>
-		<quality>
-			<id>b4e94407-9751-4717-a5eb-2b0838d81fa9</id>
-			<name>Decaying Dissonance</name>
-			<karma>-25</karma>
-			<category>Negative</category>
-			<bonus />
-			<required>
-				<oneof>
-					<quality>Technomancer</quality>
-				</oneof>
-			</required>
-			<source>DT</source>
-			<page>47</page>
-		</quality>
-		<quality>
 			<id>40F20232-AD18-4A00-858D-8B1A85A5A71D</id>
 			<name>Easily Exploitable</name>
 			<nomission/>
@@ -9611,24 +9728,6 @@
 			</required>
 			<source>DT</source>
 			<page>151</page>
-		</quality>
-		<quality>
-			<id>565e404b-947f-4027-a2dd-f74f51682c3b</id>
-			<name>Electronic Witness</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>48</page>
-		</quality>
-		<quality>
-			<id>38a26727-a736-47a9-803f-cfa762c9b8a0</id>
-			<name>Faraday Himself</name>
-			<karma>-7</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>48</page>
 		</quality>
 		<quality>
 			<id>40CEDA2D-B7D1-44C2-80F0-A26EA96DCBE2</id>
@@ -9650,34 +9749,6 @@
 			<page>151</page>
 		</quality>
 		<quality>
-			<id>3a32e8c5-6d02-4360-bac2-221229a68741</id>
-			<name>Latest and Greatest</name>
-			<karma>-5</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>48</page>
-		</quality>
-		<quality>
-			<id>e138ecce-6fba-4fe6-be09-1d60dc8c3853</id>
-			<name>Leeeeeeeroy Jenkins</name>
-			<nomission/>
-			<karma>-20</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>48</page>
-		</quality>
-		<quality>
-			<id>b77f30b2-e518-44a9-8a0e-7ef3eddb65cd</id>
-			<name>Nerdrage</name>
-			<karma>-8</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>48</page>
-		</quality>
-		<quality>
 			<id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
 			<name>Persnickety Renter</name>
 			<karma>-6</karma>
@@ -9692,16 +9763,6 @@
 			<page>152</page>
 		</quality>
 		<quality>
-			<id>a6ca7ad6-49f0-41df-b9cb-1693818a0b3b</id>
-			<name>Prank Warrior</name>
-			<nomission/>
-			<karma>-15</karma>
-			<category>Negative</category>
-			<bonus />
-			<source>DT</source>
-			<page>49</page>
-		</quality>
-		<quality>
 			<id>B65991AF-B962-4641-A5A2-92FC53F30370</id>
 			<name>Real World Naiveté</name>
 			<karma>-8</karma>
@@ -9714,31 +9775,7 @@
 			</required>
 			<source>DT</source>
 			<page>152</page>
-		</quality>
-		<quality>
-			<id>a82b239b-fa92-45e7-ac87-4adedf72396a</id>
-			<name>Wanted by GOD</name>
-			<nomission/>
-			<karma>-12</karma>
-			<category>Negative</category>
-			<bonus />
-			<required>
-				<oneof>
-					<skill>
-						<name>Hacking</name>
-						<val>3</val>
-					</skill>
-				</oneof>
-			</required>
-			<forbidden>
-				<oneof>
-					<quality>Technomancer</quality>
-				</oneof>
-			</forbidden>
-			<source>DT</source>
-			<page>49</page>
-		</quality>
-		<!-- End Region -->
+		</quality>	
 		<!-- End Region-->
 		<!-- Region Chrome Flesh -->
 		<!--Region Chrome Flesh Positive Qualities -->
