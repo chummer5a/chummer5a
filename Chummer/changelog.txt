@@ -2,6 +2,9 @@ Build 180:
 Application Change:
 - Fixed an issue with skills not rendering in a localised language when selecting skill groups for Aspected Magicians. Fixes #867.
 - Fixed a crash caused by adding an exotic weapon without having the relevant exotic weapons skill. Fixes #888.
+- Fixed a crash caused when loading a character that has a tradition that isn't being used. Fixes #893.
+- Changed the HTML doctype of all existing character sheets to support CSS3. Fixes #568.
+- Changed the button string for adding an initiate grade in creation mode. 
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.

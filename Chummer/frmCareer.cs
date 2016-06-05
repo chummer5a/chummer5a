@@ -19086,7 +19086,9 @@ namespace Chummer
 
 		private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (_blnLoading || cboTradition.SelectedValue.ToString() == string.Empty)
+			//TODO: Why can't IsInitialised be used here? Throws an error when trying to use chummer.helpers.
+			
+			if (_blnLoading || cboTradition.SelectedValue == null || String.IsNullOrEmpty(cboTradition.SelectedValue.ToString()))
 				return;
 
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("traditions.xml");

@@ -7,7 +7,7 @@
 	<xsl:template match="/characters/character">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 			<head>
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
 				<title><xsl:value-of select="name" /></title>
 				<style type="text/css">
 					*
