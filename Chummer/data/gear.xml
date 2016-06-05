@@ -7167,6 +7167,86 @@
 			<source>SR5</source>
 			<page>413</page>
 		</gear>
+		<gear>
+			<id>08712808-0ef9-405f-a515-a84c27b7c4d4</id>
+			<name>Downer BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>192</page>
+		</gear>
+		<gear>
+			<id>1db59c8c-5939-4782-982e-26602e3cd749</id>
+			<name>Upper BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>192</page>
+		</gear>
+		<gear>
+			<id>27681339-dc48-4d84-9341-80d962996214</id>
+			<name>Hyper BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>192</page>
+		</gear>
+		<gear>
+			<id>2e55385c-c30b-4d0a-87de-cdd73f0fe9a6</id>
+			<name>Chill BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>4F</avail>
+			<cost>50</cost>
+			<source>CF</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>6f0212e2-e656-4e97-ab10-f2521c38189c</id>
+			<name>Berserkr BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>7cb80189-5893-4852-9d33-dbeea004b0a7</id>
+			<name>Bodyguard BTL</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>c153d7ec-af89-4c6f-a31d-fc3a6a490de4</id>
+			<name>Infiltrator</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>e24e181a-e43c-4e01-a1df-f907dc532db0</id>
+			<name>Pacifier</name>
+			<category>BTLs</category>
+			<rating>0</rating>
+			<avail>8F</avail>
+			<cost>200</cost>
+			<source>CF</source>
+			<page>193</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region Armor Enhancements -->
 		<gear>
