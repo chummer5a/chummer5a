@@ -1,4 +1,8 @@
-﻿namespace Chummer.UI.Skills
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace Chummer.UI.Skills
 {
 	partial class SkillControl2
 	{
@@ -44,13 +48,17 @@
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.btnAttribute = new System.Windows.Forms.Button();
 			this.cboSelectAttribute = new System.Windows.Forms.ComboBox();
+			this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
+			this.cmsSkillLabel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// lblName
 			// 
 			this.lblName.AutoSize = true;
+			this.lblName.ContextMenuStrip = this.cmsSkillLabel;
 			this.lblName.Location = new System.Drawing.Point(0, 4);
 			this.lblName.Name = "lblName";
 			this.lblName.Size = new System.Drawing.Size(35, 13);
@@ -210,6 +218,23 @@
 			this.cboSelectAttribute.Visible = false;
 			this.cboSelectAttribute.DropDownClosed += new System.EventHandler(this.cboSelectAttribute_Closed);
 			// 
+			// cmsSkillLabel
+			// 
+			this.cmsSkillLabel.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsSkillLabelNotes});
+			this.cmsSkillLabel.Name = "cmsWeapon";
+			this.cmsSkillLabel.Size = new System.Drawing.Size(106, 26);
+			this.cmsSkillLabel.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
+			// 
+			// tsSkillLabelNotes
+			// 
+			this.tsSkillLabelNotes.Image = global::Chummer.Properties.Resources.note_edit;
+			this.tsSkillLabelNotes.Name = "tsSkillLabelNotes";
+			this.tsSkillLabelNotes.Size = new System.Drawing.Size(105, 22);
+			this.tsSkillLabelNotes.Tag = "Menu_Notes";
+			this.tsSkillLabelNotes.Text = "&Notes";
+			this.tsSkillLabelNotes.Click += new System.EventHandler(this.tsSkillLabelNotes_Click);
+			// 
 			// SkillControl2
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -234,6 +259,7 @@
 			this.Click += new System.EventHandler(this.SkillControl2_Click);
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSkill)).EndInit();
+			this.cmsSkillLabel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -256,5 +282,7 @@
 		private System.Windows.Forms.ToolTip tipTooltip;
 		private System.Windows.Forms.Button btnAttribute;
 		private System.Windows.Forms.ComboBox cboSelectAttribute;
+		private ContextMenuStrip cmsSkillLabel;
+		private ToolStripMenuItem tsSkillLabelNotes;
 	}
 }
