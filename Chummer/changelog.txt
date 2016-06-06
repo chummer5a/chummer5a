@@ -5,6 +5,7 @@ Application Change:
 - Fixed a crash caused when loading a character that has a tradition that isn't being used. Fixes #893.
 - Changed the HTML doctype of all existing character sheets to support CSS3. Fixes #568.
 - Changed the button string for adding an initiate grade in creation mode. 
+- Skills can now have notes applied to their tooltip. To do this, right-click on the skill name and click the Add Notes button. 
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.

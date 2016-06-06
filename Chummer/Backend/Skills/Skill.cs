@@ -29,6 +29,7 @@ namespace Chummer.Skills
 		protected readonly string Category; //Name of the skill category it belongs to
 		protected readonly string _group; //Name of the skill group this skill belongs to (remove?)
 		protected string _name; //English name of this skill
+		private string _strNotes; //Text of any notes that were entered by the user
 		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
 
@@ -41,7 +42,7 @@ namespace Chummer.Skills
 			writer.WriteElementString("suid", SkillId.ToString());
 			writer.WriteElementString("karma", _karma.ToString());
 			writer.WriteElementString("base", _base.ToString()); //this could acctually be saved in karma too during career
-
+			writer.WriteElementString("notes", _strNotes);
 			if (!CharacterObject.Created)
 			{
 				writer.WriteElementString("buywithkarma", _buyWithKarma.ToString());
@@ -95,6 +96,7 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("karma", Karma.ToString());
 			objWriter.WriteElementString("spec", Specialization);
 			objWriter.WriteElementString("attribute", Attribute);
+			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
 			objWriter.WriteElementString("page", Page);
 			if (Attribute == "MAG" && CharacterObject.AdeptEnabled && CharacterObject.MagicianEnabled)
@@ -170,6 +172,7 @@ namespace Chummer.Skills
 			n.TryGetField("karma", out skill._karma);
 			n.TryGetField("base", out skill._base);
 			n.TryGetField("buywithkarma", out skill._buyWithKarma);
+			n.TryGetField("notes", out skill._strNotes);
 
 			foreach (XmlNode spec in n.SelectNodes("specs/spec"))
 			{
@@ -677,14 +680,34 @@ namespace Chummer.Skills
 			get
 			{
 				//v-- hack i guess
+				string strReturn = "";
 				string middle = "";
 				if (!string.IsNullOrWhiteSpace(SkillGroup))
 				{
 					middle = $"{SkillGroup} {LanguageManager.Instance.GetString("String_ExpenseSkillGroup")}\n";
 				}
+				if (!String.IsNullOrEmpty(_strNotes))
+				{
+					_strNotes = CommonFunctions.WordWrap(_strNotes, 100);
+					strReturn = LanguageManager.Instance.GetString("Label_Notes") + " " +_strNotes + "\n\n";
+				}
 
-				return
-					$"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
+				strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.Instance.GetString("String_Page")} {Page}";
+
+				return strReturn;
+					
+			}
+		}
+
+		public string Notes
+		{
+			get
+			{
+				return _strNotes;
+			}
+			set
+			{
+				_strNotes = value;
 			}
 		}
 
@@ -822,7 +845,6 @@ namespace Chummer.Skills
 					)			
 				)
 			);
-
 		#endregion
 
 		internal void ForceEvent(string property)
