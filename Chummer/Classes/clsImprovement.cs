@@ -4754,7 +4754,7 @@ namespace Chummer
 
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
 				{
-					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills?
+					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
 					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
 					//{
 					//	//wrote as foreach first, modify collection, not want rename

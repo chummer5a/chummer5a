@@ -21606,7 +21606,7 @@ namespace Chummer
 		}
 
 		/// <summary>
-		/// Change the character's Metatype.
+		/// Change the character's Metatype or priority selection.
 		/// </summary>
 		public void ChangeMetatype()
         {
@@ -21636,7 +21636,7 @@ namespace Chummer
             //Revert all Special Qualities
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
-                switch (objQuality.Name.ToString())
+                switch (objQuality.Name)
                 {
                     case "Magician":
                         _objCharacter.MAGEnabled = false;
@@ -21668,10 +21668,6 @@ namespace Chummer
                         break;
                 }
             }
-			foreach (Quality objQuality in lstRemoveQualities)
-			{
-				_objCharacter.Qualities.Remove(objQuality);
-			}
 
             int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
@@ -21694,16 +21690,15 @@ namespace Chummer
             List<Improvement> lstImprovement = new List<Improvement>();
             foreach (Improvement objImprovement in _objCharacter.Improvements)
             {
-                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
                     lstImprovement.Add(objImprovement);
             }
 
             // Build a list of the current Metatype's Qualities to remove if the Metatype changes.
-            List<Quality> lstRemoveQuality = new List<Quality>();
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
                 if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
-                    lstRemoveQuality.Add(objQuality);
+                    lstRemoveQualities.Add(objQuality);
             }
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
@@ -21730,12 +21725,11 @@ namespace Chummer
             // Remove any Improvements the character received from their Metatype.
             foreach (Improvement objImprovement in lstImprovement)
             {
-                _objImprovementManager.RemoveImprovements(objImprovement.ImproveSource, objImprovement.SourceName);
-                _objCharacter.Improvements.Remove(objImprovement);
+				_objCharacter.Improvements.Remove(objImprovement);
             }
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
-            foreach (Quality objQuality in lstRemoveQuality)
+            foreach (Quality objQuality in lstRemoveQualities)
             {
                 _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
                 _objCharacter.Qualities.Remove(objQuality);
@@ -21891,7 +21885,7 @@ namespace Chummer
                 strToolTip += " (" + _objCharacter.Metavariant + ")";
             strToolTip += " (" + _objCharacter.MetatypeBP.ToString() + ")";
             tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
-
+			
             UpdateCharacterInfo();
         }
 

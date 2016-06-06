@@ -6,6 +6,8 @@ Application Change:
 - Changed the HTML doctype of all existing character sheets to support CSS3. Fixes #568.
 - Changed the button string for adding an initiate grade in creation mode. 
 - Skills can now have notes applied to their tooltip. To do this, right-click on the skill name and click the Add Notes button. 
+- Fixed a bug where skill improvements could stack if using the Change Priority Selection menu. Note: characters that have already been affected by this bug will have to be edited manually to remove the improvements, which will have a sourcename of Heritage and an improvedname of whatever the skill is. Fixes #880.
+- Fixed a bug where changing between technomancers and mages would leave both resonance and magical skills available. Fixes #890.
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
