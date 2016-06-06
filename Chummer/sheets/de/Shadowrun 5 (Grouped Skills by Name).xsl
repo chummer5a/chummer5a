@@ -242,7 +242,7 @@
 											<tr>
 												<td colspan="5" style="text-align:center;">
 													<br />
-													<img src="{mugshot}" />
+													<img src="data:image/png;base64,{mugshotbase64}" />
 												</td>
 											</tr>
 		</xsl:if>

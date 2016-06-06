@@ -6021,6 +6021,10 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>N'afficher que les traits métagénétiques</text>
     </string>
+	<string>
+		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+		<text>Ne pas afficher Qualités Meta génétiques</text>
+	</string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>Ce Trait ne peut pas être pris plus d'une fois.</text>

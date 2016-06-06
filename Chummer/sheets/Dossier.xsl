@@ -7,7 +7,7 @@
 	<xsl:template match="/characters">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 			<head>
-				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+				<meta http-equiv="x-ua-compatible" content="IE=Edge"/>
 				<title>Dossier</title>
 				<style type="text/css">
 					*
@@ -45,7 +45,7 @@
 							<td class="value"><xsl:value-of select="name"/></td>
 							<td rowspan="10" width="40%" align="center">
 								<xsl:if test="mugshot != ''">
-									<img src="{mugshot}" />
+									<img src="data:image/png;base64,{mugshotbase64}" />
 								</xsl:if>
 							</td>
 						</tr>

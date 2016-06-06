@@ -197,10 +197,19 @@ namespace Chummer
 
 		private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
 		{
-			BuildQualityList();
-		}
+		    if (chkMetagenetic.Checked)
+		        chkNotMetagenetic.Checked = false;
+            BuildQualityList();
+        }
 
-		private void txtSearch_TextChanged(object sender, EventArgs e)
+        private void chkNotMetagenetic_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkNotMetagenetic.Checked)
+                chkMetagenetic.Checked = false;
+            BuildQualityList();
+        }
+
+        private void txtSearch_TextChanged(object sender, EventArgs e)
 		{
 			BuildQualityList();
 		}
@@ -324,8 +333,11 @@ namespace Chummer
 				if (chkMetagenetic.Checked)
 				{
 					strSearch += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
-				}
-				strSearch += "]";
+				} else if (chkNotMetagenetic.Checked)
+                {
+                    strSearch += " and not metagenetic = 'yes'";
+                }
+                strSearch += "]";
 
 				XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes(strSearch);
 				foreach (XmlNode objXmlQuality in objXmlQualityList)
@@ -366,7 +378,7 @@ namespace Chummer
 				{
 					strXPath += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				}
-				else if (cboCategory.SelectedValue.ToString() == "Negative" || _objCharacter.MetageneticLimit > 0)
+                else if (!chkNotMetagenetic.Checked && (cboCategory.SelectedValue.ToString() == "Negative" || _objCharacter.MetageneticLimit > 0))
 				{
 					//Load everything, including metagenetic qualities.
 				}
@@ -1301,5 +1313,5 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(_objCharacter);
             objCommon.OpenPDF(lblSource.Text);
         }
-	}
+    }
 }

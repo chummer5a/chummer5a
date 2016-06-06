@@ -1398,7 +1398,7 @@ namespace Chummer
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
                         tabInitiation.Text = LanguageManager.Instance.GetString("Tab_Initiation");
-                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddMetamagic");
+                        cmdAddMetamagic.Text = LanguageManager.Instance.GetString("Button_AddInitiateGrade");
                         chkInitiationGroup.Text = LanguageManager.Instance.GetString("Checkbox_GroupInitiation");
                         chkInitiationOrdeal.Text = LanguageManager.Instance.GetString("Checkbox_InitiationOrdeal");
                     }
