@@ -4153,8 +4153,8 @@ namespace Chummer
 				Log.Info("damageresistance");
 				Log.Info("damageresistance = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DamageResistance,
-					"damageresistance", ValueToInt(bonusNode.InnerText, intRating));
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DamageResistance,"", 
+					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
 			// Check for Restricted Item Count.
