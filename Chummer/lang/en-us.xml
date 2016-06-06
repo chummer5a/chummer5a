@@ -7300,6 +7300,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Show only Metagenetic Qualities</text>
 		</string>
 		<string>
+			<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+			<text>Don't show Metagenetic Qualities</text>
+		</string>
+		<string>
 			<key>Message_SelectQuality_QualityLimit</key>
 			<text>This Quality cannot be taken more than once.</text>
 		</string>

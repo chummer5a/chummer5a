@@ -6062,6 +6062,10 @@
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>メタジェネティックの資質のみを表示</text>
     </string>
+	<string>
+		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+		<text>メタ遺伝的資質を表示しません</text>
+	</string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>この資質を複数取ることはできません.</text>

@@ -4912,6 +4912,10 @@
       <key>Checkbox_SelectQuality_Metagenetic</key>
       <text>Nur metagenetische Gaben anzeigen</text>
     </string>
+	<string>
+		<key>Checkbox_SelectQuality_Not_Metagenetic</key>
+		<text>Keine metagenetischen Gaben anzeigen</text>
+	</string>
     <string>
       <key>Message_SelectQuality_QualityLimit</key>
       <text>Diese(s) Gabe/Handicap kann nicht mehrmals gewählt werden.</text>
