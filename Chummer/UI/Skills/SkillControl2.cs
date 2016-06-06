@@ -29,6 +29,10 @@ namespace Chummer.UI.Skills
 			{
 				lblName.Font = new Font(lblName.Font, FontStyle.Italic);
 			}
+			if (_skill.Notes != string.Empty)
+			{
+				lblName.ForeColor = Color.SaddleBrown;
+			}
 
 			lblName.DataBindings.Add("Text", skill, nameof(Skill.DisplayName));
 
@@ -125,6 +129,15 @@ namespace Chummer.UI.Skills
 				{
 					btnAddSpec.Location = new Point(btnAddSpec.Location.X - cmdDelete.Width, btnAddSpec.Location.Y); 
 				}
+			}
+		}
+
+		private void ContextMenu_Opening(object sender, CancelEventArgs e)
+		{
+			foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
+			{
+				if (objItem.Tag != null)
+					objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
 			}
 		}
 
@@ -267,6 +280,34 @@ namespace Chummer.UI.Skills
 			{
 				cboSelectAttribute.SelectedValue = _skill.AttributeObject.Abbrev;
 				cboSelectAttribute_Closed(null, null);
+			}
+		}
+
+		private void tsSkillLabelNotes_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				frmNotes frmItemNotes = new frmNotes();
+				frmItemNotes.Notes = _skill.Notes;
+				frmItemNotes.ShowDialog(this);
+
+				if (frmItemNotes.DialogResult == DialogResult.OK)
+				{
+					_skill.Notes = frmItemNotes.Notes;
+					_skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
+					tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
+				}
+				if (_skill.Notes != string.Empty)
+				{
+					lblName.ForeColor = Color.SaddleBrown;
+				}
+				else
+				{
+					lblName.ForeColor = Color.Black;
+				}
+			}
+			catch
+			{
 			}
 		}
 
