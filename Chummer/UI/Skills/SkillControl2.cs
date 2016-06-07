@@ -29,7 +29,7 @@ namespace Chummer.UI.Skills
 			{
 				lblName.Font = new Font(lblName.Font, FontStyle.Italic);
 			}
-			if (_skill.Notes != string.Empty)
+			if (!String.IsNullOrWhiteSpace(_skill.Notes))
 			{
 				lblName.ForeColor = Color.SaddleBrown;
 			}

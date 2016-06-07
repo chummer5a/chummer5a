@@ -4153,8 +4153,8 @@ namespace Chummer
 				Log.Info("damageresistance");
 				Log.Info("damageresistance = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
-				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DamageResistance,
-					"damageresistance", ValueToInt(bonusNode.InnerText, intRating));
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.DamageResistance,"", 
+					ValueToInt(bonusNode.InnerText, intRating));
 			}
 
 			// Check for Restricted Item Count.
@@ -4754,7 +4754,7 @@ namespace Chummer
 
 				if (objImprovement.ImproveType == Improvement.ImprovementType.SkillLevel)
 				{
-					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills?
+					//TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
 					//for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
 					//{
 					//	//wrote as foreach first, modify collection, not want rename

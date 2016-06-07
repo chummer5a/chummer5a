@@ -21784,6 +21784,9 @@ namespace Chummer
 
 				// Update Damage Resistance Pool.
 				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance)).ToString();
+				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) != 0)
+					strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
+				tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
 
 				// Update EDG Remaining Info on the Condition Monitor tab.
 				string strEDG = _objCharacter.EDG.TotalValue.ToString() + " " + LanguageManager.Instance.GetString("String_Of") + " " + _objCharacter.EDG.Value.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining");
