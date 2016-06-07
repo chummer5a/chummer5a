@@ -818,7 +818,7 @@
 													<xsl:value-of select="rating" />
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
-													<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
+													<xsl:value-of select="attributemod" /> (<xsl:value-of select="displayattribute" />)
 												</td>
 											</tr>
   </xsl:for-each>
