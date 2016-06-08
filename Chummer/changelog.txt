@@ -11,10 +11,24 @@ Application Change:
 - Altered the uniquename for the Damage Resistance improvement to allow stacking, instead of using the highest single bonus. This may be wrong, but I can't find any RAW statements against it. Fixes #879.
 - Fixes a UI localisation issue where skill attributes defaulted to BOD. Fixes #897.
 - Fixed a UI issue that stopped a character as needing to be saved if the skills were updated in career mode. Fixes #899.
+- Added Option for not showing metagenetic qualities. Fixes #889.
+- Added PhysicalLimit as accuracy for infected natural weapons.
+- Fixed freezing when removing a Specialization and Skill Dicepools now refresh when changing the Specialization. Fixes #876.
+- Now shows Source when selecting a normal lifestyle.
+
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
 - Changed how existing character sheets render mugshots when saved as HTML. Fixes #817.
+- Added Textfield when selecting Grid Subscription Lifestyle quality. Fixes #875.
+- Corrected limit note for vision enhancement cyberware. Fixes #887.
+- Added missing karma values for infected metatypes in priority selection.
+- Added Reach for all infected metatypes to prevent crshes.
+- Reorganized Data Trails AI Qualities and added missing ones.
+- Added Chrome Flesh BTLs. Fixes #885.
+
+
+
 
 Build 179:
 Application Change:
