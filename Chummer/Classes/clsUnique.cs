@@ -787,7 +787,7 @@ namespace Chummer
 					}
 					else
 					{
-						if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev)
+						if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && objImprovement.ImprovedName == _strAbbrev && !(objImprovement.Value == 0 && objImprovement.Augmented == 0))
 							strModifier += " + " + _objCharacter.GetObjectName(objImprovement) + " (" + (objImprovement.Augmented * objImprovement.Rating).ToString() + ")";
 					}
 				}

@@ -15,6 +15,8 @@ Application Change:
 - Added PhysicalLimit as accuracy for infected natural weapons.
 - Fixed freezing when removing a Specialization and Skill Dicepools now refresh when changing the Specialization. Fixes #876.
 - Now shows Source when selecting a normal lifestyle.
+- Fixed a bug where Knowledge Specializations didn't cost Knowledge SKill Pints. Fixed #902.
+- Fixed a bug where the attribute tooltip would show qualities that didn't alter the attribute value or augment it. Fixed #901.
 
 
 Data Change: 
@@ -26,9 +28,6 @@ Data Change:
 - Added Reach for all infected metatypes to prevent crshes.
 - Reorganized Data Trails AI Qualities and added missing ones.
 - Added Chrome Flesh BTLs. Fixes #885.
-
-
-
 
 Build 179:
 Application Change:
