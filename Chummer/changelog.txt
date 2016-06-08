@@ -18,6 +18,7 @@ Application Change:
 - Fixed a bug where Knowledge Specializations didn't cost Knowledge SKill Pints. Fixed #902.
 - Fixed a bug where the attribute tooltip would show qualities that didn't alter the attribute value or augment it. Fixed #901.
 - Added different PDF-Opening paramerts for Linux/Unix/etc.
+- Fixed a Bug where Specilizations had no Karma costs in Karma build mode. Fixes #908.
 
 
 Data Change: 
