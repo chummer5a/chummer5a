@@ -1396,7 +1396,16 @@ namespace Chummer
                 }
                 else
                 {
-                    string strParams = " /n /A \"page=" + intPage.ToString() + "\" \"" + strPath + "\"";
+                    string strParams;
+                    int p = (int)Environment.OSVersion.Platform;
+                    if ((p == 4) || (p == 6) || (p == 128))
+                    {
+                        strParams = "-p " + intPage.ToString() + " \"" + strPath + "\"";
+                    }
+                    else
+                    {
+                        strParams = " /n /A \"page=" + intPage.ToString() + "\" \"" + strPath + "\"";
+                    }
                     Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
                 }
             }
