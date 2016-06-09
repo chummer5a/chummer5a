@@ -213,7 +213,6 @@ namespace Chummer
 		{
 			Log.Enter("DownloadUpdates");
 			strTempPath = Path.Combine(Path.GetTempPath(), ("chummer"+LatestVersion+".zip"));
-			string strFilePath = Environment.CurrentDirectory + Path.DirectorySeparatorChar;
 			
 			WebClient Client = new WebClient();
 			Client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(wc_DownloadProgressChanged);

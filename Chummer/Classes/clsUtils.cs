@@ -19,7 +19,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
+﻿using System.IO;
+﻿using System.Linq;
+﻿using System.Net;
+﻿using System.Reflection;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -69,5 +73,47 @@ namespace Chummer
 			return System.Diagnostics.Process.GetCurrentProcess().ProcessName == "devenv";
 		}
 
+		public static Version GitVersion()
+		{
+			Version verLatestVersion = new Version();
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+			request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+			request.Accept = "application/json";
+			// Get the response.
+
+			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+			// Get the stream containing content returned by the server.
+			Stream dataStream = response.GetResponseStream();
+			// Open the stream using a StreamReader for easy access.
+			StreamReader reader = new StreamReader(dataStream);
+			// Read the content.
+
+			string responseFromServer = reader.ReadToEnd();
+			string[] stringSeparators = new string[] { "," };
+			var result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (string line in result.Where(line => line.Contains("tag_name")))
+			{
+				var strVersion = line.Split(':')[1];
+				strVersion = strVersion.Split('}')[0].Replace("\"", string.Empty);
+				strVersion = strVersion + ".0";
+				Version.TryParse(strVersion, out verLatestVersion);
+				break;
+			}
+			// Cleanup the streams and the response.
+			reader.Close();
+			dataStream.Close();
+			response.Close();
+
+			return verLatestVersion;
+		}
+
+		public static int GitUpdateAvailable()
+		{
+			Version verCurrentversion = Assembly.GetExecutingAssembly().GetName().Version;
+			int intResult = GitVersion().CompareTo(verCurrentversion);
+			return intResult;
+		}
 	}
 }
