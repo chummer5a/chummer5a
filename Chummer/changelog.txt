@@ -19,6 +19,7 @@ Application Change:
 - Fixed a bug where the attribute tooltip would show qualities that didn't alter the attribute value or augment it. Fixed #901.
 - Added different PDF-Opening paramerts for Linux/Unix/etc.
 - Fixed a Bug where Specilizations had no Karma costs in Karma build mode. Fixes #908.
+- Fixed a Bug where Karma cost of Magic/Resonance were calculated wrongly when Essence Loss occured. Fixes #912.
 
 
 Data Change: 

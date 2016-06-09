@@ -1387,13 +1387,13 @@ namespace Chummer
                 if (!_objOptions.ESSLossReducesMaximumOnly)
                     intEssenceLoss = _objCharacter.EssencePenalty;
                 nudMAG.Minimum = _objCharacter.MAG.MetatypeMinimum;
-                nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
+                nudMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
+                nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum;
 
                 // If the character options permit initiation in create mode, show the Initiation page.
                 if (_objOptions.AllowInitiationInCreateMode)
                 {
-					UpdateInitiationCost();
-					nudKMAG.Maximum = _objCharacter.MAG.MetatypeMaximum + intEssenceLoss;
+					UpdateInitiationCost();					
                     if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                     {
                         tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -14121,10 +14121,6 @@ namespace Chummer
             // Also update the Maximum and Augmented Maximum values displayed.
             _blnSkipUpdate = true;
 
-            int intEssenceLoss = 0;
-            if (!_objOptions.ESSLossReducesMaximumOnly)
-                intEssenceLoss = Math.Max(0, _objCharacter.EssencePenalty); //bad stuff happens if negative
-
             nudBOD.Maximum = _objCharacter.BOD.TotalMaximum;
             nudAGI.Maximum = _objCharacter.AGI.TotalMaximum;
             nudREA.Maximum = _objCharacter.REA.TotalMaximum;
@@ -14136,12 +14132,12 @@ namespace Chummer
             nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum;
             }
-            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
-            nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
-			nudDEP.Maximum = _objCharacter.DEP.TotalMaximum + intEssenceLoss;
+            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
+            nudRES.Maximum = _objCharacter.RES.TotalMaximum;
+			nudDEP.Maximum = _objCharacter.DEP.TotalMaximum;
 
 			nudKBOD.Value = _objCharacter.BOD.Karma;
             nudKAGI.Value = _objCharacter.AGI.Karma;
@@ -14374,14 +14370,8 @@ namespace Chummer
         /// </summary>
         private int CalculateSpecialAttributeBP()
         {
-			string strTooltip = "";
-			string strEDG = "";
-			string strMAG = "";
-			string strRES = "";
-			string strDEP = "";
-			int intBP = 0;
-			int intSpecialBP = 0;
-			int intAtt = 0;
+            int intEDG = 0,intMAG = 0, intRES = 0, intDEP = 0;
+			int intAtt = 0, intBP;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
 	            _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
 	        {
@@ -14391,124 +14381,78 @@ namespace Chummer
 			        intAtt += Convert.ToInt32(nudMAG.Value - _objCharacter.MAG.TotalMinimum);
 		        if (_objCharacter.RESEnabled)
 			        intAtt += Convert.ToInt32(nudRES.Value - nudRES.Minimum);
-			} //Not sure if bug with essence loss in karma
+	            if (_objCharacter.Metatype == "A.I.")
+	                intAtt += Convert.ToInt32(nudDEP.Value - nudDEP.Minimum);
+	        }
 
 			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
 
 			// For each attribute, figure out the actual karma cost of attributes raised with karma
 			for (int i = 1; i <= nudKEDG.Value; i++)
             {
-                intBP += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
+                intEDG += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
             }
             if (_objCharacter.MAGEnabled)
             {
                 for (int i = 1; i <= nudKMAG.Value; i++)
                 {
-                    intBP += ((Convert.ToInt32(nudMAG.Value) + i) * _objOptions.KarmaAttribute);
+                    intMAG += ((Convert.ToInt32(nudMAG.Value) + i) * _objOptions.KarmaAttribute);
                 }
             }
             if (_objCharacter.RESEnabled)
             {
                 for (int i = 1; i <= nudKRES.Value; i++)
                 {
-                    intBP += ((Convert.ToInt32(nudRES.Value) + i) * _objOptions.KarmaAttribute);
+                    intRES += ((Convert.ToInt32(nudRES.Value) + i) * _objOptions.KarmaAttribute);
                 }
 			}
 			if (_objCharacter.Metatype == "A.I.")
 			{
 				for (int i = 1; i <= nudKDEP.Value; i++)
 				{
-					intBP += ((Convert.ToInt32(nudDEP.Value) + i) * _objOptions.KarmaAttribute);
+					intDEP += ((Convert.ToInt32(nudDEP.Value) + i) * _objOptions.KarmaAttribute);
 				}
 			}
 
             // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
-			int intEssenceLoss = 0;
-            if (!_objOptions.ESSLossReducesMaximumOnly)
-            {
-                intEssenceLoss = _objCharacter.EssencePenalty;
-            }
+			int intEssenceLoss = _objOptions.ESSLossReducesMaximumOnly ? 0 : _objCharacter.EssencePenalty;
 
-            foreach (NumericUpDown objControl in panAttributes.Controls.OfType<NumericUpDown>())
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
+                _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                int intThisBP = 0;
-                // Don't apply the ESS loss penalty to EDG.
-                int intUseEssenceLoss = intEssenceLoss;
-                if (objControl.Name == nudEDG.Name)
-                    intUseEssenceLoss = 0;
-
-                if (objControl.Name == nudEDG.Name || objControl.Name == nudMAG.Name || objControl.Name == nudRES.Name)
+                if (_objCharacter.MAGEnabled)
                 {
-                    string strAttribute = "";
-                    NumericUpDown nudAttribute = objControl;
-                    // Disabled Attributes should not be included.
-                    if ((objControl.Name == nudMAG.Name && _objCharacter.MAGEnabled) || (objControl.Name == nudRES.Name && _objCharacter.RESEnabled) || objControl.Name == nudEDG.Name)
+                    for (int i = (int) nudKMAG.Value + 1; i <= nudKMAG.Value + intEssenceLoss; i++)
                     {
-                        if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-                        {
-                            // If the character has an ESS penalty, the minimum needs to be bumped up by 1 so that the cost calculation is correct.
-                            int intMinModifier = 0;
-                            if (intUseEssenceLoss > 0)
-                                intMinModifier = 1;
-
-                            if (nudAttribute.Minimum == 0 && nudAttribute.Maximum == 0)
-                            {
-                                intBP += 0;
-                                intThisBP += 0;
-                            }
-                            else
-                            {
-                                // Karma calculation starts from the minimum score + 1 and steps through each up to the current score. At each step, the current number is multplied by the Karma Cost to
-                                // give us the cost of at each step.
-                                for (int i = (int)nudAttribute.Minimum + 1 + intMinModifier; i <= (int)nudAttribute.Value + intUseEssenceLoss; i++)
-                                {
-                                    intBP += i * _objOptions.KarmaAttribute;
-                                    intThisBP += i * _objOptions.KarmaAttribute;
-                                }
-                            }
-                        }
-                        else if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                        {
-                            // If the Essence Loss in use is not 0, reduce it by 1 to correct the BP cost since the first point of Special Attributes is always free.
-                            if (intUseEssenceLoss != 0)
-                                intUseEssenceLoss -= 1;
-
-                            if ((nudAttribute.Minimum == 0 && nudAttribute.Maximum == 0) || nudAttribute.Value == 0)
-                            {
-                                intBP += 0;
-                                intThisBP += 0;
-                            }
-                            else
-                            {
-                                // Each Attribute point costs 1 SP (the first point is free).
-                                // intBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss : ADAM: I removed the intUseEssenceLoss var from the equation to resolve what looks like an error in how MAG is calculated with cyberware. I could be wrong.
-                                intThisBP += ((int)nudAttribute.Value - (int)nudAttribute.Minimum); // + intUseEssenceLoss
-                            }
-                        }
-                        strAttribute = objControl.Name.Replace("nud", string.Empty) + "\t" + intThisBP.ToString();
-
-                        switch (objControl.Name)
-                        {
-                            case "nudEDG":
-                                strEDG = strAttribute;
-                                break;
-                            case "nudMAG":
-                                strMAG = strAttribute;
-                                break;
-                            case "nudRES":
-                                strRES = strAttribute;
-                                break;
-							case "nudDEP":
-								strDEP = strAttribute;
-								break;
-						}
+                        intMAG += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
                     }
-					intSpecialBP += intThisBP;
+                }
+                if (_objCharacter.RESEnabled)
+                {
+                    for (int i = (int) nudRES.Value + 1; i <= nudKRES.Value + intEssenceLoss; i++)
+                    {
+                        intRES += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
+                    }
                 }
             }
 
-            strTooltip = strEDG + "\n" + strMAG + "\n" + strRES;
+            string strTooltip = _objCharacter.EDG.Abbrev + "\t" + intEDG + "\n";
+            if (_objCharacter.MAGEnabled)
+            {
+                strTooltip += _objCharacter.MAG.Abbrev + "\t" + intMAG + "\n";
+            }
+            if (_objCharacter.RESEnabled)
+            {
+                strTooltip += _objCharacter.RES.Abbrev + "\t" + intRES + "\n";
+            }
+            if (_objCharacter.Metatype == "A.I.")
+            {
+                strTooltip += _objCharacter.DEP.Abbrev + "\t" + intDEP + "\n";
+            }
+            
             tipTooltip.SetToolTip(lblSpecialAttributesBP, strTooltip);
+
+            intBP = intEDG + intMAG + intRES + intDEP;
 
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
             {
@@ -15221,18 +15165,10 @@ namespace Chummer
 				UpdateAttribute(_objCharacter.DEP, nudDEP, lblDEPAug, lblDEPMetatype);
 
                 // CharacterAttribute: Magic.
-				if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-                {
-                    lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0), _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
-                    nudMAG.Minimum = Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0);
-                }
-                else
-                {
-                    lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.MAG.TotalMinimum, _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
-					nudMAG.Minimum = Math.Max(_objCharacter.MAG.MetatypeMinimum - intReduction, 0);
-					//nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
-				}
+				lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.MAG.TotalMinimum, _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
+				nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
                 nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum - nudMAG.Value;
                 if (_objCharacter.MAG.HasModifiers)
                 {
                     lblMAGAug.Text = string.Format("{0} ({1})", _objCharacter.MAG.Value, _objCharacter.MAG.TotalValue);
@@ -15248,6 +15184,7 @@ namespace Chummer
                 lblRESMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.RES.TotalMinimum, _objCharacter.RES.TotalMaximum, _objCharacter.RES.TotalAugmentedMaximum);
                 nudRES.Minimum = _objCharacter.RES.TotalMinimum;
                 nudRES.Maximum = _objCharacter.RES.TotalMaximum;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum - nudRES.Value;
                 if (_objCharacter.RES.HasModifiers)
                 {
                     lblRESAug.Text = string.Format("{0} ({1})", _objCharacter.RES.Value, _objCharacter.RES.TotalValue);
@@ -21774,11 +21711,11 @@ namespace Chummer
             nudEDG.Maximum = _objCharacter.EDG.TotalMaximum;
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
             {
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
+                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum;
+                nudKRES.Maximum = _objCharacter.RES.TotalMaximum;
             }
-            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum + intEssenceLoss;
-            nudRES.Maximum = _objCharacter.RES.TotalMaximum + intEssenceLoss;
+            nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
+            nudRES.Maximum = _objCharacter.RES.TotalMaximum;
 
             nudBOD.Minimum = _objCharacter.BOD.MetatypeMinimum;
             nudAGI.Minimum = _objCharacter.AGI.MetatypeMinimum;
@@ -21823,11 +21760,17 @@ namespace Chummer
             }
             else
                 nudMAG.Value = _objCharacter.MAG.Value;
-            if (_objCharacter.RES.Value < 1)
+		    if (_objCharacter.RES.Value < 1)
+		    {
+		        if (nudRES.Maximum < 1)
+		            nudRES.Maximum = 1;
+		        if (nudRES.Minimum < 1)
+		            nudRES.Minimum = 1;
                 nudRES.Value = 1;
-            else
-                nudRES.Value = _objCharacter.RES.Value;
-            _blnSkipUpdate = false;
+		    }
+		    else
+		        nudRES.Value = _objCharacter.RES.Value;
+		    _blnSkipUpdate = false;
 
             XmlDocument objMetatypeDoc = new XmlDocument();
             XmlNode objMetatypeNode;
