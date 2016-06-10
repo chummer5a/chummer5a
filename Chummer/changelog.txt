@@ -31,6 +31,7 @@ Data Change:
 - Added Reach for all infected metatypes to prevent crashes.
 - Reorganized Data Trails AI Qualities and added missing ones.
 - Added Chrome Flesh BTLs. Fixes #885.
+- Fixed an incorrect limitation on the Home Ground quality. Fixes #904.
 
 Build 179:
 Application Change:
