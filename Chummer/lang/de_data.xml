@@ -17347,21 +17347,21 @@
 				<page>279</page>
 				<translate>Normal</translate>
 				<spirits>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
 				</spirits>
 			</tradition>
 		</traditions>
@@ -17395,7 +17395,7 @@
 			<tradition>
 				<id>19320625-bc1a-492f-8904-da6a847e5700</id>
 				<name>Hermetic</name>
-				<page>213</page>
+				<page>277</page>
 				<translate>Hermetisch</translate>
 			</tradition>
 			<tradition>
@@ -17407,14 +17407,14 @@
 			<tradition>
 				<id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
 				<name>Shamanic</name>
-				<page>213</page>
+				<page>277</page>
 				<translate>Schamanisch</translate>
 			</tradition>
 			<tradition>
 				<id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
 				<name>Shinto</name>
 				<page>49</page>
-				<translate>Shintō</translate>
+				<translate>Shinto</translate>
 			</tradition>
 			<tradition translated="True">
 				<id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
@@ -17426,7 +17426,7 @@
 				<id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
 				<name>Custom</name>
 				<translate>Eigene Tradition</translate>
-				<page>279</page>
+				<page>277</page>
 			</tradition>
 			<tradition>
 				<id>a283220f-2197-4526-b15a-331b9185b326</id>
