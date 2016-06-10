@@ -44,7 +44,7 @@
 													<xsl:value-of select="rating" />
 												</td>
 												<td width="20%" style="text-align:center;" valign="top">
-													<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
+													<xsl:value-of select="attributemod" /> (<xsl:value-of select="displayattribute" />)
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="ratingmod" />
@@ -93,7 +93,7 @@
 													<xsl:value-of select="rating" />
 												</td>
 												<td width="20%" style="text-align:center;" valign="top">
-													<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
+													<xsl:value-of select="attributemod" /> (<xsl:value-of select="displayattribute" />)
 												</td>
 												<td width="10%" style="text-align:center;" valign="top">
 													<xsl:value-of select="ratingmod" />
@@ -142,7 +142,7 @@
 															N
 														</xsl:when>
 														<xsl:otherwise>
-															<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
+															<xsl:value-of select="attributemod" /> (<xsl:value-of select="displayattribute" />)
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>
@@ -196,7 +196,7 @@
 															N
 														</xsl:when>
 														<xsl:otherwise>
-															<xsl:value-of select="attributemod" /> (<xsl:value-of select="attribute" />)
+															<xsl:value-of select="attributemod" /> (<xsl:value-of select="displayattribute" />)
 														</xsl:otherwise>
 													</xsl:choose>
 												</td>

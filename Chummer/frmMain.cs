@@ -48,31 +48,28 @@ namespace Chummer
 
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
-            /** Dashboard **/
-            //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
-            /** End Dashboard **/
+			/** Dashboard **/
+			//this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
+			/** End Dashboard **/
 
 			// If Automatic Updates are enabled, check for updates immediately.
-			if (GlobalOptions.Instance.AutomaticUpdate)
-			{
-                frmUpdate frmAutoUpdate = new frmUpdate();
-                frmAutoUpdate.SilentMode = true;
-                frmAutoUpdate.Visible = false;
-                frmAutoUpdate.ShowDialog(this);
-			}
-			else
-			{
-#if RELEASE
-				frmUpdate frmAutoUpdate = new frmUpdate();
-				frmAutoUpdate.GetChummerVersion();
-				Version verCurrentVersion = new Version(strCurrentVersion);
-				Version verLatestVersion = new Version(frmAutoUpdate.LatestVersion);
 
-				var result = verCurrentVersion.CompareTo(verLatestVersion);
-				if (result < 0)
-					this.Text += String.Format(" - Update {0} now available!",verLatestVersion);
+#if RELEASE
+            if (Utils.GitUpdateAvailable() > 0)
+	        {
+		        if (GlobalOptions.Instance.AutomaticUpdate)
+				{
+					frmUpdate frmAutoUpdate = new frmUpdate();
+					frmAutoUpdate.SilentMode = true;
+			        frmAutoUpdate.Visible = false;
+			        frmAutoUpdate.ShowDialog(this);
+		        }
+		        else
+		        {
+			        this.Text += String.Format(" - Update {0} now available!", Utils.GitVersion());
+		        }
+	        }
 #endif
-			}
 
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
 
@@ -149,6 +146,12 @@ namespace Chummer
 			catch
 			{
 			}
+		}
+
+		public sealed override string Text
+		{
+			get { return base.Text; }
+			set { base.Text = value; }
 		}
 
 		private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)

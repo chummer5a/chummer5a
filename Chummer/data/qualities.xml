@@ -401,6 +401,7 @@
 			<name>Home Ground</name>
 			<karma>10</karma>
 			<category>Positive</category>
+			<limit>no</limit>
 			<bonus>
 				<selecttext />
 			</bonus>

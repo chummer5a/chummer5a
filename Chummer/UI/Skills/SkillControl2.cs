@@ -29,7 +29,7 @@ namespace Chummer.UI.Skills
 			{
 				lblName.Font = new Font(lblName.Font, FontStyle.Italic);
 			}
-			if (_skill.Notes != string.Empty)
+			if (!String.IsNullOrWhiteSpace(_skill.Notes))
 			{
 				lblName.ForeColor = Color.SaddleBrown;
 			}
@@ -68,14 +68,14 @@ namespace Chummer.UI.Skills
 
 				lblAttribute.Visible = false;  //Was true, cannot think it should be
 
-				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+				btnAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
 				btnAttribute.Visible = true;
 
 				SetupDropdown();
 			}
 			else
 			{
-				lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.Attribute));
+				lblAttribute.DataBindings.Add("Text", skill, nameof(Skill.DisplayAttribute));
 				
 				//Up down boxes
 				nudKarma.DataBindings.Add("Value", skill, nameof(Skill.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -189,7 +189,7 @@ namespace Chummer.UI.Skills
 				case nameof(Skill.Rating):
                 case nameof(Skill.Specialization):
 					lblModifiedRating.Text =
-						_skill.DisplayOhterAttribue(_attributeActive.TotalValue);
+						_skill.DisplayOtherAttribue(_attributeActive.TotalValue);
 					break;
 			}
 		}

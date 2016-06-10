@@ -358,7 +358,7 @@ namespace Chummer.Skills
 			cost = Math.Max(0, cost); //Don't give karma back...
 
 			cost +=  //Spec
-					(!string.IsNullOrWhiteSpace(Specialization) && BuyWithKarma) ?
+					(!string.IsNullOrWhiteSpace(Specialization) && (BuyWithKarma || _character.BuildMethod == CharacterBuildMethod.Karma || _character.BuildMethod == CharacterBuildMethod.LifeModule)) ?
 					_character.Options.KarmaSpecialization : 0;
 
 

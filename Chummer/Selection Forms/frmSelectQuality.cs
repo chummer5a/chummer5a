@@ -335,7 +335,7 @@ namespace Chummer
 					strSearch += " and (required/oneof[contains(., 'Changeling (Class I SURGE)')] or metagenetic = 'yes')";
 				} else if (chkNotMetagenetic.Checked)
                 {
-                    strSearch += " and not metagenetic = 'yes'";
+                    strSearch += " and not (metagenetic = 'yes')";
                 }
                 strSearch += "]";
 

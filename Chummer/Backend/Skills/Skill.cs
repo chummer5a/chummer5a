@@ -96,6 +96,7 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("karma", Karma.ToString());
 			objWriter.WriteElementString("spec", Specialization);
 			objWriter.WriteElementString("attribute", Attribute);
+			objWriter.WriteElementString("displayattribute", DisplayAttribute);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
 			objWriter.WriteElementString("page", Page);
@@ -378,6 +379,16 @@ namespace Chummer.Skills
 		/// The Abbreviation of the linke attribute. Not the object due legacy
 		/// </summary>
 		public string Attribute
+		{
+			get
+			{
+					return AttributeObject.Abbrev;
+			}
+		}
+		/// <summary>
+		/// The translated abbreviation of the linked attribute.
+		/// </summary>
+		public string DisplayAttribute
 		{
 			get
 			{
@@ -736,11 +747,11 @@ namespace Chummer.Skills
 		public virtual string DisplayPool
 		{
 			get {
-				return DisplayOhterAttribue(AttributeObject.TotalValue);
+				return DisplayOtherAttribue(AttributeObject.TotalValue);
 			}
 		}
 
-		public string DisplayOhterAttribue(int attributeValue)
+		public string DisplayOtherAttribue(int attributeValue)
 		{
 			int pool = PoolOtherAttribute(attributeValue);
 
