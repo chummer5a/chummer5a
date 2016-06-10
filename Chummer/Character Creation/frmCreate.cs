@@ -21624,29 +21624,29 @@ namespace Chummer
 	        int intRES = Math.Max(_objCharacter.RES.Value - _objCharacter.RES.MetatypeMinimum, 0);
 
             // Build a list of the current Metatype's Improvements to remove if the Metatype changes.
-            List<Improvement> lstImprovement = new List<Improvement>();
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
-            {
-                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage)
-                    lstImprovement.Add(objImprovement);
-            }
+            List<Improvement> lstImprovement = _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant || objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage).ToList();
 
-            // Build a list of the current Metatype's Qualities to remove if the Metatype changes.
-            foreach (Quality objQuality in _objCharacter.Qualities)
-            {
-                if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
-                    lstRemoveQualities.Add(objQuality);
-            }
+			// Build a list of the current Metatype's Qualities to remove if the Metatype changes.
+			lstRemoveQualities.AddRange(_objCharacter.Qualities.Where(objQuality => objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable));
 
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter);
-				frmSelectMetatype.Attributes = _objCharacter.AttributesPriority[0].ToString();
-				frmSelectMetatype.Skills = _objCharacter.SkillsPriority[0].ToString();
-				frmSelectMetatype.Resources = _objCharacter.ResourcesPriority[0].ToString();
-				frmSelectMetatype.Special = _objCharacter.SpecialPriority[0].ToString();
-				frmSelectMetatype.Metatype = _objCharacter.MetatypePriority[0].ToString();
-				frmSelectMetatype.ShowDialog(this);
+	            frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter)
+	            {
+		            Attributes = _objCharacter.AttributesPriority[0].ToString(),
+		            Skills = _objCharacter.SkillsPriority[0].ToString(),
+		            Resources = _objCharacter.ResourcesPriority[0].ToString(),
+		            Special = _objCharacter.SpecialPriority[0].ToString(),
+		            Metatype = _objCharacter.MetatypePriority[0].ToString(),
+		            SelectedMetatype = _objCharacter.Metatype,
+					SelectedMetavariant = _objCharacter.Metavariant,
+		            SelectedMetatypeCategory = _objCharacter.MetatypeCategory,
+					SelectedTalent = _objCharacter.TalentPriority,
+					PriorityBonusSkill1 = _objCharacter.PriorityBonusSkill1,
+					PriorityBonusSkill2 = _objCharacter.PriorityBonusSkill2
+
+				};
+	            frmSelectMetatype.ShowDialog(this);
 				if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;
             }

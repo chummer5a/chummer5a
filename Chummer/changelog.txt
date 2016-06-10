@@ -21,6 +21,7 @@ Application Change:
 - Fixed a Bug where Specializations had no Karma costs in Karma build mode. Fixes #908.
 - Fixed a Bug where Karma cost of Magic/Resonance were calculated wrongly when Essence Loss occurred. Fixes #912.
 - Improved the update method to prevent update check loops. 
+- Improved the handling of changing priority selections to remember previous selections. Not all settings will be immediately available for existing characters. Fixes #709.
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
