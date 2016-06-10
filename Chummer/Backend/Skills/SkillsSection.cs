@@ -411,7 +411,7 @@ namespace Chummer.Skills
 				if (KnowledgeSkillPointsUsed > KnowledgeSkillPoints)
 					work -= KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
 
-				return SkillPointsMaximum - Skills.TotalCostSp() + work;
+				return SkillPointsMaximum - Skills.TotalCostSp() - work;
 			}
 		}
 

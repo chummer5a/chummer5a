@@ -1,6 +1,6 @@
 Build 180:
 Application Change:
-- Fixed an issue with skills not rendering in a localised language when selecting skill groups for Aspected Magicians. Fixes #867.
+- Fixed an issue with skills not rendering in a localized language when selecting skill groups for Aspected Magicians. Fixes #867.
 - Fixed a crash caused by adding an exotic weapon without having the relevant exotic weapons skill. Fixes #888.
 - Fixed a crash caused when loading a character that has a tradition that isn't being used. Fixes #893.
 - Changed the HTML doctype of all existing character sheets to support CSS3. Fixes #568.
@@ -9,10 +9,30 @@ Application Change:
 - Fixed a bug where skill improvements could stack if using the Change Priority Selection menu. Note: characters that have already been affected by this bug will have to be edited manually to remove the improvements, which will have a sourcename of Heritage and an improvedname of whatever the skill is. Fixes #880.
 - Fixed a bug where changing between technomancers and mages would leave both resonance and magical skills available. Fixes #890.
 - Altered the uniquename for the Damage Resistance improvement to allow stacking, instead of using the highest single bonus. This may be wrong, but I can't find any RAW statements against it. Fixes #879.
+- Fixes a UI localization issue where skill attributes defaulted to BOD. Fixes #897.
+- Fixed a UI issue that stopped a character as needing to be saved if the skills were updated in career mode. Fixes #899.
+- Added Option for not showing metagenetic qualities. Fixes #889.
+- Added Physical Limit as accuracy for infected natural weapons.
+- Fixed freezing when removing a Specialization and Skill Dicepools now refresh when changing the Specialization. Fixes #876.
+- Now shows Source when selecting a normal lifestyle.
+- Fixed a bug where Knowledge Specializations didn't cost Knowledge Skill Pints. Fixed #902.
+- Fixed a bug where the attribute tooltip would show qualities that didn't alter the attribute value or augment it. Fixed #901.
+- Added different PDF-Opening parameters for Linux/Unix/etc.
+- Fixed a Bug where Specializations had no Karma costs in Karma build mode. Fixes #908.
+- Fixed a Bug where Karma cost of Magic/Resonance were calculated wrongly when Essence Loss occurred. Fixes #912.
+- Improved the update method to prevent update check loops. 
+- Improved the handling of changing priority selections to remember previous selections. Not all settings will be immediately available for existing characters. Fixes #709.
 
 Data Change: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
 - Changed how existing character sheets render mugshots when saved as HTML. Fixes #817.
+- Added Textfield when selecting Grid Subscription Lifestyle quality. Fixes #875.
+- Corrected limit note for vision enhancement cyberware. Fixes #887.
+- Added missing karma values for infected metatypes in priority selection.
+- Added Reach for all infected metatypes to prevent crashes.
+- Reorganized Data Trails AI Qualities and added missing ones.
+- Added Chrome Flesh BTLs. Fixes #885.
+- Fixed an incorrect limitation on the Home Ground quality. Fixes #904.
 
 Build 179:
 Application Change:

@@ -512,7 +512,7 @@
 						<xsl:if test="spec!=''">
 							(<xsl:value-of select="spec" />)
 						</xsl:if>
-						<span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="attribute" /></span>
+						<span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
 					</td>
 					<td><xsl:value-of select="rating" /></td>
 					<td>
