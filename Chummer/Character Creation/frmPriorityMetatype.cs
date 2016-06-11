@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -19,9 +19,15 @@ namespace Chummer
 		private string _strSpecial = "";
 		private string _strSkills = "";
 		private string _strResources = "";
-		private int intBuildMethod = 0;
+	    private string _strSelectedMetatype = "";
+	    private string _strSelectedMetavariant = "";
+		private string _strSelectedMetatypeCategory = ""; 
+		private string _strSelectedTalent = "";
+        private int intBuildMethod = 0;
 		private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = false;
+		private string _strSkill1;
+		private string _strSkill2;
 
 		#region Character Events
 		private void objCharacter_MAGEnabledChanged(object sender)
@@ -126,6 +132,74 @@ namespace Chummer
 				_strSpecial = value;
 			}
 		}
+		public string SelectedMetatype
+	    {
+		    get
+		    {
+			    return _strSelectedMetatype;
+		    }
+		    set
+		    {
+			    _strSelectedMetatype = value;
+		    }
+	    }
+		public string SelectedMetatypeCategory
+		{
+			get
+			{
+				return _strSelectedMetatypeCategory;
+			}
+			set
+			{
+				_strSelectedMetatypeCategory = value;
+			}
+		}
+		public string SelectedTalent
+	    {
+		    get
+		    {
+			    return _strSelectedTalent;
+		    }
+		    set
+		    {
+			    _strSelectedTalent = value;
+		    }
+		}
+		public string PriorityBonusSkill1
+		{
+			get
+			{
+				return _strSkill1;
+			}
+			set
+			{
+				_strSkill1 = value;
+			}
+		}
+		public string PriorityBonusSkill2
+		{
+			get
+			{
+				return _strSkill2;
+			}
+			set
+			{
+				_strSkill2 = value;
+			}
+		}
+
+		public string SelectedMetavariant
+		{
+			get
+			{
+				return _strSelectedMetavariant;
+			}
+			set
+			{
+				_strSelectedMetavariant = value;
+			}
+		}
+		
 		#endregion
 
 		#region Form Events
@@ -230,22 +304,49 @@ namespace Chummer
                             break;
                     }
                 }
-            }
+			}
+
+			// Load Metatypes
+			LoadMetatypes();
+			PopulateTalents();
 
 			// Set Priority defaults.
 			if (_strAttributes != "")
 			{
 				int index = 0;
+				//Attributes
                 index = cboAttributes.FindString(_strAttributes);
 				cboAttributes.SelectedIndex = index;
+				//Heritage (Metatype)
 				index = cboHeritage.FindString(_strMetatype);
 				cboHeritage.SelectedIndex = index;
+				//Resources
 				index = cboResources.FindString(_strResources);
 				cboResources.SelectedIndex = index;
+				//Skills
 				index = cboSkills.FindString(_strSkills);
 				cboSkills.SelectedIndex = index;
+				//Magical/Resonance Talent
 				index = cboTalent.FindString(_strSpecial);
 				cboTalent.SelectedIndex = index;
+				//Magical/Resonance Type
+				index = cboTalents.FindString(_strSelectedTalent);
+				cboTalents.SelectedIndex = index;
+				//Selected Magical Bonus Skill
+				index = cboSkill1.FindString(_strSkill1);
+				cboSkill1.SelectedIndex = index;
+				//Selected Magical Bonus Skill
+				index = cboSkill2.FindString(_strSkill2);
+				cboSkill2.SelectedIndex = index;
+				//Selected Category of Metatype
+				index = cboCategory.FindString(_strSelectedMetatypeCategory);
+				cboCategory.SelectedIndex = index;
+				//Selected Metatype
+				index = lstMetatypes.FindString(_strSelectedMetatype);
+				lstMetatypes.SelectedIndex = index;
+				//Selected Metavariant
+				index = cboMetavariant.FindString(_strSelectedMetavariant);
+				cboMetavariant.SelectedIndex = index;
 			}
 			else
 			{
@@ -254,17 +355,13 @@ namespace Chummer
 				cboAttributes.SelectedIndex = 2;
 				cboSkills.SelectedIndex = 3;
 				cboResources.SelectedIndex = 4;
+				lstMetatypes.SelectedIndex = 0;
 			}
             _blnInitializing = false;
-
-            // Load Metatypes
-            LoadMetatypes();
-            PopulateTalents();
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
 				SumtoTen();
 			}
-            lstMetatypes.SelectedIndex = 0;
 
 			// Add Possession and Inhabitation to the list of Critter Tradition variations.
 			tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.Instance.GetString("Tip_Metatype_PossessionTradition"));
@@ -1281,14 +1378,7 @@ namespace Chummer
 
 				_objCharacter.Metatype = lstMetatypes.SelectedValue.ToString();
 				_objCharacter.MetatypeCategory = cboCategory.SelectedValue.ToString();
-				if (cboMetavariant.SelectedValue.ToString() == "None")
-				{
-					_objCharacter.Metavariant = "";
-				}
-				else
-				{
-					_objCharacter.Metavariant = cboMetavariant.SelectedValue.ToString();
-				}
+				_objCharacter.Metavariant = cboMetavariant.SelectedValue.ToString() == "None" ? "" : cboMetavariant.SelectedValue.ToString();
 
 				if (objXmlMetatype["movement"] != null) // TODO: Replace with Walk/Run
 					_objCharacter.Movement = objXmlMetatype["movement"].InnerText;
@@ -1450,26 +1540,24 @@ namespace Chummer
 				{
 					if (objXmlMetavariant["naturalweapons"] != null)
 					{
-						foreach (XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon"))
+						foreach (Weapon objWeapon in from XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon") select new Weapon(_objCharacter)
 						{
-							Weapon objWeapon = new Weapon(_objCharacter);
-							objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-							objWeapon.Category = LanguageManager.Instance.GetString("Tab_Critter");
-							objWeapon.WeaponType = "Melee";
-							objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-							objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
-							;
-							objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
-							;
-							objWeapon.Mode = "0";
-							objWeapon.RC = "0";
-							objWeapon.Concealability = 0;
-							objWeapon.Avail = "0";
-							objWeapon.Cost = 0;
-							objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-							objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-							objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
-
+							Name = objXmlNaturalWeapon["name"].InnerText,
+							Category = LanguageManager.Instance.GetString("Tab_Critter"),
+							WeaponType = "Melee",
+							Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
+							Damage = objXmlNaturalWeapon["damage"].InnerText,
+							AP = objXmlNaturalWeapon["ap"].InnerText,
+							Mode = "0",
+							RC = "0",
+							Concealability = 0,
+							Avail = "0",
+							Cost = 0,
+							UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
+							Source = objXmlNaturalWeapon["source"].InnerText,
+							Page = objXmlNaturalWeapon["page"].InnerText
+						})
+						{
 							_objCharacter.Weapons.Add(objWeapon);
 						}
 					}
@@ -1525,17 +1613,9 @@ namespace Chummer
 					XmlNode objXmlCritterPower;
 					TreeNode objNode;
 					CritterPower objPower;
-					bool blnAddPower = true;
+					bool blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Energy Drain");
 
 					// Energy Drain.
-					foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-					{
-						if (objFindPower.Name == "Energy Drain")
-						{
-							blnAddPower = false;
-							break;
-						}
-					}
 					if (blnAddPower)
 					{
 						objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Energy Drain\"]");
@@ -1547,15 +1627,7 @@ namespace Chummer
 					}
 
 					// Fear.
-					blnAddPower = true;
-					foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-					{
-						if (objFindPower.Name == "Fear")
-						{
-							blnAddPower = false;
-							break;
-						}
-					}
+					blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Fear");
 					if (blnAddPower)
 					{
 						objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Fear\"]");
@@ -1575,15 +1647,7 @@ namespace Chummer
 					_objCharacter.CritterPowers.Add(objPower);
 
 					// Evanescence.
-					blnAddPower = true;
-					foreach (CritterPower objFindPower in _objCharacter.CritterPowers)
-					{
-						if (objFindPower.Name == "Evanescence")
-						{
-							blnAddPower = false;
-							break;
-						}
-					}
+					blnAddPower = _objCharacter.CritterPowers.All(objFindPower => objFindPower.Name != "Evanescence");
 					if (blnAddPower)
 					{
 						objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Evanescence\"]");
@@ -1757,14 +1821,17 @@ namespace Chummer
                 XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
 
                 // Set the character priority selections
-                _objCharacter.MetatypePriority = cboHeritage.Text.ToString();
-                _objCharacter.AttributesPriority = cboAttributes.Text.ToString();
-                _objCharacter.SpecialPriority = cboTalent.Text.ToString();
-                _objCharacter.SkillsPriority = cboSkills.Text.ToString();
-                _objCharacter.ResourcesPriority = cboResources.Text.ToString();
+	            _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
+	            _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
+	            _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
+	            _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
+	            _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
+	            _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
+	            _objCharacter.PriorityBonusSkill1 = cboSkill1.SelectedValue.ToString();
+				_objCharacter.PriorityBonusSkill2 = cboSkill2.SelectedValue.ToString();
 
-                // Set starting nuyen
-                XmlNodeList objXmResourceList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Resources\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\" and value = \"" + cboResources.SelectedValue + "\"]");
+				// Set starting nuyen
+				XmlNodeList objXmResourceList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Resources\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\" and value = \"" + cboResources.SelectedValue + "\"]");
                 if (objXmResourceList.Count > 0)
                 {
                     _objCharacter.Nuyen = Convert.ToInt32(objXmResourceList[0]["resources"].InnerText.ToString());
@@ -1806,14 +1873,7 @@ namespace Chummer
                     _objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(objXmlTalentList[0]["magic"].InnerText);
                     if (_objCharacter.MAG.Value > 0)
                         _objCharacter.MAGEnabled = true;
-                    if (objXmlTalentList[0]["spells"] != null)
-                    {
-                        _objCharacter.SpellLimit = Convert.ToInt32(objXmlTalentList[0]["spells"].InnerText);
-                    }
-                    else
-                    {
-                        _objCharacter.SpellLimit = 0;
-                    }
+                    _objCharacter.SpellLimit = objXmlTalentList[0]["spells"] != null ? Convert.ToInt32(objXmlTalentList[0]["spells"].InnerText) : 0;
                 }
 
                 if (objXmlTalentList[0]["maxmagic"] != null)
@@ -2074,10 +2134,7 @@ namespace Chummer
             {
 				ListItem objItem = new ListItem();
 				objItem.Value = objXmlPriorityTalent["value"].InnerText;
-				if (objXmlPriorityTalent["translate"] != null)
-					objItem.Name = objXmlPriorityTalent["translate"].InnerText;
-				else
-					objItem.Name = objXmlPriorityTalent["name"].InnerText;
+				objItem.Name = objXmlPriorityTalent["translate"] != null ? objXmlPriorityTalent["translate"].InnerText : objXmlPriorityTalent["name"].InnerText;
 				lstTalent.Add(objItem);
             }
 
@@ -2239,41 +2296,36 @@ namespace Chummer
 
 	    private XmlNode GetSpecificSkill(string strSkill)
 	    {
-		    XmlNode objXmlSkill;
-			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-			objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
+		    XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			var objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
 			return objXmlSkill;
 		}
 
 		private XmlNode GetSpecificSkillGroup(string strSkill)
 		{
-			XmlNode objXmlSkill;
 			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-			objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
+			var objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
 			return objXmlSkill;
 		}
 
 		private XmlNodeList GetMagicalSkillList()
         {
-            XmlNodeList objXmlSkillList;
-            XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-            objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\"]");
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\"]");
             return objXmlSkillList;
         }
 
         private XmlNodeList GetResonanceSkillList()
         {
-            XmlNodeList objXmlSkillList;
-            XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-            objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Resonance Active\"]");
+	        XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Resonance Active\"]");
             return objXmlSkillList;
         }
 
         private XmlNodeList GetActiveSkillList()
         {
-            XmlNodeList objXmlSkillList;
-            XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
-            objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
+	        XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
             return objXmlSkillList;
         }
 

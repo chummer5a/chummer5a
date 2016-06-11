@@ -251,6 +251,7 @@ namespace Chummer
         private string _strPrioritySpecial = "";
         private string _strPrioritySkills = "";
         private string _strPriorityResources = "";
+	    private string _strPriorityTalent = "";
         private string _strSkill1 = "";
         private string _strSkill2 = "";
         private string _strSkillGroup = "";
@@ -404,8 +405,10 @@ namespace Chummer
             objWriter.WriteElementString("priorityskills", _strPrioritySkills);
             // <priorityresources />
             objWriter.WriteElementString("priorityresources", _strPriorityResources);
-            // <priorityskill1 />
-            objWriter.WriteElementString("priorityskill1", _strSkill1);
+			// <priorityresources />
+			objWriter.WriteElementString("prioritytalent", _strPriorityTalent);
+			// <priorityskill1 />
+			objWriter.WriteElementString("priorityskill1", _strSkill1);
             // <priorityskill2 />
             objWriter.WriteElementString("priorityskill2", _strSkill2);
             // <priorityskillgroup />
@@ -1031,8 +1034,9 @@ namespace Chummer
 		    objXmlCharacter.TryGetField("priorityattributes", out _strPriorityAttributes);
 		    objXmlCharacter.TryGetField("priorityspecial", out _strPrioritySpecial);
 		    objXmlCharacter.TryGetField("priorityskills", out _strPrioritySkills);
-		    objXmlCharacter.TryGetField("priorityresources", out _strPriorityResources);
-		    objXmlCharacter.TryGetField("priorityskill1", out _strSkill1);
+			objXmlCharacter.TryGetField("priorityresources", out _strPriorityResources);
+			objXmlCharacter.TryGetField("prioritytalent", out _strPriorityTalent);
+			objXmlCharacter.TryGetField("priorityskill1", out _strSkill1);
 		    objXmlCharacter.TryGetField("priorityskill2", out _strSkill2);
 		    objXmlCharacter.TryGetField("priorityskillgroup", out _strSkillGroup);
 
@@ -3115,12 +3119,27 @@ namespace Chummer
             {
                 _strPriorityResources = value;
             }
-        }
+		}
 
-        /// <summary>
-        /// Character's 1st bonus skill.
-        /// </summary>
-        public string PriorityBonusSkill1
+		/// <summary>
+		/// Character's Resources Priority.
+		/// </summary>
+		public string TalentPriority
+		{
+			get
+			{
+				return _strPriorityTalent;
+			}
+			set
+			{
+				_strPriorityTalent = value;
+			}
+		}
+
+		/// <summary>
+		/// Character's 1st bonus skill.
+		/// </summary>
+		public string PriorityBonusSkill1
         {
             get
             {
