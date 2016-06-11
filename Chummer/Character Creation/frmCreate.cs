@@ -14165,8 +14165,8 @@ namespace Chummer
 			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
 			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
 
-			nudMAG.Value = _objCharacter.MAG.Value;
-			nudRES.Value = _objCharacter.RES.Value;
+			nudMAG.Value = _objCharacter.MAG.Base;
+			nudRES.Value = _objCharacter.RES.Base;
 			nudDEP.Value = _objCharacter.DEP.Value;
 
 			// Metatypes cost Karma.
