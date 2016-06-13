@@ -15879,7 +15879,7 @@
 			<spell>
 				<id>a6f43dcf-c0cc-4da9-af25-1516f2564200</id>
 				<name>Destroy [Free Spirit]</name>
-				<page>194</page>
+				<page>119</page>
 				<source>SM</source>
 				<translate>[Freien Geist] Vernichten</translate>
 			</spell>
@@ -15892,7 +15892,7 @@
 			<spell>
 				<id>d3bf1bfc-e104-4b22-a1fe-0aae0ef0b35b</id>
 				<name>Firewater</name>
-				<page>194</page>
+				<page>120</page>
 				<translate>Griechisches Feuer</translate>
 			</spell>
 			<spell>
@@ -15928,19 +15928,19 @@
 			<spell>
 				<id>7a2101ff-6606-4b3e-b1c1-2f7ea74679dd</id>
 				<name>Melt [Object]</name>
-				<page>195</page>
+				<page>120</page>
 				<translate>[Objekt] zersetzen</translate>
 			</spell>
 			<spell translated="True">
 				<id>577871f2-f294-4db9-94f0-5790d0576a4b</id>
 				<name>Napalm</name>
-				<page>194</page>
+				<page>120</page>
 				<translate>Napalm</translate>
 			</spell>
 			<spell>
 				<id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
 				<name>One Less [Metatype/Species]</name>
-				<page>193</page>
+				<page>118</page>
 				<translate>Ein [Metatyp/Spezies] weniger</translate>
 			</spell>
 			<spell>
@@ -15964,7 +15964,7 @@
 			<spell>
 				<id>f883ce3d-a3a9-4021-b4f3-7812d6a5f7f1</id>
 				<name>Ram [Object]</name>
-				<page>194</page>
+				<page>120</page>
 				<translate>[Objekt] rammen</translate>
 			</spell>
 			<spell>
@@ -15976,25 +15976,25 @@
 			<spell>
 				<id>0c0c34cb-5df3-4928-8e81-b794ee2fb47c</id>
 				<name>Shattershield</name>
-				<page>195</page>
+				<page>122</page>
 				<translate>Schildbrecher</translate>
 			</spell>
 			<spell>
 				<id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
 				<name>Slaughter [Metatype/Species]</name>
-				<page>193</page>
-				<translate>[Metatyp/Spezies] metzeln</translate>
+				<page>118</page>
+				<translate>[Metatyp/Spezies] niedermetzeln</translate>
 			</spell>
 			<spell>
 				<id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
 				<name>Slay [Metatype/Species]</name>
-				<page>193</page>
+				<page>118</page>
 				<translate>[Metatyp/Spezies] erschlagen</translate>
 			</spell>
 			<spell>
 				<id>6b12c245-ab52-49df-93fe-670841cb9e3d</id>
 				<name>Sludge [Object]</name>
-				<page>195</page>
+				<page>120</page>
 				<translate>[Objekt] auflösen</translate>
 			</spell>
 			<spell>
@@ -16018,7 +16018,7 @@
 			<spell>
 				<id>f7494736-bf1f-4d2f-a137-6f43a0248d36</id>
 				<name>Wreck [Object]</name>
-				<page>194</page>
+				<page>120</page>
 				<translate>[Objekt] zertrümmern</translate>
 			</spell>
 			<spell>
@@ -16042,43 +16042,43 @@
 			<spell>
 				<id>2e4c9b88-2203-4ab9-842b-e3c373db6982</id>
 				<name>Animal Sense</name>
-				<page>203</page>
+				<page>138</page>
 				<translate>Tiersinn Borgen</translate>
 			</spell>
 			<spell>
 				<id>575e98fc-a165-403c-aef0-4877fb75845a</id>
 				<name>Area Thought Recognition</name>
-				<page>203</page>
+				<page>135</page>
 				<translate>Gedankenscan</translate>
 			</spell>
 			<spell>
 				<id>c68f9aeb-e7b2-4b2a-9ce4-1ee306412ef7</id>
 				<name>Astral Clairvoyance</name>
-				<page>203</page>
+				<page>134</page>
 				<translate>Astrale Hellsicht</translate>
 			</spell>
 			<spell>
 				<id>237ee405-062f-4e11-96a8-78336e1d6a0a</id>
 				<name>Astral Window</name>
-				<page>205</page>
+				<page>137</page>
 				<translate>Astrales Fenster</translate>
 			</spell>
 			<spell>
 				<id>66714935-5b3c-417d-b953-159fe5a2031c</id>
 				<name>Blood Sight</name>
-				<page>208</page>
-				<translate>Blutschau</translate>
+				<page>144</page>
+				<translate>Blutsicht</translate>
 			</spell>
 			<spell>
 				<id>3e350a47-4b06-48b1-94ef-fe00c3b86757</id>
 				<name>Borrow Sense</name>
-				<page>203</page>
-				<translate>Borgen</translate>
+				<page>137</page>
+				<translate>Sinn Borgen</translate>
 			</spell>
 			<spell>
 				<id>d6157db4-8957-4160-ab47-3ded6c4be07c</id>
 				<name>Catalog</name>
-				<page>204</page>
+				<page>136</page>
 				<translate>Katalog</translate>
 			</spell>
 			<spell>
@@ -16132,19 +16132,19 @@
 			<spell>
 				<id>f43c484c-a98a-4831-8ead-adb4216a7c30</id>
 				<name>Detect [Life Form]</name>
-				<page>248</page>
-				<translate>[Lebensform] aufspüren</translate>
+				<page>293</page>
+				<translate>[Lebensform] entdecken</translate>
 			</spell>
 			<spell>
 				<id>88c5059f-8f53-4910-9873-b5a5f87850e3</id>
 				<name>Detect [Life Form], Extended</name>
-				<page>248</page>
-				<translate>[Lebensform] aufspüren, Erweitertes</translate>
+				<page>293</page>
+				<translate>[Lebensform] entdecken, Erweitert</translate>
 			</spell>
 			<spell>
 				<id>9d2a045b-11b6-4385-a851-30b8ba9c2e7f</id>
 				<name>Detect Magic</name>
-				<page>239</page>
+				<page>293</page>
 				<translate>Magie entdecken</translate>
 			</spell>
 			<spell>
@@ -16156,31 +16156,31 @@
 			<spell translated="True">
 				<id>fdbb2c8e-453b-46cf-8dcd-522c6d3aa3e0</id>
 				<name>Diagnose</name>
-				<page>203</page>
+				<page>134</page>
 				<translate>Diagnose</translate>
 			</spell>
 			<spell>
 				<id>96859e68-4051-4805-8de6-4f15ea4dee66</id>
 				<name>Enhance Aim</name>
-				<page>206</page>
+				<page>139</page>
 				<translate>Zielfähigkeit steigern</translate>
 			</spell>
 			<spell>
 				<id>2f4d4afa-f94a-4659-be2a-9ffbd3589e44</id>
 				<name>Eyes of the Pack</name>
-				<page>203</page>
+				<page>138</page>
 				<translate>Augen des Rudels</translate>
 			</spell>
 			<spell>
 				<id>ba3a8f58-8eeb-49de-97ac-b68ec67b85f5</id>
 				<name>Hawkeye</name>
-				<page>203</page>
+				<page>134</page>
 				<translate>Adlerauge</translate>
 			</spell>
 			<spell>
 				<id>35d509e2-f0c7-432f-919a-34e526079097</id>
 				<name>Mana Window</name>
-				<page>205</page>
+				<page>137</page>
 				<translate>Manafenster</translate>
 			</spell>
 			<spell>
@@ -16198,49 +16198,49 @@
 			<spell>
 				<id>1a3b7121-ab36-4796-9ac8-2bae53491c5e</id>
 				<name>Mindnet</name>
-				<page>205</page>
+				<page>138</page>
 				<translate>Telepathisches Netz</translate>
 			</spell>
 			<spell>
 				<id>06a54506-0b09-4e5a-91f3-e29b20c8c224</id>
 				<name>Night Vision</name>
-				<page>205</page>
+				<page>137</page>
 				<translate>Nachtsicht</translate>
 			</spell>
 			<spell>
 				<id>b2851e5f-76b8-42a7-8e74-11c0b4b7b67f</id>
 				<name>[Sense] Cryptesthesia</name>
-				<page>205</page>
+				<page>138</page>
 				<translate>Übernatürlicher [Sinn]</translate>
 			</spell>
 			<spell>
 				<id>31a6e1bf-403d-47e4-a6dc-fe113fd875f1</id>
 				<name>Spatial Sense</name>
-				<page>206</page>
+				<page>138</page>
 				<translate>Umgebungssinn</translate>
 			</spell>
 			<spell>
 				<id>5b72a202-0dcc-44e8-b7ae-f508b7f5319f</id>
 				<name>Spatial Sense, Extended</name>
-				<page>206</page>
+				<page>138</page>
 				<translate>Umgebungssinn, Erweitert</translate>
 			</spell>
 			<spell>
 				<id>ab70d6c1-60e8-4475-87ee-16790cb9ff68</id>
 				<name>Thought Recognition</name>
-				<page>203</page>
+				<page>135</page>
 				<translate>Gedankenmuster</translate>
 			</spell>
 			<spell>
 				<id>aaebe992-95e0-4607-a3b4-256455e67791</id>
 				<name>Translate</name>
-				<page>205</page>
-				<translate>Übersetzen</translate>
+				<page>134</page>
+				<translate>Dolmetschen</translate>
 			</spell>
 			<spell>
 				<id>ff90355c-5eba-4a35-8bf9-66afff9075ad</id>
 				<name>Alleviate Addiction</name>
-				<page>185</page>
+				<page>108</page>
 				<translate>Abhängigkeit Lindern</translate>
 			</spell>
 			<spell>
@@ -16252,13 +16252,13 @@
 			<spell>
 				<id>a5096a06-4dee-40f6-879b-b88616cdb728</id>
 				<name>Awaken</name>
-				<page>186</page>
-				<translate>Erwachen</translate>
+				<page>109</page>
+				<translate>Aufwecken</translate>
 			</spell>
 			<spell>
 				<id>e0ea86bc-06df-4edc-bee1-03b6a2733675</id>
 				<name>Crank</name>
-				<page>185</page>
+				<page>109</page>
 				<translate>Aufputschen</translate>
 			</spell>
 			<spell>
@@ -16276,7 +16276,7 @@
 			<spell>
 				<id>3c2d97b8-4761-4e5a-ba61-ff4b7a403ead</id>
 				<name>Decrease Reflexes</name>
-				<page>187</page>
+				<page>111</page>
 				<translate>Reflexe senken</translate>
 			</spell>
 			<spell>
@@ -16288,13 +16288,13 @@
 			<spell>
 				<id>a547f08e-0822-4a1c-968a-a2d6c249572c</id>
 				<name>Enabler</name>
-				<page>187</page>
+				<page>110</page>
 				<translate>Giftverstärkung</translate>
 			</spell>
 			<spell>
 				<id>8c6ce834-d47a-40a6-9e4c-57a1030ce57e</id>
 				<name>Fast</name>
-				<page>186</page>
+				<page>110</page>
 				<translate>Fasten</translate>
 			</spell>
 			<spell>
@@ -16306,7 +16306,7 @@
 			<spell>
 				<id>ad128cba-aa39-4433-ab1e-9259e19778f6</id>
 				<name>Hibernate</name>
-				<page>240</page>
+				<page>112</page>
 				<translate>Winterschlaf</translate>
 			</spell>
 			<spell>
@@ -16324,13 +16324,13 @@
 			<spell>
 				<id>d3431ff8-e33f-4cd4-a185-4817b5cce2f8</id>
 				<name>Intoxication</name>
-				<page>188</page>
+				<page>112</page>
 				<translate>Vollrausch</translate>
 			</spell>
 			<spell>
 				<id>e55eccaa-107d-4cee-b0fb-d10abb2d1f35</id>
 				<name>Nutrition</name>
-				<page>186</page>
+				<page>110</page>
 				<translate>Ernährung</translate>
 			</spell>
 			<spell>
@@ -16372,14 +16372,14 @@
 			<spell>
 				<id>f7fb9b03-d7ee-4695-8e38-443a7d2b13e4</id>
 				<name>Camouflage</name>
-				<page>191</page>
+				<page>116</page>
 				<translate>Tarnung</translate>
 			</spell>
 			<spell>
 				<id>4c01416b-ff1c-4e55-a2eb-b8048b8709e4</id>
 				<name>Chaff</name>
-				<page>190</page>
-				<translate>Häcksel</translate>
+				<page>115</page>
+				<translate>Düppel</translate>
 			</spell>
 			<spell translated="True">
 				<id>4268d83b-c208-4aa3-8924-5620516f8434</id>
@@ -16402,13 +16402,13 @@
 			<spell>
 				<id>b3179247-4b02-47ea-abb0-0934b673cff2</id>
 				<name>Double Image</name>
-				<page>189</page>
+				<page>113</page>
 				<translate>Double</translate>
 			</spell>
 			<spell>
 				<id>8d724d8c-e6a0-41d7-8799-4fbb02de62a0</id>
 				<name>Dream</name>
-				<page>191</page>
+				<page>116</page>
 				<translate>Traum</translate>
 			</spell>
 			<spell>
@@ -16420,13 +16420,13 @@
 			<spell>
 				<id>e02e6362-5b3c-410c-818b-890c8d008321</id>
 				<name>Foreboding</name>
-				<page>189</page>
+				<page>112</page>
 				<translate>Böse Ahnung</translate>
 			</spell>
 			<spell>
 				<id>b60ef1c2-565a-4b96-9ca2-270905d977ea</id>
 				<name>Hot Potato</name>
-				<page>190</page>
+				<page>115</page>
 				<translate>Heißes Eisen</translate>
 			</spell>
 			<spell>
@@ -16468,7 +16468,7 @@
 			<spell>
 				<id>4dad17ac-f04c-49ce-a719-e475620028d3</id>
 				<name>Mass [Sense] Removal</name>
-				<page>189</page>
+				<page>114</page>
 				<translate>Rundum gestohlener [Sinn]</translate>
 			</spell>
 			<spell>
@@ -16480,7 +16480,7 @@
 			<spell>
 				<id>03bcc045-08db-4967-80e3-09640859aa69</id>
 				<name>Physical Camouflage</name>
-				<page>191</page>
+				<page>116</page>
 				<translate>Physische Tarnung</translate>
 			</spell>
 			<spell>
@@ -16492,7 +16492,7 @@
 			<spell>
 				<id>945fc713-6e3d-4b1e-b1aa-a1dbd2a9d429</id>
 				<name>[Sense] Removal</name>
-				<page>189</page>
+				<page>114</page>
 				<translate>Gestohlener [Sinn]</translate>
 			</spell>
 			<spell>
@@ -16504,7 +16504,7 @@
 			<spell>
 				<id>466e45ee-755d-4fd6-ba23-298afa5849ef</id>
 				<name>Sound Barrier</name>
-				<page>190</page>
+				<page>115</page>
 				<translate>Schallbarriere</translate>
 			</spell>
 			<spell>
@@ -16516,13 +16516,13 @@
 			<spell>
 				<id>ecd4d99e-7e5c-43be-bfb7-7af989879236</id>
 				<name>Stench</name>
-				<page>189</page>
+				<page>114</page>
 				<translate>Stinkbombe</translate>
 			</spell>
 			<spell>
 				<id>0a2e9859-b489-43f7-8e8a-d29cb4c8b682</id>
 				<name>Stink</name>
-				<page>189</page>
+				<page>114</page>
 				<translate>Gestank</translate>
 			</spell>
 			<spell>
@@ -16546,7 +16546,7 @@
 			<spell>
 				<id>7eec4aa0-806c-4b4d-b809-5c37c4c06ae5</id>
 				<name>Vehicle Mask</name>
-				<page>189</page>
+				<page>114</page>
 				<translate>Fahrzeugmaske</translate>
 			</spell>
 			<spell>
@@ -16564,37 +16564,37 @@
 			<spell>
 				<id>f7984928-b770-4c96-8454-e8708b820dd0</id>
 				<name>Bind</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Klammer</translate>
 			</spell>
 			<spell>
 				<id>f075819d-4924-4140-a5b4-fe8fdc069485</id>
 				<name>Calm Animal</name>
-				<page>201</page>
+				<page>132</page>
 				<translate>Tier beruhigen</translate>
 			</spell>
 			<spell>
 				<id>b0a9f3b0-d153-4ff3-9193-666f89aaf0c3</id>
 				<name>Calm Pack</name>
-				<page>201</page>
+				<page>132</page>
 				<translate>Meute beruhigen</translate>
 			</spell>
 			<spell>
 				<id>faf0247b-bd15-4287-aa08-99f704de2abb</id>
 				<name>Catfall</name>
-				<page>200</page>
+				<page>131</page>
 				<translate>Sanfter Fall</translate>
 			</spell>
 			<spell>
 				<id>05088798-a160-4080-90bb-fed9880435ba</id>
 				<name>Clean [Element]</name>
-				<page>196</page>
+				<page>124</page>
 				<translate>[Element] reinigen</translate>
 			</spell>
 			<spell>
 				<id>b0d02e0b-6c8f-4fef-8ca3-fe8f509218f0</id>
 				<name>Compel Truth</name>
-				<page>202</page>
+				<page>133</page>
 				<translate>Wahrheit</translate>
 			</spell>
 			<spell>
@@ -16606,13 +16606,13 @@
 			<spell>
 				<id>e0578a09-8fba-424f-9288-b5e1ef810c2c</id>
 				<name>Control Animal</name>
-				<page>201</page>
+				<page>132</page>
 				<translate>Tier beherrschen</translate>
 			</spell>
 			<spell>
 				<id>7d37e3fa-d16b-4d4f-8285-629f511df0e6</id>
 				<name>Control Pack</name>
-				<page>201</page>
+				<page>132</page>
 				<translate>Meute beherrschen</translate>
 			</spell>
 			<spell>
@@ -16624,19 +16624,19 @@
 			<spell>
 				<id>1b311db9-d5cc-4b4c-857a-3208caa1bf0a</id>
 				<name>Deflection</name>
-				<page>200</page>
+				<page>130</page>
 				<translate>Projektilabwehr</translate>
 			</spell>
 			<spell>
 				<id>0a52251a-8b85-4814-8645-b929182274db</id>
 				<name>Fashion</name>
-				<page>199</page>
+				<page>129</page>
 				<translate>Mode</translate>
 			</spell>
 			<spell>
 				<id>33d35d53-5f71-435d-9bbd-913a5ffc35e1</id>
 				<name>Fix</name>
-				<page>200</page>
+				<page>131</page>
 				<translate>Reparieren</translate>
 			</spell>
 			<spell>
@@ -16648,19 +16648,19 @@
 			<spell>
 				<id>d9b045d9-1320-4ae9-98d4-c67b1d681719</id>
 				<name>Gecko Crawl</name>
-				<page>197</page>
+				<page>125</page>
 				<translate>Geckogang</translate>
 			</spell>
 			<spell>
 				<id>9b996aac-6bc6-4781-9a57-61ce33a4cd20</id>
 				<name>Glue</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Klebstoff</translate>
 			</spell>
 			<spell>
 				<id>0f725e2e-2389-4aa4-99f9-da26275080bf</id>
 				<name>Glue Strip</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Klebestreifen</translate>
 			</spell>
 			<spell>
@@ -16684,7 +16684,7 @@
 			<spell>
 				<id>3f40c2bb-e66f-44dc-b801-d459a8d3a2b4</id>
 				<name>Interference</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Interferenz</translate>
 			</spell>
 			<spell>
@@ -16702,8 +16702,7 @@
 			<spell>
 				<id>403e9895-9772-4d2d-9cec-aee93a65794f</id>
 				<name>Lock</name>
-				<page>
-				</page>
+				<page>132</page>
 				<translate>Schloss</translate>
 			</spell>
 			<spell>
@@ -16715,8 +16714,8 @@
 			<spell>
 				<id>7152a1f0-6b8f-4ca8-8885-2f5eb5853d73</id>
 				<name>Makeover</name>
-				<page>198</page>
-				<translate>Herausputzen</translate>
+				<page>132</page>
+				<translate>Typveränderung</translate>
 			</spell>
 			<spell>
 				<id>b1d545b6-2498-4682-8058-a3f7783c1c84</id>
@@ -16727,19 +16726,19 @@
 			<spell>
 				<id>30292b3d-d81d-433f-a211-af1939e158db</id>
 				<name>Mana Bind</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Manaklammer</translate>
 			</spell>
 			<spell>
 				<id>37e33acf-31ab-429e-b470-d4a4c2e27559</id>
 				<name>Mana Net</name>
-				<page>198</page>
+				<page>127</page>
 				<translate>Mananetz</translate>
 			</spell>
 			<spell>
 				<id>37ac2ee9-24ed-4d06-8c99-6295e5438ecb</id>
 				<name>Mana Static</name>
-				<page>199</page>
+				<page>128</page>
 				<translate>Manastörung</translate>
 			</spell>
 			<spell>
@@ -16751,25 +16750,25 @@
 			<spell>
 				<id>091a0669-f0d2-4633-8cfa-06c25986da7c</id>
 				<name>Mist</name>
-				<page>200</page>
+				<page>129</page>
 				<translate>Nebel</translate>
 			</spell>
 			<spell>
 				<id>0404dc24-1305-4891-899f-d45ddff2811c</id>
 				<name>Mob Control</name>
-				<page>289</page>
+				<page>126</page>
 				<translate>Mob-Kontrolle</translate>
 			</spell>
 			<spell>
 				<id>64904294-a652-4361-8809-ce37a8d79f8f</id>
 				<name>Mob Mind</name>
-				<page>289</page>
+				<page>125</page>
 				<translate>Mob-Bewusstsein</translate>
 			</spell>
 			<spell>
 				<id>ccc4fc17-0c10-4ac5-8a60-d31b0f330b8b</id>
 				<name>Offensive Mana Barrier</name>
-				<page>200</page>
+				<page>129</page>
 				<translate>Offensive Manabarriere</translate>
 			</spell>
 			<spell>
@@ -16793,13 +16792,13 @@
 			<spell>
 				<id>02b38262-db06-4698-b4b2-7a9e7f2452a9</id>
 				<name>Pulse</name>
-				<page>198</page>
+				<page>126</page>
 				<translate>Impuls</translate>
 			</spell>
 			<spell>
 				<id>e520af8e-e06d-494e-ab4c-f89e9f9df192</id>
 				<name>Reinforce</name>
-				<page>201</page>
+				<page>133</page>
 				<translate>Verstärken</translate>
 			</spell>
 			<spell>
@@ -16811,31 +16810,31 @@
 			<spell>
 				<id>54e25153-07a4-4f52-8cb6-de8e00e4ac91</id>
 				<name>Shape [Material]</name>
-				<page>199</page>
+				<page>128</page>
 				<translate>[Material] formen</translate>
 			</spell>
 			<spell>
 				<id>d4bac5a3-8793-43be-a831-da7e299acd3c</id>
 				<name>Shapechange</name>
-				<page>245</page>
+				<page>126</page>
 				<translate>Gestaltwandlung</translate>
 			</spell>
 			<spell>
 				<id>8e341753-a4e1-41af-ba05-66daa90194a6</id>
 				<name>Spirit Barrier</name>
-				<page>197</page>
+				<page>126</page>
 				<translate>Geisterbarriere</translate>
 			</spell>
 			<spell>
 				<id>5b3c8f11-37a8-4090-a332-969d6ea1adb6</id>
 				<name>Spirit Zapper</name>
-				<page>197</page>
+				<page>126</page>
 				<translate>Geisterlöscher</translate>
 			</spell>
 			<spell>
 				<id>f1ed2b18-e50c-4c00-8fb5-ebf9bff9828a</id>
 				<name>Sterilize</name>
-				<page>201</page>
+				<page>132</page>
 				<translate>Sterilisieren</translate>
 			</spell>
 			<spell>
@@ -16896,152 +16895,182 @@
 			<spell>
 				<id>51f04999-1173-43da-94b6-af3749cb3156</id>
 				<name>Destroy [Vehicle]</name>
-				<translate>Destroy [Vehicle]</translate>
+				<page>119</page>
+				<translate>[Fahrzeug] Zerstören</translate>
 			</spell>
 			<spell>
 				<id>ea47eaaf-80e4-4c89-a108-6d2fb3e376dd</id>
 				<name>Insecticide [Insect Spirit]</name>
-				<translate>Insecticide [Insect Spirit]</translate>
+				<page>120</page>
+				<translate>[Insektengeist]-Insektizid</translate>
 			</spell>
 			<spell>
 				<id>bba17f26-7b83-4904-a5fa-a21ef7cacaa7</id>
 				<name>Ice Spear</name>
-				<translate>Ice Spear</translate>
+				<page>118</page>
+				<translate>Eisspeer</translate>
 			</spell>
 			<spell>
 				<id>2c2ad94e-3dd5-40e3-a4e0-74668dae1b48</id>
 				<name>Ice Storm</name>
-				<translate>Ice Storm</translate>
+				<page>118</page>
+				<translate>Eissturm</translate>
 			</spell>
 			<spell>
 				<id>f20e3789-0333-4243-b31c-0dc07f1d8736</id>
 				<name>Radiation Beam</name>
-				<translate>Radiation Beam</translate>
+				<page>120</page>
+				<translate>Radioaktiver Strahl</translate>
 			</spell>
 			<spell>
 				<id>793736ac-c4a4-408c-824e-6cc5689622a3</id>
 				<name>Radiation Burst</name>
-				<translate>Radiation Burst</translate>
+				<page>120</page>
+				<translate>Strahlenexplosion</translate>
 			</spell>
 			<spell>
 				<id>e0b3608a-cf54-4a1d-a99a-a4cd513c5e8a</id>
 				<name>Pollutant Stream</name>
-				<translate>Pollutant Stream</translate>
+				<page>122</page>
+				<translate>Schadstoffstrom</translate>
 			</spell>
 			<spell>
 				<id>7a6579fa-4eda-47e4-96d2-59f4e1f9f567</id>
 				<name>Pollutant Wave</name>
-				<translate>Pollutant Wave</translate>
+				<page>122</page>
+				<translate>Schadstoffwelle</translate>
 			</spell>
 			<spell>
 				<id>87c6046a-1f20-4b64-9e89-aec583254a3e</id>
 				<name>Astral Message</name>
-				<translate>Astral Message</translate>
+				<page>134</page>
+				<translate>Astrale Botschaft</translate>
 			</spell>
 			<spell>
 				<id>0b2bd31a-09b2-40b8-a4ab-7c776ef33268</id>
 				<name>Dragon Astral Signature</name>
-				<translate>Dragon Astral Signature</translate>
+				<page>134</page>
+				<translate>Astrale Drachensuche</translate>
 			</spell>
 			<spell>
 				<id>4af09e0f-93a5-43f5-badb-9f070d574417</id>
 				<name>Mindnet Extended</name>
-				<translate>Mindnet Extended</translate>
+				<page>138</page>
+				<translate>Erweitertes Telepathisches Netz</translate>
 			</spell>
 			<spell>
 				<id>f7ad9877-1f67-40a0-9813-ba53db664833</id>
 				<name>Ambidexterity</name>
-				<translate>Ambidexterity</translate>
+				<page>110</page>
+				<translate>Beidhändigkeit</translate>
 			</spell>
 			<spell>
 				<id>fd407eeb-103e-4bef-a719-1098d8387536</id>
 				<name>Alleviate [Allergy]</name>
-				<translate>Alleviate [Allergy]</translate>
+				<page>108</page>
+				<translate>[Allergie] Lindern</translate>
 			</spell>
 			<spell>
 				<id>b1347682-58ad-4684-a93a-3f7703f1b4bf</id>
 				<name>Forced Defense</name>
-				<translate>Forced Defense</translate>
+				<page>110</page>
+				<translate>Erzwungene Verteidugiung</translate>
 			</spell>
 			<spell>
 				<id>80704822-953b-45c5-aa8e-77ca26e6cef7</id>
 				<name>Increase Inherent Limits</name>
-				<translate>Increase Inherent Limits</translate>
+				<page>111</page>
+				<translate>Limit Erhöhen</translate>
 			</spell>
 			<spell>
 				<id>4fbbaf9c-15fb-46ec-b899-5fc48829e52a</id>
 				<name>Decrease Inherent Limits</name>
-				<translate>Decrease Inherent Limits</translate>
+				<page>111</page>
+				<translate>Limit Senken</translate>
 			</spell>
 			<spell>
 				<id>55c77b11-0647-4ece-9164-27caeadcf764</id>
 				<name>Decoy</name>
-				<translate>Decoy</translate>
+				<page>115</page>
+				<translate>Lockvogel</translate>
 			</spell>
 			<spell>
 				<id>86dfd77f-afcb-4533-951c-7b2ea8d462c5</id>
 				<name>Euphoria</name>
-				<translate>Euphoria</translate>
+				<page>113</page>
+				<translate>Euphorie</translate>
 			</spell>
 			<spell>
 				<id>883457da-6b0f-49d8-b40e-fcdf7486737e</id>
 				<name>Opium Den</name>
-				<translate>Opium Den</translate>
+				<page>113</page>
+				<translate>Opiumhöhle</translate>
 			</spell>
 			<spell>
 				<id>0e6abd64-04bf-44ca-9358-4f12c9673209</id>
 				<name>Switch Vehicle Signature</name>
-				<translate>Switch Vehicle Signature</translate>
+				<page>114</page>
+				<translate>Fahrzeugsignatur Austauschen</translate>
 			</spell>
 			<spell>
 				<id>e59a2be4-41b5-4b3e-aa5b-c4881a021cae</id>
 				<name>Net Bind</name>
-				<translate>Net Bind</translate>
+				<page>127</page>
+				<translate>Netz</translate>
 			</spell>
 			<spell>
 				<id>75411316-c3b0-43cb-bbb8-24bde461ea58</id>
 				<name>Bug Zapper</name>
-				<translate>Bug Zapper</translate>
+				<page>126</page>
+				<translate>Insektenvernichter</translate>
 			</spell>
 			<spell>
 				<id>90b5f888-bc04-45c2-9b5e-11d95b787c6e</id>
 				<name>[Element] Aura</name>
-				<translate>[Element] Aura</translate>
+				<page>124</page>
+				<translate>[Element]-Aura</translate>
 			</spell>
 			<spell>
 				<id>ac8c938d-3aa1-4911-a812-c770e858de92</id>
 				<name>[Element] Wall</name>
-				<translate>[Element] Wall</translate>
+				<page>124</page>
+				<translate>[Element]-Wand</translate>
 			</spell>
 			<spell>
 				<id>785b5b5e-500f-40a2-9b25-b90f3dde7c26</id>
 				<name>Increase Noise</name>
-				<translate>Increase Noise</translate>
+				<page>130</page>
+				<translate>Rauschen erhöhen</translate>
 			</spell>
 			<spell>
 				<id>243c19b9-3555-4257-bca0-a7e7f0fff6bf</id>
 				<name>Decrease Noise</name>
-				<translate>Decrease Noise</translate>
+				<page>131</page>
+				<translate>Rauschen Senken</translate>
 			</spell>
 			<spell>
 				<id>93237162-228a-4073-b798-f1b0605388a9</id>
 				<name>Increase Gear Limits</name>
-				<translate>Increase Gear Limits</translate>
+				<page>123</page>
+				<translate>Ausrüstungslimit Erhöhen</translate>
 			</spell>
 			<spell>
 				<id>35ba4222-4e7b-4862-a767-42c5d3dfe2cb</id>
 				<name>Decrease Gear Limits</name>
-				<translate>Decrease Gear Limits</translate>
+				<page>123</page>
+				<translate>Ausrüstungslimit Senken</translate>
 			</spell>
 			<spell>
 				<id>e748de46-a314-4fc5-a7b1-4cdb16c59637</id>
 				<name>Protect Vehicle</name>
-				<translate>Protect Vehicle</translate>
+				<page>125</page>
+				<translate>Fahrzeug Schützen</translate>
 			</spell>
 			<spell>
 				<id>603e63a2-1caa-4860-9344-88cbb2df10a2</id>
 				<name>Slow Vehicle</name>
-				<translate>Slow Vehicle</translate>
+				<page>125</page>
+				<translate>Fahrzeug Verlangsamen</translate>
 			</spell>
 			<spell>
 				<id>03b3daef-040d-4377-baf6-9b1919f48050</id>
@@ -17318,21 +17347,21 @@
 				<page>279</page>
 				<translate>Normal</translate>
 				<spirits>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
-					<spirit translate="Courier Sprite">Courier Sprite</spirit>
-					<spirit translate="Crack Sprite">Crack Sprite</spirit>
-					<spirit translate="Data Sprite">Data Sprite</spirit>
-					<spirit translate="Fault Sprite">Fault Sprite</spirit>
-					<spirit translate="Machine Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
+					<spirit translate="Kurier-Sprite">Courier Sprite</spirit>
+					<spirit translate="Infiltrator-Sprite">Crack Sprite</spirit>
+					<spirit translate="Daten-Sprite">Data Sprite</spirit>
+					<spirit translate="Stör-Sprite">Fault Sprite</spirit>
+					<spirit translate="Machinen-Sprite">Machine Sprite</spirit>
 				</spirits>
 			</tradition>
 		</traditions>
@@ -17342,68 +17371,68 @@
 			<tradition>
 				<id>4fba452f-a240-4530-82b6-5ffd4bb83f28</id>
 				<name>Aztec</name>
-				<page>37</page>
+				<page>41</page>
 				<translate>Aztekisch</translate>
 			</tradition>
 			<tradition>
 				<id>66ceefed-2cb1-4027-96ca-756ab4eed7ad</id>
 				<name>Black Magic</name>
-				<page>44</page>
+				<page>49</page>
 				<translate>Schwarze Magie</translate>
 			</tradition>
 			<tradition>
 				<id>20b8e39f-a956-49bd-b417-6e1bd4a14604</id>
 				<name>Chaos Magic</name>
-				<page>38</page>
+				<page>43</page>
 				<translate>Chaosmagie</translate>
 			</tradition>
 			<tradition>
 				<id>5d98ea69-29b1-4fb4-b9f3-56396d1dce16</id>
 				<name>Christian Theurgy</name>
-				<page>39</page>
+				<page>44</page>
 				<translate>Christliche Theurgie</translate>
 			</tradition>
 			<tradition>
 				<id>19320625-bc1a-492f-8904-da6a847e5700</id>
 				<name>Hermetic</name>
-				<page>213</page>
+				<page>277</page>
 				<translate>Hermetisch</translate>
 			</tradition>
 			<tradition>
 				<id>7f6073fd-e7f3-41f5-a40f-2a5b1cde382e</id>
 				<name>Path of the Wheel</name>
-				<page>43</page>
+				<page>48</page>
 				<translate>Pfad des Rades</translate>
 			</tradition>
 			<tradition>
 				<id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
 				<name>Shamanic</name>
-				<page>213</page>
+				<page>277</page>
 				<translate>Schamanisch</translate>
 			</tradition>
 			<tradition>
 				<id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
 				<name>Shinto</name>
-				<page>44</page>
-				<translate>Shintō</translate>
+				<page>49</page>
+				<translate>Shinto</translate>
 			</tradition>
 			<tradition translated="True">
 				<id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
 				<name>Wuxing</name>
-				<page>46</page>
+				<page>54</page>
 				<translate>Wuxing</translate>
 			</tradition>
 			<tradition>
 				<id>616ba093-306c-45fc-8f41-0b98c8cccb46</id>
 				<name>Custom</name>
 				<translate>Eigene Tradition</translate>
-				<page>279</page>
+				<page>277</page>
 			</tradition>
 			<tradition>
 				<id>a283220f-2197-4526-b15a-331b9185b326</id>
 				<name>Buddhism</name>
 				<translate>Buddhistisch</translate>
-				<page>43</page>
+				<page>42</page>
 			</tradition>
 			<tradition>
 				<id>fb6f9683-47bb-4b04-9d15-4b59a003bf69</id>
@@ -17426,64 +17455,64 @@
 			<tradition>
 				<id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
 				<name>Qabbalism</name>
-				<translate>Qabbalism</translate>
-				<page>48</page>
+				<translate>Kabbalistisch</translate>
+				<page>47</page>
 			</tradition>
 			<tradition>
 				<id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
 				<name>Sioux</name>
 				<translate>Sioux</translate>
-				<page>49</page>
+				<page>50</page>
 			</tradition>
 			<tradition>
 				<id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
 				<name>Vodou</name>
 				<translate>Voodoo</translate>
-				<page>50</page>
+				<page>52</page>
 			</tradition>
 			<tradition>
 				<id>24601762-ef67-44d8-b974-03f626db848a</id>
 				<name>Wicca, Gardnerian</name>
 				<translate>Wicca, Gardnerianisch</translate>
-				<page>50</page>
+				<page>53</page>
 			</tradition>
 			<tradition>
 				<id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
 				<name>Wicca, Goddess</name>
 				<translate>Wicca, Göttin</translate>
-				<page>50</page>
+				<page>53</page>
 			</tradition>
 			<tradition>
 				<id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
 				<name>Zoroastrianism</name>
 				<translate>Zarathustrisch</translate>
-				<page>52</page>
+				<page>55</page>
 			</tradition>
 			<tradition>
 				<id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
 				<name>Insect Shaman</name>
 				<translate>Insektenschamanen</translate>
-				<page>94</page>
+				<page>99</page>
 			</tradition>
 		</traditions>
 		<spirits>
 			<spirit>
 				<id>ea797271-de7e-4e55-ac03-93a8be90b47a</id>
 				<name>Guardian Spirit</name>
-				<translate>Schutzgeist</translate>
-				<page>193</page>
+				<translate>Beschützergeist</translate>
+				<page>223</page>
 			</spirit>
 			<spirit>
 				<id>12028356-5d37-406b-83d1-d25ef18030d1</id>
 				<name>Guidance Spirit</name>
 				<translate>Ratgebergeist</translate>
-				<page>193</page>
+				<page>224</page>
 			</spirit>
 			<spirit>
 				<id>22efb7b7-b822-4243-9fa3-6d87d407e9e5</id>
 				<name>Plant Spirit</name>
 				<translate>Pflanzengeist</translate>
-				<page>193</page>
+				<page>223</page>
 			</spirit>
 			<spirit>
 				<id>380a4860-e5b7-4d07-9b8f-24951c1d656a</id>
@@ -17525,7 +17554,7 @@
 				<id>a6906b58-489e-4100-a84d-866a3af4e37a</id>
 				<name>Task Spirit</name>
 				<translate>Helfergeist</translate>
-				<page>193</page>
+				<page>223</page>
 			</spirit>
 		</spirits>
 		<drainattributes>
