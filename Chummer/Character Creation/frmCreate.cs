@@ -14165,8 +14165,8 @@ namespace Chummer
 			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
 			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
 
-			nudMAG.Value = _objCharacter.MAG.Value;
-			nudRES.Value = _objCharacter.RES.Value;
+			nudMAG.Value = _objCharacter.MAG.Base;
+			nudRES.Value = _objCharacter.RES.Base;
 			nudDEP.Value = _objCharacter.DEP.Value;
 
 			// Metatypes cost Karma.
@@ -14420,19 +14420,13 @@ namespace Chummer
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
                 _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                if (_objCharacter.MAGEnabled)
+                if (_objCharacter.MAGEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    for (int i = (int) nudKMAG.Value + 1; i <= nudKMAG.Value + intEssenceLoss; i++)
-                    {
-                        intMAG += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
-                    }
+                    intMAG += intEssenceLoss * Convert.ToInt32(nudMAG.Value+nudKMAG.Value) *  _objOptions.KarmaAttribute;                
                 }
-                if (_objCharacter.RESEnabled)
+                if (_objCharacter.RESEnabled && !_objCharacter.Options.ESSLossReducesMaximumOnly)
                 {
-                    for (int i = (int) nudRES.Value + 1; i <= nudKRES.Value + intEssenceLoss; i++)
-                    {
-                        intRES += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
-                    }
+                    intRES += intEssenceLoss * Convert.ToInt32(nudRES.Value + nudKRES.Value) * _objOptions.KarmaAttribute;
                 }
             }
 
