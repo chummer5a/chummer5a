@@ -1,3 +1,8 @@
+Build 181:
+
+Data Changes:
+- Fixed a crash when creating an e-ghost AI. Fixes #918.
+
 Build 180:
 Application Changes:
 - Fixed an issue with skills not rendering in a localized language when selecting skill groups for Aspected Magicians. Fixes #867.
