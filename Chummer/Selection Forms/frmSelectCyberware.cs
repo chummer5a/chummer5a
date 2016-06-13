@@ -53,6 +53,7 @@ namespace Chummer
 		private string _strNode = "cyberware";
 		private bool _blnAddAgain = false;
 		private bool _blnAllowModularPlugins = false;
+        private bool _blnShowOnlyLimbs = false;
 	    private bool _blnBlackMarketDiscount = false;
 		private static string _strSelectCategory = "";
 		private static string _strSelectedGrade = "";
@@ -114,6 +115,9 @@ namespace Chummer
 
 				if (objXmlCategory.Attributes["show"] != null)
 					blnAddItem = _blnAllowModularPlugins;
+
+			    if (_blnShowOnlyLimbs)
+			        blnAddItem = objXmlCategory.InnerText == "Cyberlimb";
 
 				if (blnAddItem)
 				{
@@ -741,10 +745,21 @@ namespace Chummer
 					return false;
 			}
 		}
-		#endregion
 
-		#region Methods
-		/// <summary>
+        /// <summary>
+		/// Whether or not only Cyberlimb should be shown
+		/// </summary>
+		public bool ShowOnlyLimbs
+        {
+            set
+            {
+                _blnShowOnlyLimbs = value;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
         private void UpdateCyberwareInfo()

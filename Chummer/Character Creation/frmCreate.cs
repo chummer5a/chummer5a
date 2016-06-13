@@ -17128,6 +17128,11 @@ namespace Chummer
                         frmPickCyberware.Subsystems = objSelectedCyberware.Subsytems;
                         frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
                     }
+                    if (objSelectedCyberware.Name.StartsWith("Modular Connector"))
+                    {
+                        frmPickCyberware.ShowOnlySubsystems = false;
+                        frmPickCyberware.ShowOnlyLimbs = true;
+                    }
                 }
             }
             catch
