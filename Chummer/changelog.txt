@@ -1,4 +1,6 @@
 Build 181:
+Application Changes:
+- Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

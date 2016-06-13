@@ -14165,13 +14165,23 @@ namespace Chummer
 			nudRES.Minimum = _objCharacter.RES.TotalMinimum;
 			nudDEP.Minimum = _objCharacter.DEP.TotalMinimum;
 
-			nudMAG.Value = _objCharacter.MAG.Base;
-			nudRES.Value = _objCharacter.RES.Base;
+			nudMAG.Value = _objCharacter.MAG.Value;
+			nudRES.Value = _objCharacter.RES.Value;
 			nudDEP.Value = _objCharacter.DEP.Value;
 
+            // Quick Fix
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
+            {
+                nudMAG.Value = _objCharacter.MAG.Base;
+                nudRES.Value = _objCharacter.RES.Base;
+            }
+
 			// Metatypes cost Karma.
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
-                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
+            {
+                lblKarmaMetatypeBP.Text = (_objCharacter.MetatypeBP).ToString() + " " +
+                                          LanguageManager.Instance.GetString("String_Karma");              
+            }
             else
                 lblKarmaMetatypeBP.Text = "0 " + LanguageManager.Instance.GetString("String_Karma");
 
