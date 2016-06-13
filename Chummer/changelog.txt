@@ -1,5 +1,5 @@
 Build 180:
-Application Change:
+Application Changes:
 - Fixed an issue with skills not rendering in a localized language when selecting skill groups for Aspected Magicians. Fixes #867.
 - Fixed a crash caused by adding an exotic weapon without having the relevant exotic weapons skill. Fixes #888.
 - Fixed a crash caused when loading a character that has a tradition that isn't being used. Fixes #893.
@@ -23,7 +23,7 @@ Application Change:
 - Improved the update method to prevent update check loops. 
 - Improved the handling of changing priority selections to remember previous selections. Not all settings will be immediately available for existing characters. Fixes #709.
 
-Data Change: 
+Data Changes: 
 - Fixed an issue with mystic adepts not unlocking the appropriate magical skills. Fixes #869.
 - Changed how existing character sheets render mugshots when saved as HTML. Fixes #817.
 - Added Textfield when selecting Grid Subscription Lifestyle quality. Fixes #875.
@@ -33,6 +33,9 @@ Data Change:
 - Reorganized Data Trails AI Qualities and added missing ones.
 - Added Chrome Flesh BTLs. Fixes #885.
 - Fixed an incorrect limitation on the Home Ground quality. Fixes #904.
+
+Translation Changes:
+- Updated the German translation files, courtesy of HaukeW.
 
 Build 179:
 Application Change:
