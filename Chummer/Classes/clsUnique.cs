@@ -994,9 +994,9 @@ namespace Chummer
 	public enum QualityType
 	{
 		Positive = 0,
-		Negative = 1,
-        Entertainment = 2,
-        LifeModule = 3
+		Negative = 1,          
+        LifeModule = 2,
+        Entertainment = 3
 	}
 
 	/// <summary>
