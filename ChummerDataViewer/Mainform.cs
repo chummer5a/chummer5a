@@ -21,8 +21,11 @@ namespace ChummerDataViewer
 
 		//background workers
 		private DynamoDbLoader _loader;
-		
+		private DownloaderWorker _downloader;
+
+
 		private readonly Dictionary<string, Action<StatusChangedEventArgs>> _specificHandlers;
+		
 
 		public Mainform()
 		{
@@ -52,6 +55,10 @@ namespace ChummerDataViewer
 
 			_loader = new DynamoDbLoader();
 			_loader.StatusChanged += OtherThreadNotificationHandler;
+
+			_downloader = new DownloaderWorker();
+			_downloader.StatusChanged += OtherThreadNotificationHandler;
+
 			_mainThreadDelegate = MainThreadAction;
 
 			//lstCrashes.View = View.Details;
@@ -62,7 +69,7 @@ namespace ChummerDataViewer
 				_crashReports.Add(crashReport);
 			}
 			
-			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c), true)
+			_bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader), true)
 			{
 				Anchor  = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
 				Location = new Point(12, 69),

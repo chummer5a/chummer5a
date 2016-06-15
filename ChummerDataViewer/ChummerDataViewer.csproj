@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\DownloaderWorker.cs" />
     <Compile Include="View\CrashReportView.cs">
       <SubType>UserControl</SubType>
     </Compile>

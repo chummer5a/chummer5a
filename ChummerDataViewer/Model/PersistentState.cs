@@ -22,6 +22,8 @@ namespace ChummerDataViewer.Model
 			Database = Database.Create();
 			Database.SetKey("crashdumps_aws_id", id);
 			Database.SetKey("crashdumps_aws_key", key);
+			Database.SetKey("crashdumps_zip_folder", FolderPath);
+			Database.SetKey("crashdumps_zip_folder", FolderPath);
 		}
 		
 		static PersistentState()

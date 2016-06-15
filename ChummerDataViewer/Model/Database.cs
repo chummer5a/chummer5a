@@ -8,6 +8,8 @@ namespace ChummerDataViewer.Model
 	internal class Database
 	{
 		private readonly object _syncRoot = new object();
+		private DatabasePrivateApi innerApi;
+
 		private readonly SQLiteConnection _dbConnection;
 		private readonly SQLiteCommand _setKey;
 		private readonly SQLiteCommand _deleteKey;
@@ -15,6 +17,7 @@ namespace ChummerDataViewer.Model
 		private readonly SQLiteCommand _insertCrash;
 		private readonly SQLiteCommand _getAllCrashes;
 		private readonly SQLiteCommand _getSingleCrash;
+		private readonly SQLiteCommand _setZipFile;
 
 		private static void ExecuteSQL(SQLiteConnection connection, string sql)
 		{
@@ -65,6 +68,10 @@ namespace ChummerDataViewer.Model
 
 			_getAllCrashes = new SQLiteCommand("SELECT * FROM crashreports ORDER BY timestamp DESC;", _dbConnection);
 			_getSingleCrash = new SQLiteCommand("SELECT * FROM crashreports WHERE guid=@guid", _dbConnection);
+			_setZipFile = new SQLiteCommand("UPDATE crashreport SET ziplocation=@ziplocation WHERE guid=@guid", _dbConnection);
+
+
+			innerApi = new DatabasePrivateApi(this);
 		}
 
 		public Database() : this(
@@ -171,7 +178,7 @@ namespace ChummerDataViewer.Model
 			string s6 = reader.GetValue(7) as string;
 			string s7 = reader.GetValue(8) as string;
 
-			return new CrashReport(this, g, l, s1, s2, s3, s4, v, s6, s7);
+			return new CrashReport(innerApi, g, l, s1, s2, s3, s4, v, s6, s7);
 		}
 
 		public CrashReport GetCrash(Guid guid)
@@ -183,7 +190,7 @@ namespace ChummerDataViewer.Model
 
 				using (SQLiteDataReader reader = _getSingleCrash.ExecuteReader())
 				{
-					if (reader.Read())
+					if (reader.HasRows && reader.Read())
 					{
 						return MakeCrashReport(reader);
 					}
@@ -191,6 +198,30 @@ namespace ChummerDataViewer.Model
 
 				return null;
 			}
+		}
+
+		private void SetZipFileLocation(Guid guid, string filePath)
+		{
+			lock (_syncRoot)
+			{
+				_setZipFile.Reset(true, false);
+				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setZipFile.Parameters.Add(new SQLiteParameter("@ziplocation", filePath));
+
+				_setZipFile.ExecuteNonQuery();
+			}
+		}
+
+		public class DatabasePrivateApi
+		{
+			private Database _db;
+
+			internal DatabasePrivateApi(Database db)
+			{
+				_db = db;
+			}
+
+			void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
 		}
 	}
 }
