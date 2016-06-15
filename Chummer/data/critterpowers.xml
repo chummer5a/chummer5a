@@ -238,12 +238,12 @@
 			<category>Paranormal</category>
 			<rating>yes</rating>
 			<type>P</type>
-			<bonus>
-				<armor>Rating</armor>
-			</bonus>
 			<action>Auto</action>
 			<range>Self</range>
 			<duration>Always</duration>
+			<bonus>
+				<armor>Rating</armor>
+			</bonus>
 			<source>RF</source>
 			<page>212</page>
 		</power>
@@ -2256,10 +2256,10 @@
 			<type>P</type>
 			<action>Auto</action>
 			<range>Self</range>
+			<duration>Always</duration>
 			<bonus>
 				<armor>Rating</armor>
 			</bonus>
-			<duration>Always</duration>
 			<source>SR5</source>
 			<page>394</page>
 		</power>
@@ -2293,13 +2293,13 @@
 			<type>P</type>
 			<action>Auto</action>
 			<range>Self</range>
+			<duration>Always</duration>
 			<bonus>
 				<specificskill>
 					<name>Swimming</name>
 					<bonus>4</bonus>
 				</specificskill>
 			</bonus>
-			<duration>Always</duration>
 			<source>HS</source>
 			<page>164</page>
 		</power>
