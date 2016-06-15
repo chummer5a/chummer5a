@@ -995,8 +995,7 @@ namespace Chummer
 	{
 		Positive = 0,
 		Negative = 1,
-        Entertainment = 2,
-        LifeModule = 3
+        LifeModule = 2
 	}
 
 	/// <summary>
