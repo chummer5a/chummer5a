@@ -1703,8 +1703,8 @@
 			<bonus>
 				<specificattribute>
 					<name>WIL</name>
-					<bonus>1</bonus>
-					<applytorating>no</applytorating>
+					<val>1</val>
+					<affectbase>no</affectbase>
 				</specificattribute>
 			</bonus>
 			<source>CF</source>
@@ -2020,10 +2020,10 @@
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>11</avail>
-      <bonus>
-        <reflexrecorderoptimization/>
-      </bonus>
 			<cost>3800</cost>
+			<bonus>
+				<reflexrecorderoptimization />
+			</bonus>
 			<source>CF</source>
 			<page>165</page>
 		</bioware>
