@@ -19,7 +19,11 @@ namespace ChummerDataViewer.Model
 		public DynamoDbLoader()
 		{
 			_client = new AmazonDynamoDBClient(PersistentState.AWSCredentials, RegionEndpoint.EUCentral1);
-			_workerThread = new Thread(WorkerEntryPrt);
+			_workerThread = new Thread(WorkerEntryPrt)
+			{
+				IsBackground = true,
+				Name = "DynamoDB Worker"
+			};
 			_workerThread.Start();
 		}
 
@@ -27,21 +31,31 @@ namespace ChummerDataViewer.Model
 		{
 			try
 			{
+
+				OnStatusChanged(new StatusChangedEventArgs("Connecting"));
 				while (true)
 				{
 					try
 					{
-						OnStatusChanged(new StatusChangedEventArgs("Connecting"));
-
+						//Scan 10 items. If middle of scan, pick up there
 						ScanResponse response = ScanData(
 							PersistentState.Database.GetKey("crashdumps_last_timestamp"),
 							PersistentState.Database.GetKey("crashdumps_last_key")); //Start scanning based on last key in db
 
-						List<Guid> newItems = new List<Guid>();
+						//Into anon type with a little extra info. DB lookup to see if known, parse guid 
+						var newItems = response.Items
+							.Select(x => new { item = x, guid = Guid.Parse(x["crash_id"].S)})
+							.Select(old => new {item = old.item, guid = old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
+							.ToList();
 
-						//Wait exponential backoff if no items
-						if (response.Items.Count == 0)
+						//If all items are known
+						if (newItems.All(item => item.known))
 						{
+							//reset progress so we start from start (new first on dynamoDB)
+							PersistentState.Database.SetKey("crashdumps_last_timestamp", null);
+							PersistentState.Database.SetKey("crashdumps_last_key", null);
+
+							//And sleep for exponential backoff
 							int timeout = _backoff.GetSeconds();
 							OnStatusChanged(new StatusChangedEventArgs($"No data. Retrying in {TimeSpan.FromSeconds(timeout)}"));
 							for (int i = timeout - 1; i >= 0; i--)
@@ -51,48 +65,45 @@ namespace ChummerDataViewer.Model
 							continue;
 						}
 
+						//Otherwise, add _NEW_ items to db
 						using (SQLiteTransaction transaction = PersistentState.Database.GetTransaction())
 						{
-							Dictionary<string, AttributeValue> nextRead;
-							if (response.LastEvaluatedKey.Count != 0)
+							
+							if (response.LastEvaluatedKey.Count == 0)
 							{
-								nextRead= response.LastEvaluatedKey;
-								
+								//If we reached the last (oldest), reset progress meter
+								PersistentState.Database.SetKey("crashdumps_last_timestamp", null);
+								PersistentState.Database.SetKey("crashdumps_last_key", null);
 							}
 							else
 							{
-								nextRead = response.Items.Last();
+								//Otherwise set next to take next block
+								Dictionary<string, AttributeValue> nextRead = response.LastEvaluatedKey;
+
+								PersistentState.Database.SetKey("crashdumps_last_timestamp", nextRead["upload_timestamp"].N);
+								PersistentState.Database.SetKey("crashdumps_last_key", nextRead["crash_id"].S);
 							}
 
-							PersistentState.Database.SetKey("crashdumps_last_timestamp", nextRead["upload_timestamp"].N);
-							PersistentState.Database.SetKey("crashdumps_last_key", nextRead["crash_id"].S);
-
-							foreach (Dictionary<string, AttributeValue> attributeValues in response.Items)
+							//Write stuff
+							foreach (var item in newItems.Where(x => !x.known))
 							{
-								Guid guid = Guid.Parse(attributeValues["crash_id"].S);
-								Version version;
-								if (Version.TryParse(attributeValues["version"].S, out version))
-								{ }
-								else
-								{ version = new Version(attributeValues["version"].S + ".0"); }
+								WriteCrashToDb(item.item);
 
-								PersistentState.Database.CreateCrashReport(
-									guid,
-									long.Parse(attributeValues["upload_timestamp"].N),
-									attributeValues["build_type"].S,
-									attributeValues["error_friendly"].S,
-									attributeValues["key"].S,
-									attributeValues["location"].S,
-									version
-								);
-
-								_backoff.Sucess();
-								newItems.Add(guid);
+								//Don't take so long waiting for the next if we found anything.
+								//Theoretically this should keep it checking roughly same frequency as new items gets added
+								//in reality it is probably bull
+								_backoff.Sucess(); 
 							}
 							transaction.Commit();
 						}
 
-						OnStatusChanged(new StatusChangedEventArgs("Working", newItems));
+						//Tell the good news that we have new items. Also tell guids so it can be found
+						OnStatusChanged(new StatusChangedEventArgs("Working", 
+							newItems
+							.Where(x => !x.known)
+							.Select(x => x.guid)
+							.ToList()
+						));
 					}
 					catch (InternalServerErrorException)
 					{
@@ -124,6 +135,29 @@ namespace ChummerDataViewer.Model
 				OnStatusChanged(new StatusChangedEventArgs("Crashed", ex));
 				throw;
 			}
+		}
+
+		private static void WriteCrashToDb(Dictionary<string, AttributeValue> attributeValues)
+		{
+			Guid guid = Guid.Parse(attributeValues["crash_id"].S);
+			Version version;
+			if (Version.TryParse(attributeValues["version"].S, out version))
+			{
+			}
+			else
+			{
+				version = new Version(attributeValues["version"].S + ".0");
+			}
+
+			PersistentState.Database.CreateCrashReport(
+				guid,
+				long.Parse(attributeValues["upload_timestamp"].N),
+				attributeValues["build_type"].S,
+				attributeValues["error_friendly"].S,
+				attributeValues["key"].S,
+				attributeValues["location"].S,
+				version
+				);
 		}
 
 		private ScanResponse ScanData(string lastTimeStamp, string lastKey)

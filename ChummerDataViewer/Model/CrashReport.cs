@@ -2,11 +2,16 @@
 
 namespace ChummerDataViewer.Model
 {
-	class CrashReport
+	public class CrashReport
 	{
+		private readonly Database _database;
 		private readonly string _key;
-		private readonly string _downloadedZip;
-		private readonly string _folderlocation;
+		private string _downloadedZip;
+		private string _folderlocation;
+
+		public bool IsDownloadStarted => _downloadedZip != null;
+		public bool IsUnpackStarted => _folderlocation != null;
+
 
 		public Guid Guid { get; }
 		public string BuildType { get; set; }
@@ -16,9 +21,10 @@ namespace ChummerDataViewer.Model
 		public DateTime Timestamp { get; }
 
 
-		public CrashReport(Guid guid, long unixTimeStamp, string buildType, string errorFrindly, string key,
+		internal CrashReport(Database database, Guid guid, long unixTimeStamp, string buildType, string errorFrindly, string key,
 			string webFileLocation, Version version, string downloadedZip = null, string folderlocation = null)
 		{
+			_database = database;
 			_key = key;
 			_downloadedZip = downloadedZip;
 			_folderlocation = folderlocation;
@@ -27,8 +33,11 @@ namespace ChummerDataViewer.Model
 			ErrorFrindly = errorFrindly;
 			WebFileLocation = webFileLocation;
 			Version = version;
-			Timestamp = DateTime.FromFileTimeUtc(unixTimeStamp);
+			DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+			//Addseconds complains, 1 second = 10000 ns ticks so do that instead
+			Timestamp = unixStart.AddTicks(unixTimeStamp * 10000);  
+			
 		}
 	}
 }
