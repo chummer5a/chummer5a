@@ -9,6 +9,7 @@ using System.Text;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend;
+using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 
 namespace Chummer.Skills

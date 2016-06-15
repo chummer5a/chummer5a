@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 
 namespace Chummer.Skills

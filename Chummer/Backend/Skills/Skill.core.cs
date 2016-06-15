@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Chummer.Backend.Equipment;
 
 namespace Chummer.Skills
 {

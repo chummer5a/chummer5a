@@ -141,7 +141,7 @@
     <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashreport.cs" />
-    <Compile Include="Classes\clsEquipment.cs" />
+    <Compile Include="Backend\Equipment\clsEquipment.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
     <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
