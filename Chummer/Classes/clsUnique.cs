@@ -29,7 +29,8 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Skills;
+ using Chummer.Backend.Equipment;
+ using Chummer.Skills;
 
 namespace Chummer
 {
