@@ -285,11 +285,15 @@ namespace Chummer.Skills
 		{
 			if (HasRelatedBoost())
 			{
-				return (Ibase + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1) + 1)/2;
+				return (Ibase + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma || 
+                    CharacterObject.BuildMethod == CharacterBuildMethod.Karma || 
+                    CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule) ? 0 : 1) + 1)/2;
 			}
 			else
 			{
-				return Ibase + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+				return Ibase + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma || 
+                    CharacterObject.BuildMethod == CharacterBuildMethod.Karma || 
+                    CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule) ? 0 : 1);
 			}
 
 		}
