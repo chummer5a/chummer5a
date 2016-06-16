@@ -57,6 +57,8 @@
 			this.lblTestLabel = new System.Windows.Forms.Label();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.cboCategory = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
 			this.SuspendLayout();
@@ -64,7 +66,7 @@
 			// lblMaximumCapacity
 			// 
 			this.lblMaximumCapacity.AutoSize = true;
-			this.lblMaximumCapacity.Location = new System.Drawing.Point(382, 248);
+			this.lblMaximumCapacity.Location = new System.Drawing.Point(255, 248);
 			this.lblMaximumCapacity.Name = "lblMaximumCapacity";
 			this.lblMaximumCapacity.Size = new System.Drawing.Size(101, 13);
 			this.lblMaximumCapacity.TabIndex = 19;
@@ -73,7 +75,7 @@
 			// lblCost
 			// 
 			this.lblCost.AutoSize = true;
-			this.lblCost.Location = new System.Drawing.Point(439, 120);
+			this.lblCost.Location = new System.Drawing.Point(312, 120);
 			this.lblCost.Name = "lblCost";
 			this.lblCost.Size = new System.Drawing.Size(19, 13);
 			this.lblCost.TabIndex = 10;
@@ -82,7 +84,7 @@
 			// lblCostLabel
 			// 
 			this.lblCostLabel.AutoSize = true;
-			this.lblCostLabel.Location = new System.Drawing.Point(382, 120);
+			this.lblCostLabel.Location = new System.Drawing.Point(255, 120);
 			this.lblCostLabel.Name = "lblCostLabel";
 			this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
 			this.lblCostLabel.TabIndex = 9;
@@ -92,7 +94,7 @@
 			// lblAvail
 			// 
 			this.lblAvail.AutoSize = true;
-			this.lblAvail.Location = new System.Drawing.Point(439, 98);
+			this.lblAvail.Location = new System.Drawing.Point(312, 98);
 			this.lblAvail.Name = "lblAvail";
 			this.lblAvail.Size = new System.Drawing.Size(19, 13);
 			this.lblAvail.TabIndex = 6;
@@ -101,7 +103,7 @@
 			// lblAvailLabel
 			// 
 			this.lblAvailLabel.AutoSize = true;
-			this.lblAvailLabel.Location = new System.Drawing.Point(382, 98);
+			this.lblAvailLabel.Location = new System.Drawing.Point(255, 98);
 			this.lblAvailLabel.Name = "lblAvailLabel";
 			this.lblAvailLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblAvailLabel.TabIndex = 5;
@@ -111,7 +113,7 @@
 			// nudRating
 			// 
 			this.nudRating.Enabled = false;
-			this.nudRating.Location = new System.Drawing.Point(442, 164);
+			this.nudRating.Location = new System.Drawing.Point(315, 164);
 			this.nudRating.Name = "nudRating";
 			this.nudRating.Size = new System.Drawing.Size(37, 20);
 			this.nudRating.TabIndex = 14;
@@ -120,7 +122,7 @@
 			// lblRatingLabel
 			// 
 			this.lblRatingLabel.AutoSize = true;
-			this.lblRatingLabel.Location = new System.Drawing.Point(382, 166);
+			this.lblRatingLabel.Location = new System.Drawing.Point(255, 166);
 			this.lblRatingLabel.Name = "lblRatingLabel";
 			this.lblRatingLabel.Size = new System.Drawing.Size(41, 13);
 			this.lblRatingLabel.TabIndex = 13;
@@ -130,7 +132,7 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(471, 382);
+			this.cmdCancel.Location = new System.Drawing.Point(344, 382);
 			this.cmdCancel.Name = "cmdCancel";
 			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
 			this.cmdCancel.TabIndex = 25;
@@ -141,7 +143,7 @@
 			// 
 			// cmdOK
 			// 
-			this.cmdOK.Location = new System.Drawing.Point(552, 382);
+			this.cmdOK.Location = new System.Drawing.Point(425, 382);
 			this.cmdOK.Name = "cmdOK";
 			this.cmdOK.Size = new System.Drawing.Size(75, 23);
 			this.cmdOK.TabIndex = 23;
@@ -153,9 +155,9 @@
 			// lstMod
 			// 
 			this.lstMod.FormattingEnabled = true;
-			this.lstMod.Location = new System.Drawing.Point(12, 13);
+			this.lstMod.Location = new System.Drawing.Point(12, 37);
 			this.lstMod.Name = "lstMod";
-			this.lstMod.Size = new System.Drawing.Size(364, 394);
+			this.lstMod.Size = new System.Drawing.Size(237, 368);
 			this.lstMod.TabIndex = 22;
 			this.lstMod.SelectedIndexChanged += new System.EventHandler(this.lstMod_SelectedIndexChanged);
 			this.lstMod.DoubleClick += new System.EventHandler(this.lstMod_DoubleClick);
@@ -163,7 +165,7 @@
 			// lblSlots
 			// 
 			this.lblSlots.AutoSize = true;
-			this.lblSlots.Location = new System.Drawing.Point(439, 143);
+			this.lblSlots.Location = new System.Drawing.Point(312, 143);
 			this.lblSlots.Name = "lblSlots";
 			this.lblSlots.Size = new System.Drawing.Size(19, 13);
 			this.lblSlots.TabIndex = 12;
@@ -173,7 +175,7 @@
 			// lblSlotsLabel
 			// 
 			this.lblSlotsLabel.AutoSize = true;
-			this.lblSlotsLabel.Location = new System.Drawing.Point(382, 143);
+			this.lblSlotsLabel.Location = new System.Drawing.Point(255, 143);
 			this.lblSlotsLabel.Name = "lblSlotsLabel";
 			this.lblSlotsLabel.Size = new System.Drawing.Size(33, 13);
 			this.lblSlotsLabel.TabIndex = 11;
@@ -184,7 +186,7 @@
 			// lblCategory
 			// 
 			this.lblCategory.AutoSize = true;
-			this.lblCategory.Location = new System.Drawing.Point(439, 52);
+			this.lblCategory.Location = new System.Drawing.Point(312, 52);
 			this.lblCategory.Name = "lblCategory";
 			this.lblCategory.Size = new System.Drawing.Size(55, 13);
 			this.lblCategory.TabIndex = 3;
@@ -193,7 +195,7 @@
 			// lblCategoryLabel
 			// 
 			this.lblCategoryLabel.AutoSize = true;
-			this.lblCategoryLabel.Location = new System.Drawing.Point(382, 52);
+			this.lblCategoryLabel.Location = new System.Drawing.Point(255, 52);
 			this.lblCategoryLabel.Name = "lblCategoryLabel";
 			this.lblCategoryLabel.Size = new System.Drawing.Size(52, 13);
 			this.lblCategoryLabel.TabIndex = 2;
@@ -203,7 +205,7 @@
 			// lblLimit
 			// 
 			this.lblLimit.AutoSize = true;
-			this.lblLimit.Location = new System.Drawing.Point(439, 75);
+			this.lblLimit.Location = new System.Drawing.Point(312, 75);
 			this.lblLimit.Name = "lblLimit";
 			this.lblLimit.Size = new System.Drawing.Size(34, 13);
 			this.lblLimit.TabIndex = 4;
@@ -211,7 +213,7 @@
 			// 
 			// cmdOKAdd
 			// 
-			this.cmdOKAdd.Location = new System.Drawing.Point(552, 353);
+			this.cmdOKAdd.Location = new System.Drawing.Point(425, 353);
 			this.cmdOKAdd.Name = "cmdOKAdd";
 			this.cmdOKAdd.Size = new System.Drawing.Size(75, 23);
 			this.cmdOKAdd.TabIndex = 24;
@@ -223,7 +225,7 @@
 			// lblSource
 			// 
 			this.lblSource.AutoSize = true;
-			this.lblSource.Location = new System.Drawing.Point(433, 304);
+			this.lblSource.Location = new System.Drawing.Point(306, 304);
 			this.lblSource.Name = "lblSource";
 			this.lblSource.Size = new System.Drawing.Size(47, 13);
 			this.lblSource.TabIndex = 21;
@@ -233,7 +235,7 @@
 			// lblSourceLabel
 			// 
 			this.lblSourceLabel.AutoSize = true;
-			this.lblSourceLabel.Location = new System.Drawing.Point(382, 304);
+			this.lblSourceLabel.Location = new System.Drawing.Point(255, 304);
 			this.lblSourceLabel.Name = "lblSourceLabel";
 			this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblSourceLabel.TabIndex = 20;
@@ -243,7 +245,7 @@
 			// chkFreeItem
 			// 
 			this.chkFreeItem.AutoSize = true;
-			this.chkFreeItem.Location = new System.Drawing.Point(385, 192);
+			this.chkFreeItem.Location = new System.Drawing.Point(258, 192);
 			this.chkFreeItem.Name = "chkFreeItem";
 			this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
 			this.chkFreeItem.TabIndex = 15;
@@ -255,7 +257,7 @@
 			// 
 			// txtSearch
 			// 
-			this.txtSearch.Location = new System.Drawing.Point(453, 12);
+			this.txtSearch.Location = new System.Drawing.Point(326, 12);
 			this.txtSearch.Name = "txtSearch";
 			this.txtSearch.Size = new System.Drawing.Size(174, 20);
 			this.txtSearch.TabIndex = 1;
@@ -266,7 +268,7 @@
 			// lblSearchLabel
 			// 
 			this.lblSearchLabel.AutoSize = true;
-			this.lblSearchLabel.Location = new System.Drawing.Point(403, 15);
+			this.lblSearchLabel.Location = new System.Drawing.Point(276, 15);
 			this.lblSearchLabel.Name = "lblSearchLabel";
 			this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
 			this.lblSearchLabel.TabIndex = 0;
@@ -275,7 +277,7 @@
 			// 
 			// nudMarkup
 			// 
-			this.nudMarkup.Location = new System.Drawing.Point(442, 215);
+			this.nudMarkup.Location = new System.Drawing.Point(315, 215);
 			this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -294,7 +296,7 @@
 			// lblMarkupLabel
 			// 
 			this.lblMarkupLabel.AutoSize = true;
-			this.lblMarkupLabel.Location = new System.Drawing.Point(382, 217);
+			this.lblMarkupLabel.Location = new System.Drawing.Point(255, 217);
 			this.lblMarkupLabel.Name = "lblMarkupLabel";
 			this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
 			this.lblMarkupLabel.TabIndex = 16;
@@ -304,7 +306,7 @@
 			// lblMarkupPercentLabel
 			// 
 			this.lblMarkupPercentLabel.AutoSize = true;
-			this.lblMarkupPercentLabel.Location = new System.Drawing.Point(497, 217);
+			this.lblMarkupPercentLabel.Location = new System.Drawing.Point(370, 217);
 			this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
 			this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
 			this.lblMarkupPercentLabel.TabIndex = 18;
@@ -313,7 +315,7 @@
 			// lblTest
 			// 
 			this.lblTest.AutoSize = true;
-			this.lblTest.Location = new System.Drawing.Point(548, 98);
+			this.lblTest.Location = new System.Drawing.Point(421, 98);
 			this.lblTest.Name = "lblTest";
 			this.lblTest.Size = new System.Drawing.Size(19, 13);
 			this.lblTest.TabIndex = 8;
@@ -322,7 +324,7 @@
 			// lblTestLabel
 			// 
 			this.lblTestLabel.AutoSize = true;
-			this.lblTestLabel.Location = new System.Drawing.Point(497, 98);
+			this.lblTestLabel.Location = new System.Drawing.Point(370, 98);
 			this.lblTestLabel.Name = "lblTestLabel";
 			this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
 			this.lblTestLabel.TabIndex = 7;
@@ -341,7 +343,7 @@
 			// chkBlackMarketDiscount
 			// 
 			this.chkBlackMarketDiscount.AutoSize = true;
-			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(442, 192);
+			this.chkBlackMarketDiscount.Location = new System.Drawing.Point(315, 192);
 			this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
 			this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
 			this.chkBlackMarketDiscount.TabIndex = 39;
@@ -351,13 +353,35 @@
 			this.chkBlackMarketDiscount.Visible = false;
 			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(9, 15);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(52, 13);
+			this.label1.TabIndex = 40;
+			this.label1.Tag = "Label_Category";
+			this.label1.Text = "Category:";
+			// 
+			// cboCategory
+			// 
+			this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboCategory.FormattingEnabled = true;
+			this.cboCategory.Location = new System.Drawing.Point(67, 11);
+			this.cboCategory.Name = "cboCategory";
+			this.cboCategory.Size = new System.Drawing.Size(182, 21);
+			this.cboCategory.TabIndex = 41;
+			this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+			// 
 			// frmSelectVehicleMod
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(639, 417);
+			this.ClientSize = new System.Drawing.Size(513, 417);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.cboCategory);
 			this.Controls.Add(this.chkBlackMarketDiscount);
 			this.Controls.Add(this.lblTest);
 			this.Controls.Add(this.lblTestLabel);
@@ -431,5 +455,7 @@
 		private System.Windows.Forms.Label lblTestLabel;
 		private System.Windows.Forms.ToolTip tipTooltip;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox cboCategory;
 	}
 }

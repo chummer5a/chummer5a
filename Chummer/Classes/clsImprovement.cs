@@ -26,6 +26,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Linq;
  using Chummer.Backend;
+ using Chummer.Backend.Equipment;
  using Chummer.Skills;
 
 namespace Chummer

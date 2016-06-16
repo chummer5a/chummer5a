@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -39,9 +40,12 @@ namespace Chummer
 		private string _strAllowedCategories = "";
 		private bool _blnAddAgain = false;
 
+		private XmlNodeList objXmlCategoryList;
 		private XmlDocument _objXmlDocument = new XmlDocument();
 		private readonly Character _objCharacter;
 		private bool _blnBlackMarketDiscount;
+		private string _strLimitToCategories;
+		private List<ListItem> _lstCategory = new List<ListItem>();
 
 		#region Control Events
 		public frmSelectVehicleMod(Character objCharacter, bool blnCareer = false)
@@ -58,6 +62,66 @@ namespace Chummer
 
 		private void frmSelectVehicleMod_Load(object sender, EventArgs e)
 		{
+			// Load the Mod information.
+			_objXmlDocument = XmlManager.Instance.Load(_strInputFile + ".xml");
+
+			// Populate the Weapon Category list.
+			if (!string.IsNullOrEmpty(_strLimitToCategories))
+			{
+				string[] strValues = _strLimitToCategories.Split(',');
+
+				// Populate the Category list.
+				XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
+				foreach (XmlNode objXmlCategory in objXmlNodeList)
+				{
+					foreach (string strCategory in strValues)
+					{
+						if (strCategory == objXmlCategory.InnerText)
+						{
+							ListItem objItem = new ListItem();
+							objItem.Value = objXmlCategory.InnerText;
+							if (objXmlCategory.Attributes != null)
+							{
+								if (objXmlCategory.Attributes["translate"] != null)
+									objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
+								else
+									objItem.Name = objXmlCategory.InnerText;
+							}
+							else
+							{
+								objItem.Name = objXmlCategory.InnerXml;
+							}
+							_lstCategory.Add(objItem);
+						}
+					}
+				}
+			}
+			else
+			{
+				objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
+
+				foreach (XmlNode objXmlCategory in objXmlCategoryList)
+				{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlCategory.InnerText;
+					if (objXmlCategory.Attributes != null)
+					{
+						if (objXmlCategory.Attributes["translate"] != null)
+							objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
+						else
+							objItem.Name = objXmlCategory.InnerText;
+					}
+					else
+						objItem.Name = objXmlCategory.InnerXml;
+					_lstCategory.Add(objItem);
+				}
+			}
+			SortListItem objSort = new SortListItem();
+			_lstCategory.Sort(objSort.Compare);
+			cboCategory.ValueMember = "Value";
+			cboCategory.DisplayMember = "Name";
+			cboCategory.DataSource = _lstCategory;
+
 			BuildModList();
 
 			chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
@@ -69,6 +133,37 @@ namespace Chummer
 		private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			UpdateGearInfo();
+		}
+
+		private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			List<ListItem> lstMods = new List<ListItem>();
+			XmlNodeList objXmlModList = null;
+			// Populate the Mod list.
+			if (cboCategory.SelectedValue.ToString() != "All")
+			{
+				objXmlModList =
+					_objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category = \"" + cboCategory.SelectedValue + "\"]");
+			}
+			else
+			{
+				objXmlModList =
+					_objXmlDocument.SelectNodes("/chummer/mods/mod[" + _objCharacter.Options.BookXPath() + "]");
+			}
+			foreach (XmlNode objXmlMod in objXmlModList)
+			{
+					ListItem objItem = new ListItem();
+					objItem.Value = objXmlMod["name"].InnerText;
+					if (objXmlMod["translate"] != null)
+						objItem.Name = objXmlMod["translate"].InnerText;
+					else
+						objItem.Name = objXmlMod["name"].InnerText;
+					lstMods.Add(objItem);
+			}
+			lstMod.DataSource = null;
+			lstMod.ValueMember = "Value";
+			lstMod.DisplayMember = "Name";
+			lstMod.DataSource = lstMods;
 		}
 
 		private void nudRating_ValueChanged(object sender, EventArgs e)

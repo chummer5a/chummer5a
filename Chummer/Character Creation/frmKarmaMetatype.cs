@@ -22,7 +22,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+ using Chummer.Backend.Equipment;
+ using Chummer.Skills;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer

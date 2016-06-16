@@ -29,7 +29,8 @@ using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
-using Chummer.Skills;
+ using Chummer.Backend.Equipment;
+ using Chummer.Skills;
 
 namespace Chummer
 {
@@ -993,9 +994,9 @@ namespace Chummer
 	public enum QualityType
 	{
 		Positive = 0,
-		Negative = 1,
-        Entertainment = 2,
-        LifeModule = 3
+		Negative = 1,          
+        LifeModule = 2,
+        Entertainment = 3
 	}
 
 	/// <summary>

@@ -178,14 +178,14 @@
 			<armor>+6</armor>
 			<armorcapacity>6</armorcapacity>
 			<addweapon>Ballistic Shield</addweapon>
+			<avail>12R</avail>
+			<cost>1200</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>-1</value>
 				</limitmodifier>
 			</bonus>
-			<avail>12R</avail>
-			<cost>1200</cost>
 			<source>SR5</source>
 			<page>438</page>
 		</armor>
@@ -196,14 +196,14 @@
 			<armor>+6</armor>
 			<armorcapacity>6</armorcapacity>
 			<addweapon>Riot Shield</addweapon>
+			<avail>10R</avail>
+			<cost>1500</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>-1</value>
 				</limitmodifier>
 			</bonus>
-			<avail>10R</avail>
-			<cost>1500</cost>
 			<source>SR5</source>
 			<page>438</page>
 		</armor>
@@ -2829,6 +2829,7 @@
 			<maxrating>1</maxrating>
 			<armorcapacity>[0]</armorcapacity>
 			<avail>0</avail>
+			<cost>2400</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Social</limit>
@@ -2836,7 +2837,6 @@
 					<condition>Must be visible</condition>
 				</limitmodifier>
 			</bonus>
-			<cost>2400</cost>
 			<source>RG</source>
 			<page>65</page>
 		</mod>

@@ -23,7 +23,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+ using Chummer.Backend.Equipment;
+ using Chummer.Skills;
 
 // ServicesOwedChanged Event Handler.
 public delegate void ServicesOwedChangedHandler(Object sender);

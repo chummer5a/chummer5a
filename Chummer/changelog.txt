@@ -2,6 +2,8 @@ Build 181:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
 - Added Cyberlimbs as Plugins for Modular Connectors.
+- Fixed a Bug, where Chummer would crash when loading a Life Module character. Fixes #925.
+- Fixed a Bug, where Specializations for Knowledge Skills would cost Knowledge Skill Points even without the House rule. Fixes #929.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

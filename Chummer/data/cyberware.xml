@@ -113,8 +113,8 @@
 	<cyberwares>
 		<!-- Region Shadowrun 5 -->
 		<cyberware>
-			<name>Essence Hole</name>
 			<id>b57eadaa-7c3b-4b80-8d79-cbbd922c1196</id>
+			<name>Essence Hole</name>
 			<category>Bodyware</category>
 			<rating>600</rating>
 			<ess>Rating * 0.01</ess>
@@ -156,8 +156,8 @@
 			<category>Headware</category>
 			<rating>3</rating>
 			<ess>Rating * 1</ess>
-			<avail>Rating * 5</avail>
 			<capacity>0</capacity>
+			<avail>Rating * 5</avail>
 			<cost>FixedValues(43000,97000,208000)</cost>
 			<source>SR5</source>
 			<page>452</page>
@@ -202,10 +202,10 @@
 			<ess>0.4</ess>
 			<capacity>[4]</capacity>
 			<avail>5R</avail>
+			<cost>5000</cost>
 			<allowgear>
 				<gearcategory>Cyberdecks</gearcategory>
 			</allowgear>
-			<cost>5000</cost>
 			<source>SR5</source>
 			<page>452</page>
 		</cyberware>
@@ -338,6 +338,8 @@
 			<rating>6</rating>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<avail>Rating * 3F</avail>
+			<cost>Rating * 5000</cost>
 			<bonus>
 				<specificskill>
 					<name>Impersonation</name>
@@ -345,8 +347,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<avail>Rating * 3F</avail>
-			<cost>Rating * 5000</cost>
 			<source>SR5</source>
 			<page>452</page>
 		</cyberware>
@@ -359,10 +359,12 @@
 			<capacity>(Rating * 4)</capacity>
 			<avail>(Rating * 3)</avail>
 			<cost>FixedValues(4000,6000,10000,14000)</cost>
+			<allowgear>
+				<gearcategory>Vision Devices</gearcategory>
+			</allowgear>
 			<subsystems>
 				<subsystem>Eyeware</subsystem>
 			</subsystems>
-			<allowgear>Vision Devices</allowgear>
 			<source>SR5</source>
 			<page>453</page>
 		</cyberware>
@@ -1495,6 +1497,8 @@
 			<category>Headware</category>
 			<ess>0.5</ess>
 			<capacity>0</capacity>
+			<avail>12R</avail>
+			<cost>20000</cost>
 			<bonus>
 				<specificskill>
 					<name>Disguise</name>
@@ -1502,8 +1506,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<avail>12R</avail>
-			<cost>20000</cost>
 			<source>CF</source>
 			<page>79</page>
 		</cyberware>
@@ -1746,8 +1748,8 @@
 			<id>c84aac08-a1bc-4953-aaba-3a395dd0359a</id>
 			<name>Translat-ear</name>
 			<category>Earware</category>
-			<ess>0.1</ess>
 			<rating>6</rating>
+			<ess>0.1</ess>
 			<capacity>[1]</capacity>
 			<avail>8</avail>
 			<cost>Rating * 2000</cost>
@@ -2005,20 +2007,20 @@
 		<cyberware>
 			<id>31d32ab0-107c-4410-9148-7b2501db12be</id>
 			<name>Move-by-Wire System</name>
-			<rating>3</rating>
 			<category>Bodyware</category>
+			<rating>3</rating>
 			<ess>FixedValues(3,4,5)</ess>
 			<capacity>0</capacity>
 			<avail>FixedValues(12F,18F,24F)</avail>
 			<cost>FixedValues(40000,125000,205000)</cost>
 			<bonus>
+				<initiative precedence="1">FixedValues(3,6,9)</initiative>
 				<initiativepass precedence="1">FixedValues(0,1,1)</initiativepass>
-				<initiative precedence="1">FixedValues(3,6,9)</initiative> 
+				<skillwire>Rating * 2</skillwire>
 				<specificattribute>
 					<name precedence="1">REA</name>
 					<val>Rating</val>
 				</specificattribute>
-        <skillwire>Rating * 2</skillwire>
 			</bonus>
 			<source>CF</source>
 			<page>84</page>
@@ -2028,13 +2030,13 @@
 			<name>Active Hardwires</name>
 			<category>Bodyware</category>
 			<rating>6</rating>
-			<bonus>
-				<hardwires excludecategory="Magical Active,Resonance Active">Rating</hardwires>
-			</bonus>
 			<ess>Rating * 0.05</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 2)</avail>
 			<cost>Rating * 4000</cost>
+			<bonus>
+				<hardwires excludecategory="Magical Active,Resonance Active">Rating</hardwires>
+			</bonus>
 			<source>CF</source>
 			<page>81</page>
 		</cyberware>
@@ -2055,11 +2057,11 @@
 		<cyberware>
 			<id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
 			<name>Casemod</name>
-			<capacity>0</capacity>
 			<category>Cosmetic Enhancement</category>
-			<ess>0</ess>
-			<avail>Rating</avail>
 			<rating>4</rating>
+			<ess>0</ess>
+			<capacity>0</capacity>
+			<avail>Rating</avail>
 			<cost>Variable(0-10000)</cost>
 			<source>CF</source>
 			<page>72</page>
@@ -2147,6 +2149,9 @@
 			<name>Metatype Reduction (Ork)</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.3</ess>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>6000</cost>
 			<bonus>
 				<freepositivequalities>-6</freepositivequalities>
 			</bonus>
@@ -2158,9 +2163,6 @@
 			<addqualities>
 				<addquality>Human-Looking</addquality>
 			</addqualities>
-			<capacity>0</capacity>
-			<avail>4</avail>
-			<cost>6000</cost>
 			<source>CF</source>
 			<page>73</page>
 		</cyberware>
@@ -2169,20 +2171,20 @@
 			<name>Metatype Reduction (Troll)</name>
 			<category>Cosmetic Enhancement</category>
 			<ess>0.3</ess>
-			<required>
-				<oneof>
-					<metatype>Troll</metatype>
-				</oneof>
-			</required>
+			<capacity>0</capacity>
+			<avail>4</avail>
+			<cost>6000</cost>
 			<bonus>
 				<specificattribute>
 					<name>CHA</name>
 					<max>1</max>
 				</specificattribute>
 			</bonus>
-			<capacity>0</capacity>
-			<avail>4</avail>
-			<cost>6000</cost>
+			<required>
+				<oneof>
+					<metatype>Troll</metatype>
+				</oneof>
+			</required>
 			<source>CF</source>
 			<page>73</page>
 		</cyberware>
@@ -2194,11 +2196,13 @@
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>2000</cost>
+			<bonus>
 			<limitmodifier>
 					<limit>Physical</limit>
 					<value>2</value>
 					<condition>Only for Sneaking, Must be loosened</condition>
 				</limitmodifier>
+			</bonus>
 			<source>CF</source>
 			<page>74</page>
 		</cyberware>
@@ -2239,16 +2243,17 @@
 		<!-- End Region -->
 		<!-- Region Cyberlimb -->
 		<cyberware>
+			<id>100d47b3-a07c-4321-ae68-92fcfd90878b</id>
 			<name>Primitive Prosthetic Full Arm</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>250</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2257,13 +2262,13 @@
 			<name>Primitive Prosthetic Lower Arm</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2272,13 +2277,13 @@
 			<name>Primitive Prosthetic Hand</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>20</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2287,13 +2292,13 @@
 			<name>Primitive Prosthetic Full Leg</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>250</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2302,13 +2307,13 @@
 			<name>Primitive Prosthetic Lower Leg</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2317,13 +2322,13 @@
 			<name>Primitive Prosthetic Foot</name>
 			<category>Cyberlimb</category>
 			<limbslot>arm</limbslot>
-			<bonus>
-				<selectside />
-			</bonus>
 			<ess>0</ess>
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>20</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2389,12 +2394,12 @@
 			<name>Cyberfinger (Grenade)</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.05</ess>
-			<allowgear>
-				<gearcategory>Ammunition</gearcategory>
-			</allowgear>
 			<capacity>[1]</capacity>
 			<avail>4</avail>
 			<cost>500</cost>
+			<allowgear>
+				<gearcategory>Ammunition</gearcategory>
+			</allowgear>
 			<source>CF</source>
 			<page>86</page>
 		</cyberware>
@@ -2414,17 +2419,17 @@
 			<name>Digigrade Legs</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.25</ess>
+			<capacity>[4]</capacity>
+			<avail>+4</avail>
+			<cost>5000</cost>
 			<bonus>
-				<selectside />
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>1</value>
 					<condition>Only for Stealth group, Must be in Pairs</condition>
 				</limitmodifier>
+				<selectside />
 			</bonus>
-			<capacity>[4]</capacity>
-			<avail>+4</avail>
-			<cost>5000</cost>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -2433,13 +2438,13 @@
 			<name>Grapple Hand</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.45</ess>
+			<capacity>[10]</capacity>
+			<avail>12R</avail>
+			<addweapon>Grapple Fist</addweapon>
+			<cost>2000</cost>
 			<bonus>
 				<selectside />
 			</bonus>
-			<capacity>[10]</capacity>
-			<addweapon>Grapple Fist</addweapon>
-			<avail>12R</avail>
-			<cost>2000</cost>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -2448,12 +2453,12 @@
 			<name>Remote Cyberhand</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.25</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>[5]</capacity>
 			<avail>8</avail>
 			<cost>8000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>R5</source>
 			<page>130</page>
 		</cyberware>
@@ -2462,17 +2467,17 @@
 			<name>Monkey Foot</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.3</ess>
+			<capacity>[2]</capacity>
+			<avail>8</avail>
+			<cost>6000</cost>
 			<bonus>
-				<selectside />
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>-1</value>
 					<condition>Only when used as hand</condition>
 				</limitmodifier>
+				<selectside />
 			</bonus>
-			<capacity>[2]</capacity>
-			<avail>8</avail>
-			<cost>6000</cost>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2481,18 +2486,18 @@
 			<name>Raptor Foot</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0.5</ess>
+			<capacity>[4]</capacity>
+			<avail>8R</avail>
+			<addweapon>Raptor Foot</addweapon>
+			<cost>8000</cost>
 			<bonus>
-				<selectside />
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>-1</value>
 					<condition>Only when attacking with the legs</condition>
 				</limitmodifier>
+				<selectside />
 			</bonus>
-			<addweapon>Raptor Foot</addweapon>
-			<capacity>[4]</capacity>
-			<avail>8R</avail>
-			<cost>8000</cost>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2501,17 +2506,17 @@
 			<name>Skates</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<capacity>[2]</capacity>
+			<avail>4</avail>
+			<cost>250</cost>
 			<bonus>
-				<selectside />
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>-1</value>
 					<condition>Only when in use</condition>
 				</limitmodifier>
+				<selectside />
 			</bonus>
-			<capacity>[2]</capacity>
-			<avail>4</avail>
-			<cost>250</cost>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2520,6 +2525,9 @@
 			<name>Skimmers</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<capacity>[4]</capacity>
+			<avail>8</avail>
+			<cost>2000</cost>
 			<bonus>
 				<limitmodifier>
 					<limit>Physical</limit>
@@ -2527,9 +2535,6 @@
 				</limitmodifier>
 				<selectside />
 			</bonus>
-			<capacity>[4]</capacity>
-			<avail>8</avail>
-			<cost>2000</cost>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2538,17 +2543,17 @@
 			<name>Snake Fingers</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
+			<capacity>[2]</capacity>
+			<avail>6</avail>
+			<cost>1000</cost>
 			<bonus>
-				<selectside />
 				<limitmodifier>
 					<limit>Physical</limit>
 					<value>1</value>
 					<condition>Only with manual dexterity</condition>
 				</limitmodifier>
+				<selectside />
 			</bonus>
-			<capacity>[2]</capacity>
-			<avail>6</avail>
-			<cost>1000</cost>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2557,12 +2562,12 @@
 			<name>Modular Component (Hand/Foot)</name>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>[1]</capacity>
 			<avail>+2</avail>
 			<cost>1000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2594,26 +2599,26 @@
 			<category>Cyberlimb Enhancement</category>
 			<rating>2</rating>
 			<ess>0</ess>
-			<bonus>
-				<selectside />
-			</bonus>
 			<capacity>[Rating * 3]</capacity>
 			<avail>Rating * 4</avail>
 			<cost>Rating * 1000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>90</page>
 		</cyberware>
 		<cyberware>
 			<id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
 			<name>Water Jet</name>
-			<bonus>
-				<selectside />
-			</bonus>
 			<category>Cyberlimb Enhancement</category>
 			<ess>0</ess>
 			<capacity>[4]</capacity>
 			<avail>8</avail>
 			<cost>1000</cost>
+			<bonus>
+				<selectside />
+			</bonus>
 			<source>CF</source>
 			<page>90</page>
 		</cyberware>
@@ -2678,12 +2683,12 @@
 			<name>Liminal Body, Centaur</name>
 			<category>Cyberlimb</category>
 			<ess>3</ess>
-			<subsystems>
-				<subsystem>Cyberlimb</subsystem>
-			</subsystems>
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>
+			<subsystems>
+				<subsystem>Cyberlimb</subsystem>
+			</subsystems>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -2716,10 +2721,10 @@
 			<ess>0</ess>
 			<capacity>[2]</capacity>
 			<avail>+2</avail>
+			<cost>2000</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
-			<cost>2000</cost>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -2799,11 +2804,11 @@
 			<ess>0.5</ess>
 			<capacity>[5]</capacity>
 			<avail>8F</avail>
+			<addweapon>Extreme Cyberimplant</addweapon>
+			<cost>2000</cost>
 			<bonus>
 				<selecttext />
 			</bonus>
-			<addweapon>Extreme Cyberimplant</addweapon>
-			<cost>2000</cost>
 			<source>CF</source>
 			<page>90</page>
 		</cyberware>
@@ -2813,7 +2818,7 @@
 			<category>Cyber Implant Weapon</category>
 			<ess>1.25</ess>
 			<capacity>[10]</capacity>
-			<avail>12R</avail>
+			<avail>0</avail>
 			<cost>7000</cost>
 			<source>CF</source>
 			<page>90</page>
@@ -2922,9 +2927,11 @@
 			<id>a1337cab-c70e-4e49-b722-83b26f5fbde3</id>
 			<name>Voice Mimic</name>
 			<category>Nanocybernetics</category>
-			<ess>0.2</ess>
 			<rating>6</rating>
+			<ess>0.2</ess>
 			<capacity>0</capacity>
+			<avail>16F</avail>
+			<cost>Rating * 20000</cost>
 			<bonus>
 				<specificskill>
 					<name>Impersonation</name>
@@ -2932,8 +2939,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<avail>16F</avail>
-			<cost>Rating * 20000</cost>
 			<source>CF</source>
 			<page>152</page>
 		</cyberware>
@@ -2941,8 +2946,8 @@
 			<id>2b7745f6-96ca-4f15-ad32-db216e7d5aac</id>
 			<name>Dynamic Handprints</name>
 			<category>Nanocybernetics</category>
-			<ess>0.2</ess>
 			<rating>6</rating>
+			<ess>0.2</ess>
 			<capacity>0</capacity>
 			<avail>12F</avail>
 			<cost>21000 * Rating</cost>
@@ -2963,8 +2968,8 @@
 		<cyberware>
 			<id>c94f0f0f-f201-49b1-9b4b-d921f4228140</id>
 			<name>Nanohive, Hard</name>
-			<rating>6</rating>
 			<category>Nanocybernetics</category>
+			<rating>6</rating>
 			<ess>Rating * 0.25</ess>
 			<capacity>[2]</capacity>
 			<avail>(Rating * 5)R</avail>
@@ -2978,8 +2983,8 @@
 		<cyberware>
 			<id>52d76c1a-2918-4531-b6ad-5ea732a1e6ea</id>
 			<name>Nanohive, Soft</name>
-			<rating>6</rating>
 			<category>Nanocybernetics</category>
+			<rating>6</rating>
 			<ess>Rating * 0.2</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 5)R</avail>
@@ -2994,9 +2999,9 @@
 			<id>5089640b-99fd-45c5-922c-2f26aa925847</id>
 			<name>Retinal Adjusters</name>
 			<category>Nanocybernetics</category>
+			<rating>6</rating>
 			<ess>0.2</ess>
 			<capacity>0</capacity>
-			<rating>6</rating>
 			<avail>16F</avail>
 			<cost>19000 * Rating</cost>
 			<source>CF</source>
@@ -3006,8 +3011,8 @@
 			<id>c6067916-5df2-4663-aeec-85c8fecb5ad2</id>
 			<name>Smartskin</name>
 			<category>Nanocybernetics</category>
-			<ess>Rating * 0.5</ess>
 			<rating>6</rating>
+			<ess>Rating * 0.5</ess>
 			<capacity>0</capacity>
 			<avail>(Rating * 5)F</avail>
 			<cost>Rating * 5000</cost>
@@ -3021,9 +3026,9 @@
 			<name>Anti-Rad</name>
 			<category>Hard Nanoware</category>
 			<rating>6</rating>
-			<avail>14F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>14F</avail>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3034,9 +3039,9 @@
 			<name>Control Rig Booster</name>
 			<category>Hard Nanoware</category>
 			<rating>3</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3047,9 +3052,9 @@
 			<name>Implant Medic</name>
 			<category>Hard Nanoware</category>
 			<rating>6</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Parent Cost * 0.10</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3060,9 +3065,9 @@
 			<name>Nanite Hunters</name>
 			<category>Hard Nanoware</category>
 			<rating>6</rating>
-			<avail>16R</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>16R</avail>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3073,9 +3078,9 @@
 			<name>Markers</name>
 			<category>Hard Nanoware</category>
 			<rating>3</rating>
-			<avail>12</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12</avail>
 			<cost>Rating * 2000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3086,9 +3091,9 @@
 			<name>Nanotattoos</name>
 			<category>Hard Nanoware</category>
 			<rating>3</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 1000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3099,9 +3104,9 @@
 			<name>Taggants</name>
 			<category>Hard Nanoware</category>
 			<rating>3</rating>
-			<avail>12</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12</avail>
 			<cost>Rating * 600</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3112,9 +3117,9 @@
 			<name>Trauma Control System</name>
 			<category>Hard Nanoware</category>
 			<rating>6</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 4000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3127,14 +3132,14 @@
 			<name>Anti-Tox</name>
 			<category>Soft Nanoware</category>
 			<rating>9</rating>
-			<avail>16F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>16F</avail>
 			<cost>Rating * 5000</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<selecttext />
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>149</page>
 		</cyberware>
@@ -3143,14 +3148,14 @@
 			<name>Carcerand-Plus</name>
 			<category>Soft Nanoware</category>
 			<rating>6</rating>
-			<avail>10F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>10F</avail>
 			<cost>Rating * 3000</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<selecttext />
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>149</page>
 		</cyberware>
@@ -3159,9 +3164,9 @@
 			<name>Nanosymbiotes</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>16F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>16F</avail>
 			<cost>Rating * 6000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3172,14 +3177,14 @@
 			<name>Nantidotes</name>
 			<category>Soft Nanoware</category>
 			<rating>6</rating>
-			<avail>8F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>8F</avail>
 			<cost>Rating * 1500</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<selecttext />
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>149</page>
 		</cyberware>
@@ -3188,9 +3193,9 @@
 			<name>Nanotattoos</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3201,9 +3206,9 @@
 			<name>Neural Amplifiers (Learning Stimulus)</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>14F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>14F</avail>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3214,11 +3219,10 @@
 			<name>Neural Amplifiers (Limbic)</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>16F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>16F</avail>
 			<cost>Rating * 7500</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<limitmodifier>
 					<limit>Mental</limit>
@@ -3226,6 +3230,7 @@
 					<condition>Only with Intuition-linked skills</condition>
 				</limitmodifier>
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>149</page>
 		</cyberware>
@@ -3234,11 +3239,10 @@
 			<name>Neural Amplifiers (Neocortical)</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>16F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>16F</avail>
 			<cost>Rating * 7500</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<limitmodifier>
 					<limit>Mental</limit>
@@ -3246,6 +3250,7 @@
 					<condition>Only with Logic-based skills</condition>
 				</limitmodifier>
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>150</page>
 		</cyberware>
@@ -3254,14 +3259,14 @@
 			<name>Neural Amplifiers (Recall)</name>
 			<category>Soft Nanoware</category>
 			<rating>3</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 3500</cost>
-			<forcegrade>Standard</forcegrade>
 			<bonus>
 				<memory>Rating</memory>
 			</bonus>
+			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
 			<page>150</page>
 		</cyberware>
@@ -3270,9 +3275,9 @@
 			<name>O-Cells</name>
 			<category>Soft Nanoware</category>
 			<rating>9</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 5000</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3283,9 +3288,9 @@
 			<name>Oxyrush</name>
 			<category>Soft Nanoware</category>
 			<rating>5</rating>
-			<avail>12F</avail>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
+			<avail>12F</avail>
 			<cost>Rating * 1500</cost>
 			<forcegrade>Standard</forcegrade>
 			<source>CF</source>
@@ -3311,6 +3316,10 @@
 			<name>Infrasonic Generator</name>
 			<category>Bodyware</category>
 			<rating>4</rating>
+			<ess>0.2</ess>
+			<capacity>[2]</capacity>
+			<avail>(Rating * 3)F</avail>
+			<cost>Rating * 4000</cost>
 			<bonus>
 				<specificskill>
 					<name>Intimidation</name>
@@ -3318,10 +3327,6 @@
 					<applytorating>no</applytorating>
 				</specificskill>
 			</bonus>
-			<ess>0.2</ess>
-			<capacity>[2]</capacity>
-			<avail>(Rating * 3)F</avail>
-			<cost>Rating * 4000</cost>
 			<source>HT</source>
 			<page>186</page>
 		</cyberware>
