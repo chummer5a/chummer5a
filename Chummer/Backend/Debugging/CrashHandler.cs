@@ -91,7 +91,7 @@ namespace Chummer.Backend.Debugging
 		internal static void WebMiniDumpHandler(Exception ex)
 		{
 
-			if (true || MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			if (MessageBox.Show("Chummer5a crashed.\nDo you want to send a crash report to the developer?", "Crash!", MessageBoxButtons.YesNo) == DialogResult.Yes)
 			{
 				try
 				{
@@ -106,9 +106,9 @@ namespace Chummer.Backend.Debugging
 
 					crashHandler.WaitForExit();
 				}
-				catch
+				catch(Exception nex)
 				{
-					MessageBox.Show("Failed to create crash report.\nMake sure your system is connected to the internet.");
+					MessageBox.Show("Failed to create crash report.\nMake sure your system is connected to the internet.\n" +nex.ToString());
 				}
 			}
 

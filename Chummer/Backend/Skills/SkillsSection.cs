@@ -189,15 +189,21 @@ namespace Chummer.Skills
 				unsoredSkills.ForEach(x => _skills.Add(x));
 
 				UpdateUndoList(skillNode);
+			}
 
-				//remove skillgroups whose skills did not make the final cut
-				for (var i = SkillGroups.Count - 1; i >= 0; i--)
-				{
-					if(SkillGroups[i].GetEnumerable().Any(x => Skills.Contains(x)))
-						continue;
-					
-					SkillGroups.RemoveAt(i);
-				}
+			//This might give subtle bugs in the future, 
+			//but right now it needs to be run once when upgrading or it might crash. 
+			//As some didn't they crashed on loading skills. 
+			//After this have run, it won't (for the crash i'm aware)
+			//TODO: Move it to the other side of the if someday?
+
+			//remove skillgroups whose skills did not make the final cut
+			for (var i = SkillGroups.Count - 1; i >= 0; i--)
+			{
+				if (SkillGroups[i].GetEnumerable().Any(x => Skills.Contains(x)))
+					continue;
+
+				SkillGroups.RemoveAt(i);
 			}
 
 			//Workaround for probably breaking compability between earlier beta builds
