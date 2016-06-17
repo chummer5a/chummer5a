@@ -10311,7 +10311,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Health spells</name>
-						<translate>Magician: +2 Würfel für Heilzauber</translate>
+						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Rapid Healing</name>
@@ -10327,11 +10327,11 @@
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Health spells</name>
-						<translate>Magician: +2 dice for Health spells</translate>
+						<translate>Zauberer: +2 Würfel für Heilzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Rapid Healing</name>
-						<translate>Adept: 1 free level of Rapid Healing</translate>
+						<translate>Adept: 1 freie Stufe für Beschleunigte Heilung</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -10380,19 +10380,19 @@
 					</choice>
 					<choice>
 						<name>+2 dice on Gymnastics Tests</name>
-						<translate>+2 dice on Gymnastics Tests</translate>
+						<translate>+2 Würfel für Akrobatikproben</translate>
 					</choice>
 					<choice>
 						<name>+2 dice on Sneaking Tests</name>
-						<translate>+2 dice on Sneaking Tests</translate>
+						<translate>+2 Würfel für Inflitrationsproben</translate>
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Illusion spells</name>
-						<translate>Magician: +2 dice for Illusion spells</translate>
+						<translate>Zauberer: +2 Würfel für Illusionszauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: 2 free levels of Light Body</name>
-						<translate>Adept: 2 free levels of Light Body</translate>
+						<translate>Adept: 2 freie Stufen auf Leichter Körper</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -10413,7 +10413,7 @@
 					</choice>
 					<choice>
 						<name>Adept: 2 free Improved Sense powers</name>
-						<translate>Adept:  2 Geschärfte Sinne gratis</translate>
+						<translate>Adept: 2 Geschärfte Sinne gratis</translate>
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
@@ -10425,11 +10425,11 @@
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Detection spells</name>
-						<translate>Magician: +2 dice for Detection spells</translate>
+						<translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 2 free Improved Sense powers</name>
-						<translate>Adept: 2 free Improved Sense powers</translate>
+						<translate>Adept: 2 Geschärfte Sinne gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -10447,7 +10447,7 @@
 				<choices>
 					<choice>
 						<name>+2 to Demolitions</name>
-						<translate>+2 to Demolitions</translate>
+						<translate>+2 auf Sprengstoffe</translate>
 					</choice>
 					<choice>
 						<name>+2 to a Combat Skill</name>
@@ -10455,15 +10455,15 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
-						<translate>Adept: free Killing Hands</translate>
+						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 					<choice>
 						<name>+2 to Demolitions</name>
-						<translate>+2 to Demolitions</translate>
+						<translate>+2 auf Sprengstoffe</translate>
 					</choice>
 					<choice>
 						<name>+2 to a Combat Skill</name>
@@ -10471,15 +10471,15 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
-						<translate>Adept: free Killing Hands</translate>
+						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 					<choice>
 						<name>+2 to Demolitions</name>
-						<translate>+2 to Demolitions</translate>
+						<translate>+2 auf Sprengstoffe</translate>
 					</choice>
 					<choice>
 						<name>+2 to a Combat Skill</name>
@@ -10487,11 +10487,11 @@
 					</choice>
 					<choice set="2">
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Magician: +2 dice for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice set="2">
 						<name>Adept: free Killing Hands</name>
-						<translate>Adept: free Killing Hands</translate>
+						<translate>Adept: Todeskralle gratis</translate>
 					</choice>
 				</choices>
 			</mentor>
@@ -10508,7 +10508,7 @@
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
@@ -10516,7 +10516,7 @@
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Zauberer: +2 Würfel for Combat spells</translate>
+						<translate>Zauberer: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
@@ -10524,7 +10524,7 @@
 					</choice>
 					<choice>
 						<name>Magician: +2 dice for Combat spells</name>
-						<translate>Magician: +2 dice for Combat spells</translate>
+						<translate>Magician: +2 Würfel auf Kampfzauber</translate>
 					</choice>
 					<choice>
 						<name>Adept: 1 free level of Enhanced Accuracy and Danger Sense</name>
