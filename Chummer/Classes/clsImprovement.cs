@@ -1827,9 +1827,9 @@ namespace Chummer
 			{
 				Log.Info("addcontact");
 
-				int loyality, connection;
+				int loyalty, connection;
 				
-				bonusNode.TryGetField("loyality", out loyality, 1);
+				bonusNode.TryGetField("loyalty", out loyalty, 1);
 				bonusNode.TryGetField("connection", out connection, 1);
 				bool group = bonusNode["group"] != null;
 				bool free = bonusNode["free"] != null;
@@ -1837,7 +1837,7 @@ namespace Chummer
 				Contact contact = new Contact(_objCharacter);
 				contact.Free = free;
 				contact.IsGroup = group;
-				contact.Loyalty = loyality;
+				contact.Loyalty = loyalty;
 				contact.Connection = connection;
 				contact.ReadOnly = true;
 				_objCharacter.Contacts.Add(contact);
@@ -2032,7 +2032,7 @@ namespace Chummer
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", val);
 			}
 
-			if (bonusNode.LocalName == "knowldgeskillpoints")
+			if (bonusNode.LocalName == "knowledgeskillpoints")
 			{
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
