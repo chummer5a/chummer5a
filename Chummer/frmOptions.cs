@@ -650,8 +650,9 @@ namespace Chummer
 			chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
 			chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
 			chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
-			chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
-			chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
+            chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
+            chkOpenPDFsAsUnix.Checked = GlobalOptions._blnOpenPDFsAsUnix;
+            chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
 			chkPrintNotes.Checked = _characterOptions.PrintNotes;
 			chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
 			chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
@@ -722,6 +723,7 @@ namespace Chummer
             GlobalOptions.Instance.PDFAppPath = txtPDFAppPath.Text;
             GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
+            GlobalOptions.Instance.OpenPDFsAsAsUnix = chkOpenPDFsAsUnix.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
 			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
@@ -745,6 +747,7 @@ namespace Chummer
             objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
             objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
             objRegistry.SetValue("openpdfsasurls", chkOpenPDFsAsURLs.Checked.ToString());
+            objRegistry.SetValue("openpdfsasunix", chkOpenPDFsAsUnix.Checked.ToString());
             objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
@@ -1028,6 +1031,7 @@ namespace Chummer
 			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
             chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
             chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
+            chkOpenPDFsAsUnix.Checked = GlobalOptions.Instance.OpenPDFsAsAsUnix;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
             txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
         }
