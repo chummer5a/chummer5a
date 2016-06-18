@@ -2622,7 +2622,10 @@ namespace Chummer
 				Log.Info("prototypetranshuman");
 				Log.Info("prototypetranshuman = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
+
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PrototypeTranshuman, strUnique);
 				_objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
+
 			}
 			// Check for Uncouth modifiers.
 			if (bonusNode.LocalName == ("uncouth"))

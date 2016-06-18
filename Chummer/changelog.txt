@@ -1,3 +1,7 @@
+Build 182:
+Application Changes:
+- Prototype transhuman is now correctly removed. This fix does not apply to older characters.
+
 Build 181:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
