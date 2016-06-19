@@ -1,0 +1,39 @@
+version: 5.181.{build}.0
+branches:
+  only:
+  - master
+skip_tags: true
+configuration: Debug
+platform: x86
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+environment:
+  SolutionDir: C:\projects\chummer5a\
+install:
+- ps: "Write-host $SolutionDir\n\n$Assemblyfile = \"C:\\projects\\chummer5a\\Chummer\\Properties\\AssemblyInfo.cs\"\n\n$RegularExpression = [regex] 'AssemblyVersion\\(\\\"(.*)\\\"\\)'\n    \n\n# Get the Content of the file and store it in the  variable \n$fileContent = Get-Content $assemblyFile\n#$fileContent\n\nforeach($content in $fileContent)\n{\n    $match = [System.Text.RegularExpressions.Regex]::Match($content, $RegularExpression)\n    if($match.Success) {\n        $Version = $match.groups[1].value\n    }\n}\n\n$Major = $Version.Split('.')[0]\n$Minor = $Version.Split('.')[1]\n\nUpdate-AppveyorBuild -Version \"$Major.$Minor.$env:appveyor_build_number\""
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+before_build:
+- ps: nuget restore
+build:
+  project: Chummer
+  verbosity: normal
+after_build:
+- ps: 7z a Chummer.Nightly.zip C:\projects\chummer5a\Chummer\bin\debug\* -r
+artifacts:
+- path: Chummer.Nightly.zip
+  name: Chummer
+deploy:
+- provider: GitHub
+  tag: Nightly-v$(appveyor_build_version)
+  auth_token:
+    secure: vwyyrjSs0DpHUhZYOQ9NzqEPwa/a/HcKDgCi9lyzQRxhGcvDXvAhphggxQ/LXZV0
+  artifact: Chummer
+  draft: false
+  prerelease: true
