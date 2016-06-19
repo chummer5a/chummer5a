@@ -6122,7 +6122,7 @@
 			<damage>7P</damage>
 			<ap>-</ap>
 			<mode>SA/BF/FA</mode>
-			<rc>2</rc>
+			<rc>0</rc>
 			<ammo>32(c)</ammo>
 			<avail>5R</avail>
 			<cost>660</cost>
@@ -6134,6 +6134,7 @@
 			<accessories>
 				<accessory><name>Folding Stock</name></accessory>
 				<accessory><name>Laser Sight</name></accessory>
+				<accessory><name>Gas-Vent 2 System</name></accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>427</page>
