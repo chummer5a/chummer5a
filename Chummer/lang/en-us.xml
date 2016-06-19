@@ -6602,9 +6602,13 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_Options_PDFTest</key>
 			<text>Test - Open to Page 5</text>
 		</string>
-				<string>
+		<string>
 			<key>Checkbox_Options_OpenPDFsAsURLs</key>
 			<text>Open PDFs as URLs (For use in browsers)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsUnix</key>
+			<text>Use Unix-Style Parameters when opening PDFs</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->

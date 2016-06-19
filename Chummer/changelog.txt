@@ -15,6 +15,7 @@ Application Changes:
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
+- Added the missing Nausea Gas toxin SR5. Fixes #940.
 
 Build 180:
 Application Changes:

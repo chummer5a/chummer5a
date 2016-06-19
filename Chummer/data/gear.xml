@@ -6314,6 +6314,16 @@
 			<page>410</page>
 		</gear>
 		<gear>
+			<id>ee90d254-cb65-4a03-92e5-abe7037ff5e3</id>
+			<name>Nausea Gas</name>
+			<category>Toxins</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>25</cost>
+			<source>SR5</source>
+			<page>410</page>
+		</gear>
+		<gear>
 			<id>24e87c73-22be-480d-bb79-978277672a1d</id>
 			<name>Neuro-Stun VIII</name>
 			<category>Toxins</category>

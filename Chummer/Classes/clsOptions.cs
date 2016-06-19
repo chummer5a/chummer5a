@@ -130,6 +130,7 @@ namespace Chummer
         public static string _strURLAppPath = "";
 		public static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
         public static bool _blnOpenPDFsAsURLs = false;
+	    public static bool _blnOpenPDFsAsUnix = false;
         public static bool _blnUseLogging = false;
 
 		#region Constructor and Instance
@@ -280,8 +281,17 @@ namespace Chummer
             {
             }
 
-			// PDF application path.
-			try
+            // Open PDFs as URLs. For use with Chrome, Firefox, etc.
+            try
+            {
+                _blnOpenPDFsAsUnix = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasunix").ToString());
+            }
+            catch
+            {
+            }
+
+            // PDF application path.
+            try
 			{
 				_strPDFAppPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfapppath").ToString();
 			}
@@ -836,5 +846,19 @@ namespace Chummer
             } 
         }
 
+        /// <summary>
+        /// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
+        /// </summary>
+        public bool OpenPDFsAsAsUnix
+        {
+            get
+            {
+                return GlobalOptions._blnOpenPDFsAsUnix;
+            }
+            set
+            {
+                GlobalOptions._blnOpenPDFsAsUnix = value;
+            }
+        }
     }
 }

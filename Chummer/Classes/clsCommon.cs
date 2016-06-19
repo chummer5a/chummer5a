@@ -1398,14 +1398,13 @@ namespace Chummer
                 else
                 {
                     string strParams;
-                    int p = (int)Environment.OSVersion.Platform;
-                    if ((p == 4) || (p == 6) || (p == 128))
+                    if (GlobalOptions._blnOpenPDFsAsUnix)
                     {
-                        strParams = "-p " + intPage.ToString() + " \"" + strPath + "\"";
+                        strParams = "-p " + intPage + " \"" + strPath + "\"";
                     }
                     else
                     {
-                        strParams = " /n /A \"page=" + intPage.ToString() + "\" \"" + strPath + "\"";
+                        strParams = " /n /A \"page=" + intPage + "\" \"" + strPath + "\"";
                     }
                     Process.Start(GlobalOptions.Instance.PDFAppPath, strParams);
                 }
