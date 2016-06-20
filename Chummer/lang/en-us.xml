@@ -944,6 +944,14 @@
 			<key>String_AttributeINIShort</key>
 			<text>INI</text>
 		</string>
+		<string>
+			<key>String_AttributeESSLong</key>
+			<text>Essence</text>
+		</string>
+		<string>
+			<key>String_AttributeESSShort</key>
+			<text>ESS</text>
+		</string>
 		<!-- End Region -->
 		<!-- Region Main Window -->
 		<string>

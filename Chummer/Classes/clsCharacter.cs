@@ -5536,14 +5536,9 @@ namespace Chummer
         {
             get
             {
-                int intTotalA = 0;
-                foreach (Armor objArmor in _lstArmor)
-                    if (objArmor.Equipped)
-                        // Form-Fitting Armor is treated as half of its value for determining Armor Encumbrance.
-                        if (objArmor.ArmorValue.StartsWith("+"))
-                            intTotalA += objArmor.TotalArmor;
+                int intTotalA = (from objArmor in _lstArmor where objArmor.Equipped where objArmor.ArmorValue.StartsWith("+") select objArmor.TotalArmor).Sum();
 
-                // calculate armor encumberance
+	            // calculate armor encumberance
                 if (intTotalA > this._attSTR.TotalValue)
                     return (intTotalA - this._attSTR.TotalValue) / 2 * -1;  // we expect a negative number
                 return 0;

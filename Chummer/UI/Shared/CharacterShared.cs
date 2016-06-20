@@ -19,7 +19,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+﻿using System.Runtime.InteropServices;
+﻿using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -34,7 +35,6 @@ namespace Chummer
 		protected CharacterOptions _objOptions;
 		protected CommonFunctions _objFunctions;
 
-		
 		/// <summary>
 		/// Wrapper for relocating contact forms. 
 		/// </summary>
@@ -130,5 +130,92 @@ namespace Chummer
 				manager.Value.Commit(); //REFACTOR! WHEN MOVING MANAGER, change this to bool
 			}
         }
+
+		/// <summary>
+		/// Update the label and tooltip for the character's Condition Monitors.
+		/// </summary>
+		/// <param name="lblPhysical"></param>
+		/// <param name="lblStun"></param>
+		/// <param name="tipTooltip"></param>
+		protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, ToolTip tipTooltip, ImprovementManager _objImprovementManager)
+		{
+			// Condition Monitor.
+			double dblBOD = _objCharacter.BOD.TotalValue;
+			double dblWIL = _objCharacter.WIL.TotalValue;
+			int intCMPhysical = _objCharacter.PhysicalCM;
+			int intCMStun = _objCharacter.StunCM;
+
+			// Update the Condition Monitor labels.
+			lblPhysical.Text = intCMPhysical.ToString();
+			lblStun.Text = intCMStun.ToString();
+			string strCM = "8 + (BOD/2)(" + ((int)Math.Ceiling(dblBOD / 2)).ToString() + ")";
+			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
+				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+						 _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
+			tipTooltip.SetToolTip(lblPhysical, strCM);
+			strCM = "8 + (WIL/2)(" + ((int)Math.Ceiling(dblWIL / 2)).ToString() + ")";
+			if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
+				strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+						 _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
+			tipTooltip.SetToolTip(lblStun, strCM);
+		}
+
+		/// <summary>
+		/// Update the label and tooltip for the character's Armor Rating.
+		/// </summary>
+		/// <param name="lblArmor"></param>
+		/// <param name="tipTooltip"></param>
+		protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, ImprovementManager _objImprovementManager)
+		{
+			// Armor Ratings.
+			lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
+			string strArmorToolTip = "";
+			strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
+			if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
+				strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
+								   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
+			tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
+
+			// Remove any Improvements from Armor Encumbrance.
+			_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
+			// Create the Armor Encumbrance Improvements.
+			if (_objCharacter.ArmorEncumbrance < 0)
+			{
+				_objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+				_objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+			}
+		}
+
+
+
+		/// <summary>
+		/// Update the labels and tooltips for the character's Attributes.
+		/// </summary>
+		/// <param name="objAttribute"></param>
+		/// <param name="lblATTMetatype"></param>
+		/// <param name="lblATTAug"></param>
+		/// <param name="tipTooltip"></param>
+		/// <param name="nudATT"></param>
+		protected void UpdateCharacterAttribute(CharacterAttrib objAttribute, Label lblATTMetatype, Label lblATTAug, ToolTip tipTooltip, [Optional] NumericUpDown nudATT)
+		{
+			if (nudATT != null)
+			{
+				nudATT.Minimum = objAttribute.TotalMinimum;
+				nudATT.Maximum = objAttribute.TotalMaximum;
+				nudATT.Value = objAttribute.Value - objAttribute.Karma;
+			}
+			lblATTMetatype.Text = string.Format("{0} / {1} ({2})", objAttribute.TotalMinimum, objAttribute.TotalMaximum,
+				objAttribute.TotalAugmentedMaximum);
+			if (objAttribute.HasModifiers)
+			{
+				lblATTAug.Text = string.Format("{0} ({1})", objAttribute.Value, objAttribute.TotalValue);
+				tipTooltip.SetToolTip(lblATTAug, objAttribute.ToolTip());
+			}
+			else
+			{
+				lblATTAug.Text = string.Format("{0}", objAttribute.Value);
+				tipTooltip.SetToolTip(lblATTAug, "");
+			}
+		}
 	}
 }

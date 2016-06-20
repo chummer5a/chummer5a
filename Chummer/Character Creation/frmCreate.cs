@@ -4834,19 +4834,6 @@ namespace Chummer
             _blnIsDirty = true;
             UpdateWindowTitle();
 
-            int intSpellCount = 0;
-            foreach (TreeNode nodCategory in treSpells.Nodes)
-            {
-                foreach (TreeNode nodSpell in nodCategory.Nodes)
-                {
-                    intSpellCount++;
-                }
-            }
-            //if (intSpellCount - _objCharacter.SpellLimit > 0)
-            //    lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (0).ToString(), _objCharacter.SpellLimit.ToString());
-            //else
-            lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
-
 			if (frmPickSpell.AddAgain)
 			{
 				cmdAddSpell_Click(sender, e);
@@ -15063,45 +15050,13 @@ namespace Chummer
                     _objCharacter.ContactPoints = 0;
 
 				UpdateSkillRelatedInfo();
-
-                
-
-                // Condition Monitor.
-                double dblBOD = _objCharacter.BOD.TotalValue;
-                double dblWIL = _objCharacter.WIL.TotalValue;
-                int intCMPhysical = _objCharacter.PhysicalCM;
-                int intCMStun = _objCharacter.StunCM;
-
-                // Update the Condition Monitor labels.
-                lblCMPhysical.Text = intCMPhysical.ToString();
-                lblCMStun.Text = intCMStun.ToString();
-                string strCM = "8 + (BOD/2)(" + ((int)Math.Ceiling(dblBOD / 2)).ToString() + ")";
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM) != 0)
-                    strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.PhysicalCM).ToString() + ")";
-                tipTooltip.SetToolTip(lblCMPhysical, strCM);
-                strCM = "8 + (WIL/2)(" + ((int)Math.Ceiling(dblWIL / 2)).ToString() + ")";
-                if (_objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM) != 0)
-                    strCM += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.StunCM).ToString() + ")";
-                tipTooltip.SetToolTip(lblCMStun, strCM);
-
-				UpdateSpellDefence();
 				
-                // Armor Ratings.
-                lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
-                string strArmorToolTip = "";
-                strArmorToolTip = LanguageManager.Instance.GetString("Tip_Armor") + " (" + _objCharacter.ArmorRating.ToString() + ")";
-                if (_objCharacter.ArmorRating != _objCharacter.TotalArmorRating)
-                    strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
-                tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
+                UpdateConditionMonitor(lblCMPhysical,lblCMStun,tipTooltip, _objImprovementManager);
 
-                // Remove any Improvements from Armor Encumbrance.
-                _objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
-                // Create the Armor Encumbrance Improvements.
-                if (_objCharacter.ArmorEncumbrance < 0)
-                {
-                    _objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-                    _objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-                }
+	            UpdateSpellDefence();
+				
+                UpdateArmorRating(lblArmor,tipTooltip, _objImprovementManager);
+
                 // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
                 //if (_objCharacter.IgnoreRules == true)
                 //    nudNuyen.Maximum = _objCharacter.NuyenMaximumBP;
@@ -15158,48 +15113,19 @@ namespace Chummer
                 }
 
                 // Update the CharacterAttribute information.
-                UpdateAttribute(_objCharacter.BOD, nudBOD, lblBODAug, lblBODMetatype);
-				UpdateAttribute(_objCharacter.AGI, nudAGI, lblAGIAug, lblAGIMetatype);
-				UpdateAttribute(_objCharacter.STR, nudSTR, lblSTRAug, lblSTRMetatype);
-				UpdateAttribute(_objCharacter.REA, nudREA, lblREAAug, lblREAMetatype);
-				UpdateAttribute(_objCharacter.INT, nudINT, lblINTAug, lblINTMetatype);
-				UpdateAttribute(_objCharacter.LOG, nudLOG, lblLOGAug, lblLOGMetatype);
-				UpdateAttribute(_objCharacter.WIL, nudWIL, lblWILAug, lblWILMetatype);
-				UpdateAttribute(_objCharacter.CHA, nudCHA, lblCHAAug, lblCHAMetatype);
-				UpdateAttribute(_objCharacter.EDG, nudEDG, lblEDGAug, lblEDGMetatype);
-				UpdateAttribute(_objCharacter.DEP, nudDEP, lblDEPAug, lblDEPMetatype);
-
-                // CharacterAttribute: Magic.
-				lblMAGMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.MAG.TotalMinimum, _objCharacter.MAG.TotalMaximum, _objCharacter.MAG.TotalAugmentedMaximum);
-				nudMAG.Minimum = _objCharacter.MAG.TotalMinimum;
-                nudMAG.Maximum = _objCharacter.MAG.TotalMaximum;
-                nudKMAG.Maximum = _objCharacter.MAG.TotalMaximum - nudMAG.Value;
-                if (_objCharacter.MAG.HasModifiers)
-                {
-                    lblMAGAug.Text = string.Format("{0} ({1})", _objCharacter.MAG.Value, _objCharacter.MAG.TotalValue);
-                    tipTooltip.SetToolTip(lblMAGAug, _objCharacter.MAG.ToolTip());
-                }
-                else
-                {
-                    lblMAGAug.Text = string.Format("{0}", _objCharacter.MAG.Value);
-                    tipTooltip.SetToolTip(lblMAGAug, _objCharacter.MAG.ToolTip());
-                }
-
-                // CharacterAttribute: Resonance.
-                lblRESMetatype.Text = string.Format("{0} / {1} ({2})", _objCharacter.RES.TotalMinimum, _objCharacter.RES.TotalMaximum, _objCharacter.RES.TotalAugmentedMaximum);
-                nudRES.Minimum = _objCharacter.RES.TotalMinimum;
-                nudRES.Maximum = _objCharacter.RES.TotalMaximum;
-                nudKRES.Maximum = _objCharacter.RES.TotalMaximum - nudRES.Value;
-                if (_objCharacter.RES.HasModifiers)
-                {
-                    lblRESAug.Text = string.Format("{0} ({1})", _objCharacter.RES.Value, _objCharacter.RES.TotalValue);
-                    tipTooltip.SetToolTip(lblRESAug, _objCharacter.RES.ToolTip());
-                }
-                else
-                {
-                    lblRESAug.Text = string.Format("{0}", _objCharacter.RES.Value);
-                    tipTooltip.SetToolTip(lblRESAug, _objCharacter.RES.ToolTip());
-                }
+				UpdateCharacterAttribute(_objCharacter.BOD,lblBODMetatype,lblBODAug,tipTooltip,nudBOD);
+				//tipTooltip.SetToolTip(lblAGIAug, _objCharacter.AGI.ToolTip());
+				UpdateCharacterAttribute(_objCharacter.AGI, lblAGIMetatype, lblAGIAug, tipTooltip, nudAGI);
+				UpdateCharacterAttribute(_objCharacter.STR, lblSTRMetatype, lblSTRAug, tipTooltip, nudSTR);
+				UpdateCharacterAttribute(_objCharacter.REA, lblREAMetatype, lblREAAug, tipTooltip, nudREA);
+				UpdateCharacterAttribute(_objCharacter.INT, lblINTMetatype, lblINTAug, tipTooltip, nudINT);
+				UpdateCharacterAttribute(_objCharacter.LOG, lblLOGMetatype, lblLOGAug, tipTooltip, nudLOG);
+				UpdateCharacterAttribute(_objCharacter.WIL, lblWILMetatype, lblWILAug, tipTooltip, nudWIL);
+				UpdateCharacterAttribute(_objCharacter.CHA, lblCHAMetatype, lblCHAAug, tipTooltip, nudCHA);
+				UpdateCharacterAttribute(_objCharacter.EDG, lblEDGMetatype, lblEDGAug, tipTooltip, nudEDG);
+				UpdateCharacterAttribute(_objCharacter.DEP, lblDEPMetatype, lblDEPAug, tipTooltip, nudDEP);
+				UpdateCharacterAttribute(_objCharacter.MAG, lblMAGMetatype, lblMAGAug, tipTooltip, nudMAG);
+				UpdateCharacterAttribute(_objCharacter.RES, lblRESMetatype, lblRESAug, tipTooltip, nudRES);
 
                 // Update the MAG pseudo-Attributes if applicable.
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
@@ -15239,7 +15165,11 @@ namespace Chummer
                         objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
                         objPowerControl.RefreshTooltip();
                     }
-                }
+
+					//Update Build Summary for Spells.
+					int intSpellCount = treSpells.Nodes.Cast<TreeNode>().SelectMany(nodCategory => nodCategory.Nodes.Cast<TreeNode>()).Count();
+	                lblPBuildSpells.Text = String.Format("{0} " + LanguageManager.Instance.GetString("String_Of") + " {1}", (_objCharacter.SpellLimit - intSpellCount).ToString(), _objCharacter.SpellLimit.ToString());
+				}
 
                 // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
                 if (_objCharacter.RESEnabled)
@@ -15283,7 +15213,7 @@ namespace Chummer
                 {
                     try
                     {
-                        lblFadingAttributes.Text = "WIL + RES";
+                        lblFadingAttributes.Text = string.Format("{0} + {1}", LanguageManager.Instance.GetString("String_AttributeRESShort"), LanguageManager.Instance.GetString("String_AttributeWILShort"));
                         XmlDocument objXmlDocument = new XmlDocument();
                         XPathNavigator nav = objXmlDocument.CreateNavigator();
                         string strFading = lblFadingAttributes.Text.Replace("BOD", _objCharacter.BOD.TotalValue.ToString());
@@ -15365,25 +15295,25 @@ namespace Chummer
 
                 // Skill Limits
                 lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
-                string strPhysical = "(STR [" + _objCharacter.STR.TotalValue.ToString() + "] * 2) + BOD [" + _objCharacter.BOD.TotalValue.ToString() + "] + REA [" + _objCharacter.REA.TotalValue.ToString() + "] / 3";
+                string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
                 tipTooltip.SetToolTip(lblPhysical, strPhysical);
 
                 lblMental.Text = _objCharacter.LimitMental.ToString();
-                string strMental = "(LOG [" + _objCharacter.LOG.TotalValue.ToString() + "] * 2) + INT [" + _objCharacter.INT.TotalValue.ToString() + "] + WIL [" + _objCharacter.WIL.TotalValue.ToString() + "] / 3";
+                string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
                 tipTooltip.SetToolTip(lblMental, strMental);
 
                 lblSocial.Text = _objCharacter.LimitSocial.ToString();
-                string strSocial = "(CHA [" + _objCharacter.CHA.TotalValue.ToString() + "] * 2) + WIL [" + _objCharacter.WIL.TotalValue.ToString() + "] + ESS [" + _objCharacter.Essence.ToString() + "] / 3";
+                string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString());
                 tipTooltip.SetToolTip(lblSocial, strSocial);
 
                 lblAstral.Text = _objCharacter.LimitAstral.ToString();
 
                 // Initiative.
                 lblINI.Text = _objCharacter.Initiative;
-                string strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
+                string strInit = string.Format("{0} ({1}) + {2} ({3})", LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.Value.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.Value.ToString());
                 if (_objCharacter.INI.AttributeModifiers > 0 || _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INI.AttributeModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
-                strInit += " + (" + _objCharacter.InitiativePasses.ToString() + "d6)";
+                strInit += " + (" + _objCharacter.InitiativePasses + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
                 // Astral Initiative.
@@ -15601,7 +15531,9 @@ namespace Chummer
 			UpdateInitiationCost();
 		}
 
-	    private void UpdateAttribute(CharacterAttrib attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
+		//TODO: Rrmove pending further testing. Should be redundant now.
+		/*
+		private void UpdateAttribute(CharacterAttrib attribute, NumericUpDown nudControll, Label augLabel, Label metatype)
 	    {
 			metatype.Text = string.Format("{0} / {1} ({2})", attribute.TotalMinimum, attribute.TotalMaximum,
 			    attribute.TotalAugmentedMaximum);
@@ -15619,7 +15551,7 @@ namespace Chummer
 			    augLabel.Text = string.Format("{0}", attribute.Value);
 			    tipTooltip.SetToolTip(augLabel, attribute.ToolTip());
 		    }
-	    }
+	    }*/
 
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining.
@@ -15734,7 +15666,7 @@ namespace Chummer
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory;
                 string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
                 string strPage = objCyberware.Page;
-                lblCyberwareSource.Text = strBook + " " + strPage;
+                lblCyberwareSource.Text = string.Format("{0} {1}", strBook, strPage);
                 tipTooltip.SetToolTip(lblCyberwareSource, _objOptions.LanguageBookLong(objCyberware.Source) + " " + LanguageManager.Instance.GetString("String_Page") + " " + objCyberware.Page);
                 // Enable and set the Rating values as needed.
                 if (objCyberware.Rating == 0)
@@ -15796,7 +15728,7 @@ namespace Chummer
 
                 lblCyberwareAvail.Text = objCyberware.TotalAvail;
                 lblCyberwareCost.Text = String.Format("{0:###,###,##0¥}", objCyberware.TotalCost);
-                lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" + objCyberware.CapacityRemaining.ToString() + " " + LanguageManager.Instance.GetString("String_Remaining") + ")";
+                lblCyberwareCapacity.Text = string.Format("{0} ({1} {2})", objCyberware.CalculatedCapacity, objCyberware.CapacityRemaining.ToString(), LanguageManager.Instance.GetString("String_Remaining"));
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString();
                 UpdateCharacterInfo();
             }

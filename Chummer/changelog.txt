@@ -1,8 +1,3 @@
-Build 182:
-Application Changes:
-- Prototype transhuman is now correctly removed. This fix does not apply to older characters.
-- Knowledge skills now load correctly
-
 Build 181:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
@@ -10,10 +5,16 @@ Application Changes:
 - Fixed an issue where Chummer would crash when loading a Life Module character. Fixes #925.
 - Fixed an issue with taking specialisations in karmagen without the house rule for free karma points enabled. Fixes #929.
 - Fixed the total cost of vehicles to include discounts from the Dealer Connection quality. Fixes #934.
+- Fixed an issue that prevented the Prototype transhuman improvements from being removed. This fix does not apply to older characters.
+- Fixed an issue that prevented knowledge skills from loading properly. 
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
 - Added the missing Nausea Gas toxin SR5. Fixes #940.
+
+New Strings:
+- String_AttributeESSShort
+- String_AttributeESSLong
 
 Build 180:
 Application Changes:
