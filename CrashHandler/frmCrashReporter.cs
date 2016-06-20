@@ -23,7 +23,7 @@ namespace CrashHandler
 			_dumper = dumper;
 			InitializeComponent();
 			lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
-			lblId.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
+			txtIdSelectable.Text = "Crash followup id = " + _dumper.Attributes["visible-crash-id"];
 			
 			_dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
 		}

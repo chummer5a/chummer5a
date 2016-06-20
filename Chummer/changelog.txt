@@ -7,6 +7,8 @@ Application Changes:
 - Fixed the total cost of vehicles to include discounts from the Dealer Connection quality. Fixes #934.
 - Fixed an issue that prevented the Prototype transhuman improvements from being removed. This fix does not apply to older characters.
 - Fixed an issue that prevented knowledge skills from loading properly. 
+- The Crash Handler form's Crash ID is now selectable.
+- The Crash Handler now requests permission from the user before submitting a crash report. 
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
