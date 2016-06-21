@@ -11,6 +11,8 @@ Application Changes:
 - The Crash Handler now requests permission from the user before submitting a crash report. 
 - Added a validation option to prevent characters from having multiple Native Language skills from entering career mode. Fixes #947.
 - Fixed a crash issue caused by improvements with selectskill trying to use an Exotic skill. Fixes #921.
+- Fixed a rendering issue that prevented Exotic Skills from showing up in sorted lists.
+- Fixed a misleading reference to Special Attributes when validating your character.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

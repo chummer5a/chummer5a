@@ -556,7 +556,7 @@ namespace Chummer.Skills
 			{
 				if (lhs is ExoticSkill)
 				{
-					return (rhs.Specialization ?? "").CompareTo(lhs.Specialization ?? "");
+					return ((rhs as ExoticSkill).Specific ?? "").CompareTo((lhs as ExoticSkill).Specific ?? "");
 				}
 				else
 				{

@@ -9831,44 +9831,5 @@
 			<source>SR5</source>
 			<page>1</page>
 		</gear>
-		<gear>
-			<id>75ccb148-e774-429c-b854-a27816439626</id>
-			<name>Spare Clip</name>
-			<category>Ammunition</category>
-			<bonus>
-				<selectweapon />
-			</bonus>
-			<rating>0</rating>
-			<avail>4</avail>
-			<cost>5</cost>
-			<source>SR5</source>
-			<page>433</page>
-		</gear>
-		<gear>
-			<id>18ad29eb-33d2-4032-9520-47b69979ebf3</id>
-			<name>Vindicator 200-Round Belt</name>
-			<category>Ammunition</category>
-			<bonus>
-				<selectweapon />
-			</bonus>
-			<rating>0</rating>
-			<avail>4</avail>
-			<cost>100</cost>
-			<source>RG</source>
-			<page>42</page>
-		</gear>
-		<gear>
-			<id>f87701a0-4ea2-47db-bcac-f5b8396c369e</id>
-			<name>Speed Loader</name>
-			<category>Ammunition</category>
-			<bonus>
-				<selectweapon />
-			</bonus>
-			<rating>0</rating>
-			<avail>2</avail>
-			<cost>25</cost>
-			<source>SR5</source>
-			<page>433</page>
-		</gear>
 	</gears>
 </chummer>

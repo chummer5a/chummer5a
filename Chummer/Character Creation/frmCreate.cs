@@ -20195,7 +20195,7 @@ namespace Chummer
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
 							.Replace("{0}", _objCharacter.SkillsSection.SkillPoints.ToString())
-							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryActiveSkills")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
 					blnValid = false;
@@ -20208,7 +20208,7 @@ namespace Chummer
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
 							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsUsed.ToString())
-							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummarySpecialAttributes")),
+							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryKnowledgeSkills")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
 					blnValid = false;
