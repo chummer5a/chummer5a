@@ -2141,6 +2141,10 @@
       <text>The following pieces of restricted Cyber/Bioware are not allowed on an ExCon:</text>
     </string>
 		<string>
+			<key>Message_OverLanguageLimit</key>
+			<text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
+		</string>
+		<string>
 			<key>Message_OverPositiveMetagenicQualities</key>
 			<text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
 		</string>		

@@ -19249,7 +19249,20 @@ namespace Chummer
                 strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNoStream");
             }
 
-            // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
+			// Check if the character has more than the permitted amount of native languages.
+	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.SkillCategory == "Language");
+			
+			//TODO: This should probably be an improvement type. Also slightly excessive, as Bilingual normally has a limit of 1.
+	        int intLanguageLimit = 1 + _objCharacter.Qualities.Count(objQuality => objQuality.Name == "Bilingual");
+
+	        if (intLanguages > intLanguageLimit)
+	        {
+		        blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverLanguageLimit").Replace("{0}",intLanguages.ToString()).Replace("{1}", intLanguageLimit.ToString());
+			}
+
+
+	        // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
             bool blnRestrictedGearUsed = false;
             // Gear Availability.
             foreach (Gear objGear in _objCharacter.Gear)

@@ -9,6 +9,7 @@ Application Changes:
 - Fixed an issue that prevented knowledge skills from loading properly. 
 - The Crash Handler form's Crash ID is now selectable.
 - The Crash Handler now requests permission from the user before submitting a crash report. 
+- Added a validation option to prevent characters from having multiple Native Language skills. Fixes #947.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
@@ -17,6 +18,7 @@ Data Changes:
 New Strings:
 - String_AttributeESSShort
 - String_AttributeESSLong
+- Message_OverLanguageLimit
 
 Build 180:
 Application Changes:
