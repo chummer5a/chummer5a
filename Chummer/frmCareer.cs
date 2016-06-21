@@ -21401,13 +21401,7 @@ namespace Chummer
 				}
 
 				// Update Adept Powers.
-				int intMAG = _objCharacter.MAG.TotalValue;
-				foreach (PowerControl objPowerControl in panPowers.Controls)
-				{
-					// Maximum Power Level for Mystic Adepts is based on their total MAG.
-					objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
-					objPowerControl.RefreshTooltip();
-				}
+				RefreshPowers();
 
 				// Update the Drain CharacterAttribute Value.
 				if (_objCharacter.MAGEnabled && lblDrainAttributes.Text != "")

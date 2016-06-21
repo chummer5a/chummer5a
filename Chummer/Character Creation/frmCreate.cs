@@ -733,7 +733,7 @@ namespace Chummer
 					if (objPower.Name == "Improved Ability (skill)")
 					{
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
+							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
                         {
                             int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                             if (intImprovedAbilityMaximum == 0)
@@ -4981,27 +4981,6 @@ namespace Chummer
             objPowerControl.AdeptWayDiscount = frmPickPower.AdeptWayDiscount;
             objPowerControl.LevelEnabled = frmPickPower.LevelEnabled;
 
-            if (frmPickPower.MaxLevels() > 0)
-				if (objPower.Name == "Improved Ability (skill)")
-				{
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-					{
-						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")")))
-                    {
-                        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-                        if (intImprovedAbilityMaximum == 0)
-                        {
-                            intImprovedAbilityMaximum = 1;
-                        }
-                        objPower.MaxLevels = intImprovedAbilityMaximum;
-                    }
-					}
-				}
-                    else
-                    {
-                        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-                    }
-
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Instance.Load("powers.xml");
 
@@ -5023,8 +5002,29 @@ namespace Chummer
                 objPowerControl.Extra = _objImprovementManager.SelectedValue;
             }
 
-            // Set the control's Maximum.
-            objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
+			if (frmPickPower.MaxLevels() > 0)
+				if (objPower.Name == "Improved Ability (skill)")
+				{
+					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+					{
+						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
+						{
+							int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+							if (intImprovedAbilityMaximum == 0)
+							{
+								intImprovedAbilityMaximum = 1;
+							}
+							objPower.MaxLevels = intImprovedAbilityMaximum;
+						}
+					}
+				}
+				else
+				{
+					objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+				}
+
+			// Set the control's Maximum.
+			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
             objPowerControl.Top = i * objPowerControl.Height;
             objPowerControl.RefreshTooltip();
             panPowers.Controls.Add(objPowerControl);
@@ -15385,8 +15385,11 @@ namespace Chummer
                 // Calculate the number of Build Points remaining.
                 CalculateBP();
                 CalculateNuyen();
-                if (_objCharacter.AdeptEnabled)
-                    CalculatePowerPoints();
+	            if (_objCharacter.AdeptEnabled)
+	            {
+		            CalculatePowerPoints();
+		            RefreshPowers();
+	            }
                 if ((_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter) || _objCharacter.MetatypeCategory.EndsWith("Spirits"))
                 {
                     lblCritterPowerPointsLabel.Visible = true;
@@ -15897,9 +15900,31 @@ namespace Chummer
                 objPowerControl.PointsPerLevel = objPower.PointsPerLevel;
                 objPowerControl.AdeptWayDiscount = objPower.AdeptWayDiscount;
                 objPowerControl.LevelEnabled = objPower.LevelsEnabled;
-                if (objPower.MaxLevels > 0)
-                    objPowerControl.MaxLevels = objPower.MaxLevels;
-                objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
+				if (objPower.MaxLevels > 0)
+				{
+					if (objPower.Name == "Improved Ability (skill)")
+					{
+						foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+							if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
+							{
+								int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
+								if (intImprovedAbilityMaximum == 0)
+								{
+									intImprovedAbilityMaximum = 1;
+								}
+								objPower.MaxLevels = intImprovedAbilityMaximum;
+							}
+							else
+							{
+								objPowerControl.MaxLevels = objPower.MaxLevels;
+							}
+					}
+					else
+					{
+						objPowerControl.MaxLevels = objPower.MaxLevels;
+					}
+				}
+				objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
                 if (objPower.Rating < 1)
                     objPower.Rating = 1;
                 objPowerControl.PowerLevel = Convert.ToInt32(objPower.Rating);
