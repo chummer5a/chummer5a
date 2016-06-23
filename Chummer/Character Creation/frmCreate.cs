@@ -19275,7 +19275,7 @@ namespace Chummer
             }
 
 			// Check if the character has more than the permitted amount of native languages.
-	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.SkillCategory == "Language");
+	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => (objSkill.SkillCategory == "Language" && objSkill.Rating == 0));
 			
 			//TODO: This should probably be an improvement type. Also slightly excessive, as Bilingual normally has a limit of 1.
 	        int intLanguageLimit = 1 + _objCharacter.Qualities.Count(objQuality => objQuality.Name == "Bilingual");
