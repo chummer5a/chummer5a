@@ -33,6 +33,7 @@
 			this.lblBuildType = new System.Windows.Forms.Label();
 			this.lblDate = new System.Windows.Forms.Label();
 			this.btnAction = new System.Windows.Forms.Button();
+			this.lblExceptionGuess = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// lblGuid
@@ -74,7 +75,7 @@
 			// btnAction
 			// 
 			this.btnAction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnAction.Location = new System.Drawing.Point(521, 0);
+			this.btnAction.Location = new System.Drawing.Point(659, 0);
 			this.btnAction.Name = "btnAction";
 			this.btnAction.Size = new System.Drawing.Size(75, 23);
 			this.btnAction.TabIndex = 4;
@@ -82,17 +83,28 @@
 			this.btnAction.UseVisualStyleBackColor = true;
 			this.btnAction.Click += new System.EventHandler(this.btnAction_Click);
 			// 
+			// lblExceptionGuess
+			// 
+			this.lblExceptionGuess.AutoSize = true;
+			this.lblExceptionGuess.Location = new System.Drawing.Point(413, 5);
+			this.lblExceptionGuess.Name = "lblExceptionGuess";
+			this.lblExceptionGuess.Size = new System.Drawing.Size(43, 13);
+			this.lblExceptionGuess.TabIndex = 5;
+			this.lblExceptionGuess.Text = "[Guess]";
+			this.lblExceptionGuess.Visible = false;
+			// 
 			// CrashReportView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.lblExceptionGuess);
 			this.Controls.Add(this.btnAction);
 			this.Controls.Add(this.lblDate);
 			this.Controls.Add(this.lblBuildType);
 			this.Controls.Add(this.lblVersion);
 			this.Controls.Add(this.lblGuid);
 			this.Name = "CrashReportView";
-			this.Size = new System.Drawing.Size(599, 23);
+			this.Size = new System.Drawing.Size(737, 23);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -105,5 +117,6 @@
 		private System.Windows.Forms.Label lblBuildType;
 		private System.Windows.Forms.Label lblDate;
 		private System.Windows.Forms.Button btnAction;
+		private System.Windows.Forms.Label lblExceptionGuess;
 	}
 }

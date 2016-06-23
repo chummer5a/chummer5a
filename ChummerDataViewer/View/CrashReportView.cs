@@ -27,9 +27,27 @@ namespace ChummerDataViewer
 			lblVersion.Text = report.Version.ToString(3);
 			lblDate.Text = report.Timestamp.ToString("d MMM yy");
 
+			if (report.StackTrace != null)
+			{
+				lblExceptionGuess.Text = GuessStack(_report.StackTrace);
+				lblExceptionGuess.Visible = true;
+			}
 			report.ProgressChanged += (s, e) => OnProgressChanged(_report.Progress);
 			OnProgressChanged(_report.Progress);
 		}
+
+		//TODO: move this to a better place
+		private string GuessStack(string stacktrace)
+		{
+			string exception = stacktrace.Split(':')[0];
+
+			string location = stacktrace.Split(new string[] {" at "}, StringSplitOptions.None).Skip(1).FirstOrDefault(x => x.StartsWith("Chummer."));
+
+			if (location != null) return exception + " : " + location;
+
+			return exception;
+		}
+
 
 		private void OnProgressChanged(CrashReportProcessingProgress progress)
 		{
@@ -65,6 +83,13 @@ namespace ChummerDataViewer
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+
+			if (_report.StackTrace != null)
+			{
+				lblExceptionGuess.Text = GuessStack(_report.StackTrace);
+				lblExceptionGuess.Visible = true;
+			}
+
 		}
 
 		private void btnAction_Click(object sender, EventArgs e)

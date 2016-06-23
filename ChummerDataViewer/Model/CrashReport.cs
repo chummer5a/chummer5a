@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 
 namespace ChummerDataViewer.Model
 {
@@ -16,11 +19,15 @@ namespace ChummerDataViewer.Model
 
 
 		public Guid Guid { get; }
-		public string BuildType { get; set; }
-		public string ErrorFrindly { get; set; }
-		public string WebFileLocation { get; set; }
-		public Version Version { get; set; }
+		
 		public DateTime Timestamp { get; }
+		public Version Version { get; }
+		public string BuildType { get;  }
+		public string ErrorFrindly { get;  }
+		public string WebFileLocation { get; set; }
+		public string StackTrace { get; set; }
+		public string Userstory { get; set; }
+		
 
 		public CrashReportProcessingProgress Progress
 		{
@@ -34,7 +41,7 @@ namespace ChummerDataViewer.Model
 
 
 		internal CrashReport(Database.DatabasePrivateApi database, Guid guid, long unixTimeStamp, string buildType, string errorFrindly, string key,
-			string webFileLocation, Version version, string downloadedZip = null, string folderlocation = null)
+			string webFileLocation, Version version, string downloadedZip = null, string folderlocation = null, string stackTrace = null, string userstory = null)
 		{
 			_database = database;
 			_key = key;
@@ -45,6 +52,8 @@ namespace ChummerDataViewer.Model
 			ErrorFrindly = errorFrindly;
 			WebFileLocation = webFileLocation;
 			Version = version;
+			StackTrace = stackTrace;
+			Userstory = userstory;
 			DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 			//Addseconds complains, 1 second = 10000 ns ticks so do that instead
@@ -89,6 +98,40 @@ namespace ChummerDataViewer.Model
 				return;
 			
 			_worker.StatusChanged -= WorkerOnStatusChanged;
+			
+			_database.SetZipFileLocation(Guid, args.AttachedData.destinationPath);
+
+			WebFileLocation = args.AttachedData.destinationPath;
+
+			string userstory = null, exception;
+			using (ZipArchive archive = new ZipArchive(File.OpenRead(args.AttachedData.destinationPath), ZipArchiveMode.Read, false))
+			{
+				ZipArchiveEntry userstoryEntry = archive.GetEntry("userstory.txt");
+				if (userstoryEntry != null)
+				{
+					using (Stream s = userstoryEntry.Open())
+					{
+						byte[] buffer = new byte[userstoryEntry.Length];
+						s.Read(buffer, 0, buffer.Length);
+						userstory = Encoding.UTF8.GetString(buffer);
+					}
+				}
+
+				ZipArchiveEntry exceptionEntry= archive.GetEntry("exception.txt");
+				using (Stream s = exceptionEntry.Open())
+				{
+					byte[] buffer = new byte[exceptionEntry.Length];
+					s.Read(buffer, 0, buffer.Length);
+					exception = Encoding.UTF8.GetString(buffer);
+				}
+			}
+			Userstory = userstory;
+			StackTrace = exception;
+
+			_database.SetStackTrace(Guid, exception);
+			if (userstory != null) _database.SetUserStory(Guid, userstory);
+
+
 			Progress = CrashReportProcessingProgress.Downloaded;
 		}
 	}

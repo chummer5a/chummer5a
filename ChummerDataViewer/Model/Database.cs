@@ -14,10 +14,18 @@ namespace ChummerDataViewer.Model
 		private readonly SQLiteCommand _setKey;
 		private readonly SQLiteCommand _deleteKey;
 		private readonly SQLiteCommand _getKey;
-		private readonly SQLiteCommand _insertCrash;
+
+		//Read crash
 		private readonly SQLiteCommand _getAllCrashes;
 		private readonly SQLiteCommand _getSingleCrash;
+		private readonly SQLiteCommand _getDistinctVersions;
+		private readonly SQLiteCommand _getDistinctBuildTypes;
+
+		//write crash
+		private readonly SQLiteCommand _insertCrash;
 		private readonly SQLiteCommand _setZipFile;
+		private readonly SQLiteCommand _setUserStory;
+		private readonly SQLiteCommand _setStackTrace;
 
 		private static void ExecuteSQL(SQLiteConnection connection, string sql)
 		{
@@ -30,7 +38,7 @@ namespace ChummerDataViewer.Model
 		public static Database Create()
 		{
 			SQLiteConnection connection =
-				new SQLiteConnection($"Data Source={Path.Combine(PersistentState.FolderPath, "persistent.db")}; Version=3;");
+				new SQLiteConnection($"Data Source={Path.Combine(PersistentState.DatabaseFolder, "persistent.db")}; Version=3;");
 			connection.Open();
 			ExecuteSQL(connection, "CREATE TABLE kvstore (key TEXT UNIQUE PRIMARY KEY, value TEXT);");
 
@@ -44,7 +52,9 @@ namespace ChummerDataViewer.Model
 			                       "url TEXT, " +
 			                       "version TEXT, " +
 			                       "ziplocation TEXT, " +
-			                       "folderlocation TEXT" +
+			                       "folderlocation TEXT, " +
+			                       "userstory TEXT," +
+			                       "stacktrace TEXT" +
 			                       ");");
 
 			ExecuteSQL(connection, "CREATE INDEX errortypeindex ON crashreports (errorfriendly);");
@@ -68,14 +78,19 @@ namespace ChummerDataViewer.Model
 
 			_getAllCrashes = new SQLiteCommand("SELECT * FROM crashreports ORDER BY timestamp DESC;", _dbConnection);
 			_getSingleCrash = new SQLiteCommand("SELECT * FROM crashreports WHERE guid=@guid", _dbConnection);
-			_setZipFile = new SQLiteCommand("UPDATE crashreport SET ziplocation=@ziplocation WHERE guid=@guid", _dbConnection);
+			_setZipFile = new SQLiteCommand("UPDATE crashreports SET ziplocation = @ziplocation WHERE guid = @guid", _dbConnection);
+			_setUserStory = new SQLiteCommand("UPDATE crashreports SET userstory = @userstory WHERE guid = @guid", _dbConnection);
+			_setStackTrace = new SQLiteCommand("UPDATE crashreports SET stacktrace = @stacktrace WHERE guid = @guid", _dbConnection);
 
+
+			_getDistinctVersions = new SQLiteCommand("SELECT DISTINCT version FROM crashreports", _dbConnection);
+			_getDistinctBuildTypes = new SQLiteCommand("SELECT DISTINCT buildtype FROM crashreports", _dbConnection);
 
 			innerApi = new DatabasePrivateApi(this);
 		}
 
 		public Database() : this(
-			new SQLiteConnection($"Data Source={Path.Combine(PersistentState.FolderPath, "persistent.db")}; Version=3;")
+			new SQLiteConnection($"Data Source={Path.Combine(PersistentState.DatabaseFolder, "persistent.db")}; Version=3;")
 				.OpenAndReturn())
 		{
 			
@@ -166,6 +181,38 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
+		public IEnumerable<Version> GetAllVersions()
+		{
+			lock (_syncRoot)
+			{
+				_getDistinctVersions.Reset(true, false);
+
+				using (SQLiteDataReader reader = _getDistinctVersions.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						yield return Version.Parse(reader.GetString(0));
+					}
+				}
+			}
+		}
+
+		public IEnumerable<string> GetAllBuildTypes()
+		{
+			lock (_syncRoot)
+			{
+				_getDistinctBuildTypes.Reset(true, false);
+
+				using (SQLiteDataReader reader = _getDistinctBuildTypes.ExecuteReader())
+				{
+					while (reader.Read())
+					{
+						yield return reader.GetString(0);
+					}
+				}
+			}
+		}
+
 		private CrashReport MakeCrashReport(SQLiteDataReader reader)
 		{
 			Guid g = reader.GetGuid(0); //Guid.Parse(reader.GetString(0)));
@@ -175,10 +222,13 @@ namespace ChummerDataViewer.Model
 			string s3 = reader.GetString(4);
 			string s4 = reader.GetString(5);
 			Version v = Version.Parse(reader.GetString(6));
-			string s6 = reader.GetValue(7) as string;
-			string s7 = reader.GetValue(8) as string;
+			string s6 = reader.GetValue(7) as string;         //Not GetString as GetString throws an invalidCast 
+			string s7 = reader.GetValue(8) as string;         //(or another exception, cannot rmbr)
+			string userstory = reader.GetValue(9) as string;  //If the value is null, and this and following fields 
+			string trace = reader.GetValue(10) as string;     //can be null as they aren't set before zip is downloaded
 
-			return new CrashReport(innerApi, g, l, s1, s2, s3, s4, v, s6, s7);
+
+			return new CrashReport(innerApi, g, l, s1, s2, s3, s4, v, s6, s7, trace, userstory);
 		}
 
 		public CrashReport GetCrash(Guid guid)
@@ -212,6 +262,30 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
+		private void SetUserStory(Guid guid, string userstory)
+		{
+			lock (_syncRoot)
+			{
+				_setUserStory.Reset(true, false);
+				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setUserStory.Parameters.Add(new SQLiteParameter("@userstory", userstory));
+
+				_setUserStory.ExecuteNonQuery();
+			}
+		}
+
+		private void SetStackTrace(Guid guid, string exception)
+		{
+			lock (_syncRoot)
+			{
+				_setStackTrace.Reset(true, false);
+				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setStackTrace.Parameters.Add(new SQLiteParameter("@stacktrace", exception));
+
+				_setStackTrace.ExecuteNonQuery();
+			}
+		}
+
 		public class DatabasePrivateApi
 		{
 			private Database _db;
@@ -221,7 +295,22 @@ namespace ChummerDataViewer.Model
 				_db = db;
 			}
 
-			void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
+			internal void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
+
+			public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
+
+			public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
+		}
+
+		
+
+		public void Delete()
+		{
+			lock (_syncRoot)
+			{
+				_dbConnection.Close();
+				File.Delete(Path.Combine(PersistentState.DatabaseFolder, "persistent.db"));
+			}
 		}
 	}
 }

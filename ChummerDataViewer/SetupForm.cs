@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
@@ -9,6 +10,7 @@ namespace ChummerDataViewer
 	{
 		public string Id => txtId.Text;
 		public string Key => txtKey.Text;
+		public string BulkData => txtBulk.Text;
 
 		public SetupForm()
 		{
@@ -17,7 +19,9 @@ namespace ChummerDataViewer
 
 		private void SetupForm_Load(object sender, EventArgs e)
 		{
-			lblDb.Text = $"{PersistentState.FolderPath}";
+			lblDb.Text = Path.Combine(PersistentState.DatabaseFolder, "persistent.db");
+
+			txtBulk.Text = $"{PersistentState.DatabaseFolder}";
 		}
 
 		private void AnyTextChanged(object sender, EventArgs e)
