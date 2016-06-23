@@ -258,6 +258,9 @@ namespace Chummer.UI.Shared
 		private void BindingListDisplay_SizeChanged(object sender, EventArgs e)
 		{
 			pnlDisplay.Width = Width - SystemInformation.VerticalScrollBarWidth;
+
+			if (_contentList == null) return; //In some edge case i don't know, this is done before _Load()
+
 			pnlDisplay.Height = _contentList.Count == 0 ? Height : _contentList.Count(x => x.Visible)*_contentList[0].Control.Height;
 			foreach (Control control in pnlDisplay.Controls)
 			{
