@@ -72,6 +72,16 @@
 			this.lblDate.TabIndex = 3;
 			this.lblDate.Text = "[01 Jan 00]";
 			// 
+			// lblExceptionGuess
+			// 
+			this.lblExceptionGuess.AutoSize = true;
+			this.lblExceptionGuess.Location = new System.Drawing.Point(413, 5);
+			this.lblExceptionGuess.Name = "lblExceptionGuess";
+			this.lblExceptionGuess.Size = new System.Drawing.Size(43, 13);
+			this.lblExceptionGuess.TabIndex = 5;
+			this.lblExceptionGuess.Text = "[Guess]";
+			this.lblExceptionGuess.Visible = false;
+			// 
 			// btnAction
 			// 
 			this.btnAction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -83,22 +93,12 @@
 			this.btnAction.UseVisualStyleBackColor = true;
 			this.btnAction.Click += new System.EventHandler(this.btnAction_Click);
 			// 
-			// lblExceptionGuess
-			// 
-			this.lblExceptionGuess.AutoSize = true;
-			this.lblExceptionGuess.Location = new System.Drawing.Point(413, 5);
-			this.lblExceptionGuess.Name = "lblExceptionGuess";
-			this.lblExceptionGuess.Size = new System.Drawing.Size(43, 13);
-			this.lblExceptionGuess.TabIndex = 5;
-			this.lblExceptionGuess.Text = "[Guess]";
-			this.lblExceptionGuess.Visible = false;
-			// 
 			// CrashReportView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.lblExceptionGuess);
 			this.Controls.Add(this.btnAction);
+			this.Controls.Add(this.lblExceptionGuess);
 			this.Controls.Add(this.lblDate);
 			this.Controls.Add(this.lblBuildType);
 			this.Controls.Add(this.lblVersion);

@@ -201,9 +201,10 @@ namespace ChummerDataViewer
 
 			if (report.ErrorFrindly.Contains(search)) return true;
 
+			if (report.StackTrace?.Contains(search) ?? false) return true;
 
-
-
+			if (report.Userstory?.Contains(search) ?? false) return false;
+			
 			return false;
 		}
 	}
