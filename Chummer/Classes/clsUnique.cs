@@ -751,8 +751,6 @@ namespace Chummer
 			MetatypeMinimum = Convert.ToInt32(strMin);
 			MetatypeMaximum = Convert.ToInt32(strMax);
 			MetatypeAugmentedMaximum = Convert.ToInt32(strAug);
-
-			throw new NotSupportedException();
 		}
 
 		/// <summary>
