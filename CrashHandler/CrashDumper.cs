@@ -170,25 +170,23 @@ namespace CrashHandler
 				                      MINIDUMP_TYPE.MiniDumpWithThreadInfo |
 				                      MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
 
-				MessageBox.Show($"{exceptionInfo} {threadId} {debugger}");
-
 				bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
-				Attributes["exception-info"] = exceptionInfo.ToString();
-				Attributes["thread-id"] = threadId.ToString();
+				
 				if (extraInfo)
 				{
 					dtype |= 0;
 					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
-
-					Attributes["moreInfo"] = "true";
 					
 				}
 				else if (DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
-					Attributes["moreInfo"] = "false";
+					
+					//Might solve the problem if crashhandler stops working on remote (hah)					
+					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
+					Attributes["debug-debug-thread-id"] = threadId.ToString();
 
 				}
 				else
