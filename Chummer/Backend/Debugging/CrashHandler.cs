@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Chummer.Backend.Debugging
 {
+
+
 	internal class CrashHandler
 	{
+		[DllImport("kernel32.dll")]
+		static extern uint GetCurrentThreadId();
+
 		private class DumpData
 		{
 			public DumpData()
@@ -23,6 +30,8 @@ namespace Chummer.Backend.Debugging
 			public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
 			public Dictionary<string, string> attributes = new Dictionary<string, string>();
 			public int processid = Process.GetCurrentProcess().Id;
+			public uint threadId = GetCurrentThreadId();
+			public IntPtr exceptionPrt = IntPtr.Zero;
 
 			void AddDefaultInfo()
 			{
@@ -66,6 +75,8 @@ namespace Chummer.Backend.Debugging
 
 			public void AddException(Exception ex)
 			{
+				exceptionPrt = Marshal.GetExceptionPointers();
+
 				pretendfiles.Add("exception.txt", ex.ToString());
 
 				attributes["visible-error-friendly"] = ex.Message;
@@ -100,7 +111,6 @@ namespace Chummer.Backend.Debugging
 					dump.AddException(ex);
 					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "settings", "default.xml"));
 					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "chummerlog.txt"));
-					
 
 					Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
 
