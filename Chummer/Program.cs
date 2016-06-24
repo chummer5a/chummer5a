@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+﻿using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
 ﻿using Chummer.Backend.Debugging;
@@ -76,39 +77,34 @@ namespace Chummer
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
 			// Make sure the default language has been loaded before attempting to open the Main Form.
 
+			AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+			{
+				Exception ex = e.ExceptionObject as Exception;
+				if(ex != null)
+					CrashHandler.WebMiniDumpHandler(ex);
+
+				//main.Hide();
+				//main.ShowInTaskbar = false;
+			};
+
 	        sw.TaskEnd("Startup");
 			if (LanguageManager.Instance.Loaded)
 			{
-				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-				Application.ThreadException += ApplicationOnThreadException;
+				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
 				frmMain main = new frmMain();
-
-				try
-				{
-					Application.Run(main);
-				}
-				catch (Exception ex)
-				{
-					main.Hide();
-					main.ShowInTaskbar = false;
-					CrashHandler.WebMiniDumpHandler(ex);
-				}
+				Application.Run(main);
 			}
 			else
+			{
 				Application.Exit();
+			}
 
 			string ExceptionMap = heatmap.GenerateInfo();
 			Log.Info(ExceptionMap);
 		}
 
 		static ExceptionHeatMap heatmap = new ExceptionHeatMap();
-
-
-		private static void ApplicationOnThreadException(object sender, ThreadExceptionEventArgs threadExceptionEventArgs)
-		{
-			CrashHandler.WebMiniDumpHandler(threadExceptionEventArgs.Exception);
-		}
 
 		static void FixCwd()
 		{

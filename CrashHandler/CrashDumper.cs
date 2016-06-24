@@ -14,6 +14,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
+using System.Windows.Forms;
+using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
 
 namespace CrashHandler
 {
@@ -32,19 +34,36 @@ namespace CrashHandler
 		private readonly Dictionary<string, string> pretendFiles;
 		readonly Dictionary<string, string> _attributes;
 		short procId;
+		private IntPtr _exceptionPrt;
+		private uint _threadId;
 		private volatile CrashDumperProgress _progress;
 		private Thread worker;
 		private ManualResetEvent startSendEvent = new ManualResetEvent(false);
 
 		public CrashDumper(string b64Json)
 		{
-			if (!Deserialize(b64Json, out procId, out _filesList, out pretendFiles, out _attributes))
+			if (!Deserialize(b64Json, out procId, out _filesList, out pretendFiles, out _attributes, out _threadId, out _exceptionPrt))
 			{
 				throw new ArgumentException();
 			}
 
 			WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
 			Directory.CreateDirectory(WorkingDirectory);
+			Attributes["visible-crashhandler-major-minor"] = "v2_0";
+		}
+
+		private void AttemptDebug(Process process)
+		{
+			bool sucess = DbgHlp.DebugActiveProcess(new IntPtr(process.Id));
+
+			if (sucess)
+			{
+				Attributes["debugger-attached-sucess"] = "True";
+			}
+			else
+			{
+				Attributes["debugger-attached-error"] = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+			}
 		}
 
 		public void AllowSending()
@@ -76,8 +95,12 @@ namespace CrashHandler
 			try
 			{
 				Process = Process.GetProcessById(procId);
+
+				SetProgress(CrashDumperProgress.Debugger);
+				AttemptDebug(Process);
+
 				SetProgress(CrashDumperProgress.CreateDmp);
-				if (CreateDump(Process))
+				if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
 				{
 					Process.Kill();
 					SetProgress(CrashDumperProgress.Error);
@@ -128,22 +151,43 @@ namespace CrashHandler
 
 		
 
-		private bool CreateDump(Process process)
+		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 
 			bool ret;
 			using (FileStream file = File.Create(Path.Combine(WorkingDirectory, "crashdump.dmp")))
 			{
 
-				if (DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
-					MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
-					MINIDUMP_TYPE.MiniDumpWithDataSegs |
-					MINIDUMP_TYPE.MiniDumpWithHandleData |
-					MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
-					MINIDUMP_TYPE.MiniDumpWithThreadInfo |
-					MINIDUMP_TYPE.MiniDumpWithUnloadedModules, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
+				MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
+				info.ClientPointers = true;
+				info.ExceptionPointers = exceptionInfo;
+				info.ThreadId = threadId;
+
+				MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
+				                      MINIDUMP_TYPE.MiniDumpWithDataSegs |
+				                      MINIDUMP_TYPE.MiniDumpWithHandleData |
+				                      MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
+				                      MINIDUMP_TYPE.MiniDumpWithThreadInfo |
+				                      MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
+
+				bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
+				
+				if (extraInfo)
+				{
+					dtype |= 0;
+					ret = !(DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
+						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
+					
+				}
+				else if (DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
+					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;
+					
+					//Might solve the problem if crashhandler stops working on remote (hah)					
+					Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
+					Attributes["debug-debug-thread-id"] = threadId.ToString();
+
 				}
 				else
 				{
@@ -308,7 +352,9 @@ namespace CrashHandler
 			out short processId, 
 			out List<string> filesList,
 			out Dictionary<string, string> pretendFiles, 
-			out Dictionary<string, string> attributes)
+			out Dictionary<string, string> attributes,
+			out uint threadId,
+			out IntPtr exceptionPrt)
 		{
 			string json = Encoding.UTF8.GetString(Convert.FromBase64String(base64json));
 
@@ -325,6 +371,12 @@ namespace CrashHandler
 
 				processId = (short) pid;
 
+				string s = parts["exceptionPrt"]?.ToString() ?? "0";
+
+				exceptionPrt = new IntPtr(int.Parse(s));
+
+				threadId = uint.Parse(parts["threadId"]?.ToString() ?? "0");
+
 				return true;
 			}
 
@@ -333,7 +385,8 @@ namespace CrashHandler
 			filesList = null;
 			pretendFiles = null;
 			attributes = null;
-
+			exceptionPrt = IntPtr.Zero;
+			threadId = 0;
 			return false;
 		}
 
@@ -359,6 +412,9 @@ namespace CrashHandler
 	{
 		[Description("Started collecting error information")]
 		Started,
+
+		[Description("Attaching Debugger")]
+		Debugger,
 
 		[Description("Saving crash dump (this might take a while)")]
 		CreateDmp,

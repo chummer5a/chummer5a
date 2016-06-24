@@ -8,8 +8,29 @@ using System.Threading.Tasks;
 
 namespace CrashHandler
 {
+	[StructLayout(LayoutKind.Sequential, Pack = 4)]  // Pack=4 is important! So it works also for x64!
+	public struct MiniDumpExceptionInformation
+	{
+		public uint ThreadId;
+		public IntPtr ExceptionPointers;
+		[MarshalAs(UnmanagedType.Bool)]
+		public bool ClientPointers;
+	}
+
 	static class DbgHlp
 	{
+		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		public static extern bool MiniDumpWriteDump
+		(
+			IntPtr hProcess,
+			short ProcessId,
+			IntPtr hFile,
+			MINIDUMP_TYPE DumpType,
+			ref MiniDumpExceptionInformation ExceptionParam,
+			IntPtr UserStreamParam,
+			IntPtr CallbackParam
+		);
+
 		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		public static extern bool MiniDumpWriteDump
 		(
@@ -21,6 +42,9 @@ namespace CrashHandler
 			IntPtr UserStreamParam,
 			IntPtr CallbackParam
 		);
+
+		[DllImport("Kernel32.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		public static extern bool DebugActiveProcess(IntPtr hProcess);
 
 	}
 

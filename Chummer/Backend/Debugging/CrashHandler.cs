@@ -3,15 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Chummer.Backend.Debugging
 {
+
+
 	internal class CrashHandler
 	{
+		[DllImport("kernel32.dll")]
+		static extern uint GetCurrentThreadId();
+
 		private class DumpData
 		{
 			public DumpData()
@@ -23,6 +31,8 @@ namespace Chummer.Backend.Debugging
 			public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
 			public Dictionary<string, string> attributes = new Dictionary<string, string>();
 			public int processid = Process.GetCurrentProcess().Id;
+			public uint threadId = GetCurrentThreadId();
+			public IntPtr exceptionPrt = IntPtr.Zero;
 
 			void AddDefaultInfo()
 			{
@@ -45,14 +55,13 @@ namespace Chummer.Backend.Debugging
 
 					if (!cv.GetValueNames().Contains("ProductId"))
 					{
-						//on 32 bit builds?
-						//cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-
+						//On 32 bit builds? get 64 bit registry
 						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 					}
-
-					String[] keys = cv.GetValueNames();
+					
 					attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
+					attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+
 					
 				}
 				catch{ }
@@ -60,12 +69,22 @@ namespace Chummer.Backend.Debugging
 				attributes.Add("machine-name", Environment.MachineName);
 				attributes.Add("current-dir", Environment.CurrentDirectory);
 				attributes.Add("application-dir", Application.ExecutablePath);
+				attributes.Add("os-type", Environment.OSVersion.VersionString);
+
 
 				attributes.Add("visible-error-friendly", "No description available");
+
+				PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
+				foreach (PropertyInfo propertyInfo in systemInformation)
+				{
+					attributes.Add("system-info-"+ propertyInfo.Name, propertyInfo.GetValue(null).ToString());
+				}
 			}
 
 			public void AddException(Exception ex)
 			{
+				exceptionPrt = Marshal.GetExceptionPointers();
+
 				pretendfiles.Add("exception.txt", ex.ToString());
 
 				attributes["visible-error-friendly"] = ex.Message;
@@ -100,7 +119,6 @@ namespace Chummer.Backend.Debugging
 					dump.AddException(ex);
 					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "settings", "default.xml"));
 					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "chummerlog.txt"));
-					
 
 					Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
 
