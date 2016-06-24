@@ -5002,28 +5002,31 @@ namespace Chummer
                 objPowerControl.Extra = _objImprovementManager.SelectedValue;
             }
 
-			if (frmPickPower.MaxLevels() > 0)
-				if (objPower.Name == "Improved Ability (skill)")
-				{
-					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-					{
-						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-						{
-							int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-							if (intImprovedAbilityMaximum == 0)
-							{
-								intImprovedAbilityMaximum = 1;
-							}
-							objPower.MaxLevels = intImprovedAbilityMaximum;
-						}
-					}
-				}
-				else
-				{
-					objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-				}
-
-			// Set the control's Maximum.
+	        if (frmPickPower.MaxLevels() > 0)
+	        {
+		        if (objPower.Name == "Improved Ability (skill)")
+		        {
+			        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+			        {
+				        if (objPower.Extra == objSkill.Name ||
+				            (objSkill.IsExoticSkill &&
+				             objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
+				        {
+					        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating/2);
+					        if (intImprovedAbilityMaximum == 0)
+					        {
+						        intImprovedAbilityMaximum = 1;
+					        }
+					        objPower.MaxLevels = intImprovedAbilityMaximum;
+				        }
+			        }
+		        }
+		        else
+		        {
+			        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+		        }
+	        }
+	        // Set the control's Maximum.
 			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
             objPowerControl.Top = i * objPowerControl.Height;
             objPowerControl.RefreshTooltip();
