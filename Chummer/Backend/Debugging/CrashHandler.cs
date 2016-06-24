@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -54,14 +55,13 @@ namespace Chummer.Backend.Debugging
 
 					if (!cv.GetValueNames().Contains("ProductId"))
 					{
-						//on 32 bit builds?
-						//cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
-
+						//On 32 bit builds? get 64 bit registry
 						cv = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64).OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 					}
-
-					String[] keys = cv.GetValueNames();
+					
 					attributes.Add("machine-id", cv.GetValue("ProductId").ToString());
+					attributes.Add("os-name", cv.GetValue("ProductName").ToString());
+
 					
 				}
 				catch{ }
@@ -69,8 +69,16 @@ namespace Chummer.Backend.Debugging
 				attributes.Add("machine-name", Environment.MachineName);
 				attributes.Add("current-dir", Environment.CurrentDirectory);
 				attributes.Add("application-dir", Application.ExecutablePath);
+				attributes.Add("os-type", Environment.OSVersion.VersionString);
+
 
 				attributes.Add("visible-error-friendly", "No description available");
+
+				PropertyInfo[] systemInformation = typeof(SystemInformation).GetProperties();
+				foreach (PropertyInfo propertyInfo in systemInformation)
+				{
+					attributes.Add("system-info-"+ propertyInfo.Name, propertyInfo.GetValue(null).ToString());
+				}
 			}
 
 			public void AddException(Exception ex)
