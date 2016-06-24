@@ -126,7 +126,7 @@ namespace Chummer.Backend.Debugging
 				}
 				catch(Exception nex)
 				{
-					MessageBox.Show("Failed to create crash report.\nMake sure your system is connected to the internet.\n" +nex.ToString());
+					MessageBox.Show("Failed to create crash report.\nHere is some information to help the developers figure out why\n" +nex + "\nCrash information:\n"+ ex);
 				}
 			}
 
