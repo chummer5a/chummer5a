@@ -1323,7 +1323,7 @@ namespace Chummer
 				{
 					Log.Info("Calling CreateImprovement");
 					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillGroup,
-						strUnique, ValueToInt(bonusNode["max"].InnerText, intRating), 0, 0, 1, 0, 0, strExclude,
+						strUnique, 0, 0, 0, 1, 0, 0, strExclude,
 						blnAddToRating);
 				}
 			}

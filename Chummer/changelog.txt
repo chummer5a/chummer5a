@@ -13,6 +13,7 @@ Application Changes:
 - Fixed a crash issue caused by improvements with selectskill trying to use an Exotic skill. Fixes #921.
 - Fixed a rendering issue that prevented Exotic Skills from showing up in sorted lists.
 - Fixed a misleading reference to Special Attributes when validating your character.
+- Fixed a crash issue with the Incompetent quality. Fixes #959.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
