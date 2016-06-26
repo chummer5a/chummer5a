@@ -14,10 +14,14 @@ Application Changes:
 - Fixed a rendering issue that prevented Exotic Skills from showing up in sorted lists.
 - Fixed a misleading reference to Special Attributes when validating your character.
 - Fixed a crash issue with the Incompetent quality. Fixes #959.
+- Added code to allow override XML files to use the ID node instead of the Name tag when finding an item to replace. Fixes #957.
+- Improved the Options form to only prompt for saving if changes were made.
+- Added a handler to check if there's a mismatch between a loaded character's used sourcebooks and the application's selected sourcebooks. Won't affect characters that haven't been loaded before now, changes may also be overwritten by loading the character in older versions. Closes #884.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
 - Added the missing Nausea Gas toxin SR5. Fixes #940.
+- Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
 
 New Strings:
 - String_AttributeESSShort

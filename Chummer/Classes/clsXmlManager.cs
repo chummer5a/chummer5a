@@ -180,7 +180,13 @@ namespace Chummer
 						{
 							foreach (XmlNode objType in objNode.ChildNodes)
 							{
-								if (objType["name"] != null)
+								if (objType["id"] != null)
+								{
+									XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"]");
+									if (objItem != null)
+										objItem.InnerXml = objType.InnerXml;
+								}
+								else if (objType["name"] != null)
 								{
 									XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"]");
 									if (objItem != null)
