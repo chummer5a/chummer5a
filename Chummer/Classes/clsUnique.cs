@@ -4845,6 +4845,7 @@ namespace Chummer
             _blnFree = Convert.ToBoolean(objNode["free"].InnerText);
             _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
             _intMaxLevel = Convert.ToInt32(objNode["maxlevel"].InnerText);
+
 			try
 			{
 				_blnDiscountedAdeptWay = Convert.ToBoolean(objNode["discounted"].InnerText);

@@ -665,7 +665,7 @@ namespace Chummer.Skills
 				Log.Warning(new object[]{"Skill Tooltip GetName value = null", source.SourceName, source.ImproveSource, source.ImproveType, source.ImprovedName});
 			}
 
-			return value ?? source.SourceName;
+			return value ?? source.ImproveSource + " source not found";
 
 		}
 

@@ -5002,28 +5002,31 @@ namespace Chummer
                 objPowerControl.Extra = _objImprovementManager.SelectedValue;
             }
 
-			if (frmPickPower.MaxLevels() > 0)
-				if (objPower.Name == "Improved Ability (skill)")
-				{
-					foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-					{
-						if (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
-						{
-							int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
-							if (intImprovedAbilityMaximum == 0)
-							{
-								intImprovedAbilityMaximum = 1;
-							}
-							objPower.MaxLevels = intImprovedAbilityMaximum;
-						}
-					}
-				}
-				else
-				{
-					objPowerControl.MaxLevels = frmPickPower.MaxLevels();
-				}
-
-			// Set the control's Maximum.
+	        if (frmPickPower.MaxLevels() > 0)
+	        {
+		        if (objPower.Name == "Improved Ability (skill)")
+		        {
+			        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+			        {
+				        if (objPower.Extra == objSkill.Name ||
+				            (objSkill.IsExoticSkill &&
+				             objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
+				        {
+					        int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating/2);
+					        if (intImprovedAbilityMaximum == 0)
+					        {
+						        intImprovedAbilityMaximum = 1;
+					        }
+					        objPower.MaxLevels = intImprovedAbilityMaximum;
+				        }
+			        }
+		        }
+		        else
+		        {
+			        objPowerControl.MaxLevels = frmPickPower.MaxLevels();
+		        }
+	        }
+	        // Set the control's Maximum.
 			objPowerControl.RefreshMaximum(_objCharacter.MAG.TotalValue);
             objPowerControl.Top = i * objPowerControl.Height;
             objPowerControl.RefreshTooltip();
@@ -19275,7 +19278,7 @@ namespace Chummer
             }
 
 			// Check if the character has more than the permitted amount of native languages.
-	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.SkillCategory == "Language");
+	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => (objSkill.SkillCategory == "Language" && objSkill.Rating == 0));
 			
 			//TODO: This should probably be an improvement type. Also slightly excessive, as Bilingual normally has a limit of 1.
 	        int intLanguageLimit = 1 + _objCharacter.Qualities.Count(objQuality => objQuality.Name == "Bilingual");

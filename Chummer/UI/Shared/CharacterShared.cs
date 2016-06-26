@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 ﻿using System.Runtime.InteropServices;
 ﻿using System.Windows.Forms;
+﻿using Chummer.Backend.Equipment;
+﻿using Chummer.Skills;
 
 namespace Chummer
 {
@@ -34,6 +36,12 @@ namespace Chummer
 		protected MainController _objController;
 		protected CharacterOptions _objOptions;
 		protected CommonFunctions _objFunctions;
+
+		public CharacterShared()
+		{
+			_gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.Skills.First(x => x.Name == "Gunnery"));
+		}
+
 
 		/// <summary>
 		/// Wrapper for relocating contact forms. 
@@ -186,8 +194,6 @@ namespace Chummer
 			}
 		}
 
-
-
 		/// <summary>
 		/// Update the labels and tooltips for the character's Attributes.
 		/// </summary>
@@ -217,5 +223,32 @@ namespace Chummer
 				tipTooltip.SetToolTip(lblATTAug, "");
 			}
 		}
+
+		private Lazy<Skill> _gunneryCached;
+
+		protected int MountedGunManualOperationDicePool(Weapon weapon)
+		{
+			return _gunneryCached.Value.Pool;
+		}
+
+		protected int MountedGunCommandDeviceDicePool(Weapon weapon)
+		{
+			return _gunneryCached.Value.PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+		}
+
+		protected int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
+		{
+			int pilotRating = vehicle.Pilot;
+
+			Gear maybeAutoSoft = vehicle.Gear.SelectMany(x => x.ThisAndAllChildren()).FirstOrDefault(x => x.Name == "Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+
+			if (maybeAutoSoft != null)
+			{
+				return maybeAutoSoft.Rating + pilotRating;
+			}
+
+			return 0;
+		}
+
 	}
 }

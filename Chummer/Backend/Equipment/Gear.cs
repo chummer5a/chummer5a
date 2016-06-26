@@ -2467,5 +2467,22 @@ namespace Chummer.Backend.Equipment
 			}
 		}
 		#endregion
+
+		#region Methods
+
+		public IEnumerable<Gear> ThisAndAllChildren()
+		{
+			yield return this;
+
+			foreach (Gear objChild in _objChildren)
+			{
+				foreach (Gear child in objChild.ThisAndAllChildren())
+				{
+					yield return child;
+				}
+			}
+		}
+
+		#endregion
 	}
 }
