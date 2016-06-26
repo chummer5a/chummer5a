@@ -33,6 +33,8 @@ namespace Chummer
 	{
 		private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
 		private bool _skipRefresh;
+		private bool blnDirty = false;
+		private bool blnLoading = true;
 		#region Form Events
 		public frmOptions()
         {
@@ -54,14 +56,28 @@ namespace Chummer
             SetDefaultValueForLanguageList();
             PopulateXsltList();
             SetDefaultValueForXsltList();
+	        blnLoading = false;
         }
         #endregion
 
         #region Control Events
         private void cmdOK_Click(object sender, EventArgs e)
-        {
-            // Make sure the current Setting has a name.
-            if (txtSettingName.Text.Trim() == "")
+		{
+			if (blnDirty)
+			{
+				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.Yes:
+						break;
+					default:
+						return;
+				}
+			}
+			// Make sure the current Setting has a name.
+			if (txtSettingName.Text.Trim() == "")
             {
                 MessageBox.Show("You must give your Settings a name.", "Chummer Settings", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtSettingName.Focus();
@@ -270,8 +286,8 @@ namespace Chummer
         }
 
         private void chkKnowledgeMultiplier_CheckedChanged(object sender, EventArgs e)
-        {
-            nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
+		{
+			nudKnowledgeMultiplier.Enabled = chkKnowledgeMultiplier.Checked;
             if (!chkKnowledgeMultiplier.Checked)
             {
                 nudKnowledgeMultiplier.Value = 2;
@@ -280,8 +296,8 @@ namespace Chummer
         }
 
         private void chkDroneArmorMultiplier_CheckedChanged(object sender, EventArgs e)
-        {
-            nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
+		{
+			nudDroneArmorMultiplier.Enabled = chkDroneArmorMultiplier.Checked;
             if (!chkDroneArmorMultiplier.Checked)
             {
                 nudDroneArmorMultiplier.Value = 2;
@@ -398,25 +414,6 @@ namespace Chummer
             CommonFunctions objCommon = new CommonFunctions(null);
             objCommon.OpenPDF(treSourcebook.SelectedNode.Tag + " 5");
         }
-		
-		protected override void OnFormClosing(FormClosingEventArgs e)
-		{
-			string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
-			string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
-
-			switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
-			{
-				case DialogResult.Yes:
-					cmdOK_Click(cmdOK, e);
-					break;
-				case DialogResult.Cancel:
-					e.Cancel = true;
-					break;
-				default:
-					break;
-			}
-		}
-
 		#endregion
 
 		#region Methods
@@ -1210,6 +1207,14 @@ namespace Chummer
 			Clipboard.SetText(response);
 			#endif
 		}
-        #endregion        
-    }
+		#endregion
+
+		private void OptionsChanged(object sender, EventArgs e)
+		{
+			if (!blnLoading)
+			{
+				blnDirty = true;
+			}
+		}
+	}
 }

@@ -410,6 +410,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteEndElement();
 			}
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>

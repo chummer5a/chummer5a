@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-﻿using System.Runtime.InteropServices;
-﻿using System.Windows.Forms;
-﻿using Chummer.Backend.Equipment;
-﻿using Chummer.Skills;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using System.Xml;
 
 namespace Chummer
 {

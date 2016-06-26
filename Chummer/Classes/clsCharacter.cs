@@ -261,6 +261,7 @@ namespace Chummer
         private int _intContactMultiplier = 0;
 
         // Lists.
+		private List<string> _lstSources = new List<string>();
         private List<Improvement> _lstImprovements = new List<Improvement>();
 	    private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
@@ -360,6 +361,7 @@ namespace Chummer
 		        Indentation = 1,
 		        IndentChar = '\t'
 	        };
+	        _lstSources = null;
 	        objWriter.WriteStartDocument();
 
             // <character>
@@ -921,10 +923,19 @@ namespace Chummer
                 objWeek.Save(objWriter);
             }
             objWriter.WriteEndElement();
-            // </calendar>
+			// </calendar>
 
-            // </character>
-            objWriter.WriteEndElement();
+			// <sources>
+			objWriter.WriteStartElement("sources");
+			foreach (String strItem in _lstSources)
+			{
+				objWriter.WriteElementString("source", strItem);
+			}
+			objWriter.WriteEndElement();
+			// </sources>
+
+			// </character>
+			objWriter.WriteEndElement();
 
             objWriter.WriteEndDocument();
             objWriter.Close();
@@ -978,7 +989,34 @@ namespace Chummer
             if (!_objOptions.Load(_strSettingsFileName))
                 return false;
 
-            try
+			// Get the sourcebooks that were used to create the character and throw up a warning if there's a mismatch.
+				if (objXmlCharacter["sources"] != null)
+				{
+					bool blnMissingBooks = false;
+					string strMissingBooks = "";
+					//Does the list of enabled books contain the current item?
+					foreach (XmlNode objXmlNode in objXmlCharacter["sources"].Cast<XmlNode>().Where(objXmlNode => !_objOptions.Books.Contains(objXmlNode.InnerText)))
+					{
+						strMissingBooks += (objXmlNode.InnerText + ";");
+						blnMissingBooks = true;
+					}
+					if (blnMissingBooks)
+				{
+
+					string strMessage = "";
+					strMessage =
+						"This character was created with the following books that are not enabled:\n {0} \nThis may cause issues. Do you want to continue loading the character?"
+							.Replace("{0}", TranslatedBookList(strMissingBooks));
+                    if (
+							MessageBox.Show(strMessage, "Missing Books",
+								MessageBoxButtons.YesNo) == DialogResult.No)
+						{
+							return false;
+						}
+					}
+				}
+
+			try
             {
 			    _decEssenceAtSpecialStart = Convert.ToDecimal(objXmlCharacter["essenceatspecialstart"].InnerText,
 				    GlobalOptions.Instance.CultureInfo);
@@ -2640,15 +2678,24 @@ namespace Chummer
 			
 			SkillsSection.Reset();
 		}
-        #endregion
+		#endregion
 
-        #region Helper Methods
-
-	    /// <summary>
-        /// Retrieve the name of the Object that created an Improvement.
-        /// </summary>
-        /// <param name="objImprovement">Improvement to check.</param>
-        public string GetObjectName(Improvement objImprovement)
+		#region Helper Methods
+		/// <summary>
+		/// Collate and save the character's used sourcebooks. This list is cleared after loading a character to ensure that only the current items are stored.
+		/// </summary>
+		public void SourceProcess(string strInput)
+		{
+			if (!_lstSources.Contains(strInput))
+			{
+				_lstSources.Add(strInput);
+			}
+		}
+		/// <summary>
+		/// Retrieve the name of the Object that created an Improvement.
+		/// </summary>
+		/// <param name="objImprovement">Improvement to check.</param>
+		public string GetObjectName(Improvement objImprovement)
         {
             string strReturn = "";
             switch (objImprovement.ImproveSource)
@@ -7108,11 +7155,11 @@ namespace Chummer
         /// </summary>
         public int InitRoll { get; set; }
 
-        /// <summary>
-        /// The Initiative Passes that the player has
-        /// <note>Dashboard</note>
-        /// </summary>
-        public int InitPasses
+		/// <summary>
+		/// The Initiative Passes that the player has
+		/// <note>Dashboard</note>
+		/// </summary>
+		public int InitPasses
         {
             get
             {
@@ -7143,9 +7190,45 @@ namespace Chummer
         /// <note>Dashboard</note>
         /// </summary>
         public int InitialInit { get; set; }
+		#endregion
+
+		#region Temporary Properties
+
+		/// <summary>
+		/// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+		/// </summary>
+		/// <param name="strInput"></param>
+		public string TranslatedBookList(string strInput)
+		{
+			string strReturn = "";
+			strInput = strInput.TrimEnd(';');
+			string[] strArray = strInput.Split(';');
+			// Load the Sourcebook information.
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("books.xml");
+
+			foreach (string strBook in strArray)
+			{
+				XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[code = \"" + strBook + "\"]");
+				if (objXmlBook != null)
+				{
+					if (objXmlBook["translate"] != null)
+						strReturn += objXmlBook["translate"]?.InnerText;
+					else
+						strReturn += objXmlBook["name"]?.InnerText;
+				}
+				else
+				{
+					strReturn += "Unknown book! ";
+				}
+				strReturn += " (" + objXmlBook?["code"]?.InnerText + ")";
+			}
+			return strReturn;
+		}
+
+		#endregion
 
 		//Can't be at improvementmanager due reasons
-	    private  Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
+		private Lazy<Stack<String>> _pushtext = new Lazy<Stack<String>>();
 
 	    /// <summary>
 		/// Push a value that will be used instad of dialog instead in next <selecttext />
@@ -7261,9 +7344,7 @@ namespace Chummer
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
         }
-	    #endregion
-
-	    public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]
 	    protected virtual void OnPropertyChanged<T>(ref T old, T value, [CallerMemberName] string propertyName = null)
