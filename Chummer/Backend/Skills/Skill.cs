@@ -792,7 +792,7 @@ namespace Chummer.Skills
 			//this might do hardwires if i understand how they works correctly
 			var hardwire = CharacterObject.Improvements.Where(
 				improvement =>
-					improvement.ImproveType == Improvement.ImprovementType.HardWire && improvement.ImprovedName == Name &&
+					improvement.ImproveType == Improvement.ImprovementType.Hardwire && improvement.ImprovedName == Name &&
 					improvement.Enabled).ToList();
 
 			if (hardwire.Any())
