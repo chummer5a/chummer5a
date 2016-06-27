@@ -7358,13 +7358,38 @@ namespace Chummer
 
 		//I also think this prevents GC. But there is no good way to do it...
 		internal event Action<List<Improvement>, ImprovementManager> ImprovementEvent;
+		
+		//List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down
+		private static readonly Improvement.ImprovementType[] skillRelated = {
+			Improvement.ImprovementType.Skillwire,
+			Improvement.ImprovementType.SkillsoftAccess,
+			Improvement.ImprovementType.Linguist,
+			Improvement.ImprovementType.TechSchool,
+			Improvement.ImprovementType.Attributelevel,
+			Improvement.ImprovementType.Hardwire,
+			Improvement.ImprovementType.Skill,  //Improve pool of skill based on name
+			Improvement.ImprovementType.SkillGroup,  //Group
+			Improvement.ImprovementType.SkillCategory, //category
+			Improvement.ImprovementType.SkillAttribute, //attribute
+			Improvement.ImprovementType.SkillLevel,  //Karma points in skill
+			Improvement.ImprovementType.SkillGroupLevel, //group
+			Improvement.ImprovementType.SkillBase,  //base points in skill
+			Improvement.ImprovementType.SkillGroupBase, //group
+			Improvement.ImprovementType.SkillKnowledgeForced, //A skill gained from a knowsoft
+			Improvement.ImprovementType.SpecialSkills,
+			Improvement.ImprovementType.ReflexRecorderOptimization,
+		};
+
 		//To get when things change in improvementmanager
 		//Ugly, ugly done, but we cannot get events out of it today
 		// FUTURE REFACTOR HERE
 		[Obsolete("Refactor this method away once improvementmanager gets outbound events")]
 		internal void ImprovementHook(List<Improvement> _lstTransaction, ImprovementManager improvementManager)
 		{
-			ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+			if (_lstTransaction.Any(x => skillRelated.Any(y => y == x.ImproveType)))
+			{
+				ImprovementEvent?.Invoke(_lstTransaction, improvementManager);
+			}
 		}
 	}
 }

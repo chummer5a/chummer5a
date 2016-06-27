@@ -1,3 +1,10 @@
+Build 182:
+Application Changes:
+- Increase knowledge skill rating and add knowledge skill specialization now has the right point
+- All knowledge skills don't cost -1 karma anymore.
+- Active Hardwires work again.
+- Now promts for a name for new knowledge skills in career mode, instead of them being unnameable.
+
 Build 181:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.

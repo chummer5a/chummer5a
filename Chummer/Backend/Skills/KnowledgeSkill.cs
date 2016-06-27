@@ -262,7 +262,7 @@ namespace Chummer.Skills
 
 
 			int value;
-			if (LearnedRating <= RatingMaximum)
+			if (LearnedRating >= RatingMaximum)
 			{
 				return -1;
 			}
