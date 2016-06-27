@@ -156,12 +156,14 @@
 			// 
 			// txtIdSelectable
 			// 
+			this.txtIdSelectable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
 			this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.txtIdSelectable.Location = new System.Drawing.Point(10, 102);
 			this.txtIdSelectable.Name = "txtIdSelectable";
 			this.txtIdSelectable.ReadOnly = true;
-			this.txtIdSelectable.Size = new System.Drawing.Size(100, 13);
+			this.txtIdSelectable.Size = new System.Drawing.Size(416, 13);
 			this.txtIdSelectable.TabIndex = 10;
 			this.txtIdSelectable.TabStop = false;
 			this.txtIdSelectable.Text = "[ID]";
