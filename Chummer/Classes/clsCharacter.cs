@@ -361,7 +361,7 @@ namespace Chummer
 		        Indentation = 1,
 		        IndentChar = '\t'
 	        };
-	        _lstSources = null;
+	        _lstSources.Clear();
 	        objWriter.WriteStartDocument();
 
             // <character>
