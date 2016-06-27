@@ -316,9 +316,10 @@ namespace Chummer.UI.Skills
 			Skill_PropertyChanged(null, new PropertyChangedEventArgs(nameof(Skill.Rating)));
 		}
 
-		private void SkillControl2_Click(object sender, EventArgs e)
-		{
-
-		}
-	}
+        private void lblName_Click(object sender, EventArgs e)
+        {
+            CommonFunctions objCommon = new CommonFunctions(_skill.CharacterObject);
+            objCommon.OpenPDF(_skill.Source+" "+_skill.Page);
+        }
+    }
 }
