@@ -114,6 +114,8 @@ namespace Chummer
 		private static bool _blnDronemods = false;
 
 
+		private static bool _omaeEnabled = false;
+
 		// Omae Information.
 		private static string _strOmaeUserName = "";
 		private static string _strOmaePassword = "";
@@ -155,6 +157,15 @@ namespace Chummer
 			{
 				_lifeModuleEnabled =
 					Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("lifemodule").ToString());
+			}
+			catch 
+			{
+			}
+
+			try
+			{
+				_omaeEnabled =
+					Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("omaeenabled").ToString());
 			}
 			catch 
 			{
@@ -860,5 +871,10 @@ namespace Chummer
                 GlobalOptions._blnOpenPDFsAsUnix = value;
             }
         }
-    }
+
+		public bool OmaeEnabled {
+			get { return _omaeEnabled; }
+			set { _omaeEnabled = value; }
+		}
+	}
 }

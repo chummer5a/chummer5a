@@ -4495,6 +4495,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BuildPositiveQualities</key>
 			<text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
 		</string>
+    <string>
+      <key>Checkbox_Options_OmaeEnabled</key>
+      <text>Enable Omae character exchange</text>      
+    </string>
 		<string>
 			<key>Checkbox_Options_UseLifeModule</key>
 			<text>Life modules available</text>
@@ -4531,6 +4535,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_BuildNegativeQualities</key>
 			<text>Characters may select up to -25 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -25 Karma limit.</text>
 		</string>
+    <string>
+      <key>Tip_Omae_Warning</key>
+      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.
+Do you want to continue?</text>
+    </string>
 		<string>
 			<key>Tip_BuildFoci</key>
 			<text>Each bonded Focus costs {0} Karma per point of Force.</text>

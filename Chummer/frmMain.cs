@@ -509,6 +509,9 @@ namespace Chummer
 		{
 			if (GlobalOptions.Instance.StartupFullscreen)
 				this.WindowState = FormWindowState.Maximized;
+
+			mnuToolsOmae.Visible = GlobalOptions.Instance.OmaeEnabled;
+
             if (GlobalOptions.Instance.UseLogging)
             {
 				CommonFunctions objFunctions = new CommonFunctions();

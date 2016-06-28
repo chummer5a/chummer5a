@@ -261,6 +261,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1038,6 +1039,7 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.chkOmaeEnabled);
 			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsUnix);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
 			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
@@ -1198,7 +1200,6 @@
 			this.nudPDFOffset.Name = "nudPDFOffset";
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
-			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblPDFOffset
@@ -1695,8 +1696,8 @@
 			this.treSourcebook.Size = new System.Drawing.Size(226, 534);
 			this.treSourcebook.TabIndex = 1;
 			this.treSourcebook.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treSourcebook_BeforeCheck);
-			this.treSourcebook.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterSelect);
 			this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
+			this.treSourcebook.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterSelect);
 			// 
 			// tabKarmaCosts
 			// 
@@ -2739,7 +2740,6 @@
 			this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
 			this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
 			this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
-			this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.chkDroneArmorMultiplier_CheckedChanged);
 			this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkUseTotalValueForFreeKnowledge
@@ -2840,7 +2840,6 @@
 			this.chkExceedNegativeQualities.Tag = "Checkbox_Options_ExceedNegativeQualities";
 			this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
 			this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
-			this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
 			this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkExceedPositiveQualities
@@ -2898,7 +2897,6 @@
 			this.chkKnowledgeMultiplier.Tag = "Checkbox_Options_KnowledgeMultiplier";
 			this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
 			this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
-			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
 			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// label2
@@ -2944,7 +2942,6 @@
 			this.chkContactMultiplier.Tag = "Checkbox_Options_ContactMultiplier";
 			this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
 			this.chkContactMultiplier.UseVisualStyleBackColor = true;
-			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
 			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkFreeKarmaContacts
@@ -3023,7 +3020,6 @@
 			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s AGI when calculating" +
         " movement rates.");
 			this.chkCyberlegMovement.UseVisualStyleBackColor = true;
-			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkIgnoreArt
 			// 
@@ -3037,7 +3033,6 @@
 			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art " +
         "requirement detailed in Street Grimoire.");
 			this.chkIgnoreArt.UseVisualStyleBackColor = true;
-			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cboSetting
 			// 
@@ -3081,6 +3076,18 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
+			// 
+			// chkOmaeEnabled
+			// 
+			this.chkOmaeEnabled.AutoSize = true;
+			this.chkOmaeEnabled.Location = new System.Drawing.Point(9, 222);
+			this.chkOmaeEnabled.Name = "chkOmaeEnabled";
+			this.chkOmaeEnabled.Size = new System.Drawing.Size(101, 17);
+			this.chkOmaeEnabled.TabIndex = 24;
+			this.chkOmaeEnabled.Tag = "Checkbox_Options_OmaeEnabled";
+			this.chkOmaeEnabled.Text = "[Omae enabled]";
+			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
+			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
 			// 
 			// frmOptions
 			// 
@@ -3409,5 +3416,6 @@
         private System.Windows.Forms.NumericUpDown nudDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
-    }
+		private System.Windows.Forms.CheckBox chkOmaeEnabled;
+	}
 }
