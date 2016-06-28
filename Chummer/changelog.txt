@@ -30,6 +30,7 @@ Data Changes:
 - Added the missing Nausea Gas toxin SR5. Fixes #940.
 - Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
 - Hawk eye now gives an 1 dice bonus to perception
+- The Armor tab under gear has been renamed to "Clothing and Armor" to match the core rulebook
 
 New Strings:
 - String_AttributeESSShort
