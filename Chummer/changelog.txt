@@ -28,6 +28,7 @@ Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
 - Added the missing Nausea Gas toxin SR5. Fixes #940.
 - Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
+- Hawk eye now gives an 1 dice bonus to perception
 
 New Strings:
 - String_AttributeESSShort
