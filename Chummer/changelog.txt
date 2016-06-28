@@ -21,6 +21,7 @@ Application Changes:
 - All knowledge skills don't cost -1 karma anymore.
 - Active Hardwires work again.
 - Now promts for a name for new knowledge skills in career mode, instead of them being unnameable.
+- Gear that adds bonuses to skills now show up as a name instead of an id.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

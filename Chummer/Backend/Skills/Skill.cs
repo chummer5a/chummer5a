@@ -656,6 +656,12 @@ namespace Chummer.Skills
 				{
 					return source.CustomName;
 				}
+
+				case Improvement.ImprovementSource.Gear:
+				{
+					value = _character.Gear.FirstOrDefault(x => x.InternalId == source.SourceName)?.DisplayName;
+				}
+					break;
 				default:
 					return source.SourceName;
 			}
