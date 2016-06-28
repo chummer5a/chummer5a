@@ -39,8 +39,8 @@
 			this.llblContents = new System.Windows.Forms.LinkLabel();
 			this.label2 = new System.Windows.Forms.Label();
 			this.txtDesc = new System.Windows.Forms.TextBox();
-			this.lblId = new System.Windows.Forms.Label();
 			this.timerRefreshTextFile = new System.Windows.Forms.Timer(this.components);
+			this.txtIdSelectable = new System.Windows.Forms.TextBox();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -149,27 +149,31 @@
 			this.txtDesc.TabIndex = 8;
 			this.txtDesc.TextChanged += new System.EventHandler(this.txtDesc_TextChanged);
 			// 
-			// lblId
-			// 
-			this.lblId.AutoSize = true;
-			this.lblId.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblId.Location = new System.Drawing.Point(10, 102);
-			this.lblId.Name = "lblId";
-			this.lblId.Size = new System.Drawing.Size(24, 13);
-			this.lblId.TabIndex = 9;
-			this.lblId.Text = "[ID]";
-			// 
 			// timerRefreshTextFile
 			// 
 			this.timerRefreshTextFile.Interval = 5000;
 			this.timerRefreshTextFile.Tick += new System.EventHandler(this.timerRefreshTextFile_Tick);
+			// 
+			// txtIdSelectable
+			// 
+			this.txtIdSelectable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
+			this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.txtIdSelectable.Location = new System.Drawing.Point(10, 102);
+			this.txtIdSelectable.Name = "txtIdSelectable";
+			this.txtIdSelectable.ReadOnly = true;
+			this.txtIdSelectable.Size = new System.Drawing.Size(416, 13);
+			this.txtIdSelectable.TabIndex = 10;
+			this.txtIdSelectable.TabStop = false;
+			this.txtIdSelectable.Text = "[ID]";
 			// 
 			// frmCrashReporter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(438, 348);
-			this.Controls.Add(this.lblId);
+			this.Controls.Add(this.txtIdSelectable);
 			this.Controls.Add(this.txtDesc);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.llblContents);
@@ -202,8 +206,8 @@
 		private System.Windows.Forms.LinkLabel llblContents;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox txtDesc;
-		private System.Windows.Forms.Label lblId;
 		private System.Windows.Forms.Timer timerRefreshTextFile;
+		private System.Windows.Forms.TextBox txtIdSelectable;
 	}
 }
 

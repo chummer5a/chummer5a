@@ -52,7 +52,7 @@ namespace Chummer
 			decimal actualRating = _objPower.Rating - _objPower.FreeLevels;
 			decimal newRating = actualRating + _objPower.FreeLevels;
 
-			nudRating.Maximum = _objPower.MaxLevels;
+			nudRating.Maximum = Math.Max(1, _objPower.MaxLevels);
             nudRating.Minimum = _objPower.FreeLevels;
 
             if (newRating < _objPower.FreeLevels)
@@ -64,8 +64,8 @@ namespace Chummer
             {
                 newRating = Convert.ToDecimal(_objPower.CharacterObject.MAG.Value);
             }
-
-            nudRating.Value = newRating;
+			//if(_objPower.LevelsEnabled)
+				nudRating.Value = newRating;
         }
         
 		private void nudRating_ValueChanged(object sender, EventArgs e)

@@ -1321,6 +1321,7 @@ namespace Chummer
 			}
 
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -2603,6 +2604,7 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString());
             objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -3865,6 +3867,7 @@ namespace Chummer
 			objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -4208,7 +4211,8 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-        }
+			_objCharacter.SourceProcess(_strSource);
+		}
 
         /// <summary>
         /// Load the Metamagic from the XmlNode.
@@ -4508,7 +4512,8 @@ namespace Chummer
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
-        }
+			_objCharacter.SourceProcess(_strSource);
+		}
 
         /// <summary>
         /// Load the Enhancement from the XmlNode.
@@ -4817,6 +4822,7 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -4845,6 +4851,7 @@ namespace Chummer
             _blnFree = Convert.ToBoolean(objNode["free"].InnerText);
             _intFreeLevels = Convert.ToInt32(objNode["freelevels"].InnerText);
             _intMaxLevel = Convert.ToInt32(objNode["maxlevel"].InnerText);
+
 			try
 			{
 				_blnDiscountedAdeptWay = Convert.ToBoolean(objNode["discounted"].InnerText);
@@ -5501,6 +5508,7 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -5831,6 +5839,7 @@ namespace Chummer
 			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -6099,6 +6108,7 @@ namespace Chummer
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strSource);
             objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -6307,6 +6317,7 @@ namespace Chummer
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -7279,6 +7290,7 @@ namespace Chummer
 				objWriter.WriteElementString("bonus", "");
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>

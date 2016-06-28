@@ -366,7 +366,21 @@ namespace Chummer.UI.Skills
 
 		private void btnKnowledge_Click(object sender, EventArgs e)
 		{
-			ObjCharacter.SkillsSection.KnowledgeSkills.Add(new KnowledgeSkill(ObjCharacter));
+
+			frmSelectItem form = new frmSelectItem();
+			form.Description = LanguageManager.Instance.GetString("Label_Options_NewKnowledgeSkill");
+			form.DropdownItems = KnowledgeSkill.DefaultKnowledgeSkillCatagories;
+
+			if (form.ShowDialog() == DialogResult.OK)
+			{
+				KnowledgeSkill skill = new KnowledgeSkill(ObjCharacter);
+				skill.WriteableName = form.SelectedItem;
+				skill.Karma = 1;
+				_character.Karma -= _character.Options.KarmaNewKnowledgeSkill;
+
+
+				ObjCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+			}
 		}
 
 		private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)

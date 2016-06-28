@@ -101,6 +101,7 @@
 			this.tabGeneral = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.chkOpenPDFsAsUnix = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
 			this.cmdURLAppPath = new System.Windows.Forms.Button();
 			this.txtURLAppPath = new System.Windows.Forms.TextBox();
@@ -230,9 +231,9 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
-            this.label4 = new System.Windows.Forms.Label();
-            this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
-            this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
+			this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
 			this.chkUseTotalValueForFreeKnowledge = new System.Windows.Forms.CheckBox();
 			this.chkUseTotalValueForFreeContacts = new System.Windows.Forms.CheckBox();
 			this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
@@ -315,7 +316,7 @@
 			this.tabOptionalRules.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
 			this.tabHouseRules.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).BeginInit();
 			this.SuspendLayout();
@@ -353,6 +354,7 @@
 			this.chkConfirmDelete.Tag = "Checkbox_Options_ConfirmDelete";
 			this.chkConfirmDelete.Text = "Ask for confirmation when deleting items";
 			this.chkConfirmDelete.UseVisualStyleBackColor = true;
+			this.chkConfirmDelete.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaComplexFormOptionExtra
 			// 
@@ -370,6 +372,7 @@
 			this.nudKarmaComplexFormOption.Name = "nudKarmaComplexFormOption";
 			this.nudKarmaComplexFormOption.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaComplexFormOption.TabIndex = 31;
+			this.nudKarmaComplexFormOption.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaComplexFormOption
 			// 
@@ -387,6 +390,7 @@
 			this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
 			this.nudKarmaMetamagic.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaMetamagic.TabIndex = 58;
+			this.nudKarmaMetamagic.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaMetamagic
 			// 
@@ -423,6 +427,7 @@
 			this.nudKarmaInitiation.Name = "nudKarmaInitiation";
 			this.nudKarmaInitiation.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaInitiation.TabIndex = 55;
+			this.nudKarmaInitiation.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaInitiation
 			// 
@@ -440,6 +445,7 @@
 			this.nudKarmaManeuver.Name = "nudKarmaManeuver";
 			this.nudKarmaManeuver.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaManeuver.TabIndex = 40;
+			this.nudKarmaManeuver.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaManeuver
 			// 
@@ -467,6 +473,7 @@
 			this.nudKarmaSpirit.Name = "nudKarmaSpirit";
 			this.nudKarmaSpirit.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSpirit.TabIndex = 37;
+			this.nudKarmaSpirit.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSpirit
 			// 
@@ -494,6 +501,7 @@
 			this.nudKarmaCarryover.Name = "nudKarmaCarryover";
 			this.nudKarmaCarryover.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaCarryover.TabIndex = 51;
+			this.nudKarmaCarryover.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaCarryover
 			// 
@@ -521,6 +529,7 @@
 			this.nudKarmaContact.Name = "nudKarmaContact";
 			this.nudKarmaContact.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaContact.TabIndex = 45;
+			this.nudKarmaContact.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaContact
 			// 
@@ -548,6 +557,7 @@
 			this.nudKarmaEnemy.Name = "nudKarmaEnemy";
 			this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaEnemy.TabIndex = 48;
+			this.nudKarmaEnemy.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaEnemy
 			// 
@@ -580,6 +590,7 @@
 			this.nudKarmaNuyenPer.Name = "nudKarmaNuyenPer";
 			this.nudKarmaNuyenPer.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaNuyenPer.TabIndex = 42;
+			this.nudKarmaNuyenPer.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaNuyenPer
 			// 
@@ -607,6 +618,7 @@
 			this.nudKarmaImproveComplexForm.Name = "nudKarmaImproveComplexForm";
 			this.nudKarmaImproveComplexForm.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaImproveComplexForm.TabIndex = 28;
+			this.nudKarmaImproveComplexForm.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaImproveComplexForm
 			// 
@@ -624,6 +636,7 @@
 			this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
 			this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaNewComplexForm.TabIndex = 26;
+			this.nudKarmaNewComplexForm.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaNewComplexForm
 			// 
@@ -641,6 +654,7 @@
 			this.nudKarmaSpell.Name = "nudKarmaSpell";
 			this.nudKarmaSpell.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSpell.TabIndex = 24;
+			this.nudKarmaSpell.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSpell
 			// 
@@ -668,6 +682,7 @@
 			this.nudKarmaQuality.Name = "nudKarmaQuality";
 			this.nudKarmaQuality.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaQuality.TabIndex = 21;
+			this.nudKarmaQuality.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaQuality
 			// 
@@ -695,6 +710,7 @@
 			this.nudKarmaAttribute.Name = "nudKarmaAttribute";
 			this.nudKarmaAttribute.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaAttribute.TabIndex = 18;
+			this.nudKarmaAttribute.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaAttribute
 			// 
@@ -722,6 +738,7 @@
 			this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
 			this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaImproveSkillGroup.TabIndex = 15;
+			this.nudKarmaImproveSkillGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaImproveSkillGroup
 			// 
@@ -749,6 +766,7 @@
 			this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
 			this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaImproveActiveSkill.TabIndex = 12;
+			this.nudKarmaImproveActiveSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaImproveActiveSkill
 			// 
@@ -776,6 +794,7 @@
 			this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
 			this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaImproveKnowledgeSkill.TabIndex = 9;
+			this.nudKarmaImproveKnowledgeSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaImproveKnowledgeSkill
 			// 
@@ -793,6 +812,7 @@
 			this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
 			this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaNewSkillGroup.TabIndex = 7;
+			this.nudKarmaNewSkillGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaNewSkillGroup
 			// 
@@ -810,6 +830,7 @@
 			this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
 			this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaNewActiveSkill.TabIndex = 5;
+			this.nudKarmaNewActiveSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaNewActiveSkill
 			// 
@@ -827,6 +848,7 @@
 			this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
 			this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaNewKnowledgeSkill.TabIndex = 3;
+			this.nudKarmaNewKnowledgeSkill.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaNewKnowledgeSkill
 			// 
@@ -844,6 +866,7 @@
 			this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
 			this.nudKarmaSpecialization.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSpecialization.TabIndex = 1;
+			this.nudKarmaSpecialization.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSpecialization
 			// 
@@ -865,6 +888,7 @@
 			this.chkPrintSkillsWithZeroRating.Tag = "Checkbox_Options_PrintAllSkills";
 			this.chkPrintSkillsWithZeroRating.Text = "Print all Active Skills with total score higher than 0";
 			this.chkPrintSkillsWithZeroRating.UseVisualStyleBackColor = true;
+			this.chkPrintSkillsWithZeroRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkMoreLethalGameplay
 			// 
@@ -877,6 +901,7 @@
 			this.chkMoreLethalGameplay.Text = "More Lethal Gameplay";
 			this.chkMoreLethalGameplay.UseVisualStyleBackColor = true;
 			this.chkMoreLethalGameplay.Visible = false;
+			this.chkMoreLethalGameplay.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAutomaticUpdate
 			// 
@@ -888,6 +913,7 @@
 			this.chkAutomaticUpdate.Tag = "Checkbox_Options_AutomaticUpdates";
 			this.chkAutomaticUpdate.Text = "Automatic Updates";
 			this.chkAutomaticUpdate.UseVisualStyleBackColor = true;
+			this.chkAutomaticUpdate.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblNuyenPerBP
 			// 
@@ -917,6 +943,7 @@
             0,
             0});
 			this.nudNuyenPerBP.Visible = false;
+			this.nudNuyenPerBP.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkEnforceSkillMaximumModifiedRating
 			// 
@@ -928,6 +955,7 @@
 			this.chkEnforceSkillMaximumModifiedRating.Tag = "Checkbox_Options_EnforceSkillRating";
 			this.chkEnforceSkillMaximumModifiedRating.Text = "Enforce maximum Skill modified Rating";
 			this.chkEnforceSkillMaximumModifiedRating.UseVisualStyleBackColor = true;
+			this.chkEnforceSkillMaximumModifiedRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkConfirmKarmaExpense
 			// 
@@ -939,6 +967,7 @@
 			this.chkConfirmKarmaExpense.Tag = "Checkbox_Options_ConfirmKarmaExpense";
 			this.chkConfirmKarmaExpense.Text = "Ask for confirmation for Karma expenses";
 			this.chkConfirmKarmaExpense.UseVisualStyleBackColor = true;
+			this.chkConfirmKarmaExpense.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkPrintExpenses
 			// 
@@ -950,6 +979,7 @@
 			this.chkPrintExpenses.Tag = "Checkbox_Options_PrintExpenses";
 			this.chkPrintExpenses.Text = "Print Karma and Nuyen Expenses";
 			this.chkPrintExpenses.UseVisualStyleBackColor = true;
+			this.chkPrintExpenses.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkKnucks
 			// 
@@ -963,6 +993,7 @@
 			this.tipTooltip.SetToolTip(this.chkKnucks, "Enabling this house rule allows Knucks to benefit from bonuses that apply to unar" +
         "med attacks including DV bonuses.");
 			this.chkKnucks.UseVisualStyleBackColor = true;
+			this.chkKnucks.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// tabControl1
 			// 
@@ -1007,6 +1038,7 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsUnix);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
 			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
 			this.tabGlobal.Controls.Add(this.txtURLAppPath);
@@ -1041,6 +1073,18 @@
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
 			// 
+			// chkOpenPDFsAsUnix
+			// 
+			this.chkOpenPDFsAsUnix.AutoSize = true;
+			this.chkOpenPDFsAsUnix.Location = new System.Drawing.Point(9, 392);
+			this.chkOpenPDFsAsUnix.Name = "chkOpenPDFsAsUnix";
+			this.chkOpenPDFsAsUnix.Size = new System.Drawing.Size(250, 17);
+			this.chkOpenPDFsAsUnix.TabIndex = 23;
+			this.chkOpenPDFsAsUnix.Tag = "Checkbox_Options_OpenPDFsAsUnix";
+			this.chkOpenPDFsAsUnix.Text = "Use Unix-Style Parameters when opening PDFs";
+			this.chkOpenPDFsAsUnix.UseVisualStyleBackColor = true;
+			this.chkOpenPDFsAsUnix.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			// 
 			// chkLifeModule
 			// 
 			this.chkLifeModule.AutoSize = true;
@@ -1051,6 +1095,7 @@
 			this.chkLifeModule.Tag = "Checkbox_Options_UseLifeModule";
 			this.chkLifeModule.Text = "Life modules visible";
 			this.chkLifeModule.UseVisualStyleBackColor = true;
+			this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cmdURLAppPath
 			// 
@@ -1090,6 +1135,7 @@
 			this.chkOpenPDFsAsURLs.Tag = "Checkbox_Options_OpenPDFsAsURLs";
 			this.chkOpenPDFsAsURLs.Text = "Open PDFs as URLs";
 			this.chkOpenPDFsAsURLs.UseVisualStyleBackColor = true;
+			this.chkOpenPDFsAsURLs.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkUseLogging
 			// 
@@ -1101,6 +1147,7 @@
 			this.chkUseLogging.Tag = "Checkbox_Options_UseLogging";
 			this.chkUseLogging.Text = "Use Debug Logging";
 			this.chkUseLogging.UseVisualStyleBackColor = true;
+			this.chkUseLogging.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkLocalisedUpdatesOnly
 			// 
@@ -1112,6 +1159,7 @@
 			this.chkLocalisedUpdatesOnly.Tag = "Checkbox_Options_LocalisedUpdatesOnly";
 			this.chkLocalisedUpdatesOnly.Text = "Only download updates in my selected language";
 			this.chkLocalisedUpdatesOnly.UseVisualStyleBackColor = true;
+			this.chkLocalisedUpdatesOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkDatesIncludeTime
 			// 
@@ -1123,6 +1171,7 @@
 			this.chkDatesIncludeTime.Tag = "Checkbox_Options_DatesIncludeTime";
 			this.chkDatesIncludeTime.Text = "Expense dates should include time";
 			this.chkDatesIncludeTime.UseVisualStyleBackColor = true;
+			this.chkDatesIncludeTime.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cmdPDFTest
 			// 
@@ -1150,6 +1199,7 @@
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblPDFOffset
 			// 
@@ -1289,6 +1339,7 @@
 			this.chkSingleDiceRoller.Tag = "Checkbox_Options_SingleDiceRoller";
 			this.chkSingleDiceRoller.Text = "Use a single instance of the Dice Roller window";
 			this.chkSingleDiceRoller.UseVisualStyleBackColor = true;
+			this.chkSingleDiceRoller.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkStartupFullscreen
 			// 
@@ -1300,6 +1351,7 @@
 			this.chkStartupFullscreen.Tag = "Checkbox_Options_StartupFullscreen";
 			this.chkStartupFullscreen.Text = "Start Chummer in fullscreen";
 			this.chkStartupFullscreen.UseVisualStyleBackColor = true;
+			this.chkStartupFullscreen.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// tabPage2
 			// 
@@ -1339,6 +1391,7 @@
 			this.chkDontUseCyberlimbCalculation.Tag = "Checkbox_Options_UseCyberlimbCalculation";
 			this.chkDontUseCyberlimbCalculation.Text = "Use Cyberlimbs for calculating augmented Attributes";
 			this.chkDontUseCyberlimbCalculation.UseVisualStyleBackColor = true;
+			this.chkDontUseCyberlimbCalculation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkPrintToFileFirst
 			// 
@@ -1350,6 +1403,7 @@
 			this.chkPrintToFileFirst.Tag = "Checkbox_Option_PrintToFileFirst";
 			this.chkPrintToFileFirst.Text = "Apply Linux printing fix";
 			this.chkPrintToFileFirst.UseVisualStyleBackColor = true;
+			this.chkPrintToFileFirst.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cboEssenceDecimals
 			// 
@@ -1401,6 +1455,7 @@
 			this.chkAllowSkillDiceRolling.Tag = "Checkbox_Option_AllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Text = "Allow dice rolling for dice pools";
 			this.chkAllowSkillDiceRolling.UseVisualStyleBackColor = true;
+			this.chkAllowSkillDiceRolling.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// label36
 			// 
@@ -1428,6 +1483,7 @@
             0,
             0,
             0});
+			this.nudBP.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cboBuildMethod
 			// 
@@ -1460,6 +1516,7 @@
             0,
             0,
             0});
+			this.nudMaxAvail.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cboLimbCount
 			// 
@@ -1502,6 +1559,7 @@
 			this.chkLicenseEachRestrictedItem.Tag = "Checkbox_Options_LicenseRestricted";
 			this.chkLicenseEachRestrictedItem.Text = "License each Restricted item";
 			this.chkLicenseEachRestrictedItem.UseVisualStyleBackColor = true;
+			this.chkLicenseEachRestrictedItem.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkSpecialKarmaCost
 			// 
@@ -1514,6 +1572,7 @@
 			this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
 			this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
 			this.chkSpecialKarmaCost.Visible = false;
+			this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkErgonomicProgramLimit
 			// 
@@ -1526,6 +1585,7 @@
 			this.chkErgonomicProgramLimit.Text = "Ergonomic Programs do not affect a Commlink\'s effective Response (UN 114)";
 			this.chkErgonomicProgramLimit.UseVisualStyleBackColor = true;
 			this.chkErgonomicProgramLimit.Visible = false;
+			this.chkErgonomicProgramLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkCalculateCommlinkResponse
 			// 
@@ -1538,6 +1598,7 @@
 			this.chkCalculateCommlinkResponse.Text = "Calculate Commlink Response based on number of running programs";
 			this.chkCalculateCommlinkResponse.UseVisualStyleBackColor = true;
 			this.chkCalculateCommlinkResponse.Visible = false;
+			this.chkCalculateCommlinkResponse.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkCreateBackupOnCareer
 			// 
@@ -1549,6 +1610,7 @@
 			this.chkCreateBackupOnCareer.Tag = "Checkbox_Option_CreateBackupOnCareer";
 			this.chkCreateBackupOnCareer.Text = "Create backup of character before moving them to Career Mode";
 			this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
+			this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAutomaticRegistration
 			// 
@@ -1561,6 +1623,7 @@
 			this.chkAutomaticRegistration.Text = "Automatically add Registration plugin to Matrix Programs (requires Unwired)";
 			this.chkAutomaticRegistration.UseVisualStyleBackColor = true;
 			this.chkAutomaticRegistration.Visible = false;
+			this.chkAutomaticRegistration.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkRestrictRecoil
 			// 
@@ -1572,6 +1635,7 @@
 			this.chkRestrictRecoil.Tag = "Checkbox_Options_UseRestrictionsToRecoilCompensation";
 			this.chkRestrictRecoil.Text = "Use Restrictions to Recoil Compensation (RG 53)";
 			this.chkRestrictRecoil.UseVisualStyleBackColor = true;
+			this.chkRestrictRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAutomaticCopyProtection
 			// 
@@ -1584,6 +1648,7 @@
 			this.chkAutomaticCopyProtection.Text = "Automatically add Copy Protection plugin to Matrix Programs (requires Unwired)";
 			this.chkAutomaticCopyProtection.UseVisualStyleBackColor = true;
 			this.chkAutomaticCopyProtection.Visible = false;
+			this.chkAutomaticCopyProtection.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkEnforceCapacity
 			// 
@@ -1595,6 +1660,7 @@
 			this.chkEnforceCapacity.Tag = "Checkbox_Option_EnforceCapacity";
 			this.chkEnforceCapacity.Text = "Enforce Capacity limits";
 			this.chkEnforceCapacity.UseVisualStyleBackColor = true;
+			this.chkEnforceCapacity.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// tabPage3
 			// 
@@ -1630,6 +1696,7 @@
 			this.treSourcebook.TabIndex = 1;
 			this.treSourcebook.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treSourcebook_BeforeCheck);
 			this.treSourcebook.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterSelect);
+			this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
 			// 
 			// tabKarmaCosts
 			// 
@@ -1785,6 +1852,7 @@
 			this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaWeaponFocus.TabIndex = 106;
 			this.nudKarmaWeaponFocus.Visible = false;
+			this.nudKarmaWeaponFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaWeaponFocus
 			// 
@@ -1815,6 +1883,7 @@
 			this.nudKarmaSymbolicLinkFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSymbolicLinkFocus.TabIndex = 103;
 			this.nudKarmaSymbolicLinkFocus.Visible = false;
+			this.nudKarmaSymbolicLinkFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSymbolicLinkFocus
 			// 
@@ -1845,6 +1914,7 @@
 			this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSustainingFocus.TabIndex = 100;
 			this.nudKarmaSustainingFocus.Visible = false;
+			this.nudKarmaSustainingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSustainingFocus
 			// 
@@ -1875,6 +1945,7 @@
 			this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSummoningFocus.TabIndex = 97;
 			this.nudKarmaSummoningFocus.Visible = false;
+			this.nudKarmaSummoningFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSummoningFocus
 			// 
@@ -1905,6 +1976,7 @@
 			this.nudKarmaSpellcastingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaSpellcastingFocus.TabIndex = 94;
 			this.nudKarmaSpellcastingFocus.Visible = false;
+			this.nudKarmaSpellcastingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaSpellcastingFocus
 			// 
@@ -1935,6 +2007,7 @@
 			this.nudKarmaShieldingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaShieldingFocus.TabIndex = 91;
 			this.nudKarmaShieldingFocus.Visible = false;
+			this.nudKarmaShieldingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaShieldingFocus
 			// 
@@ -1965,6 +2038,7 @@
 			this.nudKarmaPowerFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaPowerFocus.TabIndex = 88;
 			this.nudKarmaPowerFocus.Visible = false;
+			this.nudKarmaPowerFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaPowerFocus
 			// 
@@ -1995,6 +2069,7 @@
 			this.nudKarmaMaskingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaMaskingFocus.TabIndex = 85;
 			this.nudKarmaMaskingFocus.Visible = false;
+			this.nudKarmaMaskingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaMaskingFocus
 			// 
@@ -2025,6 +2100,7 @@
 			this.nudKarmaInfusionFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaInfusionFocus.TabIndex = 82;
 			this.nudKarmaInfusionFocus.Visible = false;
+			this.nudKarmaInfusionFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaInfusionFocus
 			// 
@@ -2055,6 +2131,7 @@
 			this.nudKarmaDowsingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaDowsingFocus.TabIndex = 79;
 			this.nudKarmaDowsingFocus.Visible = false;
+			this.nudKarmaDowsingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaDowsingFocus
 			// 
@@ -2085,6 +2162,7 @@
 			this.nudKarmaDiviningFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaDiviningFocus.TabIndex = 76;
 			this.nudKarmaDiviningFocus.Visible = false;
+			this.nudKarmaDiviningFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaDiviningFocus
 			// 
@@ -2115,6 +2193,7 @@
 			this.nudKarmaCounterspellingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaCounterspellingFocus.TabIndex = 73;
 			this.nudKarmaCounterspellingFocus.Visible = false;
+			this.nudKarmaCounterspellingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaCounterspellingFocus
 			// 
@@ -2145,6 +2224,7 @@
 			this.nudKarmaCenteringFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaCenteringFocus.TabIndex = 70;
 			this.nudKarmaCenteringFocus.Visible = false;
+			this.nudKarmaCenteringFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaCenteringFocus
 			// 
@@ -2175,6 +2255,7 @@
 			this.nudKarmaBindingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaBindingFocus.TabIndex = 67;
 			this.nudKarmaBindingFocus.Visible = false;
+			this.nudKarmaBindingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaBindingFocus
 			// 
@@ -2205,6 +2286,7 @@
 			this.nudKarmaBanishingFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaBanishingFocus.TabIndex = 64;
 			this.nudKarmaBanishingFocus.Visible = false;
+			this.nudKarmaBanishingFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaBanishingFocus
 			// 
@@ -2235,6 +2317,7 @@
 			this.nudKarmaAnchoringFocus.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaAnchoringFocus.TabIndex = 61;
 			this.nudKarmaAnchoringFocus.Visible = false;
+			this.nudKarmaAnchoringFocus.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaAnchoringFocus
 			// 
@@ -2263,6 +2346,7 @@
 			this.nudKarmaComplexFormSkillsoft.Name = "nudKarmaComplexFormSkillsoft";
 			this.nudKarmaComplexFormSkillsoft.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaComplexFormSkillsoft.TabIndex = 34;
+			this.nudKarmaComplexFormSkillsoft.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaComplexFormSkillsoft
 			// 
@@ -2280,6 +2364,7 @@
 			this.nudKarmaLeaveGroup.Name = "nudKarmaLeaveGroup";
 			this.nudKarmaLeaveGroup.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaLeaveGroup.TabIndex = 59;
+			this.nudKarmaLeaveGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaLeaveGroup
 			// 
@@ -2297,6 +2382,7 @@
 			this.nudKarmaJoinGroup.Name = "nudKarmaJoinGroup";
 			this.nudKarmaJoinGroup.Size = new System.Drawing.Size(47, 20);
 			this.nudKarmaJoinGroup.TabIndex = 57;
+			this.nudKarmaJoinGroup.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblKarmaJoinGroup
 			// 
@@ -2347,6 +2433,7 @@
 			this.chkDronemods.Tag = "Checkbox_Options_Dronemods";
 			this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
 			this.chkDronemods.UseVisualStyleBackColor = true;
+			this.chkDronemods.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkMissions
 			// 
@@ -2358,6 +2445,7 @@
 			this.chkMissions.Tag = "Checkbox_Options_Missions";
 			this.chkMissions.Text = "Hide Qualities prohibited by Missions";
 			this.chkMissions.UseVisualStyleBackColor = true;
+			this.chkMissions.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkContactPoints
 			// 
@@ -2370,6 +2458,7 @@
 			this.chkContactPoints.Text = "Contact points instead of fixed Contacts (RC 40)";
 			this.chkContactPoints.UseVisualStyleBackColor = true;
 			this.chkContactPoints.Visible = false;
+			this.chkContactPoints.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkMayBuyQualities
 			// 
@@ -2382,6 +2471,7 @@
 			this.chkMayBuyQualities.Text = "May buy Qualities (RC 40)";
 			this.chkMayBuyQualities.UseVisualStyleBackColor = true;
 			this.chkMayBuyQualities.Visible = false;
+			this.chkMayBuyQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkExtendAnyDetectionSpell
 			// 
@@ -2394,6 +2484,7 @@
 			this.chkExtendAnyDetectionSpell.Text = "Allow any Detection Spell to be taken as Extended range version (SM 165)";
 			this.chkExtendAnyDetectionSpell.UseVisualStyleBackColor = true;
 			this.chkExtendAnyDetectionSpell.Visible = false;
+			this.chkExtendAnyDetectionSpell.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAlternateMatrixAttribute
 			// 
@@ -2406,6 +2497,7 @@
 			this.chkAlternateMatrixAttribute.Text = "Use alternate Matrix Attribute (UN 39)";
 			this.chkAlternateMatrixAttribute.UseVisualStyleBackColor = true;
 			this.chkAlternateMatrixAttribute.Visible = false;
+			this.chkAlternateMatrixAttribute.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAllowCustomTransgenics
 			// 
@@ -2418,6 +2510,7 @@
 			this.chkAllowCustomTransgenics.Text = "Allow any Bioware to be converted to Transgenic (AU 93)";
 			this.chkAllowCustomTransgenics.UseVisualStyleBackColor = true;
 			this.chkAllowCustomTransgenics.Visible = false;
+			this.chkAllowCustomTransgenics.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAlternateComplexFormCost
 			// 
@@ -2430,6 +2523,7 @@
 			this.chkAlternateComplexFormCost.Text = "Use alternate Complex Forms costs (UN 39)";
 			this.chkAlternateComplexFormCost.UseVisualStyleBackColor = true;
 			this.chkAlternateComplexFormCost.Visible = false;
+			this.chkAlternateComplexFormCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkArmorDegradation
 			// 
@@ -2442,6 +2536,7 @@
 			this.chkArmorDegradation.Text = "Allow Armor Degradation (AR 44)";
 			this.chkArmorDegradation.UseVisualStyleBackColor = true;
 			this.chkArmorDegradation.Visible = false;
+			this.chkArmorDegradation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkArmorSuitCapacity
 			// 
@@ -2454,6 +2549,7 @@
 			this.chkArmorSuitCapacity.Text = "Use Armor Suit Capacity (AR 44)";
 			this.chkArmorSuitCapacity.UseVisualStyleBackColor = true;
 			this.chkArmorSuitCapacity.Visible = false;
+			this.chkArmorSuitCapacity.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkMaximumArmorModifications
 			// 
@@ -2466,6 +2562,7 @@
 			this.chkMaximumArmorModifications.Text = "Use Maximum Armor Modifications (AR 44)";
 			this.chkMaximumArmorModifications.UseVisualStyleBackColor = true;
 			this.chkMaximumArmorModifications.Visible = false;
+			this.chkMaximumArmorModifications.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkStrengthAffectsRecoil
 			// 
@@ -2478,6 +2575,7 @@
 			this.chkStrengthAffectsRecoil.Text = "High Strength affects Weapon Recoil";
 			this.chkStrengthAffectsRecoil.UseVisualStyleBackColor = true;
 			this.chkStrengthAffectsRecoil.Visible = false;
+			this.chkStrengthAffectsRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// lblMetatypeCostsKarma
 			// 
@@ -2509,6 +2607,7 @@
             0,
             0,
             0});
+			this.nudMetatypeCostsKarmaMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkMetatypeCostsKarma
 			// 
@@ -2520,6 +2619,7 @@
 			this.chkMetatypeCostsKarma.Tag = "Checkbox_Options_MetatypesCostKarma";
 			this.chkMetatypeCostsKarma.Text = "Metatypes cost Karma equal to their BP";
 			this.chkMetatypeCostsKarma.UseVisualStyleBackColor = true;
+			this.chkMetatypeCostsKarma.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAllowSkillRegrouping
 			// 
@@ -2531,6 +2631,7 @@
 			this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
 			this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
 			this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+			this.chkAllowSkillRegrouping.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkCapSkillRating
 			// 
@@ -2544,6 +2645,7 @@
     "igher";
 			this.chkCapSkillRating.UseVisualStyleBackColor = true;
 			this.chkCapSkillRating.Visible = false;
+			this.chkCapSkillRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkNoSingleArmorEncumbrance
 			// 
@@ -2556,13 +2658,14 @@
 			this.chkNoSingleArmorEncumbrance.Text = "No Armor Encumbrance when wearing only one piece of Armor";
 			this.chkNoSingleArmorEncumbrance.UseVisualStyleBackColor = true;
 			this.chkNoSingleArmorEncumbrance.Visible = false;
+			this.chkNoSingleArmorEncumbrance.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
-            this.tabHouseRules.Controls.Add(this.label4);
-            this.tabHouseRules.Controls.Add(this.nudDroneArmorMultiplier);
-            this.tabHouseRules.Controls.Add(this.chkDroneArmorMultiplier);
+			this.tabHouseRules.Controls.Add(this.label4);
+			this.tabHouseRules.Controls.Add(this.nudDroneArmorMultiplier);
+			this.tabHouseRules.Controls.Add(this.chkDroneArmorMultiplier);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeKnowledge);
 			this.tabHouseRules.Controls.Add(this.chkUseTotalValueForFreeContacts);
 			this.tabHouseRules.Controls.Add(this.chkUseCalculatedPublicAwareness);
@@ -2593,50 +2696,52 @@
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
 			// 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(304, 234);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(12, 13);
-            this.label4.TabIndex = 27;
-            this.label4.Text = "x";
-            // 
-            // nudDroneArmorMultiplier
-            // 
-            this.nudDroneArmorMultiplier.Enabled = false;
-            this.nudDroneArmorMultiplier.Location = new System.Drawing.Point(322, 232);
-            this.nudDroneArmorMultiplier.Maximum = new decimal(new int[] {
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(304, 234);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(12, 13);
+			this.label4.TabIndex = 27;
+			this.label4.Text = "x";
+			// 
+			// nudDroneArmorMultiplier
+			// 
+			this.nudDroneArmorMultiplier.Enabled = false;
+			this.nudDroneArmorMultiplier.Location = new System.Drawing.Point(322, 232);
+			this.nudDroneArmorMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.nudDroneArmorMultiplier.Minimum = new decimal(new int[] {
+			this.nudDroneArmorMultiplier.Minimum = new decimal(new int[] {
             2,
             0,
             0,
             0});
-            this.nudDroneArmorMultiplier.Name = "nudDroneArmorMultiplier";
-            this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(36, 20);
-            this.nudDroneArmorMultiplier.TabIndex = 25;
-            this.nudDroneArmorMultiplier.Value = new decimal(new int[] {
+			this.nudDroneArmorMultiplier.Name = "nudDroneArmorMultiplier";
+			this.nudDroneArmorMultiplier.Size = new System.Drawing.Size(36, 20);
+			this.nudDroneArmorMultiplier.TabIndex = 25;
+			this.nudDroneArmorMultiplier.Value = new decimal(new int[] {
             2,
             0,
             0,
             0});
-            // 
-            // chkDroneArmorMultiplier
-            // 
-            this.chkDroneArmorMultiplier.AutoSize = true;
-            this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(8, 233);
-            this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
-            this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
-            this.chkDroneArmorMultiplier.TabIndex = 24;
-            this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
-            this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
-            this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
-            this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.chkDroneArmorMultiplier_CheckedChanged);
-            // 
+			this.nudDroneArmorMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
+			// 
+			// chkDroneArmorMultiplier
+			// 
+			this.chkDroneArmorMultiplier.AutoSize = true;
+			this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(8, 233);
+			this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
+			this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
+			this.chkDroneArmorMultiplier.TabIndex = 24;
+			this.chkDroneArmorMultiplier.Tag = "Checkbox_Options_DroneArmorMultiplier";
+			this.chkDroneArmorMultiplier.Text = "Limit Drone Armor Enhance ment to Drone Body";
+			this.chkDroneArmorMultiplier.UseVisualStyleBackColor = true;
+			this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.chkDroneArmorMultiplier_CheckedChanged);
+			this.chkDroneArmorMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			// 
 			// chkUseTotalValueForFreeKnowledge
 			// 
 			this.chkUseTotalValueForFreeKnowledge.AutoSize = true;
@@ -2647,6 +2752,7 @@
 			this.chkUseTotalValueForFreeKnowledge.Tag = "Checkbox_Options_UseTotalValueForFreeKnowledge";
 			this.chkUseTotalValueForFreeKnowledge.Text = "Free Contacts use the augmented LOG+INT values";
 			this.chkUseTotalValueForFreeKnowledge.UseVisualStyleBackColor = true;
+			this.chkUseTotalValueForFreeKnowledge.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkUseTotalValueForFreeContacts
 			// 
@@ -2658,6 +2764,7 @@
 			this.chkUseTotalValueForFreeContacts.Tag = "Checkbox_Options_UseTotalValueForFreeContacts";
 			this.chkUseTotalValueForFreeContacts.Text = "Free Contacts use the augmented Charisma value";
 			this.chkUseTotalValueForFreeContacts.UseVisualStyleBackColor = true;
+			this.chkUseTotalValueForFreeContacts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkUseCalculatedPublicAwareness
 			// 
@@ -2669,6 +2776,7 @@
 			this.chkUseCalculatedPublicAwareness.Tag = "Checkbox_Options_UseCalculatedPublicAwareness";
 			this.chkUseCalculatedPublicAwareness.Text = "Public Awareness should be (Street Cred + Notoriety /3)";
 			this.chkUseCalculatedPublicAwareness.UseVisualStyleBackColor = true;
+			this.chkUseCalculatedPublicAwareness.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkDontDoubleQualityRefunds
 			// 
@@ -2682,6 +2790,7 @@
 			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityRefunds, "Allows characters in Career mode to remove Negative Qualities and buy off Negativ" +
         "e at their normal price instead of doubling them.");
 			this.chkDontDoubleQualityRefunds.UseVisualStyleBackColor = true;
+			this.chkDontDoubleQualityRefunds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkESSLossReducesMaximumOnly
 			// 
@@ -2693,6 +2802,7 @@
 			this.chkESSLossReducesMaximumOnly.Tag = "Checkbox_Options_EssenceLossReducesMaximum";
 			this.chkESSLossReducesMaximumOnly.Text = "Essence Loss only Reduces Maximum Essence";
 			this.chkESSLossReducesMaximumOnly.UseVisualStyleBackColor = true;
+			this.chkESSLossReducesMaximumOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAllowCyberwareESSDiscounts
 			// 
@@ -2705,6 +2815,7 @@
 			this.chkAllowCyberwareESSDiscounts.Text = "Allow Cyber/Bioware Essence costs to be customized";
 			this.tipTooltip.SetToolTip(this.chkAllowCyberwareESSDiscounts, "Permits adjustment of essence costs on a per-item basis.");
 			this.chkAllowCyberwareESSDiscounts.UseVisualStyleBackColor = true;
+			this.chkAllowCyberwareESSDiscounts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkExceedNegativeQualitiesLimit
 			// 
@@ -2717,6 +2828,7 @@
 			this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
 			this.chkExceedNegativeQualitiesLimit.Text = "Characters only receive up to 35 BP from Negative Qualities";
 			this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
+			this.chkExceedNegativeQualitiesLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkExceedNegativeQualities
 			// 
@@ -2729,6 +2841,7 @@
 			this.chkExceedNegativeQualities.Text = "Allow characters to exceed their Negative Quality limit";
 			this.chkExceedNegativeQualities.UseVisualStyleBackColor = true;
 			this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.chkExceedNegativeQualities_CheckedChanged);
+			this.chkExceedNegativeQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkExceedPositiveQualities
 			// 
@@ -2740,6 +2853,7 @@
 			this.chkExceedPositiveQualities.Tag = "Checkbox_Options_ExceedPositiveQualities";
 			this.chkExceedPositiveQualities.Text = "Allow characters to exceed their Positive Quality limit";
 			this.chkExceedPositiveQualities.UseVisualStyleBackColor = true;
+			this.chkExceedPositiveQualities.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// label3
 			// 
@@ -2772,6 +2886,7 @@
             0,
             0,
             0});
+			this.nudKnowledgeMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkKnowledgeMultiplier
 			// 
@@ -2784,6 +2899,7 @@
 			this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
 			this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
 			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
+			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// label2
 			// 
@@ -2816,6 +2932,7 @@
             0,
             0,
             0});
+			this.nudContactMultiplier.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkContactMultiplier
 			// 
@@ -2828,6 +2945,7 @@
 			this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
 			this.chkContactMultiplier.UseVisualStyleBackColor = true;
 			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
+			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkFreeKarmaContacts
 			// 
@@ -2839,6 +2957,7 @@
 			this.chkFreeKarmaContacts.Tag = "Checkbox_Options_FreeKarmaContacts";
 			this.chkFreeKarmaContacts.Text = "Karma Build: Free Contact Points like Priority";
 			this.chkFreeKarmaContacts.UseVisualStyleBackColor = true;
+			this.chkFreeKarmaContacts.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkFreeKarmaKnowledge
 			// 
@@ -2850,6 +2969,7 @@
 			this.chkFreeKarmaKnowledge.Tag = "Checkbox_Options_FreeKnowledgeSkills";
 			this.chkFreeKarmaKnowledge.Text = "Karma Build: Free Knowledge Skills like Priority";
 			this.chkFreeKarmaKnowledge.UseVisualStyleBackColor = true;
+			this.chkFreeKarmaKnowledge.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkAllowInitiation
 			// 
@@ -2862,6 +2982,7 @@
 			this.chkAllowInitiation.Text = "Allow Initiation/Submersion in Create mode";
 			this.tipTooltip.SetToolTip(this.chkAllowInitiation, "Allows Initiation/Submersion using Karma during Create mode.");
 			this.chkAllowInitiation.UseVisualStyleBackColor = true;
+			this.chkAllowInitiation.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkStrictSkillGroups
 			// 
@@ -2874,6 +2995,7 @@
 			this.chkStrictSkillGroups.Text = "Strict interprentation of breaking skill groups in create mode";
 			this.tipTooltip.SetToolTip(this.chkStrictSkillGroups, "Allows Skill Points to be spent on skills belonging to a broken skill group.");
 			this.chkStrictSkillGroups.UseVisualStyleBackColor = true;
+			this.chkStrictSkillGroups.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkDontDoubleQualityPurchases
 			// 
@@ -2887,6 +3009,7 @@
 			this.tipTooltip.SetToolTip(this.chkDontDoubleQualityPurchases, "Allows characters in Career mode to purchase Positive Qualities and buy off Negat" +
         "ive at their normal price instead of doubling them.");
 			this.chkDontDoubleQualityPurchases.UseVisualStyleBackColor = true;
+			this.chkDontDoubleQualityPurchases.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkCyberlegMovement
 			// 
@@ -2900,6 +3023,7 @@
 			this.tipTooltip.SetToolTip(this.chkCyberlegMovement, "Allows characters with two cyberlegs to use their cyberleg\'s AGI when calculating" +
         " movement rates.");
 			this.chkCyberlegMovement.UseVisualStyleBackColor = true;
+			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkIgnoreArt
 			// 
@@ -2913,6 +3037,7 @@
 			this.tipTooltip.SetToolTip(this.chkIgnoreArt, "Allows all metamagics, enhancements, enchantments, and rituals to ignore the Art " +
         "requirement detailed in Street Grimoire.");
 			this.chkIgnoreArt.UseVisualStyleBackColor = true;
+			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// cboSetting
 			// 
@@ -3042,7 +3167,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
 			this.tabHouseRules.ResumeLayout(false);
 			this.tabHouseRules.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKnowledgeMultiplier)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudContactMultiplier)).EndInit();
 			this.ResumeLayout(false);
@@ -3283,5 +3408,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown nudDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
+        private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
     }
 }

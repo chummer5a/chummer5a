@@ -1,14 +1,41 @@
-Build 181:
+Build 182:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
 - Added Cyberlimbs as Plugins for Modular Connectors.
-- Fixed a Bug, where Chummer would crash when loading a Life Module character. Fixes #925.
-- Fixed a Bug, where Specializations for Knowledge Skills would cost Knowledge Skill Points even without the House rule. Fixes #929.
+- Fixed an issue where Chummer would crash when loading a Life Module character. Fixes #925.
+- Fixed an issue with taking specialisations in karmagen without the house rule for free karma points enabled. Fixes #929.
+- Fixed the total cost of vehicles to include discounts from the Dealer Connection quality. Fixes #934.
+- Fixed an issue that prevented the Prototype transhuman improvements from being removed. This fix does not apply to older characters.
+- Fixed an issue that prevented knowledge skills from loading properly. 
+- The Crash Handler form's Crash ID is now selectable.
+- The Crash Handler now requests permission from the user before submitting a crash report. 
+- Added a validation option to prevent characters from having multiple Native Language skills from entering career mode. Fixes #947.
+- Fixed a crash issue caused by improvements with selectskill trying to use an Exotic skill. Fixes #921.
+- Fixed a rendering issue that prevented Exotic Skills from showing up in sorted lists.
+- Fixed a misleading reference to Special Attributes when validating your character.
+- Fixed a crash issue with the Incompetent quality. Fixes #959.
+- Added code to allow override XML files to use the ID node instead of the Name tag when finding an item to replace. Fixes #957.
+- Improved the Options form to only prompt for saving if changes were made.
+- Added a handler to check if there's a mismatch between a loaded character's used sourcebooks and the application's selected sourcebooks. Won't affect characters that haven't been loaded before now, changes may also be overwritten by loading the character in older versions. Closes #884.
+- Increase knowledge skill rating and add knowledge skill specialization now has the right point
+- All knowledge skills don't cost -1 karma anymore.
+- Active Hardwires work again.
+- Now promts for a name for new knowledge skills in career mode, instead of them being unnameable.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
+- Added the missing Nausea Gas toxin SR5. Fixes #940.
+- Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
 
-Build 180:
+New Strings:
+- String_AttributeESSShort
+- String_AttributeESSLong
+- Message_OverLanguageLimit
+
+Changelog Changes:
+changelog build numbers after build 178 now match the build they are for.
+
+Build 181:
 Application Changes:
 - Fixed an issue with skills not rendering in a localized language when selecting skill groups for Aspected Magicians. Fixes #867.
 - Fixed a crash caused by adding an exotic weapon without having the relevant exotic weapons skill. Fixes #888.
@@ -47,7 +74,7 @@ Data Changes:
 Translation Changes:
 - Updated the German translation files, courtesy of HaukeW.
 
-Build 179:
+Build 180:
 Application Change:
 - Total rewrite of skills. 
 	* Eliminated a lot (all?) old bugs

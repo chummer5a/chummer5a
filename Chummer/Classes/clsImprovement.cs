@@ -91,7 +91,6 @@ namespace Chummer
 			Submersion,
 			Infirm,
 			Skillwire,
-			HardWire,
 			DamageResistance,
 			RestrictedItemCount,
 			AdeptLinguistics,
@@ -1323,7 +1322,7 @@ namespace Chummer
 				{
 					Log.Info("Calling CreateImprovement");
 					CreateImprovement(_strSelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.SkillGroup,
-						strUnique, ValueToInt(bonusNode["max"].InnerText, intRating), 0, 0, 1, 0, 0, strExclude,
+						strUnique, 0, 0, 0, 1, 0, 0, strExclude,
 						blnAddToRating);
 				}
 			}
@@ -1827,9 +1826,9 @@ namespace Chummer
 			{
 				Log.Info("addcontact");
 
-				int loyality, connection;
+				int loyalty, connection;
 				
-				bonusNode.TryGetField("loyality", out loyality, 1);
+				bonusNode.TryGetField("loyalty", out loyalty, 1);
 				bonusNode.TryGetField("connection", out connection, 1);
 				bool group = bonusNode["group"] != null;
 				bool free = bonusNode["free"] != null;
@@ -1837,7 +1836,7 @@ namespace Chummer
 				Contact contact = new Contact(_objCharacter);
 				contact.Free = free;
 				contact.IsGroup = group;
-				contact.Loyalty = loyality;
+				contact.Loyalty = loyalty;
 				contact.Connection = connection;
 				contact.ReadOnly = true;
 				_objCharacter.Contacts.Add(contact);
@@ -2032,7 +2031,7 @@ namespace Chummer
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", val);
 			}
 
-			if (bonusNode.LocalName == "knowldgeskillpoints")
+			if (bonusNode.LocalName == "knowledgeskillpoints")
 			{
 				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.FreeKnowledgeSkills, "", ValueToInt(bonusNode.InnerText,Convert.ToInt32(bonusNode.Value)));
 			}
@@ -2622,7 +2621,10 @@ namespace Chummer
 				Log.Info("prototypetranshuman");
 				Log.Info("prototypetranshuman = " + bonusNode.OuterXml.ToString());
 				Log.Info("Calling CreateImprovement");
+
+				CreateImprovement("", objImprovementSource, strSourceName, Improvement.ImprovementType.PrototypeTranshuman, strUnique);
 				_objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
+
 			}
 			// Check for Uncouth modifiers.
 			if (bonusNode.LocalName == ("uncouth"))

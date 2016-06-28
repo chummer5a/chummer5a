@@ -116,13 +116,17 @@ namespace Chummer.UI.Skills
 			}
 		}
 
-		private void btnAddSpec_Click(object sender, EventArgs e)
+		private void btnCareerIncrease_Click(object sender, EventArgs e)
 		{
 			frmCareer parrent = ParentForm as frmCareer;
 			if (parrent != null)
 			{
+				int upgradeKarmaCost = skill.UpgradeKarmaCost();
+
+				if (upgradeKarmaCost == -1) return; //TODO: more descriptive
+
 				string confirmstring = string.Format(LanguageManager.Instance.GetString("Message_ConfirmKarmaExpense"),
-					skill.DisplayName, skill.Rating + 1, skill.UpgradeKarmaCost());
+					skill.DisplayName, skill.Rating + 1, upgradeKarmaCost);
 
 				if (!parrent.ConfirmKarmaExpense(confirmstring))
 					return;
@@ -131,7 +135,7 @@ namespace Chummer.UI.Skills
 			skill.Upgrade();
 		}
 
-		private void btnCareerIncrease_Click(object sender, EventArgs e)
+		private void btnAddSpec_Click(object sender, EventArgs e)
 		{
 			frmCareer parrent = ParentForm as frmCareer;
 			if (parrent != null)
@@ -144,6 +148,7 @@ namespace Chummer.UI.Skills
 			}
 
 			frmSelectSpec selectForm = new frmSelectSpec(skill);
+			selectForm.Mode = "Knowledge";
 			selectForm.ShowDialog();
 
 			if (selectForm.DialogResult != DialogResult.OK) return;

@@ -653,6 +653,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -2466,6 +2467,23 @@ namespace Chummer.Backend.Equipment
 				return 8 + intSystem;
 			}
 		}
+		#endregion
+
+		#region Methods
+
+		public IEnumerable<Gear> ThisAndAllChildren()
+		{
+			yield return this;
+
+			foreach (Gear objChild in _objChildren)
+			{
+				foreach (Gear child in objChild.ThisAndAllChildren())
+				{
+					yield return child;
+				}
+			}
+		}
+
 		#endregion
 	}
 }

@@ -410,6 +410,7 @@ namespace Chummer.Backend.Equipment
 				objWriter.WriteEndElement();
 			}
 			objWriter.WriteEndElement();
+			_objCharacter.SourceProcess(_strSource);
 		}
 
 		/// <summary>
@@ -1413,6 +1414,9 @@ namespace Chummer.Backend.Equipment
 				if (BlackMarketDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
+				if (DealerConnectionDiscount)
+					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
+
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Do not include the price of Mods that are part of the base configureation.
@@ -1452,6 +1456,9 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intCost = Convert.ToInt32(_strCost);
+
+				if (BlackMarketDiscount)
+					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);
 
 				if (DealerConnectionDiscount)
 					intCost = Convert.ToInt32(Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo) * 0.9);

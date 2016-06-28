@@ -944,6 +944,14 @@
 			<key>String_AttributeINIShort</key>
 			<text>INI</text>
 		</string>
+		<string>
+			<key>String_AttributeESSLong</key>
+			<text>Essence</text>
+		</string>
+		<string>
+			<key>String_AttributeESSShort</key>
+			<text>ESS</text>
+		</string>
 		<!-- End Region -->
 		<!-- Region Main Window -->
 		<string>
@@ -2132,6 +2140,10 @@
       <key>Message_InvalidExConWare</key>
       <text>The following pieces of restricted Cyber/Bioware are not allowed on an ExCon:</text>
     </string>
+		<string>
+			<key>Message_OverLanguageLimit</key>
+			<text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
+		</string>
 		<string>
 			<key>Message_OverPositiveMetagenicQualities</key>
 			<text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
@@ -6602,9 +6614,13 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_Options_PDFTest</key>
 			<text>Test - Open to Page 5</text>
 		</string>
-				<string>
+		<string>
 			<key>Checkbox_Options_OpenPDFsAsURLs</key>
 			<text>Open PDFs as URLs (For use in browsers)</text>
+		</string>
+		<string>
+			<key>Checkbox_Options_OpenPDFsAsUnix</key>
+			<text>Use Unix-Style Parameters when opening PDFs</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->

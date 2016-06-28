@@ -102,22 +102,27 @@ namespace Chummer.Skills
 			{
 				if (ForcedName) return;
 				_translator.Write(value,ref _name, ref _translated);
-				if (NameCategoryMap.ContainsKey(_name))
-				{
-					Type = NameCategoryMap[_name];
-					SuggestedSpecializations.Clear();
-
-					XmlNodeList list =
-						XmlManager.Instance.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{_name}\"]/specs/spec");
-					foreach (XmlNode node in list)
-					{
-						SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
-					}
-					OnPropertyChanged(nameof(CGLSpecializations));
-					OnPropertyChanged(nameof(Type));
-				}
+				LoadSuggestedSpecializations(_name);
 
 				OnPropertyChanged();
+			}
+		}
+
+		private void LoadSuggestedSpecializations(string name)
+		{
+			if (NameCategoryMap.ContainsKey(name))
+			{
+				Type = NameCategoryMap[name];
+				SuggestedSpecializations.Clear();
+
+				XmlNodeList list =
+					XmlManager.Instance.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
+				foreach (XmlNode node in list)
+				{
+					SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+				}
+				OnPropertyChanged(nameof(CGLSpecializations));
+				OnPropertyChanged(nameof(Type));
 			}
 		}
 
@@ -257,7 +262,7 @@ namespace Chummer.Skills
 
 
 			int value;
-			if (LearnedRating <= RatingMaximum)
+			if (LearnedRating >= RatingMaximum)
 			{
 				return -1;
 			}
@@ -352,8 +357,10 @@ namespace Chummer.Skills
 		public void Load(XmlNode node)
 		{
 			node.TryGetField("name", out _name);
-			node.TryGetField("type", out _type);
+			Type = node["type"].InnerText;
 			node.TryGetField(GlobalOptions.Instance.Language, out _translated);
+
+			LoadSuggestedSpecializations(_name);
 		}
 
         public override bool IsKnowledgeSkill
