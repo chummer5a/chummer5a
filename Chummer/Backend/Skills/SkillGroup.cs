@@ -464,7 +464,7 @@ namespace Chummer.Skills
 			int lower = upper - _skillFromKarma;
 
 			int cost = upper*(upper + 1);
-			cost -= lower*(lower - 1);
+			cost -= lower*(lower + 1);
 			cost /= 2; //We get sqre, need triangle
 			
 			return cost * _character.Options.KarmaImproveSkillGroup; //todo handle KarmaNewSkillGrup 
