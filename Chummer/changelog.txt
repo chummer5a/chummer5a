@@ -28,6 +28,7 @@ Application Changes:
 - Fixed a bug where mixed points and karma in skill groups would pay for one more karma level than intended
 - Fixed a bug where changes to cyberware wouldn't update skill dicepools
 - Fixed a bug where spending any karma on a skill prevented getting a specialization with skillpoints
+- Fixed a weird bug where German knowledge skill types would appear sorted but would actually use the English order.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

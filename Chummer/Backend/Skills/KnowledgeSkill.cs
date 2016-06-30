@@ -14,22 +14,21 @@ namespace Chummer.Skills
 		private static readonly Dictionary<string, string> NameCategoryMap = new Dictionary<string, string>();  //names to their category
 
 		public static List<ListItem> DefaultKnowledgeSkillCatagories { get; }
-		public static List<ListItem> KnowledgeTypes { get; } = new List<ListItem>(); //Load the (possible translated) types of kno skills (Academic, Street...)
+		public static List<ListItem> KnowledgeTypes { get; }  //Load the (possible translated) types of kno skills (Academic, Street...)
 
 		static KnowledgeSkill()
 		{
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("skills.xml");
 
 			XmlNodeList objXmlCategoryList = objXmlDocument.SelectNodes("/chummer/categories/category[@type = \"knowledge\"]");
-			foreach (XmlNode objXmlCategory in objXmlCategoryList)
-			{
-				string display = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-				KnowledgeTypes.Add(new ListItem(objXmlCategory.InnerText, display));
-			}
 
-			
+            KnowledgeTypes = (from XmlNode objXmlCategory in objXmlCategoryList
+		        let display = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText
+		        orderby display
+		        select new ListItem(objXmlCategory.InnerText, display)).ToList();
 
-			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
+
+		    XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/knowledgeskills/skill");
 			DefaultKnowledgeSkillCatagories = new List<ListItem>();
 			foreach (XmlNode objXmlSkill in objXmlSkillList)
 			{
