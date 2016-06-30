@@ -245,8 +245,8 @@ namespace Chummer.UI.Shared
 					Utils.BreakIfDebug();
 					break;
 			}
-
-			ClearAllCache();
+            ChildPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+            ClearAllCache();
 			LoadScreenContent();
 		}
 
