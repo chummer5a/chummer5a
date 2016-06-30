@@ -5220,7 +5220,7 @@ namespace Chummer
                         objParent.Children.Remove(objCyberware);
                 }
 
-				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
 				RefreshSelectedCyberware();
             }
             catch
@@ -5807,7 +5807,7 @@ namespace Chummer
                 }
                 _objController.PopulateFocusList(treFoci);
 
-				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
 				UpdateCharacterInfo();
                 RefreshSelectedGear();
 
@@ -11565,7 +11565,7 @@ namespace Chummer
 
                     treCyberware.SelectedNode.Text = objCyberware.DisplayName;
 
-	                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+	                _objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
                 }
                 else
                 {
@@ -11595,6 +11595,7 @@ namespace Chummer
 
                 _blnIsDirty = true;
                 UpdateWindowTitle();
+                //_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.Attribute));
             }
             UpdateCharacterInfo();
         }
@@ -17225,7 +17226,7 @@ namespace Chummer
             _blnSkipRefresh = false;
 
             _blnIsDirty = true;
-			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
             PopulateGearList();
             UpdateWindowTitle();
 

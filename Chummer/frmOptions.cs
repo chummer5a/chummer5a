@@ -722,6 +722,7 @@ namespace Chummer
             GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
             GlobalOptions.Instance.OpenPDFsAsAsUnix = chkOpenPDFsAsUnix.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
+		    GlobalOptions.Instance.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
 			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
         }
@@ -748,6 +749,7 @@ namespace Chummer
             objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
+			objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
 			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
 
@@ -1020,6 +1022,7 @@ namespace Chummer
             chkAutomaticUpdate.Checked = GlobalOptions.Instance.AutomaticUpdate;
             chkUseLogging.Checked = GlobalOptions.Instance.UseLogging;
             chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
+	        chkOmaeEnabled.Checked = GlobalOptions.Instance.OmaeEnabled;
             chkLocalisedUpdatesOnly.Checked = GlobalOptions.Instance.LocalisedUpdatesOnly;
             chkStartupFullscreen.Checked = GlobalOptions.Instance.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
@@ -1214,6 +1217,16 @@ namespace Chummer
 			if (!blnLoading)
 			{
 				blnDirty = true;
+			}
+		}
+
+		private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
+		{
+			if (chkOmaeEnabled.Checked)
+			{
+				DialogResult result = MessageBox.Show(LanguageManager.Instance.GetString("Tip_Omae_Warning"), "Warning!", MessageBoxButtons.OKCancel);
+
+				if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
 			}
 		}
 	}

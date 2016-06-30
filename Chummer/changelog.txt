@@ -21,16 +21,29 @@ Application Changes:
 - All knowledge skills don't cost -1 karma anymore.
 - Active Hardwires work again.
 - Now promts for a name for new knowledge skills in career mode, instead of them being unnameable.
+- Added onClick link for Skill-List.
+- Gear that adds bonuses to skills now show up as a name instead of an id.
+- Omae hid behind an options menu as the other end is outside our control and is starting to give errors. Unless a large amount of intrest is shown, a replacement won't be forthcomming.
+- Fixed a Bug, where Knowledge Skill Specializations would not cost Knowledge Skill Points, even with activated house rule.
+- Fixed a bug where mixed points and karma in skill groups would pay for one more karma level than intended
+- Fixed a bug where changes to cyberware wouldn't update skill dicepools
+- Fixed a bug where spending any karma on a skill prevented getting a specialization with skillpoints
+- Fixed a weird bug where German knowledge skill types would appear sorted but would actually use the English order.
+- Fixed a bug where deleting a knowledge skill would not restore the spent points/ karma.
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.
 - Added the missing Nausea Gas toxin SR5. Fixes #940.
 - Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
+- Hawk eye now gives an 1 dice bonus to perception
+- The Armor tab under gear has been renamed to "Clothing and Armor" to match the core rulebook
 
 New Strings:
 - String_AttributeESSShort
 - String_AttributeESSLong
 - Message_OverLanguageLimit
+- Tip_Omae_Warning
+- Checkbox_Options_OmaeEnabled
 
 Changelog Changes:
 changelog build numbers after build 178 now match the build they are for.

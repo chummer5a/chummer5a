@@ -4856,7 +4856,7 @@ namespace Chummer
 				}
 
 				RefreshSelectedCyberware();
-				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+				_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.AttributeModifiers));
 
 				_blnIsDirty = true;
 				UpdateWindowTitle();
@@ -23549,7 +23549,7 @@ namespace Chummer
 					treGear.SelectedNode = objNode;
 			}
 
-			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+			_objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolModifiers));
 
 			UpdateCharacterInfo();
 			RefreshSelectedGear();

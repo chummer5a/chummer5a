@@ -2606,7 +2606,12 @@
 			<name>Hawk Eye</name>
 			<karma>3</karma>
 			<category>Positive</category>
-			<bonus />
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
 			<source>RF</source>
 			<page>147</page>
 		</quality>
