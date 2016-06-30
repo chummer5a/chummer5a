@@ -27,6 +27,7 @@ Application Changes:
 - Fixed a Bug, where Knowledge Skill Specializations would not cost Knowledge Skill Points, even with activated house rule.
 - Fixed a bug where mixed points and karma in skill groups would pay for one more karma level than intended
 - Fixed a bug where changes to cyberware wouldn't update skill dicepools
+- Fixed a bug where spending any karma on a skill prevented getting a specialization with skillpoints
 
 Data Changes:
 - Fixed a crash when creating an e-ghost AI. Fixes #918.

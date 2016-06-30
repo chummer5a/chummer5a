@@ -515,7 +515,7 @@ namespace Chummer.Skills
 		/// <returns></returns>
 		private bool ForceBuyWithKarma()
 		{
-			return !string.IsNullOrWhiteSpace(Specialization) && (_karma > 0 || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0);
+			return !string.IsNullOrWhiteSpace(Specialization) && ((_karma > 0 && Ibase == 0)  || SkillGroupObject?.Karma > 0 || SkillGroupObject?.Base > 0);
 		}
 
 		/// <summary>
