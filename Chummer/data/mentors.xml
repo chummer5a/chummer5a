@@ -1609,10 +1609,12 @@
 				</choice>
 				<choice set="2">
 					<name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-					<spellcategory>
-						<name>Health</name>
-						<val>2</val>
-					</spellcategory>
+					<bonus>
+						<spellcategory>
+							<name>Health</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
 				</choice>
 				<choice set="2">
 					<name>Adept: Gain Flexibility (2) power for free</name>
