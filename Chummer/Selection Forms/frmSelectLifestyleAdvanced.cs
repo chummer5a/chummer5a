@@ -583,10 +583,6 @@ namespace Chummer
 					intMultiplier += objImprovement.Value;
 				}
 			}
-            if (intLP < 0)
-            {
-                intNuyen -= intLP * 5000;
-            }
             if (cboBaseLifestyle.SelectedValue.ToString() == "Street")
             {
                 intNuyen += Convert.ToInt32(nudSecurity.Value - intMinSec) * 50;
