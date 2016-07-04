@@ -1,3 +1,7 @@
+Build 183:
+Application Changes:
+- Fixed the dolphin mentor spirit not giving a bonus on spells of the Health category.
+
 Build 182:
 Application Changes:
 - Fixed a crash when creating MAG/RES characters using Priority/Sum-to_Ten. Fixes #922.
@@ -37,6 +41,7 @@ Data Changes:
 - Fixed an issue that prevented the Voice Warper gear from Hard Tartgets from being available. Fixes #962.
 - Hawk eye now gives an 1 dice bonus to perception
 - The Armor tab under gear has been renamed to "Clothing and Armor" to match the core rulebook
+- Added several German translations provided by HaukeW.
 
 New Strings:
 - String_AttributeESSShort
