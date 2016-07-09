@@ -688,9 +688,15 @@ namespace Chummer
                 _objFunctions.CreateArmorTreeNode(objArmor, treArmor, cmsArmor, cmsArmorMod, cmsArmorGear);
             }
 
-            // Populate Weapons.
-            // Start by populating Locations.
-            foreach (string strLocation in _objCharacter.WeaponLocations)
+			// Populate Spell list.
+			foreach (Drug objDrug in _objCharacter.Drugs)
+			{
+				treCustomDrugs.Add(objDrug);
+			}
+
+			// Populate Weapons.
+			// Start by populating Locations.
+			foreach (string strLocation in _objCharacter.WeaponLocations)
             {
                 TreeNode objLocation = new TreeNode();
                 objLocation.Tag = strLocation;
@@ -11989,9 +11995,39 @@ namespace Chummer
             catch
             {
             }
-        }
+		}
 
-        private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
+		private void nudDrugQty_ValueChanged(object sender, EventArgs e)
+		{
+
+			// Don't attempt to do anything while the data is still being populated.
+			if (_blnLoading)
+				return;
+
+			if (_blnSkipRefresh)
+				return;
+			
+			// Attempt to locate the selected Drug.
+			try
+			{
+				if (treCustomDrugs.SelectedNode.Level == 1)
+				{
+					Drug objSelectedDrug = _objFunctions.FindDrug(treCustomDrugs.SelectedNode.Tag.ToString(), _objCharacter.Drugs);
+				
+					objSelectedDrug.Quantity = Convert.ToInt32(nudDrugQty.Value);
+					RefreshSelectedDrug();
+					UpdateCharacterInfo();
+
+					_blnIsDirty = true;
+					UpdateWindowTitle();
+				}
+			}
+			catch
+			{
+			}
+		}
+
+		private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -12689,6 +12725,14 @@ namespace Chummer
 			{
 				return;
 			}
+		}
+		#endregion
+
+		#region Additional Drug Tab Control Events
+		private void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			RefreshSelectedDrug();
+			RefreshPasteStatus();
 		}
 		#endregion
 
@@ -15602,7 +15646,11 @@ namespace Chummer
             foreach (Vehicle objVehcile in _objCharacter.Vehicles)
                 intDeductions += objVehcile.TotalCost;
 
-            _objCharacter.Nuyen = intNuyen - intDeductions;
+			// Drug cost.
+			foreach (Drug objDrug in _objCharacter.Drugs)
+				intDeductions += objDrug.TotalCost;
+
+			_objCharacter.Nuyen = intNuyen - intDeductions;
             lblRemainingNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
             tssNuyenRemaining.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
             lblPBuildNuyen.Text = String.Format("{0:###,###,##0¥}", intNuyen - intDeductions);
@@ -18945,11 +18993,69 @@ namespace Chummer
 				}
 			}
         }
+		
+		/// <summary>
+		/// Refresh the currently-selected Drug.
+		/// </summary>
+		private void RefreshSelectedDrug()
+		{
+			bool blnClear = false;
 
-        /// <summary>
-        /// Add or remove the Adapsin Cyberware Grade categories.
-        /// </summary>
-        public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false)
+			try
+			{
+				if (treCustomDrugs.SelectedNode.Level == 0)
+					blnClear = true;
+			}
+			catch
+			{
+				blnClear = true;
+			}
+
+			if (blnClear)
+			{
+				lblDrugAvail.Text = "";
+				lblDrugGrade.Text = "";
+				lblDrugCost.Text = "";
+				lblDrugCategory.Text = "";
+				lblDrugAddictionRating.Text = "";
+				lblDrugAddictionThreshold.Text = "";
+				lblDrugComponents.Text = "";
+				nudDrugQty.Visible = false;
+			}
+
+			// Locate the selected Vehicle.
+			if (treCustomDrugs.SelectedNode.Level == 1)
+			{
+				Drug objDrug = _objFunctions.FindDrug(treCustomDrugs.SelectedNode.Tag.ToString(), _objCharacter.Drugs);
+				if (objDrug == null)
+					return;
+
+				_blnSkipRefresh = true;
+				lblDrugName.Text = objDrug.Name;
+				lblDrugAvail.Text = objDrug.Availability.ToString();
+				lblDrugGrade.Text = objDrug.Grade;
+				lblDrugCost.Text = String.Format("{0:###,###,##0¥}", objDrug.Cost);
+				lblDrugCategory.Text = objDrug.Category;
+				lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString();
+				lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString();
+				nudDrugQty.Enabled = true;
+				nudDrugQty.Visible = true;
+				nudDrugQty.Value = objDrug.Quantity;
+
+				lblDrugComponents.Text = "";
+				foreach (DrugComponent objComponent in objDrug.Components)
+				{
+					lblDrugComponents.Text += objComponent.DisplayName + "\n";
+				}
+				_blnSkipRefresh = false;
+				UpdateCharacterInfo();
+
+			}
+		}
+		/// <summary>
+		/// Add or remove the Adapsin Cyberware Grade categories.
+		/// </summary>
+		public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false)
         {
             // Load the Cyberware information.
             GradeList objGradeList;
@@ -24271,6 +24377,36 @@ namespace Chummer
 		private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateCharacterInfo();
+		}
+
+		private void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
+		{
+			frmCreateCustomDrug form = new frmCreateCustomDrug(_objCharacter);
+			form.ShowDialog(this);
+
+			if (form.DialogResult == DialogResult.Cancel)
+				return;
+
+			Drug objCustomDrug = form.CustomDrug;
+			TreeNode node = treCustomDrugs.Nodes[0].Nodes.Add(objCustomDrug.Name);
+			node.Tag = objCustomDrug.InternalId;
+			node.EnsureVisible();
+			_objCharacter.Drugs.Add(objCustomDrug);
 		}
 	}
 }

@@ -153,6 +153,30 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Locate a piece of Gear by matching on its Weapon ID.
+		/// </summary>
+		/// <param name="strGuid">InternalId of the Weapon to find.</param>
+		/// <param name="lstGear">List of Gear to search.</param>
+		public Drug FindDrug(string strGuid, List<Drug> lstGear)
+		{
+			Drug objReturn = new Drug();
+			foreach (Drug objDrug in lstGear)
+			{
+				if (objDrug.InternalId == strGuid)
+					objReturn = objDrug;
+
+				if (objReturn != null)
+				{
+					if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")
+						return objReturn;
+				}
+			}
+
+			objReturn = null;
+			return objReturn;
+		}
+
+		/// <summary>
 		/// Locate a piece of Gear within the character's Vehicles.
 		/// </summary>
 		/// <param name="strGuid">InternalId of the Gear to find.</param>

@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+﻿using Chummer.Backend.Equipment;
 
 namespace Chummer.helpers
 {
@@ -173,13 +174,26 @@ namespace Chummer.helpers
                     this.Nodes[intNode].Expand();
                     break;
             }
-        }
+		}
+		public void Add(Drug input)
+		{
+			TreeNode objNode = new TreeNode();
+			objNode.Text = input.DisplayName;
+			objNode.Tag = input.InternalId;
+			if (!string.IsNullOrEmpty(input.Notes))
+			{
+				objNode.ForeColor = Color.SaddleBrown;
+				objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+			}
+			this.Nodes[0].Nodes.Add(objNode);
+			this.Nodes[0].Expand();
+		}
 
-        /// <summary>
-        /// Sort the contents of a TreeView alphabetically within each group Node.
-        /// </summary>
-        /// <param name="treTree">TreeView to sort.</param>
-        public void SortCustom()
+		/// <summary>
+		/// Sort the contents of a TreeView alphabetically within each group Node.
+		/// </summary>
+		/// <param name="treTree">TreeView to sort.</param>
+		public void SortCustom()
         {
             for (int i = 0; i <= this.Nodes.Count - 1; i++)
             {

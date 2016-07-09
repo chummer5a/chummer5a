@@ -205,7 +205,8 @@ namespace Chummer
             Art,
             Enhancement,
 			Custom,
-	        Heritage
+	        Heritage,
+			Drug
         }
 
 		private string _strImprovedName = "";

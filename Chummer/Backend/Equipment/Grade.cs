@@ -4,7 +4,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
 	/// <summary>
-	/// Grade of Cyberware or Bioware.
+	/// Grade of Cyberware, Bioware or Drug.
 	/// </summary>
 	public class Grade
 	{
@@ -13,6 +13,7 @@ namespace Chummer.Backend.Equipment
 		private decimal _decEss = 1.0m;
 		private double _dblCost = 1.0;
 		private int _intAvail = 0;
+		private int _intAddictionThreshold = 0;
 		private string _strSource = "SR5";
 
 		#region Constructor and Load Methods
@@ -29,9 +30,11 @@ namespace Chummer.Backend.Equipment
 			_strName = objNode["name"].InnerText;
 			if (objNode["translate"] != null)
 				_strAltName = objNode["translate"].InnerText;
-			_decEss = Convert.ToDecimal(objNode["ess"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_dblCost = Convert.ToDouble(objNode["cost"].InnerText, GlobalOptions.Instance.CultureInfo);
-			_intAvail = Convert.ToInt32(objNode["avail"].InnerText, GlobalOptions.Instance.CultureInfo);
+
+			objNode.TryGetField("ess", out _decEss);
+			objNode.TryGetField("cost", out _dblCost);
+			objNode.TryGetField("avail", out _intAvail);
+			objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
 			_strSource = objNode["source"].InnerText;
 		}
 		#endregion
@@ -137,6 +140,15 @@ namespace Chummer.Backend.Equipment
 			{
 				return _strName.Contains("Used");
 			}
+		}
+
+		/// <summary>
+		/// The Grade's Addiction Threshold Modifier. Used for Drugs.
+		/// </summary>
+		public int AddictionThreshold
+		{
+			get { return _intAddictionThreshold; }
+			set { _intAddictionThreshold = value; }
 		}
 		#endregion
 	}

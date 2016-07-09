@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,9 +18,31 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <version>0</version>
+	<grades>
+		<grade>
+			<name>Standard</name>
+			<cost>1</cost>
+			<source>CF</source>
+		</grade>
+		<grade>
+			<name>Street Cooked</name>
+			<cost>0.5</cost>
+			<source>CF</source>
+		</grade>
+		<grade>
+			<name>Pharmaceutical</name>
+			<cost>2</cost>
+			<addictionthreshold>-1</addictionthreshold>
+			<source>CF</source>
+		</grade>
+		<grade>
+			<name>Designer</name>
+			<cost>6</cost>
+			<source>CF</source>
+		</grade>
+	</grades>
   <drugcomponents>
-    <!--Foundations-->
+    <!--Region Foundations-->
     <drugcomponent>
       <name>Tank</name>
       <category>Foundation</category>
@@ -168,7 +190,8 @@
       <source>CF</source>
       <page>190</page>
     </drugcomponent>
-    <!--Blocks-->
+		<!--End Region -->
+    <!--Region Blocks-->
     <drugcomponent>
       <name>Crush</name>
       <category>Block</category>
@@ -761,7 +784,8 @@
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
-    <!--Enhancers-->
+		<!--End Region -->
+    <!--Region Enhancers-->
     <drugcomponent>
       <name>Ingestion Enhancer</name>
       <category>Enhancer</category>
@@ -822,5 +846,6 @@
       <source>CF</source>
       <page>191</page>
     </drugcomponent>
+		<!-- End Region -->
   </drugcomponents>
 </chummer>

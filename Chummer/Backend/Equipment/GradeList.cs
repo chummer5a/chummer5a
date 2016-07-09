@@ -5,7 +5,7 @@ using System.Xml;
 namespace Chummer.Backend.Equipment
 {
 	/// <summary>
-	/// List of Grades for either Cyberware or Bioware.
+	/// List of Grades for either Cyberware, Bioware or Drugs.
 	/// </summary>
 	public class GradeList : IEnumerable<Grade>
 	{
@@ -13,7 +13,7 @@ namespace Chummer.Backend.Equipment
 
 		#region Methods
 		/// <summary>
-		/// Fill the list of CyberwareGrades from the XML files.
+		/// Fill the list of Grades from the XML files.
 		/// </summary>
 		/// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
 		public void LoadList(Improvement.ImprovementSource objSource)
@@ -21,8 +21,12 @@ namespace Chummer.Backend.Equipment
 			string strXmlFile = "";
 			if (objSource == Improvement.ImprovementSource.Bioware)
 				strXmlFile = "bioware.xml";
-			else
+			else if (objSource == Improvement.ImprovementSource.Cyberware)
 				strXmlFile = "cyberware.xml";
+			else
+			{
+				strXmlFile = "drugcomponents.xml";
+			}
 			XmlDocument objXMlDocument = XmlManager.Instance.Load(strXmlFile);
 			
 			foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade"))

@@ -4178,6 +4178,28 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<text>Bonded Foci Qualifying for Adept Way Discount:</text>
 		</string>
 		<!-- End Region-->
+		<!-- Region Street Gear/Drugs Tab-->
+		<string>
+			<key>Tab_Drugs</key>
+			<text>Drugs</text>
+		</string>
+		<string>
+			<key>Label_AddictionThreshold</key>
+			<text>Threshold:</text>
+		</string>
+		<string>
+			<key>Label_DrugComponents</key>
+			<text>Components:</text>
+		</string>
+		<string>
+			<key>Button_CreateCustomDrug</key>
+			<text>Create Custom Drug</text>
+		</string>
+		<string>
+			<key>Node_SelectedDrugs</key>
+			<text>Selected Drugs</text>
+		</string>
+		<!-- End Region -->
 		<!-- Region Vehicles Tab -->
 		<string>
 			<key>Label_GearRating</key>

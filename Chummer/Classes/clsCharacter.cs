@@ -287,7 +287,8 @@ namespace Chummer
         private List<ExpenseLogEntry> _lstExpenseLog = new List<ExpenseLogEntry>();
         private List<CritterPower> _lstCritterPowers = new List<CritterPower>();
         private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
-        private List<string> _lstOldQualities = new List<string>();
+		private List<Drug> _lstDrugs = new List<Drug>();
+		private List<string> _lstOldQualities = new List<string>();
         private List<string> _lstLocations = new List<string>();
         private List<string> _lstArmorBundles = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
@@ -869,10 +870,18 @@ namespace Chummer
             // </improvements>
             objWriter.WriteEndElement();
 
-           
+			// <drugs>
+			objWriter.WriteStartElement("drugs");
+			foreach (Drug objDrug in _lstDrugs)
+			{
+				objDrug.Save(objWriter);
+			}
+			// </drugs>
+			objWriter.WriteEndElement();
 
-            // <expenses>
-            objWriter.WriteStartElement("expenses");
+
+			// <expenses>
+			objWriter.WriteStartElement("expenses");
             foreach (ExpenseLogEntry objExpenseLogEntry in _lstExpenseLog)
             {
                 objExpenseLogEntry.Save(objWriter);
@@ -1341,6 +1350,18 @@ namespace Chummer
             }
 
 			Timekeeper.Finish("load_char_weapons");
+			Timekeeper.Start("load_char_drugs");
+
+			// Weapons.
+			objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
+			foreach (XmlNode objXmlDrug in objXmlNodeList)
+			{
+				Drug objDrug = new Drug();
+				objDrug.Load(objXmlDrug);
+				_lstDrugs.Add(objDrug);
+			}
+
+			Timekeeper.Finish("load_char_drugs");
 			Timekeeper.Start("load_char_ware");
 
 			// Cyberware/Bioware.
@@ -2667,7 +2688,8 @@ namespace Chummer
             _lstWeapons = new List<Weapon>();
             _lstLifestyles = new List<Lifestyle>();
             _lstGear = new List<Gear>();
-            _lstVehicles = new List<Vehicle>();
+			_lstDrugs = new List<Drug>();
+			_lstVehicles = new List<Vehicle>();
             _lstExpenseLog = new List<ExpenseLogEntry>();
             _lstCritterPowers = new List<CritterPower>();
             _lstInitiationGrades = new List<InitiationGrade>();
@@ -5438,14 +5460,22 @@ namespace Chummer
             {
                 return _lstCalendar;
             }
-        }
-        #endregion
+		}
+		/// <summary>
+		/// Custom Drugs created by the character.
+		/// </summary>
+	    public List<Drug> Drugs
+	    {
+		    get { return _lstDrugs; }
+	    }
 
-        #region Armor Properties
-        /// <summary>
-        /// The Character's highest Armor Rating.
-        /// </summary>
-        public int ArmorRating
+	    #endregion
+
+		#region Armor Properties
+		/// <summary>
+		/// The Character's highest Armor Rating.
+		/// </summary>
+		public int ArmorRating
         {
             get
             {
@@ -7344,6 +7374,7 @@ namespace Chummer
             get { return _intRedlinerBonus; }
             set { _intRedlinerBonus = value; }
         }
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 	    [NotifyPropertyChangedInvocator]

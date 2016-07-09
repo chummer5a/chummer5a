@@ -126,6 +126,7 @@ namespace Chummer
 
 		public static GradeList CyberwareGrades = new GradeList();
 		public static GradeList BiowareGrades = new GradeList();
+		public static GradeList DrugGrades = new GradeList();
 
 		// PDF information.
 		public static string _strPDFAppPath = "";
@@ -333,6 +334,7 @@ namespace Chummer
 
 			CyberwareGrades.LoadList(Improvement.ImprovementSource.Cyberware);
 			BiowareGrades.LoadList(Improvement.ImprovementSource.Bioware);
+			DrugGrades.LoadList(Improvement.ImprovementSource.Drug);
 		}
 
 		
