@@ -41,6 +41,7 @@
 						<specificpower>
 							<name>Rapid Healing</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -89,6 +90,7 @@
 						<specificpower>
 							<name>Light Body</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -124,11 +126,13 @@
 						<specificpower>
 							<name>Improved Sense</name>
 							<val>1</val>
+							<free>yes</free>
 							<selecttext />
 						</specificpower>
 						<specificpower>
 							<name>Improved Sense</name>
 							<val>1</val>
+							<free>yes</free>
 							<selecttext />
 						</specificpower>
 					</bonus>
@@ -170,10 +174,12 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 						<specificpower>
 							<name>Danger Sense</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -206,6 +212,7 @@
 						<specificpower>
 							<name>Combat Sense</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -258,6 +265,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -294,6 +302,7 @@
 						<specificpower>
 							<name>Mystic Armor</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -323,6 +332,7 @@
 						<specificpower>
 							<name>Natural Immunity</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -362,6 +372,7 @@
 						<specificpower>
 							<name>Voice Control</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -406,6 +417,7 @@
 						<specificpower>
 							<name>Voice Control</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -439,6 +451,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -478,6 +491,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -548,6 +562,7 @@
 						<specificpower>
 							<name>Kinesics</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -577,6 +592,7 @@
 						<specificpower>
 							<name>Critical Strike</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -629,6 +645,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -667,6 +684,7 @@
 							<selectattribute>
 								<attribute>AGI</attribute>
 							</selectattribute>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -695,6 +713,7 @@
 						<specificpower>
 							<name>Mystic Armor</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -704,6 +723,7 @@
 						<specificpower>
 							<name>Pain Resistance</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -713,10 +733,12 @@
 						<specificpower>
 							<name>Pain Resistance</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 						<specificpower>
 							<name>Mystic Armor</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -787,6 +809,7 @@
 						<specificpower>
 							<name>Enhanced Perception</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -822,6 +845,7 @@
 						<specificpower>
 							<name>Astral Perception</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -932,6 +956,7 @@
 								<attribute>REA</attribute>
 								<attribute>STR</attribute>
 							</selectattribute>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1005,6 +1030,7 @@
 						<specificpower>
 							<name>Rapid Healing</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1041,6 +1067,7 @@
 						<specificpower>
 							<name>Iron Will</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1077,6 +1104,7 @@
 						<specificpower>
 							<name>Inertia Strike</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1113,6 +1141,7 @@
 						<specificpower>
 							<name>Motion Sense</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1148,6 +1177,7 @@
 						<specificpower>
 							<name>Hang Time</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1180,6 +1210,7 @@
 						<specificpower>
 							<name>Mystic Armor</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1245,6 +1276,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 						<specificpower>
 							<name>Enhanced Accuracy (skill)</name>
@@ -1253,6 +1285,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1290,6 +1323,7 @@
 						<specificpower>
 							<name>Danger Sense</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1325,6 +1359,7 @@
 						<specificpower>
 							<name>Combat Sense</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1359,6 +1394,7 @@
 						<specificpower>
 							<name>Elemental Strike</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1394,6 +1430,7 @@
 						<specificpower>
 							<name>Danger Sense</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1433,6 +1470,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 						<specificpower>
 							<name>Enhanced Accuracy (skill)</name>
@@ -1441,6 +1479,7 @@
 								<applytorating>no</applytorating>
 							</selectskill>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1450,6 +1489,7 @@
 						<specificpower>
 							<name>Spell Resistance</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1482,6 +1522,7 @@
 						<specificpower>
 							<name>Critical Strike</name>
 							<val>1</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1511,6 +1552,7 @@
 						<specificpower>
 							<name>Danger Sense</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1536,6 +1578,7 @@
 						<specificpower>
 							<name>Rooting</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1574,6 +1617,7 @@
 						<specificpower>
 							<name>Piercing Senses</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1622,6 +1666,7 @@
 						<specificpower>
 							<name>Flexibility</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1664,6 +1709,7 @@
 						<specificpower>
 							<name>Iron Lungs</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
@@ -1735,10 +1781,12 @@
 						<specificpower>
 							<name>Improved Sense</name>
 							<selecttext/>
+							<free>yes</free>
 						</specificpower>						
 						<specificpower>
 							<name>Improved Sense</name>
 							<selecttext/>
+							<free>yes</free>
 						</specificpower>						
 					</bonus>
 				</choice>
@@ -1774,6 +1822,7 @@
 						<specificpower>
 							<name>Hang Time</name>
 							<val>2</val>
+							<free>yes</free>
 						</specificpower>
 					</bonus>
 				</choice>
