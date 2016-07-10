@@ -581,15 +581,8 @@ namespace Chummer
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             if (_objCharacter.IgnoreRules == false)
             {
-                if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen || _objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-                {
-                    nudNuyen.Maximum = _objCharacter.MaxNuyen;
-                }
-                else if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
-                {
-                    nudNuyen.Maximum = 200;
-                }
-            }
+				nudNuyen.Maximum = _objCharacter.MaxNuyen;
+			}
             else
             {
                 nudNuyen.Maximum = int.MaxValue / 2000 - 75000; // To ensure there is no overflow in character nuyen even with max karma to nuyen and in debt quality

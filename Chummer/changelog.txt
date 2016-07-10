@@ -1,6 +1,7 @@
 Build 183:
 Application Changes:
 - Fixed the dolphin mentor spirit not giving a bonus on spells of the Health category.
+- Added a selector for the maximum karma spent on Nuyen in Karma and Life Modules. Fixes #999.
 
 Build 182:
 Application Changes:
