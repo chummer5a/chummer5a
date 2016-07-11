@@ -3308,6 +3308,10 @@
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
     </string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Couldn't find appropriate Limit to modify. Make sure you have selected a custom Limit Modifier.</text>
+		</string>
 		<!-- End Region -->
 		<!-- Region Common Tab -->
 		<string>

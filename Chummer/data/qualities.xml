@@ -10370,7 +10370,13 @@
 			<name>Impassive</name>
 			<karma>-7</karma>
 			<category>Negative</category>
-			<bonus />
+			<bonus>
+				<limitmodifier>
+					<limit>Social</limit>
+					<value>-1</value>
+					<condition>Does not include Intimidation.</condition>
+				</limitmodifier>
+			</bonus>
 			<source>HT</source>
 			<page>191</page>
 		</quality>

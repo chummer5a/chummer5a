@@ -1521,10 +1521,6 @@
     <Content Include="changelog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Admin\manifestdata.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Admin\manifestlang.xml" />
     <EmbeddedResource Include="Collapse.png" />
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

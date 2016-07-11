@@ -886,13 +886,13 @@ namespace Chummer
                 TreeNode objLimitModifierNode = new TreeNode();
                 objLimitModifierNode.Text = objLimitModifier.DisplayName;
                 objLimitModifierNode.Tag = objLimitModifier.Name;
-                objLimitModifierNode.ContextMenuStrip = cmsMartialArts;
-                if (objLimitModifier.Notes != string.Empty)
+				objLimitModifierNode.ContextMenuStrip = cmsMartialArts;
+				if (objLimitModifier.Notes != string.Empty)
                     objLimitModifierNode.ForeColor = Color.SaddleBrown;
                 objLimitModifierNode.ToolTipText = CommonFunctions.WordWrap(objLimitModifier.Notes, 100);
-                objLimitModifierNode.ContextMenuStrip = cmsLimitModifier;
+				objLimitModifierNode.ContextMenuStrip = cmsLimitModifier;
 
-                switch (objLimitModifier.Limit)
+				switch (objLimitModifier.Limit)
                 {
                     case "Physical":
                         treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
@@ -24264,6 +24264,16 @@ namespace Chummer
 		private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateCharacterInfo();
+		}
+
+		private void tssLimitModifierEdit_Click(object sender, EventArgs e)
+		{
+			if (treLimit.SelectedNode.Level > 0)
+			{
+				UpdateLimitModifier(treLimit, cmsLimitModifier);
+				_blnIsDirty = true;
+				UpdateWindowTitle();
+			}
 		}
 	}
 }

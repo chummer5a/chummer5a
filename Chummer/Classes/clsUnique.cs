@@ -6618,10 +6618,22 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Name.
-        /// </summary>
-        public string Name
+		/// <summary>
+		/// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
+		/// </summary>
+		public Guid Guid
+		{
+			get { return _guiID; }
+			set
+			{
+				_guiID = value;
+			}
+		}
+
+		/// <summary>
+		/// Name.
+		/// </summary>
+		public string Name
         {
             get
             {

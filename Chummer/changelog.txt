@@ -2,6 +2,14 @@ Build 183:
 Application Changes:
 - Fixed the dolphin mentor spirit not giving a bonus on spells of the Health category.
 - Added a selector for the maximum karma spent on Nuyen in Karma and Life Modules. Fixes #999.
+- Fixed an issue with the Priority D Aspected Magician. Fixes #992.
+- Set the Create Backstory button to be invisible for character generation methods other than Life Modules. Fixes #987.
+- Added a missing bonus for the Impassive quality. Fixes #984.
+- Removed an extraneous Recoil Group from the Electronic Firing Accessory. Fixes #983.
+- Added the ability to modify user-created LimitModifiers. Closes #979.
+
+New Strings:
+- Warning_NoLimitFound
 
 Build 182:
 Application Changes:

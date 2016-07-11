@@ -911,7 +911,9 @@ namespace Chummer
 			this.button3 = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.cmsCustomLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1030,6 +1032,7 @@ namespace Chummer
 			this.tabDefences.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
 			this.cmsLimitModifier.SuspendLayout();
+			this.cmsCustomLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsMetamagic.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
@@ -9319,6 +9322,7 @@ namespace Chummer
 			this.btnCreateBackstory.TabIndex = 91;
 			this.btnCreateBackstory.Text = "Create Backstory";
 			this.btnCreateBackstory.UseVisualStyleBackColor = true;
+			this.btnCreateBackstory.Visible = false;
 			this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
 			// 
 			// lblPublicAwareTotal
@@ -10546,9 +10550,19 @@ namespace Chummer
 			// cmsLimitModifier
 			// 
 			this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotes});
+            this.tssLimitModifierNotes,
+			this.tssLimitModifierEdit});
 			this.cmsLimitModifier.Name = "cmsLimitModifier";
 			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 26);
+			// 
+			// tssLimitModifierEdit
+			// 
+			this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
+			this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
+			this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
+			this.tssLimitModifierEdit.Tag = "Menu_Edit";
+			this.tssLimitModifierEdit.Text = "&Edit";
+			this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
 			// 
 			// tssLimitModifierNotes
 			// 
@@ -11442,7 +11456,9 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
         private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;
-        private System.Windows.Forms.Label lblSocialLabel;
+		private System.Windows.Forms.ContextMenuStrip cmsCustomLimitModifier;
+		private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
+		private System.Windows.Forms.Label lblSocialLabel;
         private System.Windows.Forms.Label lblSocial;
         private System.Windows.Forms.Label lblMentalLabel;
         private System.Windows.Forms.Label lblMental;
