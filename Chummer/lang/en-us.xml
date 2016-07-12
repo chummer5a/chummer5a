@@ -7576,6 +7576,14 @@ Do you want to continue?</text>
 			<key>Message_Update_MultipleInstances</key>
 			<text>Chummer cannot be updated while there is more than 1 instance of the application running. Please close the other instances of Chummer then run the update again.</text>
 		</string>
+		<string>
+			<key>String_No_Update_Found</key>
+			<text>Error</text>
+		</string>
+		<string>
+			<key>Warning_Update_CouldNotConnect</key>
+			<text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Character Viewer Window -->
 		<string>

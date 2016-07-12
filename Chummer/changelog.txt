@@ -7,9 +7,17 @@ Application Changes:
 - Added a missing bonus for the Impassive quality. Fixes #984.
 - Removed an extraneous Recoil Group from the Electronic Firing Accessory. Fixes #983.
 - Added the ability to modify user-created LimitModifiers. Closes #979.
+- Fixed an issue with the D-priority adept. Fixes #1005.
+- Added some basic error handling to prevent a crash if trying to update Chummer from behind a firewall or proxy. Fixes #989.
+
+Data Changes: 
+- Fixed an incorrect page reference for the Metatype Reduction biowares. 
+- Removed an extraneous bonus node from the Ork Metatype Reduction cyberware that made it cost karma.
 
 New Strings:
 - Warning_NoLimitFound
+- String_No_Update_Found
+- Warning_Update_CouldNotConnect
 
 Build 182:
 Application Changes:

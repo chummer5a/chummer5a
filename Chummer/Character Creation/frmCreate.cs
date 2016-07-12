@@ -5164,7 +5164,6 @@ namespace Chummer
 							XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
 							foreach (XmlNode objNode in objAddQualitiesNodeList)
 							{
-								XmlNode objXmlSelectedQuality = objQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.InnerText + "\"]");
 								foreach (Quality objQuality in _objCharacter.Qualities)
 								{
 									if (objQuality.Name == objNode.InnerText)

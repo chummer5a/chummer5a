@@ -25,6 +25,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO.Compression;
 using System.Reflection;
+﻿using System.Windows;
+﻿using Application = System.Windows.Forms.Application;
+﻿using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Chummer
 {
@@ -35,12 +38,12 @@ namespace Chummer
 		private bool _blnSilentMode;
 		private bool _blnSilentCheck;
 		private bool _blnDownloaded = false;
+		private bool _blnUnBlocked = false;
 		private string strDownloadFile = "";
 		private string strLatestVersion = "";
 		private string strTempPath = "";
         private readonly string strAppPath = Application.StartupPath;
-		private CommonFunctions objFunctions = new CommonFunctions();
-
+		WebClient wc = new WebClient();
 		public frmUpdate()
 		{
 			Log.Info("frmUpdate");
@@ -67,70 +70,118 @@ namespace Chummer
 				{
 				}
 			}
+			_blnUnBlocked = CheckConnection("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt");
 
-			if (!_blnSilentMode)
+			if (_blnUnBlocked)
 			{
-				WebClient wc = new WebClient();
-				wc.Encoding = Encoding.UTF8;
-				Log.Info("Download the changelog");
-				wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt", Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
-				webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" + File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt")).Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\n", "<br />") + "</font>";
+				if (!_blnSilentMode)
+				{
+					WebClient wc = new WebClient();
+					IWebProxy wp = WebRequest.DefaultWebProxy;
+					wp.Credentials = CredentialCache.DefaultCredentials;
+					wc.Proxy = wp;
+					wc.Encoding = Encoding.UTF8;
+					Log.Info("Download the changelog");
+					wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt",
+						Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
+					webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" +
+					                        File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt"))
+						                        .Replace("&", "&amp;")
+						                        .Replace("<", "&lt;")
+						                        .Replace(">", "&gt;")
+						                        .Replace("\n", "<br />") + "</font>";
+				}
+
+				GetChummerVersion();
+
+				Log.Info("intCount = " + intCount.ToString());
+				// If there is more than 1 instance running, do not let the application be updated.
+				if (intCount > 1)
+				{
+					Log.Info("More than one instance, exiting");
+					if (!_blnSilentMode && !_blnSilentCheck)
+						MessageBox.Show(LanguageManager.Instance.GetString("Message_Update_MultipleInstances"),
+							LanguageManager.Instance.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					Log.Info("frmUpdate_Load");
+					this.Close();
+				}
 			}
-
-			GetChummerVersion();
-
-			Log.Info("intCount = " + intCount.ToString());
-			// If there is more than 1 instance running, do not let the application be updated.
-			if (intCount > 1)
+			else
 			{
-				Log.Info("More than one instance, exiting");
-				if (!_blnSilentMode && !_blnSilentCheck)
-					MessageBox.Show(LanguageManager.Instance.GetString("Message_Update_MultipleInstances"), LanguageManager.Instance.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				Log.Info("frmUpdate_Load");
+				MessageBox.Show(LanguageManager.Instance.GetString("Warning_Update_CouldNotConnect"), "Chummer5",
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
 				this.Close();
+				Log.Exit("frmUpdate_Load");
 			}
 			Log.Exit("frmUpdate_Load");
 		}
 
+		private bool CheckConnection(String URL)
+		{
+			try
+			{
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+
+				if (request.Proxy != null)
+					request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+				request.Timeout = 5000;
+				request.Credentials = CredentialCache.DefaultNetworkCredentials;
+				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+				return response.StatusCode == HttpStatusCode.OK;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 		public void GetChummerVersion()
 		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
-			request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-			request.Accept = "application/json";
-			// Get the response.
-
-			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-			// Get the stream containing content returned by the server.
-			Stream dataStream = response.GetResponseStream();
-			// Open the stream using a StreamReader for easy access.
-			StreamReader reader = new StreamReader(dataStream);
-			// Read the content.
-
-			string responseFromServer = reader.ReadToEnd();
-			string[] stringSeparators = new string[] { "," };
-			string[] result;
-			result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-			foreach (string line in result)
+			if (_blnUnBlocked)
 			{
-				if (line.Contains("browser_download_url"))
+				HttpWebRequest request =
+					(HttpWebRequest) WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+				request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+				request.Accept = "application/json";
+				// Get the response.
+
+				HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+				// Get the stream containing content returned by the server.
+				Stream dataStream = response.GetResponseStream();
+				// Open the stream using a StreamReader for easy access.
+				StreamReader reader = new StreamReader(dataStream);
+				// Read the content.
+
+				string responseFromServer = reader.ReadToEnd();
+				string[] stringSeparators = new string[] {","};
+				string[] result;
+				result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (string line in result)
 				{
-					strDownloadFile = line.Split(':')[2];
-					strDownloadFile = strDownloadFile.Substring(2);
-					strDownloadFile = strDownloadFile.Split('}')[0].Replace("\"", string.Empty);
-					strDownloadFile = "https://" + strDownloadFile;
+					if (line.Contains("browser_download_url"))
+					{
+						strDownloadFile = line.Split(':')[2];
+						strDownloadFile = strDownloadFile.Substring(2);
+						strDownloadFile = strDownloadFile.Split('}')[0].Replace("\"", string.Empty);
+						strDownloadFile = "https://" + strDownloadFile;
+					}
+					if (line.Contains("tag_name"))
+					{
+						strLatestVersion = line.Split(':')[1];
+						strLatestVersion = strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
+					}
 				}
-				if (line.Contains("tag_name"))
-				{
-					strLatestVersion = line.Split(':')[1];
-					strLatestVersion = strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
-				}
+				// Cleanup the streams and the response.
+				reader.Close();
+				dataStream.Close();
+				response.Close();
 			}
-			// Cleanup the streams and the response.
-			reader.Close();
-			dataStream.Close();
-			response.Close();
+			else
+			{
+				strLatestVersion = LanguageManager.Instance.GetString("String_No_Update_Found");
+			}
 		}
 
 		/// <summary>
