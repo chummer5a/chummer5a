@@ -101,6 +101,7 @@
 			this.tabGeneral = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
 			this.chkOpenPDFsAsUnix = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
 			this.cmdURLAppPath = new System.Windows.Forms.Button();
@@ -231,6 +232,7 @@
 			this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
 			this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
 			this.tabHouseRules = new System.Windows.Forms.TabPage();
+			this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.nudDroneArmorMultiplier = new System.Windows.Forms.NumericUpDown();
 			this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
@@ -261,7 +263,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1074,6 +1075,18 @@
 			this.tabGlobal.TabIndex = 0;
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
+			// 
+			// chkOmaeEnabled
+			// 
+			this.chkOmaeEnabled.AutoSize = true;
+			this.chkOmaeEnabled.Location = new System.Drawing.Point(9, 222);
+			this.chkOmaeEnabled.Name = "chkOmaeEnabled";
+			this.chkOmaeEnabled.Size = new System.Drawing.Size(101, 17);
+			this.chkOmaeEnabled.TabIndex = 24;
+			this.chkOmaeEnabled.Tag = "Checkbox_Options_OmaeEnabled";
+			this.chkOmaeEnabled.Text = "[Omae enabled]";
+			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
+			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
 			// 
 			// chkOpenPDFsAsUnix
 			// 
@@ -2664,6 +2677,7 @@
 			// tabHouseRules
 			// 
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+			this.tabHouseRules.Controls.Add(this.chkAlternateMetatypeAttributeKarma);
 			this.tabHouseRules.Controls.Add(this.label4);
 			this.tabHouseRules.Controls.Add(this.nudDroneArmorMultiplier);
 			this.tabHouseRules.Controls.Add(this.chkDroneArmorMultiplier);
@@ -2696,6 +2710,17 @@
 			this.tabHouseRules.TabIndex = 3;
 			this.tabHouseRules.Tag = "Tab_Options_HouseRules";
 			this.tabHouseRules.Text = "House Rules";
+			// 
+			// chkAlternateMetatypeAttributeKarma
+			// 
+			this.chkAlternateMetatypeAttributeKarma.AutoSize = true;
+			this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(8, 256);
+			this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
+			this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
+			this.chkAlternateMetatypeAttributeKarma.TabIndex = 28;
+			this.chkAlternateMetatypeAttributeKarma.Tag = "Checkbox_Option_AlternateMetatypeAttributeKarma";
+			this.chkAlternateMetatypeAttributeKarma.Text = "Treat Metatype Attribute Minimum as 1 for the purpose of determining Karma costs";
+			this.chkAlternateMetatypeAttributeKarma.UseVisualStyleBackColor = true;
 			// 
 			// label4
 			// 
@@ -3077,18 +3102,6 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
-			// chkOmaeEnabled
-			// 
-			this.chkOmaeEnabled.AutoSize = true;
-			this.chkOmaeEnabled.Location = new System.Drawing.Point(9, 222);
-			this.chkOmaeEnabled.Name = "chkOmaeEnabled";
-			this.chkOmaeEnabled.Size = new System.Drawing.Size(101, 17);
-			this.chkOmaeEnabled.TabIndex = 24;
-			this.chkOmaeEnabled.Tag = "Checkbox_Options_OmaeEnabled";
-			this.chkOmaeEnabled.Text = "[Omae enabled]";
-			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
-			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
-			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -3417,5 +3430,6 @@
         private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
 		private System.Windows.Forms.CheckBox chkOmaeEnabled;
+		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
 	}
 }

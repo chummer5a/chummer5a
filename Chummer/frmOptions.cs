@@ -148,6 +148,7 @@ namespace Chummer
             _characterOptions.StrengthAffectsRecoil = Convert.ToBoolean(chkStrengthAffectsRecoil.Checked);
 			_characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
+	        _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
 
             switch (cboLimbCount.SelectedValue.ToString())
             {
@@ -657,6 +658,7 @@ namespace Chummer
 			chkStrengthAffectsRecoil.Checked = _characterOptions.StrengthAffectsRecoil;
 			chkUseCalculatedPublicAwareness.Checked = _characterOptions.UseCalculatedPublicAwareness;
 			chkStrictSkillGroups.Checked = _characterOptions.StrictSkillGroupsInCreateMode;
+			chkAlternateMetatypeAttributeKarma.Checked = _characterOptions.AlternateMetatypeAttributeKarma;
 			nudBP.Value = _characterOptions.BuildPoints;
 			nudContactMultiplier.Enabled = _characterOptions.FreeContactsMultiplierEnabled;
 			nudContactMultiplier.Value = _characterOptions.FreeContactsMultiplier;

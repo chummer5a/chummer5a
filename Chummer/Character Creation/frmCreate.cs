@@ -14304,46 +14304,93 @@ namespace Chummer
 
                 _objCharacter.Attributes = _objCharacter.TotalAttributes - intAtt;
 		    }
-                // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
-                for (int i = 1; i <= nudKBOD.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKAGI.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudAGI.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKREA.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudREA.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKSTR.Value; i++)
-                {
-                    if (_objCharacter.Cyberware.Find(x =>
-                        x.Name == "Myostatin Inhibitor") != null)
-                    {
-                        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
-                    }
-                    else
-                    {
-                        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
-                    }
-                }
-                for (int i = 1; i <= nudKCHA.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudCHA.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKINT.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudINT.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKLOG.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudLOG.Value) + i)*_objOptions.KarmaAttribute);
-                }
-                for (int i = 1; i <= nudKWIL.Value; i++)
-                {
-			    intBP += ((Convert.ToInt32(nudWIL.Value) + i)*_objOptions.KarmaAttribute);
+	        if (!_objOptions.AlternateMetatypeAttributeKarma)
+	        {
+		        // For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma
+		        for (int i = 1; i <= nudKBOD.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudBOD.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKAGI.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudAGI.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKREA.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudREA.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKSTR.Value; i++)
+		        {
+			        if (_objCharacter.Cyberware.Find(x =>
+				        x.Name == "Myostatin Inhibitor") != null)
+			        {
+				        intBP += ((Convert.ToInt32(nudSTR.Value) + i) * _objOptions.KarmaAttribute) - 2;
+			        }
+			        else
+			        {
+				        intBP += ((Convert.ToInt32(nudSTR.Value) + i)*_objOptions.KarmaAttribute);
+			        }
+		        }
+		        for (int i = 1; i <= nudKCHA.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudCHA.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKINT.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudINT.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKLOG.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudLOG.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        for (int i = 1; i <= nudKWIL.Value; i++)
+		        {
+			        intBP += ((Convert.ToInt32(nudWIL.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+	        }
+	        else
+	        {
+				// For each CharacterAttribute, figure out the actual karma cost of attributes raised with karma. Treat the karma cost as though we were raising it from 1.
+				for (int i = 1; i <= nudKBOD.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKAGI.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKREA.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKSTR.Value; i++)
+				{
+					if (_objCharacter.Cyberware.Find(x =>
+						x.Name == "Myostatin Inhibitor") != null)
+					{
+						intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute) - 2;
+					}
+					else
+					{
+						intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+					}
+				}
+				for (int i = 1; i <= nudKCHA.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKINT.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKLOG.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
+				for (int i = 1; i <= nudKWIL.Value; i++)
+				{
+					intBP += (Convert.ToInt32(1 + i) * _objOptions.KarmaAttribute);
+				}
 			}
 			if ((_objCharacter.BuildMethod == CharacterBuildMethod.Priority) || (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen))
 			{
@@ -14381,34 +14428,66 @@ namespace Chummer
 
 			_objCharacter.Special = _objCharacter.TotalSpecial - intAtt;
 
-			// For each attribute, figure out the actual karma cost of attributes raised with karma
-			for (int i = 1; i <= nudKEDG.Value; i++)
-            {
-                intEDG += ((Convert.ToInt32(nudEDG.Value) + i) * _objOptions.KarmaAttribute);
-            }
-            if (_objCharacter.MAGEnabled)
-            {
-                for (int i = 1; i <= nudKMAG.Value; i++)
-                {
-                    intMAG += ((Convert.ToInt32(nudMAG.Value) + i) * _objOptions.KarmaAttribute);
-                }
-            }
-            if (_objCharacter.RESEnabled)
-            {
-                for (int i = 1; i <= nudKRES.Value; i++)
-                {
-                    intRES += ((Convert.ToInt32(nudRES.Value) + i) * _objOptions.KarmaAttribute);
-                }
-			}
-			if (_objCharacter.Metatype == "A.I.")
-			{
-				for (int i = 1; i <= nudKDEP.Value; i++)
+	        if (!_objOptions.AlternateMetatypeAttributeKarma)
+	        {
+		        // For each attribute, figure out the actual karma cost of attributes raised with karma
+		        for (int i = 1; i <= nudKEDG.Value; i++)
+		        {
+			        intEDG += ((Convert.ToInt32(nudEDG.Value) + i)*_objOptions.KarmaAttribute);
+		        }
+		        if (_objCharacter.MAGEnabled)
+		        {
+			        for (int i = 1; i <= nudKMAG.Value; i++)
+			        {
+				        intMAG += ((Convert.ToInt32(nudMAG.Value) + i)*_objOptions.KarmaAttribute);
+			        }
+		        }
+		        if (_objCharacter.RESEnabled)
+		        {
+			        for (int i = 1; i <= nudKRES.Value; i++)
+			        {
+				        intRES += ((Convert.ToInt32(nudRES.Value) + i)*_objOptions.KarmaAttribute);
+			        }
+		        }
+		        if (_objCharacter.Metatype == "A.I.")
+		        {
+			        for (int i = 1; i <= nudKDEP.Value; i++)
+			        {
+				        intDEP += ((Convert.ToInt32(nudDEP.Value) + i)*_objOptions.KarmaAttribute);
+			        }
+		        }
+	        }
+	        else
+	        {
+				// For each attribute, figure out the actual karma cost of attributes raised with karma
+				for (int i = 1; i <= nudKEDG.Value; i++)
 				{
-					intDEP += ((Convert.ToInt32(nudDEP.Value) + i) * _objOptions.KarmaAttribute);
+					intEDG += ((1 + i) * _objOptions.KarmaAttribute);
+				}
+				if (_objCharacter.MAGEnabled)
+				{
+					for (int i = 1; i <= nudKMAG.Value; i++)
+					{
+						intMAG += ((1 + i) * _objOptions.KarmaAttribute);
+					}
+				}
+				if (_objCharacter.RESEnabled)
+				{
+					for (int i = 1; i <= nudKRES.Value; i++)
+					{
+						intRES += ((1 + i) * _objOptions.KarmaAttribute);
+					}
+				}
+				if (_objCharacter.Metatype == "A.I.")
+				{
+					for (int i = 1; i <= nudKDEP.Value; i++)
+					{
+						intDEP += ((1 + i) * _objOptions.KarmaAttribute);
+					}
 				}
 			}
 
-            // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
+	        // Find the character's Essence Loss. This applies unless the house rule to have ESS Loss only affect the Maximum of the CharacterAttribute is turned on.
 			int intEssenceLoss = _objOptions.ESSLossReducesMaximumOnly ? 0 : _objCharacter.EssencePenalty;
 
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma ||
