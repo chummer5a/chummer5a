@@ -6061,7 +6061,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
-			<text>Free Contact Points are calculated with augmented LOG+INT values.</text>
+			<text>Free Contact Points are calculated with augmented CHA values.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PrintExpenses</key>
