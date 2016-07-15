@@ -630,6 +630,8 @@ namespace Chummer.Skills
 					return " and category = 'Magical Active' and (skillgroup = 'Enchanting' or skillgroup = '' or not(skillgroup))";
 				case FilterOptions.Adept:
 					return " and category = 'Magical Active' and (skillgroup = '' or not(skillgroup))";
+				case FilterOptions.Spellcasting:
+					return " and category = 'Magical Active' and name = 'Spellcasting'";
 				case FilterOptions.Technomancer:
 					return " and category = 'Resonance Active'";
 				default:
@@ -646,7 +648,8 @@ namespace Chummer.Skills
 			Conjuring,
 			Enhancing,
 			Adept,
-			Technomancer
+			Technomancer,
+			Spellcasting
 		}
 
 		internal void ForceProperyChangedNotificationAll(string name)

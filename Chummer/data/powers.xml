@@ -1157,7 +1157,8 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<selecttext />
+				<unlockskills>Spellcasting</unlockskills>
+				<selectspell ignorerequirements ="true" />
 			</bonus>
 			<source>HT</source>
 			<page>190</page>
