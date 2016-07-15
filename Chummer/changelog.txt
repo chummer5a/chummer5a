@@ -10,6 +10,13 @@ Application Changes:
 - Fixed an issue with the D-priority adept. Fixes #1005.
 - Added some basic error handling to prevent a crash if trying to update Chummer from behind a firewall or proxy. Fixes #989.
 - Re-enabled the house-rule to treat metahuman minimums as 1 for karma costs. Fixes #1004.
+- Fixed a crash caused by removing life modules,
+- Fixed an issue with loading Priority characters caused by an incorrectly saved maximum nuyen value.
+- Fixed the ability for adpets with the Adept Spell power to increase their Spellcasting skill rank. Fixes #990.
+- Changed the Adept Spell power to prompt for the spell instead of a text value.
+- Altered the Select Spell form to allow ignoring requirements such as being magician-enabled to support this.
+- Altered the UnlockSkills improvement to allow for specifying the Spellcasting skill, rather than the full compliment of magical skills.
+- Fixed a crash caused by removing life modules while in creation mode. 
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
