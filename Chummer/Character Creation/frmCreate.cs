@@ -581,14 +581,14 @@ namespace Chummer
             // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
             if (_objCharacter.IgnoreRules == false)
             {
-				nudNuyen.Maximum = _objCharacter.MaxNuyen;
+				nudNuyen.Maximum = _objCharacter.NuyenMaximumBP;
 			}
             else
             {
                 nudNuyen.Maximum = int.MaxValue / 2000 - 75000; // To ensure there is no overflow in character nuyen even with max karma to nuyen and in debt quality
             }
 	        if (_objCharacter.BornRich) nudNuyen.Maximum += 30;
-			nudNuyen.Value = _objCharacter.NuyenMaximumBP;
+			nudNuyen.Value = _objCharacter.NuyenBP;
 
 			// Load the Skills information.
 			objXmlDocument = XmlManager.Instance.Load("skills.xml");

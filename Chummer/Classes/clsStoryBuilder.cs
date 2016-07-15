@@ -42,6 +42,7 @@ namespace Chummer
 			{
 				//Generate list of all life modules (xml, we don't save required data to quality) this character has
 				List<XmlNode> modules = new List<XmlNode>();
+
 				foreach (Quality quality in _objCharacter.Qualities)
 				{
 					if (quality.Type == QualityType.LifeModule)
