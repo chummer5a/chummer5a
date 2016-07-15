@@ -31,7 +31,6 @@
 			this.components = new System.ComponentModel.Container();
 			this.nudKarma = new System.Windows.Forms.NumericUpDown();
 			this.cmdOK = new System.Windows.Forms.Button();
-			this.lblDescription = new System.Windows.Forms.Label();
 			this.chkIgnoreRules = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.cmdCancel = new System.Windows.Forms.Button();
@@ -42,9 +41,13 @@
 			this.nudSumtoTen = new System.Windows.Forms.NumericUpDown();
 			this.lblSumToX = new System.Windows.Forms.Label();
 			this.lblStartingKarma = new System.Windows.Forms.Label();
+			this.lblDescription = new System.Windows.Forms.Label();
+			this.nudMaxNuyen = new System.Windows.Forms.NumericUpDown();
+			this.lblMaxNuyen = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// nudKarma
@@ -67,24 +70,14 @@
 			// 
 			// cmdOK
 			// 
-			this.cmdOK.Location = new System.Drawing.Point(162, 161);
+			this.cmdOK.Location = new System.Drawing.Point(240, 161);
 			this.cmdOK.Name = "cmdOK";
-			this.cmdOK.Size = new System.Drawing.Size(75, 23);
+			this.cmdOK.Size = new System.Drawing.Size(70, 20);
 			this.cmdOK.TabIndex = 6;
 			this.cmdOK.Tag = "String_OK";
 			this.cmdOK.Text = "OK";
 			this.cmdOK.UseVisualStyleBackColor = true;
 			this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-			// 
-			// lblDescription
-			// 
-			this.lblDescription.Location = new System.Drawing.Point(12, 36);
-			this.lblDescription.Name = "lblDescription";
-			this.lblDescription.Size = new System.Drawing.Size(222, 44);
-			this.lblDescription.TabIndex = 0;
-			this.lblDescription.Tag = "String_SelectBP_KarmaSummary";
-			this.lblDescription.Text = "Enter the amount of Build Points you are allowed to create your character with (D" +
-    "efault 400).";
 			// 
 			// chkIgnoreRules
 			// 
@@ -111,9 +104,9 @@
 			// cmdCancel
 			// 
 			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cmdCancel.Location = new System.Drawing.Point(81, 161);
+			this.cmdCancel.Location = new System.Drawing.Point(167, 161);
 			this.cmdCancel.Name = "cmdCancel";
-			this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+			this.cmdCancel.Size = new System.Drawing.Size(70, 20);
 			this.cmdCancel.TabIndex = 7;
 			this.cmdCancel.Tag = "String_Cancel";
 			this.cmdCancel.Text = "Cancel";
@@ -126,13 +119,13 @@
 			this.cboBuildMethod.FormattingEnabled = true;
 			this.cboBuildMethod.Location = new System.Drawing.Point(7, 7);
 			this.cboBuildMethod.Name = "cboBuildMethod";
-			this.cboBuildMethod.Size = new System.Drawing.Size(110, 21);
+			this.cboBuildMethod.Size = new System.Drawing.Size(151, 21);
 			this.cboBuildMethod.TabIndex = 1;
 			this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
 			// 
 			// lblMaxAvail
 			// 
-			this.lblMaxAvail.Location = new System.Drawing.Point(88, 80);
+			this.lblMaxAvail.Location = new System.Drawing.Point(84, 80);
 			this.lblMaxAvail.Name = "lblMaxAvail";
 			this.lblMaxAvail.Size = new System.Drawing.Size(70, 29);
 			this.lblMaxAvail.TabIndex = 3;
@@ -142,7 +135,7 @@
 			// 
 			// nudMaxAvail
 			// 
-			this.nudMaxAvail.Location = new System.Drawing.Point(88, 112);
+			this.nudMaxAvail.Location = new System.Drawing.Point(84, 112);
 			this.nudMaxAvail.Name = "nudMaxAvail";
 			this.nudMaxAvail.Size = new System.Drawing.Size(70, 20);
 			this.nudMaxAvail.TabIndex = 4;
@@ -156,9 +149,9 @@
 			// 
 			this.cboGamePlay.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboGamePlay.FormattingEnabled = true;
-			this.cboGamePlay.Location = new System.Drawing.Point(127, 7);
+			this.cboGamePlay.Location = new System.Drawing.Point(167, 7);
 			this.cboGamePlay.Name = "cboGamePlay";
-			this.cboGamePlay.Size = new System.Drawing.Size(110, 21);
+			this.cboGamePlay.Size = new System.Drawing.Size(143, 21);
 			this.cboGamePlay.TabIndex = 8;
 			this.cboGamePlay.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
 			// 
@@ -176,9 +169,9 @@
 			// 
 			// lblSumToX
 			// 
-			this.lblSumToX.Location = new System.Drawing.Point(167, 93);
+			this.lblSumToX.Location = new System.Drawing.Point(167, 80);
 			this.lblSumToX.Name = "lblSumToX";
-			this.lblSumToX.Size = new System.Drawing.Size(67, 16);
+			this.lblSumToX.Size = new System.Drawing.Size(70, 29);
 			this.lblSumToX.TabIndex = 10;
 			this.lblSumToX.Tag = "Label_SelectBP_SumToX";
 			this.lblSumToX.Text = "Sum to Ten";
@@ -194,14 +187,52 @@
 			this.lblStartingKarma.Text = "Starting\r\nKarma";
 			this.lblStartingKarma.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			// 
-			// frmSelectBP
+			// lblDescription
+			// 
+			this.lblDescription.Location = new System.Drawing.Point(12, 31);
+			this.lblDescription.Name = "lblDescription";
+			this.lblDescription.Size = new System.Drawing.Size(298, 49);
+			this.lblDescription.TabIndex = 0;
+			this.lblDescription.Tag = "String_SelectBP_KarmaSummary";
+			this.lblDescription.Text = "Enter the amount of Build Points you are allowed to create your character with (D" +
+    "efault 400).";
+			// 
+			// nudMaxNuyen
+			// 
+			this.nudMaxNuyen.Location = new System.Drawing.Point(238, 112);
+			this.nudMaxNuyen.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+			this.nudMaxNuyen.Name = "nudMaxNuyen";
+			this.nudMaxNuyen.Size = new System.Drawing.Size(70, 20);
+			this.nudMaxNuyen.TabIndex = 13;
+			this.nudMaxNuyen.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+			// 
+			// lblMaxNuyen
+			// 
+			this.lblMaxNuyen.Location = new System.Drawing.Point(240, 80);
+			this.lblMaxNuyen.Name = "lblMaxNuyen";
+			this.lblMaxNuyen.Size = new System.Drawing.Size(70, 29);
+			this.lblMaxNuyen.TabIndex = 15;
+			this.lblMaxNuyen.Text = "Nuyen Karma Max";
+			this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			// 
+			// frmSelectBuildMethod
 			// 
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
-			this.ClientSize = new System.Drawing.Size(249, 192);
+			this.ClientSize = new System.Drawing.Size(318, 188);
 			this.ControlBox = false;
+			this.Controls.Add(this.lblMaxNuyen);
+			this.Controls.Add(this.nudMaxNuyen);
 			this.Controls.Add(this.lblStartingKarma);
 			this.Controls.Add(this.lblSumToX);
 			this.Controls.Add(this.nudSumtoTen);
@@ -227,6 +258,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudKarma)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudSumtoTen)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyen)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -236,7 +268,6 @@
 
         private System.Windows.Forms.NumericUpDown nudKarma;
         private System.Windows.Forms.Button cmdOK;
-        private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.CheckBox chkIgnoreRules;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button cmdCancel;
@@ -247,5 +278,8 @@
 		private System.Windows.Forms.NumericUpDown nudSumtoTen;
 		private System.Windows.Forms.Label lblSumToX;
 		private System.Windows.Forms.Label lblStartingKarma;
+		private System.Windows.Forms.Label lblDescription;
+		private System.Windows.Forms.NumericUpDown nudMaxNuyen;
+		private System.Windows.Forms.Label lblMaxNuyen;
 	}
 }

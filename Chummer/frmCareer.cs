@@ -27835,5 +27835,15 @@ namespace Chummer
 			Commlink objCommlink = _objFunctions.FindCommlink(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 			objCommlink.Overclocked = cboCyberwareGearOverclocker.SelectedValue.ToString();
 		}
+
+		private void tssLimitModifierEdit_Click(object sender, EventArgs e)
+		{
+			if (treLimit.SelectedNode.Level > 0)
+			{
+				UpdateLimitModifier(treLimit, cmsLimitModifier);
+				_blnIsDirty = true;
+				UpdateWindowTitle();
+			}
+		}
 	}
 }

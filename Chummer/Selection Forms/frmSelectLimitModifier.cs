@@ -34,11 +34,17 @@ namespace Chummer
         private string _strCondition = "";
 
         #region Control Events
-        public frmSelectLimitModifier()
+        public frmSelectLimitModifier(LimitModifier objLimitModifier = null)
         {
             InitializeComponent();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-        }
+			if (objLimitModifier != null)
+			{
+				txtName.Text = objLimitModifier.Name;
+				_intBonus = objLimitModifier.Bonus;
+				txtCondition.Text = objLimitModifier.Condition;
+			}
+		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
         {

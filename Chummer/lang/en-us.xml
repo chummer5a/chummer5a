@@ -3308,6 +3308,10 @@
       <key>String_NotSupported</key>
       <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
     </string>
+		<string>
+			<key>Warning_NoLimitFound</key>
+			<text>Couldn't find appropriate Limit to modify. Make sure you have selected a custom Limit Modifier.</text>
+		</string>
 		<!-- End Region -->
 		<!-- Region Common Tab -->
 		<string>
@@ -6057,7 +6061,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseTotalValueForFreeContacts</key>
-			<text>Free Contact Points are calculated with augmented LOG+INT values.</text>
+			<text>Free Contact Points are calculated with augmented CHA values.</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_PrintExpenses</key>
@@ -7571,6 +7575,14 @@ Do you want to continue?</text>
 		<string>
 			<key>Message_Update_MultipleInstances</key>
 			<text>Chummer cannot be updated while there is more than 1 instance of the application running. Please close the other instances of Chummer then run the update again.</text>
+		</string>
+		<string>
+			<key>String_No_Update_Found</key>
+			<text>Error</text>
+		</string>
+		<string>
+			<key>Warning_Update_CouldNotConnect</key>
+			<text>Chummer was unable to connect to the update server. Please check your firewall and proxy settings.</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Character Viewer Window -->

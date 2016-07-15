@@ -2152,9 +2152,6 @@
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>6000</cost>
-			<bonus>
-				<freepositivequalities>-6</freepositivequalities>
-			</bonus>
 			<required>
 				<oneof>
 					<metatype>Ork</metatype>

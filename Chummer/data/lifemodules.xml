@@ -1866,7 +1866,7 @@
 		<!-- End Region -->
 		<!-- Region Further Education -->
 		<module>
-			<id>5A2EEE69-CEDB-403E-9649-FDC9A1377374</id>
+			<id>5a2eee69-cedb-403e-9649-fdc9a1377374</id>
 			<stage>Further Education</stage>
 			<category>LifeModule</category>
 			<name>Skipped Further Education</name>
@@ -7585,6 +7585,305 @@
 			<source>HT</source>
 			<page>200</page>
 		</module>
+		<!-- End Region -->
+		<!--Region Rigger 5.0-->
+		<!--Region Formative Years-->
+		<module>
+			<id>95b89172-5189-4841-9e89-c14754336382</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Minor Wheelman</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Navigation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[Vehicle Models]</name>
+					<group>Professional</group>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Vehicle Stunts]</name>
+					<group>Street</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<addqualities>
+				<addquality>Speed Demon</addquality>
+				<addquality>Stunt Driver</addquality>
+			</addqualities>
+			<story>$real was driving before other kids could read the street signs, emerging as one of the best getaway drivers around the age normal kids were learning traffic signals</story>
+			<source>R5</source>
+			<page>34</page>
+		</module>
+		<module>
+			<id>195a5953-42ee-40ab-80fd-8c5e4c9d5fac</id>
+			<stage>Formative Years</stage>
+			<category>LifeModule</category>
+			<name>Shop Kid</name>
+			<karma>40</karma>
+			<bonus>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Industrial Mechanic</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[Vehicle Models]</name>
+					<group>Professional</group>
+					<val>3</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Vehicle Parts]</name>
+					<group>Professional</group>
+				</knowledgeskilllevel>
+			</bonus>
+			<addqualities>
+				<addquality>Grease Monkey</addquality>
+			</addqualities>
+			<story>Tinkering was what $real lived for. It started with simply identifying the limited cars in the neighborhood. From there scavenging parts and putting them back together. Totally self taught $real worked their way into shops if they weren't chased off</story>
+			<source>R5</source>
+			<page>35</page>
+		</module>
+		<!--End Region -->
+		<!--Region Teen Years-->
+		<module>
+			<id>cc16eb63-8930-42ed-ac1a-390bd5ccc2d3</id>
+			<stage>Teen Years</stage>
+			<category>LifeModule</category>
+			<name>Booster</name>
+			<karma>50</karma>
+			<bonus>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Hacking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Locksmith</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[Vehicle Models]</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>[Chop Shops]</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<addqualities>
+				<addquality>Stunt Driver</addquality>
+			</addqualities>
+			<story>By the time $real was a teen, they were stealing cars to order, driving the boosts to any one of the chop shops in the city. Now, when $real sees a new car in the 'hood, what $real sees is the fee in Nuyen</story>
+			<source>R5</source>
+			<page>35</page>
+		</module>
+		<!--End Region -->
+		<!--Region Real Life-->
+		<module>
+			<id>95504862-5150-4360-87fa-9086269cbdce</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Drone Hobbyist</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>LOG</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Perception</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Aircraft</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Walker</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+					<val>2</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Tracking</name>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Drone Manufacturers</name>
+					<group>Professional</group>
+					<val>3</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Drone Software</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<story>$real flies drones in competitions around the city. Taking jobs using their drones on the side to help pay for upgrades</story>
+			<source>R5</source>
+			<page>35</page>
+		</module>
+		<module>
+			<id>e070e446-b3fd-4446-aa3a-35e73417ef06</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Getaway Driver</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+					<val>3</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Sneaking</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Tracking</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>[City] Streets</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Stunt Techniques</name>
+					<group>Street</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<addqualities>
+				<addquality>Gearhead</addquality>
+				<addquality>Speed Demon</addquality>
+			</addqualities>
+			<story>Need a driver for that job you want doing? Feel the need for a getaway? Contact $real at getawaydriver.me for all your driving needs, flat rates for routes inside [CITY]</story>
+			<source>R5</source>
+			<page>35</page>
+		</module>
+		<module>
+			<id>e7ec9b76-54c0-4dfd-8329-741bcc6abce8</id>
+			<stage>Real Life</stage>
+			<category>LifeModule</category>
+			<name>Trid Stunt Driver</name>
+			<karma>100</karma>
+			<bonus>
+				<attributelevel>
+					<name>INT</name>
+				</attributelevel>
+				<attributelevel>
+					<name>REA</name>
+				</attributelevel>
+				<skilllevel>
+					<name>Automotive Mechanic</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Demolitions</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Etiquette</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Gunnery</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Navigation</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Aircraft</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Ground Craft</name>
+					<val>3</val>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Walker</name>
+				</skilllevel>
+				<skilllevel>
+					<name>Pilot Watercraft</name>
+					<val>2</val>
+				</skilllevel>
+				<knowledgeskilllevel>
+					<name>Stunt Techniques</name>
+					<group>Professional</group>
+					<val>3</val>
+				</knowledgeskilllevel>
+				<knowledgeskilllevel>
+					<name>Trid Studios</name>
+					<group>Professional</group>
+					<val>2</val>
+				</knowledgeskilllevel>
+			</bonus>
+			<addqualities>
+				<addquality>Steely Eyed Wheelman</addquality>
+				<addquality>Speed Demon</addquality>
+			</addqualities>
+			<story>Need a driver for that TRI-D you're finanicing? Contact $real at actor-driver.me for all your driving needs.</story>
+			<source>R5</source>
+			<page>35</page>
+		</module>
+		<!-- End Region -->
 		<!-- End Region -->
 	</modules>
 	<storybuilder>

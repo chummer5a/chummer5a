@@ -1716,6 +1716,11 @@ namespace Chummer
 					frmPickSpell.Opacity = 0;
 				}
 
+				if (bonusNode.Attributes["ignorerequirements"] != null)
+				{
+					frmPickSpell.IgnoreRequirements = Convert.ToBoolean(bonusNode.Attributes["ignorerequirements"].InnerText);
+				}
+
 				frmPickSpell.ShowDialog();
 
 				// Make sure the dialogue window was not canceled.

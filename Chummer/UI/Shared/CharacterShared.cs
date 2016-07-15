@@ -251,5 +251,49 @@ namespace Chummer
 			return 0;
 		}
 
+		/// <summary>
+		/// Edit and update a Limit Modifier.
+		/// </summary>
+		/// <param name="treLimit"></param>
+		/// <param name="cmsLimitModifier"></param>
+		protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
+		{
+			TreeNode objSelectedNode = treLimit.SelectedNode;
+			LimitModifier objLimitModifier = _objFunctions.FindLimitModifier(treLimit.SelectedNode.Tag.ToString(),
+				_objCharacter.LimitModifiers);
+			//If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
+			if (objLimitModifier == null)
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Warning_NoLimitFound"));
+				return;
+			}
+			frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);
+			frmPickLimitModifier.ShowDialog(this);
+
+			if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+				return;
+
+			//Remove the old LimitModifier to ensure we don't double up.
+			_objCharacter.LimitModifiers.Remove(objLimitModifier);
+			// Create the new limit modifier.
+			TreeNode objNode = new TreeNode();
+			objLimitModifier = new LimitModifier(_objCharacter);
+			string strLimit = treLimit.SelectedNode.Parent.Text;
+			string strCondition = frmPickLimitModifier.SelectedCondition;
+			objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
+				strCondition, _objCharacter, objNode);
+			objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
+			if (objLimitModifier.InternalId == Guid.Empty.ToString())
+				return;
+			
+			_objCharacter.LimitModifiers.Add(objLimitModifier);
+			
+			//Add the new treeview node for the LimitModifier.
+			objNode.ContextMenuStrip = cmsLimitModifier;
+			objNode.Text = objLimitModifier.DisplayName;
+			objNode.Tag = objLimitModifier.InternalId;
+			objSelectedNode.Parent.Nodes.Add(objNode);
+			objSelectedNode.Remove();
+		}
 	}
 }

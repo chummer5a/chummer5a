@@ -1180,6 +1180,7 @@ namespace Chummer
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -14034,7 +14035,8 @@ namespace Chummer
 			// cmsLimitModifier
 			// 
 			this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotes});
+			this.tssLimitModifierEdit,
+			this.tssLimitModifierNotes});
 			this.cmsLimitModifier.Name = "cmsLimitModifier";
 			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 26);
 			// 
@@ -14078,6 +14080,15 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Tag = "Menu_Notes";
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
+			// 
+			// tssLimitModifierEdit
+			// 
+			this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
+			this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
+			this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
+			this.tssLimitModifierEdit.Tag = "Menu_Edit";
+			this.tssLimitModifierEdit.Text = "&Edit";
+			this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
 			// 
 			// frmCareer
 			// 
@@ -15367,6 +15378,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberlimbAGILabel;
 		private System.Windows.Forms.TabPage tabSkills;
 		private UI.Skills.SkillsTabUserControl tabSkillsUc;
+		private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
 	}
 }
 

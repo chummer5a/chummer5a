@@ -534,7 +534,7 @@ namespace Chummer
         {
             string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
 
-            if (cboTalents.SelectedIndex >= 0)
+            if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
             {
                 if (cboTalent.SelectedValue.ToString() == "A,4")
                 {
@@ -844,7 +844,8 @@ namespace Chummer
             }
             else
             {
-                lblMetatypeSkillSelection.Visible = false;
+	            cboTalents.SelectedIndex = 0;
+				lblMetatypeSkillSelection.Visible = false;
                 cboSkill1.Visible = false;
                 cboSkill2.Visible = false;
 			}
@@ -1838,10 +1839,13 @@ namespace Chummer
 	            _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
 	            _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
 	            _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
-	            _objCharacter.PriorityBonusSkill1 = cboSkill1.SelectedValue.ToString();
-				_objCharacter.PriorityBonusSkill2 = cboSkill2.SelectedValue.ToString();
+	            if (cboSkill1.SelectedValue != null)
+	            {
+		            _objCharacter.PriorityBonusSkill1 = cboSkill1.SelectedValue.ToString();
+		            _objCharacter.PriorityBonusSkill2 = cboSkill2.SelectedValue.ToString();
+	            }
 
-				// Set starting nuyen
+	            // Set starting nuyen
 				XmlNodeList objXmResourceList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Resources\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\" and value = \"" + cboResources.SelectedValue + "\"]");
                 if (objXmResourceList.Count > 0)
                 {

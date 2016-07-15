@@ -8729,7 +8729,6 @@
 			<mount />
 			<rc>1</rc>
 			<rating>0</rating>
-			<rcgroup>1</rcgroup>
 			<avail>10R</avail>
 			<cost>1000</cost>
 			<source>HT</source>
