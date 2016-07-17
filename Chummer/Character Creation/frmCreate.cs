@@ -17856,7 +17856,16 @@ namespace Chummer
                         }
                     }
 
-                    lblLifestyleComforts.Text = strBaseLifestyle;
+	                foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+	                {
+		                if (strQualities.Length > 0)
+		                {
+			                strQualities += ", ";
+						}
+						strQualities += objQuality.DisplayName;
+					}
+
+	                lblLifestyleComforts.Text = strBaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;
                 }
                 else
