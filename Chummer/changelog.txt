@@ -23,6 +23,7 @@ Data Changes:
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
 - Removed an extraneous bonus node from the Ork Metatype Reduction cyberware that made it cost karma.
 - Added life modules from Rigger 5.0, courtesy of SeanPGorman. Fixes #960.
+- Fixed an issue that caused the Suprathyroid gland and Muscle Augmentation biowares to stack. Fixes #913.
 
 New Strings:
 - Warning_NoLimitFound
