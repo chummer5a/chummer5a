@@ -559,7 +559,6 @@ namespace Chummer
 				else if (objNode.Type == QualityType.Entertainment)
 				{
 					objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.Name + "\"]");
-					string strLifestyleEntertainments = objXmlAspect["allowed"].InnerText;					
 					if (objXmlAspect != null)
 					{
 						intLP -= Convert.ToInt32(objXmlAspect["lp"].InnerText);
@@ -577,8 +576,13 @@ namespace Chummer
                     } else if (strLifestyleEquivalent.StartsWith("Hospitalized"))
 				    {
                         strLifestyleEquivalent = "High";
-                    }
-				    bool blnEntertainmentFree = strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString());
+					}
+					string strLifestyleEntertainments = "";
+					if (objXmlAspect["allowed"] != null)
+					{
+						strLifestyleEntertainments = objXmlAspect["allowed"].InnerText;
+					}
+					bool blnEntertainmentFree = strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString());
 				    bool blnEntertainmentFreeEqui = strLifestyleEntertainments.Contains(strLifestyleEquivalent); 
 
 					if (!(blnEntertainmentFreeEqui || blnEntertainmentFree))
