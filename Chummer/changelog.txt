@@ -19,6 +19,7 @@ Application Changes:
 - Fixed a crash caused by removing life modules while in creation mode. 
 - Added support for the free matrix grid connections added by Hard Tatrgets to advanced lifestyles. Fixes #963. 
 - Fixed an issue with lifestyle qualities crashing if they don't have a restriction. Fixes #1012.
+- Set the Adept Way Discount numericupdown control in creation mode to be invisible if the character is not MAG-enabled. Fixes #836.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 

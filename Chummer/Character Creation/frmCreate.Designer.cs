@@ -84,7 +84,6 @@ namespace Chummer
 			this.lblSprites = new System.Windows.Forms.Label();
 			this.chkArmorEquipped = new System.Windows.Forms.CheckBox();
 			this.chkWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
-			this.lblFoci = new System.Windows.Forms.Label();
 			this.chkVehicleWeaponAccessoryInstalled = new System.Windows.Forms.CheckBox();
 			this.lblNotoriety = new System.Windows.Forms.Label();
 			this.lblStreetCred = new System.Windows.Forms.Label();
@@ -673,11 +672,8 @@ namespace Chummer
 			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
 			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
 			this.lblGearAttackLabel = new System.Windows.Forms.Label();
-			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
-			this.label3 = new System.Windows.Forms.Label();
 			this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
 			this.chkCommlinks = new System.Windows.Forms.CheckBox();
-			this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
 			this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
 			this.lblGearAP = new System.Windows.Forms.Label();
 			this.lblGearAPLabel = new System.Windows.Forms.Label();
@@ -685,7 +681,6 @@ namespace Chummer
 			this.lblGearDamageLabel = new System.Windows.Forms.Label();
 			this.cmdAddLocation = new System.Windows.Forms.Button();
 			this.chkGearEquipped = new System.Windows.Forms.CheckBox();
-			this.treFoci = new System.Windows.Forms.TreeView();
 			this.lblGearSource = new System.Windows.Forms.Label();
 			this.lblGearSourceLabel = new System.Windows.Forms.Label();
 			this.lblGearDeviceRating = new System.Windows.Forms.Label();
@@ -911,9 +906,9 @@ namespace Chummer
 			this.button3 = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.cmsCustomLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsCustomLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -925,6 +920,11 @@ namespace Chummer
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
+			this.treFoci = new System.Windows.Forms.TreeView();
+			this.lblFoci = new System.Windows.Forms.Label();
+			this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
+			this.lblAdeptWayDiscount = new System.Windows.Forms.Label();
+			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1015,7 +1015,6 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
 			this.tabWeapons.SuspendLayout();
 			this.tabGear.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).BeginInit();
 			this.tabPets.SuspendLayout();
@@ -1032,10 +1031,10 @@ namespace Chummer
 			this.tabDefences.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
 			this.cmsLimitModifier.SuspendLayout();
-			this.cmsCustomLimitModifier.SuspendLayout();
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsMetamagic.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -1311,17 +1310,6 @@ namespace Chummer
 			this.tipTooltip.SetToolTip(this.chkWeaponAccessoryInstalled, "Installed Weapon Accessories and Mods count towards a Weapon\'s stats.");
 			this.chkWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
 			this.chkWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkWeaponAccessoryInstalled_CheckedChanged);
-			// 
-			// lblFoci
-			// 
-			this.lblFoci.AutoSize = true;
-			this.lblFoci.Location = new System.Drawing.Point(307, 332);
-			this.lblFoci.Name = "lblFoci";
-			this.lblFoci.Size = new System.Drawing.Size(67, 13);
-			this.lblFoci.TabIndex = 92;
-			this.lblFoci.Tag = "Label_BondedFoci";
-			this.lblFoci.Text = "Bonded Foci";
-			this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
 			// 
 			// chkVehicleWeaponAccessoryInstalled
 			// 
@@ -7793,7 +7781,7 @@ namespace Chummer
 			this.tabGear.Controls.Add(this.lblGearSleazeLabel);
 			this.tabGear.Controls.Add(this.lblGearAttackLabel);
 			this.tabGear.Controls.Add(this.nudAdeptWayDiscount);
-			this.tabGear.Controls.Add(this.label3);
+			this.tabGear.Controls.Add(this.lblAdeptWayDiscount);
 			this.tabGear.Controls.Add(this.chkActiveCommlink);
 			this.tabGear.Controls.Add(this.chkCommlinks);
 			this.tabGear.Controls.Add(this.cmdCreateStackedFocus);
@@ -7918,31 +7906,6 @@ namespace Chummer
 			this.lblGearAttackLabel.Text = "Attack:";
 			this.lblGearAttackLabel.Visible = false;
 			// 
-			// nudAdeptWayDiscount
-			// 
-			this.nudAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.nudAdeptWayDiscount.Location = new System.Drawing.Point(571, 552);
-			this.nudAdeptWayDiscount.Maximum = new decimal(new int[] {
-            9000,
-            0,
-            0,
-            0});
-			this.nudAdeptWayDiscount.Name = "nudAdeptWayDiscount";
-			this.nudAdeptWayDiscount.Size = new System.Drawing.Size(48, 20);
-			this.nudAdeptWayDiscount.TabIndex = 147;
-			this.nudAdeptWayDiscount.ValueChanged += new System.EventHandler(this.nudAdeptWayDiscount_ValueChanged);
-			// 
-			// label3
-			// 
-			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(307, 554);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(235, 13);
-			this.label3.TabIndex = 146;
-			this.label3.Tag = "Label_AdeptWayDiscount";
-			this.label3.Text = "Bonded Foci Qualifying for Adept Way Discount:";
-			// 
 			// chkActiveCommlink
 			// 
 			this.chkActiveCommlink.AutoSize = true;
@@ -7967,18 +7930,6 @@ namespace Chummer
 			this.chkCommlinks.Text = "Only show Commlinks";
 			this.chkCommlinks.UseVisualStyleBackColor = true;
 			this.chkCommlinks.CheckedChanged += new System.EventHandler(this.chkCommlinks_CheckedChanged);
-			// 
-			// cmdCreateStackedFocus
-			// 
-			this.cmdCreateStackedFocus.AutoSize = true;
-			this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
-			this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
-			this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
-			this.cmdCreateStackedFocus.TabIndex = 109;
-			this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
-			this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
-			this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
-			this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
 			// 
 			// chkGearHomeNode
 			// 
@@ -8055,22 +8006,6 @@ namespace Chummer
 			this.chkGearEquipped.UseVisualStyleBackColor = true;
 			this.chkGearEquipped.Visible = false;
 			this.chkGearEquipped.CheckedChanged += new System.EventHandler(this.chkGearEquipped_CheckedChanged);
-			// 
-			// treFoci
-			// 
-			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.treFoci.CheckBoxes = true;
-			this.treFoci.Location = new System.Drawing.Point(310, 348);
-			this.treFoci.Name = "treFoci";
-			this.treFoci.ShowLines = false;
-			this.treFoci.ShowPlusMinus = false;
-			this.treFoci.ShowRootLines = false;
-			this.treFoci.Size = new System.Drawing.Size(308, 198);
-			this.treFoci.TabIndex = 91;
-			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
-			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
-			this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
 			// 
 			// lblGearSource
 			// 
@@ -10551,9 +10486,18 @@ namespace Chummer
 			// 
 			this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tssLimitModifierNotes,
-			this.tssLimitModifierEdit});
+            this.tssLimitModifierEdit});
 			this.cmsLimitModifier.Name = "cmsLimitModifier";
-			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 26);
+			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 48);
+			// 
+			// tssLimitModifierNotes
+			// 
+			this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit;
+			this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
+			this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
+			this.tssLimitModifierNotes.Tag = "Menu_Notes";
+			this.tssLimitModifierNotes.Text = "&Notes";
+			this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
 			// 
 			// tssLimitModifierEdit
 			// 
@@ -10564,14 +10508,9 @@ namespace Chummer
 			this.tssLimitModifierEdit.Text = "&Edit";
 			this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
 			// 
-			// tssLimitModifierNotes
+			// cmsCustomLimitModifier
 			// 
-			this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit;
-			this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
-			this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
-			this.tssLimitModifierNotes.Tag = "Menu_Notes";
-			this.tssLimitModifierNotes.Text = "&Notes";
-			this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
+			this.cmsCustomLimitModifier.Name = "cmsCustomLimitModifier";
 			// 
 			// cmsInitiationNotes
 			// 
@@ -10660,6 +10599,70 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Tag = "Menu_Notes";
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
+			// 
+			// treFoci
+			// 
+			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.treFoci.CheckBoxes = true;
+			this.treFoci.Location = new System.Drawing.Point(310, 348);
+			this.treFoci.Name = "treFoci";
+			this.treFoci.ShowLines = false;
+			this.treFoci.ShowPlusMinus = false;
+			this.treFoci.ShowRootLines = false;
+			this.treFoci.Size = new System.Drawing.Size(308, 198);
+			this.treFoci.TabIndex = 91;
+			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
+			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
+			this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
+			// 
+			// lblFoci
+			// 
+			this.lblFoci.AutoSize = true;
+			this.lblFoci.Location = new System.Drawing.Point(307, 332);
+			this.lblFoci.Name = "lblFoci";
+			this.lblFoci.Size = new System.Drawing.Size(67, 13);
+			this.lblFoci.TabIndex = 92;
+			this.lblFoci.Tag = "Label_BondedFoci";
+			this.lblFoci.Text = "Bonded Foci";
+			this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
+			// 
+			// cmdCreateStackedFocus
+			// 
+			this.cmdCreateStackedFocus.AutoSize = true;
+			this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
+			this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
+			this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
+			this.cmdCreateStackedFocus.TabIndex = 109;
+			this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
+			this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
+			this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
+			this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
+			// 
+			// lblAdeptWayDiscount
+			// 
+			this.lblAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.lblAdeptWayDiscount.AutoSize = true;
+			this.lblAdeptWayDiscount.Location = new System.Drawing.Point(307, 554);
+			this.lblAdeptWayDiscount.Name = "lblAdeptWayDiscount";
+			this.lblAdeptWayDiscount.Size = new System.Drawing.Size(235, 13);
+			this.lblAdeptWayDiscount.TabIndex = 146;
+			this.lblAdeptWayDiscount.Tag = "Label_AdeptWayDiscount";
+			this.lblAdeptWayDiscount.Text = "Bonded Foci Qualifying for Adept Way Discount:";
+			// 
+			// nudAdeptWayDiscount
+			// 
+			this.nudAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.nudAdeptWayDiscount.Location = new System.Drawing.Point(571, 552);
+			this.nudAdeptWayDiscount.Maximum = new decimal(new int[] {
+            9000,
+            0,
+            0,
+            0});
+			this.nudAdeptWayDiscount.Name = "nudAdeptWayDiscount";
+			this.nudAdeptWayDiscount.Size = new System.Drawing.Size(48, 20);
+			this.nudAdeptWayDiscount.TabIndex = 147;
+			this.nudAdeptWayDiscount.ValueChanged += new System.EventHandler(this.nudAdeptWayDiscount_ValueChanged);
 			// 
 			// frmCreate
 			// 
@@ -10789,7 +10792,6 @@ namespace Chummer
 			this.tabWeapons.PerformLayout();
 			this.tabGear.ResumeLayout(false);
 			this.tabGear.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
 			this.tabPets.ResumeLayout(false);
@@ -10816,6 +10818,7 @@ namespace Chummer
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsMetamagic.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -11132,8 +11135,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblAttributesAug;
         private System.Windows.Forms.Label lblAttributesBase;
         private System.Windows.Forms.Label lblAttributesMetatype;
-        private System.Windows.Forms.Label lblFoci;
-        private System.Windows.Forms.TreeView treFoci;
         private System.Windows.Forms.ToolStripMenuItem mnuFilePrint;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabPage tabInitiation;
@@ -11332,7 +11333,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsGearLocation;
         private System.Windows.Forms.ToolStripMenuItem tsGearRenameLocation;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialReapplyImprovements;
-        private System.Windows.Forms.Button cmdCreateStackedFocus;
         private System.Windows.Forms.ContextMenuStrip cmsSpellButton;
         private System.Windows.Forms.ToolStripMenuItem tsCreateSpell;
         private System.Windows.Forms.Label lblPublicAwareTotal;
@@ -11522,8 +11522,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblLivingPersonaAttackLabel;
         private System.Windows.Forms.Label lblArmorValueLabel;
         private System.Windows.Forms.Label lblArmorValue;
-        private System.Windows.Forms.NumericUpDown nudAdeptWayDiscount;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblGearFirewallLabel;
         private System.Windows.Forms.Label lblGearDataProcessingLabel;
         private System.Windows.Forms.Label lblGearSleazeLabel;
@@ -11694,6 +11692,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberlimbAGILabel;
 		private System.Windows.Forms.TabPage tabSkills;
 		private UI.Skills.SkillsTabUserControl tabSkillUc;
+		private System.Windows.Forms.NumericUpDown nudAdeptWayDiscount;
+		private System.Windows.Forms.Label lblAdeptWayDiscount;
+		private System.Windows.Forms.Button cmdCreateStackedFocus;
+		private System.Windows.Forms.Label lblFoci;
+		private System.Windows.Forms.TreeView treFoci;
 	}
 }
 

@@ -362,6 +362,8 @@ namespace Chummer
             lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
+	        nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
 			if (_objCharacter.Metatype == "A.I.")
@@ -1373,6 +1375,8 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
+	        nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
