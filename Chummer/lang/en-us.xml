@@ -3557,6 +3557,42 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Tip_SkillsKnowledgeSkills</key>
 			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
 		</string>
+    <string>
+      <key>Skill_SortAlphabetical</key>
+      <text>Alphabetical</text>
+    </string>
+    <string>
+      <key>Skill_SortRating</key>
+      <text>Rating</text>
+    </string>
+    <string>
+      <key>Skill_SortDicepool</key>
+      <text>Dicepool</text>
+    </string>
+    <string>
+      <key>Skill_SortLowerDicepool</key>
+      <text>Smaller Dicepool</text>
+    </string>
+    <string>
+      <key>Skill_SortAttributeValue</key>
+      <text>Attribute Value</text>
+    </string>
+    <string>
+      <key>Skill_SortAttributeName</key>
+      <text>Attribute Name</text>
+    </string>
+    <string>
+      <key>Skill_SortGroupName</key>
+      <text>Group Name</text>
+    </string>
+    <string>
+      <key>Skill_SortGroupRating</key>
+      <text>Group Rating</text>
+    </string>
+    <string>
+      <key>Skill_SortCategory</key>
+      <text>Category</text>
+    </string>
 		<!-- End Region -->
 		<!-- Region  Martial Arts Tab -->
 		<string>

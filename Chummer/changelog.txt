@@ -21,6 +21,7 @@ Application Changes:
 - Fixed an issue with lifestyle qualities crashing if they don't have a restriction. Fixes #1012.
 - Set the Adept Way Discount numericupdown control in creation mode to be invisible if the character is not MAG-enabled. Fixes #836.
 - Updated the Capacity calculation for cyberware to include any attached Gear items. Fixes #896.
+- Skill Filter names is now read from data files instead of hardcoded.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -33,6 +34,15 @@ New Strings:
 - Warning_NoLimitFound
 - String_No_Update_Found
 - Warning_Update_CouldNotConnect
+- Skill_SortAlphabetical
+- Skill_SortRating
+- Skill_SortDicepool
+- Skill_SortLowerDicepool
+- Skill_SortAttributeValue
+- Skill_SortAttributeName
+- Skill_SortGroupName
+- Skill_SortGroupRating
+- Skill_SortCategory
 
 Changed Strings:
 - Checkbox_Options_UseTotalValueForFreeContacts. Fixes #981.
