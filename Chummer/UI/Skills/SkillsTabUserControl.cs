@@ -165,23 +165,23 @@ namespace Chummer.UI.Skills
 		{
 			List<Tuple<string, IComparer<Skill>>> ret = new List<Tuple<string, IComparer<Skill>>>()
 			{
-				new Tuple<string, IComparer<Skill>>("Alphabetical",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAlphabetical"),
 					new SkillSorter(SkillsSection.CompareSkills)),
-				new Tuple<string, IComparer<Skill>>("Rating",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortRating"),
 					new SkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
-				new Tuple<string, IComparer<Skill>>("Dicepool",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortDicepool"),
 					new SkillSorter((x, y) => y.Pool.CompareTo(x.Pool))),
-				new Tuple<string, IComparer<Skill>>("Smaller Dicepool",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortLowerDicepool"),
 					new SkillSorter((x, y) => x.Pool.CompareTo(y.Pool))),
-				new Tuple<string, IComparer<Skill>>("Attribute Value",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeValue"),
 					new SkillSorter((x, y) => y.AttributeModifiers.CompareTo(x.AttributeModifiers))),
-				new Tuple<string, IComparer<Skill>>("Attribute Name",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortAttributeName"),
 					new SkillSorter((x, y) => x.Attribute.CompareTo(y.Attribute))),
-				new Tuple<string, IComparer<Skill>>("Group Name",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupName"),
 					new SkillSorter((x, y) => y.SkillGroup.CompareTo(x.SkillGroup))),
-				new Tuple<string, IComparer<Skill>>("Group Rating",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortGroupRating"),
 					new SkillSortBySkillGroup()),
-				new Tuple<string, IComparer<Skill>>("Category",
+				new Tuple<string, IComparer<Skill>>(LanguageManager.Instance.GetString("Skill_SortCategory"),
 					new SkillSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
 			};
 
