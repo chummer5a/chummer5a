@@ -23962,9 +23962,18 @@ namespace Chummer
                             else
                                 strQualities += objImprovement.ImproveSource + " [" + objImprovement.Value.ToString() + "%]";
                         }
-                    }
+					}
 
-                    lblLifestyleComforts.Text = strBaseLifestyle;
+					foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+					{
+						if (strQualities.Length > 0)
+						{
+							strQualities += ", ";
+						}
+						strQualities += objQuality.DisplayName;
+					}
+
+					lblLifestyleComforts.Text = strBaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;
 
                     cmdIncreaseLifestyleMonths.Enabled = true;
@@ -24170,12 +24179,12 @@ namespace Chummer
 					}
 					else
 					{
-						lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
-						lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
-						lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
-						lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
-						lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
-						lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
+						lblVehiclePowertrain.Text = objVehicle.PowertrainModSlots.ToString();
+						lblVehicleCosmetic.Text = objVehicle.CosmeticModSlots.ToString();
+						lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlots.ToString();
+						lblVehicleBodymod.Text = objVehicle.BodyModSlots.ToString();
+						lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlots.ToString();
+						lblVehicleProtection.Text = objVehicle.ProtectionModSlots.ToString();
 
 						lblVehicleDroneModSlots.Visible = false;
 						lblVehicleDroneModSlotsLabel.Visible = false;

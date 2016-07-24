@@ -536,6 +536,21 @@ namespace Chummer
 		}
 
 		/// <summary>
+		/// Locate a LifestyleQuality within the character's Lifestyles.
+		/// </summary>
+		/// <param name="strGuid">InternalId of the Lifestyle Quality to find.</param>
+		/// <param name="lstLifestyleQualities">List of Lifestyle Qualities to search.</param>
+		public LifestyleQuality FindLifestyleQuality(string strGuid, List<LifestyleQuality> lstLifestyleQualities)
+		{
+			foreach (LifestyleQuality objLifestyleQuality in lstLifestyleQualities)
+			{
+				if (objLifestyleQuality.InternalId == strGuid)
+					return objLifestyleQuality;
+			}
+
+			return null;
+		}
+		/// <summary>
 		/// Locate a piece of Cyberware within the character's Cyberware.
 		/// </summary>
 		/// <param name="strGuid">InternalId of the Cyberware to find.</param>

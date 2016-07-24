@@ -34,6 +34,7 @@ namespace Chummer.Backend.Equipment
 		private bool _blnTrustFund = false;
 		private LifestyleType _objType = LifestyleType.Standard;
 		private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
+		private List<LifestyleQuality> _lstFreeGrids = new List<LifestyleQuality>();
 		private string _strNotes = "";
 		private readonly Character _objCharacter;
 
@@ -126,6 +127,12 @@ namespace Chummer.Backend.Equipment
 				objQuality.Save(objWriter);
 			}
 			objWriter.WriteEndElement();
+			objWriter.WriteStartElement("freegrids");
+			foreach (LifestyleQuality objQuality in _lstFreeGrids)
+			{
+				objQuality.Save(objWriter);
+			}
+			objWriter.WriteEndElement();
 			objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
@@ -183,8 +190,17 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetField("trustfund", out _blnTrustFund);
 			objNode.TryGetField("page", out _strPage);
 
-			// Qualities
+			// Lifestyle Qualities
 			XmlNodeList objXmlNodeList = objNode.SelectNodes("lifestylequalities/lifestylequality");
+			foreach (XmlNode objXmlQuality in objXmlNodeList)
+			{
+				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+				objQuality.Load(objXmlQuality);
+				_lstLifestyleQualities.Add(objQuality);
+			}
+
+			// Free Grids provided by the Lifestyle
+			objXmlNodeList = objNode.SelectNodes("freegrids/lifestylequality");
 			foreach (XmlNode objXmlQuality in objXmlNodeList)
 			{
 				LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
@@ -315,6 +331,15 @@ namespace Chummer.Backend.Equipment
 					objWriter.WriteElementString("lifestylequality", strThisQuality);
 				}
 			}
+			// Retrieve the free Grids for the Advanced Lifestyle if applicable.
+			if (_lstFreeGrids.Count > 0)
+			{
+				foreach (LifestyleQuality objQuality in _lstFreeGrids)
+				{
+					string strThisQuality = objQuality.DisplayName;
+					objWriter.WriteElementString("lifestylequality", strThisQuality);
+				}
+			}
 			objWriter.WriteEndElement();
 			if (_objCharacter.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
@@ -331,6 +356,18 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				return _guiID.ToString();
+			}
+		}
+
+		public List<LifestyleQuality> FreeGrids
+		{
+			get
+			{
+				return _lstFreeGrids;
+			}
+			set
+			{
+				_lstFreeGrids = value;
 			}
 		}
 

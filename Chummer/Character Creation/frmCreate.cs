@@ -362,6 +362,8 @@ namespace Chummer
             lblMAGMetatype.Enabled = _objCharacter.MAGEnabled;
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
+	        nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
 			if (_objCharacter.Metatype == "A.I.")
@@ -1373,6 +1375,8 @@ namespace Chummer
 
             lblFoci.Visible = _objCharacter.MAGEnabled;
             treFoci.Visible = _objCharacter.MAGEnabled;
+	        nudAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
+	        lblAdeptWayDiscount.Visible = _objCharacter.MAGEnabled;
             cmdCreateStackedFocus.Visible = _objCharacter.MAGEnabled;
 
             if (_objCharacter.MAGEnabled)
@@ -6966,7 +6970,8 @@ namespace Chummer
                     treWeapons.Nodes[0].Expand();
                 }
 
-                if (objXmlLifeModule.SelectNodes("addqualities/addquality").Count > 0)
+	            XmlNodeList xmlNodeList = objXmlLifeModule.SelectNodes("addqualities/addquality");
+	            if (xmlNodeList != null && xmlNodeList.Count > 0)
                 {
                     XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
 
@@ -7476,28 +7481,39 @@ namespace Chummer
                         }
                     }
                 }
-            }
-			XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-			XmlNodeList objRemoveQualitiesNodeList = objXmlQuality.SelectNodes("addqualities/addquality");
-			if (objRemoveQualitiesNodeList.Count > 0)
+			}
+
+			XmlNode objXmlDeleteQuality;
+			if (objQuality.Type == QualityType.LifeModule)
+			{
+				objXmlDeleteQuality =
+					Quality.GetNodeOverrideable(objQuality.QualityId);
+			}
+			else
+			{
+				objXmlDeleteQuality =
+					objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
+			}
+
+			XmlNodeList objRemoveQualitiesNodeList = objXmlDeleteQuality.SelectNodes("addqualities/addquality");
+			if (objRemoveQualitiesNodeList != null && objRemoveQualitiesNodeList.Count > 0)
 			{
 				foreach (XmlNode objNode in objRemoveQualitiesNodeList)
 				{
-					XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.InnerText + "\"]");
 					foreach (Quality objChildQuality in _objCharacter.Qualities)
 					{
 						if (objChildQuality.Name == objNode.InnerText)
 						{
 							foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
 							{
-								if (nodQuality.Text.ToString() == objChildQuality.DisplayName)
+								if (nodQuality.Text == objChildQuality.DisplayName)
 								{
 									nodQuality.Remove();
 								}
 							}
 							foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
 							{
-								if (nodQuality.Text.ToString() == objChildQuality.DisplayName)
+								if (nodQuality.Text == objChildQuality.DisplayName)
 								{
 									nodQuality.Remove();
 								}
@@ -7508,18 +7524,6 @@ namespace Chummer
 					}
 				}
 			}
-
-			XmlNode objXmlDeleteQuality;
-            if (objQuality.Type == QualityType.LifeModule)
-            {
-                objXmlDeleteQuality =
-                    Quality.GetNodeOverrideable(objQuality.QualityId);
-            }
-            else
-            {
-                objXmlDeleteQuality =
-                    objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-            }
 
 
 			// Remove any Critter Powers that are gained through the Quality (Infected).
@@ -17856,7 +17860,16 @@ namespace Chummer
                         }
                     }
 
-                    lblLifestyleComforts.Text = strBaseLifestyle;
+	                foreach (LifestyleQuality objQuality in objLifestyle.FreeGrids)
+	                {
+		                if (strQualities.Length > 0)
+		                {
+			                strQualities += ", ";
+						}
+						strQualities += objQuality.DisplayName;
+					}
+
+	                lblLifestyleComforts.Text = strBaseLifestyle;
                     lblLifestyleQualities.Text += strQualities;
                 }
                 else
@@ -18060,12 +18073,12 @@ namespace Chummer
 				}
 				else
 				{
-					lblVehiclePowertrain.Text = objVehicle.CalcPowertrain.ToString();
-					lblVehicleCosmetic.Text = objVehicle.CalcCosmetic.ToString();
-					lblVehicleElectromagnetic.Text = objVehicle.CalcElectromagnetic.ToString();
-					lblVehicleBodymod.Text = objVehicle.CalcBodymod.ToString();
-					lblVehicleWeaponsmod.Text = objVehicle.CalcWeaponsmod.ToString();
-					lblVehicleProtection.Text = objVehicle.CalcProtection.ToString();
+					lblVehiclePowertrain.Text = objVehicle.PowertrainModSlots.ToString();
+					lblVehicleCosmetic.Text = objVehicle.CosmeticModSlots.ToString();
+					lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlots.ToString();
+					lblVehicleBodymod.Text = objVehicle.BodyModSlots.ToString();
+					lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlots.ToString();
+					lblVehicleProtection.Text = objVehicle.ProtectionModSlots.ToString();
 				}
 
 				nudVehicleGearQty.Visible = true;

@@ -10,16 +10,43 @@ Application Changes:
 - Fixed an issue with the D-priority adept. Fixes #1005.
 - Added some basic error handling to prevent a crash if trying to update Chummer from behind a firewall or proxy. Fixes #989.
 - Re-enabled the house-rule to treat metahuman minimums as 1 for karma costs. Fixes #1004.
+- Fixed a crash caused by removing life modules,
+- Fixed an issue with loading Priority characters caused by an incorrectly saved maximum nuyen value.
+- Fixed the ability for adpets with the Adept Spell power to increase their Spellcasting skill rank. Fixes #990.
+- Changed the Adept Spell power to prompt for the spell instead of a text value.
+- Altered the Select Spell form to allow ignoring requirements such as being magician-enabled to support this.
+- Altered the UnlockSkills improvement to allow for specifying the Spellcasting skill, rather than the full compliment of magical skills.
+- Fixed a crash caused by removing life modules while in creation mode. 
+- Added support for the free matrix grid connections added by Hard Tatrgets to advanced lifestyles. Fixes #963. 
+- Fixed an issue with lifestyle qualities crashing if they don't have a restriction. Fixes #1012.
+- Set the Adept Way Discount numericupdown control in creation mode to be invisible if the character is not MAG-enabled. Fixes #836.
+- Updated the Capacity calculation for cyberware to include any attached Gear items. Fixes #896.
+- Fixed an issue that prevented the MCT-Nissan Rotodrone from getting the three extra modification slots expected when not using the vehicle modification rules intrroduced in Rigger 5.0. Fixes #943.
+- Skill Filter names is now read from data files instead of hardcoded.
+- Added an option to download Nightly updates via the Update system instead of just default releases.
+- The changelog will now filter itself based on the most recent build version, so Release builds won't see updated text from the Nightlies. Fixes #1013.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
 - Removed an extraneous bonus node from the Ork Metatype Reduction cyberware that made it cost karma.
 - Added life modules from Rigger 5.0, courtesy of SeanPGorman. Fixes #960.
+- Fixed an issue that caused the Suprathyroid gland and Muscle Augmentation biowares to stack. Fixes #913.
+- Added the allowed gear-categories for Sensors to cyberlimbs. Fixes #896.
 
 New Strings:
+- 
 - Warning_NoLimitFound
 - String_No_Update_Found
 - Warning_Update_CouldNotConnect
+- Skill_SortAlphabetical
+- Skill_SortRating
+- Skill_SortDicepool
+- Skill_SortLowerDicepool
+- Skill_SortAttributeValue
+- Skill_SortAttributeName
+- Skill_SortGroupName
+- Skill_SortGroupRating
+- Skill_SortCategory
 
 Changed Strings:
 - Checkbox_Options_UseTotalValueForFreeContacts. Fixes #981.

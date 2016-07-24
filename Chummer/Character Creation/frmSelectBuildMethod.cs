@@ -117,20 +117,20 @@ namespace Chummer
 	        switch (cboBuildMethod.SelectedValue.ToString())
 	        {
 				case "Karma":
-					_objCharacter.MaxNuyen = Convert.ToInt32(nudMaxNuyen.Value);
+					_objCharacter.NuyenMaximumBP = Convert.ToInt32(nudMaxNuyen.Value);
 					_objCharacter.BuildMethod = CharacterBuildMethod.Karma;
 					break;
 				case "Priority":
-					_objCharacter.MaxNuyen = intNuyenBP;
+					_objCharacter.NuyenMaximumBP = intNuyenBP;
 					_objCharacter.BuildMethod = CharacterBuildMethod.Priority;
 					break;
 				case "SumtoTen":
-					_objCharacter.MaxNuyen = intNuyenBP;
+					_objCharacter.NuyenMaximumBP = intNuyenBP;
 					_objCharacter.BuildMethod = CharacterBuildMethod.SumtoTen;
 					_objCharacter.SumtoTen = Convert.ToInt32(nudSumtoTen.Value);
 			        break;
 				case "LifeModule":
-					_objCharacter.MaxNuyen = Convert.ToInt32(nudMaxNuyen.Value);
+					_objCharacter.NuyenMaximumBP = Convert.ToInt32(nudMaxNuyen.Value);
 					_objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
 			        break;
 	        }

@@ -725,6 +725,7 @@ namespace Chummer
             GlobalOptions.Instance.OpenPDFsAsAsUnix = chkOpenPDFsAsUnix.Checked;
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
 		    GlobalOptions.Instance.OmaeEnabled = chkOmaeEnabled.Checked;
+		    GlobalOptions.Instance.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
 			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
         }
@@ -752,6 +753,7 @@ namespace Chummer
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 			objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString());
+			objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
 			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
 
@@ -1025,6 +1027,7 @@ namespace Chummer
             chkUseLogging.Checked = GlobalOptions.Instance.UseLogging;
             chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
 	        chkOmaeEnabled.Checked = GlobalOptions.Instance.OmaeEnabled;
+	        chkPreferNightlyBuilds.Checked = GlobalOptions.Instance.PreferNightlyBuilds;
             chkLocalisedUpdatesOnly.Checked = GlobalOptions.Instance.LocalisedUpdatesOnly;
             chkStartupFullscreen.Checked = GlobalOptions.Instance.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;

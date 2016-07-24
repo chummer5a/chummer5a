@@ -263,6 +263,7 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1040,6 +1041,7 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.chkPreferNightlyBuilds);
 			this.tabGlobal.Controls.Add(this.chkOmaeEnabled);
 			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsUnix);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
@@ -1091,7 +1093,7 @@
 			// chkOpenPDFsAsUnix
 			// 
 			this.chkOpenPDFsAsUnix.AutoSize = true;
-			this.chkOpenPDFsAsUnix.Location = new System.Drawing.Point(9, 392);
+			this.chkOpenPDFsAsUnix.Location = new System.Drawing.Point(9, 426);
 			this.chkOpenPDFsAsUnix.Name = "chkOpenPDFsAsUnix";
 			this.chkOpenPDFsAsUnix.Size = new System.Drawing.Size(250, 17);
 			this.chkOpenPDFsAsUnix.TabIndex = 23;
@@ -1114,7 +1116,7 @@
 			// 
 			// cmdURLAppPath
 			// 
-			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 254);
+			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 288);
 			this.cmdURLAppPath.Name = "cmdURLAppPath";
 			this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
 			this.cmdURLAppPath.TabIndex = 21;
@@ -1124,7 +1126,7 @@
 			// 
 			// txtURLAppPath
 			// 
-			this.txtURLAppPath.Location = new System.Drawing.Point(153, 256);
+			this.txtURLAppPath.Location = new System.Drawing.Point(153, 290);
 			this.txtURLAppPath.Name = "txtURLAppPath";
 			this.txtURLAppPath.ReadOnly = true;
 			this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1133,7 +1135,7 @@
 			// lblURLAppPath
 			// 
 			this.lblURLAppPath.AutoSize = true;
-			this.lblURLAppPath.Location = new System.Drawing.Point(6, 259);
+			this.lblURLAppPath.Location = new System.Drawing.Point(6, 293);
 			this.lblURLAppPath.Name = "lblURLAppPath";
 			this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
 			this.lblURLAppPath.TabIndex = 19;
@@ -1143,7 +1145,7 @@
 			// chkOpenPDFsAsURLs
 			// 
 			this.chkOpenPDFsAsURLs.AutoSize = true;
-			this.chkOpenPDFsAsURLs.Location = new System.Drawing.Point(266, 367);
+			this.chkOpenPDFsAsURLs.Location = new System.Drawing.Point(266, 401);
 			this.chkOpenPDFsAsURLs.Name = "chkOpenPDFsAsURLs";
 			this.chkOpenPDFsAsURLs.Size = new System.Drawing.Size(125, 17);
 			this.chkOpenPDFsAsURLs.TabIndex = 18;
@@ -1192,7 +1194,7 @@
 			// 
 			this.cmdPDFTest.AutoSize = true;
 			this.cmdPDFTest.Enabled = false;
-			this.cmdPDFTest.Location = new System.Drawing.Point(138, 363);
+			this.cmdPDFTest.Location = new System.Drawing.Point(138, 397);
 			this.cmdPDFTest.Name = "cmdPDFTest";
 			this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
 			this.cmdPDFTest.TabIndex = 17;
@@ -1204,7 +1206,7 @@
 			// nudPDFOffset
 			// 
 			this.nudPDFOffset.Enabled = false;
-			this.nudPDFOffset.Location = new System.Drawing.Point(87, 366);
+			this.nudPDFOffset.Location = new System.Drawing.Point(87, 400);
 			this.nudPDFOffset.Minimum = new decimal(new int[] {
             100,
             0,
@@ -1218,7 +1220,7 @@
 			// lblPDFOffset
 			// 
 			this.lblPDFOffset.AutoSize = true;
-			this.lblPDFOffset.Location = new System.Drawing.Point(6, 368);
+			this.lblPDFOffset.Location = new System.Drawing.Point(6, 402);
 			this.lblPDFOffset.Name = "lblPDFOffset";
 			this.lblPDFOffset.Size = new System.Drawing.Size(66, 13);
 			this.lblPDFOffset.TabIndex = 15;
@@ -1228,7 +1230,7 @@
 			// cmdPDFLocation
 			// 
 			this.cmdPDFLocation.Enabled = false;
-			this.cmdPDFLocation.Location = new System.Drawing.Point(341, 331);
+			this.cmdPDFLocation.Location = new System.Drawing.Point(341, 365);
 			this.cmdPDFLocation.Name = "cmdPDFLocation";
 			this.cmdPDFLocation.Size = new System.Drawing.Size(27, 23);
 			this.cmdPDFLocation.TabIndex = 14;
@@ -1238,7 +1240,7 @@
 			// 
 			// txtPDFLocation
 			// 
-			this.txtPDFLocation.Location = new System.Drawing.Point(87, 333);
+			this.txtPDFLocation.Location = new System.Drawing.Point(87, 367);
 			this.txtPDFLocation.Name = "txtPDFLocation";
 			this.txtPDFLocation.ReadOnly = true;
 			this.txtPDFLocation.Size = new System.Drawing.Size(248, 20);
@@ -1247,7 +1249,7 @@
 			// lblPDFLocation
 			// 
 			this.lblPDFLocation.AutoSize = true;
-			this.lblPDFLocation.Location = new System.Drawing.Point(6, 336);
+			this.lblPDFLocation.Location = new System.Drawing.Point(6, 370);
 			this.lblPDFLocation.Name = "lblPDFLocation";
 			this.lblPDFLocation.Size = new System.Drawing.Size(75, 13);
 			this.lblPDFLocation.TabIndex = 12;
@@ -1256,7 +1258,7 @@
 			// 
 			// cmdPDFAppPath
 			// 
-			this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 290);
+			this.cmdPDFAppPath.Location = new System.Drawing.Point(407, 324);
 			this.cmdPDFAppPath.Name = "cmdPDFAppPath";
 			this.cmdPDFAppPath.Size = new System.Drawing.Size(27, 23);
 			this.cmdPDFAppPath.TabIndex = 11;
@@ -1266,7 +1268,7 @@
 			// 
 			// txtPDFAppPath
 			// 
-			this.txtPDFAppPath.Location = new System.Drawing.Point(153, 292);
+			this.txtPDFAppPath.Location = new System.Drawing.Point(153, 326);
 			this.txtPDFAppPath.Name = "txtPDFAppPath";
 			this.txtPDFAppPath.ReadOnly = true;
 			this.txtPDFAppPath.Size = new System.Drawing.Size(248, 20);
@@ -1275,7 +1277,7 @@
 			// lblPDFAppPath
 			// 
 			this.lblPDFAppPath.AutoSize = true;
-			this.lblPDFAppPath.Location = new System.Drawing.Point(6, 295);
+			this.lblPDFAppPath.Location = new System.Drawing.Point(6, 329);
 			this.lblPDFAppPath.Name = "lblPDFAppPath";
 			this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
 			this.lblPDFAppPath.TabIndex = 9;
@@ -3102,6 +3104,17 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
+			// chkPreferNightlyBuilds
+			// 
+			this.chkPreferNightlyBuilds.AutoSize = true;
+			this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(9, 245);
+			this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
+			this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
+			this.chkPreferNightlyBuilds.TabIndex = 25;
+			this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
+			this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
+			this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
+			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -3431,5 +3444,6 @@
         private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
 		private System.Windows.Forms.CheckBox chkOmaeEnabled;
 		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
+		private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
 	}
 }

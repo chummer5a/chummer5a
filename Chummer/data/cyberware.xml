@@ -775,6 +775,9 @@
 			<capacity>15</capacity>
 			<avail>4</avail>
 			<cost>15000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -799,6 +802,9 @@
 			<capacity>20</capacity>
 			<avail>4</avail>
 			<cost>15000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -822,6 +828,9 @@
 			<capacity>4</capacity>
 			<avail>2</avail>
 			<cost>5000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -845,6 +854,9 @@
 			<capacity>4</capacity>
 			<avail>2</avail>
 			<cost>5000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -868,6 +880,9 @@
 			<capacity>10</capacity>
 			<avail>4</avail>
 			<cost>10000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -891,6 +906,9 @@
 			<capacity>12</capacity>
 			<avail>4</avail>
 			<cost>10000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -915,6 +933,9 @@
 			<capacity>10</capacity>
 			<avail>12</avail>
 			<cost>20000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -938,6 +959,9 @@
 			<capacity>4</capacity>
 			<avail>16</avail>
 			<cost>10000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -961,6 +985,9 @@
 			<capacity>8</capacity>
 			<avail>4</avail>
 			<cost>20000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -985,6 +1012,9 @@
 			<capacity>10</capacity>
 			<avail>4</avail>
 			<cost>20000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1008,6 +1038,9 @@
 			<capacity>2</capacity>
 			<avail>2</avail>
 			<cost>6000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1031,6 +1064,9 @@
 			<capacity>2</capacity>
 			<avail>2</avail>
 			<cost>6000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1054,6 +1090,9 @@
 			<capacity>5</capacity>
 			<avail>4</avail>
 			<cost>12000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1077,6 +1116,9 @@
 			<capacity>6</capacity>
 			<avail>4</avail>
 			<cost>12000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1101,6 +1143,9 @@
 			<capacity>5</capacity>
 			<avail>12</avail>
 			<cost>25000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -1124,6 +1169,9 @@
 			<capacity>2</capacity>
 			<avail>16</avail>
 			<cost>15000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<conditionmonitor>
 					<physical>1</physical>
@@ -2248,6 +2296,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>250</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2263,6 +2314,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2278,6 +2332,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>20</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2293,6 +2350,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>250</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2308,6 +2368,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>100</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2323,6 +2386,9 @@
 			<capacity>0</capacity>
 			<avail>0</avail>
 			<cost>20</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<bonus>
 				<selectside />
 			</bonus>
@@ -2660,6 +2726,9 @@
 			<capacity>4</capacity>
 			<avail>12</avail>
 			<cost>8000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<source>CF</source>
 			<page>88</page>
 		</cyberware>
@@ -2683,6 +2752,9 @@
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<subsystems>
 				<subsystem>Cyberlimb</subsystem>
 			</subsystems>
@@ -2697,6 +2769,9 @@
 			<capacity>40</capacity>
 			<avail>8</avail>
 			<cost>40000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>
@@ -2708,6 +2783,9 @@
 			<capacity>60</capacity>
 			<avail>12R</avail>
 			<cost>50000</cost>
+			<allowgear>
+				<gearcategory>Sensors</gearcategory>
+			</allowgear>
 			<source>CF</source>
 			<page>87</page>
 		</cyberware>

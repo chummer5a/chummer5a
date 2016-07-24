@@ -250,7 +250,7 @@
 			<cost>Rating * 31000</cost>
 			<bonus>
 				<specificattribute>
-					<name>STR</name>
+					<name precedence="1">STR</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -386,7 +386,7 @@
 					<val>1</val>
 				</specificattribute>
 				<specificattribute>
-					<name>STR</name>
+					<name precedence="1">STR</name>
 					<val>1</val>
 				</specificattribute>
 			</bonus>
