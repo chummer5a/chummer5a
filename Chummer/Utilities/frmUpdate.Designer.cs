@@ -36,6 +36,9 @@
 			// webNotes
 			// 
 			this.webNotes.AllowNavigation = false;
+			this.webNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.webNotes.Location = new System.Drawing.Point(12, 12);
 			this.webNotes.MinimumSize = new System.Drawing.Size(20, 20);
 			this.webNotes.Name = "webNotes";
@@ -45,6 +48,8 @@
 			// 
 			// cmdUpdate
 			// 
+			this.cmdUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdUpdate.Location = new System.Drawing.Point(12, 514);
 			this.cmdUpdate.Name = "cmdUpdate";
 			this.cmdUpdate.Size = new System.Drawing.Size(105, 31);
@@ -55,6 +60,7 @@
 			// 
 			// pgbOverallProgress
 			// 
+			this.pgbOverallProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.pgbOverallProgress.Location = new System.Drawing.Point(123, 514);
 			this.pgbOverallProgress.Name = "pgbOverallProgress";
 			this.pgbOverallProgress.Size = new System.Drawing.Size(710, 31);

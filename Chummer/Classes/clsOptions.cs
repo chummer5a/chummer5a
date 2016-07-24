@@ -112,11 +112,10 @@ namespace Chummer
 		private static bool _lifeModuleEnabled;
 		private static bool _blnMissionsOnly = false;
 		private static bool _blnDronemods = false;
-
-
-		private static bool _omaeEnabled = false;
+		private static bool _blnPreferNightlyUpdates = false;
 
 		// Omae Information.
+		private static bool _omaeEnabled = false;
 		private static string _strOmaeUserName = "";
 		private static string _strOmaePassword = "";
 		private static bool _blnOmaeAutoLogin = false;
@@ -305,6 +304,15 @@ namespace Chummer
             try
 			{
 				_strPDFAppPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfapppath").ToString();
+			}
+			catch
+			{
+			}
+
+			// PDF application path.
+			try
+			{
+				_blnPreferNightlyUpdates = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("prefernightlybuilds").ToString());
 			}
 			catch
 			{
@@ -875,6 +883,18 @@ namespace Chummer
 		public bool OmaeEnabled {
 			get { return _omaeEnabled; }
 			set { _omaeEnabled = value; }
+		}
+
+		public bool PreferNightlyBuilds
+		{
+			get
+			{
+				return _blnPreferNightlyUpdates;
+			}
+			set
+			{
+				_blnPreferNightlyUpdates = value;
+			}
 		}
 	}
 }
