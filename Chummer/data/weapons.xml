@@ -2880,7 +2880,7 @@
 			<damage>12P</damage>
 			<ap>-4</ap>
 			<mode>FA</mode>
-			<rc>4</rc>
+			<rc>0</rc>
 			<ammo>50(c) or 100(belt)</ammo>
 			<avail>18F</avail>
 			<cost>19600</cost>
@@ -2899,7 +2899,10 @@
 				</accessory>
 				<accessory>
 					<name>Laser Sight</name>
-			</accessory>
+				</accessory>
+				<accessory>
+					<name>Gas-Vent 3 System</name>
+				</accessory>
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
@@ -2917,7 +2920,7 @@
 			<damage>11P</damage>
 			<ap>-4</ap>
 			<mode>FA</mode>
-			<rc>6</rc>
+			<rc>0</rc>
 			<ammo>50(c) or 100(belt)</ammo>
 			<avail>16F</avail>
 			<cost>16000</cost>
@@ -2940,7 +2943,7 @@
 			</accessories>
 			<range>Medium/Heavy Machinegun</range>
 			<source>RG</source>
-			<page>44</page>
+			<page>45</page>
 		</weapon>
 		<weapon>
 			<id>971c711b-db32-4339-9203-865ef38f350e</id>
@@ -3731,10 +3734,10 @@
 				</accessory>
 				<accessory>
 					<name>Laser Sight</name>
-			</accessory>
+				</accessory>
 				<accessory>
 					<name>Gas-Vent 2 System</name>
-			</accessory>
+				</accessory>
 			</accessories>
 			<source>SR5</source>
 			<page>430</page>
@@ -3784,7 +3787,7 @@
 			<damage>9P</damage>
 			<ap>-2</ap>
 			<mode>BF/FA</mode>
-			<rc>2</rc>
+			<rc>0</rc>
 			<ammo>50(c) or 100(belt)</ammo>
 			<avail>16F</avail>
 			<cost>6500</cost>
@@ -4470,7 +4473,7 @@
 			<damage>11P</damage>
 			<ap>-3</ap>
 			<mode>FA</mode>
-			<rc>2</rc>
+			<rc>0</rc>
 			<ammo>50(c) or 100(belt)</ammo>
 			<avail>18F</avail>
 			<cost>8500</cost>
@@ -4529,7 +4532,7 @@
 		</weapon>
 		<weapon>
 			<id>08e04ae5-ee6f-451d-8dc9-7873b6f9d3a5</id>
-			<name>Ultimax MMG</name>
+			<name>Ultamax MMG</name>
 			<category>Medium Machine Guns</category>
 			<type>Ranged</type>
 			<conceal>10</conceal>
