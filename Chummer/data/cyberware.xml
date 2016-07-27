@@ -1360,7 +1360,7 @@
 			<category>Cyber Implant Weapon</category>
 			<ess>0.2</ess>
 			<capacity>[2]</capacity>
-			<avail>10F</avail>
+			<avail>8F</avail>
 			<addweapon>Hand Razors</addweapon>
 			<cost>1250</cost>
 			<source>SR5</source>
