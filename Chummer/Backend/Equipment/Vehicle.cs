@@ -31,7 +31,13 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = "";
 		private string _strVehicleName = "";
 		private int _intAddSlots = 0;
-		private int _intModSlots = 0;
+		private int _intDroneModSlots = 0;
+		private int _intAddPowertrainModSlots = 0;
+		private int _intAddProtectionModSlots = 0;
+		private int _intAddWeaponModSlots = 0;
+		private int _intAddBodyModSlots = 0;
+		private int _intAddElectromagneticModSlots = 0;
+		private int _intAddCosmeticModSlots = 0;
 		private int _intDeviceRating = 3;
 		private bool _blnHomeNode = false;
 		private List<VehicleMod> _lstVehicleMods = new List<VehicleMod>();
@@ -87,28 +93,15 @@ namespace Chummer.Backend.Equipment
 			_intBody = Convert.ToInt32(objXmlVehicle["body"].InnerText);
 			_intArmor = Convert.ToInt32(objXmlVehicle["armor"].InnerText);
 			_intSensor = Convert.ToInt32(objXmlVehicle["sensor"].InnerText);
-			try
-			{
-				_intDeviceRating = Convert.ToInt32(objXmlVehicle["devicerating"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSeats = Convert.ToInt32(objXmlVehicle["seats"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intModSlots = Convert.ToInt32(objXmlVehicle["modslots"].InnerText);
-			}
-			catch (NullReferenceException e)
-			{
-				_intModSlots = _intBody;
-			}
+			objXmlVehicle.TryGetField("devicerating", out _intDeviceRating);
+			objXmlVehicle.TryGetField("seats", out _intSeats);
+			objXmlVehicle.TryGetField("modslots", out _intDroneModSlots,_intBody);
+			objXmlVehicle.TryGetField("powertrainmodslots", out _intAddPowertrainModSlots);
+			objXmlVehicle.TryGetField("protectionmodslots", out _intAddProtectionModSlots);
+			objXmlVehicle.TryGetField("weaponmodslots", out _intAddWeaponModSlots);
+			objXmlVehicle.TryGetField("bodymodslots", out _intAddBodyModSlots);
+			objXmlVehicle.TryGetField("electromagneticmodslots", out _intAddElectromagneticModSlots);
+			objXmlVehicle.TryGetField("cosmeticmodslots", out _intAddCosmeticModSlots);
 			_strAvail = objXmlVehicle["avail"].InnerText;
 			_strCost = objXmlVehicle["cost"].InnerText;
 			// Check for a Variable Cost.
@@ -365,7 +358,13 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
 			objWriter.WriteElementString("addslots", _intAddSlots.ToString());
-			objWriter.WriteElementString("modslots", _intModSlots.ToString());
+			objWriter.WriteElementString("modslots", _intDroneModSlots.ToString());
+			objWriter.WriteElementString("powertrainmodslots", _intAddPowertrainModSlots.ToString());
+			objWriter.WriteElementString("protectionmodslots", _intAddProtectionModSlots.ToString());
+			objWriter.WriteElementString("weaponmodslots", _intAddWeaponModSlots.ToString());
+			objWriter.WriteElementString("bodymodslots", _intAddBodyModSlots.ToString());
+			objWriter.WriteElementString("electromagneticmodslots", _intAddElectromagneticModSlots.ToString());
+			objWriter.WriteElementString("cosmeticmodslots", _intAddCosmeticModSlots.ToString());
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);
 			objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString());
@@ -447,7 +446,13 @@ namespace Chummer.Backend.Equipment
 			_strAvail = objNode["avail"].InnerText;
 			_strCost = objNode["cost"].InnerText;
 			objNode.TryGetField("addslots", out _intAddSlots);
-			objNode.TryGetField("modslots", out _intModSlots);
+			objNode.TryGetField("modslots", out _intDroneModSlots);
+			objNode.TryGetField("powertrainmodslots", out _intAddPowertrainModSlots);
+			objNode.TryGetField("protectionmodslots", out _intAddProtectionModSlots);
+			objNode.TryGetField("weaponmodslots", out _intAddWeaponModSlots);
+			objNode.TryGetField("bodymodslots", out _intAddBodyModSlots);
+			objNode.TryGetField("electromagneticmodslots", out _intAddElectromagneticModSlots);
+			objNode.TryGetField("cosmeticmodslots", out _intAddCosmeticModSlots);
 			_strSource = objNode["source"].InnerText;
 			objNode.TryGetField("page", out _strPage);
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
@@ -1297,7 +1302,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intDroneModSlots = _intModSlots;
+				int intDroneModSlots = _intDroneModSlots;
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
 					// Mods that are included with a Vehicle by default do not count toward the Slots used.
@@ -1369,7 +1374,7 @@ namespace Chummer.Backend.Equipment
 
 								if (!blnArmor)
 								{
-									blnAccel = true;
+									blnArmor = true;
 									intActualSlots = intThird - 1;
 								}
 								else
@@ -1767,11 +1772,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Powertrain slots
 		/// </summary>
-		public int CalcPowertrain
+		public int PowertrainModSlots
 		{
 			get
 			{
-				int intPowertrain = _intBody;
+				int intPowertrain = _intBody + _intAddPowertrainModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -1791,11 +1796,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Protection slots
 		/// </summary>
-		public int CalcProtection
+		public int ProtectionModSlots
 		{
 			get
 			{
-				int intProtection = _intBody;
+				int intProtection = _intBody + _intAddProtectionModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -1815,11 +1820,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Weapon slots
 		/// </summary>
-		public int CalcWeaponsmod
+		public int WeaponModSlots
 		{
 			get
 			{
-				int intWeaponsmod = _intBody;
+				int intWeaponsmod = _intBody + _intAddWeaponModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -1839,11 +1844,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Bodymod slots
 		/// </summary>
-		public int CalcBodymod
+		public int BodyModSlots
 		{
 			get
 			{
-				int intBodymod = _intBody;
+				int intBodymod = _intBody + _intAddBodyModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -1862,11 +1867,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Electromagnetic slots
 		/// </summary>
-		public int CalcElectromagnetic
+		public int ElectromagneticModSlots
 		{
 			get
 			{
-				int intElectromagnetic = _intBody;
+				int intElectromagnetic = _intBody + _intAddBodyModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -1886,11 +1891,11 @@ namespace Chummer.Backend.Equipment
 		/// <summary>
 		/// Calculate remaining Cosmetic slots
 		/// </summary>
-		public int CalcCosmetic
+		public int CosmeticModSlots
 		{
 			get
 			{
-				int intCosmetic = _intBody;
+				int intCosmetic = _intBody +_intAddCosmeticModSlots;
 
 				foreach (VehicleMod objMod in _lstVehicleMods)
 				{
@@ -2001,31 +2006,6 @@ namespace Chummer.Backend.Equipment
 				}
 			}
 			return blnReturn;
-		}
-
-		/// <summary>
-		/// Locate a piece of Gear.
-		/// </summary>
-		/// <param name="strGuid">InternalId of the Gear to find.</param>
-		/// <param name="lstGear">List of Gear to search.</param>
-		private Gear FindGear(string strGuid, List<Gear> lstGear)
-		{
-			Gear objReturn = new Gear(_objCharacter);
-			foreach (Gear objGear in lstGear)
-			{
-				if (objGear.InternalId == strGuid)
-					objReturn = objGear;
-				else
-				{
-					if (objGear.Children.Count > 0)
-						objReturn = FindGear(strGuid, objGear.Children);
-				}
-
-				if (objReturn.InternalId != Guid.Empty.ToString() && objReturn.Name != "")
-					return objReturn;
-			}
-
-			return objReturn;
 		}
 
 		/// <summary>

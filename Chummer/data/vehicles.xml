@@ -4964,6 +4964,7 @@
 			<seats>0</seats>
 			<sensor>3</sensor>
 			<modslots>7</modslots>
+			<weaponmodslots>3</weaponmodslots>
 			<gears>
 				<gear rating="3" maxrating="4">Sensor Array</gear>
 			</gears>

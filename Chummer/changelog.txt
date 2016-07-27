@@ -21,7 +21,10 @@ Application Changes:
 - Fixed an issue with lifestyle qualities crashing if they don't have a restriction. Fixes #1012.
 - Set the Adept Way Discount numericupdown control in creation mode to be invisible if the character is not MAG-enabled. Fixes #836.
 - Updated the Capacity calculation for cyberware to include any attached Gear items. Fixes #896.
+- Fixed an issue that prevented the MCT-Nissan Rotodrone from getting the three extra modification slots expected when not using the vehicle modification rules intrroduced in Rigger 5.0. Fixes #943.
 - Skill Filter names is now read from data files instead of hardcoded.
+- Added an option to download Nightly updates via the Update system instead of just default releases.
+- The changelog will now filter itself based on the most recent build version, so Release builds won't see updated text from the Nightlies. Fixes #1013.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -29,8 +32,11 @@ Data Changes:
 - Added life modules from Rigger 5.0, courtesy of SeanPGorman. Fixes #960.
 - Fixed an issue that caused the Suprathyroid gland and Muscle Augmentation biowares to stack. Fixes #913.
 - Added the allowed gear-categories for Sensors to cyberlimbs. Fixes #896.
+- Fixed the Essence cost for the German version of the Skilljack to be 0.1 Essence. 
+- Changed the source for Reagents to be the Shadowrun core book instead of Shadow Spells.
 
 New Strings:
+- 
 - Warning_NoLimitFound
 - String_No_Update_Found
 - Warning_Update_CouldNotConnect

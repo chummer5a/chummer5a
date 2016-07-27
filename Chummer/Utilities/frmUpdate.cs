@@ -43,7 +43,7 @@ namespace Chummer
 		private string strLatestVersion = "";
 		private string strTempPath = "";
         private readonly string strAppPath = Application.StartupPath;
-		WebClient wc = new WebClient();
+		private readonly GlobalOptions _objGlobalOptions = GlobalOptions.Instance;
 		public frmUpdate()
 		{
 			Log.Info("frmUpdate");
@@ -74,6 +74,7 @@ namespace Chummer
 
 			if (_blnUnBlocked)
 			{
+				GetChummerVersion();
 				if (!_blnSilentMode)
 				{
 					WebClient wc = new WebClient();
@@ -82,7 +83,7 @@ namespace Chummer
 					wc.Proxy = wp;
 					wc.Encoding = Encoding.UTF8;
 					Log.Info("Download the changelog");
-					wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/master/Chummer/changelog.txt",
+					wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt",
 						Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
 					webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" +
 					                        File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt"))
@@ -91,8 +92,6 @@ namespace Chummer
 						                        .Replace(">", "&gt;")
 						                        .Replace("\n", "<br />") + "</font>";
 				}
-
-				GetChummerVersion();
 
 				Log.Info("intCount = " + intCount.ToString());
 				// If there is more than 1 instance running, do not let the application be updated.
@@ -122,8 +121,8 @@ namespace Chummer
 			{
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
 
-				if (request.Proxy != null)
-					request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+				//if (request.Proxy != null)
+					//request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 				request.Timeout = 5000;
 				request.Credentials = CredentialCache.DefaultNetworkCredentials;
 				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -139,8 +138,13 @@ namespace Chummer
 		{
 			if (_blnUnBlocked)
 			{
+				string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+				if (_objGlobalOptions.PreferNightlyBuilds)
+				{
+					strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
+				}
 				HttpWebRequest request =
-					(HttpWebRequest) WebRequest.Create("https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
+					(HttpWebRequest) WebRequest.Create(strUpdateLocation);
 				request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
 				request.Accept = "application/json";
 				// Get the response.
@@ -158,19 +162,27 @@ namespace Chummer
 				string[] result;
 				result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
+				bool blnFoundTag = false;
+				bool blnFoundArchive = false;
 				foreach (string line in result)
 				{
+					if (line.Contains("tag_name"))
+					{
+						strLatestVersion = line.Split(':')[1];
+						strLatestVersion = strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
+						blnFoundTag = true;
+					}
 					if (line.Contains("browser_download_url"))
 					{
 						strDownloadFile = line.Split(':')[2];
 						strDownloadFile = strDownloadFile.Substring(2);
 						strDownloadFile = strDownloadFile.Split('}')[0].Replace("\"", string.Empty);
 						strDownloadFile = "https://" + strDownloadFile;
+						blnFoundArchive = true;
 					}
-					if (line.Contains("tag_name"))
+					if (blnFoundArchive && blnFoundTag)
 					{
-						strLatestVersion = line.Split(':')[1];
-						strLatestVersion = strLatestVersion.Split('}')[0].Replace("\"", string.Empty);
+						break;
 					}
 				}
 				// Cleanup the streams and the response.
