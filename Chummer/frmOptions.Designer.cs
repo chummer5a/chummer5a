@@ -101,6 +101,7 @@
 			this.tabGeneral = new System.Windows.Forms.TabPage();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
 			this.chkOpenPDFsAsUnix = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -263,7 +264,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1078,6 +1078,17 @@
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
 			// 
+			// chkPreferNightlyBuilds
+			// 
+			this.chkPreferNightlyBuilds.AutoSize = true;
+			this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(9, 245);
+			this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
+			this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
+			this.chkPreferNightlyBuilds.TabIndex = 25;
+			this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
+			this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
+			this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
+			// 
 			// chkOmaeEnabled
 			// 
 			this.chkOmaeEnabled.AutoSize = true;
@@ -1580,14 +1591,13 @@
 			// chkSpecialKarmaCost
 			// 
 			this.chkSpecialKarmaCost.AutoSize = true;
-			this.chkSpecialKarmaCost.Location = new System.Drawing.Point(6, 196);
+			this.chkSpecialKarmaCost.Location = new System.Drawing.Point(6, 183);
 			this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
 			this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
 			this.chkSpecialKarmaCost.TabIndex = 17;
 			this.chkSpecialKarmaCost.Tag = "Checkbox_Options_SpecialKarmaCost";
 			this.chkSpecialKarmaCost.Text = "Karma cost for increasing Special Attributes is reduced with Essence Loss";
 			this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
-			this.chkSpecialKarmaCost.Visible = false;
 			this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
 			// chkErgonomicProgramLimit
@@ -3103,17 +3113,6 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
-			// 
-			// chkPreferNightlyBuilds
-			// 
-			this.chkPreferNightlyBuilds.AutoSize = true;
-			this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(9, 245);
-			this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
-			this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
-			this.chkPreferNightlyBuilds.TabIndex = 25;
-			this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
-			this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
-			this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
 			// 
 			// frmOptions
 			// 

@@ -25,6 +25,8 @@ Application Changes:
 - Skill Filter names is now read from data files instead of hardcoded.
 - Added an option to download Nightly updates via the Update system instead of just default releases.
 - The changelog will now filter itself based on the most recent build version, so Release builds won't see updated text from the Nightlies. Fixes #1013.
+- Fixed an issue with Essence Loss that caused characters to burn out their Magic or Resonance when hitting 0 value, rather than 0 maximum. Fixes #801.
+- Altered the functionality of the optional rule to reduce Karma costs based on Essence Loss to reflect the above change. 
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -34,7 +36,6 @@ Data Changes:
 - Added the allowed gear-categories for Sensors to cyberlimbs. Fixes #896.
 
 New Strings:
-- 
 - Warning_NoLimitFound
 - String_No_Update_Found
 - Warning_Update_CouldNotConnect
@@ -50,6 +51,7 @@ New Strings:
 
 Changed Strings:
 - Checkbox_Options_UseTotalValueForFreeContacts. Fixes #981.
+- Checkbox_Options_SpecialKarmaCost
 
 Build 182:
 Application Changes:
