@@ -275,7 +275,7 @@
 			<name>Skilljack (German)</name>
 			<category>Headware</category>
 			<rating>6</rating>
-			<ess>Rating * 0.1</ess>
+			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>Rating * 2</avail>
 			<cost>Rating * 1000</cost>
@@ -1360,7 +1360,7 @@
 			<category>Cyber Implant Weapon</category>
 			<ess>0.2</ess>
 			<capacity>[2]</capacity>
-			<avail>10F</avail>
+			<avail>8F</avail>
 			<addweapon>Hand Razors</addweapon>
 			<cost>1250</cost>
 			<source>SR5</source>
