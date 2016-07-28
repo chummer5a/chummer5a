@@ -34,6 +34,8 @@ Data Changes:
 - Added life modules from Rigger 5.0, courtesy of SeanPGorman. Fixes #960.
 - Fixed an issue that caused the Suprathyroid gland and Muscle Augmentation biowares to stack. Fixes #913.
 - Added the allowed gear-categories for Sensors to cyberlimbs. Fixes #896.
+- Fixed the Essence cost for the German version of the Skilljack to be 0.1 Essence. 
+- Changed the source for Reagents to be the Shadowrun core book instead of Shadow Spells.
 
 New Strings:
 - Warning_NoLimitFound
