@@ -1055,7 +1055,7 @@
 			<karma>15</karma>
 			<category>Positive</category>
 			<bonus>
-				<unlockskills>Sorcery,Conjuring,Enhancing</unlockskills>
+				<unlockskills>Sorcery,Conjuring,Enchanting</unlockskills>
 			</bonus>
 			<forbidden>
 				<oneof>

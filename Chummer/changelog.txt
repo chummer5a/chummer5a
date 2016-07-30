@@ -27,6 +27,7 @@ Application Changes:
 - The changelog will now filter itself based on the most recent build version, so Release builds won't see updated text from the Nightlies. Fixes #1013.
 - Fixed an issue with Essence Loss that caused characters to burn out their Magic or Resonance when hitting 0 value, rather than 0 maximum. Fixes #801.
 - Altered the functionality of the optional rule to reduce Karma costs based on Essence Loss to reflect the above change. 
+- Fixed an issue that prevented Aspected Magicians taking the Conjuring skill group from actually receiving the skills.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -36,6 +37,7 @@ Data Changes:
 - Added the allowed gear-categories for Sensors to cyberlimbs. Fixes #896.
 - Fixed the Essence cost for the German version of the Skilljack to be 0.1 Essence. 
 - Changed the source for Reagents to be the Shadowrun core book instead of Shadow Spells.
+- Fixed an issue that prevented the standard Weapon Mount from Shadowrun 5 from taking Machine Pistols and Submachine Guns.
 
 New Strings:
 - Warning_NoLimitFound
