@@ -691,11 +691,11 @@
 			<cost>Rating * 25000</cost>
 			<bonus>
 				<specificattribute>
-					<name precedence="1">AGI</name>
+					<name precedence="0">AGI</name>
 					<val>Rating</val>
 				</specificattribute>
 				<specificattribute>
-					<name precedence="1">STR</name>
+					<name precedence="0">STR</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -713,7 +713,7 @@
 			<cost>Rating * 13000</cost>
 			<bonus>
 				<specificattribute>
-					<name precedence="1">REA</name>
+					<name precedence="0">REA</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -757,9 +757,9 @@
 			<avail>FixedValues(8R,12R,20R)</avail>
 			<cost>FixedValues(39000,149000,217000)</cost>
 			<bonus>
-				<initiativepass precedence="1">Rating</initiativepass>
+				<initiativepass precedence="0">Rating</initiativepass>
 				<specificattribute>
-					<name precedence="1">REA</name>
+					<name precedence="0">REA</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -2062,11 +2062,11 @@
 			<avail>FixedValues(12F,18F,24F)</avail>
 			<cost>FixedValues(40000,125000,205000)</cost>
 			<bonus>
-				<initiative precedence="1">FixedValues(3,6,9)</initiative>
-				<initiativepass precedence="1">FixedValues(0,1,1)</initiativepass>
+				<initiative precedence="0">FixedValues(3,6,9)</initiative>
+				<initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
 				<skillwire>Rating * 2</skillwire>
 				<specificattribute>
-					<name precedence="1">REA</name>
+					<name precedence="0">REA</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>

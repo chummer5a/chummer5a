@@ -409,6 +409,18 @@ Data Change:
 - Holdouts have had the <allowaccessory> tag set to true as a result of code changes to how accessories can be attached to a weapon. May not take effect on existing weapons; if not, remove and re-add the weapon.
 - Renamed the description for the Cat Mentor to not refer to Infiltration.
 - Removed the Sail Away, Sweet Sister version of the Personalised Grip, as it's replaced by the Hard Targets version.
+- Altered the Precedence setting for the following bioware, cyberware, powers and qualities, as they were stacking improperly.
+-- Muscle Augmentation bioware
+-- Suprathyroid Gland bioware
+-- Synaptic Booster bioware
+-- Boosted Reflexes bioware
+-- Synaptic Acceleration bioware
+-- Muscle Replacement cyberware
+-- Reaction Enhancers cyberware
+-- Wired Reflexes cyberware
+-- Move-by-Wire System bioware
+-- Improved Reflexes 1,2,3 power
+-- Lightning Reflexes quality
 
 New String:
 - Menu_FilePrintPreview

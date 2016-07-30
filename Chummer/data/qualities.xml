@@ -2645,8 +2645,8 @@
 			<karma>20</karma>
 			<category>Positive</category>
 			<bonus>
-				<initiative precedence="1">1</initiative>
-				<initiativepass precedence="1">1</initiativepass>
+				<initiative precedence="0">1</initiative>
+				<initiativepass precedence="0">1</initiativepass>
 				<lightningreflexes />
 			</bonus>
 			<source>RF</source>

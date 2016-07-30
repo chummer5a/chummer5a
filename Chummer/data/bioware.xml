@@ -250,7 +250,7 @@
 			<cost>Rating * 31000</cost>
 			<bonus>
 				<specificattribute>
-					<name precedence="1">STR</name>
+					<name precedence="0">STR</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -382,11 +382,11 @@
 					<val>1</val>
 				</specificattribute>
 				<specificattribute>
-					<name precedence="1">REA</name>
+					<name precedence="0">REA</name>
 					<val>1</val>
 				</specificattribute>
 				<specificattribute>
-					<name precedence="1">STR</name>
+					<name precedence="0">STR</name>
 					<val>1</val>
 				</specificattribute>
 			</bonus>
@@ -415,9 +415,9 @@
 			<avail>(Rating * 6)R</avail>
 			<cost>Rating * 95000</cost>
 			<bonus>
-				<initiativepass precedence="1">Rating</initiativepass>
+				<initiativepass precedence="0">Rating</initiativepass>
 				<specificattribute>
-					<name precedence="1">REA</name>
+					<name precedence="0">REA</name>
 					<val>Rating</val>
 				</specificattribute>
 			</bonus>
@@ -1386,7 +1386,7 @@
 			<avail>8R</avail>
 			<cost>10000</cost>
 			<bonus>
-				<initiativepass precedence="1">1</initiativepass>
+				<initiativepass precedence="0">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>118</page>
@@ -1857,8 +1857,8 @@
 			<avail>8</avail>
 			<cost>78000</cost>
 			<bonus>
-				<initiative precedence="1">1</initiative>
-				<initiativepass precedence="1">1</initiativepass>
+				<initiative precedence="0">1</initiative>
+				<initiativepass precedence="0">1</initiativepass>
 			</bonus>
 			<source>CF</source>
 			<page>162</page>
