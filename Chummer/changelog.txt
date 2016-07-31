@@ -28,6 +28,7 @@ Application Changes:
 - Fixed an issue with Essence Loss that caused characters to burn out their Magic or Resonance when hitting 0 value, rather than 0 maximum. Fixes #801.
 - Altered the functionality of the optional rule to reduce Karma costs based on Essence Loss to reflect the above change. 
 - Fixed an issue that prevented Aspected Magicians taking the Conjuring skill group from actually receiving the skills.
+- Fixed an issue with undoing expense entries for skills. Fixes #988, fixes #1028.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -38,6 +39,18 @@ Data Changes:
 - Fixed the Essence cost for the German version of the Skilljack to be 0.1 Essence. 
 - Changed the source for Reagents to be the Shadowrun core book instead of Shadow Spells.
 - Fixed an issue that prevented the standard Weapon Mount from Shadowrun 5 from taking Machine Pistols and Submachine Guns.
+- Altered the Precedence setting for the following bioware, cyberware, powers and qualities, as they were stacking improperly.
+-- Muscle Augmentation bioware
+-- Suprathyroid Gland bioware
+-- Synaptic Booster bioware
+-- Boosted Reflexes bioware
+-- Synaptic Acceleration bioware
+-- Muscle Replacement cyberware
+-- Reaction Enhancers cyberware
+-- Wired Reflexes cyberware
+-- Move-by-Wire System bioware
+-- Improved Reflexes 1,2,3 power
+-- Lightning Reflexes quality
 
 New Strings:
 - Warning_NoLimitFound
@@ -409,18 +422,6 @@ Data Change:
 - Holdouts have had the <allowaccessory> tag set to true as a result of code changes to how accessories can be attached to a weapon. May not take effect on existing weapons; if not, remove and re-add the weapon.
 - Renamed the description for the Cat Mentor to not refer to Infiltration.
 - Removed the Sail Away, Sweet Sister version of the Personalised Grip, as it's replaced by the Hard Targets version.
-- Altered the Precedence setting for the following bioware, cyberware, powers and qualities, as they were stacking improperly.
--- Muscle Augmentation bioware
--- Suprathyroid Gland bioware
--- Synaptic Booster bioware
--- Boosted Reflexes bioware
--- Synaptic Acceleration bioware
--- Muscle Replacement cyberware
--- Reaction Enhancers cyberware
--- Wired Reflexes cyberware
--- Move-by-Wire System bioware
--- Improved Reflexes 1,2,3 power
--- Lightning Reflexes quality
 
 New String:
 - Menu_FilePrintPreview

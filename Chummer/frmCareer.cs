@@ -12457,6 +12457,7 @@ namespace Chummer
 					SkillGroup group = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
 					if (group != null) group.Karma--;
 					break;
+				case KarmaExpenseType.AddSkill:
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
 					Skill skill = _objCharacter.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId) ??
