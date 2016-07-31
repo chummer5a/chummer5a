@@ -1227,6 +1227,7 @@
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
 			// 
 			// lblPDFOffset
 			// 

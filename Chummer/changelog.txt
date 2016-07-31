@@ -29,6 +29,7 @@ Application Changes:
 - Altered the functionality of the optional rule to reduce Karma costs based on Essence Loss to reflect the above change. 
 - Fixed an issue that prevented Aspected Magicians taking the Conjuring skill group from actually receiving the skills.
 - Fixed an issue with undoing expense entries for skills. Fixes #988, fixes #1028.
+- Fixed an issue that prevented page offsets from being saved properly. Existing options files may need to be reconfigured. Fixes #1027.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
