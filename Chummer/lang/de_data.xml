@@ -1205,6 +1205,11 @@
 				<translate>Datenpfade</translate>
 			</book>
 			<book>
+				<id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
+				<name>Chrome Flesh</name>
+				<translate>Bodyshop</translate>
+			</book>
+			<book>
 				<id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
 				<name>Run Faster German</name>
 				<translate>Schattenläufer</translate>
@@ -13664,12 +13669,12 @@
 				<page>143</page>
 				<translate>Verbannen</translate>
 				<specs>
-					<spec translate="Spirits of Air">Spirits of Air</spec>
+					<spec translate="Geister des Himmels">Spirits of Air</spec>
 					<spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-					<spec translate="Spirits of Earth">Spirits of Earth</spec>
-					<spec translate="Spirits of Fire">Spirits of Fire</spec>
-					<spec translate="Spirits of Man">Spirits of Man</spec>
-					<spec translate="Spirits of Water">Spirits of Water</spec>
+					<spec translate="Geister des Landes">Spirits of Earth</spec>
+					<spec translate="Geister des Feuers">Spirits of Fire</spec>
+					<spec translate="Geister des Menschen">Spirits of Man</spec>
+					<spec translate="Geister des Wassers">Spirits of Water</spec>
 					<spec translate="Guardian Spirit">Guardian Spirit</spec>
 					<spec translate="Guidance Spirit">Guidance Spirit</spec>
 					<spec translate="Plant Spirit">Plant Spirit</spec>
@@ -13682,12 +13687,12 @@
 				<page>143</page>
 				<translate>Binden</translate>
 				<specs>
-					<spec translate="Spirits of Air">Spirits of Air</spec>
+					<spec translate="Geister des Himmels">Spirits of Air</spec>
 					<spec translate="Spirits of Beasts">Spirits of Beasts</spec>
-					<spec translate="Spirits of Earth">Spirits of Earth</spec>
-					<spec translate="Spirits of Fire">Spirits of Fire</spec>
-					<spec translate="Spirits of Man">Spirits of Man</spec>
-					<spec translate="Spirits of Water">Spirits of Water</spec>
+					<spec translate="Geister des Landes">Spirits of Earth</spec>
+					<spec translate="Geister des Feuers">Spirits of Fire</spec>
+					<spec translate="Geister des Menschen">Spirits of Man</spec>
+					<spec translate="Geister des Wassers">Spirits of Water</spec>
 					<spec translate="Guardian Spirit">Guardian Spirit</spec>
 					<spec translate="Guidance Spirit">Guidance Spirit</spec>
 					<spec translate="Plant Spirit">Plant Spirit</spec>

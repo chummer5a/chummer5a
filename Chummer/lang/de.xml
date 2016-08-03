@@ -2470,6 +2470,44 @@
       <text>Charaktere erhalten (INT + LOG) x 3 freie Punkte, um Sie für allgemeine Wissenfertigkeiten und Sprachen auszugeben. Zusätzliche Stufen in Wissensfertigkeiten kosten je 2 BP. Eine Sprache mit der Stufe 0 wird als Ihre Muttersprache angesehen.</text>
     </string>
     <string>
+      <key>Skill_SortAlphabetical</key>
+      <text>Alphabetisch</text>
+    </string>
+    <string>
+      <key>Skill_SortRating</key>
+      <text>Wert</text>
+    </string>
+    <string>
+      <key>Skill_SortDicepool</key>
+      <text>Würfelpool</text>
+    </string>
+    <string>
+      <key>Skill_SortLowerDicepool</key>
+      <text>Kleinerer Würfelpool</text>
+    </string>
+    <string>
+      <key>Skill_SortAttributeValue</key>
+      <text>Attributwert</text>
+    </string>
+    <string>
+      <key>Skill_SortAttributeName</key>
+      <text>Attributname</text>
+    </string>
+    <string>
+      <key>Skill_SortGroupName</key>
+      <text>Fähigkeitsgruppenname</text>
+    </string>
+    <string>
+      <key>Skill_SortGroupRating</key>
+      <text>Fähigkeitsgruppenwert</text>
+    </string>
+    <string>
+      <key>Skill_SortCategory</key>
+      <text>Kategorie</text>
+    </string>
+		<!-- End Region -->
+		<!-- Region  Martial Arts Tab -->
+    <string>
       <key>Button_AddMartialArt</key>
       <text>&amp;Kampfkunst hinzufügen</text>
     </string>
@@ -5260,6 +5298,10 @@
       <key>Button_EditWeek</key>
       <text>Woche bearbeiten</text>
     </string>
+	<string>
+		<key>Button_DeleteWeek</key>
+		<text>Woche löschen</text>
+	</string>
     <string>
       <key>String_WeekDisplay</key>
       <text>{0}: Monat {1}, Woche {2}</text>
@@ -7171,7 +7213,7 @@
     </string>
     <string>
       <key>Label_OtherRiggingInit</key>
-      <text>Geriggte Initiative (AR):</text>
+      <text>Rigger Initiative (AR):</text>
     </string>
     <string>
       <key>Label_OtherArmor</key>
@@ -7433,5 +7475,78 @@
       <key>Tip_Skill_AddSpecialization</key>
       <text>Spezialisierung für {0} Karma hinzufügen</text>
     </string>
+	<string>
+		<key>Label_CounterspellingDice</key>
+		<text>Antimagie Würfel</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceIndirectDodge</key>
+		<text>Indirektes Ausweichen</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceIndirect</key>
+		<text>Indirektes Widerstehen</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDirectSoakMana</key>
+		<text>Direktes Widerstehen - Mana</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDirectSoakPhysical</key>
+		<text>Direktes Widerstehen - Körperlich</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDetection</key>
+		<text>Wahrnehmungszauber</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttBOD</key>
+		<text>Attribut verringern (KON)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttSTR</key>
+		<text>Attribut verringern (STR)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttAGI</key>
+		<text>Attribut verringern (GES)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttREA</key>
+		<text>Attribut verringern (REA)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttLOG</key>
+		<text>Attribut verringern (LOG)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttWIL</key>
+		<text>Attribut verringern (WIL)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttINT</key>
+		<text>Attribut verringern (INT)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceDecAttCHA</key>
+		<text>Attribut verringern (CHA)</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceIllusionMana</key>
+		<text>Illusion - Mana</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceIllusionPhysical</key>
+		<text>Illusion - Körperlich</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceManipMental</key>
+		<text>Manipulation - Mental</text>
+	</string>
+	<string>
+		<key>Label_SpellDefenceManipPhysical</key>
+		<text>Manipulation - Körperlich</text>
+	</string>
+	<!-- End Region -->
   </strings>
 </chummer>
