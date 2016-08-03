@@ -7475,7 +7475,6 @@
       <key>Tip_Skill_AddSpecialization</key>
       <text>Spezialisierung für {0} Karma hinzufügen</text>
     </string>
-	<!-- Region Spell Defence Tab-->
 	<string>
 		<key>Label_CounterspellingDice</key>
 		<text>Antimagie Würfel</text>
