@@ -64,7 +64,7 @@ namespace Chummer.Skills
 				case FilterOptions.Magician:
 				case FilterOptions.Sorcery:
 				case FilterOptions.Conjuring:
-				case FilterOptions.Enhancing:
+				case FilterOptions.Enchanting:
 				case FilterOptions.Adept:
 					category = "Magical Active";
 					break;
@@ -626,7 +626,7 @@ namespace Chummer.Skills
 					return " and category = 'Magical Active' and (skillgroup = 'Sorcery' or skillgroup = '' or not(skillgroup))";
 				case FilterOptions.Conjuring:
 					return " and category = 'Magical Active' and (skillgroup = 'Conjuring' or skillgroup = '' or not(skillgroup))";
-				case FilterOptions.Enhancing:
+				case FilterOptions.Enchanting:
 					return " and category = 'Magical Active' and (skillgroup = 'Enchanting' or skillgroup = '' or not(skillgroup))";
 				case FilterOptions.Adept:
 					return " and category = 'Magical Active' and (skillgroup = '' or not(skillgroup))";
@@ -646,7 +646,7 @@ namespace Chummer.Skills
 			Magician,
 			Sorcery,
 			Conjuring,
-			Enhancing,
+			Enchanting,
 			Adept,
 			Technomancer,
 			Spellcasting

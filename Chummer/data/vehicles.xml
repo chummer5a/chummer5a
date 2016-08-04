@@ -5236,7 +5236,7 @@
 			<category>Vehicle Weapon Mount</category>
 			<rating>0</rating>
 			<slots>0</slots>
-			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
+			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
 			<avail>8F</avail>
 			<cost>2500</cost>
 			<source>SR5</source>

@@ -3534,7 +3534,7 @@ namespace Chummer
 		{
 			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intKarmaCost = (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			else
 				intKarmaCost = (_objCharacter.MAG.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
@@ -3546,7 +3546,7 @@ namespace Chummer
 			}
 
 			int intFromValue = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intFromValue = _objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers;
 			else
 				intFromValue = _objCharacter.MAG.Value - _objCharacter.EssencePenalty;
@@ -3591,7 +3591,7 @@ namespace Chummer
 		{
 			// Make sure the character has enough Karma to improve the CharacterAttribute.
 			int intKarmaCost = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intKarmaCost = (_objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			else
 				intKarmaCost = (_objCharacter.RES.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
@@ -3603,7 +3603,7 @@ namespace Chummer
 			}
 
 			int intFromValue = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intFromValue = _objCharacter.RES.Value + _objCharacter.RES.AttributeValueModifiers;
 			else
 				intFromValue = _objCharacter.RES.Value - _objCharacter.EssencePenalty;
@@ -3633,7 +3633,7 @@ namespace Chummer
 		{
 			// Make sure the character has enough Karma to improve the Attribute.
 			int intKarmaCost = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intKarmaCost = (_objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute;
 			else
 				intKarmaCost = (_objCharacter.DEP.Value - _objCharacter.EssencePenalty + 1) * _objOptions.KarmaAttribute;
@@ -3645,7 +3645,7 @@ namespace Chummer
 			}
 
 			int intFromValue = 0;
-			if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+			if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 				intFromValue = _objCharacter.DEP.Value + _objCharacter.DEP.AttributeValueModifiers;
 			else
 				intFromValue = _objCharacter.DEP.Value - _objCharacter.EssencePenalty;
@@ -12457,6 +12457,7 @@ namespace Chummer
 					SkillGroup group = _objCharacter.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
 					if (group != null) group.Karma--;
 					break;
+				case KarmaExpenseType.AddSkill:
 				case KarmaExpenseType.ImproveSkill:
 					// Locate the Skill that was affected.
 					Skill skill = _objCharacter.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId) ??
@@ -21001,7 +21002,7 @@ namespace Chummer
 					lblDEP.Text = (_objCharacter.DEP.Value - intEssenceLoss).ToString();
 
 				// If the CharacterAttribute reaches 0, the character has burned out.
-				if (_objCharacter.MAG.Value - intEssenceLoss < 1 && _objCharacter.MAGEnabled)
+				if (_objCharacter.MAG.TotalMaximum < 1 && _objCharacter.MAGEnabled)
 				{
 					_objCharacter.MAG.Value = 0;
 					_objCharacter.MAG.MetatypeMinimum = 0;
@@ -21053,7 +21054,7 @@ namespace Chummer
 					_objCharacter.MagicianEnabled = false;
 					_objCharacter.AdeptEnabled = false;
 				}
-				if (_objCharacter.RES.Value - intEssenceLoss < 1 && _objCharacter.RESEnabled)
+				if (_objCharacter.RES.TotalMaximum < 1 && _objCharacter.RESEnabled)
 				{
 					_objCharacter.RES.Value = 0;
 					_objCharacter.RES.MetatypeMinimum = 0;
@@ -21156,7 +21157,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(cmdImproveWIL, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveEDG, strTooltip);
-					if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+					if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 					{
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);
@@ -21191,7 +21192,7 @@ namespace Chummer
 					tipTooltip.SetToolTip(cmdImproveWIL, strTooltip);
 					strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.EDG.Value + _objCharacter.EDG.AttributeValueModifiers - _objCharacter.EDG.MetatypeMinimum + 2) * _objOptions.KarmaAttribute).ToString());
 					tipTooltip.SetToolTip(cmdImproveEDG, strTooltip);
-					if (!_objOptions.SpecialKarmaCostBasedOnShownValue)
+					if (_objOptions.SpecialKarmaCostBasedOnShownValue)
 					{
 						strTooltip = LanguageManager.Instance.GetString("Tip_ImproveItem").Replace("{0}", (_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1).ToString()).Replace("{1}", ((_objCharacter.MAG.Value + _objCharacter.MAG.AttributeValueModifiers + 1) * _objOptions.KarmaAttribute).ToString());
 						tipTooltip.SetToolTip(cmdImproveMAG, strTooltip);

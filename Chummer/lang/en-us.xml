@@ -6505,7 +6505,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_SpecialKarmaCost</key>
-			<text>Karma cost for increasing Special Attributes is reduced with Essence Loss</text>
+			<text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
