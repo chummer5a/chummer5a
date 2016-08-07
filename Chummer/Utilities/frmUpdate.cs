@@ -84,9 +84,9 @@ namespace Chummer
 					wc.Encoding = Encoding.UTF8;
 					Log.Info("Download the changelog");
 					wc.DownloadFile("https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt",
-						Path.Combine(Environment.CurrentDirectory, "changelog.txt"));
+						Path.Combine(Application.StartupPath, "changelog.txt"));
 					webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">" +
-					                        File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "changelog.txt"))
+					                        File.ReadAllText(Path.Combine(Application.StartupPath, "changelog.txt"))
 						                        .Replace("&", "&amp;")
 						                        .Replace("<", "&lt;")
 						                        .Replace(">", "&gt;")

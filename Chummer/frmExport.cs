@@ -39,7 +39,7 @@ namespace Chummer
 		private void frmExport_Load(object sender, EventArgs e)
 		{
 			// Populate the XSLT list with all of the XSL files found in the sheets directory.
-			string exportDirectoryPath = Path.Combine(Environment.CurrentDirectory, "export");
+			string exportDirectoryPath = Path.Combine(Application.StartupPath, "export");
 			foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
 			{
 				// Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
@@ -67,7 +67,7 @@ namespace Chummer
 			// Look for the file extension information.
 			string strLine = "";
 			string strExtension = "xml";
-			string exportSheetPath = Path.Combine(Environment.CurrentDirectory, "export", cboXSLT.Text + ".xsl");
+			string exportSheetPath = Path.Combine(Application.StartupPath, "export", cboXSLT.Text + ".xsl");
 			StreamReader objFile = new StreamReader(exportSheetPath);
 			while ((strLine = objFile.ReadLine()) != null)
 			{

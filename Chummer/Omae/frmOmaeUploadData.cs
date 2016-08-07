@@ -56,7 +56,7 @@ namespace Chummer
 		private void frmOmaeUploadData_Load(object sender, EventArgs e)
 		{
 			// Populate the CheckedListBox with the list of custom and override files in the user's data directory.
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "data");
+			string strFilePath = Path.Combine(Application.StartupPath, "data");
 			foreach (string strFile in Directory.GetFiles(strFilePath, "custom*_*.xml"))
 			{
 				TreeNode objNode = new TreeNode();
@@ -106,7 +106,7 @@ namespace Chummer
 			
 			bool blnSuccess = false;
 
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "data", "books.xml");
+			string strFilePath = Path.Combine(Application.StartupPath, "data", "books.xml");
 			XmlDocument objXmlBooks = new XmlDocument();
 			objXmlBooks.Load(strFilePath);
 

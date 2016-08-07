@@ -30,6 +30,8 @@ Application Changes:
 - Fixed an issue that prevented Aspected Magicians taking the Conjuring skill group from actually receiving the skills.
 - Fixed an issue with undoing expense entries for skills. Fixes #988, fixes #1028.
 - Fixed an issue that prevented page offsets from being saved properly. Existing options files may need to be reconfigured. Fixes #1027.
+- Fixed an issue with application locations causing some problems with accessing data files. Fixes #597.
+- Improved the tooltip indications for when a skill is affected by cyberlimb stats. Fixes #1009.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -52,6 +54,8 @@ Data Changes:
 -- Move-by-Wire System bioware
 -- Improved Reflexes 1,2,3 power
 -- Lightning Reflexes quality
+- Added a missing MAG attribute to the Drake qualities. Fixes #1034.
+- Added the Portable Chemical Injectors from Chrome Flesh's sidebar on page 176. CGL, if you're going to use tables then please please PLEASE include all your things in them! Fixes #176.
 
 New Strings:
 - Warning_NoLimitFound

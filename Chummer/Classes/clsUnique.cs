@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+ using System.Text;
  using System.Threading;
  using System.Windows.Forms;
 using System.Xml;
@@ -891,20 +892,32 @@ namespace Chummer
 				}
 			}
 
-            //// If this is AGI or STR, factor in any Cyberlimbs.
-            string strCyberlimb = "";
-            if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
-            {
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+			//// If this is AGI or STR, factor in any Cyberlimbs.
+			StringBuilder strCyberlimb = new StringBuilder();
+			if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+			{
+				LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+				foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                 {
-                    if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                    if (objCyberware.Category == "Cyberlimb")
                     {
-                        LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-                        strCyberlimb = LanguageManager.Instance.GetString("String_CyberlimbAttributeModifier");
+	                    if (_strAbbrev == "AGI")
+						{
+							strCyberlimb.Append("\n");
+							strCyberlimb.Append(objCyberware.DisplayName + " (");
+							strCyberlimb.Append(objCyberware.TotalAgility.ToString());
+							strCyberlimb.Append(")");
+						}
+	                    else
+	                    {
+							strCyberlimb.Append("\n");
+							strCyberlimb.Append(objCyberware.DisplayName + " (");
+							strCyberlimb.Append(objCyberware.TotalStrength.ToString());
+							strCyberlimb.Append(")");
+						}
                     }
                 }
-                if (strCyberlimb != "")
-                    strModifier += " " + strCyberlimb;
+                    strModifier += strCyberlimb;
             }
 
 			return strReturn + strModifier;

@@ -67,7 +67,7 @@ namespace Chummer.Backend.Debugging
 				catch{ }
 
 				attributes.Add("machine-name", Environment.MachineName);
-				attributes.Add("current-dir", Environment.CurrentDirectory);
+				attributes.Add("current-dir", Application.StartupPath);
 				attributes.Add("application-dir", Application.ExecutablePath);
 				attributes.Add("os-type", Environment.OSVersion.VersionString);
 
@@ -117,8 +117,8 @@ namespace Chummer.Backend.Debugging
 					DumpData dump = new DumpData();
 					
 					dump.AddException(ex);
-					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "settings", "default.xml"));
-					dump.AddFile(Path.Combine(Environment.CurrentDirectory, "chummerlog.txt"));
+					dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
+					dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
 					Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
 

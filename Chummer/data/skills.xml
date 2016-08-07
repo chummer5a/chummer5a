@@ -41,6 +41,7 @@
     <category type="active">Physical Active</category>
     <category type="active">Social Active</category>
     <category type="active">Magical Active</category>
+		<category type="active">Pseudo-Magical Active</category>
     <category type="active">Resonance Active</category>
     <category type="active">Technical Active</category>
     <category type="active">Vehicle Active</category>
@@ -110,7 +111,7 @@
       <id>74a68a9e-8c5b-4998-8dbb-08c1e768afc3</id>
       <name>Arcana</name>
       <attribute>LOG</attribute>
-      <category>Magical Active</category>
+      <category>Pseudo-Magical Active</category>
       <default>No</default>
       <skillgroup />
       <specs>

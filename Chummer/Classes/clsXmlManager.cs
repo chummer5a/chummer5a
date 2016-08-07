@@ -114,7 +114,7 @@ namespace Chummer
 		/// <param name="strFileName">Name of the XML file to load.</param>
 		public XmlDocument Load(string strFileName)
 		{
-			string strPath = Path.Combine(Environment.CurrentDirectory, "data", strFileName);
+			string strPath = Path.Combine(Application.StartupPath, "data", strFileName);
 			DateTime datDate = File.GetLastWriteTime(strPath);
 
 			// Look to see if this XmlDocument is already loaded.
@@ -171,7 +171,7 @@ namespace Chummer
 				// Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
 				if (strFileName != "improvements.xml")
 				{
-					string strFilePath = Path.Combine(Environment.CurrentDirectory, "data");
+					string strFilePath = Path.Combine(Application.StartupPath, "data");
 					foreach (string strFile in Directory.GetFiles(strFilePath, "override*_" + strFileName))
 					{
 						objXmlFile.Load(strFile);
@@ -359,7 +359,7 @@ namespace Chummer
 			// Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
 			if (strFileName != "improvements.xml")
 			{
-				strPath = Path.Combine(Environment.CurrentDirectory, "data");
+				strPath = Path.Combine(Application.StartupPath, "data");
 				foreach (string strFile in Directory.GetFiles(strPath, "custom*_" + strFileName))
 				{
 					objXmlFile.Load(strFile);
@@ -404,7 +404,7 @@ namespace Chummer
 		public void Verify(string strLanguage, List<string> lstBooks)
 		{
 			XmlDocument objLanguageDoc = new XmlDocument();
-			string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "lang");
+			string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
             string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
 			objLanguageDoc.Load(strFilePath);
 
@@ -419,7 +419,7 @@ namespace Chummer
 			// <results>
 			objWriter.WriteStartElement("results");
 
-			string strPath = Path.Combine(Environment.CurrentDirectory, "data");
+			string strPath = Path.Combine(Application.StartupPath, "data");
 			foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
 			{
 				string strFileName = Path.GetFileName(strFile);

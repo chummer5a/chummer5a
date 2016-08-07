@@ -75,7 +75,7 @@ namespace Chummer
 			// See if a Suite with this name already exists for the Custom category. This is done without the XmlManager since we need to check each file individually.
 			XmlDocument objXmlDocument = new XmlDocument();
 			XmlNodeList objXmlSuiteList;
-			string strCustomPath = Path.Combine(Environment.CurrentDirectory, "data");
+			string strCustomPath = Path.Combine(Application.StartupPath, "data");
 			foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_" + _strType + ".xml"))
 			{
 				objXmlDocument.Load(strFile);

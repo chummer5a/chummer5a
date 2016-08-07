@@ -225,7 +225,7 @@ namespace Chummer
 		private void mnuNewCritter_Click(object sender, EventArgs e)
 		{
 			Character objCharacter = new Character();
-			string settingsPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			string settingsPath = Path.Combine(Application.StartupPath, "settings");
 			string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
 			if (settingsFiles.Length > 1)
@@ -555,7 +555,7 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
 		{
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", "default.xml");
+			string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
 			if (!File.Exists(strFilePath))
 			{
 				if (MessageBox.Show(LanguageManager.Instance.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.Instance.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -565,7 +565,7 @@ namespace Chummer
 				}
 			}
 			Character objCharacter = new Character();
-			string settingsPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			string settingsPath = Path.Combine(Application.StartupPath, "settings");
 			string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
 
 			if (settingsFiles.Length > 1)

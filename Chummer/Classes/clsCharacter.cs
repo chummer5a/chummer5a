@@ -1851,7 +1851,7 @@ namespace Chummer
             string strMugshotPath = "";
             if (_strMugshot != "")
             {
-				string mugshotsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "mugshots");
+				string mugshotsDirectoryPath = Path.Combine(Application.StartupPath, "mugshots");
                 if (!Directory.Exists(mugshotsDirectoryPath))
                     Directory.CreateDirectory(mugshotsDirectoryPath);
                 byte[] bytImage = Convert.FromBase64String(_strMugshot);
