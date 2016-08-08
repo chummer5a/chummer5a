@@ -33,6 +33,7 @@ Application Changes:
 - Fixed an issue with application locations causing some problems with accessing data files. Fixes #597.
 - Improved the tooltip indications for when a skill is affected by cyberlimb stats. Fixes #1009.
 - Fixed a parsing error when verifying data files that caused a crash. Fixes #935.
+- Fixed an error that prevented Cyber-weapoons such as spurs from being properly flagged as such. Fixes #382.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 

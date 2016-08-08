@@ -267,6 +267,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("mode", _strMode);
 			objWriter.WriteElementString("rc", _strRC);
 			objWriter.WriteElementString("ammo", _strAmmo);
+			objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
 			objWriter.WriteElementString("ammocategory", _strAmmoCategory);
 
 			objWriter.WriteStartElement("clips");
@@ -339,13 +340,8 @@ namespace Chummer.Backend.Equipment
 			_strMode = objNode["mode"].InnerText;
 			_strRC = objNode["rc"].InnerText;
 			_strAmmo = objNode["ammo"].InnerText;
-			try
-			{
-				_strAmmoCategory = objNode["ammocategory"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("cyberware", out _blnCyberware);
+			objNode.TryGetField("ammocategory", out _strAmmoCategory);
 
 			_ammo.Clear();
 			if (objNode["clips"] != null)
@@ -380,90 +376,25 @@ namespace Chummer.Backend.Equipment
 					}
 				}
 			}
-			
-			try
-			{
-				_intConceal = Convert.ToInt32(objNode["conceal"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("conceal", out _intConceal);
 			_strAvail = objNode["avail"].InnerText;
 			_intCost = Convert.ToInt32(objNode["cost"].InnerText);
-			try
-			{
-				_intFullBurst = Convert.ToInt32(objNode["fullburst"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_intSuppressive = Convert.ToInt32(objNode["suppressive"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("fullburst", out _intFullBurst);
+			objNode.TryGetField("suppressive", out _intSuppressive);
+			objNode.TryGetField("page", out _strPage);
+			objNode.TryGetField("fullburst", out _intFullBurst);
 			_strSource = objNode["source"].InnerText;
-			try
+			_strWeaponName = objNode["weaponname"].InnerText;
+			objNode.TryGetField("range", out _strRange);
+			if (_strRange == "Hold-Outs")
 			{
-				_strPage = objNode["page"].InnerText;
+				_strRange = "Holdouts";
 			}
-			catch
-			{
-			}
-			try
-			{
-				_strWeaponName = objNode["weaponname"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				if (objNode["range"].InnerText == "Hold-Outs")
-					objNode["range"].InnerText = "Holdouts";
-				_strRange = objNode["range"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strUseSkill = objNode["useskill"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_dblRangeMultiplier = Convert.ToDouble(objNode["rangemultiply"].InnerText, GlobalOptions.Instance.CultureInfo);
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnIncludedInWeapon = Convert.ToBoolean(objNode["included"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnInstalled = Convert.ToBoolean(objNode["installed"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnRequireAmmo = Convert.ToBoolean(objNode["requireammo"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("useskill", out _strUseSkill);
+			objNode.TryGetField("rangemultiply", out _dblRangeMultiplier);
+			objNode.TryGetField("included", out _blnIncludedInWeapon);
+			objNode.TryGetField("installed", out _blnInstalled);
+			objNode.TryGetField("requireammo", out _blnRequireAmmo);
 
 			if (GlobalOptions.Instance.Language != "en-us")
 			{
@@ -507,29 +438,9 @@ namespace Chummer.Backend.Equipment
 					_lstUnderbarrel.Add(objUnderbarrel);
 				}
 			}
-
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strLocation = objNode["location"].InnerText;
-			}
-			catch
-			{
-			}
-
-			try
-			{
-				_blnDiscountCost = Convert.ToBoolean(objNode["discountedcost"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("location", out _strLocation);
+			objNode.TryGetField("discountedcost", out _blnDiscountCost);
 
 			if (blnCopy)
 			{
