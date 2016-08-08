@@ -25194,35 +25194,47 @@ namespace Chummer
 			lstNuyen.ContextMenuStrip = null;
 			foreach (ExpenseLogEntry objExpense in _objCharacter.ExpenseEntries)
 			{
-				ListViewItem objItem = new ListViewItem();
-				objItem.Text = objExpense.Date.ToShortDateString() + " " + objExpense.Date.ToShortTimeString();
-				ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem();
-				objAmountItem.Text = objExpense.Amount.ToString();
-				ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem();
-				objReasonItem.Text = objExpense.Reason;
-				ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();
-				objInternalIdItem.Text = objExpense.InternalId;
-
-				if (objExpense.Type == ExpenseType.Nuyen)
+				bool blnAdd = true;
+				if (objExpense.Type == ExpenseType.Nuyen && objExpense.Amount == 0)
 				{
-					objAmountItem.Text = string.Format("{0:###,###,##0¥}", objExpense.Amount);
+					blnAdd = chkShowFreeNuyen.Checked;
 				}
-
-				objItem.SubItems.Add(objAmountItem);
-				objItem.SubItems.Add(objReasonItem);
-				objItem.SubItems.Add(objInternalIdItem);
-
-				if (objExpense.Type == ExpenseType.Nuyen)
+				if (objExpense.Type == ExpenseType.Karma && objExpense.Amount == 0)
 				{
-					lstNuyen.Items.Add(objItem);
-					if (objExpense.Undo != null)
-						lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
+					blnAdd = chkShowFreeKarma.Checked;
 				}
-				else
+				if (blnAdd)
 				{
-					lstKarma.Items.Add(objItem);
-					if (objExpense.Undo != null)
-						lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
+					ListViewItem objItem = new ListViewItem();
+					objItem.Text = objExpense.Date.ToShortDateString() + " " + objExpense.Date.ToShortTimeString();
+					ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem();
+					objAmountItem.Text = objExpense.Amount.ToString();
+					ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem();
+					objReasonItem.Text = objExpense.Reason;
+					ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();
+					objInternalIdItem.Text = objExpense.InternalId;
+
+					if (objExpense.Type == ExpenseType.Nuyen)
+					{
+						objAmountItem.Text = string.Format("{0:###,###,##0¥}", objExpense.Amount);
+					}
+
+					objItem.SubItems.Add(objAmountItem);
+					objItem.SubItems.Add(objReasonItem);
+					objItem.SubItems.Add(objInternalIdItem);
+
+					if (objExpense.Type == ExpenseType.Nuyen)
+					{
+						lstNuyen.Items.Add(objItem);
+						if (objExpense.Undo != null)
+							lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
+					}
+					else
+					{
+						lstKarma.Items.Add(objItem);
+						if (objExpense.Undo != null)
+							lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
+					}
 				}
 			}
 			lstKarma.Sort();
@@ -27854,6 +27866,16 @@ namespace Chummer
 				_blnIsDirty = true;
 				UpdateWindowTitle();
 			}
+		}
+
+		private void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
+		{
+			PopulateExpenseList();
+		}
+
+		private void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
+		{
+			PopulateExpenseList();
 		}
 	}
 }

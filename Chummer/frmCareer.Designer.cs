@@ -933,6 +933,7 @@ namespace Chummer
 			this.picMugshot = new System.Windows.Forms.PictureBox();
 			this.tabKarma = new System.Windows.Forms.TabPage();
 			this.splitKarmaNuyen = new System.Windows.Forms.SplitContainer();
+			this.chkShowFreeKarma = new System.Windows.Forms.CheckBox();
 			this.chtKarma = new System.Windows.Forms.DataVisualization.Charting.Chart();
 			this.cmdKarmaEdit = new System.Windows.Forms.Button();
 			this.cmdKarmaGained = new System.Windows.Forms.Button();
@@ -941,6 +942,7 @@ namespace Chummer
 			this.colKarmaAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.cmdKarmaSpent = new System.Windows.Forms.Button();
+			this.chkShowFreeNuyen = new System.Windows.Forms.CheckBox();
 			this.chtNuyen = new System.Windows.Forms.DataVisualization.Charting.Chart();
 			this.cmdNuyenEdit = new System.Windows.Forms.Button();
 			this.lstNuyen = new System.Windows.Forms.ListView();
@@ -1175,12 +1177,12 @@ namespace Chummer
 			this.cmsWeaponLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsWeaponRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsInitiationNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusStrip.SuspendLayout();
 			this.panAttributes.SuspendLayout();
 			this.tabCharacterTabs.SuspendLayout();
@@ -11457,6 +11459,7 @@ namespace Chummer
 			// splitKarmaNuyen.Panel1
 			// 
 			this.splitKarmaNuyen.Panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.splitKarmaNuyen.Panel1.Controls.Add(this.chkShowFreeKarma);
 			this.splitKarmaNuyen.Panel1.Controls.Add(this.chtKarma);
 			this.splitKarmaNuyen.Panel1.Controls.Add(this.cmdKarmaEdit);
 			this.splitKarmaNuyen.Panel1.Controls.Add(this.cmdKarmaGained);
@@ -11467,6 +11470,7 @@ namespace Chummer
 			// splitKarmaNuyen.Panel2
 			// 
 			this.splitKarmaNuyen.Panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
+			this.splitKarmaNuyen.Panel2.Controls.Add(this.chkShowFreeNuyen);
 			this.splitKarmaNuyen.Panel2.Controls.Add(this.chtNuyen);
 			this.splitKarmaNuyen.Panel2.Controls.Add(this.cmdNuyenEdit);
 			this.splitKarmaNuyen.Panel2.Controls.Add(this.lstNuyen);
@@ -11476,6 +11480,18 @@ namespace Chummer
 			this.splitKarmaNuyen.Size = new System.Drawing.Size(832, 602);
 			this.splitKarmaNuyen.SplitterDistance = 412;
 			this.splitKarmaNuyen.TabIndex = 6;
+			// 
+			// chkShowFreeKarma
+			// 
+			this.chkShowFreeKarma.AutoSize = true;
+			this.chkShowFreeKarma.Location = new System.Drawing.Point(291, 7);
+			this.chkShowFreeKarma.Name = "chkShowFreeKarma";
+			this.chkShowFreeKarma.Size = new System.Drawing.Size(112, 17);
+			this.chkShowFreeKarma.TabIndex = 5;
+			this.chkShowFreeKarma.Tag = "Checkbox_ShowFreeEntries";
+			this.chkShowFreeKarma.Text = "Show Free Entries";
+			this.chkShowFreeKarma.UseVisualStyleBackColor = true;
+			this.chkShowFreeKarma.CheckedChanged += new System.EventHandler(this.chkShowFreeKarma_CheckedChanged);
 			// 
 			// chtKarma
 			// 
@@ -11563,6 +11579,18 @@ namespace Chummer
 			this.cmdKarmaSpent.Text = "Karma Spent";
 			this.cmdKarmaSpent.UseVisualStyleBackColor = true;
 			this.cmdKarmaSpent.Click += new System.EventHandler(this.cmdKarmaSpent_Click);
+			// 
+			// chkShowFreeNuyen
+			// 
+			this.chkShowFreeNuyen.AutoSize = true;
+			this.chkShowFreeNuyen.Location = new System.Drawing.Point(291, 7);
+			this.chkShowFreeNuyen.Name = "chkShowFreeNuyen";
+			this.chkShowFreeNuyen.Size = new System.Drawing.Size(112, 17);
+			this.chkShowFreeNuyen.TabIndex = 6;
+			this.chkShowFreeNuyen.Tag = "Checkbox_ShowFreeEntries";
+			this.chkShowFreeNuyen.Text = "Show Free Entries";
+			this.chkShowFreeNuyen.UseVisualStyleBackColor = true;
+			this.chkShowFreeNuyen.CheckedChanged += new System.EventHandler(this.chkShowFreeNuyen_CheckedChanged);
 			// 
 			// chtNuyen
 			// 
@@ -14035,10 +14063,19 @@ namespace Chummer
 			// cmsLimitModifier
 			// 
 			this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tssLimitModifierEdit,
-			this.tssLimitModifierNotes});
+            this.tssLimitModifierEdit,
+            this.tssLimitModifierNotes});
 			this.cmsLimitModifier.Name = "cmsLimitModifier";
-			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 26);
+			this.cmsLimitModifier.Size = new System.Drawing.Size(106, 48);
+			// 
+			// tssLimitModifierEdit
+			// 
+			this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
+			this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
+			this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
+			this.tssLimitModifierEdit.Tag = "Menu_Edit";
+			this.tssLimitModifierEdit.Text = "&Edit";
+			this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
 			// 
 			// tssLimitModifierNotes
 			// 
@@ -14080,15 +14117,6 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Tag = "Menu_Notes";
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
-			// 
-			// tssLimitModifierEdit
-			// 
-			this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
-			this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
-			this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
-			this.tssLimitModifierEdit.Tag = "Menu_Edit";
-			this.tssLimitModifierEdit.Text = "&Edit";
-			this.tssLimitModifierEdit.Click += new System.EventHandler(this.tssLimitModifierEdit_Click);
 			// 
 			// frmCareer
 			// 
@@ -15379,6 +15407,8 @@ namespace Chummer
 		private System.Windows.Forms.TabPage tabSkills;
 		private UI.Skills.SkillsTabUserControl tabSkillsUc;
 		private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
+		private System.Windows.Forms.CheckBox chkShowFreeKarma;
+		private System.Windows.Forms.CheckBox chkShowFreeNuyen;
 	}
 }
 
