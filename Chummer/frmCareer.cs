@@ -1565,8 +1565,10 @@ namespace Chummer
 			SkillPropertyChanged_StopWatch.Restart();
 
 			UpdateWindowTitle();
-			//TODO: Evalulate how expensive this is. Can we get away with just running PopulateExpenseList instead?
-			UpdateCharacterInfo();
+            lblCareerKarma.Text = String.Format("{0:###,###,##0}", _objCharacter.CareerKarma);
+            //UpdateSkillInfo();
+            PopulateExpenseList();
+            PopulateCalendar();
 		}
 		#endregion
 
