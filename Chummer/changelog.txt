@@ -59,6 +59,7 @@ Data Changes:
 -- Lightning Reflexes quality
 - Added a missing MAG attribute to the Drake qualities. Fixes #1034.
 - Added the Portable Chemical Injectors from Chrome Flesh's sidebar on page 176. CGL, if you're going to use tables then please please PLEASE include all your things in them! Fixes #176.
+- Added the missing Off-Road Tires from Rigger 5.0. Fixes #1039.
 
 New Strings:
 - Warning_NoLimitFound
