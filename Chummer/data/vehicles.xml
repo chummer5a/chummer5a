@@ -5310,6 +5310,17 @@
 			<page>152</page>
 		</mod>
 		<mod>
+			<id>f7926ae0-bba6-4de0-964d-f535a8adeed5</id>
+			<name>Off-Road Tires</name>
+			<category>All</category>
+			<rating>50</rating>
+			<slots>0</slots>
+			<avail>4</avail>
+			<cost>Rating * 250</cost>
+			<source>R5</source>
+			<page>152</page>
+		</mod>
+		<mod>
 			<id>bac2fcca-1edd-4814-ba50-31d63f031d4e</id>
 			<name>Racing Tires</name>
 			<category>All</category>
