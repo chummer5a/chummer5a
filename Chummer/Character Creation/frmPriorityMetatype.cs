@@ -1096,7 +1096,7 @@ namespace Chummer
             LoadMetatypes();
             lstMetatypes.SelectedValue = strMetatype;
             PopulateTalents();
-            cboTalents.SelectedIndex = -1;
+            //cboTalents.SelectedIndex = -1;
 
             if (cboTalent.SelectedValue.ToString() == "E")
                 cboTalents.SelectedIndex = 0;
@@ -2159,7 +2159,7 @@ namespace Chummer
             cboTalents.ValueMember = "Value";
             cboTalents.DisplayMember = "Name";
             cboTalents.DataSource = lstTalent;
-            cboTalents.SelectedIndex = -1;
+            //cboTalents.SelectedIndex = -1;
         }
 
         /// <summary>
