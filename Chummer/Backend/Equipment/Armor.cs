@@ -782,28 +782,26 @@ namespace Chummer.Backend.Equipment
 				bool blnHighest = true;
 				int intOverride = 0;
 
-				foreach (Armor a in _objCharacter.Armor)
+				foreach (Armor a in _objCharacter.Armor.Where(a => a.Equipped))
 				{
-					if (a.Equipped)
+					if (a.ArmorValue.Substring(0, 1) != "+")
+						blnUseBase = true;
+					if (Convert.ToInt32(a.ArmorOverrideValue) > 0)
+						intOverride += 1;
+					if (a.Name != _strName)
 					{
-						if (a.ArmorValue.Substring(0, 1) != "+")
-							blnUseBase = true;
-						if (Convert.ToInt32(a.ArmorOverrideValue) > 0)
-							intOverride += 1;
-						if (a.Name != _strName)
+						if (Convert.ToInt32(a.ArmorOverrideValue) > Convert.ToInt32(_strO))
+							blnHighest = false;
+					}
+					if (a.Name == _strName)
+					{
+						//Check for Custom Fitted armour
+						foreach (ArmorMod objMod in a.ArmorMods)
 						{
-							if (Convert.ToInt32(a.ArmorOverrideValue) > Convert.ToInt32(_strO))
-								blnHighest = false;
-						}
-						if (a.Name == _strName)
-						{
-							//Check for Custom Fitted armour
-							foreach (ArmorMod objMod in a.ArmorMods)
+							if (objMod.Name != "Custom Fit (Stack)" || (objMod.Extra.Length <= 0)) continue;
+							foreach (Armor objArmor in _objCharacter.Armor.Where(objArmor => objArmor.Equipped && objMod.Extra == objArmor.Name))
 							{
-								if (objMod.Name == "Custom Fit (Stack)" && (objMod.Extra.Length > 0))
-								{
-									blnCustomFitted = true;
-								}
+								blnCustomFitted = true;
 							}
 						}
 					}

@@ -190,8 +190,8 @@ namespace Chummer
 			// Create the Armor Encumbrance Improvements.
 			if (_objCharacter.ArmorEncumbrance < 0)
 			{
-				_objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
-				_objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+				_objImprovementManager.CreateImprovement("AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "ignoreprecedence", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
+				_objImprovementManager.CreateImprovement("REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance", Improvement.ImprovementType.Attribute, "ignoreprecedence", 0, 1, 0, 0, _objCharacter.ArmorEncumbrance);
 			}
 		}
 

@@ -717,6 +717,16 @@ namespace Chummer
 							intHighest = Convert.ToInt32(strValues[0, 1]);
 					}
 				}
+				if (lstUniqueName.Contains("ignoreprecedence"))
+				{
+					foreach (string[,] strValues in lstUniquePair)
+					{
+						if (strValues[0, 0] == "ignoreprecedence")
+						{
+							intHighest += Convert.ToInt32(strValues[0, 1]);
+						}
+					}
+				}
 				intValue = intHighest;
 			}
 
