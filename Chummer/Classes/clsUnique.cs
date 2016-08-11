@@ -307,6 +307,16 @@ namespace Chummer
 								intHighest = Convert.ToInt32(strValues[0, 1]);
 						}
 					}
+					if (lstUniqueName.Contains("ignoreprecedence"))
+					{
+						foreach (string[,] strValues in lstUniquePair)
+						{
+							if (strValues[0, 0] == "ignoreprecedence")
+							{
+								intHighest += Convert.ToInt32(strValues[0, 1]);
+							}
+						}
+					}
 					intModifier = intHighest;
 				}
 				else if (lstUniqueName.Contains("precedence1"))
@@ -443,6 +453,16 @@ namespace Chummer
 						{
 							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
 								intHighest = Convert.ToInt32(strValues[0, 1]);
+						}
+					}
+					if (lstUniqueName.Contains("ignoreprecedence"))
+					{
+						foreach (string[,] strValues in lstUniquePair)
+						{
+							if (strValues[0, 0] == "ignoreprecedence")
+							{
+								intHighest += Convert.ToInt32(strValues[0, 1]);
+							}
 						}
 					}
 					intModifier = intHighest;
@@ -809,6 +829,17 @@ namespace Chummer
 						{
 							intHighest = Convert.ToInt32(strValues[0, 1]);
 							strModifier = " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+						}
+					}
+				}
+				if (lstUniqueName.Contains("ignoreprecedence"))
+				{
+					foreach (string[,] strValues in lstUniquePair)
+					{
+						if (strValues[0, 0] == "ignoreprecedence")
+						{
+							intHighest += Convert.ToInt32(strValues[0, 1]);
+							strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
 						}
 					}
 				}

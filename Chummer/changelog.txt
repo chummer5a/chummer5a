@@ -36,6 +36,7 @@ Application Changes:
 - Fixed an error that prevented Cyber-weapoons such as spurs from being properly flagged as such. Fixes #382.
 - Added a filter to show/hide free karma and nuyen entries from the expense log list in career mode. Fixes #952.
 - Fixed the implementation of the Custom Fit (Stack) rule to support stacking properly, including the creation of armor encumbrance penalties. May still not work properly, but seems to be per RAW. Partially implements #944.
+- Implemented an ignoreprecedence uniquename for Improvements. If present, this will ignore the standard behavior of precedence0 improvements that would normally ignore other sources. Fixes #944.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
