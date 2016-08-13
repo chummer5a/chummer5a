@@ -39,6 +39,7 @@ Application Changes:
 - Implemented an ignoreprecedence uniquename for Improvements. If present, this will ignore the standard behavior of precedence0 improvements that would normally ignore other sources. Fixes #944.
 - Allowed the 'free item' checkbox to be visible during character creation. 
 - Fixed an uncalculated armor rating label on the condition monitor in career mode. Fixes #1043.
+- Added the "Pilot Exotic Vehicle" skill. TODO: Ensure spelling and page reference.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 

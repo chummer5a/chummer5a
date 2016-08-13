@@ -619,6 +619,20 @@
       <page>131</page>
     </skill>
     <skill>
+      <id>b5f95b50-e630-4162-a6a4-7dd6ab8d0256</id>
+      <name>Pilot Exotic Vehicle</name>
+      <attribute>REA</attribute>
+      <category>Vehicle Active</category>
+      <default>No</default>
+      <exotic>Yes</exotic>
+      <skillgroup />
+      <specs>
+        <spec>Festo Pigeon 2.0</spec>
+      </specs>
+      <source>SR5</source>
+      <page>131</page>
+    </skill>
+    <skill>
       <id>47cb1e8b-c285-4c54-9aaa-75305ad6dd4f</id>
       <name>First Aid</name>
       <attribute>LOG</attribute>
