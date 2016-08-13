@@ -37,6 +37,8 @@ Application Changes:
 - Added a filter to show/hide free karma and nuyen entries from the expense log list in career mode. Fixes #952.
 - Fixed the implementation of the Custom Fit (Stack) rule to support stacking properly, including the creation of armor encumbrance penalties. May still not work properly, but seems to be per RAW. Partially implements #944.
 - Implemented an ignoreprecedence uniquename for Improvements. If present, this will ignore the standard behavior of precedence0 improvements that would normally ignore other sources. Fixes #944.
+- Allowed the 'free item' checkbox to be visible during character creation. 
+- Fixed an uncalculated armor rating label on the condition monitor in career mode. Fixes #1043.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -62,6 +64,8 @@ Data Changes:
 - Added a missing MAG attribute to the Drake qualities. Fixes #1034.
 - Added the Portable Chemical Injectors from Chrome Flesh's sidebar on page 176. CGL, if you're going to use tables then please please PLEASE include all your things in them! Fixes #176.
 - Added the missing Off-Road Tires from Rigger 5.0. Fixes #1039.
+- Fixed incorrect weapon category limitations for the weapon mounts from Rigger 5.0. Fixes #1048.
+- Fixed the Improved Potential powers to properly increase their associated Limits. Fixes #1047.
 
 New Strings:
 - Warning_NoLimitFound

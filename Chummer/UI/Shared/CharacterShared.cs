@@ -174,7 +174,9 @@ namespace Chummer
 		/// </summary>
 		/// <param name="lblArmor"></param>
 		/// <param name="tipTooltip"></param>
-		protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, ImprovementManager _objImprovementManager)
+		/// <param name="_objImprovementManager"></param>
+		/// <param name="lblCMArmor"></param>
+		protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, ImprovementManager _objImprovementManager, Label lblCMArmor = null)
 		{
 			// Armor Ratings.
 			lblArmor.Text = _objCharacter.TotalArmorRating.ToString();
@@ -184,6 +186,11 @@ namespace Chummer
 				strArmorToolTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" +
 								   (_objCharacter.TotalArmorRating - _objCharacter.ArmorRating).ToString() + ")";
 			tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
+			if (lblCMArmor != null)
+			{
+				lblCMArmor.Text = _objCharacter.TotalArmorRating.ToString();
+				tipTooltip.SetToolTip(lblCMArmor, strArmorToolTip);
+			}
 
 			// Remove any Improvements from Armor Encumbrance.
 			_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");

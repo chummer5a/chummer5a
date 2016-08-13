@@ -15134,7 +15134,7 @@ namespace Chummer
 
 	            UpdateSpellDefence();
 				
-                UpdateArmorRating(lblArmor,tipTooltip, _objImprovementManager);
+                UpdateArmorRating(lblArmor, tipTooltip, _objImprovementManager);
 
                 // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
                 //if (_objCharacter.IgnoreRules == true)

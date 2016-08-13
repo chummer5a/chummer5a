@@ -175,10 +175,7 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<limitmodifier>
-					<limit>Social</limit>
-					<value>1</value>
-				</limitmodifier>
+				<sociallimit>1</sociallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>309</page>
@@ -191,10 +188,7 @@
 			<levels>no</levels>
 			<limit>1</limit>
 			<bonus>
-				<limitmodifier>
-					<limit>Mental</limit>
-					<value>1</value>
-				</limitmodifier>
+				<mentallimit>1</mentallimit>
 			</bonus>
 			<source>SR5</source>
 			<page>309</page>
@@ -207,10 +201,7 @@
       <levels>no</levels>
       <limit>1</limit>
       <bonus>
-				<limitmodifier>
-					<limit>Physical</limit>
-					<value>1</value>
-				</limitmodifier>
+				<physicallimit>1</physicallimit>
       </bonus>
       <source>SR5</source>
       <page>309</page>

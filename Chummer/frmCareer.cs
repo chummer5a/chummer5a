@@ -21332,7 +21332,7 @@ namespace Chummer
 				if (intCMPenalty < 0)
 					_objImprovementManager.CreateImprovement("", Improvement.ImprovementSource.ConditionMonitor, "", Improvement.ImprovementType.ConditionMonitor, "", intCMPenalty);
 
-				UpdateArmorRating(lblArmor,tipTooltip, _objImprovementManager);
+				UpdateArmorRating(lblArmor, tipTooltip, _objImprovementManager, lblCMArmor);
 
 				//Update the Spell Defence tab.
 				UpdateSpellDefence();
