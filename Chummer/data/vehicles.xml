@@ -39,12 +39,16 @@
 		<category>Drones: Large</category>
 		<category>Drones: Huge</category>
 	</categories>
-	<modcategories>
-		<category>All</category>
-		<category>Drone Weapon Mount</category>
+  	<modcategories>
+    		<category>All</category>
+    		<category>Protection</category>
+    		<category>Powertrain</category>
+		<category>Weapons</category>
+    		<category>Body</category>
+		<category>Electromagnetic</category>
+		<category>Cosmetic</category>
 		<category>Vehicle Weapon Mount</category>
-		<category>Powertrain</category>
-	</modcategories>
+  	</modcategories>
 	<vehicles>
 		<vehicle>
 			<id>c0d3e7fd-d5fd-48c4-b49d-0c7dea26895d</id>
@@ -108,7 +112,7 @@
 				<gear rating="2" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Gyro-Stabalization</name>
+				<name>Gyro-Stabilization</name>
 			</mods>
 			<avail>0</avail>
 			<cost>4500</cost>
@@ -131,7 +135,7 @@
 				<gear rating="2" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Gyro-Stabalization</name>
+				<name>Gyro-Stabilization</name>
 				<name>Smart Tire</name>
 			</mods>
 			<avail>4</avail>
@@ -175,7 +179,7 @@
 				<gear rating="1" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Gyro-Stabalization</name>
+				<name>Gyro-Stabilization</name>
 			</mods>
 			<avail>0</avail>
 			<cost>6500</cost>
@@ -5399,7 +5403,7 @@
 		</mod>
 		<mod>
 			<id>f89a112e-600a-4278-8731-9b14cf3737c9</id>
-			<name>Gyro-Stabalization</name>
+			<name>Gyro-Stabilization</name>
 			<category>Body</category>
 			<rating>0</rating>
 			<slots>0</slots>
@@ -6003,7 +6007,7 @@
 		<mod>
 			<id>ebedb0c7-64ff-4817-8fb3-6a5fc9b3086f</id>
 			<name>Weapon Mount Type (Light)</name>
-			<category>Vehicle Weapon Mount</category>
+			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>1</slots>
 			<weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponmountcategories>
@@ -6015,7 +6019,7 @@
 		<mod>
 			<id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
 			<name>Weapon Mount Type (Standard)</name>
-			<category>Vehicle Weapon Mount</category>
+			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>2</slots>
 			<weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
@@ -6027,10 +6031,10 @@
 		<mod>
 			<id>4eecb2ee-ad33-4bc2-b8b3-d35e0df40836</id>
 			<name>Weapon Mount Type (Heavy)</name>
-			<category>Vehicle Weapon Mount</category>
+			<category>Weapons</category>
 			<rating>0</rating>
 			<slots>4</slots>
-			<weaponmountcategories>Melee,Machine Pistols,Submachine Guns,Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
+			<weaponmountcategories>Melee,Machine Pistols,Submachine Guns,Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Missile Launchers,Lasers</weaponmountcategories>
 			<avail>10F</avail>
 			<cost>4000</cost>
 			<source>R5</source>
