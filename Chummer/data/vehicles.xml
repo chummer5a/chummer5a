@@ -838,6 +838,326 @@
 			<page>59</page>
 		</vehicle>
 		<vehicle>
+			<id>116f6efe-2bb0-4fd4-80de-c25d6fa721bd</id>
+			<name>BMW M8</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<accel>2</accel>
+			<speed>6</speed>
+			<pilot>1</pilot>
+			<body>12</body>
+			<armor>11</armor>
+			<seats>4</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>10</avail>
+			<cost>76000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
+			<name>Mercury Comet Cruiser</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>1</pilot>
+			<body>14</body>
+			<armor>11</armor>
+			<seats>5</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>21000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
+			<name>Chrysler-Nissan Bobcat</name>
+			<category>Cars</category>
+			<handling>3/3</handling>
+			<accel>2</accel>
+			<speed>3</speed>
+			<pilot>1</pilot>
+			<body>15</body>
+			<armor>10</armor>
+			<seats>8</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>25000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>15e937d5-a1be-401e-a15c-0ff6e73a25d9</id>
+			<name>Dodge Hurricane</name>
+			<category>Cars</category>
+			<handling>4/4</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>15</body>
+			<armor>12</armor>
+			<seats>3</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>37000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>026beaac-5e92-4210-943a-97f5455d98ec</id>
+			<name>Dodge Hurricane Crew Modell</name>
+			<category>Cars</category>
+			<handling>3/3</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>16</body>
+			<armor>12</armor>
+			<seats>6</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>43000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>4d38b501-1b40-4eb2-a4be-4ec0fb099cdf</id>
+			<name>Dodge Hurricane Security Modell</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>16</body>
+			<armor>14</armor>
+			<seats>5</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>67000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
+			<name>Mercedes-Benz Tornado</name>
+			<category>Cars</category>
+			<handling>4/4</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>15</body>
+			<armor>12</armor>
+			<seats>3</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>44400</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
+			<name>Mercedes-Benz Tornado Crew Modell</name>
+			<category>Cars</category>
+			<handling>3/3</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>16</body>
+			<armor>12</armor>
+			<seats>6</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>51600</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
+			<name>Mercedes-Benz Tornado Security Modell</name>
+			<category>Cars</category>
+			<handling>4/3</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>3</pilot>
+			<body>16</body>
+			<armor>14</armor>
+			<seats>5</seats>
+			<sensor>3</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>80400</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>5159292e-897c-40aa-84ad-a1b374d95370</id>
+			<name>BMW X Infinity</name>
+			<category>Cars</category>
+			<handling>5/5</handling>
+			<accel>2</accel>
+			<speed>4</speed>
+			<pilot>2</pilot>
+			<body>14</body>
+			<armor>13</armor>
+			<seats>6</seats>
+			<sensor>4</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>10</avail>
+			<cost>72000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>c90e2ec7-f351-4bb5-a145-bf33c9062ff9</id>
+			<name>Volkswagen MultyCity</name>
+			<category>Cars</category>
+			<handling>3/2</handling>
+			<accel>1</accel>
+			<speed>4</speed>
+			<pilot>1</pilot>
+			<body>12</body>
+			<armor>4</armor>
+			<seats>3</seats>
+			<sensor>1</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>18000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
+			<name>Volkswagen Urban Allrounder</name>
+			<category>Cars</category>
+			<handling>3/3</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>2</pilot>
+			<body>13</body>
+			<armor>6</armor>
+			<seats>5</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>19500</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
+			<name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
+			<category>Cars</category>
+			<handling>5/4</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>2</pilot>
+			<body>18</body>
+			<armor>10</armor>
+			<seats>3</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>44000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>22d97843-c25b-4b83-97f4-9f0db590b77d</id>
+			<name>Mercedes-Benz CityMog / Dodge City CM-X (mit Pritsche)</name>
+			<category>Cars</category>
+			<handling>5/4</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>2</pilot>
+			<body>18</body>
+			<armor>10</armor>
+			<seats>5</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>42000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>8053ea4f-9ad3-4b50-8ca9-cc7e78eb8da4</id>
+			<name>Mercedes-Benz CityMog / Dodge City CM Traveller (mit Pritsche)</name>
+			<category>Cars</category>
+			<handling>5/4</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>18</body>
+			<armor>10</armor>
+			<seats>20</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>56000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
+			<id>5ef26f25-f8cf-4610-856b-91f2152ad17a</id>
+			<name>Mercedes-Benz CityMog / Dodge City CM Elite</name>
+			<category>Cars</category>
+			<handling>5/3</handling>
+			<accel>1</accel>
+			<speed>3</speed>
+			<pilot>3</pilot>
+			<body>18</body>
+			<armor>12</armor>
+			<seats>12</seats>
+			<sensor>4</sensor>
+			<gears>
+				<gear rating="2" maxrating="7">Sensor Array</gear>
+			</gears>
+			<avail>0</avail>
+			<cost>96000</cost>
+			<source>SHB</source>
+			<page>42</page>
+		</vehicle>
+		<vehicle>
 			<id>4b64e3b8-bc1f-4dea-8d53-d90cf35f4315</id>
 			<name>Airstream Traveller Chinook</name>
 			<category>Trucks</category>
