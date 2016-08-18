@@ -1,3 +1,8 @@
+Build 184:
+Application Changes:
+- Fixed a Bug where on charater validation Chummer would warn about free Knowledge Skills, but instead of remaining it warned about spent points.
+
+
 Build 183:
 Application Changes:
 - Fixed the dolphin mentor spirit not giving a bonus on spells of the Health category.
