@@ -130,7 +130,12 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMetatypeMin;
+				int intReturn = _intMetatypeMin;
+				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+				{
+					intReturn = objImprovement.Minimum;
+				}
+				return intReturn;
 			}
 			set
 			{
@@ -148,7 +153,12 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMetatypeMax;
+				int intReturn = _intMetatypeMax;
+				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+				{
+					intReturn = objImprovement.Maximum;
+				}
+				return intReturn;
 			}
 			set
 			{
@@ -660,7 +670,7 @@ namespace Chummer
 		{
 			get
 			{
-				int intReturn = _intMetatypeMin + MinimumModifiers;
+				int intReturn = MetatypeMinimum + MinimumModifiers;
 				if (_objCharacter.IsCritter || _intMetatypeMax == 0)
 				{
 					if (intReturn < 0)
@@ -711,7 +721,7 @@ namespace Chummer
 		{
 			get
 			{
-				int intReturn = _intMetatypeMax + MaximumModifiers;
+				int intReturn = MetatypeMaximum + MaximumModifiers;
 
 				if (intReturn < 0)
 					intReturn = 0;

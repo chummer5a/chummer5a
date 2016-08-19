@@ -166,8 +166,8 @@ namespace Chummer
 			SkillGroupLevel, //group
 			SkillBase,  //base points in skill
 			SkillGroupBase, //group
-			SkillKnowledgeForced, //A skill gained from a knowsoft
-
+			SkillKnowledgeForced, //A skill gained from a knowsoft 
+			ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
 			SpecialSkills,
 			ReflexRecorderOptimization,
 	        
@@ -1065,6 +1065,32 @@ namespace Chummer
 						"enableattribute", 0, 0);
 				}
 			}
+			// Add an Attribute Replacement.
+			if (bonusNode.LocalName == ("replaceattributes"))
+			{
+				XmlNodeList objXmlAttributes = bonusNode.SelectNodes("replaceattribute");
+				if (objXmlAttributes != null)
+					foreach (XmlNode objXmlAttribute in objXmlAttributes)
+					{
+						Log.Info("replaceattribute");
+						Log.Info("replaceattribute = " + bonusNode.OuterXml.ToString());
+						// Record the improvement.
+						int intMin = 0;
+						int intMax = 0;
+
+						// Extract the modifiers.
+						if (objXmlAttribute.InnerXml.Contains("min"))
+							intMin = Convert.ToInt32(objXmlAttribute["min"].InnerText);
+						if (objXmlAttribute.InnerXml.Contains("max"))
+							intMax = Convert.ToInt32(objXmlAttribute["max"].InnerText);
+						string strAttribute = objXmlAttribute["name"].InnerText;
+
+						Log.Info("Calling CreateImprovement");
+						CreateImprovement(strAttribute, objImprovementSource, strSourceName, Improvement.ImprovementType.ReplaceAttribute,
+							strUnique,
+							0, 1, intMin, intMax, 0, 0);
+					}
+			}
 
 			// Enable a special tab.
 			if (bonusNode.LocalName == ("enabletab"))
@@ -1422,7 +1448,7 @@ namespace Chummer
 
 					string strAttribute = frmPickAttribute.SelectedAttribute;
 
-					if (objXmlAttribute["affectbase"] != null)
+if (objXmlAttribute["affectbase"] != null)
 						strAttribute += "Base";
 
 					Log.Info("Calling CreateImprovement");
