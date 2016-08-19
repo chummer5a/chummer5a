@@ -20290,7 +20290,7 @@ namespace Chummer
 			}
 
 			// Check if the character has gone over on Knowledge Skills
-			if (blnValid && _objCharacter.SkillsSection.KnowledgeSkillPointsUsed > 0)
+			if (blnValid && _objCharacter.SkillsSection.KnowledgeSkillPointsRemain > 0)
 			{
 				if (
 					MessageBox.Show(
