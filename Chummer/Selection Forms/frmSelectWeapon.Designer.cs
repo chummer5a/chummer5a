@@ -383,7 +383,7 @@
 			this.chkFreeItem.Tag = "Checkbox_Free";
 			this.chkFreeItem.Text = "Free!";
 			this.chkFreeItem.UseVisualStyleBackColor = true;
-			this.chkFreeItem.Visible = false;
+			this.chkFreeItem.Visible = true;
 			this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
 			// 
 			// nudMarkup
