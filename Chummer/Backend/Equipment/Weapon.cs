@@ -2572,7 +2572,7 @@ namespace Chummer.Backend.Equipment
 			XPathExpression xprRange = nav.Compile(strRange);
 
 			double dblReturn = Convert.ToDouble(nav.Evaluate(xprRange).ToString(), GlobalOptions.Instance.CultureInfo) * _dblRangeMultiplier;
-			int intReturn = Convert.ToInt32(Math.Floor(dblReturn));
+			int intReturn = Convert.ToInt32(Math.Ceiling(dblReturn));
 
 			return intReturn;
 		}

@@ -224,32 +224,32 @@ namespace Chummer.Backend.Equipment
 				XmlDocument objXmlGearDocument = XmlManager.Instance.Load("gear.xml");
 				foreach (XmlNode objXmlArmorGear in objXmlArmorNode.SelectNodes("gears/usegear"))
 				{
-					intRating = 0;
-					string strForceValue = "";
-					if (objXmlArmorGear.Attributes["rating"] != null)
-						intRating = Convert.ToInt32(objXmlArmorGear.Attributes["rating"].InnerText);
-					if (objXmlArmorGear.Attributes["select"] != null)
-						strForceValue = objXmlArmorGear.Attributes["select"].InnerText;
+						intRating = 0;
+						string strForceValue = "";
+						if (objXmlArmorGear.Attributes["rating"] != null)
+							intRating = Convert.ToInt32(objXmlArmorGear.Attributes["rating"].InnerText);
+						if (objXmlArmorGear.Attributes["select"] != null)
+							strForceValue = objXmlArmorGear.Attributes["select"].InnerText;
 
-					XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
-					Gear objGear = new Gear(_objCharacter);
+						XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
+						Gear objGear = new Gear(_objCharacter);
 
-					TreeNode objGearNode = new TreeNode();
-					List<Weapon> lstWeapons = new List<Weapon>();
-					List<TreeNode> lstWeaponNodes = new List<TreeNode>();
+						TreeNode objGearNode = new TreeNode();
+						List<Weapon> lstWeapons = new List<Weapon>();
+						List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-					objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
-					objGear.Capacity = "[0]";
-					objGear.ArmorCapacity = "[0]";
-					objGear.Cost = "0";
-					objGear.MaxRating = objGear.Rating;
-					objGear.MinRating = objGear.Rating;
-					objGear.IncludedInParent = true;
-					_lstGear.Add(objGear);
+						objGear.Create(objXmlGear, _objCharacter, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost);
+						objGear.Capacity = "[0]";
+						objGear.ArmorCapacity = "[0]";
+						objGear.Cost = "0";
+						objGear.MaxRating = objGear.Rating;
+						objGear.MinRating = objGear.Rating;
+						objGear.IncludedInParent = true;
+						_lstGear.Add(objGear);
 
-					objNode.Nodes.Add(objGearNode);
-					objNode.Expand();
-				}
+						objNode.Nodes.Add(objGearNode);
+						objNode.Expand();
+					}
 			}
 
 			objNode.Text = DisplayName;
@@ -319,6 +319,7 @@ namespace Chummer.Backend.Equipment
 		/// Load the CharacterAttribute from the XmlNode.
 		/// </summary>
 		/// <param name="objNode">XmlNode to load.</param>
+		/// <param name="blnCopy">Check if we are copying an existing item.</param>
 		public void Load(XmlNode objNode, bool blnCopy = false)
 		{
 			_guiID = Guid.Parse(objNode["guid"].InnerText);
@@ -348,36 +349,36 @@ namespace Chummer.Backend.Equipment
 			if (objNode.InnerXml.Contains("armormods"))
 			{
 				XmlNodeList nodMods = objNode.SelectNodes("armormods/armormod");
-				foreach (XmlNode nodMod in nodMods)
-				{
-					ArmorMod objMod = new ArmorMod(_objCharacter);
-					objMod.Load(nodMod, blnCopy);
-					objMod.Parent = this;
-					_lstArmorMods.Add(objMod);
-				}
+					foreach (XmlNode nodMod in nodMods)
+					{
+						ArmorMod objMod = new ArmorMod(_objCharacter);
+						objMod.Load(nodMod, blnCopy);
+						objMod.Parent = this;
+						_lstArmorMods.Add(objMod);
+					}
 			}
 			if (objNode.InnerXml.Contains("gears"))
 			{
 				XmlNodeList nodGears = objNode.SelectNodes("gears/gear");
-				foreach (XmlNode nodGear in nodGears)
-				{
-					switch (nodGear["category"].InnerText)
+					foreach (XmlNode nodGear in nodGears)
 					{
-						case "Commlinks":
-						case "Commlink Accessories":
-						case "Cyberdecks":
-						case "Rigger Command Consoles":
-							Commlink objCommlink = new Commlink(_objCharacter);
-							objCommlink.Load(nodGear, blnCopy);
-							_lstGear.Add(objCommlink);
-							break;
-						default:
-							Gear objGear = new Gear(_objCharacter);
-							objGear.Load(nodGear, blnCopy);
-							_lstGear.Add(objGear);
-							break;
+						switch (nodGear["category"].InnerText)
+						{
+							case "Commlinks":
+							case "Commlink Accessories":
+							case "Cyberdecks":
+							case "Rigger Command Consoles":
+								Commlink objCommlink = new Commlink(_objCharacter);
+								objCommlink.Load(nodGear, blnCopy);
+								_lstGear.Add(objCommlink);
+								break;
+							default:
+								Gear objGear = new Gear(_objCharacter);
+								objGear.Load(nodGear, blnCopy);
+								_lstGear.Add(objGear);
+								break;
+						}
 					}
-				}
 			}
 
 			if (GlobalOptions.Instance.Language != "en-us")
@@ -1144,7 +1145,7 @@ namespace Chummer.Backend.Equipment
 						XPathExpression xprCapacity = nav.Compile(strCapacity);
 
 						strCapacity = nav.Evaluate(xprCapacity).ToString();
-						strCapacity = Math.Floor(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
+						strCapacity = Math.Ceiling(Convert.ToDecimal(strCapacity) + Convert.ToDecimal(strReturn)).ToString();
 						strReturn = strCapacity;
 					}
 				}
@@ -1175,22 +1176,25 @@ namespace Chummer.Backend.Equipment
 					// Run through its Armor Mods and deduct the Capacity costs.
 					foreach (ArmorMod objMod in _lstArmorMods)
 					{
-						if (objMod.Name != "YNT Softweave Armor")
+						bool blnSoftweave = false;
+						if (objMod.Bonus != null)
 						{
-							string strCapacity = objMod.CalculatedCapacity;
-							if (strCapacity.Contains("/["))
-							{
-								// If this is a multiple-capacity item, use only the second half.
-								int intPos = strCapacity.IndexOf("/[");
-								strCapacity = strCapacity.Substring(intPos + 1);
-							}
-
-							if (strCapacity.Contains("["))
-								strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-							if (strCapacity == "*")
-								strCapacity = "0";
-							intCapacity -= Convert.ToInt32(strCapacity);
+							blnSoftweave = objMod.Bonus.SelectSingleNode("softweave") != null;
 						}
+						if (blnSoftweave) continue;
+						string strCapacity = objMod.CalculatedCapacity;
+						if (strCapacity.Contains("/["))
+						{
+							// If this is a multiple-capacity item, use only the second half.
+							int intPos = strCapacity.IndexOf("/[");
+							strCapacity = strCapacity.Substring(intPos + 1);
+						}
+
+						if (strCapacity.Contains("["))
+							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+						if (strCapacity == "*")
+							strCapacity = "0";
+						intCapacity -= Convert.ToInt32(strCapacity);
 					}
 
 					// Run through its Gear and deduct the Armor Capacity costs.

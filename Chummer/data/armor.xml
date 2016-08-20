@@ -2929,6 +2929,9 @@
 			<name>YNT Softweave Armor</name>
 			<category>General</category>
 			<armor>0</armor>
+			<bonus>
+				<softweave />
+			</bonus>
 			<maxrating>1</maxrating>
 			<armorcapacity>[-Capacity * 0.5]</armorcapacity>
 			<avail>+4</avail>

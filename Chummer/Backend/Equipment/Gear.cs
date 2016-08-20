@@ -1787,7 +1787,7 @@ namespace Chummer.Backend.Equipment
 
 					// This has resulted in a non-whole number, so round it (minimum of 1).
 					decimal decNumber = Convert.ToDecimal(nav.Evaluate(xprCapacity), GlobalOptions.Instance.CultureInfo);
-					int intNumber = Convert.ToInt32(Math.Floor(decNumber));
+					int intNumber = Convert.ToInt32(Math.Ceiling(decNumber));
 					if (intNumber < 1)
 						intNumber = 1;
 					strReturn = intNumber.ToString();
