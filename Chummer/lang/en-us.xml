@@ -6683,6 +6683,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Options_OpenPDFsAsUnix</key>
 			<text>Use Unix-Style Parameters when opening PDFs</text>
 		</string>
+		<string>
+			<key>Button_ToggleSourcebooks</key>
+			<text>Toggle all Sourcebooks On/Off</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->
 		<string>

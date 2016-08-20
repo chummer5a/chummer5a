@@ -99,6 +99,7 @@
 			this.chkKnucks = new System.Windows.Forms.CheckBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabGeneral = new System.Windows.Forms.TabPage();
+			this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
 			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
@@ -1015,6 +1016,7 @@
 			// tabGeneral
 			// 
 			this.tabGeneral.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGeneral.Controls.Add(this.cmdEnableSourcebooks);
 			this.tabGeneral.Controls.Add(this.tabControl2);
 			this.tabGeneral.Controls.Add(this.treSourcebook);
 			this.tabGeneral.Controls.Add(this.label1);
@@ -1025,6 +1027,18 @@
 			this.tabGeneral.TabIndex = 0;
 			this.tabGeneral.Tag = "Tab_Options_General";
 			this.tabGeneral.Text = "General";
+			// 
+			// cmdEnableSourcebooks
+			// 
+			this.cmdEnableSourcebooks.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdEnableSourcebooks.Location = new System.Drawing.Point(11, 528);
+			this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
+			this.cmdEnableSourcebooks.Size = new System.Drawing.Size(226, 23);
+			this.cmdEnableSourcebooks.TabIndex = 6;
+			this.cmdEnableSourcebooks.Tag = "String_ToggleSourcebooks";
+			this.cmdEnableSourcebooks.Text = "OK";
+			this.cmdEnableSourcebooks.UseVisualStyleBackColor = true;
+			this.cmdEnableSourcebooks.Click += new System.EventHandler(this.cmdEnableSourcebooks_Click);
 			// 
 			// tabControl2
 			// 
@@ -1226,7 +1240,6 @@
 			this.nudPDFOffset.Name = "nudPDFOffset";
 			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
 			this.nudPDFOffset.TabIndex = 16;
-			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.OptionsChanged);
 			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
 			// 
 			// lblPDFOffset
@@ -1719,7 +1732,7 @@
 			this.treSourcebook.ShowLines = false;
 			this.treSourcebook.ShowPlusMinus = false;
 			this.treSourcebook.ShowRootLines = false;
-			this.treSourcebook.Size = new System.Drawing.Size(226, 534);
+			this.treSourcebook.Size = new System.Drawing.Size(226, 498);
 			this.treSourcebook.TabIndex = 1;
 			this.treSourcebook.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treSourcebook_BeforeCheck);
 			this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
@@ -3445,5 +3458,6 @@
 		private System.Windows.Forms.CheckBox chkOmaeEnabled;
 		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
 		private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
+		private System.Windows.Forms.Button cmdEnableSourcebooks;
 	}
 }

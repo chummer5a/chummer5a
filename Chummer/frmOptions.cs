@@ -36,6 +36,7 @@ namespace Chummer
 		private bool _skipRefresh;
 		private bool blnDirty = false;
 		private bool blnLoading = true;
+		private bool blnSourcebookToggle = true;
 		#region Form Events
 		public frmOptions()
         {
@@ -205,7 +206,7 @@ namespace Chummer
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
 
-            CloseCreateForm();
+            //CloseCreateForm();
             DialogResult = DialogResult.OK;
         }
 
@@ -402,8 +403,8 @@ namespace Chummer
 
         private void treSourcebook_BeforeCheck(object sender, TreeViewCancelEventArgs e)
         {
-            if (e.Node.Tag.ToString() == "SR5")
-                e.Cancel = true;
+            //if (e.Node.Tag.ToString() == "SR5")
+                //e. = true;
         }
 
         private void cmdPDFTest_Click(object sender, EventArgs e)
@@ -1234,6 +1235,18 @@ namespace Chummer
 
 				if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
 			}
+		}
+
+		private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
+		{
+			foreach (TreeNode objNode in treSourcebook.Nodes)
+			{
+				if (objNode.Tag.ToString() != "SR5")
+				{
+					objNode.Checked = blnSourcebookToggle;
+				}
+			}
+			blnSourcebookToggle = !blnSourcebookToggle;
 		}
 	}
 }
