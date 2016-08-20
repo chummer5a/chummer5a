@@ -23413,8 +23413,11 @@ namespace Chummer
 					{
 						if (objCharacterGear.Name == objNewGear.Name && objCharacterGear.Category == objNewGear.Category && objCharacterGear.Rating == objNewGear.Rating && objCharacterGear.Extra == objNewGear.Extra)
 						{
-							blnMatchFound = true;
-							objStackWith = objCharacterGear;
+							if (objCharacterGear.Children.All(objStackWith.Children.Contains))
+							{
+								blnMatchFound = true;
+								objStackWith = objCharacterGear;
+							}
 
 							break;
 						}
