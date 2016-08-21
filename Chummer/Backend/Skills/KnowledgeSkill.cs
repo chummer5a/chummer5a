@@ -358,10 +358,10 @@ namespace Chummer.Skills
 		public void Load(XmlNode node)
 		{
 			node.TryGetField("name", out _name);
-			Type = node["type"].InnerText;
 			node.TryGetField(GlobalOptions.Instance.Language, out _translated);
 
 			LoadSuggestedSpecializations(_name);
+			Type = node["type"].InnerText;
 		}
 
         public override bool IsKnowledgeSkill
