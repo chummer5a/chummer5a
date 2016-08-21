@@ -11265,6 +11265,11 @@
 			<name>Cyber-snob</name>
 			<karma>-12</karma>
 			<category>Negative</category>
+			<required>
+				<oneof>
+					<ess grade="Betaware">1</ess>
+				</oneof>
+			</required>
 			<bonus />
 			<source>CF</source>
 			<page>57</page>
