@@ -39,7 +39,7 @@ namespace Chummer
 			if (GlobalOptions.Instance.UseLogging)
 			{
 				//TODO: Add listner to UseLogging to be able to start it mid run
-				string strFile = Path.Combine(Environment.CurrentDirectory, "chummerlog.txt");
+				string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
 				logWriter = new StreamWriter(strFile);
 				stringBuilder = new StringBuilder();
 				logEnabled = true;

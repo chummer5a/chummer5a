@@ -1,3 +1,25 @@
+Build 184:
+Application Changes:
+- New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.
+- Fixed an issue where Chummer warned about free Knowledge Skills still being available instead of Active Skills.
+- Fixed incorrect rounding for Weapon Ranges.
+- Fixed incorrect rounding for Armor capacity. 
+- Fixed incorrect rounding for Armor Mod capacity. 
+- Fixed incorrect rounding for Gear capacity. 
+- Properly allowed the 'free item' checkbox to be visible even in character creation. Fixes #1059.
+- Added an option to toggle all sourcebooks on and off in the Options menu. Fixes #971.
+- Attempting to add gear with the 'Stack' checkbox selected in career mode will only cause items to stack if they have the same child items by default. This prevents loaded spare clips from duplicating, for example. Fixes #1015.
+- Fixed an incorrect label for skill improvements in the Karma/Nuyen Expense History. Fixes #1046.
+- Fixed an issue that caused knowledge skills to revert their type to Interest. Fixes #1056.
+
+Data Changes:
+- Fixed the Infected qualities to work according to the rules. Characters with previous versions of the quality should reapply their improvements, characters that used the terrible metavariant idea will not load properly and should be rebuilt from scratch. If you've been affected by this, please get in contact with me and I'll fix your character for you. Mostly fixes #689.
+- Removed the Infected metavariants.
+- Added a missing bonus node to the YNT Softweave armour mod.
+
+New Strings:
+- Button_ToggleSourcebooks
+
 Build 183:
 Application Changes:
 - Fixed the dolphin mentor spirit not giving a bonus on spells of the Health category.
@@ -30,6 +52,15 @@ Application Changes:
 - Fixed an issue that prevented Aspected Magicians taking the Conjuring skill group from actually receiving the skills.
 - Fixed an issue with undoing expense entries for skills. Fixes #988, fixes #1028.
 - Fixed an issue that prevented page offsets from being saved properly. Existing options files may need to be reconfigured. Fixes #1027.
+- Fixed an issue with application locations causing some problems with accessing data files. Fixes #597.
+- Improved the tooltip indications for when a skill is affected by cyberlimb stats. Fixes #1009.
+- Fixed a parsing error when verifying data files that caused a crash. Fixes #935.
+- Fixed an error that prevented Cyber-weapoons such as spurs from being properly flagged as such. Fixes #382.
+- Added a filter to show/hide free karma and nuyen entries from the expense log list in career mode. Fixes #952.
+- Fixed the implementation of the Custom Fit (Stack) rule to support stacking properly, including the creation of armor encumbrance penalties. May still not work properly, but seems to be per RAW. Partially implements #944.
+- Implemented an ignoreprecedence uniquename for Improvements. If present, this will ignore the standard behavior of precedence0 improvements that would normally ignore other sources. Fixes #944.
+- Fixed an uncalculated armor rating label on the condition monitor in career mode. Fixes #1043.
+- Added the "Pilot Exotic Vehicle" skill. TODO: Ensure spelling and page reference.
 
 Data Changes: 
 - Fixed an incorrect page reference for the Metatype Reduction biowares. 
@@ -52,6 +83,12 @@ Data Changes:
 -- Move-by-Wire System bioware
 -- Improved Reflexes 1,2,3 power
 -- Lightning Reflexes quality
+- Added a missing MAG attribute to the Drake qualities. Fixes #1034.
+- Added the Portable Chemical Injectors from Chrome Flesh's sidebar on page 176. CGL, if you're going to use tables then please please PLEASE include all your things in them! Fixes #176.
+- Added the missing Off-Road Tires from Rigger 5.0. Fixes #1039.
+- Fixed incorrect weapon category limitations for the weapon mounts from Rigger 5.0. Fixes #1048.
+- Fixed the Improved Potential powers to properly increase their associated Limits. Fixes #1047.
+- Fixed an incorect source setting for the Periscope gear item. Fixes #1050.
 
 New Strings:
 - Warning_NoLimitFound
@@ -66,6 +103,7 @@ New Strings:
 - Skill_SortGroupName
 - Skill_SortGroupRating
 - Skill_SortCategory
+- Checkbox_ShowFreeEntries
 
 Changed Strings:
 - Checkbox_Options_UseTotalValueForFreeContacts. Fixes #981.

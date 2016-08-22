@@ -158,7 +158,7 @@ namespace Chummer
 				objPet = null;
 
 				// Set the relative path.
-				Uri uriApplication = new Uri(@Environment.CurrentDirectory);
+				Uri uriApplication = new Uri(@Application.StartupPath);
 				Uri uriFile = new Uri(@_objContact.FileName);
 				Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
 				_objContact.RelativeFileName = "../" + uriRelative.ToString();

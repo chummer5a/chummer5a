@@ -181,7 +181,7 @@ namespace Chummer
 		{
 			_character = character;
 			// Create the settings directory if it does not exist.
-			string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+			string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
 			if (!Directory.Exists(settingsDirectoryPath))
 				Directory.CreateDirectory(settingsDirectoryPath);
 
@@ -207,7 +207,7 @@ namespace Chummer
 		/// </summary>
 		public void Save()
 		{
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", _strFileName);
+			string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
 			FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
 			objWriter.Formatting = Formatting.Indented;
@@ -548,7 +548,7 @@ namespace Chummer
 		public bool Load(string strFileName)
 		{
 			_strFileName = strFileName;
-			string strFilePath = Path.Combine(Environment.CurrentDirectory, "settings", _strFileName);
+			string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
 			XmlDocument objXmlDocument = new XmlDocument();
 			try
 			{

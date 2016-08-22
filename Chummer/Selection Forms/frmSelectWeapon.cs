@@ -46,7 +46,6 @@ namespace Chummer
         {
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
-			chkFreeItem.Visible = blnCareer;
 			lblMarkupLabel.Visible = blnCareer;
 			nudMarkup.Visible = blnCareer;
 			lblMarkupPercentLabel.Visible = blnCareer;

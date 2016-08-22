@@ -736,106 +736,39 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				if (_strArmorCapacity.Contains("/["))
+				XmlDocument objXmlDocument = new XmlDocument();
+				XPathNavigator nav = objXmlDocument.CreateNavigator();
+				if (_strArmorCapacity == "")
+					return "0";
+				string strCapacity = _strArmorCapacity;
+				strCapacity = strCapacity.Replace("Capacity", this._objParent.ArmorCapacity);
+				strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
+				if (strCapacity.StartsWith("FixedValues"))
 				{
-					XmlDocument objXmlDocument = new XmlDocument();
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-					int intPos = _strArmorCapacity.IndexOf("/[");
-					string strFirstHalf = _strArmorCapacity.Substring(0, intPos);
-					string strSecondHalf = _strArmorCapacity.Substring(intPos + 1, _strArmorCapacity.Length - intPos - 1);
-					bool blnSquareBrackets = false;
-					string strCapacity = "";
-
-					try
-					{
-						blnSquareBrackets = strFirstHalf.Contains('[');
-						strCapacity = strFirstHalf;
-						if (blnSquareBrackets)
-							strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					}
-					catch
-					{
-					}
-					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
-
-					string strReturn = "";
-					try
-					{
-						if (_strArmorCapacity == "[*]")
-							strReturn = "*";
-						else
-						{
-							if (_strArmorCapacity.StartsWith("FixedValues"))
-							{
-								string[] strValues = _strArmorCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-								strReturn = strValues[Convert.ToInt32(_intRating) - 1];
-							}
-							else
-								strReturn = nav.Evaluate(xprCapacity).ToString();
-						}
-						if (blnSquareBrackets)
-							strReturn = "[" + strCapacity + "]";
-					}
-					catch
-					{
-						strReturn = "0";
-					}
-					strReturn += "/" + strSecondHalf;
-					return strReturn;
+					string[] strValues = strCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
+					strCapacity = strValues[Convert.ToInt32(_intRating) - 1];
 				}
-				else if (_strArmorCapacity.Contains("Rating"))
+				bool blnSquareBrackets = strCapacity.Contains('[');
+				if (blnSquareBrackets)
+					strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+				XPathExpression xprCapacity = nav.Compile(strCapacity);
+
+				decimal decCapacity = Convert.ToDecimal(nav.Evaluate(xprCapacity));
+				string strReturn = "";
+
+				//Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number. 
+				if (decCapacity > 0)
 				{
-					// If the Capaicty is determined by the Rating, evaluate the expression.
-					XmlDocument objXmlDocument = new XmlDocument();
-					XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-					// XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-					bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-					string strCapacity = _strArmorCapacity;
-					if (blnSquareBrackets)
-						strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-					XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Rating", _intRating.ToString()));
-
-					string strReturn = nav.Evaluate(xprCapacity).ToString();
-					if (blnSquareBrackets)
-						strReturn = "[" + strReturn + "]";
-
-					return strReturn;
+					strReturn = Math.Ceiling(decCapacity).ToString();
 				}
-                else if (_strArmorCapacity.Contains("Capacity"))
-                {
-                    // If the Capaicty is determined by the Capacity of the parent, evaluate the expression. Generally used for providing a percentage of armour capacity as bonus, ie YNT Softweave.
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    XPathNavigator nav = objXmlDocument.CreateNavigator();
-
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    bool blnSquareBrackets = _strArmorCapacity.Contains('[');
-                    string strCapacity = _strArmorCapacity;
-                    if (blnSquareBrackets)
-                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    XPathExpression xprCapacity = nav.Compile(strCapacity.Replace("Capacity", this._objParent.ArmorCapacity ));
-
-                    string strReturn = nav.Evaluate(xprCapacity).ToString();
-                    strReturn = Math.Floor(Convert.ToDecimal(strReturn)).ToString();
-                    if (blnSquareBrackets)
-                        strReturn = "[" + strReturn + "]";
-
-                    return strReturn;
-                }
-                else
+				else
 				{
-					// Just a straight Capacity, so return the value.
-					if (_strArmorCapacity == "")
-						return "0";
-					else if (_strArmorCapacity.StartsWith("FixedValues"))
-					{
-						string[] strValues = _strArmorCapacity.Replace("FixedValues(", string.Empty).Replace(")", string.Empty).Split(',');
-						return strValues[Convert.ToInt32(_intRating) - 1];
-					}
-					else
-						return _strArmorCapacity;
+					strReturn = Math.Floor(decCapacity).ToString();
 				}
+				if (blnSquareBrackets)
+					strReturn = "[" + strReturn + "]";
+
+				return strReturn;
 			}
 		}
 

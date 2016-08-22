@@ -443,7 +443,7 @@ namespace Chummer.Skills
 
 			//If data file contains {4} this crashes but...
 			string upgradetext =
-				$"{LanguageManager.Instance.GetString("String_ExpenseSkillGroup")} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
+				$"{LanguageManager.Instance.GetString("String_ExpenseActiveSkill")} {DisplayName} {LearnedRating} -> {(LearnedRating + 1)}";
 
 			ExpenseLogEntry entry = new	ExpenseLogEntry();
 			entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);

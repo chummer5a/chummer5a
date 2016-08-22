@@ -15134,7 +15134,7 @@ namespace Chummer
 
 	            UpdateSpellDefence();
 				
-                UpdateArmorRating(lblArmor,tipTooltip, _objImprovementManager);
+                UpdateArmorRating(lblArmor, tipTooltip, _objImprovementManager);
 
                 // Nuyen can be affected by Qualities, so adjust the total amount available to the character.
                 //if (_objCharacter.IgnoreRules == true)
@@ -20290,7 +20290,7 @@ namespace Chummer
 			}
 
 			// Check if the character has gone over on Knowledge Skills
-			if (blnValid && _objCharacter.SkillsSection.KnowledgeSkillPointsUsed > 0)
+			if (blnValid && _objCharacter.SkillsSection.KnowledgeSkillPointsRemain > 0)
 			{
 				if (
 					MessageBox.Show(
@@ -20316,8 +20316,8 @@ namespace Chummer
                 {
                     // Create a pre-Career Mode backup of the character.
                     // Make sure the backup directory exists.
-                    if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "saves", "backup")))
-                        Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, "saves", "backup"));
+                    if (!Directory.Exists(Path.Combine(Application.StartupPath, "saves", "backup")))
+                        Directory.CreateDirectory(Path.Combine(Application.StartupPath, "saves", "backup"));
 
                     string strFileName = _objCharacter.FileName;
                     string[] strParts = strFileName.Split(Path.DirectorySeparatorChar);
@@ -20332,7 +20332,7 @@ namespace Chummer
                         strNewName += " (" + LanguageManager.Instance.GetString("Title_CreateMode") + ").chum5";
                     }
 
-                    strNewName = Path.Combine(Environment.CurrentDirectory, "saves", "backup", strNewName);
+                    strNewName = Path.Combine(Application.StartupPath, "saves", "backup", strNewName);
 
                     _objCharacter.FileName = strNewName;
                     _objCharacter.Save();

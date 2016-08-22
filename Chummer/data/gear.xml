@@ -64,15 +64,16 @@
 		<category>Sensor Functions</category>
 		<category>Sensor Housings</category>
 		<category>Services</category>
-		<category>Software</category>
 		<category>Skillsofts</category>
+		<category>Software</category>
+		<category>Software Tweaks</category>
 		<category>Survival Gear</category>
 		<category>Tools</category>
 		<category>Tools of the Trade</category>
 		<category>Toxins</category>
 		<category>Vision Devices</category>
 		<category>Vision Enhancements</category>
-	</categories>
+</categories>
 	<gears>
 		<!-- Region Ammo -->
 			<gear>
@@ -3155,6 +3156,34 @@
 			<page>442</page>
 		</gear>
 		<!-- End Region-->
+		<!-- Region Software Tweaks -->
+		<gear>
+			<id>40c2e56e-ec66-45a6-b1aa-65372d939f61</id>
+			<name>Personality</name>
+			<category>Software Tweaks</category>
+			<rating>0</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>4</avail>
+			<cost>100</cost>
+			<source>R5</source>
+			<page>127</page>
+		</gear>
+		<gear>
+			<id>adb441f5-ce95-410b-82c9-b5f08b1c68a3</id>
+			<name>Linguistics</name>
+			<category>Software Tweaks</category>
+			<rating>0</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<avail>4</avail>
+			<cost>50</cost>
+			<source>R5</source>
+			<page>128</page>
+		</gear>
+		<!-- End Region -->
 		<!-- Region PI-Tac-->
 		<gear>
 			<id>b77b4cf8-8bdc-40bf-acca-f2afcca4965c</id>
@@ -3724,7 +3753,7 @@
 			<capacity>[1]</capacity>
 			<avail>3</avail>
 			<cost>50</cost>
-			<source>SR4</source>
+			<source>SR5</source>
 			<page>444</page>
 		</gear>
 		<!-- End Region -->
@@ -5106,6 +5135,36 @@
 			<cost>500</cost>
 			<source>SR5</source>
 			<page>451</page>
+		</gear>
+		<gear>
+			<id>afd6741b-1bc6-4b60-b8f8-b95ef66e529c</id>
+			<name>Portable Chemical Injector, Harness</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>2500</cost>
+			<source>CF</source>
+			<page>176</page>
+		</gear>
+		<gear>
+			<id>712d3e22-1fa1-450f-a0a3-172f77f4e8a7</id>
+			<name>Portable Chemical Injector, Thigh</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>750</cost>
+			<source>CF</source>
+			<page>176</page>
+		</gear>
+		<gear>
+			<id>fae30f66-6948-43d3-9fd4-12bd01d4e808</id>
+			<name>Portable Chemical Injector, Wrist</name>
+			<category>Biotech</category>
+			<rating>0</rating>
+			<avail>2</avail>
+			<cost>500</cost>
+			<source>CF</source>
+			<page>176</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Docwagon Contracts -->

@@ -761,8 +761,31 @@ namespace Chummer
 						}
 						else if (objXmlRequired.Name == "ess")
 						{
+							if (objXmlRequired.Attributes["grade"] != null)
+							{
+								decimal decGrade = 0;
+								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+								{
+									if (objCyberware.Grade.Name == objXmlRequired.Attributes["grade"].InnerText)
+									{
+										decGrade += objCyberware.CalculatedESS;
+									}
+								}
+								if (objXmlRequired.InnerText.StartsWith("-"))
+								{
+									// Essence must be less than the value.
+									if (decGrade < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.Instance.CultureInfo))
+										blnOneOfMet = true;
+								}
+								else
+								{
+									// Essence must be equal to or greater than the value.
+									if (decGrade >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.CultureInfo))
+										blnOneOfMet = true;
+								}
+							}
 							// Check Essence requirement.
-							if (objXmlRequired.InnerText.StartsWith("-"))
+							else if (objXmlRequired.InnerText.StartsWith("-"))
 							{
 								// Essence must be less than the value.
 								if (_objCharacter.Essence < Convert.ToDecimal(objXmlRequired.InnerText.Replace("-", string.Empty), GlobalOptions.Instance.CultureInfo))
@@ -774,7 +797,14 @@ namespace Chummer
 								if (_objCharacter.Essence >= Convert.ToDecimal(objXmlRequired.InnerText, GlobalOptions.Instance.CultureInfo))
 									blnOneOfMet = true;
 							}
-
+							if (!blnOneOfMet)
+							{
+								strThisRequirement += "\n\t" + string.Format("{0} {1}", objXmlRequired.InnerText, LanguageManager.Instance.GetString("String_AttributeESSLong"));
+								if (objXmlRequired.Attributes["grade"] != null)
+								{
+									strThisRequirement += string.Format(" ({0})", objXmlRequired.Attributes["grade"].InnerText);
+								}
+							}
 						}
 						else if (objXmlRequired.Name == "skill")
 						{

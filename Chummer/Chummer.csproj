@@ -25,6 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
+	<TransformOnBuild>True</TransformOnBuild>
     <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
@@ -37,6 +38,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
+	<TransformOnBuild>True</TransformOnBuild>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -48,6 +50,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+	<TransformOnBuild>True</TransformOnBuild>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -174,6 +177,11 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Properties\Contributors.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Contributors.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1522,6 +1530,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
+    <Content Include="Properties\Contributors.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Contributors.cs</LastGenOutput>
+    </Content>
     <Content Include="data\armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -1740,6 +1752,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="settings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

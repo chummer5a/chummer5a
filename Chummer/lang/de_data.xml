@@ -13675,10 +13675,17 @@
 					<spec translate="Geister des Feuers">Spirits of Fire</spec>
 					<spec translate="Geister des Menschen">Spirits of Man</spec>
 					<spec translate="Geister des Wassers">Spirits of Water</spec>
+<<<<<<< HEAD
 					<spec translate="Beschützergeist">Guardian Spirit</spec>
 					<spec translate="Ratgebergeist">Guidance Spirit</spec>
 					<spec translate="Pflanzengeist">Plant Spirit</spec>
 					<spec translate="Helfergeist">Task Spirit</spec>
+=======
+					<spec translate="Guardian Spirit">Guardian Spirit</spec>
+					<spec translate="Guidance Spirit">Guidance Spirit</spec>
+					<spec translate="Plant Spirit">Plant Spirit</spec>
+					<spec translate="Task Spirit">Task Spirit</spec>
+>>>>>>> refs/remotes/chummer5a/master
 				</specs>
 			</skill>
 			<skill>
@@ -13693,10 +13700,17 @@
 					<spec translate="Geister des Feuers">Spirits of Fire</spec>
 					<spec translate="Geister des Menschen">Spirits of Man</spec>
 					<spec translate="Geister des Wassers">Spirits of Water</spec>
+<<<<<<< HEAD
 					<spec translate="Beschützergeist">Guardian Spirit</spec>
 					<spec translate="Ratgebergeist">Guidance Spirit</spec>
 					<spec translate="Pflanzengeist">Plant Spirit</spec>
 					<spec translate="Helfergeist">Task Spirit</spec>
+=======
+					<spec translate="Guardian Spirit">Guardian Spirit</spec>
+					<spec translate="Guidance Spirit">Guidance Spirit</spec>
+					<spec translate="Plant Spirit">Plant Spirit</spec>
+					<spec translate="Task Spirit">Task Spirit</spec>
+>>>>>>> refs/remotes/chummer5a/master
 				</specs>
 			</skill>
 			<skill>

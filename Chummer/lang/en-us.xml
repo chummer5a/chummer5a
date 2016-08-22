@@ -4399,6 +4399,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>Button_EditExpense</key>
 			<text>Edit Expense</text>
 		</string>
+		<string>
+			<key>Checkbox_ShowFreeEntries</key>
+			<text>Show Free Entries</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Calendar Tab -->
 		<string>
@@ -6678,6 +6682,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Checkbox_Options_OpenPDFsAsUnix</key>
 			<text>Use Unix-Style Parameters when opening PDFs</text>
+		</string>
+		<string>
+			<key>Button_ToggleSourcebooks</key>
+			<text>Toggle all Sourcebooks On/Off</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->

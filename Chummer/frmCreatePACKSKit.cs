@@ -64,7 +64,7 @@ namespace Chummer
 
 			// See if a Kit with this name already exists for the Custom category. This is done without the XmlManager since we need to check each file individually.
 			XmlDocument objXmlDocument = new XmlDocument();
-			string strCustomPath = Path.Combine(Environment.CurrentDirectory, "data");
+			string strCustomPath = Path.Combine(Application.StartupPath, "data");
 			foreach (string strFile in Directory.GetFiles(strCustomPath, "custom*_packs.xml"))
 			{
 				objXmlDocument.Load(strFile);

@@ -35,7 +35,6 @@ namespace Chummer
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			_objCharacter = objCharacter;
 			_objGear = new Gear(objCharacter);
-			chkFreeItem.Visible = blnCareer;
 			MoveControls();
 		}
 

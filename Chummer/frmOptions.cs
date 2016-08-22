@@ -26,6 +26,7 @@ using Octokit;
 using System.Collections.Specialized;
 using System.Net;
 ﻿using System.Runtime.Remoting.Channels;
+ using Application = System.Windows.Forms.Application;
 
 namespace Chummer
 {
@@ -35,6 +36,7 @@ namespace Chummer
 		private bool _skipRefresh;
 		private bool blnDirty = false;
 		private bool blnLoading = true;
+		private bool blnSourcebookToggle = true;
 		#region Form Events
 		public frmOptions()
         {
@@ -204,7 +206,7 @@ namespace Chummer
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
 
-            CloseCreateForm();
+            //CloseCreateForm();
             DialogResult = DialogResult.OK;
         }
 
@@ -265,7 +267,7 @@ namespace Chummer
 
             XmlManager.Instance.Verify(cboLanguage.SelectedValue.ToString(), lstBooks);
 
-            string strFilePath = Path.Combine(Environment.CurrentDirectory, "lang", "results_" + cboLanguage.SelectedValue + ".xml");
+            string strFilePath = Path.Combine(Application.StartupPath, "lang", "results_" + cboLanguage.SelectedValue + ".xml");
             MessageBox.Show("Results were written to " + strFilePath, "Validation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -401,8 +403,8 @@ namespace Chummer
 
         private void treSourcebook_BeforeCheck(object sender, TreeViewCancelEventArgs e)
         {
-            if (e.Node.Tag.ToString() == "SR5")
-                e.Cancel = true;
+            //if (e.Node.Tag.ToString() == "SR5")
+                //e. = true;
         }
 
         private void cmdPDFTest_Click(object sender, EventArgs e)
@@ -945,7 +947,7 @@ namespace Chummer
         private void PopulateSettingsList()
         {
             List<ListItem> lstSettings = new List<ListItem>();
-            string settingsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "settings");
+            string settingsDirectoryPath = Path.Combine(Application.StartupPath, "settings");
             string[] settingsFilePaths = Directory.GetFiles(settingsDirectoryPath, "*.xml");
 
             foreach (string filePath in settingsFilePaths)
@@ -983,7 +985,7 @@ namespace Chummer
         private void PopulateLanguageList()
         {
             List<ListItem> lstLanguages = new List<ListItem>();
-            string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "lang");
+            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
 
             foreach (string filePath in languageFilePaths)
@@ -1060,7 +1062,7 @@ namespace Chummer
             var items = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            string sheetsDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets");
+            string sheetsDirectoryPath = Path.Combine(Application.StartupPath, "sheets");
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
             // (hidden because they are partial templates that cannot be used on their own).
@@ -1087,7 +1089,7 @@ namespace Chummer
             {
                 XmlDocument objLanguageDocument = LanguageManager.Instance.XmlDoc;
                 string strLanguage = objLanguageDocument.SelectSingleNode("/chummer/name").InnerText;
-                string languageDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", GlobalOptions.Instance.Language);
+                string languageDirectoryPath = Path.Combine(Application.StartupPath, "sheets", GlobalOptions.Instance.Language);
 
                 // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
                 // (hidden because they are partial templates that cannot be used on their own).
@@ -1111,7 +1113,7 @@ namespace Chummer
             var items = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
-            string omaeDirectoryPath = Path.Combine(Environment.CurrentDirectory, "sheets", "omae");
+            string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
             string menuMainOmae = LanguageManager.Instance.GetString("Menu_Main_Omae");
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
@@ -1233,6 +1235,18 @@ namespace Chummer
 
 				if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
 			}
+		}
+
+		private void cmdEnableSourcebooks_Click(object sender, EventArgs e)
+		{
+			foreach (TreeNode objNode in treSourcebook.Nodes)
+			{
+				if (objNode.Tag.ToString() != "SR5")
+				{
+					objNode.Checked = blnSourcebookToggle;
+				}
+			}
+			blnSourcebookToggle = !blnSourcebookToggle;
 		}
 	}
 }

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+ using System.Text;
  using System.Threading;
  using System.Windows.Forms;
 using System.Xml;
@@ -129,7 +130,12 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMetatypeMin;
+				int intReturn = _intMetatypeMin;
+				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+				{
+					intReturn = objImprovement.Minimum;
+				}
+				return intReturn;
 			}
 			set
 			{
@@ -147,7 +153,12 @@ namespace Chummer
 		{
 			get
 			{
-				return _intMetatypeMax;
+				int intReturn = _intMetatypeMax;
+				foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ReplaceAttribute).Where(objImprovement => objImprovement.ImprovedName == Abbrev))
+				{
+					intReturn = objImprovement.Maximum;
+				}
+				return intReturn;
 			}
 			set
 			{
@@ -306,6 +317,16 @@ namespace Chummer
 								intHighest = Convert.ToInt32(strValues[0, 1]);
 						}
 					}
+					if (lstUniqueName.Contains("ignoreprecedence"))
+					{
+						foreach (string[,] strValues in lstUniquePair)
+						{
+							if (strValues[0, 0] == "ignoreprecedence")
+							{
+								intHighest += Convert.ToInt32(strValues[0, 1]);
+							}
+						}
+					}
 					intModifier = intHighest;
 				}
 				else if (lstUniqueName.Contains("precedence1"))
@@ -442,6 +463,16 @@ namespace Chummer
 						{
 							if (Convert.ToInt32(strValues[0, 1]) > intHighest)
 								intHighest = Convert.ToInt32(strValues[0, 1]);
+						}
+					}
+					if (lstUniqueName.Contains("ignoreprecedence"))
+					{
+						foreach (string[,] strValues in lstUniquePair)
+						{
+							if (strValues[0, 0] == "ignoreprecedence")
+							{
+								intHighest += Convert.ToInt32(strValues[0, 1]);
+							}
 						}
 					}
 					intModifier = intHighest;
@@ -639,7 +670,7 @@ namespace Chummer
 		{
 			get
 			{
-				int intReturn = _intMetatypeMin + MinimumModifiers;
+				int intReturn = MetatypeMinimum + MinimumModifiers;
 				if (_objCharacter.IsCritter || _intMetatypeMax == 0)
 				{
 					if (intReturn < 0)
@@ -690,7 +721,7 @@ namespace Chummer
 		{
 			get
 			{
-				int intReturn = _intMetatypeMax + MaximumModifiers;
+				int intReturn = MetatypeMaximum + MaximumModifiers;
 
 				if (intReturn < 0)
 					intReturn = 0;
@@ -811,6 +842,17 @@ namespace Chummer
 						}
 					}
 				}
+				if (lstUniqueName.Contains("ignoreprecedence"))
+				{
+					foreach (string[,] strValues in lstUniquePair)
+					{
+						if (strValues[0, 0] == "ignoreprecedence")
+						{
+							intHighest += Convert.ToInt32(strValues[0, 1]);
+							strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
+						}
+					}
+				}
 			}
 			else if (lstUniqueName.Contains("precedence1"))
 			{
@@ -891,20 +933,32 @@ namespace Chummer
 				}
 			}
 
-            //// If this is AGI or STR, factor in any Cyberlimbs.
-            string strCyberlimb = "";
-            if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
-            {
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+			//// If this is AGI or STR, factor in any Cyberlimbs.
+			StringBuilder strCyberlimb = new StringBuilder();
+			if ((_strAbbrev == "AGI" || _strAbbrev == "STR") && !_objCharacter.Options.DontUseCyberlimbCalculation)
+			{
+				LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
+				foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                 {
-                    if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "")
+                    if (objCyberware.Category == "Cyberlimb")
                     {
-                        LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
-                        strCyberlimb = LanguageManager.Instance.GetString("String_CyberlimbAttributeModifier");
+	                    if (_strAbbrev == "AGI")
+						{
+							strCyberlimb.Append("\n");
+							strCyberlimb.Append(objCyberware.DisplayName + " (");
+							strCyberlimb.Append(objCyberware.TotalAgility.ToString());
+							strCyberlimb.Append(")");
+						}
+	                    else
+	                    {
+							strCyberlimb.Append("\n");
+							strCyberlimb.Append(objCyberware.DisplayName + " (");
+							strCyberlimb.Append(objCyberware.TotalStrength.ToString());
+							strCyberlimb.Append(")");
+						}
                     }
                 }
-                if (strCyberlimb != "")
-                    strModifier += " " + strCyberlimb;
+                    strModifier += strCyberlimb;
             }
 
 			return strReturn + strModifier;

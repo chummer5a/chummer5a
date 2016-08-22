@@ -111,8 +111,8 @@ namespace Chummer
 			//If launched by file assiocation, the cwd is file location. 
 			//Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
 
-			if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, "data"))
-			    && Directory.Exists(Path.Combine(Environment.CurrentDirectory, "lang")))
+			if (Directory.Exists(Path.Combine(Application.StartupPath, "data"))
+			    && Directory.Exists(Path.Combine(Application.StartupPath, "lang")))
 			{
 				//both normally used data dirs present (add file loading abstraction to the list)
 				//so do nothing
