@@ -6036,6 +6036,10 @@ Do you want to continue?</text>
 			<text>Limbs for Standard Characters:</text>
 		</string>
 		<string>
+			<key>String_LimbCount4</key>
+			<text>4 (2 arms, 2 legs)</text>
+		</string>
+		<string>
 			<key>String_LimbCount6</key>
 			<text>6 (2 arms, 2 legs, torso, skull)</text>
 		</string>

@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-	<TransformOnBuild>True</TransformOnBuild>
+    <TransformOnBuild>True</TransformOnBuild>
     <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
@@ -38,7 +38,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-	<TransformOnBuild>True</TransformOnBuild>
+    <TransformOnBuild>True</TransformOnBuild>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -50,7 +50,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-	<TransformOnBuild>True</TransformOnBuild>
+    <TransformOnBuild>True</TransformOnBuild>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -1530,6 +1530,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
+    <Content Include="data\options.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Properties\Contributors.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Contributors.cs</LastGenOutput>
@@ -1540,6 +1543,7 @@
     </Content>
     <Content Include="data\bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="data\books.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
