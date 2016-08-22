@@ -152,24 +152,11 @@ namespace Chummer
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
 	        _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
 
-            switch (cboLimbCount.SelectedValue.ToString())
-            {
-                case "torso":
-                    _characterOptions.LimbCount = 5;
-                    _characterOptions.ExcludeLimbSlot = "skull";
-                    break;
-                case "skull":
-                    _characterOptions.LimbCount = 5;
-                    _characterOptions.ExcludeLimbSlot = "torso";
-                    break;
-                default:
-                    _characterOptions.LimbCount = 6;
-                    _characterOptions.ExcludeLimbSlot = "";
-                    break;
-            }
+			_characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
+			_characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
 
-            // Karma options.
-            _characterOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
+			// Karma options.
+			_characterOptions.KarmaAttribute = Convert.ToInt32(nudKarmaAttribute.Value);
             _characterOptions.KarmaQuality = Convert.ToInt32(nudKarmaQuality.Value);
             _characterOptions.KarmaSpecialization = Convert.ToInt32(nudKarmaSpecialization.Value);
             _characterOptions.KarmaNewKnowledgeSkill = Convert.ToInt32(nudKarmaNewKnowledgeSkill.Value);
@@ -590,11 +577,9 @@ namespace Chummer
 
 	    private void SetDefaultValueForLimbCount()
 	    {
-            if (_characterOptions.LimbCount == 6)
-                cboLimbCount.SelectedValue = "all";
-            else
-                cboLimbCount.SelectedValue = _characterOptions.ExcludeLimbSlot == "skull" ? "torso" : "skull";
-        }
+		    string strDefaultValue = _characterOptions.LimbCount+"/"+_characterOptions.ExcludeLimbSlot;
+                cboLimbCount.SelectedValue = strDefaultValue;
+	    }
 
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
@@ -910,21 +895,24 @@ namespace Chummer
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
 
-            ListItem objLimbCount6 = new ListItem();
-            objLimbCount6.Value = "all";
-            objLimbCount6.Name = LanguageManager.Instance.GetString("String_LimbCount6");
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("options.xml");
 
-            ListItem objLimbCount5Torso = new ListItem();
-            objLimbCount5Torso.Value = "torso";
-            objLimbCount5Torso.Name = LanguageManager.Instance.GetString("String_LimbCount5Torso");
+			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/options/limbcounts/limb");
 
-            ListItem objLimbCount5Skull = new ListItem();
-            objLimbCount5Skull.Value = "skull";
-            objLimbCount5Skull.Name = LanguageManager.Instance.GetString("String_LimbCount5Skull");
-
-            lstLimbCount.Add(objLimbCount6);
-            lstLimbCount.Add(objLimbCount5Torso);
-            lstLimbCount.Add(objLimbCount5Skull);
+	        foreach (XmlNode objXmlNode in objXmlNodeList)
+	        {
+				ListItem objLimbCount = new ListItem();
+		        string strExclude = "";
+		        if (objXmlNode["exclude"] != null)
+		        {
+			        strExclude = objXmlNode["exclude"].InnerText;
+		        }
+		        objLimbCount.Value = string.Format("{0}/{1}", objXmlNode["limbcount"].InnerText,
+			        objXmlNode["exclude"].InnerText);
+				//TODO: Pull these strings back into the standard data files. No real reason to be handling it this way.
+		        objLimbCount.Name = LanguageManager.Instance.GetString(objXmlNode["name"].InnerText);
+				lstLimbCount.Add(objLimbCount);
+	        }
 
             cboLimbCount.ValueMember = "Value";
             cboLimbCount.DisplayMember = "Name";
