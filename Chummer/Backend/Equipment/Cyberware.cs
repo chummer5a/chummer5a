@@ -133,12 +133,13 @@ namespace Chummer.Backend.Equipment
 				else
 				{
 					_intMaxRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
-				}
+				} 
 			}
 			catch
 			{
 				_intMaxRating = 0;
 			}
+
 			try
 			{
 				_intMinRating = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
@@ -1951,7 +1952,7 @@ namespace Chummer.Backend.Equipment
                 {
                     CommonFunctions objFunctions = new CommonFunctions();
                     Vehicle objParentVehicle = objFunctions.FindVehicle(_objParent.InternalId, _objCharacter.Vehicles);
-                    return Math.Min(intAttribute + intBonus, objParentVehicle.TotalDeviceRating);
+                    return Math.Min(intAttribute + intBonus, objParentVehicle.TotalBody*2);
                 }
                 else
                 {
@@ -2016,7 +2017,7 @@ namespace Chummer.Backend.Equipment
                 {
                     CommonFunctions objFunctions = new CommonFunctions();
                     Vehicle objParentVehicle = objFunctions.FindVehicle(_objParent.InternalId, _objCharacter.Vehicles);
-                    return Math.Min(intAttribute + intBonus, objParentVehicle.TotalDeviceRating);
+                    return Math.Min(intAttribute + intBonus, objParentVehicle.Pilot*2);
                 }
                 else
                 {

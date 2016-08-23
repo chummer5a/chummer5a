@@ -1206,7 +1206,7 @@
 			<name>Customized Strength</name>
 			<category>Cyberlimb Enhancement</category>
 			<rating>MaximumSTR</rating>
-			<minrating>4</minrating>
+			<minrating>MinimumSTR</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
 			<avail>+(Rating - 3)</avail>
@@ -1220,7 +1220,7 @@
 			<name>Customized Agility</name>
 			<category>Cyberlimb Enhancement</category>
 			<rating>MaximumAGI</rating>
-			<minrating>4</minrating>
+			<minrating>MinimumAGI</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
 			<avail>+(Rating - 3)</avail>

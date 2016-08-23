@@ -10156,6 +10156,20 @@ namespace Chummer
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
             objCyberware.VehicleMounted = true;
+			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents.
+	        if (objCyberware.Category == "Cyberlimb Enhancement")
+	        {
+		        if (objCyberware.Name == "Customized Agility")
+		        {
+					objCyberware.MinRating = objVehicle.Pilot + 1;
+			        objCyberware.MaxRating = objVehicle.Pilot*2;
+		        }
+				else if (objCyberware.Name == "Customized Strength")
+				{
+					objCyberware.MinRating = objVehicle.TotalBody + 1;
+					objCyberware.MaxRating = objVehicle.TotalBody*2;
+				}
+	        }
 
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();

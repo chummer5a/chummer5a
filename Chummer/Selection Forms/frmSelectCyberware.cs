@@ -290,7 +290,8 @@ namespace Chummer
 			    {
                     if (_objVehicle != null)
                     {
-                        nudRating.Maximum = _objVehicle.Pilot;
+                        nudRating.Maximum = _objVehicle.TotalBody*2;
+	                    nudRating.Minimum = _objVehicle.TotalBody;
                     }
                     else
                     {
@@ -301,7 +302,7 @@ namespace Chummer
 			    {
                     if (_objVehicle != null)
                     {
-                        nudRating.Maximum = _objVehicle.TotalDeviceRating;
+                        nudRating.Maximum = _objVehicle.Pilot*2;
                     }
                     else
                     {
@@ -313,9 +314,27 @@ namespace Chummer
 			        nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
 			    }
 			    if (objXmlCyberware["minrating"] != null)
-					nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
-				else
-					nudRating.Minimum = 1;
+				{
+					switch (objXmlCyberware["minrating"].InnerText)
+					{
+						case "MinimumAGI":
+							if (_objVehicle != null)
+							{
+								nudRating.Minimum = _objVehicle.Pilot+1;
+							}
+							break;
+						case "MinimumSTR":
+							if (_objVehicle != null)
+							{
+								nudRating.Minimum = _objVehicle.TotalBody+1;
+							}
+							break;
+						default:
+							nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
+							break;
+					}
+				}
+				nudRating.Minimum = 1;
 			}
 			else
 			{
