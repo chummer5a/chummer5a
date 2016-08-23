@@ -10131,6 +10131,7 @@ namespace Chummer
             frmPickCyberware.ShowOnlySubsystems = true;
             frmPickCyberware.Subsystems = objMod.Subsystems;
             frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
+            frmPickCyberware.ParentVehicle = objVehicle;
             frmPickCyberware.ShowDialog(this);
 
             if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -10154,6 +10155,7 @@ namespace Chummer
                 objCyberware.Cost = "0";
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+            objCyberware.VehicleMounted = true;
 
             treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();

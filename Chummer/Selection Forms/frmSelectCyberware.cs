@@ -33,6 +33,7 @@ namespace Chummer
 		private Grade _objSelectedGrade;
 		private int _intSelectedRating = 0;
 		private readonly Character _objCharacter;
+        private Vehicle _objVehicle;
 		private int _intSelectedESSDiscount = 0;
 
         private double _dblCostMultiplier = 1.0;
@@ -287,12 +288,26 @@ namespace Chummer
 				nudRating.Enabled = true;
 			    if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
 			    {
-                    nudRating.Maximum = _objCharacter.STR.TotalMaximum;
-                } else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
+                    if (_objVehicle != null)
+                    {
+                        nudRating.Maximum = _objVehicle.Pilot;
+                    }
+                    else
+                    {
+                        nudRating.Maximum = _objCharacter.STR.TotalMaximum;
+                    }
+                }
+                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
 			    {
-			        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
-
-			    }
+                    if (_objVehicle != null)
+                    {
+                        nudRating.Maximum = _objVehicle.TotalDeviceRating;
+                    }
+                    else
+                    {
+                        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
+                    }
+                }
 			    else
 			    {
 			        nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
@@ -755,6 +770,21 @@ namespace Chummer
             set
             {
                 _blnShowOnlyLimbs = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public Vehicle ParentVehicle
+        {
+            set
+            {
+                _objVehicle = value;
+            }
+            get
+            {
+                return _objVehicle;
             }
         }
         #endregion
