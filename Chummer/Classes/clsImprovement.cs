@@ -3553,18 +3553,43 @@ if (objXmlAttribute["affectbase"] != null)
 
 						bool blnLevels = false;
 						if (objXmlPower["levels"] != null)
-							blnLevels = (objXmlPower["levels"].InnerText == "yes");
+							blnLevels = (objXmlPower["levels"].InnerText != "no");
 						objPower.LevelsEnabled = blnLevels;
 						objPower.Name = strPowerNameLimit;
-						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
-						objPower.Source = objXmlPower["source"].InnerText;
-						objPower.Page = objXmlPower["page"].InnerText;
 						if (strSelection != string.Empty)
 							objPower.Extra = strSelection;
 						if (objXmlPower["doublecost"] != null)
 							objPower.DoubleCost = false;
+						objPower.PointsPerLevel = Convert.ToDecimal(objXmlPower["points"].InnerText, GlobalOptions.Instance.CultureInfo);
+						objPower.Source = objXmlPower["source"].InnerText;
+						objPower.Page = objXmlPower["page"].InnerText;
 
-						if (blnFree)
+						if (objPower.LevelsEnabled)
+						{
+							if (objPower.Name == "Improved Ability (skill)")
+							{
+									foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+									{
+										if (objPower.Extra == objSkill.Name ||
+										    (objSkill.IsExoticSkill &&
+										     objPower.Extra == (objSkill.DisplayName + " (" + (objSkill as ExoticSkill).Specific + ")")))
+										{
+											int intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating/2);
+											if (intImprovedAbilityMaximum == 0)
+											{
+												intImprovedAbilityMaximum = 1;
+											}
+											objPower.MaxLevels = intImprovedAbilityMaximum;
+										}
+									}
+							}
+							else if(objXmlPower["levels"].InnerText == "yes")
+							{
+								objPower.MaxLevels = Convert.ToInt32(objXmlPower["levels"].InnerText);
+							}
+						}
+
+						if (blnFree && objPower.MaxLevels == 0)
 						{
 							objPower.Free = true;
 						}
