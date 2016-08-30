@@ -63,8 +63,12 @@
 			this.lblCyberwareNotes = new System.Windows.Forms.Label();
 			this.lblCyberwareNotesLabel = new System.Windows.Forms.Label();
 			this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
+			this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+			this.lblMarkupLabel = new System.Windows.Forms.Label();
+			this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cboCategory
@@ -334,7 +338,7 @@
 			// lblESSDiscountPercentLabel
 			// 
 			this.lblESSDiscountPercentLabel.AutoSize = true;
-			this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(522, 83);
+			this.lblESSDiscountPercentLabel.Location = new System.Drawing.Point(520, 80);
 			this.lblESSDiscountPercentLabel.Name = "lblESSDiscountPercentLabel";
 			this.lblESSDiscountPercentLabel.Size = new System.Drawing.Size(15, 13);
 			this.lblESSDiscountPercentLabel.TabIndex = 8;
@@ -414,6 +418,43 @@
 			this.chkBlackMarketDiscount.Visible = false;
 			this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
 			// 
+			// nudMarkup
+			// 
+			this.nudMarkup.Location = new System.Drawing.Point(483, 104);
+			this.nudMarkup.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.nudMarkup.Minimum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            -2147483648});
+			this.nudMarkup.Name = "nudMarkup";
+			this.nudMarkup.Size = new System.Drawing.Size(37, 20);
+			this.nudMarkup.TabIndex = 41;
+			this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+			// 
+			// lblMarkupLabel
+			// 
+			this.lblMarkupLabel.AutoSize = true;
+			this.lblMarkupLabel.Location = new System.Drawing.Point(432, 104);
+			this.lblMarkupLabel.Name = "lblMarkupLabel";
+			this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
+			this.lblMarkupLabel.TabIndex = 40;
+			this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
+			this.lblMarkupLabel.Text = "Markup:";
+			// 
+			// lblMarkupPercentLabel
+			// 
+			this.lblMarkupPercentLabel.AutoSize = true;
+			this.lblMarkupPercentLabel.Location = new System.Drawing.Point(520, 104);
+			this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
+			this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
+			this.lblMarkupPercentLabel.TabIndex = 42;
+			this.lblMarkupPercentLabel.Text = "%";
+			// 
 			// frmSelectCyberware
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -421,6 +462,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cmdCancel;
 			this.ClientSize = new System.Drawing.Size(549, 417);
+			this.Controls.Add(this.nudMarkup);
+			this.Controls.Add(this.lblMarkupLabel);
+			this.Controls.Add(this.lblMarkupPercentLabel);
 			this.Controls.Add(this.chkBlackMarketDiscount);
 			this.Controls.Add(this.lblCyberwareNotes);
 			this.Controls.Add(this.lblCyberwareNotesLabel);
@@ -465,6 +509,7 @@
 			this.Load += new System.EventHandler(this.frmSelectCyberware_Load);
 			((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -506,5 +551,8 @@
 		private System.Windows.Forms.Label lblCyberwareNotes;
 		private System.Windows.Forms.Label lblCyberwareNotesLabel;
 		private System.Windows.Forms.CheckBox chkBlackMarketDiscount;
+		private System.Windows.Forms.NumericUpDown nudMarkup;
+		private System.Windows.Forms.Label lblMarkupLabel;
+		private System.Windows.Forms.Label lblMarkupPercentLabel;
 	}
 }

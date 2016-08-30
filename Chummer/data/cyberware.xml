@@ -1206,11 +1206,11 @@
 			<name>Customized Strength</name>
 			<category>Cyberlimb Enhancement</category>
 			<rating>MaximumSTR</rating>
-			<minrating>4</minrating>
+			<minrating>MinimumSTR</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+(Rating - 3)</avail>
-			<cost>(Rating - 3) * 5000</cost>
+			<avail>+Rating - MinRating</avail>
+			<cost>(Rating - MinRating) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
 			<page>456</page>
@@ -1220,11 +1220,11 @@
 			<name>Customized Agility</name>
 			<category>Cyberlimb Enhancement</category>
 			<rating>MaximumAGI</rating>
-			<minrating>4</minrating>
+			<minrating>MinimumAGI</minrating>
 			<ess>0</ess>
 			<capacity>[0]</capacity>
-			<avail>+(Rating - 3)</avail>
-			<cost>(Rating - 3) * 5000</cost>
+			<avail>+Rating - MinRating</avail>
+			<cost>(Rating - MinRating) * 5000</cost>
 			<bonus />
 			<source>SR5</source>
 			<page>456</page>

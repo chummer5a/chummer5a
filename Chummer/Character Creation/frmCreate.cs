@@ -10131,6 +10131,7 @@ namespace Chummer
             frmPickCyberware.ShowOnlySubsystems = true;
             frmPickCyberware.Subsystems = objMod.Subsystems;
             frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
+            frmPickCyberware.ParentVehicle = objVehicle;
             frmPickCyberware.ShowDialog(this);
 
             if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -10154,8 +10155,24 @@ namespace Chummer
                 objCyberware.Cost = "0";
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+            objCyberware.VehicleMounted = true;
+			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents.
+			if (objCyberware.Category == "Cyberlimb Enhancement")
+			{
+				switch (objCyberware.Name)
+				{
+					case "Customized Agility":
+						objCyberware.MinRating = objVehicle.Pilot;
+						objCyberware.MaxRating = objVehicle.Pilot * 2;
+						break;
+					case "Customized Strength":
+						objCyberware.MinRating = objVehicle.TotalBody;
+						objCyberware.MaxRating = objVehicle.TotalBody * 2;
+						break;
+				}
+			}
 
-            treVehicles.SelectedNode.Nodes.Add(objNode);
+			treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
             objMod.Cyberware.Add(objCyberware);
 
@@ -17205,7 +17222,7 @@ namespace Chummer
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
 
-            List<Weapon> objWeapons = new List<Weapon>();
+			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes);
