@@ -14628,6 +14628,14 @@ namespace Chummer
 			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
+			// Apply a markup if applicable.
+			if (frmPickCyberware.Markup != 0 && !frmPickCyberware.FreeCost)
+			{
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickCyberware.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				intCost = Convert.ToInt32(dblCost);
+			}
+
 			// Check the item's Cost and make sure the character can afford it.
 			if (!frmPickCyberware.FreeCost)
 			{
@@ -14656,15 +14664,16 @@ namespace Chummer
 			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents until after creation and expects parents to be other cyberware.
 			if (objCyberware.Category == "Cyberlimb Enhancement")
 			{
-				if (objCyberware.Name == "Customized Agility")
+				switch (objCyberware.Name)
 				{
-					objCyberware.MinRating = objVehicle.Pilot + 1;
-					objCyberware.MaxRating = objVehicle.Pilot * 2;
-				}
-				else if (objCyberware.Name == "Customized Strength")
-				{
-					objCyberware.MinRating = objVehicle.TotalBody + 1;
-					objCyberware.MaxRating = objVehicle.TotalBody * 2;
+					case "Customized Agility":
+						objCyberware.MinRating = objVehicle.Pilot;
+						objCyberware.MaxRating = objVehicle.Pilot * 2;
+						break;
+					case "Customized Strength":
+						objCyberware.MinRating = objVehicle.TotalBody;
+						objCyberware.MaxRating = objVehicle.TotalBody * 2;
+						break;
 				}
 			}
 
@@ -23138,6 +23147,10 @@ namespace Chummer
 
             // Adjust for Black Market Pipeline Discount
 		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+
+			// Add any markup that has been applied from contacts and such.
+			objCyberware.Markup = frmPickCyberware.Markup;
+
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";

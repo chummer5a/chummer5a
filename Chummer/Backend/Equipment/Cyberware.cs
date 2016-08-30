@@ -142,7 +142,18 @@ namespace Chummer.Backend.Equipment
 
 			try
 			{
-				_intMinRating = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
+				if (objXmlCyberware["minrating"].InnerText == "MinimumSTR")
+				{
+					_intMinRating = 3;
+				}
+				else if (objXmlCyberware["minrating"].InnerText == "MinimumAGI")
+				{
+					_intMinRating = 3;
+				}
+				else
+				{
+					_intMinRating = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
+				}
 			}
 			catch
 			{
@@ -1180,7 +1191,7 @@ namespace Chummer.Backend.Equipment
 				// If the Avail starts with "+", return the base string and don't try to calculate anything since we're looking at a child component.
 				if (_strAvail.StartsWith("+"))
 				{
-					if (_strAvail.Contains("Rating"))
+					if (_strAvail.Contains("Rating") || _strAvail.Contains("MinRating"))
 					{
 						// If the availability is determined by the Rating, evaluate the expression.
 						XmlDocument objXmlDocument = new XmlDocument();
@@ -1195,7 +1206,9 @@ namespace Chummer.Backend.Equipment
 							// Remove the trailing character if it is "F" or "R".
 							strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
 						}
-						XPathExpression xprAvail = nav.Compile(strAvailExpr.Replace("Rating", _intRating.ToString()));
+						strAvailExpr = strAvailExpr.Replace("MinRating", _intMinRating.ToString());
+						strAvailExpr = strAvailExpr.Replace("Rating", _intRating.ToString());
+						XPathExpression xprAvail = nav.Compile(strAvailExpr);
 						return "+" + nav.Evaluate(xprAvail) + strAvail;
 					}
 					else
@@ -1278,8 +1291,9 @@ namespace Chummer.Backend.Equipment
 					if (objChild.Avail.Contains("+"))
 					{
 						string strChildAvail = objChild.Avail;
-						if (objChild.Avail.Contains("Rating"))
+						if (objChild.Avail.Contains("Rating") || objChild.Avail.Contains("MinRating"))
 						{
+							strChildAvail = strChildAvail.Replace("MinRating", objChild.MinRating.ToString());
 							strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
 							string strChildAvailText = "";
 							if (strChildAvail.Contains("R") || strChildAvail.Contains("F"))
@@ -1561,7 +1575,7 @@ namespace Chummer.Backend.Equipment
 				int intCost = 0;
 				int intReturn = 0;
 
-				if (_strCost.Contains("Rating"))
+				if (_strCost.Contains("Rating") || _strCost.Contains("MinRating"))
 				{
 					// If the cost is determined by the Rating, evaluate the expression.
 					XmlDocument objXmlDocument = new XmlDocument();
@@ -1570,7 +1584,8 @@ namespace Chummer.Backend.Equipment
 					string strCost = "";
 					string strCostExpression = _strCost;
 
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
+					strCost = strCost.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
@@ -1706,8 +1721,8 @@ namespace Chummer.Backend.Equipment
 
 					string strCost = "";
 					string strCostExpression = _strCost;
-
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
+					strCost = strCost.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
@@ -2046,6 +2061,6 @@ namespace Chummer.Backend.Equipment
 				return blnReturn;
 			}
 		}
-        #endregion
-    }
+		#endregion
+	}
 }
