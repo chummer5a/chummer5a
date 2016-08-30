@@ -17221,7 +17221,6 @@ namespace Chummer
             Cyberware objCyberware = new Cyberware(_objCharacter);
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
-			objCyberware.Markup = frmPickCyberware.Markup;
 
 			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();

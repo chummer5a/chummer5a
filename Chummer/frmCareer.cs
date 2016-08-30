@@ -23148,9 +23148,6 @@ namespace Chummer
             // Adjust for Black Market Pipeline Discount
 		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
 
-			// Add any markup that has been applied from contacts and such.
-			objCyberware.Markup = frmPickCyberware.Markup;
-
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";
