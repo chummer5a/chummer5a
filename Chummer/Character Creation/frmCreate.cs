@@ -20312,7 +20312,7 @@ namespace Chummer
 				if (
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
-							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsUsed.ToString())
+							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString())
 							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryKnowledgeSkills")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
