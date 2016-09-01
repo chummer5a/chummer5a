@@ -1071,7 +1071,7 @@ namespace Chummer
 					Log.Warning(new object[] {"Tried to get unknown bonus", bonusNode.OuterXml, string.Join(", ", AddMethods.Value.Keys)});
 				}
 			}
-			catch (AbortedException)
+			catch (TargetInvocationException ex) when (ex.InnerException.GetType() == typeof(AbortedException))
 			{
 				Rollback();
 				return false;
@@ -1081,7 +1081,7 @@ namespace Chummer
 		}
 
 		//this should probably be somewhere else...
-		private static Lazy<Dictionary<string, MethodInfo>> AddMethods = new Lazy<Dictionary<string, MethodInfo>>(() =>
+		private static readonly Lazy<Dictionary<string, MethodInfo>> AddMethods = new Lazy<Dictionary<string, MethodInfo>>(() =>
 		{
 			MethodInfo[] allMethods = typeof(AddImprovementCollection).GetMethods();
 
