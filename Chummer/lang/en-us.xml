@@ -1441,6 +1441,18 @@
 			<text>Enemies</text>
 		</string>
 		<string>
+			<key>Menu_ValidCharacter</key>
+			<text>Check Character Validity</text>
+		</string>
+		<string>
+			<key>Message_ValidCharacter</key>
+			<text>The character is valid and can move to career mode.</text>
+		</string>
+		<string>
+			<key>MessageTitle_ValidCharacter</key>
+			<text>Confirm Character Validity</text>
+		</string>
+		<string>
 			<key>Message_NegativeQualityLimit</key>
 			<text>You cannot gain more than {0} from Negative Qualities.</text>
 		</string>
