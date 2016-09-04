@@ -77,7 +77,7 @@ namespace Chummer.Skills
 					? rating + 3
 					: rating + 2);
 
-			int ratingModifiers = 0, dicePoolModifiers = 0;
+			int ratingModifiers = RatingModifiers, dicePoolModifiers = PoolModifiers;
 
 			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.Instance.GetString("String_None"));

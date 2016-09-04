@@ -260,6 +260,17 @@ namespace Chummer.Skills
 			}
 		}
 
+		/// <summary>
+		/// Things that modify the dicepool of the skill
+		/// </summary>
+		public virtual int RatingModifiers
+		{
+			get
+			{
+				return Bonus(true);
+			}
+		}
+
 		private int Bonus(bool AddToRating)
 		{
 			//Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
