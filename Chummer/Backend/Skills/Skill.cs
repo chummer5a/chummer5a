@@ -33,8 +33,9 @@ namespace Chummer.Skills
 		private string _strNotes; //Text of any notes that were entered by the user
 		protected List<ListItem> SuggestedSpecializations; //List of suggested specializations for this skill
 		private readonly string _translatedName = null;
+		private string _translatedCategory = null;
 
-		
+
 
 		public void WriteTo(XmlTextWriter writer)
 		{
@@ -82,7 +83,7 @@ namespace Chummer.Skills
 			objWriter.WriteElementString("name", DisplayName);
 			objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.Instance.GetString("String_None"));
 			objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.Instance.GetString("String_None"));
-			objWriter.WriteElementString("skillcategory", SkillCategory);
+			objWriter.WriteElementString("skillcategory", DisplayCategory);
 			objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
 			objWriter.WriteElementString("grouped", (SkillGroupObject?.CareerIncrease).ToString());
 			objWriter.WriteElementString("default", Default.ToString());
@@ -131,6 +132,7 @@ namespace Chummer.Skills
 			if (n["suid"] == null) return null;
 
 			Guid suid;
+			XmlDocument skills = XmlManager.Instance.Load("skills.xml");
 			if (!Guid.TryParse(n["suid"].InnerText, out suid))
 			{
 				return null;
@@ -138,7 +140,6 @@ namespace Chummer.Skills
 			Skill skill;
 			if (suid != Guid.Empty)
 			{
-				XmlDocument skills = XmlManager.Instance.Load("skills.xml");
 				XmlNode node = skills.SelectSingleNode($"/chummer/skills/skill[id = '{n["suid"].InnerText}']");
 
 				if (node == null) return null;
@@ -179,6 +180,12 @@ namespace Chummer.Skills
 			foreach (XmlNode spec in n.SelectNodes("specs/spec"))
 			{
 				skill.Specializations.Add(SkillSpecialization.Load(spec));
+			}
+			XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
+
+			if (objCategoryNode.Attributes?["translate"] != null)
+			{
+				skill.DisplayCategory = objCategoryNode.Attributes["translate"].InnerText;
 			}
 
 			return skill;
@@ -274,7 +281,8 @@ namespace Chummer.Skills
 			}
 			else
 			{
-
+				XmlDocument document = XmlManager.Instance.Load("skills.xml");
+				XmlNode knoNode = null;
 				string category = n["category"].InnerText; //if missing we have bigger problems, and a nullref is probably prefered
 				bool knoSkill;
 
@@ -284,8 +292,7 @@ namespace Chummer.Skills
 				}
 				else
 				{
-					XmlDocument document = XmlManager.Instance.Load("skills.xml");
-					XmlNode knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
+					knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
 					knoSkill = knoNode.Attributes["type"].InnerText != "active";
 					SkillTypeCache[category] = knoSkill;
 				}
@@ -306,6 +313,13 @@ namespace Chummer.Skills
 					//TODO INIT SKILL
 
 					s = s2;
+				}
+				if (knoNode != null)
+				{
+					if (knoNode.Attributes["translate"] != null)
+					{
+						s.DisplayCategory = knoNode.Attributes["translate"].InnerText;
+					}
 				}
 			}
 
@@ -751,6 +765,11 @@ namespace Chummer.Skills
 			get { return _translatedName ?? Name; }
 		}
 
+		public string DisplayCategory
+		{
+			get { return _translatedCategory ?? Category; }
+			set { _translatedCategory = value; }
+		}
 		public virtual string DisplayPool
 		{
 			get {
