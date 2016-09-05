@@ -2548,9 +2548,13 @@ namespace Chummer.Classes
 								}
 							}
 						}
-						else if (objXmlPower["levels"].InnerText == "yes")
+						else if (objXmlPower["levels"].InnerText != "yes")
 						{
 							objPower.MaxLevels = Convert.ToInt32(objXmlPower["levels"].InnerText);
+						}
+						else
+						{
+							objPower.MaxLevels = _objCharacter.MAG.TotalValue;
 						}
 					}
 
