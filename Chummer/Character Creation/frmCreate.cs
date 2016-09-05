@@ -21700,9 +21700,17 @@ namespace Chummer
                     default:
                         break;
                 }
-            }
+			}
 
-            int intEssenceLoss = 0;
+			// Remove any Qualities the character received from their Metatype, then remove the Quality.
+			foreach (Quality objQuality in lstRemoveQualities)
+			{
+				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+				_objCharacter.Qualities.Remove(objQuality);
+			}
+			lstRemoveQualities.Clear();
+
+			int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
 
