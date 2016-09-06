@@ -147,6 +147,11 @@ namespace Chummer
 			catch
 			{
 			}
+
+			frmCharacterRoster frmCharacter = new frmCharacterRoster();
+			frmCharacter.MdiParent = this;
+			frmCharacter.WindowState = FormWindowState.Maximized;
+			frmCharacter.Show();
 		}
 
 		public sealed override string Text
