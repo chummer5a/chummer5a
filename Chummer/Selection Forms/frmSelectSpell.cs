@@ -549,8 +549,10 @@ namespace Chummer
 
 			foreach (TreeNode nodNode in lstRemove)
 				treSpells.Nodes.Remove(nodNode);
-
-		    treSpells.SelectedNode = treSpells.Nodes[0];
+		    if (treSpells.Nodes.Count > 0)
+		    {
+		        treSpells.SelectedNode = treSpells.Nodes[0];
+		    }
 		}
 
 		private void cmdOKAdd_Click(object sender, EventArgs e)
