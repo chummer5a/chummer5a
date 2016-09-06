@@ -28,6 +28,7 @@ Data Changes:
 - Removed the Infected metavariants.
 - Added a missing bonus node to the YNT Softweave armour mod.
 - New XML file, options.xml. Used to store values for configurable default settings. 
+- Fixed missing statistic weaknesses for various Infected qualities. Fixes #689.
 
 New Strings:
 - Button_ToggleSourcebooks
