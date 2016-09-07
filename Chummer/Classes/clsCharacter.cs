@@ -1032,6 +1032,7 @@ namespace Chummer
 
             // Metatype information.
             _strMetatype = objXmlCharacter["metatype"].InnerText;
+	        objXmlCharacter.TryGetField("movement", out _strMovement);
             try
             {
                 _strWalk = objXmlCharacter["walk"].InnerText;

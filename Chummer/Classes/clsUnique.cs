@@ -609,7 +609,7 @@ namespace Chummer
                     int intLimbCount = 0;
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.Category == "Cyberlimb" && objCyberware.LimbSlot != "" && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                        if (objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
                         {
                             intLimbCount++;
                             switch (_strAbbrev)
