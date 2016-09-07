@@ -959,6 +959,10 @@
 			<text>Create New Character</text>
 		</string>
 		<string>
+			<key>String_CharacterRoster</key>
+			<text>Character Roster</text>
+		</string>
+		<string>
 			<key>Title_CareerMode</key>
 			<text>Career Mode</text>
 		</string>
@@ -6702,6 +6706,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Button_ToggleSourcebooks</key>
 			<text>Toggle all Sourcebooks On/Off</text>
+		</string>
+		<string>
+			<key>Label_Options_CharacterRoster</key>
+			<text>Character Roster Watch Folder</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->

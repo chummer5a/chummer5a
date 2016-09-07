@@ -157,7 +157,7 @@
       <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\AddImprovementCollection.cs">
-        <DependentUpon>clsImprovement.cs</DependentUpon>
+      <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
@@ -181,7 +181,13 @@
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
-        <DependentUpon>clsImprovement.cs</DependentUpon>
+      <DependentUpon>clsImprovement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCharacterRoster.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCharacterRoster.Designer.cs">
+      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
@@ -802,6 +808,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCharacterRoster.resx">
+      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddToken.resx">
       <DependentUpon>frmAddToken.cs</DependentUpon>

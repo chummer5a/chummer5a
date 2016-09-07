@@ -23,6 +23,7 @@ Application Changes:
 - Fixed an issue with adept powers that have specified maximum ranks causing a crash.
 - Fixed an issue where changing your priority selection would remove MAG/RES-linked skills. 
 - Fixed a issue where Chummer would crash if, while searching for a spell, no matches was found.
+- Added a character roster to manage characters. There is an option to specify a folder to monitor in the Options menu, under Character and Printing. 
 - Fixed a crash issue for characters that have cyberlimbs. 
 - Fixed some crash issues with custom PACKs kits with lifestyles.
 
@@ -39,6 +40,8 @@ New Strings:
 - Menu_ValidCharacter
 - Message_ValidCharacter
 - MessageTitle_ValidCharacter
+- String_CharacterRoster
+- Label_Options_CharacterRoster
 
 Build 183:
 Application Changes:
