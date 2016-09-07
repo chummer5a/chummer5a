@@ -1,4 +1,6 @@
-﻿namespace Chummer
+﻿using System;
+
+namespace Chummer
 {
 	partial class frmCharacterRoster
 	{
@@ -32,12 +34,12 @@
 			this.picMugshot = new System.Windows.Forms.PictureBox();
 			this.tabCharacterText = new System.Windows.Forms.TabControl();
 			this.panCharacterBio = new System.Windows.Forms.TabPage();
-			this.panCharacterConcept = new System.Windows.Forms.TabPage();
-			this.panCharacterBackground = new System.Windows.Forms.TabPage();
-			this.panCharacterNotes = new System.Windows.Forms.TabPage();
-			this.txtCharacterBackground = new System.Windows.Forms.TextBox();
 			this.txtCharacterBio = new System.Windows.Forms.TextBox();
+			this.panCharacterConcept = new System.Windows.Forms.TabPage();
 			this.txtCharacterConcept = new System.Windows.Forms.TextBox();
+			this.panCharacterBackground = new System.Windows.Forms.TabPage();
+			this.txtCharacterBackground = new System.Windows.Forms.TextBox();
+			this.panCharacterNotes = new System.Windows.Forms.TabPage();
 			this.txtCharacterNotes = new System.Windows.Forms.TextBox();
 			this.lblCharacterName = new System.Windows.Forms.Label();
 			this.lblCharacterNameLabel = new System.Windows.Forms.Label();
@@ -49,6 +51,8 @@
 			this.lblPlayerNameLabel = new System.Windows.Forms.Label();
 			this.lblCharacterAlias = new System.Windows.Forms.Label();
 			this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
+			this.lblEssence = new System.Windows.Forms.Label();
+			this.lblEssenceLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
 			this.tabCharacterText.SuspendLayout();
 			this.panCharacterBio.SuspendLayout();
@@ -66,11 +70,12 @@
 			this.treCharacterList.Size = new System.Drawing.Size(192, 536);
 			this.treCharacterList.TabIndex = 0;
 			this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
+			this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
 			// 
 			// picMugshot
 			// 
 			this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.picMugshot.Location = new System.Drawing.Point(568, 8);
+			this.picMugshot.Location = new System.Drawing.Point(560, 8);
 			this.picMugshot.Name = "picMugshot";
 			this.picMugshot.Size = new System.Drawing.Size(208, 328);
 			this.picMugshot.TabIndex = 21;
@@ -102,6 +107,16 @@
 			this.panCharacterBio.Text = "Bio";
 			this.panCharacterBio.UseVisualStyleBackColor = true;
 			// 
+			// txtCharacterBio
+			// 
+			this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
+			this.txtCharacterBio.Multiline = true;
+			this.txtCharacterBio.Name = "txtCharacterBio";
+			this.txtCharacterBio.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtCharacterBio.Size = new System.Drawing.Size(554, 176);
+			this.txtCharacterBio.TabIndex = 1;
+			// 
 			// panCharacterConcept
 			// 
 			this.panCharacterConcept.Controls.Add(this.txtCharacterConcept);
@@ -112,6 +127,16 @@
 			this.panCharacterConcept.TabIndex = 1;
 			this.panCharacterConcept.Text = "Concept";
 			this.panCharacterConcept.UseVisualStyleBackColor = true;
+			// 
+			// txtCharacterConcept
+			// 
+			this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
+			this.txtCharacterConcept.Multiline = true;
+			this.txtCharacterConcept.Name = "txtCharacterConcept";
+			this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
+			this.txtCharacterConcept.TabIndex = 2;
 			// 
 			// panCharacterBackground
 			// 
@@ -124,6 +149,16 @@
 			this.panCharacterBackground.Text = "Background";
 			this.panCharacterBackground.UseVisualStyleBackColor = true;
 			// 
+			// txtCharacterBackground
+			// 
+			this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
+			this.txtCharacterBackground.Multiline = true;
+			this.txtCharacterBackground.Name = "txtCharacterBackground";
+			this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
+			this.txtCharacterBackground.TabIndex = 0;
+			// 
 			// panCharacterNotes
 			// 
 			this.panCharacterNotes.Controls.Add(this.txtCharacterNotes);
@@ -135,39 +170,13 @@
 			this.panCharacterNotes.Text = "Notes";
 			this.panCharacterNotes.UseVisualStyleBackColor = true;
 			// 
-			// txtCharacterBackground
-			// 
-			this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterBackground.Multiline = true;
-			this.txtCharacterBackground.Name = "txtCharacterBackground";
-			this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterBackground.TabIndex = 0;
-			// 
-			// txtCharacterBio
-			// 
-			this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterBio.Multiline = true;
-			this.txtCharacterBio.Name = "txtCharacterBio";
-			this.txtCharacterBio.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterBio.TabIndex = 1;
-			// 
-			// txtCharacterConcept
-			// 
-			this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterConcept.Multiline = true;
-			this.txtCharacterConcept.Name = "txtCharacterConcept";
-			this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterConcept.TabIndex = 2;
-			// 
 			// txtCharacterNotes
 			// 
 			this.txtCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtCharacterNotes.Location = new System.Drawing.Point(3, 3);
 			this.txtCharacterNotes.Multiline = true;
 			this.txtCharacterNotes.Name = "txtCharacterNotes";
+			this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtCharacterNotes.Size = new System.Drawing.Size(554, 176);
 			this.txtCharacterNotes.TabIndex = 2;
 			// 
@@ -193,7 +202,7 @@
 			// lblMetatype
 			// 
 			this.lblMetatype.AutoSize = true;
-			this.lblMetatype.Location = new System.Drawing.Point(304, 82);
+			this.lblMetatype.Location = new System.Drawing.Point(304, 86);
 			this.lblMetatype.Name = "lblMetatype";
 			this.lblMetatype.Size = new System.Drawing.Size(33, 13);
 			this.lblMetatype.TabIndex = 26;
@@ -202,7 +211,7 @@
 			// lblMetatypeLabel
 			// 
 			this.lblMetatypeLabel.AutoSize = true;
-			this.lblMetatypeLabel.Location = new System.Drawing.Point(208, 82);
+			this.lblMetatypeLabel.Location = new System.Drawing.Point(208, 86);
 			this.lblMetatypeLabel.Name = "lblMetatypeLabel";
 			this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
 			this.lblMetatypeLabel.TabIndex = 25;
@@ -212,7 +221,7 @@
 			// lblCareerKarma
 			// 
 			this.lblCareerKarma.AutoSize = true;
-			this.lblCareerKarma.Location = new System.Drawing.Point(304, 108);
+			this.lblCareerKarma.Location = new System.Drawing.Point(304, 112);
 			this.lblCareerKarma.Name = "lblCareerKarma";
 			this.lblCareerKarma.Size = new System.Drawing.Size(33, 13);
 			this.lblCareerKarma.TabIndex = 28;
@@ -221,7 +230,7 @@
 			// lblCareerKarmaLabel
 			// 
 			this.lblCareerKarmaLabel.AutoSize = true;
-			this.lblCareerKarmaLabel.Location = new System.Drawing.Point(208, 108);
+			this.lblCareerKarmaLabel.Location = new System.Drawing.Point(208, 112);
 			this.lblCareerKarmaLabel.Name = "lblCareerKarmaLabel";
 			this.lblCareerKarmaLabel.Size = new System.Drawing.Size(74, 13);
 			this.lblCareerKarmaLabel.TabIndex = 27;
@@ -231,7 +240,7 @@
 			// lblPlayerName
 			// 
 			this.lblPlayerName.AutoSize = true;
-			this.lblPlayerName.Location = new System.Drawing.Point(304, 56);
+			this.lblPlayerName.Location = new System.Drawing.Point(304, 60);
 			this.lblPlayerName.Name = "lblPlayerName";
 			this.lblPlayerName.Size = new System.Drawing.Size(33, 13);
 			this.lblPlayerName.TabIndex = 32;
@@ -240,7 +249,7 @@
 			// lblPlayerNameLabel
 			// 
 			this.lblPlayerNameLabel.AutoSize = true;
-			this.lblPlayerNameLabel.Location = new System.Drawing.Point(208, 56);
+			this.lblPlayerNameLabel.Location = new System.Drawing.Point(208, 60);
 			this.lblPlayerNameLabel.Name = "lblPlayerNameLabel";
 			this.lblPlayerNameLabel.Size = new System.Drawing.Size(70, 13);
 			this.lblPlayerNameLabel.TabIndex = 31;
@@ -250,7 +259,7 @@
 			// lblCharacterAlias
 			// 
 			this.lblCharacterAlias.AutoSize = true;
-			this.lblCharacterAlias.Location = new System.Drawing.Point(304, 32);
+			this.lblCharacterAlias.Location = new System.Drawing.Point(304, 34);
 			this.lblCharacterAlias.Name = "lblCharacterAlias";
 			this.lblCharacterAlias.Size = new System.Drawing.Size(33, 13);
 			this.lblCharacterAlias.TabIndex = 34;
@@ -259,18 +268,39 @@
 			// lblCharacterAliasLabel
 			// 
 			this.lblCharacterAliasLabel.AutoSize = true;
-			this.lblCharacterAliasLabel.Location = new System.Drawing.Point(208, 32);
+			this.lblCharacterAliasLabel.Location = new System.Drawing.Point(208, 34);
 			this.lblCharacterAliasLabel.Name = "lblCharacterAliasLabel";
 			this.lblCharacterAliasLabel.Size = new System.Drawing.Size(32, 13);
 			this.lblCharacterAliasLabel.TabIndex = 33;
 			this.lblCharacterAliasLabel.Tag = "Label_Alias";
 			this.lblCharacterAliasLabel.Text = "Alias:";
 			// 
+			// lblEssence
+			// 
+			this.lblEssence.AutoSize = true;
+			this.lblEssence.Location = new System.Drawing.Point(304, 138);
+			this.lblEssence.Name = "lblEssence";
+			this.lblEssence.Size = new System.Drawing.Size(33, 13);
+			this.lblEssence.TabIndex = 36;
+			this.lblEssence.Text = "None";
+			// 
+			// lblEssenceLabel
+			// 
+			this.lblEssenceLabel.AutoSize = true;
+			this.lblEssenceLabel.Location = new System.Drawing.Point(208, 138);
+			this.lblEssenceLabel.Name = "lblEssenceLabel";
+			this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
+			this.lblEssenceLabel.TabIndex = 35;
+			this.lblEssenceLabel.Tag = "Label_Essence";
+			this.lblEssenceLabel.Text = "Essence:";
+			// 
 			// frmCharacterRoster
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(786, 552);
+			this.Controls.Add(this.lblEssence);
+			this.Controls.Add(this.lblEssenceLabel);
 			this.Controls.Add(this.lblCharacterAlias);
 			this.Controls.Add(this.lblCharacterAliasLabel);
 			this.Controls.Add(this.lblPlayerName);
@@ -324,5 +354,7 @@
 		private System.Windows.Forms.Label lblPlayerNameLabel;
 		private System.Windows.Forms.Label lblCharacterAlias;
 		private System.Windows.Forms.Label lblCharacterAliasLabel;
+		private System.Windows.Forms.Label lblEssence;
+		private System.Windows.Forms.Label lblEssenceLabel;
 	}
 }

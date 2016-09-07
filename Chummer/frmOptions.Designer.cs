@@ -265,6 +265,9 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
+			this.cmdCharacterRoster = new System.Windows.Forms.Button();
+			this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -885,7 +888,7 @@
 			// chkPrintSkillsWithZeroRating
 			// 
 			this.chkPrintSkillsWithZeroRating.AutoSize = true;
-			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(11, 200);
+			this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(7, 236);
 			this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
 			this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(259, 17);
 			this.chkPrintSkillsWithZeroRating.TabIndex = 11;
@@ -922,7 +925,7 @@
 			// lblNuyenPerBP
 			// 
 			this.lblNuyenPerBP.AutoSize = true;
-			this.lblNuyenPerBP.Location = new System.Drawing.Point(8, 355);
+			this.lblNuyenPerBP.Location = new System.Drawing.Point(4, 391);
 			this.lblNuyenPerBP.Name = "lblNuyenPerBP";
 			this.lblNuyenPerBP.Size = new System.Drawing.Size(112, 13);
 			this.lblNuyenPerBP.TabIndex = 2;
@@ -932,7 +935,7 @@
 			// 
 			// nudNuyenPerBP
 			// 
-			this.nudNuyenPerBP.Location = new System.Drawing.Point(137, 353);
+			this.nudNuyenPerBP.Location = new System.Drawing.Point(133, 389);
 			this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -976,7 +979,7 @@
 			// chkPrintExpenses
 			// 
 			this.chkPrintExpenses.AutoSize = true;
-			this.chkPrintExpenses.Location = new System.Drawing.Point(11, 223);
+			this.chkPrintExpenses.Location = new System.Drawing.Point(7, 259);
 			this.chkPrintExpenses.Name = "chkPrintExpenses";
 			this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
 			this.chkPrintExpenses.TabIndex = 12;
@@ -1397,6 +1400,9 @@
 			// tabPage2
 			// 
 			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Controls.Add(this.cmdCharacterRoster);
+			this.tabPage2.Controls.Add(this.txtCharacterRosterPath);
+			this.tabPage2.Controls.Add(this.lblCharacterRosterLabel);
 			this.tabPage2.Controls.Add(this.chkDontUseCyberlimbCalculation);
 			this.tabPage2.Controls.Add(this.chkPrintToFileFirst);
 			this.tabPage2.Controls.Add(this.cboEssenceDecimals);
@@ -1425,7 +1431,7 @@
 			// chkDontUseCyberlimbCalculation
 			// 
 			this.chkDontUseCyberlimbCalculation.AutoSize = true;
-			this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(12, 36);
+			this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(8, 72);
 			this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
 			this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(270, 17);
 			this.chkDontUseCyberlimbCalculation.TabIndex = 19;
@@ -1437,7 +1443,7 @@
 			// chkPrintToFileFirst
 			// 
 			this.chkPrintToFileFirst.AutoSize = true;
-			this.chkPrintToFileFirst.Location = new System.Drawing.Point(11, 269);
+			this.chkPrintToFileFirst.Location = new System.Drawing.Point(7, 305);
 			this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
 			this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
 			this.chkPrintToFileFirst.TabIndex = 18;
@@ -1450,7 +1456,7 @@
 			// 
 			this.cboEssenceDecimals.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboEssenceDecimals.FormattingEnabled = true;
-			this.cboEssenceDecimals.Location = new System.Drawing.Point(245, 305);
+			this.cboEssenceDecimals.Location = new System.Drawing.Point(241, 341);
 			this.cboEssenceDecimals.Name = "cboEssenceDecimals";
 			this.cboEssenceDecimals.Size = new System.Drawing.Size(61, 21);
 			this.cboEssenceDecimals.TabIndex = 17;
@@ -1458,7 +1464,7 @@
 			// lblEssenceDecimals
 			// 
 			this.lblEssenceDecimals.AutoSize = true;
-			this.lblEssenceDecimals.Location = new System.Drawing.Point(9, 308);
+			this.lblEssenceDecimals.Location = new System.Drawing.Point(5, 344);
 			this.lblEssenceDecimals.Name = "lblEssenceDecimals";
 			this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
 			this.lblEssenceDecimals.TabIndex = 16;
@@ -1468,7 +1474,7 @@
 			// chkPrintNotes
 			// 
 			this.chkPrintNotes.AutoSize = true;
-			this.chkPrintNotes.Location = new System.Drawing.Point(11, 246);
+			this.chkPrintNotes.Location = new System.Drawing.Point(7, 282);
 			this.chkPrintNotes.Name = "chkPrintNotes";
 			this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
 			this.chkPrintNotes.TabIndex = 15;
@@ -1479,7 +1485,7 @@
 			// lblLimbCount
 			// 
 			this.lblLimbCount.AutoSize = true;
-			this.lblLimbCount.Location = new System.Drawing.Point(6, 12);
+			this.lblLimbCount.Location = new System.Drawing.Point(8, 8);
 			this.lblLimbCount.Name = "lblLimbCount";
 			this.lblLimbCount.Size = new System.Drawing.Size(152, 13);
 			this.lblLimbCount.TabIndex = 0;
@@ -1489,7 +1495,7 @@
 			// chkAllowSkillDiceRolling
 			// 
 			this.chkAllowSkillDiceRolling.AutoSize = true;
-			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(11, 167);
+			this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(7, 203);
 			this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
 			this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
 			this.chkAllowSkillDiceRolling.TabIndex = 10;
@@ -1501,7 +1507,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(8, 79);
+			this.label36.Location = new System.Drawing.Point(4, 115);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(140, 13);
 			this.label36.TabIndex = 4;
@@ -1510,7 +1516,7 @@
 			// 
 			// nudBP
 			// 
-			this.nudBP.Location = new System.Drawing.Point(104, 104);
+			this.nudBP.Location = new System.Drawing.Point(100, 140);
 			this.nudBP.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -1530,7 +1536,7 @@
 			// 
 			this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboBuildMethod.FormattingEnabled = true;
-			this.cboBuildMethod.Location = new System.Drawing.Point(9, 104);
+			this.cboBuildMethod.Location = new System.Drawing.Point(5, 140);
 			this.cboBuildMethod.Name = "cboBuildMethod";
 			this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
 			this.cboBuildMethod.TabIndex = 5;
@@ -1539,7 +1545,7 @@
 			// lblMaxAvail
 			// 
 			this.lblMaxAvail.AutoSize = true;
-			this.lblMaxAvail.Location = new System.Drawing.Point(39, 134);
+			this.lblMaxAvail.Location = new System.Drawing.Point(35, 170);
 			this.lblMaxAvail.Name = "lblMaxAvail";
 			this.lblMaxAvail.Size = new System.Drawing.Size(59, 13);
 			this.lblMaxAvail.TabIndex = 7;
@@ -1548,7 +1554,7 @@
 			// 
 			// nudMaxAvail
 			// 
-			this.nudMaxAvail.Location = new System.Drawing.Point(104, 131);
+			this.nudMaxAvail.Location = new System.Drawing.Point(100, 167);
 			this.nudMaxAvail.Name = "nudMaxAvail";
 			this.nudMaxAvail.Size = new System.Drawing.Size(42, 20);
 			this.nudMaxAvail.TabIndex = 8;
@@ -1563,7 +1569,7 @@
 			// 
 			this.cboLimbCount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboLimbCount.FormattingEnabled = true;
-			this.cboLimbCount.Location = new System.Drawing.Point(164, 9);
+			this.cboLimbCount.Location = new System.Drawing.Point(166, 5);
 			this.cboLimbCount.Name = "cboLimbCount";
 			this.cboLimbCount.Size = new System.Drawing.Size(210, 21);
 			this.cboLimbCount.TabIndex = 1;
@@ -3128,6 +3134,34 @@
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
 			// 
+			// lblCharacterRosterLabel
+			// 
+			this.lblCharacterRosterLabel.AutoSize = true;
+			this.lblCharacterRosterLabel.Location = new System.Drawing.Point(8, 44);
+			this.lblCharacterRosterLabel.Name = "lblCharacterRosterLabel";
+			this.lblCharacterRosterLabel.Size = new System.Drawing.Size(154, 13);
+			this.lblCharacterRosterLabel.TabIndex = 20;
+			this.lblCharacterRosterLabel.Tag = "Label_Options_CharacterRoster";
+			this.lblCharacterRosterLabel.Text = "Character Roster Watch Folder";
+			// 
+			// cmdCharacterRoster
+			// 
+			this.cmdCharacterRoster.Location = new System.Drawing.Point(424, 39);
+			this.cmdCharacterRoster.Name = "cmdCharacterRoster";
+			this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 23);
+			this.cmdCharacterRoster.TabIndex = 23;
+			this.cmdCharacterRoster.Text = "...";
+			this.cmdCharacterRoster.UseVisualStyleBackColor = true;
+			this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
+			// 
+			// txtCharacterRoster
+			// 
+			this.txtCharacterRosterPath.Location = new System.Drawing.Point(168, 40);
+			this.txtCharacterRosterPath.Name = "txtCharacterRoster";
+			this.txtCharacterRosterPath.ReadOnly = true;
+			this.txtCharacterRosterPath.Size = new System.Drawing.Size(248, 20);
+			this.txtCharacterRosterPath.TabIndex = 22;
+			// 
 			// frmOptions
 			// 
 			this.AcceptButton = this.cmdOK;
@@ -3459,5 +3493,8 @@
 		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
 		private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
 		private System.Windows.Forms.Button cmdEnableSourcebooks;
+		private System.Windows.Forms.Label lblCharacterRosterLabel;
+		private System.Windows.Forms.Button cmdCharacterRoster;
+		private System.Windows.Forms.TextBox txtCharacterRosterPath;
 	}
 }
