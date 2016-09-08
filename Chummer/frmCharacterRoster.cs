@@ -65,15 +65,15 @@ namespace Chummer
 
 		private void LoadCharacters()
 		{
-			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList().Where(System.IO.File.Exists))
+			foreach (string strFile in GlobalOptions.Instance.ReadStickyMRUList().Where(File.Exists))
 			{
 				CacheCharacter(strFile);
 			}
-			foreach (string strFile in GlobalOptions.Instance.ReadMRUList().Where(System.IO.File.Exists))
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList().Where(File.Exists))
 			{
 				CacheCharacter(strFile);
 			}
-			if (GlobalOptions.Instance.CharacterRosterPath != null)
+			if (!string.IsNullOrEmpty(GlobalOptions.Instance.CharacterRosterPath))
 			{
 				string[] objFiles = Directory.GetFiles(GlobalOptions.Instance.CharacterRosterPath);
 				//Make sure we're not loading a character that was already loaded by the MRU list.
