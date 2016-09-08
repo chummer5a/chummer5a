@@ -171,7 +171,8 @@ namespace Chummer
                     _objCharacter.ContactMultiplier = _objOptions.FreeContactsMultiplier;
                 }
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
-                _objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
+				_objCharacter.GameplayOptionQualityLimit = Convert.ToInt32(strKarma);
+				_objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
 
 
 
@@ -4194,13 +4195,15 @@ namespace Chummer
 
         #region EnemyControl Events
         private void objEnemy_ConnectionRatingChanged(Object sender)
-        {
-            objEnemy_Changed(sender);
-        }
+		{
+			string strMode = "Connection";
+			objEnemy_Changed(sender, strMode);
+		}
 
         private void objEnemy_LoyaltyRatingChanged(Object sender)
         {
-            objEnemy_Changed(sender);
+	        string strMode = "Loyalty";
+            objEnemy_Changed(sender, strMode);
         }
 
         private void objEnemy_GroupStatusChanged(Object sender)
@@ -4213,7 +4216,7 @@ namespace Chummer
             objEnemy_Changed(sender);
         }
         
-        private void objEnemy_Changed(Object sender)
+        private void objEnemy_Changed(Object sender, string strMode = null)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
@@ -4242,17 +4245,26 @@ namespace Chummer
             int intQualityMax = 0;
             string strQualityPoints = "";
             string strEnemyPoints = "";
-            intEnemyMax = _objCharacter.MaxKarma;
-            intQualityMax = _objCharacter.MaxKarma;
-            strEnemyPoints = intEnemyMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+	        intEnemyMax = _objCharacter.GameplayOptionQualityLimit;
+            intQualityMax = _objCharacter.GameplayOptionQualityLimit;
+			strEnemyPoints = intEnemyMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
             strQualityPoints = intQualityMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 
             if (intBPUsed < (intEnemyMax * -1) && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_EnemyLimit").Replace("{0}", strEnemyPoints), LanguageManager.Instance.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ContactControl objSender = (ContactControl)sender;
-                objSender.ConnectionRating -= (intEnemyMax * -1) - intBPUsed;
-                return;
+	            int intTotal = (intEnemyMax*-1) - intBPUsed;
+	            switch (strMode)
+	            {
+		            case "Connection":
+			            objSender.ConnectionRating -= intTotal;
+			            break;
+		            case "Loyalty":
+			            objSender.LoyaltyRating -= intTotal;
+			            break;
+	            }
+	            return;
             }
 
             if (!_objOptions.ExceedNegativeQualities)
@@ -4261,7 +4273,17 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", strQualityPoints), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ContactControl objSender = (ContactControl)sender;
-                    objSender.ConnectionRating -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) / _objOptions.KarmaQuality);
+	                switch (strMode)
+	                {
+		                case "Connection":
+			                objSender.ConnectionRating -= (((intQualityMax*-1) - (intBPUsed + intNegativeQualityBP))/
+			                                               _objOptions.KarmaQuality);
+			                break;
+		                case "Loyalty":
+			                objSender.LoyaltyRating -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+			                                            _objOptions.KarmaQuality);
+			                break;
+	                }
                 }
             }
 
@@ -4716,10 +4738,10 @@ namespace Chummer
             string strEnemyPoints = "";
             string strQualityPoints = "";
             intBPUsed = -2 * _objOptions.KarmaQuality;
-            intEnemyMax = 50;
-            intQualityMax = 70;
-            strEnemyPoints = "50 " + LanguageManager.Instance.GetString("String_Karma");
-            strQualityPoints = "70 " + LanguageManager.Instance.GetString("String_Karma");
+            intEnemyMax = _objCharacter.GameplayOptionQualityLimit;
+            intQualityMax = _objCharacter.GameplayOptionQualityLimit;
+			strEnemyPoints = _objCharacter.GameplayOptionQualityLimit + " " + LanguageManager.Instance.GetString("String_Karma");
+            strQualityPoints = _objCharacter.GameplayOptionQualityLimit + " " + LanguageManager.Instance.GetString("String_Karma");
 
             foreach (ContactControl objEnemyControl in panEnemies.Controls)
             {
@@ -14721,9 +14743,9 @@ namespace Chummer
             {
                 if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
                      _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
-                    intNegativeQualities < -1*_objCharacter.MaxKarma)
+                    intNegativeQualities < -1*_objCharacter.GameplayOptionQualityLimit)
                 {
-                    intNegativeQualities = -1*_objCharacter.MaxKarma;
+                    intNegativeQualities = -1*_objCharacter.GameplayOptionQualityLimit;
                 }
                 else
                 {
@@ -19218,9 +19240,15 @@ namespace Chummer
 				// If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
 				if (_objOptions.ExceedNegativeQualitiesLimit)
 				{
-					if (intNegativePoints < (_objCharacter.MaxKarma * -1))
+					if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+					 _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+					intNegativePoints < -1 * _objCharacter.MaxKarma)
 					{
 						intNegativePoints = -1 * _objCharacter.MaxKarma;
+					}
+					else
+					{
+						intNegativePoints = -1 * _objCharacter.GameplayOptionQualityLimit;
 					}
 				}
 
