@@ -133,6 +133,7 @@ namespace Chummer
         public static bool _blnOpenPDFsAsURLs = false;
 	    public static bool _blnOpenPDFsAsUnix = false;
         public static bool _blnUseLogging = false;
+		private static string _strCharacterRosterPath;
 
 		#region Constructor and Instance
 		static GlobalOptions()
@@ -309,7 +310,16 @@ namespace Chummer
 			{
 			}
 
-			// PDF application path.
+			// Folder path to check for characters.
+			try
+			{
+				_strCharacterRosterPath = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("characterrosterpath").ToString();
+			}
+			catch
+			{
+			}
+
+			// Prefer Nightly Updates.
 			try
 			{
 				_blnPreferNightlyUpdates = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("prefernightlybuilds").ToString());
@@ -669,6 +679,66 @@ namespace Chummer
 			{
 				_lstSourcebookInfo = value;
 			}
+		}        /// <summary>
+				 /// Which method of opening PDFs to use. True = file://path.pdf#page=x
+				 /// </summary>
+		public bool OpenPDFsAsURLs
+		{
+			get
+			{
+				return GlobalOptions._blnOpenPDFsAsURLs;
+			}
+			set
+			{
+				GlobalOptions._blnOpenPDFsAsURLs = value;
+			}
+		}
+
+		/// <summary>
+		/// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
+		/// </summary>
+		public bool OpenPDFsAsAsUnix
+		{
+			get
+			{
+				return GlobalOptions._blnOpenPDFsAsUnix;
+			}
+			set
+			{
+				GlobalOptions._blnOpenPDFsAsUnix = value;
+			}
+		}
+
+		public bool OmaeEnabled
+		{
+			get { return _omaeEnabled; }
+			set { _omaeEnabled = value; }
+		}
+
+		public bool PreferNightlyBuilds
+		{
+			get
+			{
+				return _blnPreferNightlyUpdates;
+			}
+			set
+			{
+				_blnPreferNightlyUpdates = value;
+			}
+		}
+
+		public string CharacterRosterPath
+		{
+			get
+			{
+				return _strCharacterRosterPath;
+				
+			}
+			set
+			{
+				_strCharacterRosterPath = value;
+				
+			}
 		}
 		#endregion
 
@@ -850,51 +920,6 @@ namespace Chummer
 			return lstFiles;
 		}
 		#endregion
-        /// <summary>
-        /// Which method of opening PDFs to use. True = file://path.pdf#page=x
-        /// </summary>
-        public bool OpenPDFsAsURLs 
-        { 
-            get
-            {
-                return GlobalOptions._blnOpenPDFsAsURLs;
-            }
-            set
-            {
-                GlobalOptions._blnOpenPDFsAsURLs = value;
-            } 
-        }
 
-        /// <summary>
-        /// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
-        /// </summary>
-        public bool OpenPDFsAsAsUnix
-        {
-            get
-            {
-                return GlobalOptions._blnOpenPDFsAsUnix;
-            }
-            set
-            {
-                GlobalOptions._blnOpenPDFsAsUnix = value;
-            }
-        }
-
-		public bool OmaeEnabled {
-			get { return _omaeEnabled; }
-			set { _omaeEnabled = value; }
-		}
-
-		public bool PreferNightlyBuilds
-		{
-			get
-			{
-				return _blnPreferNightlyUpdates;
-			}
-			set
-			{
-				_blnPreferNightlyUpdates = value;
-			}
-		}
 	}
 }

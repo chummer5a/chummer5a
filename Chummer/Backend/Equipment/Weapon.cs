@@ -931,20 +931,7 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
-				int intReturn = 1;
-				string cachedBecauseOldCodeHurtsMyEyes = CalculatedAmmo();
-				if (cachedBecauseOldCodeHurtsMyEyes.Contains("x"))
-				{
-					return cachedBecauseOldCodeHurtsMyEyes[0] - '0'; //first letter to int due ascii table workings
-				}
-				else
-				{
-					foreach (WeaponAccessory objAccessory in _lstAccessories)
-					{
-						intReturn += objAccessory.AmmoSlots;
-					}
-					return intReturn;
-				}
+				return 1 + _lstAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
 			}
 		}
 
@@ -1565,7 +1552,6 @@ namespace Chummer.Backend.Equipment
 			string[] strSplit = new string[] { " " };
 			string[] strAmmos = _strAmmo.Split(strSplit, StringSplitOptions.None);
 			string strReturn = "";
-			bool blnAdditionalClip = false;
 			int intAmmoBonus = 0;
 
 			int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name == "Extended Clip" ? 1 : 0) * x.Rating) : 0;
@@ -1578,11 +1564,6 @@ namespace Chummer.Backend.Equipment
 					strAmmos = new string[] { objAccessory.AmmoReplace };
 					break;
 				}
-
-				// If the Mod is an Additional Clip that is not included with the base Weapon, turn on the Additional Clip flag.
-				if ((objAccessory.Name == "Spare Clip" || objAccessory.Name == "Additional Clip, Pistol") && !objAccessory.IncludedInWeapon)
-					blnAdditionalClip = true;
-
 				intAmmoBonus += objAccessory.AmmoBonus;
 			}
 
@@ -1634,14 +1615,6 @@ namespace Chummer.Backend.Equipment
 				strReturn += strThisAmmo + " ";
 			}
 
-			// If the Additional Clip flag is on, increment the clip multiplier.
-			if (blnAdditionalClip)
-			{
-				if (strReturn.Contains("2x"))
-					strReturn = strReturn.Replace("2x", "3x");
-				else
-					strReturn = "2x" + strReturn;
-			}
 			strReturn = strReturn.Trim();
 
 			if (!blnForceEnglish)

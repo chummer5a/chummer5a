@@ -6288,7 +6288,7 @@
 			<avail>11F</avail>
 			<cost>200</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>192</page>
 		</gear>
 		<gear>
 			<id>d3b0f271-9a7c-43b9-b538-f0d381b2bc22</id>
@@ -6298,7 +6298,7 @@
 			<avail>10F</avail>
 			<cost>150</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>192</page>
 		</gear>
 		<gear>
 			<id>151b47c9-03bd-4dfd-9e2b-97b48bef26a5</id>
@@ -6308,7 +6308,7 @@
 			<avail>12F</avail>
 			<cost>350</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>193</page>
 		</gear>
 		<gear>
 			<id>ebfb2bab-c9a5-41fb-8e7d-16dfe313bd16</id>
@@ -6318,7 +6318,18 @@
 			<avail>16F</avail>
 			<cost>575</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>193</page>
+		</gear>
+		<gear>
+			<id>c4e5d594-f578-4b9f-bd36-422135d13208</id>
+			<name>Naga Venom</name>
+			<category>Toxins</category>
+			<rating>99</rating>
+			<avail>(Rating * 3)F</avail>
+			<cost>100 * Rating</cost>
+			<source>HT</source>
+			<page>193</page>
+			<rating>0</rating>
 		</gear>
 		<gear>
 			<id>c4e5d594-f578-4b9f-bd36-422135d13208</id>
@@ -6328,7 +6339,7 @@
 			<avail>14F</avail>
 			<cost>600</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>193</page>
 			<rating>0</rating>
 		</gear>
 		<gear>
@@ -6339,7 +6350,7 @@
 			<avail>18F</avail>
 			<cost>1000</cost>
 			<source>HT</source>
-			<page>194</page>
+			<page>193</page>
 			<rating>0</rating>
 		</gear>
 		<gear>

@@ -14628,6 +14628,14 @@ namespace Chummer
 			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
+			// Apply a markup if applicable.
+			if (frmPickCyberware.Markup != 0 && !frmPickCyberware.FreeCost)
+			{
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickCyberware.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				intCost = Convert.ToInt32(dblCost);
+			}
+
 			// Check the item's Cost and make sure the character can afford it.
 			if (!frmPickCyberware.FreeCost)
 			{
@@ -14649,6 +14657,23 @@ namespace Chummer
 					ExpenseUndo objUndo = new ExpenseUndo();
 					objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
 					objExpense.Undo = objUndo;
+				}
+			}
+
+			objCyberware.VehicleMounted = true;
+			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents until after creation and expects parents to be other cyberware.
+			if (objCyberware.Category == "Cyberlimb Enhancement")
+			{
+				switch (objCyberware.Name)
+				{
+					case "Customized Agility":
+						objCyberware.MinRating = objVehicle.Pilot;
+						objCyberware.MaxRating = objVehicle.Pilot * 2;
+						break;
+					case "Customized Strength":
+						objCyberware.MinRating = objVehicle.TotalBody;
+						objCyberware.MaxRating = objVehicle.TotalBody * 2;
+						break;
 				}
 			}
 
@@ -22667,7 +22692,7 @@ namespace Chummer
 				tabGearMatrixCM.Visible = false;
 				return;
 			}
-			cmdGearIncreaseQty.Enabled = false;
+			cmdGearIncreaseQty.Enabled = true;
 			chkGearHomeNode.Visible = false;
 
 			if (treGear.SelectedNode.Level > 0)
@@ -22720,8 +22745,6 @@ namespace Chummer
 					tabGearMatrixCM.Visible = false;
 				}
 				_blnSkipRefresh = false;
-				if (objGear.Category == "Ammunition")
-					cmdGearIncreaseQty.Enabled = true;
 
 				if (objGear.GetType() == typeof(Commlink))
 				{
@@ -23122,6 +23145,7 @@ namespace Chummer
 
             // Adjust for Black Market Pipeline Discount
 		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";

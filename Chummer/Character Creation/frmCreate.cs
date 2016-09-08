@@ -171,7 +171,8 @@ namespace Chummer
                     _objCharacter.ContactMultiplier = _objOptions.FreeContactsMultiplier;
                 }
                 _objCharacter.MaxKarma = Convert.ToInt32(strKarma);
-                _objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
+				_objCharacter.GameplayOptionQualityLimit = Convert.ToInt32(strKarma);
+				_objCharacter.MaxNuyen = Convert.ToInt32(strNuyen);
 
 
 
@@ -4194,13 +4195,15 @@ namespace Chummer
 
         #region EnemyControl Events
         private void objEnemy_ConnectionRatingChanged(Object sender)
-        {
-            objEnemy_Changed(sender);
-        }
+		{
+			string strMode = "Connection";
+			objEnemy_Changed(sender, strMode);
+		}
 
         private void objEnemy_LoyaltyRatingChanged(Object sender)
         {
-            objEnemy_Changed(sender);
+	        string strMode = "Loyalty";
+            objEnemy_Changed(sender, strMode);
         }
 
         private void objEnemy_GroupStatusChanged(Object sender)
@@ -4213,7 +4216,7 @@ namespace Chummer
             objEnemy_Changed(sender);
         }
         
-        private void objEnemy_Changed(Object sender)
+        private void objEnemy_Changed(Object sender, string strMode = null)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             int intNegativeQualityBP = 0;
@@ -4242,17 +4245,26 @@ namespace Chummer
             int intQualityMax = 0;
             string strQualityPoints = "";
             string strEnemyPoints = "";
-            intEnemyMax = _objCharacter.MaxKarma;
-            intQualityMax = _objCharacter.MaxKarma;
-            strEnemyPoints = intEnemyMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
+	        intEnemyMax = _objCharacter.GameplayOptionQualityLimit;
+            intQualityMax = _objCharacter.GameplayOptionQualityLimit;
+			strEnemyPoints = intEnemyMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
             strQualityPoints = intQualityMax.ToString() + " " + LanguageManager.Instance.GetString("String_Karma");
 
             if (intBPUsed < (intEnemyMax * -1) && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_EnemyLimit").Replace("{0}", strEnemyPoints), LanguageManager.Instance.GetString("MessageTitle_EnemyLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ContactControl objSender = (ContactControl)sender;
-                objSender.ConnectionRating -= (intEnemyMax * -1) - intBPUsed;
-                return;
+	            int intTotal = (intEnemyMax*-1) - intBPUsed;
+	            switch (strMode)
+	            {
+		            case "Connection":
+			            objSender.ConnectionRating -= intTotal;
+			            break;
+		            case "Loyalty":
+			            objSender.LoyaltyRating -= intTotal;
+			            break;
+	            }
+	            return;
             }
 
             if (!_objOptions.ExceedNegativeQualities)
@@ -4261,7 +4273,17 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.Instance.GetString("Message_NegativeQualityLimit").Replace("{0}", strQualityPoints), LanguageManager.Instance.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ContactControl objSender = (ContactControl)sender;
-                    objSender.ConnectionRating -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) / _objOptions.KarmaQuality);
+	                switch (strMode)
+	                {
+		                case "Connection":
+			                objSender.ConnectionRating -= (((intQualityMax*-1) - (intBPUsed + intNegativeQualityBP))/
+			                                               _objOptions.KarmaQuality);
+			                break;
+		                case "Loyalty":
+			                objSender.LoyaltyRating -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+			                                            _objOptions.KarmaQuality);
+			                break;
+	                }
                 }
             }
 
@@ -4716,10 +4738,10 @@ namespace Chummer
             string strEnemyPoints = "";
             string strQualityPoints = "";
             intBPUsed = -2 * _objOptions.KarmaQuality;
-            intEnemyMax = 50;
-            intQualityMax = 70;
-            strEnemyPoints = "50 " + LanguageManager.Instance.GetString("String_Karma");
-            strQualityPoints = "70 " + LanguageManager.Instance.GetString("String_Karma");
+            intEnemyMax = _objCharacter.GameplayOptionQualityLimit;
+            intQualityMax = _objCharacter.GameplayOptionQualityLimit;
+			strEnemyPoints = _objCharacter.GameplayOptionQualityLimit + " " + LanguageManager.Instance.GetString("String_Karma");
+            strQualityPoints = _objCharacter.GameplayOptionQualityLimit + " " + LanguageManager.Instance.GetString("String_Karma");
 
             foreach (ContactControl objEnemyControl in panEnemies.Controls)
             {
@@ -10131,6 +10153,7 @@ namespace Chummer
             frmPickCyberware.ShowOnlySubsystems = true;
             frmPickCyberware.Subsystems = objMod.Subsystems;
             frmPickCyberware.AllowModularPlugins = objMod.AllowModularPlugins;
+            frmPickCyberware.ParentVehicle = objVehicle;
             frmPickCyberware.ShowDialog(this);
 
             if (frmPickCyberware.DialogResult == DialogResult.Cancel)
@@ -10154,8 +10177,24 @@ namespace Chummer
                 objCyberware.Cost = "0";
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+            objCyberware.VehicleMounted = true;
+			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents.
+			if (objCyberware.Category == "Cyberlimb Enhancement")
+			{
+				switch (objCyberware.Name)
+				{
+					case "Customized Agility":
+						objCyberware.MinRating = objVehicle.Pilot;
+						objCyberware.MaxRating = objVehicle.Pilot * 2;
+						break;
+					case "Customized Strength":
+						objCyberware.MinRating = objVehicle.TotalBody;
+						objCyberware.MaxRating = objVehicle.TotalBody * 2;
+						break;
+				}
+			}
 
-            treVehicles.SelectedNode.Nodes.Add(objNode);
+			treVehicles.SelectedNode.Nodes.Add(objNode);
             treVehicles.SelectedNode.Expand();
             objMod.Cyberware.Add(objCyberware);
 
@@ -14704,9 +14743,9 @@ namespace Chummer
             {
                 if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
                      _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
-                    intNegativeQualities < -1*_objCharacter.MaxKarma)
+                    intNegativeQualities < -1*_objCharacter.GameplayOptionQualityLimit)
                 {
-                    intNegativeQualities = -1*_objCharacter.MaxKarma;
+                    intNegativeQualities = -1*_objCharacter.GameplayOptionQualityLimit;
                 }
                 else
                 {
@@ -16732,7 +16771,9 @@ namespace Chummer
                 lblGearName.Text = objGear.DisplayNameShort;
                 lblGearCategory.Text = objGear.DisplayCategory;
                 lblGearAvail.Text = objGear.TotalAvail(true);
-                try
+				nudGearQty.Enabled = true;
+				nudGearQty.Increment = objGear.CostFor;
+				try
                 {
                     lblGearCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
                 }
@@ -16853,8 +16894,6 @@ namespace Chummer
                 if (treGear.SelectedNode.Level == 1)
                 {
                     _blnSkipRefresh = true;
-                    nudGearQty.Enabled = true;
-                    nudGearQty.Increment = objGear.CostFor;
                     //nudGearQty.Minimum = objGear.CostFor;
                     chkGearEquipped.Visible = true;
                     chkGearEquipped.Checked = objGear.Equipped;
@@ -16862,7 +16901,7 @@ namespace Chummer
                 }
                 else
                 {
-                    nudGearQty.Enabled = false;
+                    //nudGearQty.Enabled = false;
                     _blnSkipRefresh = true;
                     chkGearEquipped.Visible = true;
                     chkGearEquipped.Checked = objGear.Equipped;
@@ -16903,7 +16942,7 @@ namespace Chummer
             }
         }
 
-		// <summary>
+		/// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
         private void UpdateWindowTitle(bool blnCanSkip = true)
@@ -17205,7 +17244,7 @@ namespace Chummer
 
 	        objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
 
-            List<Weapon> objWeapons = new List<Weapon>();
+			List<Weapon> objWeapons = new List<Weapon>();
             TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             objCyberware.Create(objXmlCyberware, _objCharacter, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objNode, objWeapons, objWeaponNodes);
@@ -19065,1115 +19104,1122 @@ namespace Chummer
             cboCyberwareGrade.DataSource = lstCyberwareGrades;
         }
 
-        /// <summary>
-        /// Check the character and determine if it has broken any of the rules.
-        /// </summary>
-        public bool ValidateCharacter()
-        {
-            bool blnValid = true;
-            string strMessage = LanguageManager.Instance.GetString("Message_InvalidBeginning");
+		/// <summary>
+		/// Check the character and determine if it has broken any of the rules.
+		/// </summary>
+		/// <returns></returns>
+		public bool CheckCharacterValidity()
+		{
+			bool blnValid = true;
+			string strMessage = LanguageManager.Instance.GetString("Message_InvalidBeginning");
 
-            // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
-            int intRestrictedAllowed = _objImprovementManager.ValueOf(Improvement.ImprovementType.RestrictedItemCount);
-            int intRestrictedCount = 0;
-            string strAvailItems = "";
-            string strExConItems = "";
-            string strCyberwareGrade = "";
+			// Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
+			int intRestrictedAllowed = _objImprovementManager.ValueOf(Improvement.ImprovementType.RestrictedItemCount);
+			int intRestrictedCount = 0;
+			string strAvailItems = "";
+			string strExConItems = "";
+			string strCyberwareGrade = "";
 
-            // Check limits specific to the Priority build method.
-	        if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
-	            _objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
-	        {
-		        // Check if the character has more than 1 Martial Art
-		        int intMartialArts = _objCharacter.MartialArts.Count;
-		        if (intMartialArts > 1)
-			        strMessage += "\n\t" +
-			                      LanguageManager.Instance.GetString("Message_InvalidPointExcess")
-				                      .Replace("{0}",
-					                      ((1 - intMartialArts)*-1).ToString() + " " +
-					                      LanguageManager.Instance.GetString("String_MartialArtsCount"));
+			// Check limits specific to the Priority build method.
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority ||
+				_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+			{
+				// Check if the character has more than 1 Martial Art
+				int intMartialArts = _objCharacter.MartialArts.Count;
+				if (intMartialArts > 1)
+					strMessage += "\n\t" +
+								  LanguageManager.Instance.GetString("Message_InvalidPointExcess")
+									  .Replace("{0}",
+										  ((1 - intMartialArts) * -1).ToString() + " " +
+										  LanguageManager.Instance.GetString("String_MartialArtsCount"));
 
-		        // Check if the character has more than 5 Techniques in a Martial Art
-		        if (_objCharacter.MartialArts.Count > 0)
-		        {
-			        int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
-			        if (intTechniques > 5)
-				        strMessage += "\n\t" +
-				                      LanguageManager.Instance.GetString("Message_InvalidPointExcess")
-					                      .Replace("{0}",
-						                      ((5 - intTechniques)*-1).ToString() + " " +
-						                      LanguageManager.Instance.GetString("String_TechniquesCount"));
-		        }
+				// Check if the character has more than 5 Techniques in a Martial Art
+				if (_objCharacter.MartialArts.Count > 0)
+				{
+					int intTechniques = _objCharacter.MartialArts[0].Advantages.Count;
+					if (intTechniques > 5)
+						strMessage += "\n\t" +
+									  LanguageManager.Instance.GetString("Message_InvalidPointExcess")
+										  .Replace("{0}",
+											  ((5 - intTechniques) * -1).ToString() + " " +
+											  LanguageManager.Instance.GetString("String_TechniquesCount"));
+				}
 
-		        // Check if the character has gone over limits from optional rules
-		        int intContactPointsUsed = 0;
-		        int intGroupContacts = 0;
-		        int intHighPlaces = 0;
-		        foreach (ContactControl objContactControl in panContacts.Controls)
-		        {
-			        if (!objContactControl.Free)
-			        {
-				        if (objContactControl.IsGroup)
-				        {
-					        intGroupContacts += objContactControl.ContactObject.ContactPoints;
-				        }
-				        else if (objContactControl.ConnectionRating >= 8 && _objCharacter.FriendsInHighPlaces)
-				        {
-					        intHighPlaces += (objContactControl.ConnectionRating +
-					                          objContactControl.LoyaltyRating);
-				        }
-				        else
-				        {
-					        // The Contact's BP cost = their Connection + Loyalty Rating.
-					        intContactPointsUsed += (objContactControl.ConnectionRating +
-					                                 objContactControl.LoyaltyRating)*_objOptions.BPContact;
-				        }
+				// Check if the character has gone over limits from optional rules
+				int intContactPointsUsed = 0;
+				int intGroupContacts = 0;
+				int intHighPlaces = 0;
+				foreach (ContactControl objContactControl in panContacts.Controls)
+				{
+					if (!objContactControl.Free)
+					{
+						if (objContactControl.IsGroup)
+						{
+							intGroupContacts += objContactControl.ContactObject.ContactPoints;
+						}
+						else if (objContactControl.ConnectionRating >= 8 && _objCharacter.FriendsInHighPlaces)
+						{
+							intHighPlaces += (objContactControl.ConnectionRating +
+											  objContactControl.LoyaltyRating);
+						}
+						else
+						{
+							// The Contact's BP cost = their Connection + Loyalty Rating.
+							intContactPointsUsed += (objContactControl.ConnectionRating +
+													 objContactControl.LoyaltyRating) * _objOptions.BPContact;
+						}
 
-			        }
-		        }
+					}
+				}
 
-		        // If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
-		        int intFreePoints = (_objCharacter.CHA.TotalValue*_objOptions.FreeContactsMultiplier);
+				// If the option for CHA * X free points of Contacts is enabled, deduct that amount of points (or as many points have been spent if not the full amount).
+				int intFreePoints = (_objCharacter.CHA.TotalValue * _objOptions.FreeContactsMultiplier);
 
-				
 
-		        if (intContactPointsUsed >= intFreePoints)
-		        {
-			        intContactPointsUsed -= intFreePoints;
-		        }
-		        else
-		        {
-			        intContactPointsUsed = 0;
-		        }
 
-		        intContactPointsUsed += Math.Max(0, intHighPlaces - (_objCharacter.CHA.TotalValue*4));
+				if (intContactPointsUsed >= intFreePoints)
+				{
+					intContactPointsUsed -= intFreePoints;
+				}
+				else
+				{
+					intContactPointsUsed = 0;
+				}
 
-		        //if (intContactPointsUsed > _objCharacter.ContactPoints)
-		        //    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
+				intContactPointsUsed += Math.Max(0, intHighPlaces - (_objCharacter.CHA.TotalValue * 4));
 
-		        // Calculate the BP used by Enemies. These are added to the BP since they are technically
-		        // a Negative Quality.
-		        int intPointsUsed = 0;
-		        int intNegativePoints = 0;
-		        foreach (ContactControl objContactControl in panEnemies.Controls)
-		        {
-			        if (!objContactControl.Free)
-			        {
-				        // The Enemy's BP cost = their Connection + Loyalty Rating.
-				        //intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
-                        //                 _objOptions.KarmaContact;
-                        intNegativePoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaEnemy;
-			        }
-		        }
+				//if (intContactPointsUsed > _objCharacter.ContactPoints)
+				//    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", ((_objCharacter.ContactPoints - intContactPointsUsed) * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Contacts"));
 
-		        // Calculate the BP used by Positive Qualities.
-		        intPointsUsed = 0;
-		        foreach (Quality objQuality in _objCharacter.Qualities)
-		        {
-			        if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
-			        {
-				        intPointsUsed += objQuality.BP;
-			        }
-		        }
-		        // Group contacts are counted as positive qualities
-		        intPointsUsed += intGroupContacts;
+				// Calculate the BP used by Enemies. These are added to the BP since they are technically
+				// a Negative Quality.
+				int intPointsUsed = 0;
+				int intNegativePoints = 0;
+				foreach (ContactControl objContactControl in panEnemies.Controls)
+				{
+					if (!objContactControl.Free)
+					{
+						// The Enemy's BP cost = their Connection + Loyalty Rating.
+						//intPointsUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating)*
+						//                 _objOptions.KarmaContact;
+						intNegativePoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * _objOptions.KarmaEnemy;
+					}
+				}
 
-		        // Deduct the amount for free Qualities.
-		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
-		        int intPositivePointsUsed = intPointsUsed;
+				// Calculate the BP used by Positive Qualities.
+				intPointsUsed = 0;
+				foreach (Quality objQuality in _objCharacter.Qualities)
+				{
+					if (objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit)
+					{
+						intPointsUsed += objQuality.BP;
+					}
+				}
+				// Group contacts are counted as positive qualities
+				intPointsUsed += intGroupContacts;
 
-		        // Calculate the BP used for Negative Qualities.
-		        intPointsUsed = 0;
-		        foreach (Quality objQuality in _objCharacter.Qualities)
-		        {
-			        if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit)
-			        {
-				        intPointsUsed += objQuality.BP;
-				        intNegativePoints += objQuality.BP;
-			        }
-		        }
+				// Deduct the amount for free Qualities.
+				intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreePositiveQualities);
+				int intPositivePointsUsed = intPointsUsed;
 
-		        // Deduct the amount for free Qualities.
-		        intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
-		        intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+				// Calculate the BP used for Negative Qualities.
+				intPointsUsed = 0;
+				foreach (Quality objQuality in _objCharacter.Qualities)
+				{
+					if (objQuality.Type == QualityType.Negative && objQuality.ContributeToBP && objQuality.ContributeToLimit)
+					{
+						intPointsUsed += objQuality.BP;
+						intNegativePoints += objQuality.BP;
+					}
+				}
 
-		        // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-		        if (_objOptions.ExceedNegativeQualitiesLimit)
-		        {
-			        if (intNegativePoints < (_objCharacter.MaxKarma*-1))
-			        {
-				        intNegativePoints = -1 * _objCharacter.MaxKarma;
-			        }
-		        }
+				// Deduct the amount for free Qualities.
+				intPointsUsed -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
+				intNegativePoints -= _objImprovementManager.ValueOf(Improvement.ImprovementType.FreeNegativeQualities);
 
-		        // if positive points > 25
-                if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
-		        {
-			        strMessage += "\n\t" +
-			                      LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
-				                      .Replace("{0}", (_objCharacter.MaxKarma).ToString());
-			        blnValid = false;
-		        }
+				// If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+				if (_objOptions.ExceedNegativeQualitiesLimit)
+				{
+					if ((_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen ||
+					 _objCharacter.BuildMethod == CharacterBuildMethod.Priority) &&
+					intNegativePoints < -1 * _objCharacter.MaxKarma)
+					{
+						intNegativePoints = -1 * _objCharacter.MaxKarma;
+					}
+					else
+					{
+						intNegativePoints = -1 * _objCharacter.GameplayOptionQualityLimit;
+					}
+				}
 
-		        // if negative points > 25
-                if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
-		        {
-			        strMessage += "\n\t" +
-			                      LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
-				                      .Replace("{0}", (_objCharacter.MaxKarma).ToString());
-			        blnValid = false;
-		        }
+				// if positive points > 25
+				if (intPositivePointsUsed > _objCharacter.MaxKarma && !_objOptions.ExceedPositiveQualities)
+				{
+					strMessage += "\n\t" +
+								  LanguageManager.Instance.GetString("Message_PositiveQualityLimit")
+									  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+					blnValid = false;
+				}
 
-	        }
+				// if negative points > 25
+				if (intNegativePoints < (_objCharacter.MaxKarma * -1) && !_objOptions.ExceedNegativeQualities)
+				{
+					strMessage += "\n\t" +
+								  LanguageManager.Instance.GetString("Message_NegativeQualityLimit")
+									  .Replace("{0}", (_objCharacter.MaxKarma).ToString());
+					blnValid = false;
+				}
 
-	        if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7 && !x.Free))
-	        {
-		        blnValid = false;
-		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_HighContact");
-	        }
+			}
 
-            // Check if the character has gone over the Build Point total.
-            int intBuildPoints = CalculateBP();
-            if (intBuildPoints < 0 && !_blnFreestyle)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", (intBuildPoints * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
-            }
+			if (_objCharacter.Contacts.Any(x => x.Connection <= 7 && (x.Connection + x.Loyalty) > 7 && !x.Free))
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_HighContact");
+			}
 
-            // if character has more than permitted Metagenetic qualities
-            if (_objCharacter.MetageneticLimit > 0)
-            {
-                int metageneticPositiveQualities = 0;
-                int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in _objCharacter.Qualities)
-                {
-                    if (objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString())
-                    {
-                        if (objQuality.Type == QualityType.Positive)
-                        {
-                            metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
-                        }
-                        else if (objQuality.Type == QualityType.Negative)
-                        {
-                            metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
-                        }
-                    }
-                }
-                if (metageneticNegativeQualities > _objCharacter.MetageneticLimit)
-                {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
-                    blnValid = false;
-                }
-                if (metageneticPositiveQualities > _objCharacter.MetageneticLimit)
-                {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
-                    blnValid = false;
-                }
+			// Check if the character has gone over the Build Point total.
+			int intBuildPoints = CalculateBP();
+			if (intBuildPoints < 0 && !_blnFreestyle)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidPointExcess").Replace("{0}", (intBuildPoints * -1).ToString() + " " + LanguageManager.Instance.GetString("String_Karma"));
+			}
 
-                if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
-                {
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesUnbalanced").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", (metageneticPositiveQualities - 1).ToString()).Replace("{2}", metageneticPositiveQualities.ToString());
-                    blnValid = false;
-                }
-                //Subtract 1 karma to balance Metagenic Qualities
-                if (metageneticNegativeQualities == (metageneticPositiveQualities - 1))
-                {
-                    if (intBuildPoints > 0)
-                    {
-                        if (MessageBox.Show(LanguageManager.Instance.GetString("Message_MetagenicQualitiesSubtractingKarma").Replace("{0}", intBuildPoints.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                        {
-                            blnValid = false;
-                        }
-                        else
-                        {
-                            intBuildPoints = intBuildPoints - 1;
-                        }
-                    }
-                    else
-                    {
-                        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesInsufficientKarma").Replace("{0}", intBuildPoints.ToString());
-                        blnValid = false;
-                    }
-                }
+			// if character has more than permitted Metagenetic qualities
+			if (_objCharacter.MetageneticLimit > 0)
+			{
+				int metageneticPositiveQualities = 0;
+				int metageneticNegativeQualities = 0;
+				foreach (Quality objQuality in _objCharacter.Qualities)
+				{
+					if (objQuality._strMetagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString())
+					{
+						if (objQuality.Type == QualityType.Positive)
+						{
+							metageneticPositiveQualities = metageneticPositiveQualities + objQuality.BP;
+						}
+						else if (objQuality.Type == QualityType.Negative)
+						{
+							metageneticNegativeQualities = metageneticNegativeQualities - objQuality.BP;
+						}
+					}
+				}
+				if (metageneticNegativeQualities > _objCharacter.MetageneticLimit)
+				{
+					strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverNegativeMetagenicQualities").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
+					blnValid = false;
+				}
+				if (metageneticPositiveQualities > _objCharacter.MetageneticLimit)
+				{
+					strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverPositiveMetagenicQualities").Replace("{0}", metageneticPositiveQualities.ToString()).Replace("{1}", _objCharacter.MetageneticLimit.ToString());
+					blnValid = false;
+				}
 
-            }
-            // Check if the character has gone over on Primary Attributes
-            if (_objCharacter.Attributes < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", ((_objCharacter.Attributes) * -1).ToString());
-            }
+				if (metageneticNegativeQualities != metageneticPositiveQualities && metageneticNegativeQualities != (metageneticPositiveQualities - 1))
+				{
+					strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesUnbalanced").Replace("{0}", metageneticNegativeQualities.ToString()).Replace("{1}", (metageneticPositiveQualities - 1).ToString()).Replace("{2}", metageneticPositiveQualities.ToString());
+					blnValid = false;
+				}
+				//Subtract 1 karma to balance Metagenic Qualities
+				if (metageneticNegativeQualities == (metageneticPositiveQualities - 1))
+				{
+					if (intBuildPoints > 0)
+					{
+						if (MessageBox.Show(LanguageManager.Instance.GetString("Message_MetagenicQualitiesSubtractingKarma").Replace("{0}", intBuildPoints.ToString()), LanguageManager.Instance.GetString("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+						{
+							blnValid = false;
+						}
+						else
+						{
+							intBuildPoints = intBuildPoints - 1;
+						}
+					}
+					else
+					{
+						strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_MetagenicQualitiesInsufficientKarma").Replace("{0}", intBuildPoints.ToString());
+						blnValid = false;
+					}
+				}
 
-            // Check if the character has gone over on Special Attributes
-            if (_objCharacter.Special < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSpecialExcess").Replace("{0}", ((_objCharacter.Special) * -1).ToString());
-            }
+			}
+			// Check if the character has gone over on Primary Attributes
+			if (_objCharacter.Attributes < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAttributeExcess").Replace("{0}", ((_objCharacter.Attributes) * -1).ToString());
+			}
 
-            // Check if the character has gone over on Skill Groups
-            if (_objCharacter.SkillsSection.SkillGroupPoints < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSkillGroupExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillGroupPoints) * -1).ToString());
-            }
+			// Check if the character has gone over on Special Attributes
+			if (_objCharacter.Special < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSpecialExcess").Replace("{0}", ((_objCharacter.Special) * -1).ToString());
+			}
 
-            // Check if the character has gone over on Active Skills
-            if (_objCharacter.SkillsSection.SkillPoints < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidActiveSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillPoints) * -1).ToString());
-            }
+			// Check if the character has gone over on Skill Groups
+			if (_objCharacter.SkillsSection.SkillGroupPoints < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidSkillGroupExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillGroupPoints) * -1).ToString());
+			}
 
-            // Check if the character has gone over on Knowledge Skills
-            if (_objCharacter.SkillsSection.KnowledgeSkillPointsRemain < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString());
-            }
+			// Check if the character has gone over on Active Skills
+			if (_objCharacter.SkillsSection.SkillPoints < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidActiveSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.SkillPoints) * -1).ToString());
+			}
 
-            // Check if the character has gone over the Nuyen limit.
-            int intNuyen = CalculateNuyen();
-            if (intNuyen < 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNuyenExcess").Replace("{0}", String.Format("{0:###,###,##0¥}", (intNuyen * -1)));
-            }
+			// Check if the character has gone over on Knowledge Skills
+			if (_objCharacter.SkillsSection.KnowledgeSkillPointsRemain < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidKnowledgeSkillExcess").Replace("{0}", ((_objCharacter.SkillsSection.KnowledgeSkillPointsRemain) * -1).ToString());
+			}
 
-            // Check if the character's Essence is above 0.
-            decimal decEss = _objCharacter.Essence;
-            if (decEss < 0.01m && _objCharacter.ESS.MetatypeMaximum > 0)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidEssenceExcess").Replace("{0}", ((decEss - 0.01m) * -1).ToString());
-            }
+			// Check if the character has gone over the Nuyen limit.
+			int intNuyen = CalculateNuyen();
+			if (intNuyen < 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNuyenExcess").Replace("{0}", String.Format("{0:###,###,##0¥}", (intNuyen * -1)));
+			}
 
-            // If the character has Magician enabled, make sure a Tradition has been selected.
-            if (_objCharacter.MagicianEnabled && _objCharacter.MagicTradition == "")
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNoTradition");
-            }
+			// Check if the character's Essence is above 0.
+			decimal decEss = _objCharacter.Essence;
+			if (decEss < 0.01m && _objCharacter.ESS.MetatypeMaximum > 0)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidEssenceExcess").Replace("{0}", ((decEss - 0.01m) * -1).ToString());
+			}
 
-            // If the character has RES enabled, make sure a Stream has been selected.
-            if (_objCharacter.RESEnabled && _objCharacter.TechnomancerStream == "")
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNoStream");
-            }
+			// If the character has Magician enabled, make sure a Tradition has been selected.
+			if (_objCharacter.MagicianEnabled && _objCharacter.MagicTradition == "")
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNoTradition");
+			}
+
+			// If the character has RES enabled, make sure a Stream has been selected.
+			if (_objCharacter.RESEnabled && _objCharacter.TechnomancerStream == "")
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidNoStream");
+			}
 
 			// Check if the character has more than the permitted amount of native languages.
-	        int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => (objSkill.SkillCategory == "Language" && objSkill.Rating == 0));
-			
-			//TODO: This should probably be an improvement type. Also slightly excessive, as Bilingual normally has a limit of 1.
-	        int intLanguageLimit = 1 + _objCharacter.Qualities.Count(objQuality => objQuality.Name == "Bilingual");
+			int intLanguages = _objCharacter.SkillsSection.KnowledgeSkills.Count(objSkill => (objSkill.SkillCategory == "Language" && objSkill.Rating == 0));
 
-	        if (intLanguages > intLanguageLimit)
-	        {
-		        blnValid = false;
-				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverLanguageLimit").Replace("{0}",intLanguages.ToString()).Replace("{1}", intLanguageLimit.ToString());
+			//TODO: This should probably be an improvement type. Also slightly excessive, as Bilingual normally has a limit of 1.
+			int intLanguageLimit = 1 + _objCharacter.Qualities.Count(objQuality => objQuality.Name == "Bilingual");
+
+			if (intLanguages > intLanguageLimit)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_OverLanguageLimit").Replace("{0}", intLanguages.ToString()).Replace("{1}", intLanguageLimit.ToString());
 			}
 
 
-	        // Check the character's equipment and make sure nothing goes over their set Maximum Availability.
-            bool blnRestrictedGearUsed = false;
-            // Gear Availability.
-            foreach (Gear objGear in _objCharacter.Gear)
-            {
-                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                {
-                    if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                    {
-                        blnRestrictedGearUsed = true;
-                    }
-                    else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                    }
-                }
+			// Check the character's equipment and make sure nothing goes over their set Maximum Availability.
+			bool blnRestrictedGearUsed = false;
+			// Gear Availability.
+			foreach (Gear objGear in _objCharacter.Gear)
+			{
+				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+				{
+					if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+					{
+						blnRestrictedGearUsed = true;
+					}
+					else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+					}
+				}
 
-                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                {
-                    intRestrictedCount++;
-                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                }
-                foreach (Gear objChild in objGear.Children)
-                {
-                    if (!objChild.TotalAvail().StartsWith("+"))
-                    {
+				else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+				{
+					intRestrictedCount++;
+					strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+				}
+				foreach (Gear objChild in objGear.Children)
+				{
+					if (!objChild.TotalAvail().StartsWith("+"))
+					{
 
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                        }
-                        foreach (Gear objSubChild in objChild.Children)
-                        {
-                            if (!objSubChild.TotalAvail().StartsWith("+"))
-                            {
-                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                    }
-                                    else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                    }
-                                }
+						else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+						}
+						foreach (Gear objSubChild in objChild.Children)
+						{
+							if (!objSubChild.TotalAvail().StartsWith("+"))
+							{
+								if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+								{
+									if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+									{
+										blnRestrictedGearUsed = true;
+									}
+									else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+									}
+								}
 
-                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+								else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+								}
+							}
+						}
+					}
+				}
+			}
 
-            // Cyberware Availability.
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-            {
-                if (objCyberware.Grade.Name == "Deltaware" || objCyberware.Grade.Name == "Betaware")
-                {
-                    strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort;
-                }
+			// Cyberware Availability.
+			foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+			{
+				if (objCyberware.Grade.Name == "Deltaware" || objCyberware.Grade.Name == "Betaware")
+				{
+					strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort;
+				}
 
-                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                {
-                    if ((GetAvailInt(objCyberware.TotalAvail) <= 24) && ((GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)))
-                    {
-                        blnRestrictedGearUsed = true;
-                    }
-                    else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
-                    }
-                }
+				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+				{
+					if ((GetAvailInt(objCyberware.TotalAvail) <= 24) && ((GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)))
+					{
+						blnRestrictedGearUsed = true;
+					}
+					else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
+					}
+				}
 
-                else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
-                {
-                    intRestrictedCount++;
-                    strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
-                }
+				else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+				{
+					intRestrictedCount++;
+					strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
+				}
 
-                foreach (Cyberware objPlugin in objCyberware.Children)
-                {
-                    if (!objPlugin.TotalAvail.StartsWith("+"))
-                    {
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objPlugin.TotalAvail) <= 24) && ((GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objPlugin.DisplayNameShort;
-                            }
-                        }
+				foreach (Cyberware objPlugin in objCyberware.Children)
+				{
+					if (!objPlugin.TotalAvail.StartsWith("+"))
+					{
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objPlugin.TotalAvail) <= 24) && ((GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objPlugin.TotalAvail) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objPlugin.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
-                        }
-                    }
+						else if (GetAvailInt(objCyberware.TotalAvail) > _objCharacter.MaximumAvailability)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objCyberware.DisplayNameShort;
+						}
+					}
 
-                    foreach (Gear objGear in objPlugin.Gear)
-                    {
-                        if (!objGear.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                }
-                            }
+					foreach (Gear objGear in objPlugin.Gear)
+					{
+						if (!objGear.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+								}
+							}
 
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (!objChild.TotalAvail().StartsWith("+"))
-                            {
-                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                    }
-                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                    }
-                                }
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (!objChild.TotalAvail().StartsWith("+"))
+							{
+								if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+								{
+									if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+									{
+										blnRestrictedGearUsed = true;
+									}
+									else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+									}
+								}
 
-                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                }
-                            }
-                            foreach (Gear objSubChild in objChild.Children)
-                            {
-                                if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                        }
-                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                        }
-                                    }
+								else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+								}
+							}
+							foreach (Gear objSubChild in objChild.Children)
+							{
+								if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+									{
+										if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+										{
+											blnRestrictedGearUsed = true;
+										}
+										else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+										{
+											intRestrictedCount++;
+											strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+										}
+									}
 
-                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+									else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+									}
+								}
+							}
+						}
+					}
+				}
 
-                foreach (Gear objGear in objCyberware.Gear)
-                {
-                    if (!objGear.TotalAvail().StartsWith("+"))
-                    {
+				foreach (Gear objGear in objCyberware.Gear)
+				{
+					if (!objGear.TotalAvail().StartsWith("+"))
+					{
 
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                        }
-                    }
-                    foreach (Gear objChild in objGear.Children)
-                    {
-                        if (!objChild.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                }
-                            }
+						else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+						}
+					}
+					foreach (Gear objChild in objGear.Children)
+					{
+						if (!objChild.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+								}
+							}
 
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                        foreach (Gear objSubChild in objChild.Children)
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                    }
-                                }
-                            }
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+						foreach (Gear objSubChild in objChild.Children)
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+									}
+								}
+							}
 
-                            else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                    }
-                }
-            }
+							else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+					}
+				}
+			}
 
-            // Armor Availability.
-            foreach (Armor objArmor in _objCharacter.Armor)
-            {
+			// Armor Availability.
+			foreach (Armor objArmor in _objCharacter.Armor)
+			{
 
-                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                {
-                    if ((GetAvailInt(objArmor.TotalAvail) <= 24) && ((GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)))
-                    {
-                        blnRestrictedGearUsed = true;
-                    }
-                    else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
-                    }
-                }
+				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+				{
+					if ((GetAvailInt(objArmor.TotalAvail) <= 24) && ((GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)))
+					{
+						blnRestrictedGearUsed = true;
+					}
+					else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
+					}
+				}
 
-                else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
-                {
-                    intRestrictedCount++;
-                    strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
-                }
+				else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
+				{
+					intRestrictedCount++;
+					strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
+				}
 
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
-                {
-                    if (!objMod.TotalAvail.StartsWith("+"))
-                    {
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
-                            }
-                        }
+				foreach (ArmorMod objMod in objArmor.ArmorMods)
+				{
+					if (!objMod.TotalAvail.StartsWith("+"))
+					{
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objMod.TotalAvail) <= 24) && ((GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objMod.TotalAvail) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objMod.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
-                        }
-                    }
+						else if (GetAvailInt(objArmor.TotalAvail) > _objCharacter.MaximumAvailability)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objArmor.DisplayNameShort;
+						}
+					}
 
-                    foreach (Gear objGear in objArmor.Gear)
-                    {
-                        if (!objGear.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                }
-                            }
+					foreach (Gear objGear in objArmor.Gear)
+					{
+						if (!objGear.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+								}
+							}
 
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (!objChild.TotalAvail().StartsWith("+"))
-                            {
-                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                    }
-                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                    }
-                                }
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (!objChild.TotalAvail().StartsWith("+"))
+							{
+								if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+								{
+									if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+									{
+										blnRestrictedGearUsed = true;
+									}
+									else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+									}
+								}
 
-                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                }
-                            }
-                            foreach (Gear objSubChild in objChild.Children)
-                            {
-                                if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                        }
-                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                        }
-                                    }
+								else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+								}
+							}
+							foreach (Gear objSubChild in objChild.Children)
+							{
+								if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+									{
+										if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+										{
+											blnRestrictedGearUsed = true;
+										}
+										else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+										{
+											intRestrictedCount++;
+											strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+										}
+									}
 
-                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+									else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+									}
+								}
+							}
+						}
+					}
+				}
 
-                foreach (Gear objGear in objArmor.Gear)
-                {
-                    if (!objGear.TotalAvail().StartsWith("+"))
-                    {
+				foreach (Gear objGear in objArmor.Gear)
+				{
+					if (!objGear.TotalAvail().StartsWith("+"))
+					{
 
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                        }
-                    }
-                    foreach (Gear objChild in objGear.Children)
-                    {
-                        if (!objChild.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                }
-                            }
+						else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+						}
+					}
+					foreach (Gear objChild in objGear.Children)
+					{
+						if (!objChild.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+								}
+							}
 
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                        foreach (Gear objSubChild in objChild.Children)
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                    }
-                                }
-                            }
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+						foreach (Gear objSubChild in objChild.Children)
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+									}
+								}
+							}
 
-                            else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                    }
-                }
-            }
+							else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+					}
+				}
+			}
 
-            // Weapon Availability.
-            foreach (Weapon objWeapon in _objCharacter.Weapons)
-            {
-                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                {
-                    if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)))
-                    {
-                        blnRestrictedGearUsed = true;
-                    }
-                    else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
-                    }
-                }
+			// Weapon Availability.
+			foreach (Weapon objWeapon in _objCharacter.Weapons)
+			{
+				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+				{
+					if ((GetAvailInt(objWeapon.TotalAvail) <= 24) && ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)))
+					{
+						blnRestrictedGearUsed = true;
+					}
+					else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+					}
+				}
 
-                else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
-                {
-                    intRestrictedCount++;
-                    strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
-                }
-                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                {
-                    if (!objAccessory.TotalAvail.StartsWith("+"))
-                    {
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)) && !objAccessory.IncludedInWeapon)
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
-                            }
-                        }
+				else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+				{
+					intRestrictedCount++;
+					strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+				}
+				foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+				{
+					if (!objAccessory.TotalAvail.StartsWith("+"))
+					{
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objAccessory.TotalAvail) <= 24) && ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)) && !objAccessory.IncludedInWeapon)
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
+							}
+						}
 
-                        else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
-                        {
-                            intRestrictedCount++;
-                            strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
-                        }
-                    }
+						else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability && !objAccessory.IncludedInWeapon)
+						{
+							intRestrictedCount++;
+							strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+						}
+					}
 
-                    foreach (Gear objGear in objAccessory.Gear)
-                    {
-                        if (!objGear.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                }
-                            }
+					foreach (Gear objGear in objAccessory.Gear)
+					{
+						if (!objGear.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objGear.TotalAvail(true)) <= 24) && ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+								}
+							}
 
-                            else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                            }
-                        }
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (!objChild.TotalAvail().StartsWith("+"))
-                            {
-                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                    }
-                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                    }
-                                }
+							else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+							}
+						}
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (!objChild.TotalAvail().StartsWith("+"))
+							{
+								if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+								{
+									if ((GetAvailInt(objChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+									{
+										blnRestrictedGearUsed = true;
+									}
+									else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+									}
+								}
 
-                                else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                }
-                            }
-                            foreach (Gear objSubChild in objChild.Children)
-                            {
-                                if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                        }
-                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                        }
-                                    }
+								else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+								}
+							}
+							foreach (Gear objSubChild in objChild.Children)
+							{
+								if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+									{
+										if ((GetAvailInt(objSubChild.TotalAvail(true)) <= 24) && ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)))
+										{
+											blnRestrictedGearUsed = true;
+										}
+										else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+										{
+											intRestrictedCount++;
+											strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+										}
+									}
 
-                                    else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+									else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 
-            // Vehicle Availability.
-            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-            {
-                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                {
-                    if ((GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicle.CalculatedAvail) <= 24))
-                    {
-                        blnRestrictedGearUsed = true;
-                    }
-                    else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
-                    }
-                }
-                else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
-                {
-                    intRestrictedCount++;
-                    strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
-                }
-                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
-                {
-                    if (!objVehicleMod.TotalAvail.StartsWith("+"))
-                    {
-                        if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                        {
-                            if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24) && !objVehicleMod.IncludedInVehicle)
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability && !objVehicleMod.IncludedInVehicle)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objVehicleMod.DisplayNameShort;
-                            }
-                        }
-                        foreach (Weapon objWeapon in objVehicleMod.Weapons)
-                        {
-                            if ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objWeapon.TotalAvail) <= 24))
-                            {
-                                blnRestrictedGearUsed = true;
-                            }
-                            else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
-                            {
-                                intRestrictedCount++;
-                                strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
-                            }
-                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                            {
-                                if (!objAccessory.TotalAvail.StartsWith("+"))
-                                {
-                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24) && !objAccessory.IncludedInWeapon)
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                        }
-                                        else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    foreach (Gear objGear in objVehicle.Gear)
-                    {
-                        if (!objGear.TotalAvail().StartsWith("+"))
-                        {
-                            if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                            {
-                                if ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objGear.TotalAvail(true)) <= 24))
-                                {
-                                    blnRestrictedGearUsed = true;
-                                }
-                                else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
-                                }
-                            }
-                        }
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (!objChild.TotalAvail().StartsWith("+"))
-                            {
-                                if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                {
-                                    if ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objChild.TotalAvail(true)) <= 24))
-                                    {
-                                        blnRestrictedGearUsed = true;
-                                    }
-                                    else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                    {
-                                        intRestrictedCount++;
-                                        strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
-                                    }
-                                }
-                            }
-                            foreach (Gear objSubChild in objChild.Children)
-                            {
-                                if (!objSubChild.TotalAvail().StartsWith("+"))
-                                {
-                                    if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
-                                    {
-                                        if ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objSubChild.TotalAvail(true)) <= 24))
-                                        {
-                                            blnRestrictedGearUsed = true;
-                                        }
-                                        else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
-                                        {
-                                            intRestrictedCount++;
-                                            strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+			// Vehicle Availability.
+			foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+			{
+				if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+				{
+					if ((GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicle.CalculatedAvail) <= 24))
+					{
+						blnRestrictedGearUsed = true;
+					}
+					else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
+					{
+						intRestrictedCount++;
+						strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
+					}
+				}
+				else if (GetAvailInt(objVehicle.CalculatedAvail) > _objCharacter.MaximumAvailability)
+				{
+					intRestrictedCount++;
+					strAvailItems += "\n\t\t" + objVehicle.DisplayNameShort;
+				}
+				foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+				{
+					if (!objVehicleMod.TotalAvail.StartsWith("+"))
+					{
+						if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+						{
+							if ((GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objVehicleMod.TotalAvail) <= 24) && !objVehicleMod.IncludedInVehicle)
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objVehicleMod.TotalAvail) > _objCharacter.MaximumAvailability && !objVehicleMod.IncludedInVehicle)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objVehicleMod.DisplayNameShort;
+							}
+						}
+						foreach (Weapon objWeapon in objVehicleMod.Weapons)
+						{
+							if ((GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objWeapon.TotalAvail) <= 24))
+							{
+								blnRestrictedGearUsed = true;
+							}
+							else if (GetAvailInt(objWeapon.TotalAvail) > _objCharacter.MaximumAvailability)
+							{
+								intRestrictedCount++;
+								strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort;
+							}
+							foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+							{
+								if (!objAccessory.TotalAvail.StartsWith("+"))
+								{
+									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+									{
+										if ((GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability) && (GetAvailInt(objAccessory.TotalAvail) <= 24) && !objAccessory.IncludedInWeapon)
+										{
+											blnRestrictedGearUsed = true;
+										}
+										else if (GetAvailInt(objAccessory.TotalAvail) > _objCharacter.MaximumAvailability)
+										{
+											intRestrictedCount++;
+											strAvailItems += "\n\t\t" + objAccessory.DisplayNameShort;
+										}
+									}
+								}
+							}
+						}
+					}
+					foreach (Gear objGear in objVehicle.Gear)
+					{
+						if (!objGear.TotalAvail().StartsWith("+"))
+						{
+							if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+							{
+								if ((GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objGear.TotalAvail(true)) <= 24))
+								{
+									blnRestrictedGearUsed = true;
+								}
+								else if (GetAvailInt(objGear.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+								{
+									intRestrictedCount++;
+									strAvailItems += "\n\t\t" + objGear.DisplayNameShort;
+								}
+							}
+						}
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (!objChild.TotalAvail().StartsWith("+"))
+							{
+								if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+								{
+									if ((GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objChild.TotalAvail(true)) <= 24))
+									{
+										blnRestrictedGearUsed = true;
+									}
+									else if (GetAvailInt(objChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+									{
+										intRestrictedCount++;
+										strAvailItems += "\n\t\t" + objChild.DisplayNameShort;
+									}
+								}
+							}
+							foreach (Gear objSubChild in objChild.Children)
+							{
+								if (!objSubChild.TotalAvail().StartsWith("+"))
+								{
+									if (_objCharacter.RestrictedGear && !blnRestrictedGearUsed)
+									{
+										if ((GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability) && (GetAvailInt(objSubChild.TotalAvail(true)) <= 24))
+										{
+											blnRestrictedGearUsed = true;
+										}
+										else if (GetAvailInt(objSubChild.TotalAvail(true)) > _objCharacter.MaximumAvailability)
+										{
+											intRestrictedCount++;
+											strAvailItems += "\n\t\t" + objSubChild.DisplayNameShort;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 
-            // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
-            if (intRestrictedCount > intRestrictedAllowed)
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
-                strMessage += strAvailItems;
-            }
+			// Make sure the character is not carrying more items over the allowed Avail than they are allowed.
+			if (intRestrictedCount > intRestrictedAllowed)
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidAvail").Replace("{0}", (intRestrictedCount - intRestrictedAllowed).ToString()).Replace("{1}", _objCharacter.MaximumAvailability.ToString());
+				strMessage += strAvailItems;
+			}
 
-            if (!String.IsNullOrWhiteSpace(strExConItems))
-            {
-                blnValid = false;
-                strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
-                strMessage += strExConItems;
-            }
+			if (!String.IsNullOrWhiteSpace(strExConItems))
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidExConWare");
+				strMessage += strExConItems;
+			}
 
-            if (!String.IsNullOrWhiteSpace(strCyberwareGrade))
-		    {
-		        blnValid = false;
-		        strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidCyberwareGrades");
-		        strMessage += strCyberwareGrade;
-		    }
+			if (!String.IsNullOrWhiteSpace(strCyberwareGrade))
+			{
+				blnValid = false;
+				strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_InvalidCyberwareGrades");
+				strMessage += strCyberwareGrade;
+			}
 
-            // Check item Capacities if the option is enabled.
-            List<string> lstOverCapacity = new List<string>();
+			// Check item Capacities if the option is enabled.
+			List<string> lstOverCapacity = new List<string>();
 
-            if (_objOptions.EnforceCapacity)
-            {
-                bool blnOverCapacity = false;
-                int intCapacityOver = 0;
-                // Armor Capacity.
-                foreach (Armor objArmor in _objCharacter.Armor)
-                {
-                    if (objArmor.CapacityRemaining < 0)
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objArmor.Name);
-                        intCapacityOver++;
-                    }
-                }
+			if (_objOptions.EnforceCapacity)
+			{
+				bool blnOverCapacity = false;
+				int intCapacityOver = 0;
+				// Armor Capacity.
+				foreach (Armor objArmor in _objCharacter.Armor)
+				{
+					if (objArmor.CapacityRemaining < 0)
+					{
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objArmor.Name);
+						intCapacityOver++;
+					}
+				}
 
-                // Gear Capacity.
-                foreach (Gear objGear in _objCharacter.Gear)
-                {
-                    if (objGear.CapacityRemaining < 0)
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objGear.Name);
-                        intCapacityOver++;
-                    }
-                    // Child Gear.
-                    foreach (Gear objChild in objGear.Children)
-                    {
-                        if (objChild.CapacityRemaining < 0)
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objChild.Name);
-                            intCapacityOver++;
-                        }
-                    }
-                }
+				// Gear Capacity.
+				foreach (Gear objGear in _objCharacter.Gear)
+				{
+					if (objGear.CapacityRemaining < 0)
+					{
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objGear.Name);
+						intCapacityOver++;
+					}
+					// Child Gear.
+					foreach (Gear objChild in objGear.Children)
+					{
+						if (objChild.CapacityRemaining < 0)
+						{
+							blnOverCapacity = true;
+							lstOverCapacity.Add(objChild.Name);
+							intCapacityOver++;
+						}
+					}
+				}
 
-                // Cyberware Capacity.
-                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                {
-                    if (objCyberware.CapacityRemaining < 0)
-                    {
-                        blnOverCapacity = true;
-                        lstOverCapacity.Add(objCyberware.Name);
-                        intCapacityOver++;
-                    }
-                    // Check plugins.
-                    foreach (Cyberware objChild in objCyberware.Children)
-                    {
-                        if (objChild.CapacityRemaining < 0)
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objChild.Name);
-                            intCapacityOver++;
-                        }
-                    }
-                }
+				// Cyberware Capacity.
+				foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+				{
+					if (objCyberware.CapacityRemaining < 0)
+					{
+						blnOverCapacity = true;
+						lstOverCapacity.Add(objCyberware.Name);
+						intCapacityOver++;
+					}
+					// Check plugins.
+					foreach (Cyberware objChild in objCyberware.Children)
+					{
+						if (objChild.CapacityRemaining < 0)
+						{
+							blnOverCapacity = true;
+							lstOverCapacity.Add(objChild.Name);
+							intCapacityOver++;
+						}
+					}
+				}
 
-                // Vehicle Capacity.
-                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                {
+				// Vehicle Capacity.
+				foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+				{
 					if (_objOptions.BookEnabled("R5"))
 					{
 						if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
@@ -20201,38 +20247,38 @@ namespace Chummer
 						lstOverCapacity.Add(objVehicle.Name);
 						intCapacityOver++;
 					}
-                    // Check Vehicle Gear.
-                    foreach (Gear objGear in objVehicle.Gear)
-                    {
-                        if (objGear.CapacityRemaining < 0)
-                        {
-                            blnOverCapacity = true;
-                            lstOverCapacity.Add(objGear.Name);
-                            intCapacityOver++;
-                        }
-                        // Check Child Gear.
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (objChild.CapacityRemaining < 0)
-                            {
-                                blnOverCapacity = true;
-                                lstOverCapacity.Add(objChild.Name);
-                                intCapacityOver++;
-                            }
-                        }
-                    }
-                }
+					// Check Vehicle Gear.
+					foreach (Gear objGear in objVehicle.Gear)
+					{
+						if (objGear.CapacityRemaining < 0)
+						{
+							blnOverCapacity = true;
+							lstOverCapacity.Add(objGear.Name);
+							intCapacityOver++;
+						}
+						// Check Child Gear.
+						foreach (Gear objChild in objGear.Children)
+						{
+							if (objChild.CapacityRemaining < 0)
+							{
+								blnOverCapacity = true;
+								lstOverCapacity.Add(objChild.Name);
+								intCapacityOver++;
+							}
+						}
+					}
+				}
 
-                if (blnOverCapacity)
-                {
-                    blnValid = false;
-                    strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_CapacityReachedValidate").Replace("{0}", intCapacityOver.ToString());
-                    foreach (string strItem in lstOverCapacity)
-                    {
-                        strMessage += "\n\t- " + strItem;
-                    }
-                }
-            }
+				if (blnOverCapacity)
+				{
+					blnValid = false;
+					strMessage += "\n\t" + LanguageManager.Instance.GetString("Message_CapacityReachedValidate").Replace("{0}", intCapacityOver.ToString());
+					foreach (string strItem in lstOverCapacity)
+					{
+						strMessage += "\n\t- " + strItem;
+					}
+				}
+			}
 
 
 
@@ -20295,7 +20341,7 @@ namespace Chummer
 				if (
 					MessageBox.Show(
 						LanguageManager.Instance.GetString("Message_ExtraPoints")
-							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsUsed.ToString())
+							.Replace("{0}", _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString())
 							.Replace("{1}", LanguageManager.Instance.GetString("Label_SummaryKnowledgeSkills")),
 						LanguageManager.Instance.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
 						MessageBoxIcon.Warning) == DialogResult.No)
@@ -20303,14 +20349,24 @@ namespace Chummer
 			}
 
 			if (!_objCharacter.IgnoreRules)
-            {
-                if (!blnValid && strMessage.Length > LanguageManager.Instance.GetString("Message_InvalidBeginning").Length)
-                    MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-                blnValid = true;
+			{
+				if (!blnValid && strMessage.Length > LanguageManager.Instance.GetString("Message_InvalidBeginning").Length)
+					MessageBox.Show(strMessage, LanguageManager.Instance.GetString("MessageTitle_Invalid"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			else
+				blnValid = true;
+			return blnValid;
+		}
 
-            if (blnValid)
+        /// <summary>
+        /// Confirm that the character can move to career mode and perform final actions for karma carryover and such.
+        /// </summary>
+        public bool ValidateCharacter()
+        {
+            bool blnValid = CheckCharacterValidity();
+			int intBuildPoints = CalculateBP();
+
+			if (blnValid)
             {
                 if (_objOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
                 {
@@ -21672,9 +21728,17 @@ namespace Chummer
                     default:
                         break;
                 }
-            }
+			}
 
-            int intEssenceLoss = 0;
+			// Remove any Qualities the character received from their Metatype, then remove the Quality.
+			foreach (Quality objQuality in lstRemoveQualities)
+			{
+				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
+				_objCharacter.Qualities.Remove(objQuality);
+			}
+			lstRemoveQualities.Clear();
+
+			int intEssenceLoss = 0;
             if (!_objOptions.ESSLossReducesMaximumOnly)
                 intEssenceLoss = _objCharacter.EssencePenalty;
 
@@ -24364,6 +24428,14 @@ namespace Chummer
 				UpdateLimitModifier(treLimit, cmsLimitModifier);
 				_blnIsDirty = true;
 				UpdateWindowTitle();
+			}
+		}
+
+		private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
+		{
+			if (CheckCharacterValidity())
+			{
+				MessageBox.Show(LanguageManager.Instance.GetString("Message_ValidCharacter"), LanguageManager.Instance.GetString("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 	}

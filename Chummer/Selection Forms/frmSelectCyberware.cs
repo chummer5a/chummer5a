@@ -33,11 +33,13 @@ namespace Chummer
 		private Grade _objSelectedGrade;
 		private int _intSelectedRating = 0;
 		private readonly Character _objCharacter;
+        private Vehicle _objVehicle;
 		private int _intSelectedESSDiscount = 0;
 
         private double _dblCostMultiplier = 1.0;
         private double _dblESSMultiplier = 1.0;
-		private int _intAvailModifier = 0; 
+		private int _intAvailModifier = 0;
+		private int _intMarkup = 0;
 		private double _dblCharacterESSModifier = 1.0;
 		private double _dblGenetechCostModifier = 1.0;
 		private double _dblBasicBiowareESSModifier = 1.0;
@@ -78,6 +80,9 @@ namespace Chummer
             InitializeComponent();
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 			chkFree.Visible = blnCareer;
+			lblMarkupLabel.Visible = blnCareer;
+			nudMarkup.Visible = blnCareer;
+			lblMarkupPercentLabel.Visible = blnCareer;
 			_blnCareer = blnCareer;
 			_objCharacter = objCharacter;
 			MoveControls();
@@ -287,20 +292,64 @@ namespace Chummer
 				nudRating.Enabled = true;
 			    if (objXmlCyberware["rating"].InnerText == "MaximumSTR")
 			    {
-                    nudRating.Maximum = _objCharacter.STR.TotalMaximum;
-                } else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
+                    if (_objVehicle != null)
+                    {
+                        nudRating.Maximum = _objVehicle.TotalBody*2;
+	                    nudRating.Minimum = _objVehicle.TotalBody;
+                    }
+                    else
+                    {
+                        nudRating.Maximum = _objCharacter.STR.TotalMaximum;
+                    }
+                }
+                else if (objXmlCyberware["rating"].InnerText == "MaximumAGI")
 			    {
-			        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
-
-			    }
+                    if (_objVehicle != null)
+                    {
+                        nudRating.Maximum = _objVehicle.Pilot*2;
+                    }
+                    else
+                    {
+                        nudRating.Maximum = _objCharacter.AGI.TotalMaximum;
+                    }
+                }
 			    else
 			    {
 			        nudRating.Maximum = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
 			    }
-			    if (objXmlCyberware["minrating"] != null)
-					nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
+				if (objXmlCyberware["minrating"] != null)
+				{
+					switch (objXmlCyberware["minrating"].InnerText)
+					{
+						case "MinimumAGI":
+							if (_objVehicle != null)
+							{
+								nudRating.Minimum = _objVehicle.Pilot;
+							}
+							else
+							{
+								nudRating.Minimum = 4;
+							}
+							break;
+						case "MinimumSTR":
+							if (_objVehicle != null)
+							{
+								nudRating.Minimum = _objVehicle.TotalBody;
+							}
+							else
+							{
+								nudRating.Minimum = 4;
+							}
+							break;
+						default:
+							nudRating.Minimum = Convert.ToInt32(objXmlCyberware["minrating"].InnerText);
+							break;
+					}
+				}
 				else
+				{
 					nudRating.Minimum = 1;
+				}
 			}
 			else
 			{
@@ -365,7 +414,18 @@ namespace Chummer
         private void nudRating_ValueChanged(object sender, EventArgs e)
         {
             UpdateCyberwareInfo();
-        }
+		}
+
+		private void lblSource_Click(object sender, EventArgs e)
+		{
+			CommonFunctions objCommon = new CommonFunctions(_objCharacter);
+			objCommon.OpenPDF(lblSource.Text);
+		}
+
+		private void nudMarkup_ValueChanged(object sender, EventArgs e)
+		{
+			UpdateCyberwareInfo();
+		}
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
@@ -757,6 +817,34 @@ namespace Chummer
                 _blnShowOnlyLimbs = value;
             }
         }
+
+        /// <summary>
+        /// Parent vehicle that the cyberlimb will be attached to.
+        /// </summary>
+        public Vehicle ParentVehicle
+        {
+            set
+            {
+                _objVehicle = value;
+            }
+            get
+            {
+                return _objVehicle;
+            }
+        }
+
+	    public int Markup
+	    {
+		    get
+		    {
+			    return _intMarkup;
+		    }
+		    set
+		    {
+			    _intMarkup = value;
+		    }
+	    }
+
         #endregion
 
         #region Methods
@@ -822,12 +910,55 @@ namespace Chummer
 				}
 				try
 				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
+					if (strAvailExpr.Contains("MinRating"))
+					{
+						XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
+						if (xmlMinRatingNode != null)
+						{
+							switch (xmlMinRatingNode.InnerText)
+							{
+								case "MinimumAGI":
+									if (_objVehicle != null)
+									{
+										strAvailExpr = strAvailExpr.Replace("MinRating", 
+											_objVehicle.Pilot.ToString());
+									}
+									else
+									{
+										strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+									}
+									break;
+								case "MinimumSTR":
+									if (_objVehicle != null)
+									{
+										strAvailExpr = strAvailExpr.Replace("MinRating",
+											_objVehicle.TotalBody.ToString());
+									}
+									else
+									{
+										strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+									}
+									break;
+								default:
+									strAvailExpr = strAvailExpr.Replace("MinRating", 3.ToString());
+									break;
+							}
+						}
+					}
+					strAvailExpr = strAvailExpr.Replace("Rating", nudRating.Value.ToString());
+
+					string strPrefix = "";
+					if (strAvailExpr.StartsWith("+") || strAvailExpr.StartsWith("-"))
+					{
+						strPrefix = strAvailExpr.Substring(0, 1);
+						strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length-1);
+					}
+					xprAvail = nav.Compile(strAvailExpr);
 					int intAvail = Convert.ToInt32(nav.Evaluate(xprAvail)) + _intAvailModifier;
 					// Avail cannot go below 0.
 					if (intAvail < 0)
 						intAvail = 0;
-					lblAvail.Text = intAvail.ToString() + strAvail;
+					lblAvail.Text = strPrefix + intAvail.ToString() + strAvail;
 				}
 				catch
 				{
@@ -905,9 +1036,45 @@ namespace Chummer
 				{
 					try
 					{
+						if (objXmlCyberware["cost"].InnerText.Contains("MinRating"))
+						{
+							XmlNode xmlMinRatingNode = objXmlCyberware["minrating"];
+							if (xmlMinRatingNode != null)
+							{
+								switch (xmlMinRatingNode.InnerText)
+								{
+									case "MinimumAGI":
+										if (_objVehicle != null)
+										{
+											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
+												_objVehicle.Pilot.ToString());
+										}
+										else
+										{
+											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
+										}
+										break;
+									case "MinimumSTR":
+										if (_objVehicle != null)
+										{
+											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating",
+												_objVehicle.TotalBody.ToString());
+										}
+										else
+										{
+											objXmlCyberware["cost"].InnerText = objXmlCyberware["cost"].InnerText.Replace("MinRating", 3.ToString());
+										}
+										break;
+								}
+							}
+						}
 						XPathExpression xprCost = nav.Compile(objXmlCyberware["cost"].InnerText.Replace("Rating", nudRating.Value.ToString()));
-						lblCost.Text = String.Format("{0:###,###,##0¥}", Convert.ToInt32((Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier)));
-						intItemCost = Convert.ToInt32((Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo) * _dblCostMultiplier * dblGenetechCostModifier));
+						double dblCost = (Convert.ToDouble(nav.Evaluate(xprCost), GlobalOptions.Instance.CultureInfo)*_dblCostMultiplier*
+						           dblGenetechCostModifier);
+						dblCost *= 1 + (Convert.ToDouble(nudMarkup.Value, GlobalOptions.Instance.CultureInfo) / 100.0);
+						intItemCost = Convert.ToInt32(dblCost);
+						lblCost.Text = String.Format("{0:###,###,##0¥}", intItemCost);
+						
 					}
 					catch
 					{
@@ -1579,10 +1746,5 @@ namespace Chummer
 		}
 		#endregion
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions objCommon = new CommonFunctions(_objCharacter);
-            objCommon.OpenPDF(lblSource.Text);
-        }
 	}
 }

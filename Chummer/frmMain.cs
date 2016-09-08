@@ -147,6 +147,11 @@ namespace Chummer
 			catch
 			{
 			}
+
+			frmCharacterRoster frmCharacter = new frmCharacterRoster();
+			frmCharacter.MdiParent = this;
+			frmCharacter.WindowState = FormWindowState.Maximized;
+			frmCharacter.Show();
 		}
 
 		public sealed override string Text
@@ -352,8 +357,9 @@ namespace Chummer
 				// If this is a new child form and does not have a tab page, create one.
 				if (this.ActiveMdiChild.Tag == null)
 				{
+					TabPage tp = new TabPage();
 					// Add a tab page.
-					TabPage tp = new TabPage(LanguageManager.Instance.GetString("String_UnnamedCharacter"));
+					tp.Text = LanguageManager.Instance.GetString(this.ActiveMdiChild.GetType() == typeof (frmCharacterRoster) ? "String_CharacterRoster" : "String_UnnamedCharacter");
 					tp.Tag = this.ActiveMdiChild;
 					tp.Parent = tabForms;
 

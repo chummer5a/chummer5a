@@ -715,7 +715,8 @@ namespace Chummer
 		    GlobalOptions.Instance.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.Instance.MissionsOnly = chkMissions.Checked;
 			GlobalOptions.Instance.Dronemods = chkDronemods.Checked;
-        }
+		    GlobalOptions.Instance.CharacterRosterPath = txtCharacterRosterPath.Text;
+	    }
 
 	    /// <summary>
         /// Save the global settings to the registry.
@@ -743,10 +744,10 @@ namespace Chummer
 			objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
 			objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
+			objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
 
-
-            // Save the SourcebookInfo.
-            Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
+			// Save the SourcebookInfo.
+			Microsoft.Win32.RegistryKey objSourceRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5\\Sourcebook");
             foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
                 objSourceRegistry.SetValue(objSource.Code, objSource.Path + "|" + objSource.Offset);
         }
@@ -1029,6 +1030,7 @@ namespace Chummer
             chkOpenPDFsAsUnix.Checked = GlobalOptions.Instance.OpenPDFsAsAsUnix;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
             txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
+	        txtCharacterRosterPath.Text = GlobalOptions.Instance.CharacterRosterPath;
         }
 
         private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
@@ -1235,6 +1237,16 @@ namespace Chummer
 				}
 			}
 			blnSourcebookToggle = !blnSourcebookToggle;
+		}
+
+		private void cmdCharacterRoster_Click(object sender, EventArgs e)
+		{
+			// Prompt the user to select a save file to associate with this Contact.
+			using (var selectFolderDialog = new FolderBrowserDialog())
+			{
+				if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
+					txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
+			}
 		}
 	}
 }

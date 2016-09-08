@@ -2057,6 +2057,9 @@ namespace Chummer
                 // Set starting karma
                 _objCharacter.BuildKarma = _objCharacter.MaxKarma;
 
+				// Set limit for qualities
+	            _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma;
+
                 // Set starting movement rate
                 _objCharacter.Movement = (_objCharacter.AGI.TotalValue * 2).ToString() + "/" + (_objCharacter.AGI.TotalValue * 4).ToString();
 

@@ -959,6 +959,10 @@
 			<text>Create New Character</text>
 		</string>
 		<string>
+			<key>String_CharacterRoster</key>
+			<text>Character Roster</text>
+		</string>
+		<string>
 			<key>Title_CareerMode</key>
 			<text>Career Mode</text>
 		</string>
@@ -1439,6 +1443,18 @@
 		<string>
 			<key>MessageTitle_EnemyLimit</key>
 			<text>Enemies</text>
+		</string>
+		<string>
+			<key>Menu_ValidCharacter</key>
+			<text>Check Character Validity</text>
+		</string>
+		<string>
+			<key>Message_ValidCharacter</key>
+			<text>The character is valid and can move to career mode.</text>
+		</string>
+		<string>
+			<key>MessageTitle_ValidCharacter</key>
+			<text>Confirm Character Validity</text>
 		</string>
 		<string>
 			<key>Message_NegativeQualityLimit</key>
@@ -4183,7 +4199,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
-			<text>Purchase more Ammunition.</text>
+			<text>Purchase more of the selected Gear.</text>
 		</string>
 		<string>
 			<key>Tip_DecreaseGearQty</key>
@@ -6690,6 +6706,10 @@ Do you want to continue?</text>
 		<string>
 			<key>Button_ToggleSourcebooks</key>
 			<text>Toggle all Sourcebooks On/Off</text>
+		</string>
+		<string>
+			<key>Label_Options_CharacterRoster</key>
+			<text>Character Roster Watch Folder</text>
 		</string>
 		<!-- End Region-->
 		<!-- Region Print Multiple Window -->

@@ -4152,7 +4152,7 @@
 			<category>Drones: Anthro</category>
 			<handling>3</handling>
 			<accel>1</accel>
-			<speed>4</speed>
+			<speed>3</speed>
 			<pilot>3</pilot>
 			<body>3</body>
 			<armor>0</armor>

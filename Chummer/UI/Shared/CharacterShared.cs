@@ -216,7 +216,7 @@ namespace Chummer
 			{
 				nudATT.Minimum = objAttribute.TotalMinimum;
 				nudATT.Maximum = objAttribute.TotalMaximum;
-				nudATT.Value = objAttribute.Value - objAttribute.Karma;
+				nudATT.Value = Math.Max(objAttribute.Value - objAttribute.Karma, objAttribute.Base);
 			}
 			lblATTMetatype.Text = string.Format("{0} / {1} ({2})", objAttribute.TotalMinimum, objAttribute.TotalMaximum,
 				objAttribute.TotalAugmentedMaximum);

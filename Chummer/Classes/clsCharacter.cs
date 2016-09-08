@@ -1032,6 +1032,7 @@ namespace Chummer
 
             // Metatype information.
             _strMetatype = objXmlCharacter["metatype"].InnerText;
+	        objXmlCharacter.TryGetField("movement", out _strMovement);
             try
             {
                 _strWalk = objXmlCharacter["walk"].InnerText;
@@ -1728,20 +1729,26 @@ namespace Chummer
             }
 
 			Timekeeper.Finish("load_char_cfix");
-			
+			Timekeeper.Start("load_char_maxkarmafix");
+			//Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
+	        if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
+	        {
+		        _intGameplayOptionQualityLimit = _intMaxKarma;
+	        }
+			Timekeeper.Finish("load_char_maxkarmafix");
 
 			//// If the character had old Qualities that were converted, immediately save the file so they are in the new format.
-	  //      if (blnHasOldQualities)
-	  //      {
+			//      if (blnHasOldQualities)
+			//      {
 			//	Timekeeper.Start("load_char_resav");  //Lets not silently save file on load?
 
-				
+
 			//	Save();
 			//	Timekeeper.Finish("load_char_resav");
 
-				
+
 			//}
-	        return true;
+			return true;
         }
 
 	    /// <summary>
