@@ -6751,6 +6751,7 @@
 			<bonus>
 				<skillcategory>
 					<name>Physical Active</name>
+					<exclude>Perception</exclude>
 					<bonus>-2</bonus>
 				</skillcategory>
 			</bonus>

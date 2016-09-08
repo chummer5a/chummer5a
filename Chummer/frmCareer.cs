@@ -22692,7 +22692,7 @@ namespace Chummer
 				tabGearMatrixCM.Visible = false;
 				return;
 			}
-			cmdGearIncreaseQty.Enabled = false;
+			cmdGearIncreaseQty.Enabled = true;
 			chkGearHomeNode.Visible = false;
 
 			if (treGear.SelectedNode.Level > 0)
@@ -22745,8 +22745,6 @@ namespace Chummer
 					tabGearMatrixCM.Visible = false;
 				}
 				_blnSkipRefresh = false;
-				if (objGear.Category == "Ammunition")
-					cmdGearIncreaseQty.Enabled = true;
 
 				if (objGear.GetType() == typeof(Commlink))
 				{

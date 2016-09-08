@@ -4199,7 +4199,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
-			<text>Purchase more Ammunition.</text>
+			<text>Purchase more of the selected Gear.</text>
 		</string>
 		<string>
 			<key>Tip_DecreaseGearQty</key>

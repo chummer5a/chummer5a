@@ -16749,7 +16749,9 @@ namespace Chummer
                 lblGearName.Text = objGear.DisplayNameShort;
                 lblGearCategory.Text = objGear.DisplayCategory;
                 lblGearAvail.Text = objGear.TotalAvail(true);
-                try
+				nudGearQty.Enabled = true;
+				nudGearQty.Increment = objGear.CostFor;
+				try
                 {
                     lblGearCost.Text = String.Format("{0:###,###,##0¥}", objGear.TotalCost);
                 }
@@ -16870,8 +16872,6 @@ namespace Chummer
                 if (treGear.SelectedNode.Level == 1)
                 {
                     _blnSkipRefresh = true;
-                    nudGearQty.Enabled = true;
-                    nudGearQty.Increment = objGear.CostFor;
                     //nudGearQty.Minimum = objGear.CostFor;
                     chkGearEquipped.Visible = true;
                     chkGearEquipped.Checked = objGear.Equipped;
@@ -16879,7 +16879,7 @@ namespace Chummer
                 }
                 else
                 {
-                    nudGearQty.Enabled = false;
+                    //nudGearQty.Enabled = false;
                     _blnSkipRefresh = true;
                     chkGearEquipped.Visible = true;
                     chkGearEquipped.Checked = objGear.Equipped;
@@ -16920,7 +16920,7 @@ namespace Chummer
             }
         }
 
-		// <summary>
+		/// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
         private void UpdateWindowTitle(bool blnCanSkip = true)
