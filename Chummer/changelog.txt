@@ -52,7 +52,7 @@ Changed strings:
 - Tip_IncreaseGearQty
 
 New Sheet:
-- Added a new Character Sheet, only showing Skills with Rating greater than 0.
+- Added a new character sheet, only showing Skills with Rating greater than 0.
 
 Build 183:
 Application Changes:
