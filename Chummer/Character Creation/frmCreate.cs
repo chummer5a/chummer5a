@@ -64,8 +64,8 @@ namespace Chummer
             _objImprovementManager = new ImprovementManager(_objCharacter);
             _objController = new MainController(_objCharacter);
             InitializeComponent();
+			GlobalOptions.Instance.MainForm.OpenCharacters.Add(objCharacter);
 
-			
 			// Add EventHandlers for the various events MAG, RES, Qualities, etc.
 			_objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
             _objCharacter.RESEnabledChanged += objCharacter_RESEnabledChanged;
@@ -1133,8 +1133,8 @@ namespace Chummer
 
         private void frmCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // If there are unsaved changes to the character, as the user if they would like to save their changes.
-            if (_blnIsDirty)
+			// If there are unsaved changes to the character, as the user if they would like to save their changes.
+			if (_blnIsDirty)
             {
                 string strCharacterName = _objCharacter.Alias;
                 if (_objCharacter.Alias.Trim() == string.Empty)
@@ -1154,8 +1154,9 @@ namespace Chummer
             }
             // Reset the ToolStrip so the Save button is removed for the currently closing window.
             if (!e.Cancel)
-            {
-                if (!_blnSkipToolStripRevert)
+			{
+				GlobalOptions.Instance.MainForm.OpenCharacters.Remove(_objCharacter);
+				if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
                 // Unsubscribe from events.
@@ -1874,7 +1875,7 @@ namespace Chummer
 
         private void mnuFileClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+			this.Close();
         }
 
         private void mnuSpecialAddPACKSKit_Click(object sender, EventArgs e)

@@ -84,7 +84,7 @@ namespace Chummer
 			_objCharacter.FameChanged += objCharacter_FameChanged;
 			tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
-
+			GlobalOptions.Instance.MainForm.OpenCharacters.Add(_objCharacter);
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
 			// Update the text in the Menus so they can be merged with frmMain properly.
@@ -1165,6 +1165,7 @@ namespace Chummer
 			// Reset the ToolStrip so the Save button is removed for the currently closing window.
 			if (!e.Cancel)
 			{
+				GlobalOptions.Instance.MainForm.OpenCharacters.Remove(_objCharacter);
 				if (!_blnSkipToolStripRevert)
 					ToolStripManager.RevertMerge("toolStrip");
 

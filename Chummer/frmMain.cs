@@ -17,7 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-using System.IO;
+ using System.Collections.Generic;
+ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -33,7 +34,7 @@ namespace Chummer
 		private frmDiceRoller _frmRoller;
 		private frmUpdate _frmUpdate;
         private Character _objCharacter;
-
+		private List<Character> _lstCharacters = new List<Character>();
         #region Control Events
         public frmMain()
 		{
@@ -89,22 +90,6 @@ namespace Chummer
 			// Populate the MRU list.
 			PopulateMRU();
 
-			// Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-			string[] strArgs = Environment.GetCommandLineArgs();
-			if (strArgs.GetUpperBound(0) > 0)
-			{
-				if (strArgs[1] != "/debug")
-					LoadCharacter(strArgs[1]);
-				if (strArgs.Length > 2)
-				{
-					if (strArgs[2] == "/test")
-					{
-						frmTest frmTestData = new frmTest();
-						frmTestData.Show();
-					}
-				}
-			}
-
 			GlobalOptions.Instance.MainForm = this;
 
 			// Set the Tag for each ToolStrip item so it can be translated.
@@ -150,6 +135,23 @@ namespace Chummer
 
 			frmCharacterRoster frmCharacter = new frmCharacterRoster();
 			frmCharacter.MdiParent = this;
+
+			// Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
+			string[] strArgs = Environment.GetCommandLineArgs();
+			if (strArgs.GetUpperBound(0) > 0)
+			{
+				if (strArgs[1] != "/debug")
+					LoadCharacter(strArgs[1]);
+				if (strArgs.Length > 2)
+				{
+					if (strArgs[2] == "/test")
+					{
+						frmTest frmTestData = new frmTest();
+						frmTestData.Show();
+					}
+				}
+			}
+
 			frmCharacter.WindowState = FormWindowState.Maximized;
 			frmCharacter.Show();
 		}
@@ -633,6 +635,7 @@ namespace Chummer
 			frmNewCharacter.WindowState = FormWindowState.Maximized;
 			frmNewCharacter.Show();
 
+			OpenCharacters.Add(objCharacter);
 			objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
 		}
 
@@ -961,6 +964,20 @@ namespace Chummer
 				_frmRoller = value;
 			}
 		}
+
+		public List<Character> OpenCharacters
+		{
+			get { return _lstCharacters; }
+			set { _lstCharacters = value; }
+		}
 		#endregion
+
+		private void mnuClearUnpinnedItems_Click(object sender, EventArgs e)
+		{
+			foreach (string strFile in GlobalOptions.Instance.ReadMRUList())
+			{
+				GlobalOptions.Instance.RemoveFromMRUList(strFile);
+			}
+		}
 	}
 }

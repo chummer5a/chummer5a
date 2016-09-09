@@ -24,7 +24,8 @@ using System.Windows.Forms;
 using System.Xml;
 using Octokit;
 using System.Collections.Specialized;
-using System.Net;
+ using System.Diagnostics;
+ using System.Net;
 ﻿using System.Runtime.Remoting.Channels;
  using Application = System.Windows.Forms.Application;
 
@@ -67,6 +68,7 @@ namespace Chummer
 		{
 			if (blnDirty)
 			{
+				RestartApplication();
 				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
 				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
 
@@ -193,8 +195,8 @@ namespace Chummer
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
 
-            //CloseCreateForm();
-            DialogResult = DialogResult.OK;
+	        RestartApplication();
+			DialogResult = DialogResult.OK;
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -541,12 +543,12 @@ namespace Chummer
             foreach (Control objControl in tabHouseRules.Controls)
                 intWidth = Math.Max(intWidth, objControl.Left + objControl.Width);
 
-            // Change the window size.
-            Width = intWidth + 29;
-            Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
-            // Centre the OK button.
-            cmdOK.Left = (Width / 2) - (cmdOK.Width / 2);
-        }
+			// Change the window size.
+			Width = intWidth + 29;
+			Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
+			// Centre the OK button.
+			cmdOK.Left = (Width / 2) - (cmdOK.Width / 2);
+		}
 
 	    private void PopulateSourcebookTreeView()
 	    {
@@ -773,24 +775,31 @@ namespace Chummer
                 _characterOptions.Books.Add("SR5");
         }
 
-        private void CloseCreateForm()
+        private void RestartApplication()
         {
-            Form fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
-
-            if (fc == null)
-                return;
-
             string text = LanguageManager.Instance.GetString("Message_Options_CloseForms");
             string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
 
-            if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-
-            fc = System.Windows.Forms.Application.OpenForms["frmCreate"];
-
-            if (fc != null)
-                fc.Close();
-        }
+			if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+			    return;
+			// Get the parameters/arguments passed to program if any
+			string arguments = string.Empty;
+			string[] args = Environment.GetCommandLineArgs();
+			for (int i = 1; i < args.Length; i++) // args[0] is always exe path/filename
+				arguments += args[i] + " ";
+	        foreach (Character objCharacter in GlobalOptions.Instance.MainForm.OpenCharacters)
+	        {
+		        arguments += objCharacter.FileName + " ";
+	        }
+			// Restart current application, with same arguments/parameters
+	        this.Close();
+	        foreach (Form objForm in GlobalOptions.Instance.MainForm.MdiChildren)
+	        {
+		        objForm.Close();
+	        }
+			Application.Exit();
+			Process.Start(Application.ExecutablePath, arguments);
+		}
 
         private void RestoreDefaultKarmaValues()
         {

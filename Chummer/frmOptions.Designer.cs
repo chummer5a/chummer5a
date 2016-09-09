@@ -131,6 +131,9 @@
 			this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
 			this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.cmdCharacterRoster = new System.Windows.Forms.Button();
+			this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
+			this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
 			this.chkDontUseCyberlimbCalculation = new System.Windows.Forms.CheckBox();
 			this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
 			this.cboEssenceDecimals = new System.Windows.Forms.ComboBox();
@@ -265,9 +268,6 @@
 			this.lblSettingName = new System.Windows.Forms.Label();
 			this.txtSettingName = new System.Windows.Forms.TextBox();
 			this.tipTooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
-			this.cmdCharacterRoster = new System.Windows.Forms.Button();
-			this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -1427,6 +1427,34 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Tag = "Tab_Options_Character";
 			this.tabPage2.Text = "Character and Printing";
+			// 
+			// cmdCharacterRoster
+			// 
+			this.cmdCharacterRoster.Location = new System.Drawing.Point(424, 39);
+			this.cmdCharacterRoster.Name = "cmdCharacterRoster";
+			this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 23);
+			this.cmdCharacterRoster.TabIndex = 23;
+			this.cmdCharacterRoster.Text = "...";
+			this.cmdCharacterRoster.UseVisualStyleBackColor = true;
+			this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
+			// 
+			// txtCharacterRosterPath
+			// 
+			this.txtCharacterRosterPath.Location = new System.Drawing.Point(168, 40);
+			this.txtCharacterRosterPath.Name = "txtCharacterRosterPath";
+			this.txtCharacterRosterPath.ReadOnly = true;
+			this.txtCharacterRosterPath.Size = new System.Drawing.Size(248, 20);
+			this.txtCharacterRosterPath.TabIndex = 22;
+			// 
+			// lblCharacterRosterLabel
+			// 
+			this.lblCharacterRosterLabel.AutoSize = true;
+			this.lblCharacterRosterLabel.Location = new System.Drawing.Point(8, 44);
+			this.lblCharacterRosterLabel.Name = "lblCharacterRosterLabel";
+			this.lblCharacterRosterLabel.Size = new System.Drawing.Size(154, 13);
+			this.lblCharacterRosterLabel.TabIndex = 20;
+			this.lblCharacterRosterLabel.Tag = "Label_Options_CharacterRoster";
+			this.lblCharacterRosterLabel.Text = "Character Roster Watch Folder";
 			// 
 			// chkDontUseCyberlimbCalculation
 			// 
@@ -2708,6 +2736,7 @@
 			// 
 			// tabHouseRules
 			// 
+			this.tabHouseRules.AutoScroll = true;
 			this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
 			this.tabHouseRules.Controls.Add(this.chkAlternateMetatypeAttributeKarma);
 			this.tabHouseRules.Controls.Add(this.label4);
@@ -3133,34 +3162,6 @@
 			this.tipTooltip.AutoPopDelay = 15000;
 			this.tipTooltip.InitialDelay = 500;
 			this.tipTooltip.ReshowDelay = 100;
-			// 
-			// lblCharacterRosterLabel
-			// 
-			this.lblCharacterRosterLabel.AutoSize = true;
-			this.lblCharacterRosterLabel.Location = new System.Drawing.Point(8, 44);
-			this.lblCharacterRosterLabel.Name = "lblCharacterRosterLabel";
-			this.lblCharacterRosterLabel.Size = new System.Drawing.Size(154, 13);
-			this.lblCharacterRosterLabel.TabIndex = 20;
-			this.lblCharacterRosterLabel.Tag = "Label_Options_CharacterRoster";
-			this.lblCharacterRosterLabel.Text = "Character Roster Watch Folder";
-			// 
-			// cmdCharacterRoster
-			// 
-			this.cmdCharacterRoster.Location = new System.Drawing.Point(424, 39);
-			this.cmdCharacterRoster.Name = "cmdCharacterRoster";
-			this.cmdCharacterRoster.Size = new System.Drawing.Size(27, 23);
-			this.cmdCharacterRoster.TabIndex = 23;
-			this.cmdCharacterRoster.Text = "...";
-			this.cmdCharacterRoster.UseVisualStyleBackColor = true;
-			this.cmdCharacterRoster.Click += new System.EventHandler(this.cmdCharacterRoster_Click);
-			// 
-			// txtCharacterRoster
-			// 
-			this.txtCharacterRosterPath.Location = new System.Drawing.Point(168, 40);
-			this.txtCharacterRosterPath.Name = "txtCharacterRoster";
-			this.txtCharacterRosterPath.ReadOnly = true;
-			this.txtCharacterRosterPath.Size = new System.Drawing.Size(248, 20);
-			this.txtCharacterRosterPath.TabIndex = 22;
 			// 
 			// frmOptions
 			// 

@@ -987,6 +987,10 @@
 			<text>&amp;File</text>
 		</string>
 		<string>
+			<key>Menu_Main_ClearUnpinnedItems</key>
+			<text>&amp;Clear Unpinned Items</text>
+		</string>
+		<string>
 			<key>Menu_Main_Edit</key>
 			<text>&amp;Edit</text>
 		</string>
@@ -6657,7 +6661,7 @@ Do you want to continue?</text>
 		</string>
 		<string>
 			<key>Message_Options_CloseForms</key>
-			<text>Options are only enumerated on character load. Should we close the current open characters?</text>
+			<text>Options are only enumerated on character load. Should we restart the application?</text>
 		</string>
 		<string>
 			<key>Message_Options_SaveForms</key>
