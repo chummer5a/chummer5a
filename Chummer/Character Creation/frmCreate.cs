@@ -623,6 +623,8 @@ namespace Chummer
                     objContactControl.BackColor = objContact.Colour;
                     objContactControl.IsGroup = objContact.IsGroup;
 					objContactControl.MouseDown += panContactControl_MouseDown;
+	                objContactControl.Blackmail = objContact.Blackmail;
+	                objContactControl.Family = objContact.Family;
 
                     objContactControl.Top = intContact * objContactControl.Height;
 

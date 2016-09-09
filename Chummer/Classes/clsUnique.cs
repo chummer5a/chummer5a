@@ -2148,50 +2148,14 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			_strName = objNode["name"].InnerText;
-			try
-			{
-				_strCritterName = objNode["crittername"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("crittername", out _strCritterName);
 			_intServicesOwed = Convert.ToInt32(objNode["services"].InnerText);
-			try
-			{
-				_intForce = Convert.ToInt32(objNode["force"].InnerText);
-			}
-			catch
-			{
-			}
-			try
-			{
-				_blnBound = Convert.ToBoolean(objNode["bound"].InnerText);
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("force", out _intForce);
+			objNode.TryGetField("bound", out _blnBound);
 			_objEntityType = ConvertToSpiritType(objNode["type"].InnerText);
-			try
-			{
-				_strFileName = objNode["file"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strRelativeName = objNode["relative"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("file", out _strFileName);
+			objNode.TryGetField("relative", out _strRelativeName);
+			objNode.TryGetField("notes", out _strNotes);
 		}
 
 		/// <summary>
@@ -6826,6 +6790,8 @@ namespace Chummer
         private bool _blnIsGroup = false;
 		private Character _objCharacter;
 	    private bool _blnMadeMan;
+		private bool _blnBlackmail;
+		private bool _blnFamily;
 		private bool _readonly = false;
 
 		#region Helper Methods
@@ -6874,6 +6840,8 @@ namespace Chummer
 			objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
+			objWriter.WriteElementString("family",_blnFamily.ToString());
+			objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
 
 			if (ReadOnly) objWriter.WriteElementString("readonly", "");
 
@@ -6891,51 +6859,19 @@ namespace Chummer
 		public void Load(XmlNode objNode)
 		{
 			_strName = objNode["name"].InnerText;
-            try
-            {
-                _strRole = objNode["role"].InnerText;
-            }
-            catch
-            {
-            }
-            try
-            {
-                _strLocation = objNode["location"].InnerText;
-            }
-            catch
-            {
-            }
+			objNode.TryGetField("role", out _strRole);
+			objNode.TryGetField("location", out _strLocation);
             _intConnection = Convert.ToInt32(objNode["connection"].InnerText);
 			_intLoyalty = Convert.ToInt32(objNode["loyalty"].InnerText);
             _objContactType = ConvertToContactType(objNode["type"].InnerText);
-			try
-			{
-				_strFileName = objNode["file"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strRelativeName = objNode["relative"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strNotes = objNode["notes"].InnerText;
-			}
-			catch
-			{
-			}
-			try
-			{
-				_strGroupName = objNode["groupname"].InnerText;
-			}
-			catch
-			{
-			}
+			objNode.TryGetField("file", out _strFileName);
+			objNode.TryGetField("notes", out _strNotes);
+			objNode.TryGetField("groupname", out _strGroupName);
+			objNode.TryGetField("free", out _blnFree);
+			objNode.TryGetField("group", out _blnIsGroup);
+			objNode.TryGetField("guid", out _strUnique);
+			objNode.TryGetField("family", out _blnFamily);
+			objNode.TryGetField("blackmail", out _blnBlackmail);
 			try
 			{
 				_objColour = Color.FromArgb(Convert.ToInt32(objNode["colour"].InnerText));
@@ -6943,28 +6879,6 @@ namespace Chummer
 			catch
 			{
 			}
-			try
-			{
-				_blnFree = Convert.ToBoolean(objNode["free"].InnerText);
-			}
-			catch
-			{
-			}
-            try
-		    {
-		        _blnIsGroup = Convert.ToBoolean(objNode["group"].InnerText);
-		    }
-		    catch
-		    {
-		    }
-		    try
-		    {
-		        _strUnique = objNode["guid"].InnerText;
-		    }
-		    catch
-		    {
-		    }
-
 
 			if (objNode["readonly"] != null) _readonly = true;
 		    objNode.TryGetField("mademan", out _blnMadeMan);
@@ -7256,7 +7170,19 @@ namespace Chummer
 	        }
 	    }
 
-	    #endregion
+		public bool Blackmail
+		{
+			get { return _blnBlackmail; }
+			set { _blnBlackmail = value; }
+		}
+
+		public bool Family
+		{
+			get { return _blnFamily; }
+			set { _blnFamily = value; }
+		}
+
+		#endregion
 	}
 
 	/// <summary>

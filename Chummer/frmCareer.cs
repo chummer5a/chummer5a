@@ -558,7 +558,9 @@ namespace Chummer
 					objContactControl.EntityType = objContact.EntityType;
 					objContactControl.BackColor = objContact.Colour;
 				    objContactControl.IsGroup = objContact.IsGroup;
-                    if (objContact.MadeMan)
+					objContactControl.Blackmail = objContact.Blackmail;
+					objContactControl.Family = objContact.Family;
+					if (objContact.MadeMan)
                     {
                         objContactControl.IsGroup = objContact.MadeMan;
                     }
