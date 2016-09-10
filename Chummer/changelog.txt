@@ -40,6 +40,8 @@ Data Changes:
 - Fixed an issue with the Deformity(Quasimodo) quality that caused it to affect Perception incorrectly. Fixes #1087.
 - Added Naga Venom, and corrected page references for Hard Targets Toxins. 
 - Corrected the fire mode for the Ares Vigorous Assault Cannon.
+- Fixed an issue with the Reaction Optimization bioware not applying its initiative bonus. 
+- Added a requirement for the Reaction Enhancers cyberware in order to take Reaction Optimization.
 
 New Strings:
 - Button_ToggleSourcebooks

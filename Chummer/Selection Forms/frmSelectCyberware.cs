@@ -1530,20 +1530,20 @@ namespace Chummer
 							int intTotal = 0;
 
 							// Check Cyberware.
-							foreach (XmlNode objXmlDocument in objXmlRequired.SelectNodes("cyberware"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("cyberware"))
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
 									bool blnFound = false;
-									if (objCyberware.Name == objXmlCyberware.InnerText)
+									if (objCyberware.Name == objXmlNode.InnerText)
 									{
-										if (objXmlCyberware.Attributes["select"] == null)
+										if (objXmlNode.Attributes["select"] == null)
 										{
 											intTotal++;
 											blnFound = true;
 											break;
 										}
-										else if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+										else if (objXmlNode.Attributes["select"].InnerText == objCyberware.Location)
 										{
 											intTotal++;
 											blnFound = true;
@@ -1552,18 +1552,18 @@ namespace Chummer
 									}
 									if (!blnFound)
 									{
-										strThisRequirement += "\n\t" + objXmlCyberware.InnerText;
+										strThisRequirement += "\n\t" + objXmlNode.InnerText;
 									}
 								}
 							}
 
 							// Check Bioware.
-							foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("bioware"))
 							{
 								bool blnFound = false;
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
-									if (objCyberware.Name == objXmlBioware.InnerText)
+									if (objCyberware.Name == objXmlNode.InnerText)
 									{
 										intTotal++;
 										blnFound = true;
@@ -1572,16 +1572,16 @@ namespace Chummer
 								}
 								if (!blnFound)
 								{
-									strThisRequirement += "\n\t" + objXmlBioware.InnerText;
+									strThisRequirement += "\n\t" + objXmlNode.InnerText;
 								}
 							}
 
 							// Check Cyberware name that contain a straing.
-							foreach (XmlNode objXmlDocument in objXmlRequired.SelectNodes("cyberwarecontains"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("cyberwarecontains"))
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
-									if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
+									if (objCyberware.Name.Contains(objXmlNode.InnerText))
 									{
 										if (objXmlCyberware.Attributes["select"] == null)
 										{
@@ -1598,18 +1598,18 @@ namespace Chummer
 							}
 
 							// Check Bioware name that contain a straing.
-							foreach (XmlNode objXmlDocument in objXmlRequired.SelectNodes("biowarecontains"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("biowarecontains"))
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
-									if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
+									if (objCyberware.Name.Contains(objXmlNode.InnerText))
 									{
-										if (objXmlCyberware.Attributes["select"] == null)
+										if (objXmlNode.Attributes["select"] == null)
 										{
 											intTotal++;
 											break;
 										}
-										else if (objXmlCyberware.Attributes["select"].InnerText == objCyberware.Location)
+										else if (objXmlNode.Attributes["select"].InnerText == objCyberware.Location)
 										{
 											intTotal++;
 											break;
@@ -1619,13 +1619,13 @@ namespace Chummer
 							}
 
 							// Check for Cyberware Plugins.
-							foreach (XmlNode objXmlDocument in objXmlRequired.SelectNodes("cyberwareplugin"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("cyberwareplugin"))
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
 									foreach (Cyberware objPlugin in objCyberware.Children)
 									{
-										if (objPlugin.Name == objXmlCyberware.InnerText)
+										if (objPlugin.Name == objXmlNode.InnerText)
 										{
 											intTotal++;
 											break;
@@ -1635,11 +1635,11 @@ namespace Chummer
 							}
 
 							// Check for Cyberware Categories.
-							foreach (XmlNode objXmlDocument in objXmlRequired.SelectNodes("cyberwarecategory"))
+							foreach (XmlNode objXmlNode in objXmlRequired.SelectNodes("cyberwarecategory"))
 							{
 								foreach (Cyberware objCyberware in _objCharacter.Cyberware)
 								{
-									if (objCyberware.Category == objXmlCyberware.InnerText)
+									if (objCyberware.Category == objXmlNode.InnerText)
 										intTotal++;
 								}
 							}
