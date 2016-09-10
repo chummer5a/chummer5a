@@ -194,8 +194,7 @@ namespace Chummer
 
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
-
-	        RestartApplication();
+			
 			DialogResult = DialogResult.OK;
         }
 
