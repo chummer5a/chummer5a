@@ -42,6 +42,7 @@ Data Changes:
 - Corrected the fire mode for the Ares Vigorous Assault Cannon.
 - Fixed an issue with the Reaction Optimization bioware not applying its initiative bonus. 
 - Added a requirement for the Reaction Enhancers cyberware in order to take Reaction Optimization.
+- Fixed an issue with the Infected: Vampire quality that caused a crash. 
 
 New Strings:
 - Button_ToggleSourcebooks

@@ -9051,20 +9051,10 @@
 					<quality>Magic Resistance (Rating 4)</quality>
 					<quality>Technomancer</quality>
 					<quality>Infected: Fomoraig</quality>
-					<quality>Infected: Banshee</quality>
 					<quality>Infected: Dzoo-Noo-Qua</quality>
-					<quality>Infected: Bandersnatch</quality>
-					<quality>Infected: Gnawer</quality>
-					<quality>Infected: Goblin</quality>
-					<quality>Infected: Grendel</quality>
-					<quality>Infected: Harvester</quality>
-					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Ghoul (Troll)</quality>
 					<quality>Infected: Mutaqua (Adept)</quality>
-					<quality>Infected: Mutaqua (Non-Adept)</quality>
-					<quality>Infected: Nosferatu</quality>
-					<quality>Infected: Vampire</quality>
-					<quality>Infected: Wendigo</quality>
-					<quality>Infected: Ghoul</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
 					<quality>Magician</quality>
 					<quality>Adept</quality>
 					<quality>Mystic Adept</quality>
@@ -9208,20 +9198,11 @@
 					<quality>Magic Resistance (Rating 4)</quality>
 					<quality>Technomancer</quality>
 					<quality>Infected: Fomoraig</quality>
-					<quality>Infected: Banshee</quality>
 					<quality>Infected: Dzoo-Noo-Qua</quality>
-					<quality>Infected: Bandersnatch</quality>
-					<quality>Infected: Gnawer</quality>
-					<quality>Infected: Goblin</quality>
-					<quality>Infected: Grendel</quality>
-					<quality>Infected: Harvester</quality>
-					<quality>Infected: Loup-Garou</quality>
+					<quality>Infected: Ghoul (Troll)</quality>
 					<quality>Infected: Mutaqua (Non-Awakened)</quality>
-					<quality>Infected: Mutaqua (Non-Adept)</quality>
-					<quality>Infected: Nosferatu</quality>
-					<quality>Infected: Vampire</quality>
-					<quality>Infected: Wendigo</quality>
-					<quality>Infected: Ghoul</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
+					<quality>Mystic Adept</quality>
 				</oneof>
 			</forbidden>
 			<addqualities>
@@ -9379,7 +9360,8 @@
 					<quality>Infected: Mutaqua (Non-Awakened)</quality>
 					<quality>Infected: Mutaqua (Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
-					<quality>Infected: Vampire</quality>
+					<quality>Infected: Vampire (Human)</quality>
+					<quality>Infected: Vampire (Non-Human)</quality>
 					<quality>Infected: Wendigo</quality>
 					<quality>Infected: Ghoul</quality>
 				</oneof>
@@ -10060,12 +10042,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-				<addquality>Infected: Improved Physical Attribute (BRS)</addquality>
-				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-				<addquality>Infected: Improved Mental Attribute (WIC)</addquality>
-			</addqualities>
 			<critterpowers>
 				<power>Essence Drain</power>
 				<power>Infection</power>
