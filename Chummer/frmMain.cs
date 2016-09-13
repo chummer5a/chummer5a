@@ -182,7 +182,7 @@ namespace Chummer
 
 		private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			frmOptions frmOptions = new frmOptions();
+			frmNewOptions frmOptions = new frmNewOptions();
 			frmOptions.ShowDialog(this);
 		}
 

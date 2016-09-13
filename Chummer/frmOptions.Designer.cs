@@ -330,11 +330,13 @@
 			// 
 			// cmdOK
 			// 
-			this.cmdOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cmdOK.Location = new System.Drawing.Point(370, 626);
 			this.cmdOK.Name = "cmdOK";
-			this.cmdOK.Size = new System.Drawing.Size(75, 23);
+			this.cmdOK.Size = new System.Drawing.Size(136, 21);
 			this.cmdOK.TabIndex = 5;
 			this.cmdOK.Tag = "String_OK";
 			this.cmdOK.Text = "OK";
@@ -1004,7 +1006,8 @@
 			// 
 			// tabControl1
 			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tabControl1.Controls.Add(this.tabGeneral);
 			this.tabControl1.Controls.Add(this.tabKarmaCosts);
@@ -1013,7 +1016,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(0, 32);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(815, 588);
+			this.tabControl1.Size = new System.Drawing.Size(876, 586);
 			this.tabControl1.TabIndex = 4;
 			// 
 			// tabGeneral
@@ -1890,7 +1893,7 @@
 			this.tabKarmaCosts.Location = new System.Drawing.Point(4, 22);
 			this.tabKarmaCosts.Name = "tabKarmaCosts";
 			this.tabKarmaCosts.Padding = new System.Windows.Forms.Padding(3);
-			this.tabKarmaCosts.Size = new System.Drawing.Size(807, 562);
+			this.tabKarmaCosts.Size = new System.Drawing.Size(868, 560);
 			this.tabKarmaCosts.TabIndex = 1;
 			this.tabKarmaCosts.Tag = "Tab_Options_KarmaCosts";
 			this.tabKarmaCosts.Text = "Karma Costs";
@@ -1899,7 +1902,7 @@
 			// 
 			this.cmdRestoreDefaultsKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmdRestoreDefaultsKarma.AutoSize = true;
-			this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(703, 533);
+			this.cmdRestoreDefaultsKarma.Location = new System.Drawing.Point(764, 533);
 			this.cmdRestoreDefaultsKarma.Name = "cmdRestoreDefaultsKarma";
 			this.cmdRestoreDefaultsKarma.Size = new System.Drawing.Size(96, 23);
 			this.cmdRestoreDefaultsKarma.TabIndex = 108;
@@ -3168,7 +3171,7 @@
 			this.AcceptButton = this.cmdOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(815, 661);
+			this.ClientSize = new System.Drawing.Size(876, 659);
 			this.Controls.Add(this.txtSettingName);
 			this.Controls.Add(this.lblSettingName);
 			this.Controls.Add(this.cboSetting);

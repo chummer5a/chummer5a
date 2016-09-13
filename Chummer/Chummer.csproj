@@ -180,8 +180,15 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Classes\Options.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmNewOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNewOptions.Designer.cs">
+      <DependentUpon>frmNewOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
@@ -298,6 +305,12 @@
     </Compile>
     <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Options\OptionsNumberControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Options\OptionsNumberControl.Designer.cs">
+      <DependentUpon>OptionsNumberControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Shared\CharacterShared.cs" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
@@ -809,6 +822,9 @@
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmNewOptions.resx">
+      <DependentUpon>frmNewOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
@@ -850,6 +866,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
       <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Options\OptionsNumberControl.resx">
+      <DependentUpon>OptionsNumberControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
