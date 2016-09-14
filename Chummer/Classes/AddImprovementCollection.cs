@@ -437,11 +437,11 @@ namespace Chummer.Classes
 					throw new AbortedException();
 				}
 
-				SelectedValue = frmPickAttribute.SelectedAttribute;
+				/*SelectedValue = frmPickAttribute.SelectedAttribute;
 				if (_blnConcatSelectedValue)
 					SourceName += " (" + SelectedValue + ")";
-
-				Log.Info("_strSelectedValue = " + SelectedValue);
+				*/
+				Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
 				Log.Info("SourceName = " + SourceName);
 
 				// Record the improvement.
@@ -2116,6 +2116,16 @@ namespace Chummer.Classes
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.SensitiveSystem,
 				"sensitivesystem");
+		}
+
+		// Check for Movement Percent.
+		public void movementmultiplier(XmlNode bonusNode)
+		{
+			Log.Info("movementmultiplier");
+			Log.Info("movementmultiplier = " + bonusNode.OuterXml.ToString());
+			Log.Info("Calling CreateImprovement");
+			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.MovementMultiplier, "",
+				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
 		// Check for Movement Percent.

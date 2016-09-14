@@ -30,6 +30,9 @@ Application Changes:
 - Fixed a crash issue caused by adding too many Enemies in creation mode. 
 - Added some code to suppress errors caused by faulty XSL transforms in character sheets. 
 - Implemented the Blackmail and Family options for contacts. 
+- Removed some code from the SelectAttributes improvement that caused it to pass the selected value up to the bonus source. Generally speaking, prevents Infected qualities from getting (BOD) or whatever added to their treenode.
+- Added a new Improvement Type: MovementMultiplier. This is used to increase or decrease the multiplier for Running and Sprinting from x2/x4. 
+- Fixed a UI issue that prevented attribute bonuses from showing properly if the value made it into double digits.
 
 Data Changes:
 - Fixed the Infected qualities to work according to the rules. Characters with previous versions of the quality should reapply their improvements, characters that used the terrible metavariant idea will not load properly and should be rebuilt from scratch. If you've been affected by this, please get in contact with me and I'll fix your character for you. Mostly fixes #689.
@@ -43,6 +46,8 @@ Data Changes:
 - Fixed an issue with the Reaction Optimization bioware not applying its initiative bonus. 
 - Added a requirement for the Reaction Enhancers cyberware in order to take Reaction Optimization.
 - Fixed an issue with the Infected: Vampire quality that caused a crash. 
+- Removed old Metavariant entries for Infected metavariants from the Priority sheet.
+- Added the appropriate Initiative and Movement Multiplier bonuses for the Bandersnatch, Dzoo-Noo-Qua, Goblin, Harvester, Loup-Garou, Mutaqua, Nosferatu, Vampire and Wendigo. 
 
 New Strings:
 - Button_ToggleSourcebooks

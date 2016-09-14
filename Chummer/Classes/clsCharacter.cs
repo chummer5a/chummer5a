@@ -6094,9 +6094,10 @@ namespace Chummer
             get
             {
                 string strReturn = "";
-
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-	            if (_strMovement == "Special")
+	            int intRunMultiplier = 2 + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+				int intSprintMultiplier = 4 + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+				// Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+				if (_strMovement == "Special")
 	            {
 		            return "Special";
 	            }
@@ -6141,12 +6142,12 @@ namespace Chummer
 									}
 								}
 								if (intLegs == 2)
-									_strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
+									_strMovement = String.Format("{0}/{1}", (intAGI * intRunMultiplier), (intAGI * intSprintMultiplier));
 								else
-									_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+									_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * intRunMultiplier), (_attAGI.TotalValue * intSprintMultiplier));
 							}
 							else
-								_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * 2), (_attAGI.TotalValue * 4));
+								_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * intRunMultiplier), (_attAGI.TotalValue * intSprintMultiplier));
 						}
 						catch
 						{

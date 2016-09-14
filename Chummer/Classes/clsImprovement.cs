@@ -170,8 +170,8 @@ namespace Chummer
 			ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
 			SpecialSkills,
 			ReflexRecorderOptimization,
-	        
-        }
+			MovementMultiplier,
+		}
 
         public enum ImprovementSource
         {

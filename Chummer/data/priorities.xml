@@ -49,26 +49,6 @@
 							<value>8</value>
 							<karma>0</karma>
 						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>9</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Nosferatu</name>
-							<value>9</value>
-							<karma>48</karma>
-						</metavariant>
-						<metavariant>
-							<name>Vampire</name>
-							<value>9</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Loup-Garou</name>
-							<value>9</value>
-							<karma>30</karma>
-						</metavariant>
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -95,21 +75,6 @@
 							<name>Xapiri Thëpë</name>
 							<value>8</value>
 							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Banshee</name>
-							<value>8</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Harvester</name>
-							<value>8</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>8</value>
-							<karma>29</karma>
 						</metavariant>
 					</metavariants>		  
 				</metatype>				
@@ -138,21 +103,6 @@
 							<value>7</value>
 							<karma>2</karma>
 						</metavariant>
-						<metavariant>
-							<name>Goblin</name>
-							<value>7</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Gnawer</name>
-							<value>7</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>7</value>
-							<karma>29</karma>
-						</metavariant>
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -179,21 +129,6 @@
 							<name>Satyr</name>
 							<value>7</value>
 							<karma>10</karma>
-						</metavariant>
-						<metavariant>
-							<name>Wendigo</name>
-							<value>7</value>
-							<karma>47</karma>
-						</metavariant>
-						<metavariant>
-							<name>Grendel</name>
-							<value>7</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>7</value>
-							<karma>29</karma>
 						</metavariant>
 					</metavariants>		  
 				</metatype>
@@ -222,21 +157,6 @@
 							<value>5</value>
 							<karma>2</karma>
 						</metavariant>
-						<metavariant>
-							<name>Dzoo-Noo-Qua</name>
-							<value>5</value>
-							<karma>43</karma>
-						</metavariant>
-						<metavariant>
-							<name>Fomóraig</name>
-							<value>5</value>
-							<karma>22</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>5</value>
-							<karma>29</karma>
-						</metavariant>
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -258,18 +178,7 @@
 					<name>Sasquatch</name>
 					<value>5</value>	
 					<karma>20</karma>
-					<metavariants>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>5</value>
-							<karma>49</karma>
-						</metavariant>
-						<metavariant>
-							<name>Bandersnatch</name>
-							<value>5</value>
-							<karma>42</karma>
-						</metavariant>
-					</metavariants>	
+					<metavariants />	
 				</metatype>	
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
@@ -339,26 +248,6 @@
 							<value>6</value>
 							<karma>0</karma>
 						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>7</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Nosferatu</name>
-							<value>7</value>
-							<karma>48</karma>
-						</metavariant>
-						<metavariant>
-							<name>Vampire</name>
-							<value>7</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Loup-Garou</name>
-							<value>7</value>
-							<karma>30</karma>
-						</metavariant>
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -385,21 +274,6 @@
 							<name>Dryad</name>
 							<value>6</value>
 							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Banshee</name>
-							<value>6</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Harvester</name>
-							<value>6</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>6</value>
-							<karma>29</karma>
 						</metavariant>
 					</metavariants>		  
 				</metatype>				
@@ -428,21 +302,6 @@
 							<value>4</value>
 							<karma>2</karma>
 						</metavariant>
-						<metavariant>
-							<name>Goblin</name>
-							<value>4</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Gnawer</name>
-							<value>4</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>4</value>
-							<karma>29</karma>
-						</metavariant>		  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -469,22 +328,7 @@
 							<name>Hobgoblin</name>
 							<value>4</value>
 							<karma>5</karma>
-						</metavariant>
-						<metavariant>
-							<name>Wendigo</name>
-							<value>4</value>
-							<karma>47</karma>
-						</metavariant>
-						<metavariant>
-							<name>Grendel</name>
-							<value>4</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>4</value>
-							<karma>29</karma>
-						</metavariant>		  
+						</metavariant>	  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -512,21 +356,6 @@
 							<value>0</value>
 							<karma>2</karma>
 						</metavariant>
-						<metavariant>
-							<name>Dzoo-Noo-Qua</name>
-							<value>0</value>
-							<karma>43</karma>
-						</metavariant>
-						<metavariant>
-							<name>Fomóraig</name>
-							<value>0</value>
-							<karma>22</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>0</value>
-							<karma>29</karma>
-						</metavariant>		  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -548,18 +377,7 @@
 					<name>Sasquatch</name>
 					<value>2</value>	
 					<karma>20</karma>
-					<metavariants>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>2</value>
-							<karma>49</karma>
-						</metavariant>
-						<metavariant>
-							<name>Bandersnatch</name>
-							<value>2</value>
-							<karma>42</karma>
-						</metavariant>
-					</metavariants>					
+					<metavariants />					
 				</metatype>	
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
@@ -628,26 +446,6 @@
 							<name>Nartaki</name>
 							<value>4</value>
 							<karma>0</karma>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>5</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Nosferatu</name>
-							<value>5</value>
-							<karma>48</karma>
-						</metavariant>
-						<metavariant>
-							<name>Vampire</name>
-							<value>5</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Loup-Garou</name>
-							<value>5</value>
-							<karma>30</karma>
-						</metavariant>
 						</metavariant>
 					</metavariants>		  
 				</metatype>
@@ -676,21 +474,6 @@
 							<value>3</value>
 							<karma>0</karma>
 						</metavariant>
-						<metavariant>
-							<name>Banshee</name>
-							<value>3</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Harvester</name>
-							<value>3</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>3</value>
-							<karma>29</karma>
-						</metavariant>		  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -723,16 +506,6 @@
 							<value>1</value>
 							<karma>27</karma>
 						</metavariant>
-						<metavariant>
-							<name>Gnawer</name>
-							<value>1</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>1</value>
-							<karma>29</karma>
-						</metavariant>			  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -759,22 +532,7 @@
 							<name>Hobgoblin</name>
 							<value>0</value>
 							<karma>-5</karma>
-						</metavariant>
-						<metavariant>
-							<name>Wendigo</name>
-							<value>0</value>
-							<karma>47</karma>
-						</metavariant>
-						<metavariant>
-							<name>Grendel</name>
-							<value>0</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>0</value>
-							<karma>29</karma>
-						</metavariant>			  
+						</metavariant>		  
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -796,18 +554,7 @@
 					<name>Sasquatch</name>
 					<value>0</value>	
 					<karma>20</karma>
-					<metavariants>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>0</value>
-							<karma>49</karma>
-						</metavariant>
-						<metavariant>
-							<name>Bandersnatch</name>
-							<value>0</value>
-							<karma>42</karma>
-						</metavariant>
-					</metavariants>						
+					<metavariants />						
 				</metatype>	
 				<metatype>
 					<name>Shapeshifter: Bovine</name>
@@ -876,27 +623,7 @@
 							<name>Nartaki</name>
 							<value>2</value>
 							<karma>0</karma>
-						</metavariant>
-						<metavariant>		
-							<name>Ghoul</name>
-							<value>3</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Nosferatu</name>
-							<value>3</value>
-							<karma>48</karma>
-						</metavariant>
-						<metavariant>
-							<name>Vampire</name>
-							<value>3</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Loup-Garou</name>
-							<value>3</value>
-							<karma>30</karma>
-						</metavariant>					
+						</metavariant>				
 					</metavariants>		  
 				</metatype>
 				<metatype>
@@ -923,22 +650,7 @@
 							<name>Dryad</name>
 							<value>0</value>
 							<karma>0</karma>
-						</metavariant>
-						<metavariant>
-							<name>Banshee</name>
-							<value>0</value>
-							<karma>32</karma>
-						</metavariant>
-						<metavariant>
-							<name>Harvester</name>
-							<value>0</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Ghoul</name>
-							<value>0</value>
-							<karma>29</karma>
-						</metavariant>			  
+						</metavariant>		  
 					</metavariants>		  
 				</metatype>
 			</metatypes>
@@ -958,26 +670,6 @@
 							<name>Nartaki</name>
 							<value>1</value>
 							<karma>0</karma>
-						</metavariant>
-						<metavariant>		
-							<name>Ghoul</name>
-							<value>1</value>
-							<karma>29</karma>
-						</metavariant>
-						<metavariant>
-							<name>Nosferatu</name>
-							<value>1</value>
-							<karma>48</karma>
-						</metavariant>
-						<metavariant>
-							<name>Vampire</name>
-							<value>1</value>
-							<karma>27</karma>
-						</metavariant>
-						<metavariant>
-							<name>Loup-Garou</name>
-							<value>1</value>
-							<karma>30</karma>
 						</metavariant>
 					</metavariants>		  
 				</metatype>

@@ -7045,23 +7045,27 @@
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<min>1</min>
+						<affectbase>yes</affectbase>
+						<val>1</val>
 					</selectattribute>
 					<selectattribute>
 						<attribute>BOD</attribute>
 						<attribute>REA</attribute>
 						<attribute>STR</attribute>
-						<min>1</min>
+						<affectbase>yes</affectbase>
+						<val>1</val>
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<min>1</min>
+						<affectbase>yes</affectbase>
+						<val>1</val>
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
-						<min>1</min>
+						<affectbase>yes</affectbase>
+						<val>1</val>
 					</selectattribute>
 				</selectattributes>
 			</bonus>
@@ -7196,6 +7200,8 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 			</bonus>
 			<critterpowers>
 				<power>Dual Natured</power>
@@ -7233,8 +7239,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower>Armor</optionalpower>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -8403,7 +8409,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Taste">Enhanced Senses</optionalpower>
@@ -8685,6 +8692,8 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>2</armor>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
@@ -8818,6 +8827,8 @@
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<armor>2</armor>
 				<enabletab>
 					<name>critter</name>
@@ -8960,8 +8971,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9106,8 +9117,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9254,8 +9265,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9411,8 +9422,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9547,8 +9558,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9683,8 +9694,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Lowlight Vision">Enhanced Senses</optionalpower>
@@ -9821,8 +9832,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -9949,8 +9960,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10079,8 +10090,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10225,8 +10236,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Smell">Enhanced Senses</optionalpower>
@@ -10373,8 +10384,8 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiative>1</initiative>
-				<movement>1</movement>
+				<initiativepass>1</initiativepass>
+				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
 					<optionalpower select="Smell">Enhanced Senses</optionalpower>
