@@ -21612,8 +21612,8 @@ namespace Chummer
 
 				// Movement.
 				lblMovement.Text = _objCharacter.Movement;
-				strTip = _objCharacter.CalculatedMovementSpeed;
-				tipTooltip.SetToolTip(lblMovement, strTip);
+				//strTip = _objCharacter.CalculatedMovementSpeed;
+				//tipTooltip.SetToolTip(lblMovement, strTip);
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
 

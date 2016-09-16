@@ -183,7 +183,7 @@ namespace Chummer.Skills
 			}
 			XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
 
-			if (objCategoryNode.Attributes?["translate"] != null)
+			if (objCategoryNode != null && objCategoryNode.Attributes?["translate"] != null)
 			{
 				skill.DisplayCategory = objCategoryNode.Attributes["translate"].InnerText;
 			}

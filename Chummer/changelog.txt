@@ -34,6 +34,8 @@ Application Changes:
 - Added a new Improvement Type: MovementMultiplier. This is used to increase or decrease the multiplier for Running and Sprinting from x2/x4. 
 - Fixed a UI issue that prevented attribute bonuses from showing properly if the value made it into double digits.
 - Changed the code to calculate character movement rates. To do this, I've added three attributes to the metatype: Walk, Run and Sprint. Each of these is split into three number (Walk, Swim and Fly in order). 
+- Temporarily removed the CalculatedMovementSpeed tooltip from caeer and creation mode until it gets refacted. 
+- Added a workaround to prevent crashes when loading characters with empty knowledge skills. Fixes #1099.
 
 Data Changes:
 - Fixed the Infected qualities to work according to the rules. Characters with previous versions of the quality should reapply their improvements, characters that used the terrible metavariant idea will not load properly and should be rebuilt from scratch. If you've been affected by this, please get in contact with me and I'll fix your character for you. Mostly fixes #689.
