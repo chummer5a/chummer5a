@@ -1192,8 +1192,6 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_Metatype_SelectMetatype"), LanguageManager.Instance.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            
-            _objCharacter.Movement = (_objCharacter.AGI.TotalValue * 2).ToString() + "/" + (_objCharacter.AGI.TotalValue * 4).ToString();
 
         }
 

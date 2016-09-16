@@ -1392,9 +1392,6 @@ namespace Chummer
 				_objCharacter.MetatypeCategory = cboCategory.SelectedValue.ToString();
 				_objCharacter.Metavariant = cboMetavariant.SelectedValue.ToString() == "None" ? "" : cboMetavariant.SelectedValue.ToString();
 
-				if (objXmlMetatype["movement"] != null) // TODO: Replace with Walk/Run
-					_objCharacter.Movement = objXmlMetatype["movement"].InnerText;
-
 				// Load the Qualities file.
 				XmlDocument objXmlQualityDocument = XmlManager.Instance.Load("qualities.xml");
 
@@ -2059,9 +2056,6 @@ namespace Chummer
 
 				// Set limit for qualities
 	            _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma;
-
-                // Set starting movement rate
-                _objCharacter.Movement = (_objCharacter.AGI.TotalValue * 2).ToString() + "/" + (_objCharacter.AGI.TotalValue * 4).ToString();
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();

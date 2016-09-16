@@ -1033,16 +1033,12 @@ namespace Chummer
             // Metatype information.
             _strMetatype = objXmlCharacter["metatype"].InnerText;
 	        objXmlCharacter.TryGetField("movement", out _strMovement);
-            try
-            {
-                _strWalk = objXmlCharacter["walk"].InnerText;
-                _strRun = objXmlCharacter["run"].InnerText;
-                _strSprint = objXmlCharacter["sprint"].InnerText;
-            }
-            catch
-            {
-            }
-            _intMetatypeBP = Convert.ToInt32(objXmlCharacter["metatypebp"].InnerText);
+
+			objXmlCharacter.TryGetField("walk", out _strWalk);
+			objXmlCharacter.TryGetField("run", out _strRun);
+			objXmlCharacter.TryGetField("sprint", out _strSprint);
+
+			_intMetatypeBP = Convert.ToInt32(objXmlCharacter["metatypebp"].InnerText);
             _strMetavariant = objXmlCharacter["metavariant"].InnerText;
 		    objXmlCharacter.TryGetField("metatypecategory", out _strMetatypeCategory);
 		    objXmlCharacter.TryGetField("mutantcritterbaseskills", out _intMutantCritterBaseSkills);
@@ -6093,93 +6089,27 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
-	            int intRunMultiplier = 2 + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
-				int intSprintMultiplier = 4 + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 				// Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
 				if (_strMovement == "Special")
 	            {
 		            return "Special";
 	            }
 
-	            // If there is no Movement data, read it from the Metatype file, apply it to the character and save the updated file.
-                if (_strMovement.Trim() == "")
-                {
-                    XmlDocument objXmlDocument = new XmlDocument();
-                    if (_blnIsCritter)
-                        objXmlDocument = XmlManager.Instance.Load("critters.xml");
-                    else
-                        objXmlDocument = XmlManager.Instance.Load("metatypes.xml");
-                    try
-                    {
-                        _strMovement = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["movement"].InnerText;
-						if (_strMovement == "Special")
+				string strReturn = "";
+				XmlDocument objXmlDocument = new XmlDocument();
+	            objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+	            XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+	                
+                objXmlNode.TryGetField("movement", out _strMovement);
+				objXmlNode.TryGetField("run", out _strRun);
+				objXmlNode.TryGetField("walk", out _strWalk);
+				objXmlNode.TryGetField("sprint", out _strSprint);
+				if (_strMovement == "Special")
 						{
 							return "Special";
 						}
-					}
-                    catch
-                    {
-						try
-						{
-							string strWalk = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["walk"].InnerText;
-							string strRun = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["run"].InnerText;
-							string strSprint = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]")["sprint"].InnerText;
 
-							if (_objOptions.CyberlegMovement)
-							{
-								int intLegs = 0;
-								int intAGI = 0;
-								foreach (Cyberware objCyber in _lstCyberware)
-								{
-									if (objCyber.LimbSlot == "leg")
-									{
-										intLegs++;
-										if (intAGI > 0)
-											intAGI = Math.Min(intAGI, objCyber.TotalAgility);
-										else
-											intAGI = objCyber.TotalAgility;
-									}
-								}
-								if (intLegs == 2)
-									_strMovement = String.Format("{0}/{1}", (intAGI * intRunMultiplier), (intAGI * intSprintMultiplier));
-								else
-									_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * intRunMultiplier), (_attAGI.TotalValue * intSprintMultiplier));
-							}
-							else
-								_strMovement = String.Format("{0}/{1}", (_attAGI.TotalValue * intRunMultiplier), (_attAGI.TotalValue * intSprintMultiplier));
-						}
-						catch
-						{
-							_strMovement = "0";
-						}						
-                    }
-                    
-                }
-
-                string[] strMovements = _strMovement.Split(',');
-                foreach (string strMovement in strMovements)
-                {
-                    // Ignore Fly and Swim information since we're only looking for land Movement.
-                    if (!strMovement.Trim().StartsWith("Fly") && !strMovement.Trim().StartsWith("Swim"))
-                    {
-                        string[] strValue = strMovement.Split('/');
-                        int intWalking = Convert.ToInt32(strValue[0]);
-                        int intRunning = Convert.ToInt32(strValue[1]);
-                        double dblPercent = _objImprovementManager.ValueOf(Improvement.ImprovementType.MovementPercent);
-                        dblPercent /= 100.0;
-
-                        intWalking += Convert.ToInt32(Math.Floor(Convert.ToDouble(intWalking, GlobalOptions.Instance.CultureInfo) * dblPercent));
-                        intRunning += Convert.ToInt32(Math.Floor(Convert.ToDouble(intRunning, GlobalOptions.Instance.CultureInfo) * dblPercent));
-
-                        strReturn += intWalking.ToString() + "/" + intRunning.ToString();
-                    }
-                }
-
-                if (strReturn == "")
-                    return "0";
-                else
-                    return strReturn;
+	            return CalculatedMovement(Improvement.ImprovementType.MovementPercent, "Ground",true);
             }
             set
             {
@@ -6189,7 +6119,7 @@ namespace Chummer
 		/// <summary>
 		/// Character's Movement rate in Metres per Combat Turn or Kilometres Per Hour.
 		/// </summary>
-		public string CalculatedMovement
+		public string CalculatedMovementSpeed
 		{
            get
 			{
@@ -6215,85 +6145,194 @@ namespace Chummer
 				return strReturn;
 			}
 		}
-        /// <summary>
-        /// Character's walking Movement rate.
-        /// </summary>
-        private int WalkingRate
+
+		/// <summary>
+		/// Character's running Movement rate. 
+		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+		/// </summary>
+		private string WalkingRate(string strType)
+		{
+			string[] strReturn = _strWalk.Split('/');
+			try
+			{
+				switch (strType)
+				{
+					case "Ground":
+						return strReturn[0];
+					case "Swim":
+						return strReturn[1];
+					case "Fly":
+						return strReturn[2];
+					default:
+						return "0";
+				}
+			}
+			catch
+			{
+				return "0";
+			}
+		}
+
+		/// <summary>
+		/// Character's running Movement rate. 
+		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+		/// </summary>
+		private string RunningRate(string strType)
+		{
+			string[] strReturn = _strRun.Split('/');
+			try
+			{
+				switch (strType)
+				{
+					case "Ground":
+						return strReturn[0];
+					case "Swim":
+						return strReturn[1];
+					case "Fly":
+						return strReturn[2];
+					default:
+						return "0";
+				}
+			}
+			catch
+			{
+				return "0";
+			}
+		}
+
+		/// <summary>
+		/// Character's running Movement rate. 
+		/// <param name="strType">Takes one of three parameters: Ground, 2 for Swim, 3 for Fly. Returns 0 if the requested type isn't found.</param>
+		/// </summary>
+		private string SprintingRate(string strType)
+		{
+			string[] strReturn = _strSprint.Split('/');
+			try
+			{
+				switch (strType)
+				{
+					case "Ground":
+						return strReturn[0];
+					case "Swim":
+						return strReturn[1];
+					case "Fly":
+						return strReturn[2];
+					default:
+						return "0";
+				}
+			}
+			catch
+			{
+				return "0";
+			}
+		}
+
+	    private string CalculatedMovement(Improvement.ImprovementType objImprovementType, string strMovementType, bool blnUseCyberlegs = false)
+	    {
+		    string strReturn;
+			try
+			{
+				int intMultiply = 1;
+				// If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
+				if (strMovementType == "Fly" && _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
+				{
+					intMultiply = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) * -1;
+				}
+				double dblPercent = _objImprovementManager.ValueOf(objImprovementType);
+
+				int intRun = 0;
+				int intWalk = 0;
+				int intSprint = 0;
+				int intRunMultiplier = (Convert.ToInt32(RunningRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+				int intWalkMultiplier = (Convert.ToInt32(WalkingRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+				int intSprintMultiplier = (Convert.ToInt32(SprintingRate(strMovementType)) * intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+
+				intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
+				intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
+				intSprintMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
+
+				if (_objOptions.CyberlegMovement && blnUseCyberlegs)
+				{
+					int intLegs = 0;
+					int intAGI = 0;
+					foreach (Cyberware objCyber in _lstCyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
+					{
+						intLegs++;
+						intAGI = intAGI > 0 ? Math.Min(intAGI, objCyber.TotalAgility) : objCyber.TotalAgility;
+					}
+					if (intLegs == 2)
+					{
+						if (strMovementType == "Swim")
+						{
+							intWalk = (intAGI + _attSTR.TotalValue / 2)* intWalkMultiplier;
+							intSprint = (intAGI * intSprintMultiplier);
+						}
+						else
+						{
+							intWalk = (intAGI*intWalkMultiplier);
+							intRun = (intAGI*intRunMultiplier);
+							intSprint = (intAGI*intSprintMultiplier);
+						}
+					}
+				}
+				else
+				{
+					if (strMovementType == "Swim")
+					{
+						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue/2)*intWalkMultiplier;
+						intSprint = (_attAGI.TotalValue * intSprintMultiplier);
+					}
+					else
+					{
+						intWalk = (_attAGI.TotalValue*intWalkMultiplier);
+						intRun = (_attAGI.TotalValue*intRunMultiplier);
+						intSprint = (_attAGI.TotalValue*intSprintMultiplier);
+					}
+				}
+				if (strMovementType == "Swim")
+				{
+					strReturn = String.Format("{0}, {1}m/ hit", intWalk, intSprint);
+				}
+				else
+				{
+					strReturn = String.Format("{0}/{1}, {2}m/ hit", intWalk, intRun, intSprint);
+				}
+				if (strReturn == "" || strReturn == "0/0, 0m/ hit")
+				{
+					return "0";
+				}
+			}
+			catch
+			{
+				strReturn = "0";
+			}
+		    return strReturn;
+	    }
+
+		/// <summary>
+		/// Character's Swim rate.
+		/// </summary>
+		public string Swim
         {
             get
             {
-                if (!Movement.Contains("/"))
-                    return 0;
-                else
-                {
-                    string[] strMovement = Movement.Split('/');
-                    return Convert.ToInt32(strMovement[0]);
-                }
-            }
-        }
+				// Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+				if (_strMovement == "Special")
+				{
+					return "Special";
+				}
 
-        /// <summary>
-        /// Character's running Movement rate.
-        /// </summary>
-        private int RunningRate
-        {
-            get
-            {
-                if (!Movement.Contains("/"))
-                    return 0;
-                else
-                {
-                    string[] strMovement = Movement.Split('/');
-                    return Convert.ToInt32(strMovement[1]);
-                }
-            }
-        }
+				string strReturn = "";
+				XmlDocument objXmlDocument = new XmlDocument();
+				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
-        /// <summary>
-        /// Character's Swim rate.
-        /// </summary>
-        public string Swim
-        {
-            get
-            {
-                string strReturn = "";
-
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                    return "0";
-
-                string[] strMovements = _strMovement.Split(',');
-                foreach (string strMovement in strMovements)
-                {
-                    if (strMovement.Trim().StartsWith("Swim"))
-                    {
-                        double dblPercent = _objImprovementManager.ValueOf(Improvement.ImprovementType.SwimPercent);
-                        dblPercent /= 100.0;
-
-                        string[] strValue = strMovement.Replace("Swim", string.Empty).Trim().Split('/');
-                        if (strValue.Length == 1)
-                        {
-                            int intWalking = Convert.ToInt32(strValue[0]);
-                            intWalking += Convert.ToInt32(Math.Floor(Convert.ToDouble(intWalking, GlobalOptions.Instance.CultureInfo) * dblPercent));
-                            strReturn = intWalking.ToString();
-                        }
-                        else
-                        {
-                            int intWalking = Convert.ToInt32(strValue[0]);
-                            int intRunning = Convert.ToInt32(strValue[1]);
-
-                            intWalking += Convert.ToInt32(Math.Floor(Convert.ToDouble(intWalking, GlobalOptions.Instance.CultureInfo) * dblPercent));
-                            intRunning += Convert.ToInt32(Math.Floor(Convert.ToDouble(intRunning, GlobalOptions.Instance.CultureInfo) * dblPercent));
-
-                            strReturn += intWalking.ToString() + "/" + intRunning.ToString();
-                        }
-                    }
-                }
-
-                if (strReturn == "")
-                    return "0";
-                else
-                    return strReturn;
+				objXmlNode.TryGetField("movement", out _strMovement);
+				if (_strMovement == "Special")
+				{
+					return "Special";
+				}
+	            return CalculatedMovement(Improvement.ImprovementType.SwimPercent, "Swim");
             }
         }
 
@@ -6304,59 +6343,24 @@ namespace Chummer
         {
             get
             {
-                string strReturn = "";
+				// Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
+				if (_strMovement == "Special")
+				{
+					return "Special";
+				}
 
-                // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-                if (_strMovement == "Special")
-                    return "0";
+				string strReturn = "";
+				XmlDocument objXmlDocument = new XmlDocument();
+				objXmlDocument = XmlManager.Instance.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+				XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
 
-                string strCharacterMovement = _strMovement;
+				objXmlNode.TryGetField("movement", out _strMovement);
+				if (_strMovement == "Special")
+				{
+					return "Special";
+				}
 
-                // If the character does not have a Fly speed, see if they get one through Improvements.
-                if (!_strMovement.Contains("Fly "))
-                {
-                    if (_objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) > 0)
-                        strCharacterMovement += ",Fly " + _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed).ToString();
-                    // If the FlySpeed is a negative number, Fly speed is instead calculated as Momvement Rate * the number given.
-                    if (_objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) < 0)
-                    {
-                        int intMultiply = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) * -1;
-                        strCharacterMovement += ",Fly " + (WalkingRate * intMultiply).ToString() + "/" + (RunningRate * intMultiply).ToString();
-                    }
-                }
-
-                string[] strMovements = strCharacterMovement.Split(',');
-                foreach (string strMovement in strMovements)
-                {
-                    if (strMovement.Trim().StartsWith("Fly"))
-                    {
-                        double dblPercent = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlyPercent);
-                        dblPercent /= 100.0;
-
-                        string[] strValue = strMovement.Replace("Fly", string.Empty).Trim().Split('/');
-                        if (strValue.Length == 1)
-                        {
-                            int intWalking = Convert.ToInt32(strValue[0]);
-                            intWalking += Convert.ToInt32(Math.Floor(Convert.ToDouble(intWalking, GlobalOptions.Instance.CultureInfo) * dblPercent));
-                            strReturn = intWalking.ToString();
-                        }
-                        else
-                        {
-                            int intWalking = Convert.ToInt32(strValue[0]);
-                            int intRunning = Convert.ToInt32(strValue[1]);
-
-                            intWalking += Convert.ToInt32(Math.Floor(Convert.ToDouble(intWalking, GlobalOptions.Instance.CultureInfo) * dblPercent));
-                            intRunning += Convert.ToInt32(Math.Floor(Convert.ToDouble(intRunning, GlobalOptions.Instance.CultureInfo) * dblPercent));
-
-                            strReturn += intWalking.ToString() + "/" + intRunning.ToString();
-                        }
-                    }
-                }
-
-                if (strReturn == "")
-                    return "0";
-                else
-                    return strReturn;
+				return CalculatedMovement(Improvement.ImprovementType.FlyPercent, "Fly");
             }
         }
 

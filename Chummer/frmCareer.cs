@@ -20932,34 +20932,6 @@ namespace Chummer
 
 				RedlinerCheck();
 
-				// Calculate the character's move.
-				string strMovement = "";
-                if (_objOptions.CyberlegMovement)
-                {
-                    int intLegs = 0;
-                    int intAGI = 0;
-                    foreach (Cyberware objCyber in _objCharacter.Cyberware)
-                    {
-                        if (objCyber.LimbSlot == "leg")
-                        {
-                            intLegs++;
-                            if (intAGI > 0)
-                                intAGI = Math.Min(intAGI, objCyber.TotalAgility);
-                            else
-                                intAGI = objCyber.TotalAgility;
-                        }
-                    }
-                    if (intLegs == 2)
-                        strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
-                    else
-                        strMovement = String.Format("{0}/{1}", (_objCharacter.AGI.TotalValue * 2), (_objCharacter.AGI.TotalValue * 4));
-                }
-                else
-                    strMovement = String.Format("{0}/{1}", (_objCharacter.AGI.TotalValue * 2), (_objCharacter.AGI.TotalValue * 4));
-
-                _objCharacter.Movement = strMovement;
-                lblMovement.Text = _objCharacter.Movement;
-
 				string strFormat;
 				if (_objCharacter.Options.EssenceDecimals == 4)
 					strFormat = "{0:0.0000}";
@@ -21640,7 +21612,7 @@ namespace Chummer
 
 				// Movement.
 				lblMovement.Text = _objCharacter.Movement;
-				strTip = _objCharacter.CalculatedMovement;
+				strTip = _objCharacter.CalculatedMovementSpeed;
 				tipTooltip.SetToolTip(lblMovement, strTip);
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
