@@ -208,7 +208,19 @@ namespace Chummer
 		private void GenerateOutput()
 		{
 			XslCompiledTransform objXSLTransform = new XslCompiledTransform();
-			objXSLTransform.Load(Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl"));
+			try
+			{
+				objXSLTransform.Load(Path.Combine(Application.StartupPath, "sheets", _strSelectedSheet + ".xsl"));
+			}
+			catch(Exception ex)
+			{
+				string strReturn = string.Format("Error attempting to load {0}\n", _strSelectedSheet);
+				Log.Enter(strReturn);
+				Log.Error("ERROR Message = " + ex.Message);
+				strReturn += ex.Message;
+				MessageBox.Show(strReturn);
+				return;
+			}
 
 			MemoryStream objStream = new MemoryStream();
 			XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);

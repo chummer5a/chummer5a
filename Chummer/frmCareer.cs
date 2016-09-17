@@ -84,7 +84,7 @@ namespace Chummer
 			_objCharacter.FameChanged += objCharacter_FameChanged;
 			tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 			GlobalOptions.Instance.MRUChanged += PopulateMRU;
-
+			GlobalOptions.Instance.MainForm.OpenCharacters.Add(_objCharacter);
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
 
 			// Update the text in the Menus so they can be merged with frmMain properly.
@@ -558,7 +558,9 @@ namespace Chummer
 					objContactControl.EntityType = objContact.EntityType;
 					objContactControl.BackColor = objContact.Colour;
 				    objContactControl.IsGroup = objContact.IsGroup;
-                    if (objContact.MadeMan)
+					objContactControl.Blackmail = objContact.Blackmail;
+					objContactControl.Family = objContact.Family;
+					if (objContact.MadeMan)
                     {
                         objContactControl.IsGroup = objContact.MadeMan;
                     }
@@ -1165,6 +1167,7 @@ namespace Chummer
 			// Reset the ToolStrip so the Save button is removed for the currently closing window.
 			if (!e.Cancel)
 			{
+				GlobalOptions.Instance.MainForm.OpenCharacters.Remove(_objCharacter);
 				if (!_blnSkipToolStripRevert)
 					ToolStripManager.RevertMerge("toolStrip");
 
@@ -14628,6 +14631,14 @@ namespace Chummer
 			if (objCyberware.TotalAvail.EndsWith(LanguageManager.Instance.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
 				intCost *= _objOptions.ForbiddenCostMultiplier;
 
+			// Apply a markup if applicable.
+			if (frmPickCyberware.Markup != 0 && !frmPickCyberware.FreeCost)
+			{
+				double dblCost = Convert.ToDouble(intCost, GlobalOptions.Instance.CultureInfo);
+				dblCost *= 1 + (Convert.ToDouble(frmPickCyberware.Markup, GlobalOptions.Instance.CultureInfo) / 100.0);
+				intCost = Convert.ToInt32(dblCost);
+			}
+
 			// Check the item's Cost and make sure the character can afford it.
 			if (!frmPickCyberware.FreeCost)
 			{
@@ -14649,6 +14660,23 @@ namespace Chummer
 					ExpenseUndo objUndo = new ExpenseUndo();
 					objUndo.CreateNuyen(NuyenExpenseType.AddVehicleModCyberware, objCyberware.InternalId);
 					objExpense.Undo = objUndo;
+				}
+			}
+
+			objCyberware.VehicleMounted = true;
+			//TODO: There has to be a better way to do this. Can't currently be handled in the create method because Create doesn't know about parents until after creation and expects parents to be other cyberware.
+			if (objCyberware.Category == "Cyberlimb Enhancement")
+			{
+				switch (objCyberware.Name)
+				{
+					case "Customized Agility":
+						objCyberware.MinRating = objVehicle.Pilot;
+						objCyberware.MaxRating = objVehicle.Pilot * 2;
+						break;
+					case "Customized Strength":
+						objCyberware.MinRating = objVehicle.TotalBody;
+						objCyberware.MaxRating = objVehicle.TotalBody * 2;
+						break;
 				}
 			}
 
@@ -20904,34 +20932,6 @@ namespace Chummer
 
 				RedlinerCheck();
 
-				// Calculate the character's move.
-				string strMovement = "";
-                if (_objOptions.CyberlegMovement)
-                {
-                    int intLegs = 0;
-                    int intAGI = 0;
-                    foreach (Cyberware objCyber in _objCharacter.Cyberware)
-                    {
-                        if (objCyber.LimbSlot == "leg")
-                        {
-                            intLegs++;
-                            if (intAGI > 0)
-                                intAGI = Math.Min(intAGI, objCyber.TotalAgility);
-                            else
-                                intAGI = objCyber.TotalAgility;
-                        }
-                    }
-                    if (intLegs == 2)
-                        strMovement = String.Format("{0}/{1}", (intAGI * 2), (intAGI * 4));
-                    else
-                        strMovement = String.Format("{0}/{1}", (_objCharacter.AGI.TotalValue * 2), (_objCharacter.AGI.TotalValue * 4));
-                }
-                else
-                    strMovement = String.Format("{0}/{1}", (_objCharacter.AGI.TotalValue * 2), (_objCharacter.AGI.TotalValue * 4));
-
-                _objCharacter.Movement = strMovement;
-                lblMovement.Text = _objCharacter.Movement;
-
 				string strFormat;
 				if (_objCharacter.Options.EssenceDecimals == 4)
 					strFormat = "{0:0.0000}";
@@ -21612,8 +21612,8 @@ namespace Chummer
 
 				// Movement.
 				lblMovement.Text = _objCharacter.Movement;
-				strTip = _objCharacter.CalculatedMovement;
-				tipTooltip.SetToolTip(lblMovement, strTip);
+				//strTip = _objCharacter.CalculatedMovementSpeed;
+				//tipTooltip.SetToolTip(lblMovement, strTip);
 				lblSwim.Text = _objCharacter.Swim;
 				lblFly.Text = _objCharacter.Fly;
 
@@ -22667,7 +22667,7 @@ namespace Chummer
 				tabGearMatrixCM.Visible = false;
 				return;
 			}
-			cmdGearIncreaseQty.Enabled = false;
+			cmdGearIncreaseQty.Enabled = true;
 			chkGearHomeNode.Visible = false;
 
 			if (treGear.SelectedNode.Level > 0)
@@ -22720,8 +22720,6 @@ namespace Chummer
 					tabGearMatrixCM.Visible = false;
 				}
 				_blnSkipRefresh = false;
-				if (objGear.Category == "Ammunition")
-					cmdGearIncreaseQty.Enabled = true;
 
 				if (objGear.GetType() == typeof(Commlink))
 				{
@@ -23122,6 +23120,7 @@ namespace Chummer
 
             // Adjust for Black Market Pipeline Discount
 		    objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
+
 			// Force the item to be Transgenic if selected.
 			if (frmPickCyberware.ForceTransgenic)
 				objCyberware.Category = "Genetech: Transgenics";

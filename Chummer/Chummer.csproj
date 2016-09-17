@@ -156,6 +156,9 @@
     <Compile Include="Character Creation\frmSelectLifeModule.Designer.cs">
       <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\AddImprovementCollection.cs">
+      <DependentUpon>clsImprovement.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashreport.cs" />
@@ -177,6 +180,15 @@
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
+    <Compile Include="Classes\RemoveImprovementCollection.cs">
+      <DependentUpon>clsImprovement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCharacterRoster.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCharacterRoster.Designer.cs">
+      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Contributors.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -796,6 +808,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DiceRollerControl.resx">
       <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCharacterRoster.resx">
+      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddToken.resx">
       <DependentUpon>frmAddToken.cs</DependentUpon>
@@ -1748,6 +1763,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Vehicle Block.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\Shadowrun 5 %28Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Translator.exe">

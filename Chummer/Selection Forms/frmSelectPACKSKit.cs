@@ -418,13 +418,8 @@ namespace Chummer
 						treContents.Nodes.Add(objParent);
 						foreach (XmlNode objXmlLifestyle in objXmlItem.SelectNodes("lifestyle"))
 						{
-							XmlNode objNode = objXmlItemDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + objXmlLifestyle["name"].InnerText + "\"]");
 							TreeNode objChild = new TreeNode();
-							if (objNode["translate"] != null)
-								objChild.Text = objNode["translate"].InnerText;
-							else
-								objChild.Text = objXmlLifestyle["name"].InnerText;
-							objChild.Text += " " + objXmlLifestyle["months"].InnerText + " " + LanguageManager.Instance.GetString("Label_LifestyleMonths");
+							objChild.Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.Instance.GetString("Label_LifestyleMonths"));
 
 							// Check for Qualities.
 							foreach (XmlNode objXmlQuality in objXmlLifestyle.SelectNodes("qualities/quality"))

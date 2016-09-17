@@ -18,7 +18,7 @@ namespace Chummer.Skills
 		
 		public static string GetDisplayCategory(this Skill skill)
 		{
-			return skill.SkillCategory;
+			return skill.DisplayCategory;
 		}
 
 		public static int TotalCostSp(this IEnumerable<Skill> list)

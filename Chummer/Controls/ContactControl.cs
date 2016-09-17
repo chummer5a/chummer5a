@@ -22,7 +22,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Xml;
+﻿using System.Runtime.CompilerServices;
+﻿using System.Xml;
 
 // ConnectionRatingChanged Event Handler.
 public delegate void ConnectionRatingChangedHandler(Object sender);
@@ -67,7 +68,7 @@ namespace Chummer
             InitializeComponent();
             _objCharacter = objCharacter;
 
-            if (!_objCharacter.Created)
+	        if (!_objCharacter.Created)
             {
                 if (_objCharacter.FriendsInHighPlaces)
                 {
@@ -89,67 +90,11 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-
+	        MoveControls();
             LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
         }
 
-        private void LoadContactList()
-        {
-            if (_blnEnemy)
-            {
-                if (_strContactRole != "")
-                    cboContactRole.Text = _strContactRole;
-                return;
-            }
-
-			if (_objContact.ReadOnly)
-			{
-				chkFree.Enabled = chkGroup.Enabled =
-				nudConnection.Enabled = nudLoyalty.Enabled = false;
-
-				cmdDelete.Visible = false;
-			}
-
-
-			// Read the list of Categories from the XML file.
-			List<ListItem> lstCategories = new List<ListItem>();
-
-            ListItem objBlank = new ListItem();
-            objBlank.Value = "";
-            objBlank.Name = "";
-            lstCategories.Add(objBlank);
-
-            XmlDocument objXmlDocument = new XmlDocument();
-            objXmlDocument = XmlManager.Instance.Load("contacts.xml");
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/contacts/contact");
-            foreach (XmlNode objXmlCategory in objXmlSkillList)
-            {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                if (objXmlCategory.Attributes["translate"] != null)
-                    objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
-                else
-                    objItem.Name = objXmlCategory.InnerText;
-                lstCategories.Add(objItem);
-            }
-
-			SortListItem objContactSort = new SortListItem();
-			lstCategories.Sort(objContactSort.Compare);
-            cboContactRole.DataSource = lstCategories;
-			cboContactRole.ValueMember = "Value";
-			cboContactRole.DisplayMember = "Name";
-			chkGroup.Checked = _objContact.IsGroup;
-	        chkFree.Checked = _objContact.Free;
-            if (_objContact.MadeMan)
-            {
-                chkGroup.Checked = _objContact.MadeMan;
-            }
-
-            if (_strContactRole != "")
-                cboContactRole.Text = _strContactRole;
-
-	        _loading = false;
-        }
+        
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
@@ -197,25 +142,39 @@ namespace Chummer
             DeleteContact(this);
         }
 
-        bool blnExpanded = false;
+		private void chkGroup_CheckedChanged(object sender, EventArgs e)
+		{
+			if (_loading)
+				return;
+
+			_objContact.IsGroup = chkGroup.Checked;
+			chkGroup.Enabled = !_objContact.MadeMan;
+
+			if (GroupStatusChanged != null) GroupStatusChanged(this);
+
+			//Loyalty can be changed by event above
+			nudLoyalty.Enabled = !_objContact.IsGroup;
+			nudLoyalty.Value = _objContact.Loyalty;
+			UpdateQuickText();
+		}
+
+		
         private void cmdExpand_Click(object sender, EventArgs e)
         {
-            if (blnExpanded)
+	        bool blnExpanded = (this.Height > 22);
+	        if (blnExpanded)
             {
                 this.Height -= 25;
                 this.cmdExpand.Image = Properties.Resources.Expand;
-                blnExpanded = false;
             }
             else
             {
                 this.Height += 25;
                 this.cmdExpand.Image = Properties.Resources.Collapse;
-                blnExpanded = true;
             }
-
         }
 
-        private void cboContactRole_TextChanged(object sender, EventArgs e)
+	    private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
             _objContact.Role = cboContactRole.Text;
             ConnectionRatingChanged(this);
@@ -365,14 +324,30 @@ namespace Chummer
                     objItem.Text = LanguageManager.Instance.GetString(objItem.Tag.ToString());
                 }
             }
-        }
-        #endregion
+		}
 
-        #region Properties
-        /// <summary>
-        /// Contact object this is linked to.
-        /// </summary>
-        public Contact ContactObject
+		private void chkFree_CheckedChanged(object sender, EventArgs e)
+		{
+			_objContact.Free = chkFree.Checked;
+			if (FreeRatingChanged != null) FreeRatingChanged(this);
+		}
+
+		private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
+		{
+			_objContact.Blackmail = chkBlackmail.Checked;
+		}
+
+		private void chkFamily_CheckedChanged(object sender, EventArgs e)
+		{
+			_objContact.Family = chkFamily.Checked;
+		}
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Contact object this is linked to.
+		/// </summary>
+		public Contact ContactObject
         {
             get
             {
@@ -471,7 +446,8 @@ namespace Chummer
                     if (_objContact.Notes != string.Empty)
                         strTooltip += "\n\n" + _objContact.Notes;
 					tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-
+	                chkFamily.Visible = false;
+	                chkBlackmail.Visible = false;
 					nudConnection.Minimum = 1;
                 }
                 else
@@ -523,6 +499,24 @@ namespace Chummer
             }
         }
 
+		/// <summary>
+		/// Whether or not this contact is a Family member.
+		/// </summary>
+	    public bool Family
+	    {
+		    get { return _objContact.Family; }
+			set { _objContact.Family = value; }
+	    }
+
+		/// <summary>
+		/// Whether or not this contact is being blackmailed. 
+		/// </summary>
+	    public bool Blackmail
+	    {
+		    get { return _objContact.Blackmail; }
+			set { _objContact.Blackmail = value; }
+	    }
+
         /// <summary>
         /// Whether or not this is a free Contact.
         /// </summary>
@@ -551,34 +545,88 @@ namespace Chummer
                 _objContact.IsGroup = value;
             }
         }
-        #endregion
+		#endregion
 
-        private void chkGroup_CheckedChanged(object sender, EventArgs e)
-        {
-	        if (_loading)
-		        return;
+		#region Methods
+		private void LoadContactList()
+		{
+			if (_blnEnemy)
+			{
+				if (_strContactRole != "")
+					cboContactRole.Text = _strContactRole;
+				return;
+			}
 
-            _objContact.IsGroup = chkGroup.Checked;
-            chkGroup.Enabled = !_objContact.MadeMan;
+			if (_objContact.ReadOnly)
+			{
+				chkFree.Enabled = chkGroup.Enabled =
+				nudConnection.Enabled = nudLoyalty.Enabled = false;
 
-	        if (GroupStatusChanged != null)  GroupStatusChanged(this);
+				cmdDelete.Visible = false;
+			}
 
-            //Loyalty can be changed by event above
-            nudLoyalty.Enabled = !_objContact.IsGroup;
-            nudLoyalty.Value = _objContact.Loyalty;
-            UpdateQuickText();
-        }
+
+			// Read the list of Categories from the XML file.
+			List<ListItem> lstCategories = new List<ListItem>();
+
+			ListItem objBlank = new ListItem();
+			objBlank.Value = "";
+			objBlank.Name = "";
+			lstCategories.Add(objBlank);
+
+			XmlDocument objXmlDocument = new XmlDocument();
+			objXmlDocument = XmlManager.Instance.Load("contacts.xml");
+			XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/contacts/contact");
+			foreach (XmlNode objXmlCategory in objXmlSkillList)
+			{
+				ListItem objItem = new ListItem();
+				objItem.Value = objXmlCategory.InnerText;
+				if (objXmlCategory.Attributes["translate"] != null)
+					objItem.Name = objXmlCategory.Attributes["translate"].InnerText;
+				else
+					objItem.Name = objXmlCategory.InnerText;
+				lstCategories.Add(objItem);
+			}
+
+			SortListItem objContactSort = new SortListItem();
+			lstCategories.Sort(objContactSort.Compare);
+			cboContactRole.DataSource = lstCategories;
+			cboContactRole.ValueMember = "Value";
+			cboContactRole.DisplayMember = "Name";
+			chkGroup.Checked = _objContact.IsGroup;
+			chkFree.Checked = _objContact.Free;
+			if (_objContact.MadeMan)
+			{
+				chkGroup.Checked = _objContact.MadeMan;
+			}
+
+			if (_strContactRole != "")
+				cboContactRole.Text = _strContactRole;
+
+			_loading = false;
+		}
+
+	    private void MoveControls()
+	    {
+		    lblConnection.Left = txtContactName.Left;
+		    nudConnection.Left = lblConnection.Right + 2;
+		    lblLoyalty.Left = nudConnection.Right + 2;
+		    nudLoyalty.Left = lblLoyalty.Right + 2;
+		    imgLink.Left = nudLoyalty.Right + 4; 
+		    imgNotes.Left = imgLink.Right + 4;
+		    chkGroup.Left = imgNotes.Right + 4;
+		    chkFree.Left = chkGroup.Right + 2;
+		    chkBlackmail.Left = chkFree.Right + 2;
+		    chkFamily.Left = chkBlackmail.Right + 2;
+
+	    }
+		#endregion
+		
 
         public void UpdateQuickText()
         {
             lblQuickStats.Text = String.Format("({0}/{1})", _objContact.Connection, _objContact.IsGroup ? (_objContact.MadeMan ? "M" : "G") : _objContact.Loyalty.ToString());
 
         }
-
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
-        {
-            _objContact.Free = chkFree.Checked;
-            if (FreeRatingChanged != null) FreeRatingChanged(this);
-        }
-    }
+	}
 }

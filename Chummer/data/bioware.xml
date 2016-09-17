@@ -2007,6 +2007,17 @@
 			<name>Reaction Optimization</name>
 			<category>Genemods</category>
 			<ess>0.1</ess>
+			<bonus>
+				<initiative>1</initiative>
+			</bonus>
+			<required>
+				<oneof>
+					<cyberwares>
+						<cyberware>Reaction Enhancers</cyberware>
+						<count>1</count>
+					</cyberwares>
+				</oneof>
+			</required>
 			<capacity>0</capacity>
 			<avail>6</avail>
 			<cost>6600</cost>

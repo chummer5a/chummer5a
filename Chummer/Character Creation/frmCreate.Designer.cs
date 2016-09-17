@@ -151,6 +151,7 @@ namespace Chummer
 			this.lblSpellDefenceIllusionPhysicalLabel = new System.Windows.Forms.Label();
 			this.lblSpellDefenceIllusionManaLabel = new System.Windows.Forms.Label();
 			this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
+			this.lblFoci = new System.Windows.Forms.Label();
 			this.lblPublicAware = new System.Windows.Forms.Label();
 			this.lblSocialLabel = new System.Windows.Forms.Label();
 			this.lblMentalLabel = new System.Windows.Forms.Label();
@@ -223,6 +224,7 @@ namespace Chummer
 			this.mnuSpecialConvertToFreeSprite = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuSpecialReapplyImprovements = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuSpecialBPAvailLimit = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuSpecialConfirmValidity = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.tsbSave = new System.Windows.Forms.ToolStripButton();
 			this.tsbPrint = new System.Windows.Forms.ToolStripButton();
@@ -672,8 +674,11 @@ namespace Chummer
 			this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
 			this.lblGearSleazeLabel = new System.Windows.Forms.Label();
 			this.lblGearAttackLabel = new System.Windows.Forms.Label();
+			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
+			this.lblAdeptWayDiscount = new System.Windows.Forms.Label();
 			this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
 			this.chkCommlinks = new System.Windows.Forms.CheckBox();
+			this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
 			this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
 			this.lblGearAP = new System.Windows.Forms.Label();
 			this.lblGearAPLabel = new System.Windows.Forms.Label();
@@ -681,6 +686,7 @@ namespace Chummer
 			this.lblGearDamageLabel = new System.Windows.Forms.Label();
 			this.cmdAddLocation = new System.Windows.Forms.Button();
 			this.chkGearEquipped = new System.Windows.Forms.CheckBox();
+			this.treFoci = new System.Windows.Forms.TreeView();
 			this.lblGearSource = new System.Windows.Forms.Label();
 			this.lblGearSourceLabel = new System.Windows.Forms.Label();
 			this.lblGearDeviceRating = new System.Windows.Forms.Label();
@@ -920,11 +926,6 @@ namespace Chummer
 			this.tsMetamagicNotes = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsAddTechniqueNotes = new System.Windows.Forms.ToolStripMenuItem();
-			this.treFoci = new System.Windows.Forms.TreeView();
-			this.lblFoci = new System.Windows.Forms.Label();
-			this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
-			this.lblAdeptWayDiscount = new System.Windows.Forms.Label();
-			this.nudAdeptWayDiscount = new System.Windows.Forms.NumericUpDown();
 			this.StatusStrip.SuspendLayout();
 			this.cmsMartialArts.SuspendLayout();
 			this.cmsSpellButton.SuspendLayout();
@@ -1015,6 +1016,7 @@ namespace Chummer
 			((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
 			this.tabWeapons.SuspendLayout();
 			this.tabGear.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).BeginInit();
 			this.tabPets.SuspendLayout();
@@ -1034,7 +1036,6 @@ namespace Chummer
 			this.cmsInitiationNotes.SuspendLayout();
 			this.cmsMetamagic.SuspendLayout();
 			this.cmsTechnique.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// StatusStrip
@@ -2068,6 +2069,17 @@ namespace Chummer
 			this.lblCounterspellingDiceLabel.Text = "Counterspelling Dice";
 			this.tipTooltip.SetToolTip(this.lblCounterspellingDiceLabel, "Physical CM is calculated as 8 + (BOD / 2).");
 			// 
+			// lblFoci
+			// 
+			this.lblFoci.AutoSize = true;
+			this.lblFoci.Location = new System.Drawing.Point(307, 332);
+			this.lblFoci.Name = "lblFoci";
+			this.lblFoci.Size = new System.Drawing.Size(67, 13);
+			this.lblFoci.TabIndex = 92;
+			this.lblFoci.Tag = "Label_BondedFoci";
+			this.lblFoci.Text = "Bonded Foci";
+			this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
+			// 
 			// lblPublicAware
 			// 
 			this.lblPublicAware.AutoSize = true;
@@ -2641,7 +2653,8 @@ namespace Chummer
             this.mnuSpecialCyberzombie,
             this.mnuSpecialConvertToFreeSprite,
             this.mnuSpecialReapplyImprovements,
-            this.mnuSpecialBPAvailLimit});
+            this.mnuSpecialBPAvailLimit,
+            this.mnuSpecialConfirmValidity});
 			this.mnuCreateSpecial.MergeAction = System.Windows.Forms.MergeAction.Insert;
 			this.mnuCreateSpecial.MergeIndex = 3;
 			this.mnuCreateSpecial.Name = "mnuCreateSpecial";
@@ -2654,7 +2667,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialAddCyberwareSuite.Image = global::Chummer.Properties.Resources.briefcase_add;
 			this.mnuSpecialAddCyberwareSuite.Name = "mnuSpecialAddCyberwareSuite";
-			this.mnuSpecialAddCyberwareSuite.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialAddCyberwareSuite.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialAddCyberwareSuite.Tag = "Menu_SpecialAddCyberwareSuite";
 			this.mnuSpecialAddCyberwareSuite.Text = "Add &Cyberware Suite";
 			this.mnuSpecialAddCyberwareSuite.Click += new System.EventHandler(this.mnuSpecialAddCyberwareSuite_Click);
@@ -2663,7 +2676,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialAddBiowareSuite.Image = global::Chummer.Properties.Resources.briefcase_add;
 			this.mnuSpecialAddBiowareSuite.Name = "mnuSpecialAddBiowareSuite";
-			this.mnuSpecialAddBiowareSuite.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialAddBiowareSuite.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialAddBiowareSuite.Tag = "Menu_SpecialAddBiowareSuite";
 			this.mnuSpecialAddBiowareSuite.Text = "Add &Bioware Suite";
 			this.mnuSpecialAddBiowareSuite.Click += new System.EventHandler(this.mnuSpecialAddBiowareSuite_Click);
@@ -2672,7 +2685,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialCreateCyberwareSuite.Image = global::Chummer.Properties.Resources.briefcase_edit;
 			this.mnuSpecialCreateCyberwareSuite.Name = "mnuSpecialCreateCyberwareSuite";
-			this.mnuSpecialCreateCyberwareSuite.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialCreateCyberwareSuite.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialCreateCyberwareSuite.Tag = "Menu_SpecialCreateCyberwareSuite";
 			this.mnuSpecialCreateCyberwareSuite.Text = "Create Cyberware Suite";
 			this.mnuSpecialCreateCyberwareSuite.Click += new System.EventHandler(this.mnuSpecialCreateCyberwareSuite_Click);
@@ -2681,7 +2694,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialCreateBiowareSuite.Image = global::Chummer.Properties.Resources.briefcase_edit;
 			this.mnuSpecialCreateBiowareSuite.Name = "mnuSpecialCreateBiowareSuite";
-			this.mnuSpecialCreateBiowareSuite.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialCreateBiowareSuite.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialCreateBiowareSuite.Tag = "Menu_SpecialCreateBiowareSuite";
 			this.mnuSpecialCreateBiowareSuite.Text = "Create Bioware Suite";
 			this.mnuSpecialCreateBiowareSuite.Click += new System.EventHandler(this.mnuSpecialCreateBiowareSuite_Click);
@@ -2690,7 +2703,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialAddPACKSKit.Image = global::Chummer.Properties.Resources.basket_add;
 			this.mnuSpecialAddPACKSKit.Name = "mnuSpecialAddPACKSKit";
-			this.mnuSpecialAddPACKSKit.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialAddPACKSKit.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialAddPACKSKit.Tag = "Menu_SpecialAddPACKSKit";
 			this.mnuSpecialAddPACKSKit.Text = "Add &PACKS Kit";
 			this.mnuSpecialAddPACKSKit.Click += new System.EventHandler(this.mnuSpecialAddPACKSKit_Click);
@@ -2699,7 +2712,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialCreatePACKSKit.Image = global::Chummer.Properties.Resources.basket_edit;
 			this.mnuSpecialCreatePACKSKit.Name = "mnuSpecialCreatePACKSKit";
-			this.mnuSpecialCreatePACKSKit.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialCreatePACKSKit.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialCreatePACKSKit.Tag = "Menu_SpecialCreatePACKSKit";
 			this.mnuSpecialCreatePACKSKit.Text = "Create PACKS Kit";
 			this.mnuSpecialCreatePACKSKit.Click += new System.EventHandler(this.mnuSpecialCreatePACKSKit_Click);
@@ -2708,7 +2721,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialChangeMetatype.Image = global::Chummer.Properties.Resources.user_go;
 			this.mnuSpecialChangeMetatype.Name = "mnuSpecialChangeMetatype";
-			this.mnuSpecialChangeMetatype.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialChangeMetatype.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangeMetatype";
 			this.mnuSpecialChangeMetatype.Text = "Change &Metatype";
 			this.mnuSpecialChangeMetatype.Click += new System.EventHandler(this.mnuSpecialChangeMetatype_Click);
@@ -2717,7 +2730,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialMutantCritter.Image = global::Chummer.Properties.Resources.emoticon_surprised;
 			this.mnuSpecialMutantCritter.Name = "mnuSpecialMutantCritter";
-			this.mnuSpecialMutantCritter.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialMutantCritter.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialMutantCritter.Tag = "Menu_SpecialConvertToMutantCritter";
 			this.mnuSpecialMutantCritter.Text = "Convert to Mutant Critter";
 			this.mnuSpecialMutantCritter.Visible = false;
@@ -2727,7 +2740,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialToxicCritter.Image = global::Chummer.Properties.Resources.emoticon_tongue;
 			this.mnuSpecialToxicCritter.Name = "mnuSpecialToxicCritter";
-			this.mnuSpecialToxicCritter.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialToxicCritter.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialToxicCritter.Tag = "Menu_SpecialConvertToToxicCritter";
 			this.mnuSpecialToxicCritter.Text = "Convert to Toxic Critter";
 			this.mnuSpecialToxicCritter.Visible = false;
@@ -2737,7 +2750,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.emoticon_evilgrin;
 			this.mnuSpecialCyberzombie.Name = "mnuSpecialCyberzombie";
-			this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConverToCyberzombie";
 			this.mnuSpecialCyberzombie.Text = "Convert to Cyberzombie";
 			this.mnuSpecialCyberzombie.Click += new System.EventHandler(this.mnuSpecialCyberzombie_Click);
@@ -2746,7 +2759,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialConvertToFreeSprite.Image = global::Chummer.Properties.Resources.emoticon_waii;
 			this.mnuSpecialConvertToFreeSprite.Name = "mnuSpecialConvertToFreeSprite";
-			this.mnuSpecialConvertToFreeSprite.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialConvertToFreeSprite.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialConvertToFreeSprite.Tag = "Menu_SpecialConvertToFreeSprite";
 			this.mnuSpecialConvertToFreeSprite.Text = "Convert to Free Sprite";
 			this.mnuSpecialConvertToFreeSprite.Visible = false;
@@ -2756,7 +2769,7 @@ namespace Chummer
 			// 
 			this.mnuSpecialReapplyImprovements.Image = global::Chummer.Properties.Resources.arrow_redo;
 			this.mnuSpecialReapplyImprovements.Name = "mnuSpecialReapplyImprovements";
-			this.mnuSpecialReapplyImprovements.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialReapplyImprovements.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
 			this.mnuSpecialReapplyImprovements.Text = "Re-apply Improvements";
 			this.mnuSpecialReapplyImprovements.Click += new System.EventHandler(this.mnuSpecialReapplyImprovements_Click);
@@ -2765,11 +2778,20 @@ namespace Chummer
 			// 
 			this.mnuSpecialBPAvailLimit.Image = global::Chummer.Properties.Resources.table_edit;
 			this.mnuSpecialBPAvailLimit.Name = "mnuSpecialBPAvailLimit";
-			this.mnuSpecialBPAvailLimit.Size = new System.Drawing.Size(208, 22);
+			this.mnuSpecialBPAvailLimit.Size = new System.Drawing.Size(213, 22);
 			this.mnuSpecialBPAvailLimit.Tag = "Menu_SpecialBPAvailLimit";
 			this.mnuSpecialBPAvailLimit.Text = "Change BP/Avail Limit";
 			this.mnuSpecialBPAvailLimit.Visible = false;
 			this.mnuSpecialBPAvailLimit.Click += new System.EventHandler(this.mnuSpecialBPAvailLimit_Click);
+			// 
+			// mnuSpecialConfirmValidity
+			// 
+			this.mnuSpecialConfirmValidity.Image = global::Chummer.Properties.Resources.cog_edit;
+			this.mnuSpecialConfirmValidity.Name = "mnuSpecialConfirmValidity";
+			this.mnuSpecialConfirmValidity.Size = new System.Drawing.Size(213, 22);
+			this.mnuSpecialConfirmValidity.Tag = "Menu_ValidCharacter";
+			this.mnuSpecialConfirmValidity.Text = "Confirm Character Validity";
+			this.mnuSpecialConfirmValidity.Click += new System.EventHandler(this.mnuSpecialConfirmValidity_Click);
 			// 
 			// toolStrip
 			// 
@@ -3927,11 +3949,12 @@ namespace Chummer
 			// 
 			// lblDEPAug
 			// 
+			this.lblDEPAug.AutoSize = true;
 			this.lblDEPAug.Enabled = false;
 			this.lblDEPAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblDEPAug.Location = new System.Drawing.Point(222, 289);
 			this.lblDEPAug.Name = "lblDEPAug";
-			this.lblDEPAug.Size = new System.Drawing.Size(60, 17);
+			this.lblDEPAug.Size = new System.Drawing.Size(27, 17);
 			this.lblDEPAug.TabIndex = 58;
 			this.lblDEPAug.Text = "[0]";
 			// 
@@ -4056,102 +4079,113 @@ namespace Chummer
 			// 
 			// lblRESAug
 			// 
+			this.lblRESAug.AutoSize = true;
 			this.lblRESAug.Enabled = false;
 			this.lblRESAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblRESAug.Location = new System.Drawing.Point(222, 265);
 			this.lblRESAug.Name = "lblRESAug";
-			this.lblRESAug.Size = new System.Drawing.Size(60, 17);
+			this.lblRESAug.Size = new System.Drawing.Size(27, 17);
 			this.lblRESAug.TabIndex = 43;
 			this.lblRESAug.Text = "[0]";
 			// 
 			// lblMAGAug
 			// 
+			this.lblMAGAug.AutoSize = true;
 			this.lblMAGAug.Enabled = false;
 			this.lblMAGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblMAGAug.Location = new System.Drawing.Point(222, 239);
 			this.lblMAGAug.Name = "lblMAGAug";
-			this.lblMAGAug.Size = new System.Drawing.Size(60, 17);
+			this.lblMAGAug.Size = new System.Drawing.Size(27, 17);
 			this.lblMAGAug.TabIndex = 42;
 			this.lblMAGAug.Text = "[0]";
 			// 
 			// lblEDGAug
 			// 
+			this.lblEDGAug.AutoSize = true;
 			this.lblEDGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblEDGAug.Location = new System.Drawing.Point(222, 213);
 			this.lblEDGAug.Name = "lblEDGAug";
-			this.lblEDGAug.Size = new System.Drawing.Size(60, 17);
+			this.lblEDGAug.Size = new System.Drawing.Size(27, 17);
 			this.lblEDGAug.TabIndex = 41;
 			this.lblEDGAug.Text = "[0]";
 			// 
 			// lblWILAug
 			// 
+			this.lblWILAug.AutoSize = true;
 			this.lblWILAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblWILAug.Location = new System.Drawing.Point(222, 187);
 			this.lblWILAug.Name = "lblWILAug";
-			this.lblWILAug.Size = new System.Drawing.Size(60, 17);
+			this.lblWILAug.Size = new System.Drawing.Size(27, 17);
 			this.lblWILAug.TabIndex = 40;
 			this.lblWILAug.Text = "[0]";
 			// 
 			// lblLOGAug
 			// 
+			this.lblLOGAug.AutoSize = true;
 			this.lblLOGAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblLOGAug.Location = new System.Drawing.Point(222, 161);
 			this.lblLOGAug.Name = "lblLOGAug";
-			this.lblLOGAug.Size = new System.Drawing.Size(60, 17);
+			this.lblLOGAug.Size = new System.Drawing.Size(27, 17);
 			this.lblLOGAug.TabIndex = 39;
 			this.lblLOGAug.Text = "[0]";
 			// 
 			// lblINTAug
 			// 
+			this.lblINTAug.AutoSize = true;
 			this.lblINTAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblINTAug.Location = new System.Drawing.Point(222, 135);
 			this.lblINTAug.Name = "lblINTAug";
-			this.lblINTAug.Size = new System.Drawing.Size(60, 17);
+			this.lblINTAug.Size = new System.Drawing.Size(27, 17);
 			this.lblINTAug.TabIndex = 38;
 			this.lblINTAug.Text = "[0]";
 			// 
 			// lblCHAAug
 			// 
+			this.lblCHAAug.AutoSize = true;
 			this.lblCHAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblCHAAug.Location = new System.Drawing.Point(222, 109);
 			this.lblCHAAug.Name = "lblCHAAug";
-			this.lblCHAAug.Size = new System.Drawing.Size(60, 17);
+			this.lblCHAAug.Size = new System.Drawing.Size(27, 17);
 			this.lblCHAAug.TabIndex = 37;
 			this.lblCHAAug.Text = "[0]";
 			// 
 			// lblSTRAug
 			// 
+			this.lblSTRAug.AutoSize = true;
 			this.lblSTRAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSTRAug.Location = new System.Drawing.Point(222, 83);
 			this.lblSTRAug.Name = "lblSTRAug";
-			this.lblSTRAug.Size = new System.Drawing.Size(60, 17);
+			this.lblSTRAug.Size = new System.Drawing.Size(27, 17);
 			this.lblSTRAug.TabIndex = 36;
 			this.lblSTRAug.Text = "[0]";
 			// 
 			// lblREAAug
 			// 
+			this.lblREAAug.AutoSize = true;
 			this.lblREAAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblREAAug.Location = new System.Drawing.Point(222, 57);
 			this.lblREAAug.Name = "lblREAAug";
-			this.lblREAAug.Size = new System.Drawing.Size(60, 17);
+			this.lblREAAug.Size = new System.Drawing.Size(27, 17);
 			this.lblREAAug.TabIndex = 35;
 			this.lblREAAug.Text = "[0]";
 			// 
 			// lblAGIAug
 			// 
+			this.lblAGIAug.AutoSize = true;
 			this.lblAGIAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblAGIAug.Location = new System.Drawing.Point(222, 31);
 			this.lblAGIAug.Name = "lblAGIAug";
-			this.lblAGIAug.Size = new System.Drawing.Size(60, 17);
+			this.lblAGIAug.Size = new System.Drawing.Size(27, 17);
 			this.lblAGIAug.TabIndex = 34;
 			this.lblAGIAug.Text = "[0]";
 			// 
 			// lblBODAug
 			// 
+			this.lblBODAug.AutoSize = true;
 			this.lblBODAug.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblBODAug.Location = new System.Drawing.Point(222, 5);
 			this.lblBODAug.Name = "lblBODAug";
-			this.lblBODAug.Size = new System.Drawing.Size(60, 17);
+			this.lblBODAug.Size = new System.Drawing.Size(27, 17);
 			this.lblBODAug.TabIndex = 33;
 			this.lblBODAug.Text = "[0]";
 			// 
@@ -7906,6 +7940,31 @@ namespace Chummer
 			this.lblGearAttackLabel.Text = "Attack:";
 			this.lblGearAttackLabel.Visible = false;
 			// 
+			// nudAdeptWayDiscount
+			// 
+			this.nudAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.nudAdeptWayDiscount.Location = new System.Drawing.Point(571, 552);
+			this.nudAdeptWayDiscount.Maximum = new decimal(new int[] {
+            9000,
+            0,
+            0,
+            0});
+			this.nudAdeptWayDiscount.Name = "nudAdeptWayDiscount";
+			this.nudAdeptWayDiscount.Size = new System.Drawing.Size(48, 20);
+			this.nudAdeptWayDiscount.TabIndex = 147;
+			this.nudAdeptWayDiscount.ValueChanged += new System.EventHandler(this.nudAdeptWayDiscount_ValueChanged);
+			// 
+			// lblAdeptWayDiscount
+			// 
+			this.lblAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.lblAdeptWayDiscount.AutoSize = true;
+			this.lblAdeptWayDiscount.Location = new System.Drawing.Point(307, 554);
+			this.lblAdeptWayDiscount.Name = "lblAdeptWayDiscount";
+			this.lblAdeptWayDiscount.Size = new System.Drawing.Size(235, 13);
+			this.lblAdeptWayDiscount.TabIndex = 146;
+			this.lblAdeptWayDiscount.Tag = "Label_AdeptWayDiscount";
+			this.lblAdeptWayDiscount.Text = "Bonded Foci Qualifying for Adept Way Discount:";
+			// 
 			// chkActiveCommlink
 			// 
 			this.chkActiveCommlink.AutoSize = true;
@@ -7930,6 +7989,18 @@ namespace Chummer
 			this.chkCommlinks.Text = "Only show Commlinks";
 			this.chkCommlinks.UseVisualStyleBackColor = true;
 			this.chkCommlinks.CheckedChanged += new System.EventHandler(this.chkCommlinks_CheckedChanged);
+			// 
+			// cmdCreateStackedFocus
+			// 
+			this.cmdCreateStackedFocus.AutoSize = true;
+			this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
+			this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
+			this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
+			this.cmdCreateStackedFocus.TabIndex = 109;
+			this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
+			this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
+			this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
+			this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
 			// 
 			// chkGearHomeNode
 			// 
@@ -8006,6 +8077,22 @@ namespace Chummer
 			this.chkGearEquipped.UseVisualStyleBackColor = true;
 			this.chkGearEquipped.Visible = false;
 			this.chkGearEquipped.CheckedChanged += new System.EventHandler(this.chkGearEquipped_CheckedChanged);
+			// 
+			// treFoci
+			// 
+			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.treFoci.CheckBoxes = true;
+			this.treFoci.Location = new System.Drawing.Point(310, 348);
+			this.treFoci.Name = "treFoci";
+			this.treFoci.ShowLines = false;
+			this.treFoci.ShowPlusMinus = false;
+			this.treFoci.ShowRootLines = false;
+			this.treFoci.Size = new System.Drawing.Size(308, 198);
+			this.treFoci.TabIndex = 91;
+			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
+			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
+			this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
 			// 
 			// lblGearSource
 			// 
@@ -9251,7 +9338,7 @@ namespace Chummer
 			// 
 			// btnCreateBackstory
 			// 
-			this.btnCreateBackstory.Location = new System.Drawing.Point(634, 125);
+			this.btnCreateBackstory.Location = new System.Drawing.Point(632, 128);
 			this.btnCreateBackstory.Name = "btnCreateBackstory";
 			this.btnCreateBackstory.Size = new System.Drawing.Size(97, 23);
 			this.btnCreateBackstory.TabIndex = 91;
@@ -10511,6 +10598,7 @@ namespace Chummer
 			// cmsCustomLimitModifier
 			// 
 			this.cmsCustomLimitModifier.Name = "cmsCustomLimitModifier";
+			this.cmsCustomLimitModifier.Size = new System.Drawing.Size(61, 4);
 			// 
 			// cmsInitiationNotes
 			// 
@@ -10600,74 +10688,11 @@ namespace Chummer
 			this.tsAddTechniqueNotes.Text = "&Notes";
 			this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsAddTechniqueNotes_Click);
 			// 
-			// treFoci
-			// 
-			this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.treFoci.CheckBoxes = true;
-			this.treFoci.Location = new System.Drawing.Point(310, 348);
-			this.treFoci.Name = "treFoci";
-			this.treFoci.ShowLines = false;
-			this.treFoci.ShowPlusMinus = false;
-			this.treFoci.ShowRootLines = false;
-			this.treFoci.Size = new System.Drawing.Size(308, 198);
-			this.treFoci.TabIndex = 91;
-			this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
-			this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
-			this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
-			// 
-			// lblFoci
-			// 
-			this.lblFoci.AutoSize = true;
-			this.lblFoci.Location = new System.Drawing.Point(307, 332);
-			this.lblFoci.Name = "lblFoci";
-			this.lblFoci.Size = new System.Drawing.Size(67, 13);
-			this.lblFoci.TabIndex = 92;
-			this.lblFoci.Tag = "Label_BondedFoci";
-			this.lblFoci.Text = "Bonded Foci";
-			this.tipTooltip.SetToolTip(this.lblFoci, "Each bonded Focus costs a number of karma depending on its type and force\r\n");
-			// 
-			// cmdCreateStackedFocus
-			// 
-			this.cmdCreateStackedFocus.AutoSize = true;
-			this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
-			this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
-			this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
-			this.cmdCreateStackedFocus.TabIndex = 109;
-			this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
-			this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
-			this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
-			this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
-			// 
-			// lblAdeptWayDiscount
-			// 
-			this.lblAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.lblAdeptWayDiscount.AutoSize = true;
-			this.lblAdeptWayDiscount.Location = new System.Drawing.Point(307, 554);
-			this.lblAdeptWayDiscount.Name = "lblAdeptWayDiscount";
-			this.lblAdeptWayDiscount.Size = new System.Drawing.Size(235, 13);
-			this.lblAdeptWayDiscount.TabIndex = 146;
-			this.lblAdeptWayDiscount.Tag = "Label_AdeptWayDiscount";
-			this.lblAdeptWayDiscount.Text = "Bonded Foci Qualifying for Adept Way Discount:";
-			// 
-			// nudAdeptWayDiscount
-			// 
-			this.nudAdeptWayDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.nudAdeptWayDiscount.Location = new System.Drawing.Point(571, 552);
-			this.nudAdeptWayDiscount.Maximum = new decimal(new int[] {
-            9000,
-            0,
-            0,
-            0});
-			this.nudAdeptWayDiscount.Name = "nudAdeptWayDiscount";
-			this.nudAdeptWayDiscount.Size = new System.Drawing.Size(48, 20);
-			this.nudAdeptWayDiscount.TabIndex = 147;
-			this.nudAdeptWayDiscount.ValueChanged += new System.EventHandler(this.nudAdeptWayDiscount_ValueChanged);
-			// 
 			// frmCreate
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScroll = true;
 			this.ClientSize = new System.Drawing.Size(1040, 664);
 			this.Controls.Add(this.splitMain);
 			this.Controls.Add(this.StatusStrip);
@@ -10792,6 +10817,7 @@ namespace Chummer
 			this.tabWeapons.PerformLayout();
 			this.tabGear.ResumeLayout(false);
 			this.tabGear.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
 			this.tabPets.ResumeLayout(false);
@@ -10818,7 +10844,6 @@ namespace Chummer
 			this.cmsInitiationNotes.ResumeLayout(false);
 			this.cmsMetamagic.ResumeLayout(false);
 			this.cmsTechnique.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.nudAdeptWayDiscount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -11152,7 +11177,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem mnuCreateSpecial;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialAddPACKSKit;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialAddCyberwareSuite;
-        private System.Windows.Forms.NumericUpDown nudArmorRating;
+		private System.Windows.Forms.ToolStripMenuItem mnuSpecialConfirmValidity;
+		private System.Windows.Forms.NumericUpDown nudArmorRating;
         private System.Windows.Forms.Label lblArmorRatingLabel;
         private System.Windows.Forms.Label lblLifestyleStartingNuyenLabel;
         private System.Windows.Forms.Label lblLifestyleStartingNuyen;

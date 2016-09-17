@@ -658,6 +658,11 @@ namespace Chummer.Skills
 			{
 				skill.ForceEvent(name);
 			}
+
+			foreach (KnowledgeSkill skill in KnowledgeSkills)
+			{
+				skill.ForceEvent(name);
+			}
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

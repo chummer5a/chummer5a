@@ -12,16 +12,64 @@ Application Changes:
 - Fixed an incorrect label for skill improvements in the Karma/Nuyen Expense History. Fixes #1046.
 - Fixed an issue that caused knowledge skills to revert their type to Interest. Fixes #1056.
 - Added an option to treat arms and legs as the only limbs to average cyberlimb stats off, instead of the skull and torso that are suggested by RAW. As part of this, the options have been broken out into a new XML file, options.xml. Minor design note, I intend to eventually have every calculation variable kept outside of the application logic itself; this will allow GMs to configure their characters as they wish. 
+- Fixed an issue with Adept Powers with multiple levels granted by a Mentor Spirit not apply properly. If your character is affected by this, you should be able to use the Reapply Improvements option in the Special menu to recalculate it properly. Fixes #1057.
+- Added an option to give cyberware a markup cost in career mode. Fixes #1072.
+- Fixed an issue that prevented knowledge skill ratings from updating correctly when adding bonuses from sources like cyberware. Fixes #1073.
+- Fixed a rare issue where the Metagenetic Improvement quality could cause crashes when reapplying Improvements. Fixes #1038.
+- Added a menu option in the Special menu to confirm that a character is ready to move into Career mode. Fixes #1053.
+- Fixed an issue that prevented more than one Spare Clip from adding additional Ammo slots. 
+- Fixed an issue that prevented dicepool/rating modifiers from being visible to character sheets. 
+- Added a Display Category for skill categories. In practice, this means that printouts will use the localised name for skill categories instead of the default English. If you need to use the English string in a character sheet for some reason, use the value skillcategory_english instead. 
+- Fixed an issue with adept powers that have specified maximum ranks causing a crash.
+- Fixed an issue where changing your priority selection would remove MAG/RES-linked skills. 
+- Fixed a issue where Chummer would crash if, while searching for a spell, no matches was found.
+- Added a character roster to manage characters. There is an option to specify a folder to monitor in the Options menu, under Character and Printing. 
+- Fixed a crash issue for characters that have cyberlimbs. 
+- Fixed some crash issues with custom PACKs kits with lifestyles.
+- Fixed some issues with adding multiple non-Ammunition items to other items, ie adding trauma patches to a medkit. May have some issues, but should be functional. Fixes #814.
+- Fixed a crash issue caused by adding too many Enemies in creation mode. 
+- Added some code to suppress errors caused by faulty XSL transforms in character sheets. 
+- Implemented the Blackmail and Family options for contacts. 
+- Removed some code from the SelectAttributes improvement that caused it to pass the selected value up to the bonus source. Generally speaking, prevents Infected qualities from getting (BOD) or whatever added to their treenode.
+- Added a new Improvement Type: MovementMultiplier. This is used to increase or decrease the multiplier for Running and Sprinting from x2/x4. 
+- Fixed a UI issue that prevented attribute bonuses from showing properly if the value made it into double digits.
+- Changed the code to calculate character movement rates. To do this, I've added three attributes to the metatype: Walk, Run and Sprint. Each of these is split into three number (Walk, Swim and Fly in order). 
+- Temporarily removed the CalculatedMovementSpeed tooltip from caeer and creation mode until it gets refacted. 
+- Added a workaround to prevent crashes when loading characters with empty knowledge skills. Fixes #1099.
+- Refactored how the PDF options work; instead of being hard-coded with a bunch of check-boxes, it's now possible to generate your own parameters. Standard parameters have already been included in options.xml, but the default options are not necessarily a match for your previous settings. 
+- The "ignoreprecedence" improvement attribute has been renamed to "precedence-1". 
+- The initiativepass and initiativepassadd improvements now utilise precedence values to manage their stacking; this allows adding Improvements that will always apply, such as the Infected Initiative die bonuses. 
+- Fixed an issue with Cyberlimbs that caused a crash when printing.
 
 Data Changes:
 - Fixed the Infected qualities to work according to the rules. Characters with previous versions of the quality should reapply their improvements, characters that used the terrible metavariant idea will not load properly and should be rebuilt from scratch. If you've been affected by this, please get in contact with me and I'll fix your character for you. Mostly fixes #689.
 - Removed the Infected metavariants.
 - Added a missing bonus node to the YNT Softweave armour mod.
 - New XML file, options.xml. Used to store values for configurable default settings. 
+- Fixed missing statistic weaknesses for various Infected qualities. Fixes #689.
+- Fixed an issue with the Deformity(Quasimodo) quality that caused it to affect Perception incorrectly. Fixes #1087.
+- Added Naga Venom, and corrected page references for Hard Targets Toxins. 
+- Corrected the fire mode for the Ares Vigorous Assault Cannon.
+- Fixed an issue with the Reaction Optimization bioware not applying its initiative bonus. 
+- Added a requirement for the Reaction Enhancers cyberware in order to take Reaction Optimization.
+- Fixed an issue with the Infected: Vampire quality that caused a crash. 
+- Removed old Metavariant entries for Infected metavariants from the Priority sheet.
+- Added the appropriate Initiative and Movement Multiplier bonuses for the Bandersnatch, Dzoo-Noo-Qua, Goblin, Harvester, Loup-Garou, Mutaqua, Nosferatu, Vampire and Wendigo. 
 
 New Strings:
 - Button_ToggleSourcebooks
 - String_LimbCount4
+- Menu_ValidCharacter
+- Message_ValidCharacter
+- MessageTitle_ValidCharacter
+- String_CharacterRoster
+- Label_Options_CharacterRoster
+
+Changed strings: 
+- Tip_IncreaseGearQty
+
+New Sheet:
+- Added a new character sheet, only showing Skills with Rating greater than 0.
 
 Build 183:
 Application Changes:
