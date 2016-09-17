@@ -317,11 +317,11 @@ namespace Chummer
 								intHighest = Convert.ToInt32(strValues[0, 1]);
 						}
 					}
-					if (lstUniqueName.Contains("ignoreprecedence"))
+					if (lstUniqueName.Contains("precedence-1"))
 					{
 						foreach (string[,] strValues in lstUniquePair)
 						{
-							if (strValues[0, 0] == "ignoreprecedence")
+							if (strValues[0, 0] == "precedence-1")
 							{
 								intHighest += Convert.ToInt32(strValues[0, 1]);
 							}
@@ -335,7 +335,7 @@ namespace Chummer
 					intModifier = 0;
 					foreach (string[,] strValues in lstUniquePair)
 					{
-						if (strValues[0, 0] == "precedence1")
+						if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
 							intModifier += Convert.ToInt32(strValues[0, 1]);
 					}
 				}
@@ -465,11 +465,11 @@ namespace Chummer
 								intHighest = Convert.ToInt32(strValues[0, 1]);
 						}
 					}
-					if (lstUniqueName.Contains("ignoreprecedence"))
+					if (lstUniqueName.Contains("precedence-1"))
 					{
 						foreach (string[,] strValues in lstUniquePair)
 						{
-							if (strValues[0, 0] == "ignoreprecedence")
+							if (strValues[0, 0] == "precedence-1")
 							{
 								intHighest += Convert.ToInt32(strValues[0, 1]);
 							}
@@ -483,7 +483,7 @@ namespace Chummer
 					intModifier = 0;
 					foreach (string[,] strValues in lstUniquePair)
 					{
-						if (strValues[0, 0] == "precedence1")
+						if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
 							intModifier += Convert.ToInt32(strValues[0, 1]);
 					}
 				}
@@ -842,11 +842,11 @@ namespace Chummer
 						}
 					}
 				}
-				if (lstUniqueName.Contains("ignoreprecedence"))
+				if (lstUniqueName.Contains("precedence-1"))
 				{
 					foreach (string[,] strValues in lstUniquePair)
 					{
-						if (strValues[0, 0] == "ignoreprecedence")
+						if (strValues[0, 0] == "precedence-1")
 						{
 							intHighest += Convert.ToInt32(strValues[0, 1]);
 							strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
@@ -860,7 +860,7 @@ namespace Chummer
 				strModifier = "";
 				foreach (string[,] strValues in lstUniquePair)
 				{
-					if (strValues[0, 0] == "precedence1")
+					if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
 						strModifier += " + " + strValues[0, 2] + " (" + strValues[0, 1] + ")";
 				}
 			}

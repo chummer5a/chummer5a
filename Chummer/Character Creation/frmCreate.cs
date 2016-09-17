@@ -15092,8 +15092,7 @@ namespace Chummer
                 _blnSkipUpdate = true;
 
 				//Redliner/Cyber Singularity Seeker(hackish)
-	            RedlinerCheck();  
-				lblMovement.Text = _objCharacter.Movement;
+	            RedlinerCheck(); 
 
                 // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
                 if (_objCharacter.Metatype.EndsWith("A.I.") || _objCharacter.MetatypeCategory == "Technocritters" || _objCharacter.MetatypeCategory == "Protosapients")

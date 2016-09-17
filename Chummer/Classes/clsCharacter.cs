@@ -6238,7 +6238,7 @@ namespace Chummer
 				{
 					intMultiply = _objImprovementManager.ValueOf(Improvement.ImprovementType.FlySpeed) * -1;
 				}
-				double dblPercent = _objImprovementManager.ValueOf(objImprovementType);
+				double dblPercent = _objImprovementManager.ValueOf(objImprovementType) / 100.0;
 
 				int intRun = 0;
 				int intWalk = 0;

@@ -59,6 +59,7 @@ namespace Chummer
             SetDefaultValueForLanguageList();
             PopulateXsltList();
             SetDefaultValueForXsltList();
+			PopulatePDFParameters();
 	        blnLoading = false;
         }
         #endregion
@@ -320,18 +321,6 @@ namespace Chummer
             }
         }
 
-        private void cmdURLAppPath_Click(object sender, EventArgs e)
-        {
-            // Prompt the user to select a save file to associate with this Contact.
-            using (var openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
-
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    txtURLAppPath.Text = openFileDialog.FileName;
-            }
-        }
-
 	    private void cmdPDFLocation_Click(object sender, EventArgs e)
 	    {
             // Prompt the user to select a save file to associate with this Contact.
@@ -356,13 +345,10 @@ namespace Chummer
             _skipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
-            foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo)
+            foreach (SourcebookInfo objSource in GlobalOptions.Instance.SourcebookInfo.Where(objSource => objSource.Code == treSourcebook.SelectedNode.Tag.ToString()))
             {
-                if (objSource.Code == treSourcebook.SelectedNode.Tag.ToString())
-                {
-                    txtPDFLocation.Text = objSource.Path;
-                    nudPDFOffset.Value = objSource.Offset;
-                }
+	            txtPDFLocation.Text = objSource.Path;
+	            nudPDFOffset.Value = objSource.Offset;
             }
         }
 
@@ -636,8 +622,6 @@ namespace Chummer
 			chkMetatypeCostsKarma.Checked = _characterOptions.MetatypeCostsKarma;
 			chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
 			chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
-            chkOpenPDFsAsURLs.Checked = GlobalOptions._blnOpenPDFsAsURLs;
-            chkOpenPDFsAsUnix.Checked = GlobalOptions._blnOpenPDFsAsUnix;
             chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
 			chkPrintNotes.Checked = _characterOptions.PrintNotes;
 			chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
@@ -695,7 +679,6 @@ namespace Chummer
 	    private void SaveGlobalOptions()
 	    {
             GlobalOptions.Instance.AutomaticUpdate = chkAutomaticUpdate.Checked;
-            GlobalOptions.Instance.LocalisedUpdatesOnly = chkLocalisedUpdatesOnly.Checked;
             GlobalOptions.Instance.UseLogging = chkUseLogging.Checked;
             GlobalOptions.Instance.Language = cboLanguage.SelectedValue.ToString();
             GlobalOptions.Instance.StartupFullscreen = chkStartupFullscreen.Checked;
@@ -708,9 +691,7 @@ namespace Chummer
             GlobalOptions.Instance.DatesIncludeTime = chkDatesIncludeTime.Checked;
             GlobalOptions.Instance.PrintToFileFirst = chkPrintToFileFirst.Checked;
             GlobalOptions.Instance.PDFAppPath = txtPDFAppPath.Text;
-            GlobalOptions.Instance.URLAppPath = txtURLAppPath.Text;
-            GlobalOptions.Instance.OpenPDFsAsURLs = chkOpenPDFsAsURLs.Checked;
-            GlobalOptions.Instance.OpenPDFsAsAsUnix = chkOpenPDFsAsUnix.Checked;
+		    GlobalOptions.Instance.PDFParameters = cboPDFParameters.SelectedValue.ToString();
             GlobalOptions.Instance.LifeModuleEnabled = chkLifeModule.Checked;
 		    GlobalOptions.Instance.OmaeEnabled = chkOmaeEnabled.Checked;
 		    GlobalOptions.Instance.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
@@ -728,7 +709,6 @@ namespace Chummer
 
             Microsoft.Win32.RegistryKey objRegistry = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             objRegistry.SetValue("autoupdate", chkAutomaticUpdate.Checked.ToString());
-            objRegistry.SetValue("localisedupdatesonly", chkLocalisedUpdatesOnly.Checked.ToString());
             objRegistry.SetValue("uselogging", chkUseLogging.Checked.ToString());
             objRegistry.SetValue("language", cboLanguage.SelectedValue.ToString());
             objRegistry.SetValue("startupfullscreen", chkStartupFullscreen.Checked.ToString());
@@ -736,11 +716,9 @@ namespace Chummer
             objRegistry.SetValue("defaultsheet", cboXSLT.SelectedValue.ToString());
             objRegistry.SetValue("datesincludetime", chkDatesIncludeTime.Checked.ToString());
             objRegistry.SetValue("printtofilefirst", chkPrintToFileFirst.Checked.ToString());
-            objRegistry.SetValue("openpdfsasurls", chkOpenPDFsAsURLs.Checked.ToString());
-            objRegistry.SetValue("openpdfsasunix", chkOpenPDFsAsUnix.Checked.ToString());
-            objRegistry.SetValue("urlapppath", txtURLAppPath.Text);
             objRegistry.SetValue("pdfapppath", txtPDFAppPath.Text);
-            objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
+			objRegistry.SetValue("pdfparameters", cboPDFParameters.SelectedValue.ToString());
+			objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
 			objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString());
 			objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString());
 			objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
@@ -918,7 +896,6 @@ namespace Chummer
 		        }
 		        objLimbCount.Value = string.Format("{0}/{1}", objXmlNode["limbcount"].InnerText,
 			        objXmlNode["exclude"].InnerText);
-				//TODO: Pull these strings back into the standard data files. No real reason to be handling it this way.
 		        objLimbCount.Name = LanguageManager.Instance.GetString(objXmlNode["name"].InnerText);
 				lstLimbCount.Add(objLimbCount);
 	        }
@@ -926,9 +903,36 @@ namespace Chummer
             cboLimbCount.ValueMember = "Value";
             cboLimbCount.DisplayMember = "Name";
             cboLimbCount.DataSource = lstLimbCount;
-        }
+		}
 
-        private void SetToolTips()
+		private void PopulatePDFParameters()
+		{
+			List<ListItem> lstPdfParameters = new List<ListItem>();
+
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("options.xml");
+
+			XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/options/pdfarguments/pdfargument");
+
+			int intIndex = 0;
+			foreach (XmlNode objXmlNode in objXmlNodeList)
+			{
+				ListItem objPDFArgument = new ListItem();
+				objPDFArgument.Name = objXmlNode["name"].InnerText;
+				objPDFArgument.Value = objXmlNode["value"].InnerText;
+				lstPdfParameters.Add(objPDFArgument);
+				if (!String.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters) && GlobalOptions.Instance.PDFParameters == objPDFArgument.Value)
+				{
+					intIndex = lstPdfParameters.IndexOf(objPDFArgument);
+				}
+			}
+
+			cboPDFParameters.ValueMember = "Value";
+			cboPDFParameters.DisplayMember = "Name";
+			cboPDFParameters.DataSource = lstPdfParameters;
+			cboPDFParameters.SelectedIndex = intIndex;
+		}
+
+		private void SetToolTips()
         {
             const int width = 50;
             tipTooltip.SetToolTip(chkKnucks, CommonFunctions.WordWrap(LanguageManager.Instance.GetString("Tip_OptionsKnucks"), width));
@@ -1027,17 +1031,13 @@ namespace Chummer
             chkLifeModule.Checked = GlobalOptions.Instance.LifeModuleEnabled;
 	        chkOmaeEnabled.Checked = GlobalOptions.Instance.OmaeEnabled;
 	        chkPreferNightlyBuilds.Checked = GlobalOptions.Instance.PreferNightlyBuilds;
-            chkLocalisedUpdatesOnly.Checked = GlobalOptions.Instance.LocalisedUpdatesOnly;
             chkStartupFullscreen.Checked = GlobalOptions.Instance.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.Instance.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.Instance.DatesIncludeTime;
             chkMissions.Checked = GlobalOptions.Instance.MissionsOnly;
 			chkDronemods.Checked = GlobalOptions.Instance.Dronemods;
             chkPrintToFileFirst.Checked = GlobalOptions.Instance.PrintToFileFirst;
-            chkOpenPDFsAsURLs.Checked = GlobalOptions.Instance.OpenPDFsAsURLs;
-            chkOpenPDFsAsUnix.Checked = GlobalOptions.Instance.OpenPDFsAsAsUnix;
             txtPDFAppPath.Text = GlobalOptions.Instance.PDFAppPath;
-            txtURLAppPath.Text = GlobalOptions.Instance.URLAppPath;
 	        txtCharacterRosterPath.Text = GlobalOptions.Instance.CharacterRosterPath;
         }
 
@@ -1255,6 +1255,11 @@ namespace Chummer
 				if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
 					txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
 			}
+		}
+
+		private void cboPDFParameters_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			GlobalOptions.Instance.PDFArguments = cboPDFParameters.SelectedValue.ToString();
 		}
 	}
 }

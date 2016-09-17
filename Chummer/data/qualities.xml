@@ -7200,7 +7200,7 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
-				<initiativepass>1</initiativepass>
+				<initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 			</bonus>
 			<critterpowers>

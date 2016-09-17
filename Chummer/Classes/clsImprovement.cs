@@ -631,10 +631,8 @@ namespace Chummer
 			List<string> lstUniqueName = new List<string>();
 			List<string[,]> lstUniquePair = new List<string[,]>();
 			int intValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && !objImprovement.Custom))
 			{
-				if (objImprovement.Enabled && !objImprovement.Custom)
-				{
 					bool blnAllowed = true;
 					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
 					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -675,7 +673,6 @@ namespace Chummer
 								intValue += objImprovement.Value;
 						}
 					}
-				}
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.
@@ -699,7 +696,7 @@ namespace Chummer
 				// Retrieve all of the items that are precedence1 and nothing else.
 				foreach (string[,] strValues in lstUniquePair)
 				{
-					if (strValues[0, 0] == "precedence1")
+					if (strValues[0, 0] == "precedence1" || strValues[0, 0] == "precedence-1")
 						intValue += Convert.ToInt32(strValues[0, 1]);
 				}
 			}
@@ -717,11 +714,11 @@ namespace Chummer
 							intHighest = Convert.ToInt32(strValues[0, 1]);
 					}
 				}
-				if (lstUniqueName.Contains("ignoreprecedence"))
+				if (lstUniqueName.Contains("precedence-1"))
 				{
 					foreach (string[,] strValues in lstUniquePair)
 					{
-						if (strValues[0, 0] == "ignoreprecedence")
+						if (strValues[0, 0] == "precedence-1")
 						{
 							intHighest += Convert.ToInt32(strValues[0, 1]);
 						}
@@ -734,10 +731,8 @@ namespace Chummer
 			lstUniqueName = new List<string>();
 			lstUniquePair = new List<string[,]>();
 			int intCustomValue = 0;
-			foreach (Improvement objImprovement in _objCharacter.Improvements)
+			foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.Enabled && objImprovement.Custom))
 			{
-				if (objImprovement.Enabled && objImprovement.Custom)
-				{
 					bool blnAllowed = true;
 					// Technomancers cannot benefit from Gear-based Matrix Initiative Pass modifiers (Gear - Sim Modules).
 					if (_objCharacter.RESEnabled && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear &&
@@ -778,7 +773,6 @@ namespace Chummer
 								intCustomValue += objImprovement.Value;
 						}
 					}
-				}
 			}
 
 			// Run through the list of UniqueNames and pick out the highest value for each one.

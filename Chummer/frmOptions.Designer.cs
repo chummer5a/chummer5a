@@ -102,23 +102,20 @@
 			this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
 			this.tabControl2 = new System.Windows.Forms.TabControl();
 			this.tabGlobal = new System.Windows.Forms.TabPage();
+			this.grpSelectedSourcebook = new System.Windows.Forms.GroupBox();
+			this.lblPDFLocation = new System.Windows.Forms.Label();
+			this.txtPDFLocation = new System.Windows.Forms.TextBox();
+			this.cmdPDFLocation = new System.Windows.Forms.Button();
+			this.lblPDFOffset = new System.Windows.Forms.Label();
+			this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
+			this.cmdPDFTest = new System.Windows.Forms.Button();
+			this.cboPDFParameters = new Chummer.helpers.ComboBox();
 			this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
 			this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
-			this.chkOpenPDFsAsUnix = new System.Windows.Forms.CheckBox();
 			this.chkLifeModule = new System.Windows.Forms.CheckBox();
-			this.cmdURLAppPath = new System.Windows.Forms.Button();
-			this.txtURLAppPath = new System.Windows.Forms.TextBox();
-			this.lblURLAppPath = new System.Windows.Forms.Label();
-			this.chkOpenPDFsAsURLs = new System.Windows.Forms.CheckBox();
+			this.lblPDFParametersLabel = new System.Windows.Forms.Label();
 			this.chkUseLogging = new System.Windows.Forms.CheckBox();
-			this.chkLocalisedUpdatesOnly = new System.Windows.Forms.CheckBox();
 			this.chkDatesIncludeTime = new System.Windows.Forms.CheckBox();
-			this.cmdPDFTest = new System.Windows.Forms.Button();
-			this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
-			this.lblPDFOffset = new System.Windows.Forms.Label();
-			this.cmdPDFLocation = new System.Windows.Forms.Button();
-			this.txtPDFLocation = new System.Windows.Forms.TextBox();
-			this.lblPDFLocation = new System.Windows.Forms.Label();
 			this.cmdPDFAppPath = new System.Windows.Forms.Button();
 			this.txtPDFAppPath = new System.Windows.Forms.TextBox();
 			this.lblPDFAppPath = new System.Windows.Forms.Label();
@@ -294,6 +291,7 @@
 			this.tabGeneral.SuspendLayout();
 			this.tabControl2.SuspendLayout();
 			this.tabGlobal.SuspendLayout();
+			this.grpSelectedSourcebook.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).BeginInit();
 			this.tabPage2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudBP)).BeginInit();
@@ -1058,23 +1056,14 @@
 			// tabGlobal
 			// 
 			this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+			this.tabGlobal.Controls.Add(this.grpSelectedSourcebook);
+			this.tabGlobal.Controls.Add(this.cboPDFParameters);
 			this.tabGlobal.Controls.Add(this.chkPreferNightlyBuilds);
 			this.tabGlobal.Controls.Add(this.chkOmaeEnabled);
-			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsUnix);
 			this.tabGlobal.Controls.Add(this.chkLifeModule);
-			this.tabGlobal.Controls.Add(this.cmdURLAppPath);
-			this.tabGlobal.Controls.Add(this.txtURLAppPath);
-			this.tabGlobal.Controls.Add(this.lblURLAppPath);
-			this.tabGlobal.Controls.Add(this.chkOpenPDFsAsURLs);
+			this.tabGlobal.Controls.Add(this.lblPDFParametersLabel);
 			this.tabGlobal.Controls.Add(this.chkUseLogging);
-			this.tabGlobal.Controls.Add(this.chkLocalisedUpdatesOnly);
 			this.tabGlobal.Controls.Add(this.chkDatesIncludeTime);
-			this.tabGlobal.Controls.Add(this.cmdPDFTest);
-			this.tabGlobal.Controls.Add(this.nudPDFOffset);
-			this.tabGlobal.Controls.Add(this.lblPDFOffset);
-			this.tabGlobal.Controls.Add(this.cmdPDFLocation);
-			this.tabGlobal.Controls.Add(this.txtPDFLocation);
-			this.tabGlobal.Controls.Add(this.lblPDFLocation);
 			this.tabGlobal.Controls.Add(this.cmdPDFAppPath);
 			this.tabGlobal.Controls.Add(this.txtPDFAppPath);
 			this.tabGlobal.Controls.Add(this.lblPDFAppPath);
@@ -1094,6 +1083,97 @@
 			this.tabGlobal.TabIndex = 0;
 			this.tabGlobal.Tag = "Tab_Options_Global";
 			this.tabGlobal.Text = "Global";
+			// 
+			// grpSelectedSourcebook
+			// 
+			this.grpSelectedSourcebook.Controls.Add(this.lblPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.txtPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.cmdPDFLocation);
+			this.grpSelectedSourcebook.Controls.Add(this.lblPDFOffset);
+			this.grpSelectedSourcebook.Controls.Add(this.nudPDFOffset);
+			this.grpSelectedSourcebook.Controls.Add(this.cmdPDFTest);
+			this.grpSelectedSourcebook.Location = new System.Drawing.Point(8, 360);
+			this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
+			this.grpSelectedSourcebook.Size = new System.Drawing.Size(392, 80);
+			this.grpSelectedSourcebook.TabIndex = 27;
+			this.grpSelectedSourcebook.TabStop = false;
+			this.grpSelectedSourcebook.Text = "Selected Sourcebook";
+			// 
+			// lblPDFLocation
+			// 
+			this.lblPDFLocation.AutoSize = true;
+			this.lblPDFLocation.Location = new System.Drawing.Point(8, 24);
+			this.lblPDFLocation.Name = "lblPDFLocation";
+			this.lblPDFLocation.Size = new System.Drawing.Size(75, 13);
+			this.lblPDFLocation.TabIndex = 12;
+			this.lblPDFLocation.Tag = "Label_Options_PDFLocation";
+			this.lblPDFLocation.Text = "PDF Location:";
+			// 
+			// txtPDFLocation
+			// 
+			this.txtPDFLocation.Location = new System.Drawing.Point(89, 20);
+			this.txtPDFLocation.Name = "txtPDFLocation";
+			this.txtPDFLocation.ReadOnly = true;
+			this.txtPDFLocation.Size = new System.Drawing.Size(248, 20);
+			this.txtPDFLocation.TabIndex = 13;
+			// 
+			// cmdPDFLocation
+			// 
+			this.cmdPDFLocation.Enabled = false;
+			this.cmdPDFLocation.Location = new System.Drawing.Point(343, 19);
+			this.cmdPDFLocation.Name = "cmdPDFLocation";
+			this.cmdPDFLocation.Size = new System.Drawing.Size(27, 23);
+			this.cmdPDFLocation.TabIndex = 14;
+			this.cmdPDFLocation.Text = "...";
+			this.cmdPDFLocation.UseVisualStyleBackColor = true;
+			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
+			// 
+			// lblPDFOffset
+			// 
+			this.lblPDFOffset.AutoSize = true;
+			this.lblPDFOffset.Location = new System.Drawing.Point(8, 56);
+			this.lblPDFOffset.Name = "lblPDFOffset";
+			this.lblPDFOffset.Size = new System.Drawing.Size(66, 13);
+			this.lblPDFOffset.TabIndex = 15;
+			this.lblPDFOffset.Tag = "Label_Options_PDFOffset";
+			this.lblPDFOffset.Text = "Page Offset:";
+			// 
+			// nudPDFOffset
+			// 
+			this.nudPDFOffset.Enabled = false;
+			this.nudPDFOffset.Location = new System.Drawing.Point(89, 52);
+			this.nudPDFOffset.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+			this.nudPDFOffset.Name = "nudPDFOffset";
+			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
+			this.nudPDFOffset.TabIndex = 16;
+			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
+			// 
+			// cmdPDFTest
+			// 
+			this.cmdPDFTest.AutoSize = true;
+			this.cmdPDFTest.Enabled = false;
+			this.cmdPDFTest.Location = new System.Drawing.Point(140, 51);
+			this.cmdPDFTest.Name = "cmdPDFTest";
+			this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
+			this.cmdPDFTest.TabIndex = 17;
+			this.cmdPDFTest.Tag = "Button_Options_PDFTest";
+			this.cmdPDFTest.Text = "Test - Open to Page 5";
+			this.cmdPDFTest.UseVisualStyleBackColor = true;
+			this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
+			// 
+			// cboPDFParameters
+			// 
+			this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboPDFParameters.FormattingEnabled = true;
+			this.cboPDFParameters.Location = new System.Drawing.Point(152, 288);
+			this.cboPDFParameters.Name = "cboPDFParameters";
+			this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
+			this.cboPDFParameters.TabIndex = 26;
+			this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.cboPDFParameters_SelectedIndexChanged);
 			// 
 			// chkPreferNightlyBuilds
 			// 
@@ -1118,18 +1198,6 @@
 			this.chkOmaeEnabled.UseVisualStyleBackColor = true;
 			this.chkOmaeEnabled.CheckedChanged += new System.EventHandler(this.chkOmaeEnabled_CheckedChanged);
 			// 
-			// chkOpenPDFsAsUnix
-			// 
-			this.chkOpenPDFsAsUnix.AutoSize = true;
-			this.chkOpenPDFsAsUnix.Location = new System.Drawing.Point(9, 426);
-			this.chkOpenPDFsAsUnix.Name = "chkOpenPDFsAsUnix";
-			this.chkOpenPDFsAsUnix.Size = new System.Drawing.Size(250, 17);
-			this.chkOpenPDFsAsUnix.TabIndex = 23;
-			this.chkOpenPDFsAsUnix.Tag = "Checkbox_Options_OpenPDFsAsUnix";
-			this.chkOpenPDFsAsUnix.Text = "Use Unix-Style Parameters when opening PDFs";
-			this.chkOpenPDFsAsUnix.UseVisualStyleBackColor = true;
-			this.chkOpenPDFsAsUnix.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
 			// chkLifeModule
 			// 
 			this.chkLifeModule.AutoSize = true;
@@ -1142,45 +1210,15 @@
 			this.chkLifeModule.UseVisualStyleBackColor = true;
 			this.chkLifeModule.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
-			// cmdURLAppPath
+			// lblPDFParametersLabel
 			// 
-			this.cmdURLAppPath.Location = new System.Drawing.Point(407, 288);
-			this.cmdURLAppPath.Name = "cmdURLAppPath";
-			this.cmdURLAppPath.Size = new System.Drawing.Size(27, 23);
-			this.cmdURLAppPath.TabIndex = 21;
-			this.cmdURLAppPath.Text = "...";
-			this.cmdURLAppPath.UseVisualStyleBackColor = true;
-			this.cmdURLAppPath.Click += new System.EventHandler(this.cmdURLAppPath_Click);
-			// 
-			// txtURLAppPath
-			// 
-			this.txtURLAppPath.Location = new System.Drawing.Point(153, 290);
-			this.txtURLAppPath.Name = "txtURLAppPath";
-			this.txtURLAppPath.ReadOnly = true;
-			this.txtURLAppPath.Size = new System.Drawing.Size(248, 20);
-			this.txtURLAppPath.TabIndex = 20;
-			// 
-			// lblURLAppPath
-			// 
-			this.lblURLAppPath.AutoSize = true;
-			this.lblURLAppPath.Location = new System.Drawing.Point(6, 293);
-			this.lblURLAppPath.Name = "lblURLAppPath";
-			this.lblURLAppPath.Size = new System.Drawing.Size(126, 13);
-			this.lblURLAppPath.TabIndex = 19;
-			this.lblURLAppPath.Tag = "Label_Options_URLApplicationPath";
-			this.lblURLAppPath.Text = "Location of Web browser";
-			// 
-			// chkOpenPDFsAsURLs
-			// 
-			this.chkOpenPDFsAsURLs.AutoSize = true;
-			this.chkOpenPDFsAsURLs.Location = new System.Drawing.Point(266, 401);
-			this.chkOpenPDFsAsURLs.Name = "chkOpenPDFsAsURLs";
-			this.chkOpenPDFsAsURLs.Size = new System.Drawing.Size(125, 17);
-			this.chkOpenPDFsAsURLs.TabIndex = 18;
-			this.chkOpenPDFsAsURLs.Tag = "Checkbox_Options_OpenPDFsAsURLs";
-			this.chkOpenPDFsAsURLs.Text = "Open PDFs as URLs";
-			this.chkOpenPDFsAsURLs.UseVisualStyleBackColor = true;
-			this.chkOpenPDFsAsURLs.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.lblPDFParametersLabel.AutoSize = true;
+			this.lblPDFParametersLabel.Location = new System.Drawing.Point(6, 293);
+			this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
+			this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
+			this.lblPDFParametersLabel.TabIndex = 19;
+			this.lblPDFParametersLabel.Tag = "Label_Options_PDFParameters";
+			this.lblPDFParametersLabel.Text = "PDF Parameters:";
 			// 
 			// chkUseLogging
 			// 
@@ -1194,18 +1232,6 @@
 			this.chkUseLogging.UseVisualStyleBackColor = true;
 			this.chkUseLogging.CheckedChanged += new System.EventHandler(this.OptionsChanged);
 			// 
-			// chkLocalisedUpdatesOnly
-			// 
-			this.chkLocalisedUpdatesOnly.AutoSize = true;
-			this.chkLocalisedUpdatesOnly.Location = new System.Drawing.Point(9, 130);
-			this.chkLocalisedUpdatesOnly.Name = "chkLocalisedUpdatesOnly";
-			this.chkLocalisedUpdatesOnly.Size = new System.Drawing.Size(254, 17);
-			this.chkLocalisedUpdatesOnly.TabIndex = 6;
-			this.chkLocalisedUpdatesOnly.Tag = "Checkbox_Options_LocalisedUpdatesOnly";
-			this.chkLocalisedUpdatesOnly.Text = "Only download updates in my selected language";
-			this.chkLocalisedUpdatesOnly.UseVisualStyleBackColor = true;
-			this.chkLocalisedUpdatesOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
 			// chkDatesIncludeTime
 			// 
 			this.chkDatesIncludeTime.AutoSize = true;
@@ -1217,72 +1243,6 @@
 			this.chkDatesIncludeTime.Text = "Expense dates should include time";
 			this.chkDatesIncludeTime.UseVisualStyleBackColor = true;
 			this.chkDatesIncludeTime.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-			// 
-			// cmdPDFTest
-			// 
-			this.cmdPDFTest.AutoSize = true;
-			this.cmdPDFTest.Enabled = false;
-			this.cmdPDFTest.Location = new System.Drawing.Point(138, 397);
-			this.cmdPDFTest.Name = "cmdPDFTest";
-			this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
-			this.cmdPDFTest.TabIndex = 17;
-			this.cmdPDFTest.Tag = "Button_Options_PDFTest";
-			this.cmdPDFTest.Text = "Test - Open to Page 5";
-			this.cmdPDFTest.UseVisualStyleBackColor = true;
-			this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
-			// 
-			// nudPDFOffset
-			// 
-			this.nudPDFOffset.Enabled = false;
-			this.nudPDFOffset.Location = new System.Drawing.Point(87, 400);
-			this.nudPDFOffset.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-			this.nudPDFOffset.Name = "nudPDFOffset";
-			this.nudPDFOffset.Size = new System.Drawing.Size(44, 20);
-			this.nudPDFOffset.TabIndex = 16;
-			this.nudPDFOffset.ValueChanged += new System.EventHandler(this.nudPDFOffset_ValueChanged);
-			// 
-			// lblPDFOffset
-			// 
-			this.lblPDFOffset.AutoSize = true;
-			this.lblPDFOffset.Location = new System.Drawing.Point(6, 402);
-			this.lblPDFOffset.Name = "lblPDFOffset";
-			this.lblPDFOffset.Size = new System.Drawing.Size(66, 13);
-			this.lblPDFOffset.TabIndex = 15;
-			this.lblPDFOffset.Tag = "Label_Options_PDFOffset";
-			this.lblPDFOffset.Text = "Page Offset:";
-			// 
-			// cmdPDFLocation
-			// 
-			this.cmdPDFLocation.Enabled = false;
-			this.cmdPDFLocation.Location = new System.Drawing.Point(341, 365);
-			this.cmdPDFLocation.Name = "cmdPDFLocation";
-			this.cmdPDFLocation.Size = new System.Drawing.Size(27, 23);
-			this.cmdPDFLocation.TabIndex = 14;
-			this.cmdPDFLocation.Text = "...";
-			this.cmdPDFLocation.UseVisualStyleBackColor = true;
-			this.cmdPDFLocation.Click += new System.EventHandler(this.cmdPDFLocation_Click);
-			// 
-			// txtPDFLocation
-			// 
-			this.txtPDFLocation.Location = new System.Drawing.Point(87, 367);
-			this.txtPDFLocation.Name = "txtPDFLocation";
-			this.txtPDFLocation.ReadOnly = true;
-			this.txtPDFLocation.Size = new System.Drawing.Size(248, 20);
-			this.txtPDFLocation.TabIndex = 13;
-			// 
-			// lblPDFLocation
-			// 
-			this.lblPDFLocation.AutoSize = true;
-			this.lblPDFLocation.Location = new System.Drawing.Point(6, 370);
-			this.lblPDFLocation.Name = "lblPDFLocation";
-			this.lblPDFLocation.Size = new System.Drawing.Size(75, 13);
-			this.lblPDFLocation.TabIndex = 12;
-			this.lblPDFLocation.Tag = "Label_Options_PDFLocation";
-			this.lblPDFLocation.Text = "PDF Location:";
 			// 
 			// cmdPDFAppPath
 			// 
@@ -3214,6 +3174,8 @@
 			this.tabControl2.ResumeLayout(false);
 			this.tabGlobal.ResumeLayout(false);
 			this.tabGlobal.PerformLayout();
+			this.grpSelectedSourcebook.ResumeLayout(false);
+			this.grpSelectedSourcebook.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudPDFOffset)).EndInit();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
@@ -3447,7 +3409,6 @@
 		private System.Windows.Forms.CheckBox chkDatesIncludeTime;
 		private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
 		private System.Windows.Forms.CheckBox chkPrintToFileFirst;
-		private System.Windows.Forms.CheckBox chkLocalisedUpdatesOnly;
 		private System.Windows.Forms.CheckBox chkSpecialKarmaCost;
         private System.Windows.Forms.CheckBox chkContactPoints;
         private System.Windows.Forms.CheckBox chkMayBuyQualities;
@@ -3461,10 +3422,7 @@
         private System.Windows.Forms.CheckBox chkAllowInitiation;
         private System.Windows.Forms.CheckBox chkFreeKarmaContacts;
         private System.Windows.Forms.CheckBox chkFreeKarmaKnowledge;
-        private System.Windows.Forms.CheckBox chkOpenPDFsAsURLs;
-        private System.Windows.Forms.Button cmdURLAppPath;
-        private System.Windows.Forms.TextBox txtURLAppPath;
-        private System.Windows.Forms.Label lblURLAppPath;
+        private System.Windows.Forms.Label lblPDFParametersLabel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown nudKnowledgeMultiplier;
         private System.Windows.Forms.CheckBox chkKnowledgeMultiplier;
@@ -3489,7 +3447,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown nudDroneArmorMultiplier;
         private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
-        private System.Windows.Forms.CheckBox chkOpenPDFsAsUnix;
 		private System.Windows.Forms.CheckBox chkOmaeEnabled;
 		private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
 		private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
@@ -3497,5 +3454,7 @@
 		private System.Windows.Forms.Label lblCharacterRosterLabel;
 		private System.Windows.Forms.Button cmdCharacterRoster;
 		private System.Windows.Forms.TextBox txtCharacterRosterPath;
+		private helpers.ComboBox cboPDFParameters;
+		private System.Windows.Forms.GroupBox grpSelectedSourcebook;
 	}
 }

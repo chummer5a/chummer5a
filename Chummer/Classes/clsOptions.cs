@@ -128,10 +128,8 @@ namespace Chummer
 
 		// PDF information.
 		public static string _strPDFAppPath = "";
-        public static string _strURLAppPath = "";
+        public static string _strPDFParameters = "";
 		public static List<SourcebookInfo> _lstSourcebookInfo = new List<SourcebookInfo>();
-        public static bool _blnOpenPDFsAsURLs = false;
-	    public static bool _blnOpenPDFsAsUnix = false;
         public static bool _blnUseLogging = false;
 		private static string _strCharacterRosterPath;
 
@@ -286,16 +284,7 @@ namespace Chummer
             // Open PDFs as URLs. For use with Chrome, Firefox, etc.
             try
             {
-                _blnOpenPDFsAsURLs = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasurls").ToString());
-            }
-            catch
-            {
-            }
-
-            // Open PDFs as URLs. For use with Chrome, Firefox, etc.
-            try
-            {
-                _blnOpenPDFsAsUnix = Convert.ToBoolean(Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("openpdfsasunix").ToString());
+                _strPDFParameters = Registry.CurrentUser.CreateSubKey("Software\\Chummer5").GetValue("pdfparameters").ToString();
             }
             catch
             {
@@ -652,20 +641,11 @@ namespace Chummer
 			}
 		}
 
-        /// <summary>
-        /// Path to the user's PDF application.
-        /// </summary>
-        public string URLAppPath
-        {
-            get
-            {
-                return _strURLAppPath;
-            }
-            set
-            {
-                _strURLAppPath = value;
-            }
-        }
+		public string PDFParameters
+		{
+			get { return _strPDFParameters;}
+			set { _strPDFParameters = value; }
+		}
 		/// <summary>
 		/// List of SourcebookInfo.
 		/// </summary>
@@ -678,34 +658,6 @@ namespace Chummer
 			set
 			{
 				_lstSourcebookInfo = value;
-			}
-		}        /// <summary>
-				 /// Which method of opening PDFs to use. True = file://path.pdf#page=x
-				 /// </summary>
-		public bool OpenPDFsAsURLs
-		{
-			get
-			{
-				return GlobalOptions._blnOpenPDFsAsURLs;
-			}
-			set
-			{
-				GlobalOptions._blnOpenPDFsAsURLs = value;
-			}
-		}
-
-		/// <summary>
-		/// Which paramerters to use when opening PDFs. True = ... -p SomePage; False = ... \n \a "page = SomePage"
-		/// </summary>
-		public bool OpenPDFsAsAsUnix
-		{
-			get
-			{
-				return GlobalOptions._blnOpenPDFsAsUnix;
-			}
-			set
-			{
-				GlobalOptions._blnOpenPDFsAsUnix = value;
 			}
 		}
 
@@ -740,6 +692,8 @@ namespace Chummer
 				
 			}
 		}
+
+		public string PDFArguments { get; internal set; }
 		#endregion
 
 		#region MRU Methods

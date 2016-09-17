@@ -1510,8 +1510,13 @@ namespace Chummer.Classes
 			Log.Info("initiativepass");
 			Log.Info("initiativepass = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
+
+			string strUseUnique = bonusNode.Name;
+			if (bonusNode.Attributes["precedence"] != null)
+				strUseUnique = "precedence" + bonusNode.Attributes["precedence"].InnerText;
+
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativePass,
-				"initiativepass", ValueToInt(bonusNode.InnerText, _intRating));
+				strUseUnique, ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
 		// Check for Initiative Pass modifiers. Only the highest one ever applies.
