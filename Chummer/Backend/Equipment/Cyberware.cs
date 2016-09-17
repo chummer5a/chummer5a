@@ -1780,8 +1780,8 @@ namespace Chummer.Backend.Equipment
 
 					string strCost = "";
 					string strCostExpression = _strCost;
-
-					strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+					strCost = strCostExpression.Replace("MinRating", _intMinRating.ToString());
+					strCost = strCost.Replace("Rating", _intRating.ToString());
 					XPathExpression xprCost = nav.Compile(strCost);
 					intCost = Convert.ToInt32(nav.Evaluate(xprCost).ToString());
 				}
