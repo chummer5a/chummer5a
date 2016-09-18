@@ -18444,8 +18444,8 @@
 			<weapon>
 				<id>38e9682d-d679-47a4-97a1-7161cba07cd2</id>
 				<name>PPSK-4 Collapsible Machine Pistol</name>
-				<page>22</page>
-				<translate>PPSK-4 Klapp-MP</translate>
+				<page>34</page>
+				<translate>PPSK-4 Klapp-Automatikpistole</translate>
 			</weapon>
 			<weapon translated="True">
 				<id>c8e3d921-45df-4850-8619-7fcca279d774</id>
@@ -18516,8 +18516,7 @@
 			<weapon translated="True">
 				<id>413200d1-fbd4-485f-8a18-152b60cfb290</id>
 				<name>Ares HVAR</name>
-				<page>
-				</page>
+				<page>37</page>
 				<translate>Ares HVAR</translate>
 			</weapon>
 			<weapon translated="True">
@@ -19222,6 +19221,12 @@
 				<name>Hammer</name>
 				<translate>Hammer</translate>
 				<page>22</page>
+			</weapon>
+			<weapon>
+				<id>78293136-5bd0-49ac-aa9b-7c291f94c7a4</id>
+				<name>Ares Redline</name>
+				<translate>Ares Redline</translate>
+				<page>48</page>
 			</weapon>
 			<weapon>
 				<id>df5d5c83-ddf8-4ec2-8a6f-28c61ec7325a</id>
