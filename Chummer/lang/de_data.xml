@@ -538,6 +538,13 @@
 				<page>72</page>
 			</armor>
 			<armor>
+				<id>3134bbd7-350b-4d10-8902-25cb156e094f</id>
+				<name>Chain Mail</name>
+				<translate>Kettenhemd</translate>
+				<source>RG</source>
+				<page>71</page>
+			</armor>
+			<armor>
 				<id>31675672-3476-4a2f-8acf-605702ae4c66</id>
 				<name>Murder Armor</name>
 				<translate>Täuschungspanzerung</translate>
@@ -18445,7 +18452,7 @@
 				<id>38e9682d-d679-47a4-97a1-7161cba07cd2</id>
 				<name>PPSK-4 Collapsible Machine Pistol</name>
 				<page>34</page>
-				<translate>PPSK-4 Klapp-Automatikpistole</translate>
+				<translate>PPSK-4 Klapp-MP</translate>
 			</weapon>
 			<weapon translated="True">
 				<id>c8e3d921-45df-4850-8619-7fcca279d774</id>
