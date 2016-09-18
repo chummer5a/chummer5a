@@ -6776,7 +6776,15 @@ Do you want to continue?</text>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Comforts</key>
 			<text>Comforts:</text>
-		</string>		
+		</string>
+		<string>
+			<key>Node_SelectAdvancedLifestyle_Entertainments</key>
+			<text>Entertainments</text>
+		</string>
+		<string>
+			<key>Node_SelectAdvancedLifestyle_FreeMatrixGrids</key>
+			<text>Free Matrix Grids</text>
+		</string>
 		<string>
 			<key>Label_SelectAdvancedLifestyle_Entertainment</key>
 			<text>Entertainment:</text>

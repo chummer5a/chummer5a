@@ -7993,6 +7993,7 @@ namespace Chummer
 			this.chkGearMatrixCM2.Tag = "2";
 			this.chkGearMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.chkGearMatrixCM2.UseVisualStyleBackColor = true;
+			this.chkGearMatrixCM2.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
 			// 
 			// chkGearMatrixCM3
 			// 

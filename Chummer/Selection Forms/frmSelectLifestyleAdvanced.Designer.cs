@@ -370,12 +370,15 @@
 			this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
 			this.treLifestyleQualities.Name = "treLifestyleQualities";
 			treeNode1.Name = "nodPositiveLifestyleQualities";
+			treeNode1.Tag = "Label_SummaryPositiveQualities";
 			treeNode1.Text = "Positive Qualities";
 			treeNode2.Name = "nodNegativeLifestyleQualities";
+			treeNode2.Tag = "Label_SummaryNegativeQualities";
 			treeNode2.Text = "Negative Qualities";
 			treeNode3.Name = "nodLifestyleEntertainments";
+			treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
 			treeNode3.Text = "Entertainments";
-			treeNode4.Name = "Node0";
+			treeNode4.Name = "nodFreeMatrixGrids";
 			treeNode4.Text = "Free Matrix Grids";
 			this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,

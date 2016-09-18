@@ -58,8 +58,13 @@ namespace Chummer
                     objLabel.Text = "";
             }
 
-            // Load the Lifestyles information.
-            _objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
+			foreach (TreeNode objNode in treLifestyleQualities.Nodes)
+			{
+				if (objNode.Tag != null)
+					objNode.Text = LanguageManager.Instance.GetString(objNode.Tag.ToString());
+			}
+			// Load the Lifestyles information.
+			_objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
@@ -767,7 +772,7 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode.Level == 0)
+            if (treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
             else
             {
