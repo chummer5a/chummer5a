@@ -2944,6 +2944,7 @@
 			this.chkKnowledgeMultiplier.Text = "Free Knowledge Points equal to (INT+LOG)";
 			this.chkKnowledgeMultiplier.UseVisualStyleBackColor = true;
 			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.chkKnowledgeMultiplier.CheckedChanged += new System.EventHandler(this.chkKnowledgeMultiplier_CheckedChanged);
 			// 
 			// label2
 			// 
@@ -2989,6 +2990,7 @@
 			this.chkContactMultiplier.Text = "Free Contacts equal to Charisma";
 			this.chkContactMultiplier.UseVisualStyleBackColor = true;
 			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+			this.chkContactMultiplier.CheckedChanged += new System.EventHandler(this.chkContactMultiplier_CheckedChanged);
 			// 
 			// chkFreeKarmaContacts
 			// 

@@ -3575,7 +3575,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		</string>
 		<string>
 			<key>Tip_SkillsKnowledgeSkills</key>
-			<text>Characters receive (INT + LOG) x 3 free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {0} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
+			<text>Characters receive (INT + LOG) x {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skill points cost {1} Karma each. A Language with a Rating of 0 is considered to be your Native Language.</text>
 		</string>
     <string>
       <key>Skill_SortAlphabetical</key>

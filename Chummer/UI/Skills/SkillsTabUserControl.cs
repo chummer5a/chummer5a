@@ -284,17 +284,24 @@ namespace Chummer.UI.Skills
 		private void Panel1_Resize(object sender, EventArgs e)
 		{
 			int height = splitSkills.Panel1.Height;
-
+			int intWidth = 255;
+			if (_groups != null)
+			{
+				foreach (SkillGroupControl objControl in _groups.Controls[0].Controls)
+				{
+					if (objControl.PreferredSize.Width > intWidth)
+					{
+						intWidth = objControl.PreferredSize.Width;
+					}
+				}
+				_groups.Height = height - _groups.Top;
+				_groups.Size = new Size(intWidth, splitSkills.Panel1.Height - 15);
+			}
 			if (_skills != null)
 			{
 				_skills.Height = height - _skills.Top;
-				_skills.Size = new Size(splitSkills.Panel1.Width - 265, splitSkills.Panel1.Height - 39);
+				_skills.Size = new Size(splitSkills.Panel1.Width - (intWidth+10), splitSkills.Panel1.Height - 39);
 
-			}
-			if (_groups != null)
-			{
-				_groups.Height = height - _groups.Top;
-				_groups.Size = new Size(255, splitSkills.Panel1.Height - 15);
 			}
 		}
 
