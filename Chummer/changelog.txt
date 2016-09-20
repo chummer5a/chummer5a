@@ -1,3 +1,11 @@
+Build 185:
+Application Changes: 
+- Fixed a crash when Chummer hasn't had PDF arguments assigned. Fixes #1107
+
+Data Changes: 
+- Fixed the LP cost for the Indor Arboretum lifestyle quality.
+- Renamed the Sparring Drone from Hard Targets to Sparring Drone(Large).
+
 Build 184:
 Application Changes:
 - New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.

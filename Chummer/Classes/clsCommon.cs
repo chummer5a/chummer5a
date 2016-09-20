@@ -1337,6 +1337,10 @@ namespace Chummer
 		/// <param name="strSource">Book coode and page number to open.</param>
 		public void OpenPDF(string strSource)
 		{
+			// The user must have specified the arguments of their PDF application in order to use this functionality.
+			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFArguments))
+				return;
+
 			string[] strTemp = strSource.Split(' ');
 			string strBook = "";
 			Uri uriPath = null;
@@ -1369,9 +1373,6 @@ namespace Chummer
 				uriPath = new Uri(objInfo.Path);
 				intPage += objInfo.Offset;
 			}
-            // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (GlobalOptions.Instance.PDFArguments == string.Empty)
-				return;
 
 			// If the sourcebook was not found, we can't open anything.
             if (!blnFound)
