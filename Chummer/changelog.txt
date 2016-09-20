@@ -1,3 +1,9 @@
+Build 185:
+Application CHanges: 
+- Fixed an issue with Sprint distance calculations for Movement. 
+- Fixed a precedence issue with Infected initiative values. 
+- Fixed an issue that prevented lifestyle qualities from being exposed to the character sheets. 
+
 Build 184:
 Application Changes:
 - New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.
