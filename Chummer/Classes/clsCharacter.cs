@@ -4569,7 +4569,7 @@ namespace Chummer
                 //if (intIP != intExtraIP)
                 //    strReturn = "1 (" + intExtraIP.ToString() + ")";
                 //else
-                strReturn = intExtraIP.ToString();
+                strReturn = Math.Min(intExtraIP,5).ToString();
 
                 return strReturn;
             }
@@ -6242,14 +6242,13 @@ namespace Chummer
 
 				int intRun = 0;
 				int intWalk = 0;
-				int intSprint = 0;
-				int intRunMultiplier = (Convert.ToInt32(RunningRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+                int intSprint = (Convert.ToInt32(SprintingRate(strMovementType)) * intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+                int intRunMultiplier = (Convert.ToInt32(RunningRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 				int intWalkMultiplier = (Convert.ToInt32(WalkingRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
-				int intSprintMultiplier = (Convert.ToInt32(SprintingRate(strMovementType)) * intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 
 				intRunMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(RunningRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
 				intWalkMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(WalkingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
-				intSprintMultiplier += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
+				intSprint += Convert.ToInt32(Math.Floor(Convert.ToDouble(SprintingRate(strMovementType), GlobalOptions.Instance.CultureInfo) * dblPercent));
 
 				if (_objOptions.CyberlegMovement && blnUseCyberlegs)
 				{
@@ -6265,13 +6264,11 @@ namespace Chummer
 						if (strMovementType == "Swim")
 						{
 							intWalk = (intAGI + _attSTR.TotalValue / 2)* intWalkMultiplier;
-							intSprint = (intAGI * intSprintMultiplier);
 						}
 						else
 						{
 							intWalk = (intAGI*intWalkMultiplier);
 							intRun = (intAGI*intRunMultiplier);
-							intSprint = (intAGI*intSprintMultiplier);
 						}
 					}
 				}
@@ -6280,13 +6277,11 @@ namespace Chummer
 					if (strMovementType == "Swim")
 					{
 						intWalk = (_attAGI.TotalValue + _attSTR.TotalValue/2)*intWalkMultiplier;
-						intSprint = (_attAGI.TotalValue * intSprintMultiplier);
 					}
 					else
 					{
 						intWalk = (_attAGI.TotalValue*intWalkMultiplier);
 						intRun = (_attAGI.TotalValue*intRunMultiplier);
-						intSprint = (_attAGI.TotalValue*intSprintMultiplier);
 					}
 				}
 				if (strMovementType == "Swim")

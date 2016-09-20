@@ -328,7 +328,7 @@ namespace Chummer.Backend.Equipment
 							}
 						}
 					}
-					objWriter.WriteElementString("lifestylequality", strThisQuality);
+					objWriter.WriteElementString("quality", strThisQuality);
 				}
 			}
 			// Retrieve the free Grids for the Advanced Lifestyle if applicable.
@@ -337,7 +337,7 @@ namespace Chummer.Backend.Equipment
 				foreach (LifestyleQuality objQuality in _lstFreeGrids)
 				{
 					string strThisQuality = objQuality.DisplayName;
-					objWriter.WriteElementString("lifestylequality", strThisQuality);
+					objWriter.WriteElementString("quality", strThisQuality);
 				}
 			}
 			objWriter.WriteEndElement();

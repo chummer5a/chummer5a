@@ -1,6 +1,9 @@
 Build 185:
-Application Changes: 
-- Fixed a crash when Chummer hasn't had PDF arguments assigned. Fixes #1107
+Application CHanges: 
+- Fixed an issue with Sprint distance calculations for Movement. 
+- Fixed a precedence issue with Infected initiative values. 
+- Fixed an issue that prevented lifestyle qualities from being exposed to the character sheets. 
+- Fixed a crash when Chummer hasn't had PDF arguments assigned.
 
 Data Changes: 
 - Fixed the LP cost for the Indor Arboretum lifestyle quality.

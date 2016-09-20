@@ -7239,7 +7239,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower>Armor</optionalpower>
@@ -8409,7 +8409,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -8692,7 +8692,7 @@
 			<category>Positive</category>
 			<bonus>
 				<armor>2</armor>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<enabletab>
 					<name>critter</name>
@@ -8827,7 +8827,7 @@
 			<karma>30</karma>
 			<category>Positive</category>
 			<bonus>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<armor>2</armor>
 				<enabletab>
@@ -8971,7 +8971,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9117,7 +9117,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9265,7 +9265,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9422,7 +9422,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9558,7 +9558,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9694,7 +9694,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9832,7 +9832,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+				<initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -9960,7 +9960,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -10090,7 +10090,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -10236,7 +10236,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
@@ -10384,7 +10384,7 @@
 				<enabletab>
 					<name>critter</name>
 				</enabletab>
-				<initiativepass>1</initiativepass>
+        <initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
 				<optionalpowers>
 					<optionalpower select="Hearing">Enhanced Senses</optionalpower>

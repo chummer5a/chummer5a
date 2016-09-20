@@ -7469,7 +7469,7 @@
 			<armorcapacity>[2]</armorcapacity>
 			<rating>0</rating>
 			<bonus>
-				<matrixinitiativepass>1</matrixinitiativepass>
+				<matrixinitiativepass  precedence="-1">1</matrixinitiativepass>
 			</bonus>
 			<devicerating>0</devicerating>
 			<avail>7R</avail>
