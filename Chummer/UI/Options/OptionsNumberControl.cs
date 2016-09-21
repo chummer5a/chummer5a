@@ -23,10 +23,7 @@ namespace Chummer.UI.Options
 				{
 					lblRuleMultiplierLabel.Text = LanguageManager.Instance.GetString(LinkedOption.ModifierTag);
 				}
-				if (LinkedOption.Value != null)
-				{
-					nudRule.Value = Convert.ToDecimal(LinkedOption.Value);
-				}
+				nudRule.Value = Convert.ToDecimal(LinkedOption.Value ?? LinkedOption.Default);
 				MoveControls();
 			}
 		}
@@ -47,10 +44,14 @@ namespace Chummer.UI.Options
 			intSize = Math.Max(intSize, TextRenderer.MeasureText(strDescription, fntSelectedFont).Width);
 
 			lblRuleDescriptionLabel.Left = 2;
+			lblRuleDescriptionLabel.AutoSize = false;
 			lblRuleDescriptionLabel.Width = intSize;
+			lblRuleDescriptionLabel.MaximumSize = new Size(intSize,0);
 			nudRule.Left = lblRuleDescriptionLabel.Right + 2;
 			lblRuleMultiplierLabel.Left = nudRule.Right + 2;
+			lblRuleMultiplierLabel.AutoSize = false;
 			lblRuleMultiplierLabel.Width = intSize;
+			lblRuleMultiplierLabel.MaximumSize = new Size(intSize, 0);
 		}
 	}
 }

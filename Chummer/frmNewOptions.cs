@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 using Chummer;
 using Chummer.Classes;
 using Chummer.UI.Options;
@@ -18,30 +20,16 @@ namespace Chummer
 		{
 			InitializeComponent();
 			List<Option> _lstOptions = new List<Option>();
-
-			Option testOption = new Option
+			XmlDocument objXmlDocument = new XmlDocument();
+			string strFilePath = Path.Combine(Application.StartupPath, "data", "options.xml");
+			objXmlDocument.Load(strFilePath);
+			XmlNodeList objNodeList = objXmlDocument.SelectNodes("/chummer/options/chummeroptions/chummeroption");
+			foreach (XmlNode objNode in objNodeList)
 			{
-				DescriptionTag = "Tip_CombineItems",
-				ModifierTag = "Tip_SplitItems",
-				Category = "Default",
-				Value = 5
-			};
-			_lstOptions.Add(testOption);
-			testOption = new Option
-			{
-				DescriptionTag = "Tip_CombineItems",
-				ModifierTag = "Tip_SplitItems",
-				Category = "Default",
-				Value = 1
-			};
-			_lstOptions.Add(testOption);
-			testOption = new Option
-			{
-				DescriptionTag = "Tip_CombineItems",
-				ModifierTag = "Tip_SplitItems",
-				Category = "Karma"
-			};
-			_lstOptions.Add(testOption);
+				Option testOption = new Option();
+				
+				_lstOptions.Add(testOption);
+			}
 			if (treeView1.SelectedNode == null)
 			{
 				treeView1.SelectedNode = treeView1.Nodes[0];
