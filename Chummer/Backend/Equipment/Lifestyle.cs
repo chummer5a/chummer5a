@@ -798,11 +798,11 @@ namespace Chummer.Backend.Equipment
 			get
 			{
 				int intReturn = 0;
-				/*if (_objType != LifestyleType.Standard)
+				if (_objType != LifestyleType.Standard)
 				{
 					intReturn = Cost;
 					return intReturn;
-				}*/
+				}
 				XmlDocument objXmlDocument = XmlManager.Instance.Load("lifestyles.xml");
 				ImprovementManager objImprovementManager = new ImprovementManager(_objCharacter);
 				decimal decMultiplier = 1;
