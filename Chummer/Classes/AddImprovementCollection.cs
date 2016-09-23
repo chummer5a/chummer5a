@@ -129,7 +129,28 @@ namespace Chummer.Classes
 				_strUnique);
 		}
 
+		public void qualitylevel(XmlNode bonusNode)
+		{
+			//List of qualities to work with
+			Guid[] all =
+			{
+				Guid.Parse("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
+				Guid.Parse("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
+				Guid.Parse("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
+				Guid.Parse("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
+			};
 
+			//Add to list
+			//retrive list
+			//sort list
+			//find active instance
+			//if active = list[top]
+			//	return
+			//else
+			//	remove active
+			//  add list[top]
+			//	set list[top] active
+		}
 
 		public void addattribute(XmlNode bonusNode)
 		{

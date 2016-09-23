@@ -171,6 +171,7 @@ namespace Chummer
 			SpecialSkills,
 			ReflexRecorderOptimization,
 			MovementMultiplier,
+			DataStore
 		}
 
         public enum ImprovementSource
