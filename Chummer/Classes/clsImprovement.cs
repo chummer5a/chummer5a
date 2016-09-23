@@ -935,60 +935,7 @@ namespace Chummer
                     Log.Info("Has Child Nodes");
 
                     // Select Text (custom entry for things like Allergy).
-                    if (NodeExists(nodBonus, "selecttext"))
-                    {
-                        Log.Info("selecttext");
-
-					if (_objCharacter != null)
-					{
-						if (_strForcedValue != "")
-						{
-							_strLimitSelection = _strForcedValue;
-						}
-						else if (_objCharacter.Pushtext.Count != 0)
-						{
-							_strLimitSelection = _objCharacter.Pushtext.Pop();
-						}
-					}
-
-						Log.Info("_strForcedValue = " + _strSelectedValue);
-						Log.Info("_strLimitSelection = " + _strLimitSelection);
-
-                        // Display the Select Text window and record the value that was entered.
-                        frmSelectText frmPickText = new frmSelectText();
-						frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-							.Replace("{0}", strFriendlyName);
-
-                        if (_strLimitSelection != "")
-                        {
-                            frmPickText.SelectedValue = _strLimitSelection;
-                            frmPickText.Opacity = 0;
-                        }
-
-                        frmPickText.ShowDialog();
-
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            Rollback();
-                            blnSuccess = false;
-                            _strForcedValue = "";
-                            _strLimitSelection = "";
-                            Log.Exit("CreateImprovements");
-                            return false;
-                        }
-
-                        _strSelectedValue = frmPickText.SelectedValue;
-                        if (blnConcatSelectedValue)
-                            strSourceName += " (" + _strSelectedValue + ")";
-						Log.Info("_strSelectedValue = " + _strSelectedValue);
-						Log.Info("strSourceName = " + strSourceName);
-
-                        // Create the Improvement.
-                        Log.Info("Calling CreateImprovement");
-						CreateImprovement(frmPickText.SelectedValue, objImprovementSource, strSourceName, Improvement.ImprovementType.Text,
-							strUnique);
-                    }
+	                
                 }
 
                 // If there is no character object, don't attempt to add any Improvements.
