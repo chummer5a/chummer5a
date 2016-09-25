@@ -278,6 +278,9 @@
 					<group>Language</group>
 					<val>0</val>
 				</knowledgeskilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
 				<knowledgeskilllevel>
 					<options>
 						<spanish>Spanish</spanish>

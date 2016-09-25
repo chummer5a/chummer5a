@@ -70,7 +70,88 @@ namespace Chummer.Classes
 		}
 
 
-		#region Improvements
+		#region
+
+		public void selecttext(XmlNode bonusNode)
+		{
+			Log.Info("selecttext");
+
+			if (_objCharacter != null)
+			{
+				if (ForcedValue != "")
+				{
+					LimitSelection = ForcedValue;
+				}
+				else if (_objCharacter.Pushtext.Count != 0)
+				{
+					LimitSelection = _objCharacter.Pushtext.Pop();
+				}
+			}
+
+			Log.Info("_strForcedValue = " + SelectedValue);
+			Log.Info("_strLimitSelection = " + LimitSelection);
+
+			// Display the Select Text window and record the value that was entered.
+			frmSelectText frmPickText = new frmSelectText();
+			frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+				.Replace("{0}", this._strFriendlyName);
+
+			if (LimitSelection != "")
+			{
+				frmPickText.SelectedValue = LimitSelection;
+				frmPickText.Opacity = 0;
+			}
+
+			frmPickText.ShowDialog();
+
+			// Make sure the dialogue window was not canceled.
+			if (frmPickText.DialogResult == DialogResult.Cancel)
+			{
+
+				Rollback();
+				ForcedValue = "";
+				LimitSelection = "";
+				Log.Exit("CreateImprovements");
+				throw new AbortedException();
+			}
+
+			SelectedValue = frmPickText.SelectedValue;
+			if (this._blnConcatSelectedValue)
+				SourceName += " (" + SelectedValue + ")";
+			Log.Info("_strSelectedValue = " + SelectedValue);
+			Log.Info("strSourceName = " +SourceName);
+
+			// Create the Improvement.
+			Log.Info("Calling CreateImprovement");
+
+			CreateImprovement(frmPickText.SelectedValue, _objImprovementSource, SourceName, 
+				Improvement.ImprovementType.Text,
+				_strUnique);
+		}
+
+		public void qualitylevel(XmlNode bonusNode)
+		{
+			//List of qualities to work with
+			Guid[] all =
+			{
+				Guid.Parse("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
+				Guid.Parse("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
+				Guid.Parse("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
+				Guid.Parse("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
+			};
+
+			//Add to list
+			//retrive list
+			//sort list
+			//find active instance
+			//if active = list[top]
+			//	return
+			//else
+			//	remove active
+			//  add list[top]
+			//	set list[top] active
+		}
+
 		public void addattribute(XmlNode bonusNode)
 		{
 			Log.Info("addattribute");
@@ -3118,61 +3199,6 @@ namespace Chummer.Classes
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("", _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire, "",
 				ValueToInt(bonusNode.InnerText, _intRating));
-		}
-
-		// Select Text (custom entry for things like Allergy).
-		public void selecttext(XmlNode bonusNode)
-		{
-				Log.Info("selecttext");
-
-				if (_objCharacter != null)
-				{
-					if (ForcedValue != "")
-					{
-						LimitSelection = ForcedValue;
-					}
-					else if (_objCharacter.Pushtext.Count != 0)
-					{
-					LimitSelection = _objCharacter.Pushtext.Pop();
-					}
-				}
-
-				Log.Info("_strForcedValue = " + SelectedValue);
-				Log.Info("_strLimitSelection = " + LimitSelection);
-
-				// Display the Select Text window and record the value that was entered.
-				frmSelectText frmPickText = new frmSelectText();
-				frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
-					.Replace("{0}", _strFriendlyName);
-
-				if (LimitSelection != "")
-				{
-					frmPickText.SelectedValue = LimitSelection;
-					frmPickText.Opacity = 0;
-				}
-
-				frmPickText.ShowDialog();
-
-				// Make sure the dialogue window was not canceled.
-				if (frmPickText.DialogResult == DialogResult.Cancel)
-				{
-					Rollback();
-					ForcedValue = "";
-					LimitSelection = "";
-					Log.Exit("CreateImprovements");
-					throw new AbortedException();
-				}
-
-				SelectedValue = frmPickText.SelectedValue;
-				if (_blnConcatSelectedValue)
-					SourceName += " (" + SelectedValue + ")";
-				Log.Info("_strSelectedValue = " + SelectedValue);
-				Log.Info("strSourceName = " + SourceName);
-
-				// Create the Improvement.
-				Log.Info("Calling CreateImprovement");
-				CreateImprovement(frmPickText.SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
-					_strUnique);
 		}
 
 		// Check for Hardwires.
