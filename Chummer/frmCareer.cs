@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
- using System.Diagnostics;
- using System.Drawing;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,9 +29,10 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-﻿using Chummer.Backend;
- using Chummer.Backend.Equipment;
- using Chummer.Skills;
+using Chummer.Backend;
+using Chummer.Backend.Equipment;
+using Chummer.Skills;
+using System.Drawing.Imaging;
 
 public delegate void DiceRollerOpenHandler(Object sender);
 public delegate void DiceRollerOpenIntHandler(Chummer.Character objCharacter, int intDice);
@@ -6216,31 +6217,8 @@ namespace Chummer
 
 		private void cmdAddMugshot_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			if (!String.IsNullOrEmpty(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
-			{
-				openFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
-			}
-			// Prompt the user to select an image to associate with this character.
-			openFileDialog.Filter = "All Files (*.*)|*.*";
-
-			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-			{
-				MemoryStream objStream = new MemoryStream();
-				// Convert the image to a string usinb Base64.
-				Image imgMugshot = new Bitmap(openFileDialog.FileName);
-				imgMugshot.Save(objStream, imgMugshot.RawFormat);
-				string strResult = Convert.ToBase64String(objStream.ToArray());
-
-				_objCharacter.Mugshot = strResult;
-				picMugshot.Image = imgMugshot;
-
-				objStream.Close();
-
-				_objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
-				_blnIsDirty = true;
-				UpdateWindowTitle();
-			}
+			_blnIsDirty = AddMugshot(picMugshot);
+			UpdateWindowTitle();
 		}
 
 		private void cmdDeleteMugshot_Click(object sender, EventArgs e)

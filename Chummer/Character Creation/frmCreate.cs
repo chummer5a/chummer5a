@@ -6359,44 +6359,9 @@ namespace Chummer
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog();
-			if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
-			{
-				openFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
-			}
-			// Prompt the user to select an image to associate with this character.
-
-			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-			openFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*", string.Join("|", codecs.Select(codec => string.Format("{0} ({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()), string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray()));
-
-			if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                MemoryStream objStream = new MemoryStream();
-                // Convert the image to a string usinb Base64.
-	            try
-	            {
-		            Image imgMugshot = new Bitmap(openFileDialog.FileName);
-		            imgMugshot.Save(objStream, imgMugshot.RawFormat);
-		            string strResult = Convert.ToBase64String(objStream.ToArray());
-
-		            _objCharacter.Mugshot = strResult;
-		            picMugshot.Image = imgMugshot;
-
-		            objStream.Close();
-
-		            _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
-		            _blnIsDirty = true;
-		            UpdateWindowTitle();
-	            }
-	            catch (Exception ex)
-	            {
-		            if (ex.Message == "Parameter is not valid.")
-		            {
-			            Log.Error("User attempted to use invalid image as mugshot.");
-		            }
-				}
-            }
-        }
+			_blnIsDirty = AddMugshot(picMugshot);
+			UpdateWindowTitle();
+		}
 
         private void cmdDeleteMugshot_Click(object sender, EventArgs e)
         {
