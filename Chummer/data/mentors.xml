@@ -192,15 +192,15 @@
 			<name>Eagle</name>
 			<advantage>All: +2 dice to Perception Tests.</advantage>
 			<disadvantage>You get the Allergy (pollutants, mild) quality (p. 322; no bonus Karma for this negative quality).</disadvantage>
-			<addqualities>
-				<addquality select="Pollutants">Allergy (Common, Mild)</addquality>
-			</addqualities>
 			<bonus>
 				<specificskill>
 					<name>Perception</name>
 					<bonus>2</bonus>
 					<applytorating>no</applytorating>
 				</specificskill>
+				<addqualities>
+					<addquality select="Pollutants">Allergy (Common, Mild)</addquality>
+				</addqualities>
 			</bonus>
 			<choices>
 				<choice>
@@ -1303,10 +1303,10 @@
 					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>
+				<addqualities>
+					<addquality>Distinctive Style</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality>Distinctive Style</addquality>
-			</addqualities>
 			<choices>
 				<choice>
 					<name>Magician: +2 dice for Manipulation Spells.</name>
@@ -1502,15 +1502,15 @@
 			<name>Tatzelwurm</name>
 			<advantage>All: +2 dice to Unarmed Combat.</advantage>
 			<disadvantage>Combat Junkie quality is gained for free.</disadvantage>
-			<addqualities>
-				<addquality>Combat Junkie</addquality>
-			</addqualities>
 			<bonus>
 				<specificskill>
 					<name>Unarmed Combat</name>
 					<bonus>2</bonus>
 					<applytorating>no</applytorating>
 				</specificskill>
+				<addqualities>
+					<addquality>Combat Junkie</addquality>
+				</addqualities>
 			</bonus>
 			<choices>
 				<choice>
@@ -1564,9 +1564,6 @@
 			<id/>
 			<name>Boar</name>
 			<advantage>All: Home Ground Quality is gained for free.</advantage>
-			<addqualities>
-				<addquality>Home Ground</addquality>
-			</addqualities>
 			<disadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower’s friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</disadvantage>
 			<choices>
 				<choice>
@@ -1580,6 +1577,9 @@
 							<val>2</val>
 							<free>yes</free>
 						</specificpower>
+						<addqualities>
+							<addquality>Home Ground</addquality>
+						</addqualities>
 					</bonus>
 				</choice>
 			</choices>

@@ -299,39 +299,7 @@ namespace Chummer
 				treQualities.Nodes.Add(new TreeNode("Life Modules"));
 			}
 
-			// Populate the Qualities list.
-			foreach (Quality objQuality in _objCharacter.Qualities)
-			{
-				TreeNode objNode = new TreeNode();
-				objNode.Text = objQuality.DisplayName;
-				objNode.Tag = objQuality.InternalId;
-				objNode.ContextMenuStrip = cmsQuality;
-
-				if (objQuality.Notes != string.Empty)
-					objNode.ForeColor = Color.SaddleBrown;
-				else
-				{
-					if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable)
-						objNode.ForeColor = SystemColors.GrayText;
-				}
-				objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
-
-				if (objQuality.Type == QualityType.Positive)
-				{
-					treQualities.Nodes[0].Nodes.Add(objNode);
-					treQualities.Nodes[0].Expand();
-				}
-				else if (objQuality.Type == QualityType.Negative)
-				{
-					treQualities.Nodes[1].Nodes.Add(objNode);
-					treQualities.Nodes[1].Expand();
-				}
-				else if (objQuality.Type == QualityType.LifeModule)
-				{
-					treQualities.Nodes[2].Nodes.Add(objNode);
-					treQualities.Nodes[2].Expand();
-				}
-			}
+			RefreshQualities(treQualities,cmsQuality);
 
 			// Populate the Magician Traditions list.
 			objXmlDocument = XmlManager.Instance.Load("traditions.xml");
@@ -961,28 +929,7 @@ namespace Chummer
 				}
 			}
 
-			// Populate Critter Powers.
-			foreach (CritterPower objPower in _objCharacter.CritterPowers)
-			{
-				TreeNode objNode = new TreeNode();
-				objNode.Text = objPower.DisplayName;
-				objNode.Tag = objPower.InternalId;
-				objNode.ContextMenuStrip = cmsCritterPowers;
-				if (objPower.Notes != string.Empty)
-					objNode.ForeColor = Color.SaddleBrown;
-				objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
-
-				if (objPower.Category != "Weakness")
-				{
-					treCritterPowers.Nodes[0].Nodes.Add(objNode);
-					treCritterPowers.Nodes[0].Expand();
-				}
-				else
-				{
-					treCritterPowers.Nodes[1].Nodes.Add(objNode);
-					treCritterPowers.Nodes[1].Expand();
-				}
-			}
+			RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
 
 			_blnLoading = false;
 
@@ -4808,37 +4755,11 @@ namespace Chummer
 						{
 							objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
 						}
-
+						
+						// Fix for legacy characters with old addqualities improvements. 
 						if (objXmlCyberware["addqualities"] != null)
 						{
-							XmlNodeList objAddQualitiesNodeList = objXmlCyberware.SelectNodes("addqualities/addquality");
-							XmlDocument objQualityDocument = XmlManager.Instance.Load("qualities.xml");
-							foreach (XmlNode objNode in objAddQualitiesNodeList)
-							{
-								XmlNode objXmlSelectedQuality = objQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objNode.InnerText + "\"]");
-								foreach (Quality objQuality in _objCharacter.Qualities)
-								{
-									if (objQuality.Name == objNode.InnerText)
-									{
-										foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
-										{
-											if (nodQuality.Text.ToString() == objQuality.Name)
-											{
-												nodQuality.Remove();
-											}
-										}
-										foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
-										{
-											if (nodQuality.Text.ToString() == objQuality.Name)
-											{
-												nodQuality.Remove();
-											}
-										}
-										_objCharacter.Qualities.Remove(objQuality);
-										break;
-									}
-								}
-							}
+							RemoveAddedQualities(objXmlCyberware.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
 						}
 					}
 					else
@@ -7619,89 +7540,7 @@ namespace Chummer
 				// Add any additional Qualities that are forced on the character.
 				if (objXmlQuality.SelectNodes("addqualities/addquality").Count > 0)
 				{
-					foreach (XmlNode objXmlAddQuality in objXmlQuality.SelectNodes("addqualities/addquality"))
-					{
-						XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
-						string strForceValue = "";
-						if (objXmlAddQuality.Attributes["select"] != null)
-							strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
-						bool blnAddQuality = true;
-
-						// Make sure the character does not yet have this Quality.
-						foreach (Quality objCharacterQuality in _objCharacter.Qualities)
-						{
-							if (objCharacterQuality.Name == objXmlAddQuality.InnerText && objCharacterQuality.Extra == strForceValue)
-							{
-								blnAddQuality = false;
-								break;
-							}
-						}
-
-						if (blnAddQuality)
-						{
-							TreeNode objAddQualityNode = new TreeNode();
-							List<Weapon> objAddWeapons = new List<Weapon>();
-							List<TreeNode> objAddWeaponNodes = new List<TreeNode>();
-							Quality objAddQuality = new Quality(_objCharacter);
-							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objAddWeapons, objAddWeaponNodes, strForceValue);
-							objNode.Nodes.Add(objAddQualityNode);
-							objNode.Expand();
-							if (objXmlAddQuality.Attributes["contributetobp"] != null)
-							{
-								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
-								{
-									objQuality.BP = 0;
-									objQuality.ContributeToLimit = false;
-								}
-							}
-							_objCharacter.Qualities.Add(objAddQuality);
-
-							// Add any created Weapons to the character.
-							foreach (Weapon objWeapon in objAddWeapons)
-								_objCharacter.Weapons.Add(objWeapon);
-
-							// Create the Weapon Node if one exists.
-							foreach (TreeNode objWeaponNode in objAddWeaponNodes)
-							{
-								objWeaponNode.ContextMenuStrip = cmsWeapon;
-								treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
-								treWeapons.Nodes[0].Expand();
-							}
-						}
-					}
-				}
-
-				// Add any Critter Powers that are gained through qualities like Infected or Drake.
-				if (objXmlQuality.SelectNodes("critterpowers/power").Count > 0)
-				{
-					objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-					foreach (XmlNode objXmlPower in objXmlQuality.SelectNodes("critterpowers/power"))
-					{
-						XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-						TreeNode objPowerNode = new TreeNode();
-						CritterPower objPower = new CritterPower(_objCharacter);
-						string strForcedValue = "";
-						int intRating = 0;
-
-						if (objXmlPower.Attributes["rating"] != null)
-							intRating = Convert.ToInt32(objXmlPower.Attributes["rating"].InnerText);
-						if (objXmlPower.Attributes["select"] != null)
-							strForcedValue = objXmlPower.Attributes["select"].InnerText;
-
-						objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
-						_objCharacter.CritterPowers.Add(objPower);
-
-						if (objPower.Category != "Weakness")
-						{
-							treCritterPowers.Nodes[0].Nodes.Add(objPowerNode);
-							treCritterPowers.Nodes[0].Expand();
-						}
-						else
-						{
-							treCritterPowers.Nodes[1].Nodes.Add(objPowerNode);
-							treCritterPowers.Nodes[1].Expand();
-						}
-					}
+					
 				}
 			}
 			else
@@ -7709,51 +7548,6 @@ namespace Chummer
 				// Remove the Improvements created by the Create method.
 				_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.Quality, objQuality.InternalId);
 			}
-
-            // If the Quality is a mentor spirit, add any qualities particular to the mentor spirit.
-            if (objQuality.Name == "Mentor Spirit")
-            {
-                XmlDocument objXmlMentors = XmlManager.Instance.Load("mentors.xml");
-                XmlNode objXmlMentor = objXmlMentors.SelectSingleNode("/chummer/mentors/mentor[name = \"" + objQuality.Extra + "\"]");
-                XmlNode objXmlAddQualities = objXmlMentor["addqualities"];
-
-                // If there are additional qualities
-                if (objXmlAddQualities != null)
-                {
-                    foreach (XmlNode objXmlAddQuality in objXmlAddQualities.ChildNodes)
-                    {
-                        XmlNode objXmlMentorQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
-
-                        TreeNode objMentorNode = new TreeNode();
-                        List<Weapon> objMentorWeapons = new List<Weapon>();
-                        List<TreeNode> objMentorWeaponNodes = new List<TreeNode>();
-                        Quality objSpiritQuality = new Quality(_objCharacter);
-                        string strExtra = "";
-                        if (objXmlAddQuality.Attributes["select"] != null)
-                        {
-                            strExtra = objXmlAddQuality.Attributes["select"].InnerText.ToString();
-                            objSpiritQuality.Create(objXmlMentorQuality, _objCharacter, QualitySource.Selected, objMentorNode, objMentorWeapons, objMentorWeaponNodes, strExtra);
-                        }
-                        else
-                            objSpiritQuality.Create(objXmlMentorQuality, _objCharacter, QualitySource.Selected, objMentorNode, objMentorWeapons, objMentorWeaponNodes);
-
-                        objSpiritQuality.BP = 0;
-
-                        // Add the quality to the character
-                        if (objSpiritQuality.Type == QualityType.Positive)
-                        {
-                            treQualities.Nodes[0].Nodes.Add(objMentorNode);
-                            treQualities.Nodes[0].Expand();
-                        }
-                        else
-                        {
-                            treQualities.Nodes[1].Nodes.Add(objMentorNode);
-                            treQualities.Nodes[1].Expand();
-                        }
-                        _objCharacter.Qualities.Add(objSpiritQuality);
-                    }
-                }
-            }
 
 			treQualities.SortCustom();
 			UpdateMentorSpirits();
@@ -7919,44 +7713,11 @@ namespace Chummer
 						}
 					}
 				}
-			// Remove any Critter Powers that are gained through the Quality (Infected).
-			if (objXmlDeleteQuality.SelectNodes("addqualities/addquality").Count > 0)
+
+			// Fix for legacy characters with old addqualities improvements. 
+			if (objXmlDeleteQuality["addqualities"] != null)
 			{
-				objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
-				foreach (XmlNode objXmlQuality in objXmlDeleteQuality.SelectNodes("addqualities/addquality"))
-				{
-					string strExtra = "";
-					if (objXmlQuality.Attributes["select"] != null)
-						strExtra = objXmlQuality.Attributes["select"].InnerText;
-
-					foreach (Quality objDeleteQuality in _objCharacter.Qualities)
-					{
-						if (objDeleteQuality.Name == objXmlQuality.InnerText && objDeleteQuality.Extra == strExtra)
-						{
-							// Remove any Improvements created by the Critter Power.
-							_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objDeleteQuality.InternalId);
-
-							// Remove the Critter Power from the character.
-							_objCharacter.Qualities.Remove(objDeleteQuality);
-							break;
-						}
-						// Remove the Critter Power from the Tree.
-						foreach (TreeNode objNode in treQualities.Nodes)
-						{
-							if (objNode.Nodes.Count > 0)
-							{
-								foreach (TreeNode objChildNode in objNode.Nodes)
-								{
-									if (objNode.Tag.ToString() == objDeleteQuality.InternalId)
-									{
-										objNode.Remove();
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
+				RemoveAddedQualities(objXmlDeleteQuality.SelectNodes("addqualities/addquality"), treQualities, _objImprovementManager);
 			}
 
 			// Remove any Weapons created by the Quality if applicable.
@@ -8121,63 +7882,6 @@ namespace Chummer
 				{
 					if (objXmlQuality["latentsource"].InnerText == objQuality.Name)
 						_objCharacter.OverrideSpecialAttributeEssenceLoss = true;
-				}
-
-				// Add any additional Qualities that are forced on the character.
-				if (objXmlQuality.SelectNodes("addqualities/addquality").Count > 0)
-				{
-					foreach (XmlNode objXmlAddQuality in objXmlQuality.SelectNodes("addqualities/addquality"))
-					{
-						XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
-						string strForceValue = "";
-						if (objXmlAddQuality.Attributes["select"] != null)
-							strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
-						bool blnAddQuality = true;
-
-						// Make sure the character does not yet have this Quality.
-						foreach (Quality objCharacterQuality in _objCharacter.Qualities)
-						{
-							if (objCharacterQuality.Name == objXmlAddQuality.InnerText && objCharacterQuality.Extra == strForceValue)
-							{
-								blnAddQuality = false;
-								break;
-							}
-						}
-
-						if (blnAddQuality)
-						{
-							TreeNode objAddQualityNode = new TreeNode();
-							List<Weapon> objAddWeapons = new List<Weapon>();
-							List<TreeNode> objAddWeaponNodes = new List<TreeNode>();
-							Quality objAddQuality = new Quality(_objCharacter);
-							objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue);
-							objNode.Nodes.Add(objAddQualityNode);
-							objNode.Expand();
-
-							if (objXmlAddQuality.Attributes["contributetobp"] != null)
-							{
-								if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
-								{
-									objQuality.BP = 0;
-									objQuality.ContributeToLimit = false;
-								}
-							}
-
-							_objCharacter.Qualities.Add(objAddQuality);
-
-							// Add any created Weapons to the character.
-							foreach (Weapon objWeapon in objAddWeapons)
-								_objCharacter.Weapons.Add(objWeapon);
-
-							// Create the Weapon Node if one exists.
-							foreach (TreeNode objWeaponNode in objAddWeaponNodes)
-							{
-								objWeaponNode.ContextMenuStrip = cmsWeapon;
-								treWeapons.Nodes[0].Nodes.Add(objWeaponNode);
-								treWeapons.Nodes[0].Expand();
-							}
-						}
-					}
 				}
 
 				// Remove any Improvements for the old Quality.

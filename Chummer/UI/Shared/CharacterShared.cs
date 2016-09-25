@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -301,6 +302,140 @@ namespace Chummer
 			objNode.Tag = objLimitModifier.InternalId;
 			objSelectedNode.Parent.Nodes.Add(objNode);
 			objSelectedNode.Remove();
+		}
+
+		/// <summary>
+		/// Clears and updates the treeview for Critter Powers. Typically called as part of AddQuality or UpdateCharacterInfo.
+		/// </summary>
+		/// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
+		/// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
+		protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
+		{
+			int intCount = 0;
+			//Clear the default nodes of entries.
+			foreach (TreeNode objNode in treCritterPowers.Nodes)
+			{
+				objNode.Nodes.Clear();
+			}
+			//Add the Critter Powers that exist.
+			foreach (CritterPower objPower in _objCharacter.CritterPowers)
+			{
+				TreeNode objNode = new TreeNode();
+				objNode.Text = objPower.DisplayName;
+				objNode.Tag = objPower.InternalId;
+				objNode.ContextMenuStrip = cmsCritterPowers;
+				if (objPower.Notes != string.Empty)
+					objNode.ForeColor = Color.SaddleBrown;
+				objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
+
+				if (objPower.Category != "Weakness")
+				{
+					treCritterPowers.Nodes[0].Nodes.Add(objNode);
+					treCritterPowers.Nodes[0].Expand();
+				}
+				else
+				{
+					treCritterPowers.Nodes[1].Nodes.Add(objNode);
+					treCritterPowers.Nodes[1].Expand();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Refreshes the list of qualities into the selected TreeNode. If the same number of 
+		/// </summary>
+		/// <param name="treQualities">Treeview to insert the qualities into.</param>
+		/// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
+		/// <param name="blnForce">Forces a refresh of the TreeNode despite a match.</param>
+		protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, bool blnForce = false)
+		{
+			//Count the child nodes in each treenode.
+			int intQualityCount = 0;
+			foreach (TreeNode objTreeNode in treQualities.Nodes)
+			{
+				intQualityCount += objTreeNode.Nodes.Count;
+			}
+
+			//If the node count is the same as the quality count, there's no need to do anything.
+			if (intQualityCount == _objCharacter.Qualities.Count && !blnForce)
+			{
+				return;
+			}
+			else 
+			{
+				foreach (TreeNode objTreeNode in treQualities.Nodes)
+				{
+					objTreeNode.Nodes.Clear();
+				}
+				// Populate the Qualities list.
+				foreach (Quality objQuality in _objCharacter.Qualities)
+				{
+					TreeNode objNode = new TreeNode();
+					objNode.Text = objQuality.DisplayName;
+					objNode.Tag = objQuality.InternalId;
+					objNode.ContextMenuStrip = cmsQuality;
+
+					if (objQuality.Notes != string.Empty)
+						objNode.ForeColor = Color.SaddleBrown;
+					else
+					{
+						if (objQuality.OriginSource == QualitySource.Metatype ||
+						    objQuality.OriginSource == QualitySource.MetatypeRemovable)
+							objNode.ForeColor = SystemColors.GrayText;
+					}
+					objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
+
+					switch (objQuality.Type)
+					{
+						case QualityType.Positive:
+							treQualities.Nodes[0].Nodes.Add(objNode);
+							treQualities.Nodes[0].Expand();
+							break;
+						case QualityType.Negative:
+							treQualities.Nodes[1].Nodes.Add(objNode);
+							treQualities.Nodes[1].Expand();
+							break;
+						case QualityType.LifeModule:
+							treQualities.Nodes[2].Nodes.Add(objNode);
+							treQualities.Nodes[2].Expand();
+							break;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Method for removing old <addqualities /> nodes from existing characters.
+		/// </summary>
+		/// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
+		/// <param name="treQualities"></param>
+		/// <param name="_objImprovementManager"></param>
+		protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities, ImprovementManager _objImprovementManager)
+		{
+			foreach (XmlNode objNode in objNodeList)
+			{
+				foreach (Quality objQuality in _objCharacter.Qualities.Where(objQuality => objQuality.Name == objNode.InnerText))
+				{
+					switch (objQuality.Type)
+					{
+						case QualityType.Positive:
+							foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
+							{
+								nodQuality.Remove();
+							}
+							break;
+						case QualityType.Negative:
+							foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes.Cast<TreeNode>().Where(nodQuality => nodQuality.Text == objQuality.Name))
+							{
+								nodQuality.Remove();
+							}
+							break;
+					}
+					_objCharacter.Qualities.Remove(objQuality);
+					_objImprovementManager.RemoveImprovements(Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+					break;
+				}
+			}
 		}
 	}
 }

@@ -70,7 +70,7 @@ namespace Chummer.Classes
 		}
 
 
-		#region 
+		#region Improvements
 		public void addattribute(XmlNode bonusNode)
 		{
 			Log.Info("addattribute");
@@ -3120,6 +3120,61 @@ namespace Chummer.Classes
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
+		// Select Text (custom entry for things like Allergy).
+		public void selecttext(XmlNode bonusNode)
+		{
+				Log.Info("selecttext");
+
+				if (_objCharacter != null)
+				{
+					if (ForcedValue != "")
+					{
+						LimitSelection = ForcedValue;
+					}
+					else if (_objCharacter.Pushtext.Count != 0)
+					{
+					LimitSelection = _objCharacter.Pushtext.Pop();
+					}
+				}
+
+				Log.Info("_strForcedValue = " + SelectedValue);
+				Log.Info("_strLimitSelection = " + LimitSelection);
+
+				// Display the Select Text window and record the value that was entered.
+				frmSelectText frmPickText = new frmSelectText();
+				frmPickText.Description = LanguageManager.Instance.GetString("String_Improvement_SelectText")
+					.Replace("{0}", _strFriendlyName);
+
+				if (LimitSelection != "")
+				{
+					frmPickText.SelectedValue = LimitSelection;
+					frmPickText.Opacity = 0;
+				}
+
+				frmPickText.ShowDialog();
+
+				// Make sure the dialogue window was not canceled.
+				if (frmPickText.DialogResult == DialogResult.Cancel)
+				{
+					Rollback();
+					ForcedValue = "";
+					LimitSelection = "";
+					Log.Exit("CreateImprovements");
+					throw new AbortedException();
+				}
+
+				SelectedValue = frmPickText.SelectedValue;
+				if (_blnConcatSelectedValue)
+					SourceName += " (" + SelectedValue + ")";
+				Log.Info("_strSelectedValue = " + SelectedValue);
+				Log.Info("strSourceName = " + SourceName);
+
+				// Create the Improvement.
+				Log.Info("Calling CreateImprovement");
+				CreateImprovement(frmPickText.SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
+					_strUnique);
+		}
+
 		// Check for Hardwires.
 		public void hardwires(XmlNode bonusNode)
 		{
@@ -3597,7 +3652,7 @@ namespace Chummer.Classes
 		public void optionalpowers(XmlNode bonusNode)
 		{
 			XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
-			//Log.Info("selectoptionalpower");
+			Log.Info("selectoptionalpower");
 			// Display the Select Attribute window and record which Skill was selected.
 			frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
 			frmPickPower.Description = LanguageManager.Instance.GetString("String_Improvement_SelectOptionalPower");
@@ -3637,16 +3692,37 @@ namespace Chummer.Classes
 				throw new AbortedException();
 			}
 
-			SelectedValue = frmPickPower.SelectedPower;
+			strForcedValue = frmPickPower.SelectedPowerExtra;
 			// Record the improvement.
 			XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
 			XmlNode objXmlPowerNode =
-				objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
+				objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
 			TreeNode objPowerNode = new TreeNode();
 			CritterPower objPower = new CritterPower(_objCharacter);
 
 			objPower.Create(objXmlPowerNode, _objCharacter, objPowerNode, 0, strForcedValue);
 			_objCharacter.CritterPowers.Add(objPower);
+		}
+
+		public void critterpowers(XmlNode bonusNode)
+		{
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("critterpowers.xml");
+			foreach (XmlNode objXmlPower in bonusNode.SelectNodes("power"))
+			{
+				XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
+				TreeNode objPowerNode = new TreeNode();
+				CritterPower objPower = new CritterPower(_objCharacter);
+				string strForcedValue = "";
+				int intRating = 0;
+				if (objXmlPower.Attributes != null && objXmlPower.Attributes.Count > 0)
+				{
+					intRating = Convert.ToInt32(objXmlPower.Attributes["rating"]?.InnerText);
+					strForcedValue = objXmlPower.Attributes["select"]?.InnerText;
+				}
+
+				objPower.Create(objXmlCritterPower, _objCharacter, objPowerNode, intRating, strForcedValue);
+				_objCharacter.CritterPowers.Add(objPower);
+			}
 		}
 
 		public void publicawareness(XmlNode bonusNode)
@@ -3735,6 +3811,39 @@ namespace Chummer.Classes
 			{
 				Utils.BreakIfDebug();
 				Log.Info(new[] { "Failed to parse", "specialskills", bonusNode.OuterXml });
+			}
+		}
+
+		public void addqualities(XmlNode bonusNode)
+		{
+			XmlDocument objXmlDocument = XmlManager.Instance.Load("qualities.xml");
+			foreach (XmlNode objXmlAddQuality in bonusNode.SelectNodes("addquality"))
+			{
+				XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+				string strForceValue = "";
+				if (objXmlAddQuality.Attributes["select"] != null)
+					strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
+				bool blnAddQuality = _objCharacter.Qualities.All(objCharacterQuality => objCharacterQuality.Name != objXmlAddQuality.InnerText || objCharacterQuality.Extra != strForceValue);
+
+				// Make sure the character does not yet have this Quality.
+
+				if (blnAddQuality)
+				{
+					TreeNode objAddQualityNode = new TreeNode();
+					Quality objAddQuality = new Quality(_objCharacter);
+					objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, null, null, strForceValue);
+					if (objXmlAddQuality.Attributes["contributetobp"] != null)
+					{
+						if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
+						{
+							objAddQuality.BP = 0;
+							objAddQuality.ContributeToLimit = false;
+						}
+					}
+					_objCharacter.Qualities.Add(objAddQuality);
+					CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
+					Improvement.ImprovementType.SpecificQuality, _strUnique);
+				}
 			}
 		}
 

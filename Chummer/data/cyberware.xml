@@ -2200,14 +2200,16 @@
 			<capacity>0</capacity>
 			<avail>4</avail>
 			<cost>6000</cost>
+			<bonus>
+				<addqualities>
+					<addquality>Human-Looking</addquality>
+				</addqualities>
+			</bonus>
 			<required>
 				<oneof>
 					<metatype>Ork</metatype>
 				</oneof>
 			</required>
-			<addqualities>
-				<addquality>Human-Looking</addquality>
-			</addqualities>
 			<source>CF</source>
 			<page>73</page>
 		</cyberware>

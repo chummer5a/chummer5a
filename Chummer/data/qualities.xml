@@ -3519,11 +3519,11 @@
 			<category>Negative</category>
 			<bonus>
 				<excon />
+				<addqualities>
+					<addquality contributetobp="false">SINner (Criminal)</addquality>
+				</addqualities>
 			</bonus>
 			<nomission />
-			<addqualities>
-				<addquality contributetobp="false">SINner (Criminal)</addquality>
-			</addqualities>
 			<source>RF</source>
 			<page>155</page>
 		</quality>
@@ -4387,9 +4387,10 @@
 			<name>Pie Iesu Domine. Dona Eis Requiem.</name>
 			<karma>-2</karma>
 			<category>Negative</category>
-			<addqualities>
+			<bonus><addqualities>
 				<addquality>High Pain Tolerance (Rating 1)</addquality>
 			</addqualities>
+			</bonus>
 			<source>RF</source>
 			<page>158</page>
 		</quality>
@@ -5688,9 +5689,11 @@
 					<quality>Changeling (Class III SURGE)</quality>
 				</oneof>
 			</required>
+			<bonus>
 			<addqualities>
 				<addquality>Distinctive Style</addquality>
 			</addqualities>
+			</bonus>
 			<source>RF</source>
 			<page>115</page>
 			<metagenetic>yes</metagenetic>
@@ -7068,6 +7071,11 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Adaptive Coloration</power>
+					<power select="Sunlight, Mild">Allergy</power>
+					<power select="Sasquatch Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7083,11 +7091,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Adaptive Coloration</power>
-				<power select="Sunlight, Mild">Allergy</power>
-				<power select="Sasquatch Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7202,17 +7205,26 @@
 				</selectattributes>
 				<initiativepass precedence="-1">1</initiativepass>
 				<movementmultiplier>1</movementmultiplier>
+				<enabletab>
+					<name>critter</name>
+				</enabletab>
+				<optionalpowers>
+					<optionalpower select="Hearing">Enhanced Senses</optionalpower>
+					<optionalpower select="Toxins">Immunity</optionalpower>
+					<optionalpower select="Smell">Enhanced Senses</optionalpower>
+					<optionalpower select="Pathogens">Immunity</optionalpower>
+				</optionalpowers>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Silver">Vulnerability</power>
+					<power select="Wood">Vulnerability</power>
+				</critterpowers>
 			</bonus>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Silver">Vulnerability</power>
-				<power select="Wood">Vulnerability</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -7313,6 +7325,15 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Infection</power>
+					<power>Essence Loss</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7328,15 +7349,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Infection</power>
-				<power>Essence Loss</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7443,6 +7455,14 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Corrosive Secretions</power>
+					<power>Magical Guard</power>
+					<power>Dual Natured</power>
+					<power select="Air Pollution, Moderate">Allergy</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -7458,14 +7478,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Corrosive Secretions</power>
-				<power>Magical Guard</power>
-				<power>Dual Natured</power>
-				<power select="Air Pollution, Moderate">Allergy</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7581,6 +7593,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -7591,13 +7610,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7713,6 +7725,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -7723,13 +7742,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7845,6 +7857,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -7855,13 +7874,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -7977,6 +7989,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -7987,13 +8006,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8109,6 +8121,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -8119,13 +8138,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8241,6 +8253,13 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -8251,13 +8270,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8360,6 +8372,14 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+			<critterpowers>
+				<power>Dual Natured</power>
+				<power select="Toxins">Immunity</power>
+				<power>Noxious Breath</power>
+				<power>Paralyzing Touch</power>
+				<power select="Sunlight, Moderate">Allergy</power>
+				<power select="Metahuman Bone">Dietary Requirement</power>
+			</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8375,14 +8395,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Toxins">Immunity</power>
-				<power>Noxious Breath</power>
-				<power>Paralyzing Touch</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Bone">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -8491,6 +8503,15 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power select="Toxins">Immunity</power>
+					<power>Noxious Breath</power>
+					<power>Paralyzing Touch</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Bone">Dietary Requirement</power>
+					<power select="Iron">Vulnerability</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8506,15 +8527,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power select="Toxins">Immunity</power>
-				<power>Noxious Breath</power>
-				<power>Paralyzing Touch</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Bone">Dietary Requirement</power>
-				<power select="Iron">Vulnerability</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8633,6 +8645,17 @@
 					<name>CHA</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Animal Control</power>
+					<power>Concealment</power>
+					<power>Dual Natured</power>
+					<power select="Toxins">Immunity</power>
+					<power>Noxious Breath</power>
+					<power>Paralyzing Touch</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+					<power select="Iron">Vulnerability</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8648,17 +8671,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Animal Control</power>
-				<power>Concealment</power>
-				<power>Dual Natured</power>
-				<power select="Toxins">Immunity</power>
-				<power>Noxious Breath</power>
-				<power>Paralyzing Touch</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-				<power select="Iron">Vulnerability</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8772,6 +8784,14 @@
 					<name>LOG</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Movement</power>
+					<power select="Thermographic Vision">Enhanced Senses</power>
+					<power>Dual Natured</power>
+					<power select="Silver, Moderate">Allergy</power>
+					<power select="Sunlight, Moderate">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8787,14 +8807,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Movement</power>
-				<power select="Thermographic Vision">Enhanced Senses</power>
-				<power>Dual Natured</power>
-				<power select="Silver, Moderate">Allergy</power>
-				<power select="Sunlight, Moderate">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -8909,6 +8921,17 @@
 					<name>LOG</name>
 					<val>-1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Movement</power>
+					<power select="Hearing">Enhanced Senses</power>
+					<power select="Low-Light Vision">Enhanced Senses</power>
+					<power select="Smell">Enhanced Senses</power>
+					<power select="Thermographic Vision">Enhanced Senses</power>
+					<power>Dual Natured</power>
+					<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -8924,17 +8947,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Movement</power>
-				<power select="Hearing">Enhanced Senses</power>
-				<power select="Low-Light Vision">Enhanced Senses</power>
-				<power select="Smell">Enhanced Senses</power>
-				<power select="Thermographic Vision">Enhanced Senses</power>
-				<power>Dual Natured</power>
-				<power select="Aconite a.k.a. Wolf's Bane, Moderate">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -9048,6 +9060,16 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9071,16 +9093,6 @@
 					<quality>Mystic Adept</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Fire">Vulnerability</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -9194,6 +9206,19 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<allof>
@@ -9216,19 +9241,6 @@
 					<quality>Mystic Adept</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Mystic Adept</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Fire">Vulnerability</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -9342,6 +9354,16 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Fire">Vulnerability</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Severe</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9377,16 +9399,6 @@
 					<quality>Infected: Ghoul</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Fire">Vulnerability</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Severe</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -9503,6 +9515,20 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<allof>
@@ -9519,20 +9545,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Mystic Adept</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -9639,6 +9651,17 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9658,17 +9681,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -9775,6 +9787,20 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Extreme">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
+			<addqualities>
+				<addquality>Magician</addquality>
+			</addqualities>
 			</bonus>
 			<required>
 				<allof>
@@ -9793,20 +9819,6 @@
 					<quality>Adept</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Magician</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Extreme">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -9909,6 +9921,17 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Wood, Severe">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Blood">Dietary Requirement</power>
+					<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -9924,17 +9947,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -10037,6 +10049,18 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+			<critterpowers>
+				<power>Essence Drain</power>
+				<power>Infection</power>
+				<power select="Age">Immunity</power>
+				<power>Essence Loss</power>
+				<power>Dual Natured</power>
+				<power>Infection</power>
+				<power select="Wood, Severe">Allergy</power>
+				<power select="Sunlight, Severe">Allergy</power>
+				<power select="Metahuman Blood">Dietary Requirement</power>
+				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
+			</critterpowers>
 			</bonus>
 			<forbidden>
 				<oneof>
@@ -10053,18 +10077,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Wood, Severe">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Blood">Dietary Requirement</power>
-				<power select="Lack of Air (Essence) Minutes">Induced Dormancy</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Bite</name>
@@ -10169,6 +10181,20 @@
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
+				<addqualities>
+					<addquality>Magician</addquality>
+				</addqualities>
 			</bonus>
 			<required>
 				<allof>
@@ -10187,20 +10213,6 @@
 					<quality>Adept</quality>
 				</oneof>
 			</forbidden>
-			<addqualities>
-				<addquality>Magician</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Ferrous Metals, Moderate">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -10319,6 +10331,17 @@
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -10338,17 +10361,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Ferrous Metals, Moderate">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -10467,6 +10479,17 @@
 						<affectbase />
 					</selectattribute>
 				</selectattributes>
+				<critterpowers>
+					<power>Essence Drain</power>
+					<power>Infection</power>
+					<power select="Age">Immunity</power>
+					<power>Essence Loss</power>
+					<power>Dual Natured</power>
+					<power>Infection</power>
+					<power select="Ferrous Metals, Moderate">Allergy</power>
+					<power select="Sunlight, Severe">Allergy</power>
+					<power select="Metahuman Flesh">Dietary Requirement</power>
+				</critterpowers>
 			</bonus>
 			<required>
 				<allof>
@@ -10483,17 +10506,6 @@
 					<quality>Technomancer</quality>
 				</oneof>
 			</forbidden>
-			<critterpowers>
-				<power>Essence Drain</power>
-				<power>Infection</power>
-				<power select="Age">Immunity</power>
-				<power>Essence Loss</power>
-				<power>Dual Natured</power>
-				<power>Infection</power>
-				<power select="Ferrous Metals, Moderate">Allergy</power>
-				<power select="Sunlight, Severe">Allergy</power>
-				<power select="Metahuman Flesh">Dietary Requirement</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Infected Claws</name>
@@ -11723,10 +11735,6 @@
 					<name>LOG</name>
 					<val>1</val>
 				</specificattribute>
-			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
 			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Shift (Dracoform)</power>
@@ -11735,6 +11743,10 @@
 				<power rating="2">Hardened Mystic Armor</power>
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
+				<addqualities>
+					<addquality contributetobp="false">Wanted</addquality>
+				</addqualities>
+			</bonus>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Claws</name>
@@ -11781,18 +11793,18 @@
 					<name>CHA</name>
 					<val>1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Shift (Dracoform)</power>
+					<power>Vestigial Wings</power>
+					<power rating="2">Hardened Armor</power>
+					<power rating="2">Hardened Mystic Armor</power>
+					<power select="Fire">Elemental Attack</power>
+				</critterpowers>
+				<addqualities>
+					<addquality contributetobp="false">Wanted</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Vestigial Wings</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Horns</name>
@@ -11847,18 +11859,18 @@
 					<name>WIL</name>
 					<val>1</val>
 				</specificattribute>
+				<critterpowers>
+					<power>Dual Natured</power>
+					<power>Shift (Dracoform)</power>
+					<power>Vestigial Wings</power>
+					<power rating="2">Hardened Armor</power>
+					<power rating="2">Hardened Mystic Armor</power>
+					<power select="Fire">Elemental Attack</power>
+				</critterpowers>
+				<addqualities>
+					<addquality contributetobp="false">Wanted</addquality>
+				</addqualities>
 			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
-			<critterpowers>
-				<power>Dual Natured</power>
-				<power>Shift (Dracoform)</power>
-				<power>Vestigial Wings</power>
-				<power rating="2">Hardened Armor</power>
-				<power rating="2">Hardened Mystic Armor</power>
-				<power select="Fire">Elemental Attack</power>
-			</critterpowers>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Tail</name>
@@ -11909,10 +11921,6 @@
 					<name>INT</name>
 					<val>1</val>
 				</specificattribute>
-			</bonus>
-			<addqualities>
-				<addquality contributetobp="false">Wanted</addquality>
-			</addqualities>
 			<critterpowers>
 				<power>Dual Natured</power>
 				<power>Shift (Dracoform)</power>
@@ -11921,6 +11929,10 @@
 				<power rating="2">Hardened Mystic Armor</power>
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
+				<addqualities>
+					<addquality contributetobp="false">Wanted</addquality>
+				</addqualities>
+			</bonus>
 			<naturalweapons>
 				<naturalweapon>
 					<name>Dracoform Fangs</name>

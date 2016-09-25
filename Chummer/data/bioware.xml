@@ -1465,9 +1465,11 @@
 			<ess>0.1</ess>
 			<capacity>0</capacity>
 			<avail>4</avail>
-			<addqualities>
+			<bonus>
+				<addqualities>
 				<addquality>Photographic Memory</addquality>
 			</addqualities>
+			</bonus>
 			<cost>10000</cost>
 			<source>CF</source>
 			<page>118</page>
