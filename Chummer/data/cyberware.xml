@@ -2754,6 +2754,9 @@
 			<capacity>80</capacity>
 			<avail>12</avail>
 			<cost>80000</cost>
+			<bonus>
+				<movementpercent>100</movementpercent>
+			</bonus>
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>
@@ -2771,6 +2774,9 @@
 			<capacity>40</capacity>
 			<avail>8</avail>
 			<cost>40000</cost>
+			<bonus>
+				<movementpercent>100</movementpercent>
+			</bonus>
 			<allowgear>
 				<gearcategory>Sensors</gearcategory>
 			</allowgear>

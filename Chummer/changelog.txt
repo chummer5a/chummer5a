@@ -10,6 +10,7 @@ Application CHanges:
 - Moved the method for the SelectText improvement. I don't EXPECT that this will cause any issues, but if you encounter any odd behaviour please let us know.
 - Fixed a bunch of code relating to the addition of qualities by other sources. A side effect of this is that some existing quality pairs may not be removed properly. In most cases this not not present an issue, but if you encounter any odd behaviour please contact us.
 - Altered the code for the OptionalPowers improvement to prevent the selected value from attaching to the associated quality, ie Infected: Vampire (Human) (Enhanced Senses).
+- Added a movement speed bonus for the liminal centaur body.
 
 Data Changes: 
 - Fixed the LP cost for the Indor Arboretum lifestyle quality.

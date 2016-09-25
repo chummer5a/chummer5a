@@ -6242,7 +6242,7 @@ namespace Chummer
 
 				int intRun = 0;
 				int intWalk = 0;
-                int intSprint = (Convert.ToInt32(SprintingRate(strMovementType)) * intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
+                int intSprint = (Convert.ToInt32(SprintingRate(strMovementType)) * intMultiply);
                 int intRunMultiplier = (Convert.ToInt32(RunningRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 				int intWalkMultiplier = (Convert.ToInt32(WalkingRate(strMovementType))*intMultiply) + ObjImprovementManager.ValueOf(Improvement.ImprovementType.MovementMultiplier);
 
