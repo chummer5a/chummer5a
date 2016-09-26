@@ -36,6 +36,7 @@ namespace Chummer
 		private int _intModMultiplier = 1;
 		private string _strInputFile = "vehicles";
 		private int _intMarkup = 0;
+		private static string _strSelectCategory = "";
 
 		private string _strAllowedCategories = "";
 		private bool _blnAddAgain = false;
@@ -183,6 +184,7 @@ namespace Chummer
 
 		private void cmdCancel_Click(object sender, EventArgs e)
 		{
+			_strSelectCategory = "";
 			this.DialogResult = DialogResult.Cancel;
 		}
 
@@ -448,6 +450,13 @@ namespace Chummer
 		/// </summary>
 		private void BuildModList()
 		{
+
+			// Select the first Category in the list.
+			if (_strSelectCategory == "")
+				cboCategory.SelectedIndex = 0;
+			else
+				cboCategory.SelectedValue = _strSelectCategory;
+
 			foreach (Label objLabel in this.Controls.OfType<Label>())
 			{
 				if (objLabel.Text.StartsWith("["))
@@ -505,6 +514,7 @@ namespace Chummer
 			_intSelectedRating = Convert.ToInt32(nudRating.Value);
 			_intMarkup = Convert.ToInt32(nudMarkup.Value);
 			_blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+			_strSelectCategory = cboCategory.SelectedValue.ToString();
 			this.DialogResult = DialogResult.OK;
 		}
 

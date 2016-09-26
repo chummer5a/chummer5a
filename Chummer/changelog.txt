@@ -15,6 +15,7 @@ Application CHanges:
 - Added code to the Vehicle Mod Selection Form that enables preventing mods from being listed if they don't match certain requirements.
 - Amended the tooltip for Damage Resistance in Career Mode to display the correct values when not affected by a Damage Resistance Improvement. 
 - Fixed an issue with knowledge skills in Career Mode that prevented changing the skill's Type. Existing characters will have to be manually modified outside of Chummer or refund their expense history to resolve it.
+- Fixed a setting that prevented the SelectVehicleMod form from returning to the previously selected Category when adding items. 
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
