@@ -467,42 +467,27 @@ namespace Chummer
 				objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and category != \"Special\" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
 			bool blnAdd = true;
 			List<ListItem> lstMods = new List<ListItem>();
-			foreach (XmlNode objXmlMod in objXmlModList)
-			{
-				blnAdd = true;
-				/*
-				if (objXmlMod["response"] != null)
+			if (objXmlModList != null)
+				foreach (XmlNode objXmlMod in objXmlModList)
 				{
-					if (Convert.ToInt32(objXmlMod["response"].InnerText) > _intMaxResponse || Convert.ToInt32(objXmlMod["response"].InnerText) <= _objVehicle.DeviceRating)
-						blnAdd = false;
+					blnAdd = true;
+					XmlNode objXmlRequirements = objXmlMod.SelectSingleNode("requires");
+					if (objXmlRequirements != null)
+					{
+						if (_objVehicle.Seats < Convert.ToInt32(objXmlRequirements["seats"]?.InnerText))
+						{
+							blnAdd = false;
+						}
+					}
+
+					if (blnAdd)
+					{
+						ListItem objItem = new ListItem();
+						objItem.Value = objXmlMod["name"].InnerText;
+						objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
+						lstMods.Add(objItem);
+					}
 				}
-				if (objXmlMod["system"] != null)
-				{
-					if (Convert.ToInt32(objXmlMod["system"].InnerText) <= _objVehicle.DeviceRating)
-						blnAdd = false;
-				}
-				if (objXmlMod["firewall"] != null)
-				{
-					if (Convert.ToInt32(objXmlMod["firewall"].InnerText) <= _objVehicle.DeviceRating)
-						blnAdd = false;
-				}
-				if (objXmlMod["signal"] != null)
-				{
-					if (Convert.ToInt32(objXmlMod["signal"].InnerText) > _intMaxSignal || Convert.ToInt32(objXmlMod["signal"].InnerText) <= _objVehicle.DeviceRating)
-						blnAdd = false;
-				}
-				*/
-				if (blnAdd)
-				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objXmlMod["name"].InnerText;
-					if (objXmlMod["translate"] != null)
-						objItem.Name = objXmlMod["translate"].InnerText;
-					else
-						objItem.Name = objXmlMod["name"].InnerText;
-					lstMods.Add(objItem);
-				}
-			}
 			SortListItem objSort = new SortListItem();
 			lstMods.Sort(objSort.Compare);
 			lstMod.DataSource = null;
@@ -566,8 +551,8 @@ namespace Chummer
 				}
 				try
 				{
-					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", nudRating.Value.ToString()));
-					lblAvail.Text = (Convert.ToInt32(nav.Evaluate(xprAvail))).ToString() + strAvail;
+					xprAvail = nav.Compile(strAvailExpr.Replace("Rating", Math.Max(nudRating.Value,1).ToString()));
+					lblAvail.Text = Convert.ToInt32(nav.Evaluate(xprAvail)) + strAvail;
 				}
 				catch
 				{

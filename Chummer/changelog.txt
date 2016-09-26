@@ -12,13 +12,18 @@ Application CHanges:
 - Altered the code for the OptionalPowers improvement to prevent the selected value from attaching to the associated quality, ie Infected: Vampire (Human) (Enhanced Senses).
 - Added a movement speed bonus for the liminal centaur body.
 - Applied a filter to the mugshot selector that prevents attempting to load things like icons or document files.
+- Added code to the Vehicle Mod Selection Form that enables preventing mods from being listed if they don't match certain requirements.
+- Amended the tooltip for Damage Resistance in Career Mode to display the correct values when not affected by a Damage Resistance Improvement. 
 
 Data Changes: 
-- Fixed the LP cost for the Indor Arboretum lifestyle quality.
+- Fixed the LP cost for the Indoor Arboretum lifestyle quality.
 - Renamed the Sparring Drone from Hard Targets to Sparring Drone(Large).
 - Fixed missing optional powers for the Banshee.
 - Fixed a missing SINNER quality for the Private Investigator/Detective life module.
 - Moved all instances of the addqualities xmlnode into the bonus node. 
+- Fixed an issue with the Gamber Mentor Spirit's skill choice bonus.
+- Added a filter to the Metahuman Adjustment vehicle mod that prevents it from being visible for vehicles and drones that don't have a seat. 
+- Fixed an incorrect cost for the Saeder-Krupp MK-170 Neptune (Large).
 
 Build 184:
 Application Changes:

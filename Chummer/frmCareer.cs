@@ -21335,9 +21335,10 @@ namespace Chummer
 				}
 
 				// Update Damage Resistance Pool.
-				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance)).ToString();
+				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) + _objCharacter.TotalArmorRating).ToString();
+				strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Armor");
 				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) != 0)
-					strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
+					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
 				tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
 
 				// Update EDG Remaining Info on the Condition Monitor tab.
