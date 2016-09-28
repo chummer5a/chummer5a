@@ -6583,6 +6583,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Options_MultiplyForbiddenCost</key>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
+    <string>
+      <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
+      <text>Allow Mystic Adepts to buy power points during career</text>
+    </string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>
