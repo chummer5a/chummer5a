@@ -12,7 +12,7 @@ Application CHanges:
 - Altered the code for the OptionalPowers improvement to prevent the selected value from attaching to the associated quality, ie Infected: Vampire (Human) (Enhanced Senses).
 - Added a movement speed bonus for the liminal centaur body.
 - Applied a filter to the mugshot selector that prevents attempting to load things like icons or document files.
-
+- Fixed a crash caused by adding lifestyle qualities that don't have a free breakpoint. 
 Data Changes: 
 - Fixed the LP cost for the Indor Arboretum lifestyle quality.
 - Renamed the Sparring Drone from Hard Targets to Sparring Drone(Large).
