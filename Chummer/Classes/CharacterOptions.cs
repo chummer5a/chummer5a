@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes.OptionDisplayAttributes;
 using Microsoft.Win32;
 
 namespace Chummer
@@ -1251,6 +1252,8 @@ namespace Chummer
 			return _lstBooks;
 		}
 
+        [OptionPath("Uncategorized")]
+
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
@@ -2489,13 +2492,14 @@ namespace Chummer
 				_blnTechnomancerAllowAutosoft = value;
 			}
 		}
-		#endregion
+        #endregion
 
-		#region BP
-		/// <summary>
-		/// BP cost for each Attribute = this value.
-		/// </summary>
-		public int BPAttribute
+        #region BP
+        [OptionPath("Karma Costs")]
+        /// <summary>
+        /// BP cost for each Attribute = this value.
+        /// </summary>
+        public int BPAttribute
 		{
 			get
 			{
@@ -2701,13 +2705,14 @@ namespace Chummer
 				_intBPComplexFormOption = value;
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Karma
-		/// <summary>
-		/// Karma cost to improve an Attribute = New Rating X this value.
-		/// </summary>
-		public int KarmaAttribute
+        #region Karma
+        [OptionPath("Karma Costs/More")]
+        /// <summary>
+        /// Karma cost to improve an Attribute = New Rating X this value.
+        /// </summary>
+        public int KarmaAttribute
 		{
 			get
 			{
