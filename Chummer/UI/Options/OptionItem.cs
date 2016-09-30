@@ -13,7 +13,7 @@ namespace Chummer.UI.Options
 {
     public partial class OptionItem : UserControl
     {
-        const int MUTABLE_START = 5, LABEL_START = 70, UNIT_HEIGHT = 23, SPACING_TOP = 5;
+        const int MUTABLE_START = 5, LABEL_START = 70, UNIT_HEIGHT = 25, SPACING_TOP = 5;
         private object _target = null;
         private readonly List<Wrapper> _contents = new List<Wrapper>();
         private readonly Control _destinationControl; //Probably not going to be used, but allows easy changing of destination
