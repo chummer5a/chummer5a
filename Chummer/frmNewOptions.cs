@@ -61,8 +61,9 @@ namespace Chummer
 	        {
 	            Control c = tree.ControlLazy();
                 Controls.Add(c);
-                c.Location = new Point(176, 8);
-                c.Size = new Size(967, 473); //TODO: this is going to be a CLUSTERFUCK if somebody changes option window size
+                c.Location = new Point(treeView1.Right+8, 8);
+		        c.Height = treeView1.Height;
+		        c.Width = treeView1.Parent.Width - treeView1.Width - 36;
 	            c.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 	        }
 
@@ -86,7 +87,7 @@ namespace Chummer
 	        DummyOptionTree root = new DummyOptionTree("root");
 
 	        string currentName = "";
-	        AbstractOptionTree parrent;
+	        AbstractOptionTree parentTree;
 	        string[] npath;
 
             List<PropertyInfo> currentInfos = new List<PropertyInfo>();
@@ -102,14 +103,14 @@ namespace Chummer
 	                }
 	                else
 	                {
-	                    parrent = root;
+	                    parentTree = root;
 	                    npath = currentName.Split('/');
 	                    foreach (string s in npath.Take(npath.Length - 1))
 	                    {
-	                        parrent = parrent.Children.First(x => x.Name == s);
+	                        parentTree = parentTree.Children.First(x => x.Name == s);
 	                    }
 
-	                    parrent.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
+	                    parentTree.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
 
                         currentInfos.Clear();
                         currentName = info.GetCustomAttribute<OptionPathAttribute>().Path;
@@ -119,13 +120,13 @@ namespace Chummer
                 currentInfos.Add(info);
 	        }
 
-            parrent = root;
+            parentTree = root;
             npath = currentName.Split('/');
             foreach (string s in npath.Take(npath.Length - 1))
             {
-                parrent = parrent.Children.First(x => x.Name == s);
+                parentTree = parentTree.Children.First(x => x.Name == s);
             }
-            parrent.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
+            parentTree.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
 
             return root;
 	    }

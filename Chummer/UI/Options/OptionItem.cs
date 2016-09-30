@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using Chummer.Backend.Attributes.OptionDisplayAttributes;
 
 namespace Chummer.UI.Options
 {
@@ -49,8 +50,10 @@ namespace Chummer.UI.Options
                     throw new InvalidOperationException("target is never set and got propertyinfo without linked object");
 
                 Type t = tuple.Item1.PropertyType;
+	            string strDisplayName = tuple.Item1.GetCustomAttribute<OptionDisplayNameAttribute>() != null ? tuple.Item1.GetCustomAttribute<OptionDisplayNameAttribute>().DisplayName : tuple.Item1.Name;
+				string strTooltip = tuple.Item1.GetCustomAttribute<OptionTooltipAttribute>() != null ? tuple.Item1.GetCustomAttribute<OptionTooltipAttribute>().Tooltip : "";
 
-                Wrapper w = new Wrapper(this, tuple.Item1, tuple.Item2, tuple.Item1.Name, "TOOLTIP");
+				Wrapper w = new Wrapper(this, tuple.Item1, tuple.Item2, strDisplayName, strTooltip);
                 w.ReadFrom(w.Target());
                 w.SetPos(i);
 

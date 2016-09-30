@@ -73,7 +73,7 @@ namespace Chummer.Classes
         
         public override Control ControlLazy()
         {
-            return p ?? (p = new Panel());
+            return p ?? (p = new FlowLayoutPanel());
         }
 
         public override void Save()

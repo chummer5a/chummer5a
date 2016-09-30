@@ -1252,11 +1252,11 @@ namespace Chummer
 			return _lstBooks;
 		}
 
-        [OptionPath("Uncategorized")]
-
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
+		[OptionPath("Uncategorized")]
+		[OptionDisplayName("Checkbox_Options_PrintAllSkills")]
 		public bool PrintSkillsWithZeroRating
 		{
 			get
@@ -1392,6 +1392,9 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
 		/// </summary>
+		[OptionPath("Uncategorized")]
+		[OptionDisplayName("Checkbox_Options_Knucks")]
+		[OptionTooltip("Tip_OptionsKnucks")]
 		public bool KnucksUseUnarmed
 		{
 			get
@@ -2492,14 +2495,15 @@ namespace Chummer
 				_blnTechnomancerAllowAutosoft = value;
 			}
 		}
-        #endregion
+		#endregion
 
-        #region BP
-        [OptionPath("Karma Costs")]
-        /// <summary>
-        /// BP cost for each Attribute = this value.
-        /// </summary>
-        public int BPAttribute
+		#region BP
+		/// <summary>
+		/// BP cost for each Attribute = this value.
+		/// </summary>
+		[OptionPath("Karma Costs")]
+		[OptionDisplayName("Label_Options_BPAttribute")]
+		public int BPAttribute
 		{
 			get
 			{
