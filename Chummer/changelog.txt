@@ -19,6 +19,7 @@ Application CHanges:
 - Fixed an issue that prevented Penetrating Strike from applying to Knucks with the optional rule for such enabled.
 - Added a workaround for AIs not being able to increase skills linked to physical attributes.
 - Added an option to allow Mystic Adepts to increase power points during career mode. Fixes #1121.
+- Fixed an issue with Awakened characters not gaining their free skills in Priority mode for non-English users.
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
