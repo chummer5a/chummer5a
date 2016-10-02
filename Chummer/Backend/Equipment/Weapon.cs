@@ -2011,6 +2011,16 @@ namespace Chummer.Backend.Equipment
 									intAP += objImprovement.Value;
 							}
 						}
+						//TODO: There should probably be a method to enable this for ANY weapon the user wants to use.
+						// This should also add any UnarmedAP bonus to Unarmed physical weapons if the option is enabled.
+						if ((_strName == "Knucks") && _objCharacter.Options.KnucksUseUnarmed)
+						{
+							foreach (Improvement objImprovement in _objCharacter.Improvements)
+							{
+								if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedAP && objImprovement.Enabled)
+									intAP += objImprovement.Value;
+							}
+						}
 					}
 					// If this is an Unarmed Cyberware Weapon (belongs to the Cyberware category), add the Unarmed AP bonus an Adept may have.
 					if (_strCategory == "Cyberware")

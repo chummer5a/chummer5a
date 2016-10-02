@@ -423,7 +423,18 @@ namespace Chummer.Skills
 		//TODO handle aspected/adepts who cannot (always) get magic skills
 		public bool Enabled
 		{
-			get { return AttributeObject.Value != 0; }
+			get
+			{
+				//TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
+				if (CharacterObject.Metatype == "A.I.")
+				{
+					return !(AttributeObject.Abbrev == "MAG" || AttributeObject.Abbrev == "RES");
+				}
+				else
+				{
+					return AttributeObject.Value != 0;
+				}
+			}
 		}
 
 		private bool _oldUpgrade = false;
