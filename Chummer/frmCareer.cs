@@ -496,7 +496,7 @@ namespace Chummer
 
 				lblMysticAdeptAssignment.Visible = true;
 				lblMysticAdeptMAGAdept.Visible = true;
-                // cmdIncreasePowerPoints.Visible = true;
+                cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
 			}
 			// Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
 			int i = -1;
@@ -20613,6 +20613,9 @@ namespace Chummer
 				_blnSkipUpdate = true;
 
 				RedlinerCheck();
+
+                //needs to be somewhere...
+			    cmdIncreasePowerPoints.Enabled = (_objCharacter.MAGAdept < _objCharacter.MAG.TotalValue) &&_objCharacter.Karma >= 5;
 
 				string strFormat;
 				if (_objCharacter.Options.EssenceDecimals == 4)

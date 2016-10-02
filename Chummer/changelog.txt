@@ -18,6 +18,7 @@ Application CHanges:
 - Fixed a setting that prevented the SelectVehicleMod form from returning to the previously selected Category when adding items. 
 - Fixed an issue that prevented Penetrating Strike from applying to Knucks with the optional rule for such enabled.
 - Added a workaround for AIs not being able to increase skills linked to physical attributes.
+- Added an option to allow Mystic Adepts to increase power points during career mode. Fixes #1121.
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
@@ -31,6 +32,7 @@ Data Changes:
 
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
+- Checkbox_Option_AllowMysadPowerPointCareer
 Build 184:
 Application Changes:
 - New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.
