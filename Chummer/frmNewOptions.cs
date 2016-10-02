@@ -95,11 +95,11 @@ namespace Chummer
 	        //to be fair, rest of code is winform specific too
 	        foreach (PropertyInfo info in o.GetType().GetProperties())
 	        {
-	            if (info.GetCustomAttribute<OptionPathAttribute>() != null)
+	            if (info.GetCustomAttribute<OptionAttributes>() != null)
 	            {
 	                if (currentInfos.Count == 0)
 	                {
-	                    currentName = info.GetCustomAttribute<OptionPathAttribute>().Path;
+	                    currentName = info.GetCustomAttribute<OptionAttributes>().Path;
 	                }
 	                else
 	                {
@@ -113,7 +113,7 @@ namespace Chummer
 	                    parentTree.Children.Add(new SimpleOptionTree(npath.Last(), o, currentInfos));
 
                         currentInfos.Clear();
-                        currentName = info.GetCustomAttribute<OptionPathAttribute>().Path;
+                        currentName = info.GetCustomAttribute<OptionAttributes>().Path;
                     }
 	            }
 

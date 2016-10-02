@@ -1255,8 +1255,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not all Active Skills with a total score higher than 0 should be printed.
 		/// </summary>
-		[OptionPath("Uncategorized")]
-		[OptionDisplayName("Checkbox_Options_PrintAllSkills")]
+		[OptionAttributes("Checkbox_Options_PrintAllSkills",false, "Printing")]
 		public bool PrintSkillsWithZeroRating
 		{
 			get
@@ -1272,6 +1271,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the More Lethal Gameplay optional rule is enabled.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_MoreLethalGameplay", false,"Gameplay Options")]
 		public bool MoreLethalGameplay
 		{
 			get
@@ -1287,6 +1287,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not to require licensing restricted items.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_LicenseRestricted", false, "Gameplay Options/Printing")]
 		public bool LicenseRestricted
 		{
 			get
@@ -1302,6 +1303,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not a Spirit's Maximum Force is based on the character's total MAG.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_MaxSpiritForce", false, "Gameplay Options/Printing")]
 		public bool SpiritForceBasedOnTotalMAG
 		{
 			get
@@ -1317,6 +1319,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not Defaulting on a Skill should include any Modifiers.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_EnforceSkillRating", false, "Gameplay Options/Printing")]
 		public bool SkillDefaultingIncludesModifiers
 		{
 			get
@@ -1332,6 +1335,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the maximum Skill rating modifiers are set.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_EnforceSkillRating", false, "Gameplay Options/Printing")]
 		public bool EnforceMaximumSkillRatingModifier
 		{
 			get
@@ -1347,6 +1351,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not total Skill ratings are capped at 20 or 2 x natural Attribute + Rating, whichever is higher.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_LimitSkills", false, "Gameplay Options/Printing")]
 		public bool CapSkillRating
 		{
 			get
@@ -1362,6 +1367,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
 		/// </summary>
+		[OptionAttributes("Checkbox_Options_PrintExpenses", false, "Gameplay Options/Printing")]
 		public bool PrintExpenses
 		{
 			get
@@ -1377,6 +1383,7 @@ namespace Chummer
 		/// <summary>
 		/// Amount of Nuyen gained per BP spent.
 		/// </summary>
+		[OptionAttributes("Label_Options_Nuyen", false, "Gameplay Options/Printing")]
 		public int NuyenPerBP
 		{
 			get
@@ -1392,9 +1399,7 @@ namespace Chummer
 		/// <summary>
 		/// Whether or not characters in Karma build mode receive free Contacts equal to CHA * 2.
 		/// </summary>
-		[OptionPath("Uncategorized")]
-		[OptionDisplayName("Checkbox_Options_Knucks")]
-		[OptionTooltip("Tip_OptionsKnucks")]
+		[OptionAttributes("Checkbox_Options_Knucks",false,"Uncategorized","Tip_OptionsKnucks")]
 		public bool KnucksUseUnarmed
 		{
 			get
@@ -2501,8 +2506,7 @@ namespace Chummer
 		/// <summary>
 		/// BP cost for each Attribute = this value.
 		/// </summary>
-		[OptionPath("Karma Costs")]
-		[OptionDisplayName("Label_Options_BPAttribute")]
+		[OptionAttributes("Label_Options_BPAttribute",5,"Karma Costs")]
 		public int BPAttribute
 		{
 			get
@@ -2518,6 +2522,7 @@ namespace Chummer
 		/// <summary>
 		/// BP cost to raise an Attribute to its Metatype Maximum = this value.
 		/// </summary>
+		[OptionAttributes("Label_Options_BPAttributeMax",15, "Karma Costs/More")]
 		public int BPAttributeMax
 		{
 			get
@@ -2709,14 +2714,14 @@ namespace Chummer
 				_intBPComplexFormOption = value;
 			}
 		}
-        #endregion
+		#endregion
 
-        #region Karma
-        [OptionPath("Karma Costs/More")]
-        /// <summary>
-        /// Karma cost to improve an Attribute = New Rating X this value.
-        /// </summary>
-        public int KarmaAttribute
+		#region Karma
+		/// <summary>
+		/// Karma cost to improve an Attribute = New Rating X this value.
+		/// </summary>
+		//[OptionAttributes("Karma Costs/More")]
+		public int KarmaAttribute
 		{
 			get
 			{
