@@ -599,9 +599,9 @@ namespace Chummer
 			// Enforce Skill Maximum Modified Rating.
 			objXmlNode.TryGetField("enforceskillmaximummodifiedrating", out _blnEnforceSkillMaximumModifiedRating);
 			// Cap Skill Rating.
-			_blnCapSkillRating = objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
+			objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
 			// Print Expenses.
-			_blnPrintExpenses = objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
+			objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
 			// Nuyen per Build Point
 			objXmlNode.TryGetField("nuyenperbp", out _intNuyenPerBP);
 			// Knucks use Unarmed

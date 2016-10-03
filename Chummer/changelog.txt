@@ -25,6 +25,7 @@ Application CHanges:
 - Fixed an issue with the Print method for cyberware that caused it to show irrelevant stats for some cyberware. Fixes #1133.
 - Fixed an issue with loading characters that prevented cyberlimbs from correctly adding to attribute displays.
 - Fixed an issue with linguasofts contributing to point costs for knowledge skills. 
+- Fixed an issue with the Print Expenses option not disabling properly. 
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
