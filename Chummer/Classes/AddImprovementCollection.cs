@@ -1188,7 +1188,7 @@ namespace Chummer.Classes
 			Log.Info("physicallimit = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("Physical", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalLimit,
-				_strFriendlyName,
+				"",
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
@@ -1199,7 +1199,7 @@ namespace Chummer.Classes
 			Log.Info("mentallimit = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("Mental", _objImprovementSource, SourceName, Improvement.ImprovementType.MentalLimit,
-				_strFriendlyName,
+				"",
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
@@ -1210,7 +1210,7 @@ namespace Chummer.Classes
 			Log.Info("sociallimit = " + bonusNode.OuterXml.ToString());
 			Log.Info("Calling CreateImprovement");
 			CreateImprovement("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
-				_strFriendlyName,
+				"",
 				ValueToInt(bonusNode.InnerText, _intRating));
 		}
 
