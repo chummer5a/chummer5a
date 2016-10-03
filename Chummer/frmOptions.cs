@@ -1262,7 +1262,7 @@ namespace Chummer
 
 		private void cboPDFParameters_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			GlobalOptions.Instance.PDFArguments = cboPDFParameters.SelectedValue.ToString();
+			GlobalOptions.Instance.PDFParameters = cboPDFParameters.SelectedValue.ToString();
 		}
 	}
 }
