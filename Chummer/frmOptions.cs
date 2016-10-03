@@ -67,20 +67,6 @@ namespace Chummer
         #region Control Events
         private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (blnDirty)
-			{
-				RestartApplication();
-				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
-				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
-
-				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-				{
-					case DialogResult.Yes:
-						break;
-					default:
-						return;
-				}
-			}
 			// Make sure the current Setting has a name.
 			if (txtSettingName.Text.Trim() == "")
             {
@@ -196,7 +182,22 @@ namespace Chummer
 
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
-			
+
+			if (blnDirty)
+			{
+				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.Yes:
+						break;
+					default:
+						return;
+				}
+				RestartApplication();
+			}
+
 			DialogResult = DialogResult.OK;
         }
 
