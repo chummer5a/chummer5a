@@ -427,7 +427,7 @@ namespace Chummer.Backend.Equipment
 			_strName = objNode["name"].InnerText;
 			_strCategory = objNode["category"].InnerText;
 			objNode.TryGetField("matrixcmfilled", out _intMatrixCMFilled);
-            objNode.TryGetField("limsblot", out _strLimbSlot);
+            objNode.TryGetField("limbslot", out _strLimbSlot);
 			_strESS = objNode["ess"].InnerText;
 			_strCapacity = objNode["capacity"].InnerText;
 			_strAvail = objNode["avail"].InnerText;
@@ -554,12 +554,12 @@ namespace Chummer.Backend.Equipment
 
 		/// <summary>
 		/// Print the object's XML to the XmlWriter.
-		/// </summary>
+		/// </summary>obv
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
 		public void Print(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("cyberware");
-			if (_strLimbSlot == "")
+			if (string.IsNullOrWhiteSpace(_strLimbSlot) && _strCategory != "Cyberlimb")
 				objWriter.WriteElementString("name", DisplayNameShort);
 			else
 			{
