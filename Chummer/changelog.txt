@@ -20,6 +20,7 @@ Application CHanges:
 - Added a workaround for AIs not being able to increase skills linked to physical attributes.
 - Added an option to allow Mystic Adepts to increase power points during career mode. Fixes #1121.
 - Fixed an issue with Awakened characters not gaining their free skills in Priority mode for non-English users.
+- Added a cached displayname to the print method for loaded clips. Accessed via weapon/clips/clip/[name/count].
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
