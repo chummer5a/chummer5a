@@ -552,7 +552,10 @@ namespace Chummer
 						    break;
 				    }
 					string strLifestyleEntertainments = "";
-					strLifestyleEntertainments = objXmlNode["allowed"]?.InnerText;
+                    if (objXmlNode["allowed"] != null)
+                    {
+                        strLifestyleEntertainments = objXmlNode["allowed"].InnerText;
+                    }
 					bool blnEntertainmentFree = strLifestyleEntertainments.Contains(cboBaseLifestyle.SelectedValue.ToString());
 				    bool blnEntertainmentFreeEqui = strLifestyleEntertainments.Contains(strLifestyleEquivalent); 
 
