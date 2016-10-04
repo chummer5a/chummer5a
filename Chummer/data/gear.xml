@@ -3056,7 +3056,6 @@
 				<tag>Linguasoft</tag>
 			</tags>
 			<bonus>
-        <!--<selecttext />-->
         <knowsoft>
           <pick/>
           <val>Rating</val>

@@ -1338,7 +1338,7 @@ namespace Chummer
 		public void OpenPDF(string strSource)
 		{
 			// The user must have specified the arguments of their PDF application in order to use this functionality.
-			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFArguments))
+			if (string.IsNullOrWhiteSpace(GlobalOptions.Instance.PDFParameters))
 				return;
 
 			string[] strTemp = strSource.Split(' ');
@@ -1378,7 +1378,7 @@ namespace Chummer
             if (!blnFound)
 				return;
 
-			string strParams = GlobalOptions.Instance.PDFArguments;
+			string strParams = GlobalOptions.Instance.PDFParameters;
 			strParams = strParams.Replace("{page}", intPage.ToString());
 			strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
 			strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);

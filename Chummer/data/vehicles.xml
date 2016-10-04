@@ -3851,7 +3851,7 @@
 				<name>Searchlight</name>
 			</mods>
 			<avail>10F</avail>
-			<cost>175</cost>
+			<cost>17500</cost>
 			<source>R5</source>
 			<page>143</page>
 		</vehicle>
@@ -6585,6 +6585,9 @@
 			<name>Smuggling Compartment Shielding</name>
 			<category>Body</category>
 			<rating>0</rating>
+			<bonus>
+				<selecttext />
+			</bonus>
 			<slots>0</slots>
 			<avail>12F</avail>
 			<cost>3000</cost>
@@ -6833,6 +6836,9 @@
 			<name>Metahuman Adjustment</name>
 			<category>Cosmetic</category>
 			<rating>Seats</rating>
+			<requires>
+				<seats>1</seats>
+			</requires>
 			<slots>0</slots>
 			<avail>4</avail>
 			<cost>Rating * 500</cost>

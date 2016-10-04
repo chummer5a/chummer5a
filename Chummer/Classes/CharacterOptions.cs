@@ -174,9 +174,9 @@ namespace Chummer
 
 		// Sourcebook list.
 		private readonly List<string> _lstBooks = new List<string>();
+	    private bool _mysaddPpCareer;
 
-
-		#region Initialization, Save, and Load Methods
+	    #region Initialization, Save, and Load Methods
 		public CharacterOptions(Character character)
 		{
 			_character = character;
@@ -325,6 +325,9 @@ namespace Chummer
 			objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString());
 			// <exceedpositivequalities />
 			objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString());
+
+            objWriter.WriteElementString("mysaddppcareer", MysaddPPCareer.ToString());
+
 			// <exceednegativequalities />
 			objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString());
 			// <exceednegativequalitieslimit />
@@ -596,9 +599,9 @@ namespace Chummer
 			// Enforce Skill Maximum Modified Rating.
 			objXmlNode.TryGetField("enforceskillmaximummodifiedrating", out _blnEnforceSkillMaximumModifiedRating);
 			// Cap Skill Rating.
-			_blnCapSkillRating = objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
+			objXmlNode.TryGetField("capskillrating", out _blnCapSkillRating);
 			// Print Expenses.
-			_blnPrintExpenses = objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
+			objXmlNode.TryGetField("printexpenses", out _blnPrintExpenses);
 			// Nuyen per Build Point
 			objXmlNode.TryGetField("nuyenperbp", out _intNuyenPerBP);
 			// Knucks use Unarmed
@@ -677,6 +680,9 @@ namespace Chummer
 			objXmlNode.TryGetField("specialkarmacostbasedonshownvalue", out _blnSpecialKarmaCostBasedOnShownValue);
 			// Allow more than 35 BP in Positive Qualities.
 			objXmlNode.TryGetField("exceedpositivequalities", out _blnExceedPositiveQualities);
+
+		    objXmlNode.TryGetField("mysaddppcareer", out _mysaddPpCareer);
+
 			// Allow more than 35 BP in Negative Qualities.
 			objXmlNode.TryGetField("exceednegativequalities", out _blnExceedNegativeQualities);
 			// Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
@@ -1491,10 +1497,19 @@ namespace Chummer
 			}
 		}
 
-		/// <summary>
-		/// Whether or not to allow a 2nd max attribute with Exceptional Attribute
-		/// </summary>
-		public bool Allow2ndMaxAttribute
+	    /// <summary>
+	    /// Allow Mystic Adepts to increase their power points during career mode
+	    /// </summary>
+	    public bool MysaddPPCareer
+	    {
+	        get { return _mysaddPpCareer; }
+	        set { _mysaddPpCareer = value; }
+	    }
+
+	    /// <summary>
+	    /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
+	    /// </summary>
+	    public bool Allow2ndMaxAttribute
 		{
 			get
 			{

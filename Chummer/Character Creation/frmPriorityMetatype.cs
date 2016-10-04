@@ -1544,34 +1544,6 @@ namespace Chummer
 					_objCharacter.DEP.Karma = 0;
 				}
 
-				// Add any Natural Weapons the Metavariant should have.
-				if (cboMetavariant.SelectedValue.ToString() != "None")
-				{
-					if (objXmlMetavariant["naturalweapons"] != null)
-					{
-						foreach (Weapon objWeapon in from XmlNode objXmlNaturalWeapon in objXmlMetavariant["naturalweapons"].SelectNodes("naturalweapon") select new Weapon(_objCharacter)
-						{
-							Name = objXmlNaturalWeapon["name"].InnerText,
-							Category = LanguageManager.Instance.GetString("Tab_Critter"),
-							WeaponType = "Melee",
-							Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
-							Damage = objXmlNaturalWeapon["damage"].InnerText,
-							AP = objXmlNaturalWeapon["ap"].InnerText,
-							Mode = "0",
-							RC = "0",
-							Concealability = 0,
-							Avail = "0",
-							Cost = 0,
-							UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
-							Source = objXmlNaturalWeapon["source"].InnerText,
-							Page = objXmlNaturalWeapon["page"].InnerText
-						})
-						{
-							_objCharacter.Weapons.Add(objWeapon);
-						}
-					}
-				}
-
 				// Add any Critter Powers the Metatype/Critter should have.
 				XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
 
@@ -2073,12 +2045,12 @@ namespace Chummer
 
 		    if (cboSkill1.Visible)
 		    {
-			    manager.CreateImprovement(cboSkill1.Text, Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
+			    manager.CreateImprovement(cboSkill1.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
 		    }
 
 			if (cboSkill2.Visible)
 			{
-				manager.CreateImprovement(cboSkill2.Text, Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
+				manager.CreateImprovement(cboSkill2.SelectedValue.ToString(), Improvement.ImprovementSource.Heritage, "Heritage", type, "", intFreeLevels);
 			}
 
 			manager.Commit();

@@ -570,8 +570,6 @@ namespace Chummer
 		private string _strForcedValue = "";
 		private readonly List<Improvement> _lstTransaction = new List<Improvement>();
 
-        private CommonFunctions objFunctions = new CommonFunctions();
-
 		public ImprovementManager(Character objCharacter)
 		{
 			LanguageManager.Instance.Load(GlobalOptions.Instance.Language, null);
@@ -2030,6 +2028,11 @@ namespace Chummer
 
 	public static class ImprovementExtensions
 	{
+		/// <summary>
+		/// Are Skill Points enabled for the character?
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns></returns>
 		public static bool HaveSkillPoints(this CharacterBuildMethod method)
 		{
 			return method == CharacterBuildMethod.Priority || method == CharacterBuildMethod.SumtoTen;

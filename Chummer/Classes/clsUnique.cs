@@ -607,21 +607,20 @@ namespace Chummer
                 {
                     int intLimbTotal = 0;
                     int intLimbCount = 0;
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware
+						.Where(objCyberware => objCyberware.Category == "Cyberlimb")
+						.Where(objCyberware => !string.IsNullOrWhiteSpace(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-                        if (objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot) && !_objCharacter.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
-                        {
-                            intLimbCount++;
-                            switch (_strAbbrev)
-                            {
-                                case "STR":
-                                    intLimbTotal += objCyberware.TotalStrength;
-                                    break;
-                                default:
-                                    intLimbTotal += objCyberware.TotalAgility;
-                                    break;
-                            }
-                        }
+	                    intLimbCount++;
+	                    switch (_strAbbrev)
+	                    {
+		                    case "STR":
+			                    intLimbTotal += objCyberware.TotalStrength;
+			                    break;
+		                    default:
+			                    intLimbTotal += objCyberware.TotalAgility;
+			                    break;
+	                    }
                     }
 
                     if (intLimbCount > 0)

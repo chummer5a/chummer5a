@@ -1299,7 +1299,7 @@
 			<advantage>All: +2 to Etiquette or Palming.</advantage>
 			<disadvantage>Gain the Distinctive Style negative quality.</disadvantage>
 			<bonus>
-				<selectskill limittoskill="Palming,Etiquett">
+				<selectskill limittoskill="Palming,Etiquette">
 					<val>2</val>
 					<applytorating>no</applytorating>
 				</selectskill>

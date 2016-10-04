@@ -2305,6 +2305,10 @@
 			<text>Are you sure you want to spend Karma on improving {0} to {1} for {2} Karma?</text>
 		</string>
 		<string>
+			<key>Message_ConfirmKarmaExpenseKnowledgeSkill</key>
+			<text>Are you sure you want to spend Karma on improving {0} to {1} for {2} Karma?\nWarning: This will lock the skill's Type to {3}.</text>
+		</string>
+		<string>
 			<key>Message_ConfirmKarmaandNuyenExpense</key>
 			<text>Are you sure you want to spend Karma and Nuyen on improving {0} to {1} for {2} Karma and {3} Nuyen?</text>
 		</string>
@@ -6579,6 +6583,10 @@ Do you want to continue?</text>
 			<key>Checkbox_Options_MultiplyForbiddenCost</key>
 			<text>Multiply the cost of Forbidden items by</text>
 		</string>
+    <string>
+      <key>Checkbox_Option_AllowMysadPowerPointCareer</key>
+      <text>Allow Mystic Adepts to buy power points during career</text>
+    </string>
 		<string>
 			<key>Checkbox_Option_EnforceCapacity</key>
 			<text>Enforce Capacity limits</text>

@@ -4477,12 +4477,11 @@ namespace Chummer
 			{
             foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
             {
-                foreach (Power objPower in _objCharacter.Powers)
-						if (objPower.Name == "Improved Ability (skill)" && (objPower.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPower.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
+					if (objPowerControl.PowerObject.Name == "Improved Ability (skill)" && (objPowerControl.PowerObject.Extra == objSkill.Name || (objSkill.IsExoticSkill && objPowerControl.PowerObject.Extra == (objSkill.DisplayName + " (" + objSkill.Specialization + ")"))))
                     {
                         double intImprovedAbilityMaximum = objSkill.Rating + (objSkill.Rating / 2);
                         intImprovedAbilityMaximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
-                        objPower.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
+						objPowerControl.PowerObject.MaxLevels = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
                         objPowerControl.nudRating.Maximum = Convert.ToInt32(Math.Ceiling(intImprovedAbilityMaximum));
                     }
             }
@@ -4490,8 +4489,8 @@ namespace Chummer
             if (objPowerControl.PowerLevel > _objCharacter.MAG.TotalValue && !_objCharacter.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.Instance.GetString("Message_PowerLevel"), LanguageManager.Instance.GetString("MessageTitle_PowerLevel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                objPowerControl.PowerLevel = _objCharacter.MAG.TotalValue;
-            }
+				objPowerControl.PowerLevel = _objCharacter.MAG.TotalValue;
+			}
             else
             {
                 // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
@@ -15058,19 +15057,7 @@ namespace Chummer
                 }
 
                 // Skill Limits
-                lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
-                string strPhysical = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeSTRShort"), _objCharacter.STR.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeBODShort"), _objCharacter.BOD.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeREAShort"), _objCharacter.REA.TotalValue.ToString());
-                tipTooltip.SetToolTip(lblPhysical, strPhysical);
-
-                lblMental.Text = _objCharacter.LimitMental.ToString();
-                string strMental = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeLOGShort"), _objCharacter.LOG.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeINTShort"), _objCharacter.INT.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString());
-                tipTooltip.SetToolTip(lblMental, strMental);
-
-                lblSocial.Text = _objCharacter.LimitSocial.ToString();
-                string strSocial = string.Format("({0} [{1}] * 2) + {2} [{3}] + {4} [{5}] / 3", LanguageManager.Instance.GetString("String_AttributeCHAShort"), _objCharacter.CHA.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeWILShort"), _objCharacter.WIL.TotalValue.ToString(), LanguageManager.Instance.GetString("String_AttributeESSShort"), _objCharacter.Essence.ToString());
-                tipTooltip.SetToolTip(lblSocial, strSocial);
-
-                lblAstral.Text = _objCharacter.LimitAstral.ToString();
+				RefreshLimits(lblPhysical,lblMental,lblSocial,lblAstral,tipTooltip);
 
                 // Initiative.
                 lblINI.Text = _objCharacter.Initiative;
@@ -15728,7 +15715,7 @@ namespace Chummer
                 }
 
             // Populate Limit Modifiers from Improvements
-            foreach (Improvement objImprovement in _objCharacter.Improvements)
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
             {
                 if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit || objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit || objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
                 {

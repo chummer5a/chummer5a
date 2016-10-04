@@ -67,20 +67,6 @@ namespace Chummer
         #region Control Events
         private void cmdOK_Click(object sender, EventArgs e)
 		{
-			if (blnDirty)
-			{
-				RestartApplication();
-				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
-				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
-
-				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-				{
-					case DialogResult.Yes:
-						break;
-					default:
-						return;
-				}
-			}
 			// Make sure the current Setting has a name.
 			if (txtSettingName.Text.Trim() == "")
             {
@@ -154,6 +140,7 @@ namespace Chummer
 			_characterOptions.UseCalculatedPublicAwareness = chkUseCalculatedPublicAwareness.Checked;
             _characterOptions.StrictSkillGroupsInCreateMode = chkStrictSkillGroups.Checked;
 	        _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
+            _characterOptions.MysaddPPCareer = chkMysAdPp.Checked;
 
 			_characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
 			_characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
@@ -195,7 +182,22 @@ namespace Chummer
 
             _characterOptions.Name = txtSettingName.Text;
             _characterOptions.Save();
-			
+
+			if (blnDirty)
+			{
+				string text = LanguageManager.Instance.GetString("Message_Options_SaveForms");
+				string caption = LanguageManager.Instance.GetString("MessageTitle_Options_CloseForms");
+
+				switch (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+				{
+					case DialogResult.Yes:
+						break;
+					default:
+						return;
+				}
+				RestartApplication();
+			}
+
 			DialogResult = DialogResult.OK;
         }
 
@@ -600,6 +602,7 @@ namespace Chummer
 			chkContactPoints.Checked = _characterOptions.UseContactPoints;
 			chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
 			chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
+            chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
 			chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
 			chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
 			chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
@@ -1259,7 +1262,7 @@ namespace Chummer
 
 		private void cboPDFParameters_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			GlobalOptions.Instance.PDFArguments = cboPDFParameters.SelectedValue.ToString();
+			GlobalOptions.Instance.PDFParameters = cboPDFParameters.SelectedValue.ToString();
 		}
 	}
 }

@@ -496,7 +496,7 @@ namespace Chummer
 
 				lblMysticAdeptAssignment.Visible = true;
 				lblMysticAdeptMAGAdept.Visible = true;
-                // cmdIncreasePowerPoints.Visible = true;
+                cmdIncreasePowerPoints.Visible = _objOptions.MysaddPPCareer;
 			}
 			// Counter to keep track of the number of Controls that have been added to the Panel so we can determine their vertical positioning.
 			int i = -1;
@@ -20614,6 +20614,9 @@ namespace Chummer
 
 				RedlinerCheck();
 
+                //needs to be somewhere...
+			    cmdIncreasePowerPoints.Enabled = (_objCharacter.MAGAdept < _objCharacter.MAG.TotalValue) &&_objCharacter.Karma >= 5;
+
 				string strFormat;
 				if (_objCharacter.Options.EssenceDecimals == 4)
 					strFormat = "{0:0.0000}";
@@ -21205,23 +21208,11 @@ namespace Chummer
                     tipTooltip.SetToolTip(lblLivingPersonaFirewall, strPersonaTip);
                 }
 
-                // Skill Limits
-                lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
-                string strPhysical = "(STR [" + _objCharacter.STR.TotalValue.ToString() + "] * 2) + BOD [" + _objCharacter.BOD.TotalValue.ToString() + "] + REA [" + _objCharacter.REA.TotalValue.ToString() + "] / 3";
-                tipTooltip.SetToolTip(lblPhysical, strPhysical);
+				// Skill Limits
+				RefreshLimits(lblPhysical, lblMental, lblSocial, lblAstral, tipTooltip);
 
-                lblMental.Text = _objCharacter.LimitMental.ToString();
-                string strMental = "(LOG [" + _objCharacter.LOG.TotalValue.ToString() + "] * 2) + INT [" + _objCharacter.INT.TotalValue.ToString() + "] + WIL [" + _objCharacter.WIL.TotalValue.ToString() + "] / 3";
-                tipTooltip.SetToolTip(lblMental, strMental);
-
-                lblSocial.Text = _objCharacter.LimitSocial.ToString();
-                string strSocial = "(CHA [" + _objCharacter.CHA.TotalValue.ToString() + "] * 2) + WIL [" + _objCharacter.WIL.TotalValue.ToString() + "] + ESS [" + _objCharacter.Essence.ToString() + "] / 3";
-                tipTooltip.SetToolTip(lblSocial, strSocial);
-
-                lblAstral.Text = _objCharacter.LimitAstral.ToString();
-
-                // Initiative.
-                lblINI.Text = _objCharacter.Initiative;
+				// Initiative.
+				lblINI.Text = _objCharacter.Initiative;
                 string strInit = "REA (" + _objCharacter.REA.Value.ToString() + ") + INT (" + _objCharacter.INT.Value.ToString() + ")";
                 if (_objCharacter.INI.AttributeModifiers > 0 || _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) > 0 || _objCharacter.INT.AttributeModifiers > 0 || _objCharacter.REA.AttributeModifiers > 0)
                     strInit += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + (_objCharacter.INI.AttributeModifiers + _objImprovementManager.ValueOf(Improvement.ImprovementType.Initiative) + _objCharacter.INT.AttributeModifiers + _objCharacter.REA.AttributeModifiers).ToString() + ")";
@@ -21335,9 +21326,10 @@ namespace Chummer
 				}
 
 				// Update Damage Resistance Pool.
-				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance)).ToString();
+				lblCMDamageResistancePool.Text = (_objCharacter.BOD.TotalValue + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) + _objCharacter.TotalArmorRating).ToString();
+				strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Armor");
 				if (_objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance) != 0)
-					strTip = LanguageManager.Instance.GetString("String_AttributeBODShort") + " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
+					strTip += " + " + LanguageManager.Instance.GetString("Tip_Modifiers") + " (" + _objImprovementManager.ValueOf(Improvement.ImprovementType.DamageResistance).ToString() + ")";
 				tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
 
 				// Update EDG Remaining Info on the Condition Monitor tab.
