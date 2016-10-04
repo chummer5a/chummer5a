@@ -36,6 +36,7 @@ Data Changes:
 - Fixed an issue with the Gamber Mentor Spirit's skill choice bonus.
 - Added a filter to the Metahuman Adjustment vehicle mod that prevents it from being visible for vehicles and drones that don't have a seat. 
 - Fixed an incorrect cost for the Saeder-Krupp MK-170 Neptune (Large).
+- Fixed missing attribute choices for the Banshee quality. 
 
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
