@@ -43,6 +43,7 @@ Data Changes:
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
 - Checkbox_Option_AllowMysadPowerPointCareer
+- String_MetamagicSkills
 Build 184:
 Application Changes:
 - New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.

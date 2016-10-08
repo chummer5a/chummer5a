@@ -8079,40 +8079,8 @@ Do you want to continue?</text>
 			<text>Based on your talent selection, you may choose {0}.</text>
 		</string>
 		<string>
-			<key>String_MetamagicSkillMagicianA</key>
-			<text>2 magical skills to start at rating 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerA</key>
-			<text>2 resonance skills to start at rating 5</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillMagicianB</key>
-			<text>2 magical skills to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillTechnomancerB</key>
-			<text>2 resonance skills to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptB</key>
-			<text>1 active skill to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedB</key>
-			<text>1 magical skill group to start at rating 4</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAdeptC</key>
-			<text>1 active skill to start at rating 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedC</key>
-			<text>1 magical skill group to start at rating 2</text>
-		</string>
-		<string>
-			<key>String_MetamagicSkillAspectedD</key>
-			<text>1 magical skill group to start at rating 0</text>
+			<key>String_MetamagicSkills</key>
+			<text>{0} {1} skill(s) to start at rating {2}</text>
 		</string>
 		<string>
 			<key>Message_Metatype_Duplicate</key>

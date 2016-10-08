@@ -532,322 +532,91 @@ namespace Chummer
 
         private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
-
-            if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
-            {
-                if (cboTalent.SelectedValue.ToString() == "A,4")
-                {
-                    if (cboTalents.SelectedValue.ToString() == "Magician" || cboTalents.SelectedValue.ToString() == "Mystic Adept")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillMagicianA"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        List<ListItem> lstSkills2 = new List<ListItem>();
-                        XmlNodeList objXmlMagicalSkills = GetMagicalSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlMagicalSkills)
-                        {
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-							lstSkills1.Add(objItem);
-                            lstSkills2.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        cboSkill2.ValueMember = "Value";
-                        cboSkill2.DisplayMember = "Name";
-                        cboSkill2.DataSource = lstSkills2;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = true;
-                    }
-                    else if (cboTalents.SelectedValue.ToString() == "Technomancer")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillTechnomancerA"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        List<ListItem> lstSkills2 = new List<ListItem>();
-                        XmlNodeList objXmlResonanceSkills = GetResonanceSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlResonanceSkills)
-                        {
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-							lstSkills1.Add(objItem);
-                            lstSkills2.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        cboSkill2.ValueMember = "Value";
-                        cboSkill2.DisplayMember = "Name";
-                        cboSkill2.DataSource = lstSkills2;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = true;
-                    }
-                    else
-                    {
-                        lblMetatypeSkillSelection.Visible = false;
-                        cboSkill1.Visible = false;
-                        cboSkill2.Visible = false;
-                    }
-                }
-                else if (cboTalent.SelectedValue.ToString() == "B,3")
-                {
-                    if (cboTalents.SelectedValue.ToString() == "Magician" || cboTalents.SelectedValue.ToString() == "Mystic Adept")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillMagicianB"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        List<ListItem> lstSkills2 = new List<ListItem>();
-                        XmlNodeList objXmlMagicalSkills = GetMagicalSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlMagicalSkills)
-                        {
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-							lstSkills1.Add(objItem);
-                            lstSkills2.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        cboSkill2.ValueMember = "Value";
-                        cboSkill2.DisplayMember = "Name";
-                        cboSkill2.DataSource = lstSkills2;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = true;
-                    }
-                    else if (cboTalents.SelectedValue.ToString() == "Technomancer")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillTechnomancerB"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        List<ListItem> lstSkills2 = new List<ListItem>();
-                        XmlNodeList objXmlResonanceSkills = GetResonanceSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlResonanceSkills)
-                        {
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-							lstSkills1.Add(objItem);
-                            lstSkills2.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        cboSkill2.ValueMember = "Value";
-                        cboSkill2.DisplayMember = "Name";
-                        cboSkill2.DataSource = lstSkills2;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = true;
-                    }
-                    else if (cboTalents.SelectedValue.ToString() == "Adept")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAdeptB"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        XmlNodeList objXmlActiveSkills = GetActiveSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlActiveSkills)
-                        {
-                            ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-                            lstSkills1.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = false;
-                    }
-                    else if (cboTalents.SelectedValue.ToString().StartsWith("Aspected Magician"))
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedB"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
-						List<ListItem> lstSkills1 = new List<ListItem>();
-	                    XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
-						ListItem objItem = new ListItem();
-
-						foreach (XmlNode objXmlSkill in objXmlSkillsList)
-						{
-							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
-							objItem.Value = objNode.InnerText;
-							if (objNode.Attributes["translate"] != null)
-								objItem.Name = objNode.Attributes["translate"].InnerText;
-							else
-								objItem.Name = objNode.InnerText;
-							lstSkills1.Add(objItem);
-							objItem = new ListItem();
-						}
-
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = false;
-                    }
-                    else
-                    {
-                        lblMetatypeSkillSelection.Visible = false;
-                        cboSkill1.Visible = false;
-                        cboSkill2.Visible = false;
-                    }
-                }
-                else if (cboTalent.SelectedValue.ToString() == "C,2")
-                {
-                    if (cboTalents.SelectedValue.ToString() == "Adept")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAdeptC"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-                        List<ListItem> lstSkills1 = new List<ListItem>();
-                        XmlNodeList objXmlActiveSkills = GetActiveSkillList();
-                        foreach (XmlNode objXmlSkill in objXmlActiveSkills)
-                        {
-							ListItem objItem = new ListItem();
-							objItem.Value = objXmlSkill["name"].InnerText;
-							if (objXmlSkill["translate"] != null)
-								objItem.Name = objXmlSkill["translate"].InnerText;
-							else
-								objItem.Name = objXmlSkill["name"].InnerText;
-							lstSkills1.Add(objItem);
-                        }
-                        cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = false;
-                    }
-                    else if (cboTalents.SelectedValue.ToString() == "Aspected Magician")
-                    {
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedC"));
-                        lblMetatypeSkillSelection.Text = strLabel;
-
-						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
-						List<ListItem> lstSkills1 = new List<ListItem>();
-						XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
-						ListItem objItem = new ListItem();
-
-						foreach (XmlNode objXmlSkill in objXmlSkillsList)
-						{
-							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
-							objItem.Value = objNode.InnerText;
-							if (objNode.Attributes["translate"] != null)
-								objItem.Name = objNode.Attributes["translate"].InnerText;
-							else
-								objItem.Name = objNode.InnerText;
-							lstSkills1.Add(objItem);
-							objItem = new ListItem();
-						}
-
-						cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
-
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = false;
-                    }
-                    else
-                    {
-                        lblMetatypeSkillSelection.Visible = false;
-                        cboSkill1.Visible = false;
-                        cboSkill2.Visible = false;
-                    }
-                }
-                else if (cboTalent.SelectedValue.ToString() == "D,1")
-                {
-					if (cboTalents.SelectedValue.ToString().StartsWith("Aspected Magician"))
+			if (cboTalents.SelectedIndex >= 0 && cboTalents.SelectedValue != null)
+			{
+				XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
+				XmlNode objTalentsNode =
+					objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" +
+															cboTalent.SelectedValue + "\"]/talents/talent[value = \"" +
+															cboTalents.SelectedValue + "\"]");
+				if (objTalentsNode != null)
+				{
+					string strSkillCount = (objTalentsNode.SelectSingleNode("skillqty")?.InnerText ??
+											objTalentsNode.SelectSingleNode("skillgroupqty")?.InnerText);
+					string strSkillType = (objTalentsNode.SelectSingleNode("skilltype")?.InnerText ??
+										   objTalentsNode.SelectSingleNode("skillgrouptype")?.InnerText);
+					string strSkillVal = (objTalentsNode.SelectSingleNode("skillval")?.InnerText ??
+										  objTalentsNode.SelectSingleNode("skillgroupval")?.InnerText);
+					string strLabel = LanguageManager.Instance.GetString("String_MetamagicSkillBase");
+					strLabel = string.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkills"));
+					strLabel = string.Format(strLabel, strSkillCount, strSkillType, strSkillVal);
+					lblMetatypeSkillSelection.Text = strLabel;
+					XmlNodeList objXmlSkillsList;
+					switch (strSkillType)
 					{
-                        strLabel = String.Format(strLabel, LanguageManager.Instance.GetString("String_MetamagicSkillAspectedD"));
-                        lblMetatypeSkillSelection.Text = strLabel;
+						case "magic":
+							{
+								objXmlSkillsList = GetMagicalSkillList();
+								break;
+							}
+						case "resonance":
+							{
+								objXmlSkillsList = GetResonanceSkillList();
+								break;
+							}
+						case "matrix":
+							{
+								objXmlSkillsList = GetMatrixSkillList();
+								break;
+							}
+						default:
+							{
+								objXmlSkillsList = GetActiveSkillList();
+								break;
+							}
+					}
 
-						XmlDocument objXmlDocumentPriority = XmlManager.Instance.Load(_strPrioritiesXmlFile);
-						List<ListItem> lstSkills1 = new List<ListItem>();
-						XmlNodeList objXmlSkillsList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[value = \"Aspected Magician\"]/skillgroupchoices/skillgroup");
-						ListItem objItem = new ListItem();
-
+					if (strSkillCount == "1" || strSkillCount == "2")
+					{
+						List<ListItem> lstSkills = new List<ListItem>();
 						foreach (XmlNode objXmlSkill in objXmlSkillsList)
 						{
-							XmlNode objNode = GetSpecificSkillGroup(objXmlSkill.InnerText);
-							objItem.Value = objNode.InnerText;
-							if (objNode.Attributes["translate"] != null)
-								objItem.Name = objNode.Attributes["translate"].InnerText;
-							else
-								objItem.Name = objNode.InnerText;
-							lstSkills1.Add(objItem);
-							objItem = new ListItem();
+							ListItem objItem = new ListItem
+							{
+								Value = objXmlSkill["name"]?.InnerText,
+								Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
+							};
+							lstSkills.Add(objItem);
 						}
-
 						cboSkill1.ValueMember = "Value";
-                        cboSkill1.DisplayMember = "Name";
-                        cboSkill1.DataSource = lstSkills1;
+						cboSkill1.DisplayMember = "Name";
+						cboSkill1.DataSource = lstSkills;
+						cboSkill1.Visible = true;
 
-                        lblMetatypeSkillSelection.Visible = true;
-                        cboSkill1.Visible = true;
-                        cboSkill2.Visible = false;
-                    }
-                    else
-                    {
-                        lblMetatypeSkillSelection.Visible = false;
-                        cboSkill1.Visible = false;
-                        cboSkill2.Visible = false;
-                    }
-                }
-                else
-                {
-                    lblMetatypeSkillSelection.Visible = false;
-                    cboSkill1.Visible = false;
-                    cboSkill2.Visible = false;
-                }
-            }
-            else
-            {
-	            cboTalents.SelectedIndex = 0;
+						if (strSkillCount == "2")
+						{
+							cboSkill2.BindingContext = new BindingContext();
+							cboSkill2.ValueMember = "Value";
+							cboSkill2.DisplayMember = "Name";
+							cboSkill2.DataSource = lstSkills;
+							cboSkill2.Visible = true;
+						}
+						lblMetatypeSkillSelection.Visible = true;
+					}
+					else
+					{
+						cboSkill1.Visible = false;
+						cboSkill2.Visible = false;
+						lblMetatypeSkillSelection.Visible = false;
+					}
+				}
+			}
+			else
+			{
+				cboTalents.SelectedIndex = 0;
 				lblMetatypeSkillSelection.Visible = false;
-                cboSkill1.Visible = false;
-                cboSkill2.Visible = false;
+				cboSkill1.Visible = false;
+				cboSkill2.Visible = false;
 			}
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
@@ -1006,41 +775,15 @@ namespace Chummer
 
         private void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnInitializing)
-                return;
-
+			if (_blnInitializing)
+				return;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
 			{
-				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
-
-				// Discover which priority rating is not currently assigned
-				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-				objPriorities.Remove(cboTalent.SelectedValue.ToString());
-				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-				objPriorities.Remove(cboSkills.SelectedValue.ToString());
-				objPriorities.Remove(cboResources.SelectedValue.ToString());
-				if (objPriorities.Count == 0)
-					return;
-
-				string strMissing = objPriorities[0].ToString();
-
-				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
-				if (cboTalent.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-					cboTalent.SelectedValue = strMissing;
-
-				if (cboAttributes.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-					cboAttributes.SelectedValue = strMissing;
-
-				if (cboSkills.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-					cboSkills.SelectedValue = strMissing;
-
-				if (cboResources.SelectedValue.ToString() == cboHeritage.SelectedValue.ToString())
-					cboResources.SelectedValue = strMissing;
+				ManagePriorityItems(cboHeritage);
 			}
-            _blnInitializing = false;
+			_blnInitializing = false;
 
-            string strMetatype = "";
+			string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
@@ -1057,38 +800,13 @@ namespace Chummer
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnInitializing)
-                return;
+			if (_blnInitializing)
+				return;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
 			{
-				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
-
-				// Discover which priority rating is not currently assigned
-				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-				objPriorities.Remove(cboTalent.SelectedValue.ToString());
-				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-				objPriorities.Remove(cboSkills.SelectedValue.ToString());
-				objPriorities.Remove(cboResources.SelectedValue.ToString());
-				if (objPriorities.Count == 0)
-					return;
-
-				string strMissing = objPriorities[0].ToString();
-
-				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
-				if (cboHeritage.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-					cboHeritage.SelectedValue = strMissing;
-
-				if (cboAttributes.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-					cboAttributes.SelectedValue = strMissing;
-
-				if (cboSkills.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-					cboSkills.SelectedValue = strMissing;
-
-				if (cboResources.SelectedValue.ToString() == cboTalent.SelectedValue.ToString())
-					cboResources.SelectedValue = strMissing;
+				ManagePriorityItems(cboTalent);
 			}
-            _blnInitializing = false;
+			_blnInitializing = false;
 
             string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
@@ -1108,40 +826,15 @@ namespace Chummer
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnInitializing)
-                return;
+			if (_blnInitializing)
+				return;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
 			{
-				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
-
-				// Discover which priority rating is not currently assigned
-				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-				objPriorities.Remove(cboTalent.SelectedValue.ToString());
-				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-				objPriorities.Remove(cboSkills.SelectedValue.ToString());
-				objPriorities.Remove(cboResources.SelectedValue.ToString());
-				if (objPriorities.Count == 0)
-					return;
-
-				string strMissing = objPriorities[0].ToString();
-
-				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
-				if (cboTalent.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-					cboTalent.SelectedValue = strMissing;
-
-				if (cboHeritage.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-					cboHeritage.SelectedValue = strMissing;
-
-				if (cboSkills.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-					cboSkills.SelectedValue = strMissing;
-
-				if (cboResources.SelectedValue.ToString() == cboAttributes.SelectedValue.ToString())
-					cboResources.SelectedValue = strMissing;
+				ManagePriorityItems(cboAttributes);
 			}
-            _blnInitializing = false;
+			_blnInitializing = false;
 
-            string strMetatype = "";
+			string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
@@ -1158,47 +851,22 @@ namespace Chummer
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnInitializing)
-                return;
+			if (_blnInitializing)
+				return;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
 			{
-				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
-
-				// Discover which priority rating is not currently assigned
-				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-				objPriorities.Remove(cboTalent.SelectedValue.ToString());
-				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-				objPriorities.Remove(cboSkills.SelectedValue.ToString());
-				objPriorities.Remove(cboResources.SelectedValue.ToString());
-				if (objPriorities.Count == 0)
-					return;
-
-				string strMissing = objPriorities[0].ToString();
-
-				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
-				if (cboTalent.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-					cboTalent.SelectedValue = strMissing;
-
-				if (cboAttributes.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-					cboAttributes.SelectedValue = strMissing;
-
-				if (cboHeritage.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-					cboHeritage.SelectedValue = strMissing;
-
-				if (cboResources.SelectedValue.ToString() == cboSkills.SelectedValue.ToString())
-					cboResources.SelectedValue = strMissing;
+				ManagePriorityItems(cboSkills);
 			}
-            _blnInitializing = false;
+			_blnInitializing = false;
 
-            string strMetatype = "";
+			string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
             lstMetatypes.SelectedValue = strMetatype;
             PopulateTalents();
 
-            if (cboTalent.SelectedValue.ToString() == "E")
+            if (cboTalent.SelectedValue.ToString() == "E,0")
                 cboTalents.SelectedIndex = 0;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
@@ -1210,45 +878,20 @@ namespace Chummer
         {
             if (_blnInitializing)
                 return;
-			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
-			{
-				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
-
-				// Discover which priority rating is not currently assigned
-				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
-				objPriorities.Remove(cboTalent.SelectedValue.ToString());
-				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
-				objPriorities.Remove(cboSkills.SelectedValue.ToString());
-				objPriorities.Remove(cboResources.SelectedValue.ToString());
-				if (objPriorities.Count == 0)
-					return;
-
-				string strMissing = objPriorities[0].ToString();
-
-				// Find the combo with the same value as this one and change it to the missing value.
-				_blnInitializing = true;
-				if (cboTalent.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-					cboTalent.SelectedValue = strMissing;
-
-				if (cboAttributes.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-					cboAttributes.SelectedValue = strMissing;
-
-				if (cboSkills.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-					cboSkills.SelectedValue = strMissing;
-
-				if (cboHeritage.SelectedValue.ToString() == cboResources.SelectedValue.ToString())
-					cboHeritage.SelectedValue = strMissing;
+	        if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+	        {
+		        ManagePriorityItems(cboResources);
 			}
-            _blnInitializing = false;
+			_blnInitializing = false;
 
-            string strMetatype = "";
+			string strMetatype = "";
             if (lstMetatypes.SelectedIndex >= 0)
                 strMetatype = lstMetatypes.SelectedValue.ToString();
             LoadMetatypes();
             lstMetatypes.SelectedValue = strMetatype;
             PopulateTalents();
 
-            if (cboTalent.SelectedValue.ToString() == "E")
+            if (cboTalent.SelectedValue.ToString() == "E,0")
                 cboTalents.SelectedIndex = 0;
 			if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
 			{
@@ -2057,6 +1700,50 @@ namespace Chummer
 		    
         }
 
+		/// <summary>
+		/// Manages adjusting priority selections to prevent doubling up in Priority mode.
+		/// </summary>
+		/// <param name="comboBox"></param>
+		private void ManagePriorityItems(ComboBox comboBox)
+		{
+			if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+			{
+				List<string> objPriorities = new List<string>() { "A,4", "B,3", "C,2", "D,1", "E,0" };
+
+				// Discover which priority rating is not currently assigned
+				objPriorities.Remove(cboHeritage.SelectedValue.ToString());
+				objPriorities.Remove(cboTalent.SelectedValue.ToString());
+				objPriorities.Remove(cboAttributes.SelectedValue.ToString());
+				objPriorities.Remove(cboSkills.SelectedValue.ToString());
+				objPriorities.Remove(cboResources.SelectedValue.ToString());
+				if (objPriorities.Count == 0)
+					return;
+
+				string strMissing = objPriorities[0];
+
+				// Find the combo with the same value as this one and change it to the missing value.
+				_blnInitializing = true;
+				if (comboBox.Name != cboTalent.Name &&
+					cboTalent.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
+					cboTalent.SelectedValue = strMissing;
+
+				if (comboBox.Name != cboHeritage.Name &&
+					cboHeritage.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
+					cboHeritage.SelectedValue = strMissing;
+
+				if (comboBox.Name != cboSkills.Name &&
+					cboSkills.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
+					cboSkills.SelectedValue = strMissing;
+
+				if (comboBox.Name != cboResources.Name &&
+					cboResources.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
+					cboResources.SelectedValue = strMissing;
+
+				if (comboBox.Name != cboAttributes.Name &&
+					cboAttributes.SelectedValue.ToString() == comboBox.SelectedValue.ToString())
+					cboAttributes.SelectedValue = strMissing;
+			}
+		}
 
 		private int SumtoTen()
 		{
@@ -2283,6 +1970,13 @@ namespace Chummer
 		    XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
 			var objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
 			return objXmlSkill;
+		}
+
+		private XmlNodeList GetMatrixSkillList()
+		{
+			XmlDocument objXmlSkillsDocument = XmlManager.Instance.Load("skills.xml");
+			var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
+			return objXmlSkillList;
 		}
 
 		private XmlNode GetSpecificSkillGroup(string strSkill)
