@@ -43,7 +43,6 @@ Data Changes:
 - Fixed missing attribute choices for the Banshee quality. 
 - Added missing content from Howling Shadows, Battle Of Manhattan, The Vladivostok Gauntlet, Splintered State and Shadows In Focus: Butte courtesy of GamingHarry.
 - Added a missing offroadhandling bonus to the Handling Enhancement vehicle mod.
-- Changed the Norse Tradition to use WIL + CHA for Drain instead of WIL + LOG.
 
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill

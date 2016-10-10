@@ -340,7 +340,7 @@
 		</tradition>
 		<tradition>
 			<name>Norse</name>
-			<drain>WIL + CHA</drain>
+			<drain>WIL + LOG</drain>
 			<spirits>
 				<spirit>Guardian Spirit</spirit>
 				<spirit>Spirit of Earth</spirit>
