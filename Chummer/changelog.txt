@@ -28,6 +28,7 @@ Application CHanges:
 - Fixed an issue with the Print Expenses option not disabling properly. 
 - Fixed a crash caused by adding lifestyle qualities that don't have a free breakpoint. 
 - Fixed an issue with the character roster not properly showing career karma. Takes effect on next save of the character.
+- Fixed a problem with Laser Weapon ammunition not being properly usable in career mode. 
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.
@@ -40,6 +41,8 @@ Data Changes:
 - Fixed an incorrect cost for the Saeder-Krupp MK-170 Neptune (Large).
 - Fixed missing attribute choices for the Banshee quality. 
 - Added missing content from Howling Shadows, Battle Of Manhattan, The Vladivostok Gauntlet, Splintered State and Shadows In Focus: Butte courtesy of GamingHarry.
+- Added a missing offroadhandling bonus to the Handling Enhancement vehicle mod.
+- Changed the Norse Tradition to use WIL + CHA for Drain instead of WIL + LOG.
 
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
