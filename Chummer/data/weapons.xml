@@ -3603,6 +3603,7 @@
 			<avail>24F</avail>
 			<cost>35000</cost>
 			<allowaccessory>true</allowaccessory>
+      <useskill>Exotic Ranged Weapons</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
@@ -3632,6 +3633,7 @@
 			<avail>18F</avail>
 			<cost>16000</cost>
 			<allowaccessory>true</allowaccessory>
+      <useskill>Exotic Ranged Weapons</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
@@ -3656,6 +3658,7 @@
 			<avail>14F</avail>
 			<cost>7500</cost>
 			<allowaccessory>true</allowaccessory>
+      <useskill>Exotic Ranged Weapons</useskill>
 			<accessorymounts>
 				<mount>Top</mount>
 				<mount>Under</mount>
