@@ -7195,11 +7195,13 @@
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
 						<val>1</val>
 					</selectattribute>
 					<selectattribute>
 						<attribute>WIL</attribute>
 						<attribute>INT</attribute>
+						<attribute>CHA</attribute>
 						<val>1</val>
 					</selectattribute>
 				</selectattributes>

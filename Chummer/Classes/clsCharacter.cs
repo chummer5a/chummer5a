@@ -469,7 +469,7 @@ namespace Chummer
 			// <karma />
 			objWriter.WriteElementString("karma", _intKarma.ToString());
             // <totalkarma />
-            objWriter.WriteElementString("totalkarma", _intTotalKarma.ToString());
+            objWriter.WriteElementString("totalkarma", CareerKarma.ToString());
             // <special />
             objWriter.WriteElementString("special", _intSpecial.ToString());
             // <totalspecial />

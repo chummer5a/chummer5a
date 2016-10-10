@@ -27,6 +27,7 @@ Application CHanges:
 - Fixed an issue with linguasofts contributing to point costs for knowledge skills. 
 - Fixed an issue with the Print Expenses option not disabling properly. 
 - Fixed a crash caused by adding lifestyle qualities that don't have a free breakpoint. 
+- Fixed an issue with the character roster not properly showing career karma. Takes effect on next save of the character.
 - Fixed a problem with Laser Weapon ammunition not being properly usable in career mode. 
 
 Data Changes: 
@@ -38,10 +39,12 @@ Data Changes:
 - Fixed an issue with the Gamber Mentor Spirit's skill choice bonus.
 - Added a filter to the Metahuman Adjustment vehicle mod that prevents it from being visible for vehicles and drones that don't have a seat. 
 - Fixed an incorrect cost for the Saeder-Krupp MK-170 Neptune (Large).
+- Fixed missing attribute choices for the Banshee quality. 
 
 New Strings: 
 - Message_ConfirmKarmaExpenseKnowledgeSkill
 - Checkbox_Option_AllowMysadPowerPointCareer
+- String_MetamagicSkills
 Build 184:
 Application Changes:
 - New ImprovementType: ReplaceAttribute. This allows you to replace the metatypeminimum or metatypemaximum with another value. Intended to be used for infected.
