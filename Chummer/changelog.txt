@@ -29,6 +29,7 @@ Application CHanges:
 - Fixed a crash caused by adding lifestyle qualities that don't have a free breakpoint. 
 - Fixed an issue with the character roster not properly showing career karma. Takes effect on next save of the character.
 - Fixed a problem with Laser Weapon ammunition not being properly usable in career mode. 
+- Altered the behaviour of the addqualities bonus node to default to having child qualities contribute to karma expenditure. 
 
 Data Changes: 
 - Fixed the LP cost for the Indoor Arboretum lifestyle quality.

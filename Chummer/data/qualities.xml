@@ -3520,7 +3520,7 @@
 			<bonus>
 				<excon />
 				<addqualities>
-					<addquality contributetobp="false">SINner (Criminal)</addquality>
+					<addquality>SINner (Criminal)</addquality>
 				</addqualities>
 			</bonus>
 			<nomission />
@@ -8976,11 +8976,14 @@
 		</quality>
 		<quality>
 			<id>f74b4ef1-988f-4787-9a8c-aea493bd7e95</id>
-			<name>Infected: Mutaqua (Non-Awakened)</name>
+			<name>Infected: Mutaqua (Mundane)</name>
 			<contributetolimit>no</contributetolimit>
 			<karma>54</karma>
 			<category>Positive</category>
 			<bonus>
+				<addqualities>
+					<addquality>Mystic Adept</addquality>
+				</addqualities>
 				<armor>1</armor>
 				<enabletab>
 					<name>critter</name>
@@ -9238,7 +9241,8 @@
 					<quality>Infected: Fomoraig</quality>
 					<quality>Infected: Dzoo-Noo-Qua</quality>
 					<quality>Infected: Ghoul (Troll)</quality>
-					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Mundane)</quality>
+					<quality>Infected: Mutaqua (Non-Adept)</quality>
 					<quality>Infected: Vampire (Non-Human)</quality>
 					<quality>Mystic Adept</quality>
 				</oneof>
@@ -9392,7 +9396,7 @@
 					<quality>Infected: Grendel</quality>
 					<quality>Infected: Harvester</quality>
 					<quality>Infected: Loup-Garou</quality>
-					<quality>Infected: Mutaqua (Non-Awakened)</quality>
+					<quality>Infected: Mutaqua (Mundane)</quality>
 					<quality>Infected: Mutaqua (Adept)</quality>
 					<quality>Infected: Nosferatu</quality>
 					<quality>Infected: Vampire (Human)</quality>
@@ -11746,7 +11750,7 @@
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
 				<addqualities>
-					<addquality contributetobp="false">Wanted</addquality>
+					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
 			<naturalweapons>
@@ -11804,7 +11808,7 @@
 					<power select="Fire">Elemental Attack</power>
 				</critterpowers>
 				<addqualities>
-					<addquality contributetobp="false">Wanted</addquality>
+					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
 			<naturalweapons>
@@ -11870,7 +11874,7 @@
 					<power select="Fire">Elemental Attack</power>
 				</critterpowers>
 				<addqualities>
-					<addquality contributetobp="false">Wanted</addquality>
+					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
 			<naturalweapons>
@@ -11932,7 +11936,7 @@
 				<power select="Fire">Elemental Attack</power>
 			</critterpowers>
 				<addqualities>
-					<addquality contributetobp="false">Wanted</addquality>
+					<addquality>Wanted</addquality>
 				</addqualities>
 			</bonus>
 			<naturalweapons>

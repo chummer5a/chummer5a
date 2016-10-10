@@ -3858,13 +3858,13 @@ namespace Chummer.Classes
 					TreeNode objAddQualityNode = new TreeNode();
 					Quality objAddQuality = new Quality(_objCharacter);
 					objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Selected, objAddQualityNode, null, null, strForceValue);
-					if (objXmlAddQuality.Attributes["contributetobp"] != null)
+
+					bool blnFree = (objXmlAddQuality.Attributes["contributetobp"] == null ||
+					                (objXmlAddQuality.Attributes["contributetobp"]?.InnerText.ToLower() != "true"));
+					if (blnFree)
 					{
-						if (objXmlAddQuality.Attributes["contributetobp"].InnerText.ToLower() == "false")
-						{
-							objAddQuality.BP = 0;
-							objAddQuality.ContributeToLimit = false;
-						}
+						objAddQuality.BP = 0;
+						objAddQuality.ContributeToLimit = false;
 					}
 					_objCharacter.Qualities.Add(objAddQuality);
 					CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName,
