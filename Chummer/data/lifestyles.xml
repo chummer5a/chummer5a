@@ -1223,5 +1223,86 @@
 			<page>141</page>
 			<id>23dcd584-9650-44b0-9273-896873ba6f61</id>
 		</quality>	
+		<!-- Region Shadows in Focus: Butte-->
+
+		<quality>
+			<id>79de178b-6064-468f-bb8d-72b510dc0239</id>
+			<name>Escape Tunnel, 100 Meters</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>f5b675ed-2d7f-4325-b301-a63deb81356c</id>
+			<name>Escape Tunnel, 200 Meters</name>
+			<category>Entertainment - Asset</category>
+			<lp>2</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>e548ba65-e403-4cd5-bc70-3d45478ad76c</id>
+			<name>Escape Tunnel, 300 Meters</name>
+			<category>Entertainment - Asset</category>
+			<lp>3</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>7f8bdcb0-b5c6-4741-86b1-e48cff81709e</id>
+			<name>Escape Tunnel, 400 Meters</name>
+			<category>Entertainment - Asset</category>
+			<lp>4</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>fdb2718d-a88d-45f3-ba54-6ed6937321bc</id>
+			<name>Escape Tunnel, 500 Meters</name>
+			<category>Entertainment - Asset</category>
+			<lp>5</lp>
+			<allowed>Squatter,Low,Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>ffb7fb04-77ee-4a12-8823-7012aa272dbf</id>
+			<name>Cramped Garage (Stable)</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>180</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>24435fe5-2791-40e2-8ca1-6e397b6982d8</id>
+			<name>Garage (Stable)</name>
+			<category>Entertainment - Asset</category>
+			<lp>1</lp>
+			<allowed>Medium,High,Luxury</allowed>
+			<source>SFB</source>
+			<cost>200</cost>
+			<page>20</page>
+		</quality>
+		<quality>
+			<id>665c46a9-4726-4e57-963f-392c30f653e9</id>
+			<name>Haunted</name>
+			<category>Negative</category>
+			<lp>0</lp>
+			<source>SFB</source>
+			<page>20</page>
+		</quality>
+	<!-- End Region -->
 	</qualities>
 </chummer>

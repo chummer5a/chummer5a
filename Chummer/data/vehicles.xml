@@ -5552,6 +5552,26 @@
 			<source>HT</source>
 			<page>190</page>
 		</vehicle>
+		<vehicle>
+			<id>1264a59a-2fdd-4d41-a674-2082db4f199b</id>
+			<name>Clockwork Greyhound</name>
+			<category>Drones: Medium</category>
+			<handling>3</handling>
+			<accel>1</accel>
+			<speed>2</speed>
+			<pilot>3</pilot>
+			<body>2</body>
+			<armor>1</armor>
+			<seats>0</seats>
+			<sensor>2</sensor>
+			<gears>
+				<gear rating="2" maxrating="4">Sensor Array</gear>
+			</gears>
+			<avail>16</avail>
+			<cost>225000</cost>
+			<source>TVG</source>
+			<page>19</page>
+		</vehicle>
 	</vehicles>
 	<mods>
 		<mod>

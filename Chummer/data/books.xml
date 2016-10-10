@@ -127,5 +127,25 @@
 			<name>Howling Shadows</name>
 			<code>HS</code>
 		</book>
+		<book>
+			<id>9b88873f-61fa-4419-b733-49b96997bd42</id>
+			<name>Battle Of Manhattan</name>
+			<code>BOM</code>
+		</book>
+		<book>
+			<id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
+			<name>The Vladivostok Gauntlet</name>
+			<code>TVG</code>
+		</book>
+		<book>
+			<id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
+			<name>Splintered State</name>
+			<code>SPS</code>
+		</book>
+		<book>
+			<id>58b3ffae-7320-4b11-8c50-db92b7f0452b</id>
+			<name>Shadows In Focus: Butte</name>
+			<code>SFB</code>
+		</book>
 	</books>
 </chummer>

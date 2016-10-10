@@ -2391,6 +2391,24 @@
 			<source>DT</source>
 			<page>64</page>
 		</gear>
+		<gear>
+			<id>caa889d9-7bd6-4745-84f7-4454951e3d53</id>
+			<name>Crystal Leviathan Shatterstar</name>
+			<category>Cyberdecks</category>
+			<capacity>0</capacity>
+			<rating>5</rating>
+			<devicerating>5</devicerating>
+			<attributearray>8,7,7,5</attributearray>
+			<attack>8</attack>
+			<sleaze>7</sleaze>
+			<dataprocessing>7</dataprocessing>
+			<firewall>5</firewall>
+			<programs>4</programs>
+			<avail>20R</avail>
+			<cost>500000</cost>
+			<source>SPS</source>
+			<page>45</page>
+		</gear>
 		<!-- End Region -->
 		<!-- Region RCCs -->
 		<gear>
@@ -3910,6 +3928,38 @@
 			<cost>Rating * 50</cost>
 			<source>SR5</source>
 			<page>445</page>
+		</gear>
+		<gear>
+			<id>bedcaf29-5b6e-4135-8589-d8b5a1291afb</id>
+			<name>Critter Earphones</name>
+			<category>Audio Devices</category>
+			<rating>6</rating>
+			<capacity>Rating</capacity>
+			<avail>3</avail>
+			<cost>Rating * 50</cost>
+			<source>HS</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>098beed4-c197-432e-adb9-bedba3eda18a</id>
+			<name>Critter Goggles</name>
+			<category>Vision Devices</category>
+			<rating>6</rating>
+			<capacity>Rating</capacity>
+			<avail>3</avail>
+			<cost>Rating * 50</cost>
+			<source>HS</source>
+			<page>185</page>
+		</gear>
+		<gear>
+			<id>df3e6d75-4f97-4ad3-a944-02b8f0733b78</id>
+			<name>Training Kit</name>
+			<category>Miscellany</category>
+			<rating>0</rating>
+			<avail>1</avail>
+			<cost>250</cost>
+			<source>HS</source>
+			<page>185</page>
 		</gear>
 		<!-- End Region -->
 		<!-- Region Audio Enhancements -->
@@ -6663,6 +6713,57 @@
 			<cost>100</cost>
 			<source>BB</source>
 			<page>19</page>
+		</gear>
+		<gear>
+			<id>1e391e72-1c21-44b3-b935-7abfba2dca43</id>
+			<name>Evo Aphrodite Reactive Biomatter</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>8</avail>
+			<cost>1000</cost>
+			<source>TVG</source>
+			<page>19</page>
+		</gear>
+		<!-- Lockdown Drugs -->
+		<gear>
+			<id>c113d0e8-8720-47fb-9ac6-fdc9e262c94b</id>
+			<name>Accelerator</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>200</cost>
+			<source>LCD</source>
+			<page>205</page>
+		</gear>
+		<gear>
+			<id>ee783a4e-331f-4e03-bf47-7ecb93341919</id>
+			<name>Buffout</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>100</cost>
+			<source>LCD</source>
+			<page>204</page>
+		</gear>
+		<gear>
+			<id>31f51b7e-d2eb-4274-aead-72710b198c13</id>
+			<name>Numb</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>150</cost>
+			<source>LCD</source>
+			<page>204</page>
+		</gear>
+		<gear>
+			<id>87186987-c004-439a-8958-d7b82198fb69</id>
+			<name>Pinpoint</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<avail>6R</avail>
+			<cost>75</cost>
+			<source>LCD</source>
+			<page>204</page>
 		</gear>
 		<gear>
 			<id>d7fc6610-8ec3-45eb-8a8d-c664c84db56f</id>
