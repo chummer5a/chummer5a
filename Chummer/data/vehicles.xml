@@ -5823,6 +5823,7 @@
 			<cost>FixedValues(Rating*2000,Rating*5000,Rating*12000)</cost>
 			<bonus>
 				<handling>+Rating</handling>
+        <offroadhandling>+Rating</offroadhandling>
 			</bonus>
 			<source>R5</source>
 			<page>154</page>
