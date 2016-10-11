@@ -1,3 +1,7 @@
+Build 186:
+Data Changes:
+- Fixed missing values for Metahuman adjustment on several vehicles.
+
 Build 185:
 Application CHanges: 
 - Fixed an issue with Sprint distance calculations for Movement. 

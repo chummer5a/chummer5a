@@ -2730,7 +2730,7 @@
 				<gear rating="5" maxrating="7">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>24F</avail>
 			<cost>2275000</cost>
@@ -2773,7 +2773,7 @@
 				<gear rating="4" maxrating="7">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>24R</avail>
 			<cost>50000</cost>
@@ -4190,7 +4190,7 @@
 				<gear rating="2" maxrating="6">Sensor Array</gear>
 			</gears>
 			<mods>
-				<name>Metahuman Adjustment</name>
+        <name rating="1">Metahuman Adjustment</name>
 			</mods>
 			<avail>0</avail>
 			<cost>12000</cost>
