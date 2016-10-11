@@ -21219,8 +21219,9 @@ namespace Chummer
                 strInit += " + (" + _objCharacter.InitiativePasses.ToString() + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
-                // Astral Initiative.
-                if (_objCharacter.MAGEnabled)
+				// Astral Initiative.
+				lblAstralINI.Visible = _objCharacter.MAGEnabled;
+				if (_objCharacter.MAGEnabled)
                 {
                     lblAstralINI.Text = _objCharacter.AstralInitiative;
                     strInit = "INT (" + _objCharacter.INT.TotalValue.ToString() + ") x 2";
@@ -23746,6 +23747,9 @@ namespace Chummer
 				lblVehicleGearQty.Text = "";
 				cmdVehicleGearReduceQty.Enabled = false;
 				cboVehicleWeaponAmmo.Enabled = false;
+
+				lblVehicleSeatsLabel.Visible = false;
+				lblVehicleSeats.Visible = false;
 				return;
 			}
 			chkVehicleHomeNode.Visible = false;
@@ -23831,6 +23835,10 @@ namespace Chummer
 				lblVehiclePilot.Text = objVehicle.Pilot.ToString();
 				lblVehicleBody.Text = objVehicle.TotalBody.ToString();
 				lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
+				lblVehicleSeats.Text = objVehicle.Seats.ToString();
+
+				lblVehicleSeatsLabel.Visible = true;
+				lblVehicleSeats.Visible = true;
 
 				// Update the vehicle mod slots
 				if (_objOptions.BookEnabled("R5"))
@@ -23904,7 +23912,6 @@ namespace Chummer
 
 				lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
 				UpdateSensor(objVehicle);
-
 				string strBook = _objOptions.LanguageBookShort(objVehicle.Source);
 				string strPage = objVehicle.Page;
 				lblVehicleSource.Text = strBook + " " + strPage;

@@ -15067,8 +15067,9 @@ namespace Chummer
                 strInit += " + (" + _objCharacter.InitiativePasses + "d6)";
                 tipTooltip.SetToolTip(lblINI, strInit);
 
-                // Astral Initiative.
-                if (_objCharacter.MAGEnabled)
+				// Astral Initiative.
+	            lblAstralINI.Visible = _objCharacter.MAGEnabled;
+				if (_objCharacter.MAGEnabled)
                 {
                     lblAstralINI.Text = _objCharacter.AstralInitiative;
                     strInit = "INT (" + _objCharacter.INT.TotalValue.ToString() + ") x 2";
@@ -17559,11 +17560,12 @@ namespace Chummer
 			lblVehicleWeaponRangeLongLabel.Visible = blnDisplay;
 			lblVehicleWeaponRangeExtremeLabel.Visible = blnDisplay;
 		}
-		private void DisplayVehicleCommlinkStats(bool blnDisplay)
+
 		/// <summary>
 		/// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
 		/// </summary>
 		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		private void DisplayVehicleCommlinkStats(bool blnDisplay)
 		{
 			cboVehicleGearAttack.Visible = blnDisplay;
 			cboVehicleGearSleaze.Visible = blnDisplay;
@@ -17577,11 +17579,11 @@ namespace Chummer
 			lblVehicleDeviceLabel.Visible = blnDisplay;
 		}
 
-		private void DisplayVehicleStats(bool blnDisplay)
 		/// <summary>
 		/// Switches the visibility of Commlink attributes on the Vehicles and Drones form.
 		/// </summary>
 		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		private void DisplayVehicleStats(bool blnDisplay)
 		{
 			lblVehicleHandling.Visible = blnDisplay;
 			lblVehicleAccel.Visible = blnDisplay;
@@ -17613,13 +17615,15 @@ namespace Chummer
 			lblVehicleProtection.Visible = blnDisplay;
 			lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
 			lblVehicleDroneModSlots.Visible = blnDisplay;
+			lblVehicleSeatsLabel.Visible = blnDisplay;
+			lblVehicleSeats.Visible = blnDisplay;
 		}
 
-		private void DisplayVehicleMods(bool blnDisplay)
 		/// <summary>
 		/// Switches the visibility of Vehicle (non-drone) Mods on the Vehicles and Drones form.
 		/// </summary>
 		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		private void DisplayVehicleMods(bool blnDisplay)
 		{
 			lblVehiclePowertrainLabel.Visible = blnDisplay;
 			lblVehiclePowertrain.Visible = blnDisplay;
@@ -17634,15 +17638,17 @@ namespace Chummer
 			lblVehicleProtectionLabel.Visible = blnDisplay;
 			lblVehicleProtection.Visible = blnDisplay;
 		}
-		private void DisplayVehicleDroneMods(bool blnDisplay)
+
 		/// <summary>
 		/// Switches the visibility of Drone Mods on the Vehicles and Drones form.
 		/// </summary>
 		/// <param name="blnDisplay">Whether to hide or show the objects.</param>
+		private void DisplayVehicleDroneMods(bool blnDisplay)
 		{
 			lblVehicleDroneModSlotsLabel.Visible = blnDisplay;
 			lblVehicleDroneModSlots.Visible = blnDisplay;
 		}
+
 		/// <summary>
 		/// Refresh the currently-selected Vehicle.
 		/// </summary>
@@ -17711,6 +17717,7 @@ namespace Chummer
                 lblVehiclePilot.Text = objVehicle.Pilot.ToString();
                 lblVehicleBody.Text = objVehicle.TotalBody.ToString();
                 lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
+	            lblVehicleSeats.Text = objVehicle.Seats.ToString();
 
 				// Update the vehicle mod slots
 				if (objVehicle.IsDrone && GlobalOptions.Instance.Dronemods)
