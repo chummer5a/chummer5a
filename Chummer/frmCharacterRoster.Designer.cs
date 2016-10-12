@@ -30,304 +30,311 @@ namespace Chummer
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treCharacterList = new System.Windows.Forms.TreeView();
-			this.picMugshot = new System.Windows.Forms.PictureBox();
-			this.tabCharacterText = new System.Windows.Forms.TabControl();
-			this.panCharacterBio = new System.Windows.Forms.TabPage();
-			this.txtCharacterBio = new System.Windows.Forms.TextBox();
-			this.panCharacterConcept = new System.Windows.Forms.TabPage();
-			this.txtCharacterConcept = new System.Windows.Forms.TextBox();
-			this.panCharacterBackground = new System.Windows.Forms.TabPage();
-			this.txtCharacterBackground = new System.Windows.Forms.TextBox();
-			this.panCharacterNotes = new System.Windows.Forms.TabPage();
-			this.txtCharacterNotes = new System.Windows.Forms.TextBox();
-			this.lblCharacterName = new System.Windows.Forms.Label();
-			this.lblCharacterNameLabel = new System.Windows.Forms.Label();
-			this.lblMetatype = new System.Windows.Forms.Label();
-			this.lblMetatypeLabel = new System.Windows.Forms.Label();
-			this.lblCareerKarma = new System.Windows.Forms.Label();
-			this.lblCareerKarmaLabel = new System.Windows.Forms.Label();
-			this.lblPlayerName = new System.Windows.Forms.Label();
-			this.lblPlayerNameLabel = new System.Windows.Forms.Label();
-			this.lblCharacterAlias = new System.Windows.Forms.Label();
-			this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
-			this.lblEssence = new System.Windows.Forms.Label();
-			this.lblEssenceLabel = new System.Windows.Forms.Label();
-			((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
-			this.tabCharacterText.SuspendLayout();
-			this.panCharacterBio.SuspendLayout();
-			this.panCharacterConcept.SuspendLayout();
-			this.panCharacterBackground.SuspendLayout();
-			this.panCharacterNotes.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// treCharacterList
-			// 
-			this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treCharacterList = new System.Windows.Forms.TreeView();
+            this.picMugshot = new System.Windows.Forms.PictureBox();
+            this.tabCharacterText = new System.Windows.Forms.TabControl();
+            this.panCharacterBio = new System.Windows.Forms.TabPage();
+            this.txtCharacterBio = new System.Windows.Forms.TextBox();
+            this.panCharacterConcept = new System.Windows.Forms.TabPage();
+            this.txtCharacterConcept = new System.Windows.Forms.TextBox();
+            this.panCharacterBackground = new System.Windows.Forms.TabPage();
+            this.txtCharacterBackground = new System.Windows.Forms.TextBox();
+            this.panCharacterNotes = new System.Windows.Forms.TabPage();
+            this.txtCharacterNotes = new System.Windows.Forms.TextBox();
+            this.lblCharacterName = new System.Windows.Forms.Label();
+            this.lblCharacterNameLabel = new System.Windows.Forms.Label();
+            this.lblMetatype = new System.Windows.Forms.Label();
+            this.lblMetatypeLabel = new System.Windows.Forms.Label();
+            this.lblCareerKarma = new System.Windows.Forms.Label();
+            this.lblCareerKarmaLabel = new System.Windows.Forms.Label();
+            this.lblPlayerName = new System.Windows.Forms.Label();
+            this.lblPlayerNameLabel = new System.Windows.Forms.Label();
+            this.lblCharacterAlias = new System.Windows.Forms.Label();
+            this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
+            this.lblEssence = new System.Windows.Forms.Label();
+            this.lblEssenceLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
+            this.tabCharacterText.SuspendLayout();
+            this.panCharacterBio.SuspendLayout();
+            this.panCharacterConcept.SuspendLayout();
+            this.panCharacterBackground.SuspendLayout();
+            this.panCharacterNotes.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // treCharacterList
+            // 
+            this.treCharacterList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.treCharacterList.Location = new System.Drawing.Point(8, 8);
-			this.treCharacterList.Name = "treCharacterList";
-			this.treCharacterList.Size = new System.Drawing.Size(192, 536);
-			this.treCharacterList.TabIndex = 0;
-			this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
-			this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
-			// 
-			// picMugshot
-			// 
-			this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.picMugshot.Location = new System.Drawing.Point(560, 8);
-			this.picMugshot.Name = "picMugshot";
-			this.picMugshot.Size = new System.Drawing.Size(208, 328);
-			this.picMugshot.TabIndex = 21;
-			this.picMugshot.TabStop = false;
-			// 
-			// tabCharacterText
-			// 
-			this.tabCharacterText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treCharacterList.Location = new System.Drawing.Point(8, 8);
+            this.treCharacterList.Name = "treCharacterList";
+            this.treCharacterList.Size = new System.Drawing.Size(192, 536);
+            this.treCharacterList.TabIndex = 0;
+            this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
+            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            // 
+            // picMugshot
+            // 
+            this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.picMugshot.Location = new System.Drawing.Point(560, 8);
+            this.picMugshot.Name = "picMugshot";
+            this.picMugshot.Size = new System.Drawing.Size(208, 328);
+            this.picMugshot.TabIndex = 21;
+            this.picMugshot.TabStop = false;
+            // 
+            // tabCharacterText
+            // 
+            this.tabCharacterText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabCharacterText.Controls.Add(this.panCharacterBio);
-			this.tabCharacterText.Controls.Add(this.panCharacterConcept);
-			this.tabCharacterText.Controls.Add(this.panCharacterBackground);
-			this.tabCharacterText.Controls.Add(this.panCharacterNotes);
-			this.tabCharacterText.Location = new System.Drawing.Point(208, 336);
-			this.tabCharacterText.Name = "tabCharacterText";
-			this.tabCharacterText.SelectedIndex = 0;
-			this.tabCharacterText.Size = new System.Drawing.Size(568, 208);
-			this.tabCharacterText.TabIndex = 22;
-			// 
-			// panCharacterBio
-			// 
-			this.panCharacterBio.Controls.Add(this.txtCharacterBio);
-			this.panCharacterBio.Location = new System.Drawing.Point(4, 22);
-			this.panCharacterBio.Name = "panCharacterBio";
-			this.panCharacterBio.Padding = new System.Windows.Forms.Padding(3);
-			this.panCharacterBio.Size = new System.Drawing.Size(560, 182);
-			this.panCharacterBio.TabIndex = 0;
-			this.panCharacterBio.Text = "Bio";
-			this.panCharacterBio.UseVisualStyleBackColor = true;
-			// 
-			// txtCharacterBio
-			// 
-			this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterBio.Multiline = true;
-			this.txtCharacterBio.Name = "txtCharacterBio";
-			this.txtCharacterBio.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtCharacterBio.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterBio.TabIndex = 1;
-			// 
-			// panCharacterConcept
-			// 
-			this.panCharacterConcept.Controls.Add(this.txtCharacterConcept);
-			this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
-			this.panCharacterConcept.Name = "panCharacterConcept";
-			this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
-			this.panCharacterConcept.Size = new System.Drawing.Size(560, 182);
-			this.panCharacterConcept.TabIndex = 1;
-			this.panCharacterConcept.Text = "Concept";
-			this.panCharacterConcept.UseVisualStyleBackColor = true;
-			// 
-			// txtCharacterConcept
-			// 
-			this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterConcept.Multiline = true;
-			this.txtCharacterConcept.Name = "txtCharacterConcept";
-			this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterConcept.TabIndex = 2;
-			// 
-			// panCharacterBackground
-			// 
-			this.panCharacterBackground.Controls.Add(this.txtCharacterBackground);
-			this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
-			this.panCharacterBackground.Name = "panCharacterBackground";
-			this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
-			this.panCharacterBackground.Size = new System.Drawing.Size(560, 182);
-			this.panCharacterBackground.TabIndex = 2;
-			this.panCharacterBackground.Text = "Background";
-			this.panCharacterBackground.UseVisualStyleBackColor = true;
-			// 
-			// txtCharacterBackground
-			// 
-			this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterBackground.Multiline = true;
-			this.txtCharacterBackground.Name = "txtCharacterBackground";
-			this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterBackground.TabIndex = 0;
-			// 
-			// panCharacterNotes
-			// 
-			this.panCharacterNotes.Controls.Add(this.txtCharacterNotes);
-			this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
-			this.panCharacterNotes.Name = "panCharacterNotes";
-			this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-			this.panCharacterNotes.Size = new System.Drawing.Size(560, 182);
-			this.panCharacterNotes.TabIndex = 3;
-			this.panCharacterNotes.Text = "Notes";
-			this.panCharacterNotes.UseVisualStyleBackColor = true;
-			// 
-			// txtCharacterNotes
-			// 
-			this.txtCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtCharacterNotes.Location = new System.Drawing.Point(3, 3);
-			this.txtCharacterNotes.Multiline = true;
-			this.txtCharacterNotes.Name = "txtCharacterNotes";
-			this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtCharacterNotes.Size = new System.Drawing.Size(554, 176);
-			this.txtCharacterNotes.TabIndex = 2;
-			// 
-			// lblCharacterName
-			// 
-			this.lblCharacterName.AutoSize = true;
-			this.lblCharacterName.Location = new System.Drawing.Point(304, 8);
-			this.lblCharacterName.Name = "lblCharacterName";
-			this.lblCharacterName.Size = new System.Drawing.Size(33, 13);
-			this.lblCharacterName.TabIndex = 24;
-			this.lblCharacterName.Text = "None";
-			// 
-			// lblCharacterNameLabel
-			// 
-			this.lblCharacterNameLabel.AutoSize = true;
-			this.lblCharacterNameLabel.Location = new System.Drawing.Point(208, 8);
-			this.lblCharacterNameLabel.Name = "lblCharacterNameLabel";
-			this.lblCharacterNameLabel.Size = new System.Drawing.Size(87, 13);
-			this.lblCharacterNameLabel.TabIndex = 23;
-			this.lblCharacterNameLabel.Tag = "Label_CharacterName";
-			this.lblCharacterNameLabel.Text = "Character Name:";
-			// 
-			// lblMetatype
-			// 
-			this.lblMetatype.AutoSize = true;
-			this.lblMetatype.Location = new System.Drawing.Point(304, 86);
-			this.lblMetatype.Name = "lblMetatype";
-			this.lblMetatype.Size = new System.Drawing.Size(33, 13);
-			this.lblMetatype.TabIndex = 26;
-			this.lblMetatype.Text = "None";
-			// 
-			// lblMetatypeLabel
-			// 
-			this.lblMetatypeLabel.AutoSize = true;
-			this.lblMetatypeLabel.Location = new System.Drawing.Point(208, 86);
-			this.lblMetatypeLabel.Name = "lblMetatypeLabel";
-			this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
-			this.lblMetatypeLabel.TabIndex = 25;
-			this.lblMetatypeLabel.Tag = "Label_Metatype";
-			this.lblMetatypeLabel.Text = "Metatype:";
-			// 
-			// lblCareerKarma
-			// 
-			this.lblCareerKarma.AutoSize = true;
-			this.lblCareerKarma.Location = new System.Drawing.Point(304, 112);
-			this.lblCareerKarma.Name = "lblCareerKarma";
-			this.lblCareerKarma.Size = new System.Drawing.Size(33, 13);
-			this.lblCareerKarma.TabIndex = 28;
-			this.lblCareerKarma.Text = "None";
-			// 
-			// lblCareerKarmaLabel
-			// 
-			this.lblCareerKarmaLabel.AutoSize = true;
-			this.lblCareerKarmaLabel.Location = new System.Drawing.Point(208, 112);
-			this.lblCareerKarmaLabel.Name = "lblCareerKarmaLabel";
-			this.lblCareerKarmaLabel.Size = new System.Drawing.Size(74, 13);
-			this.lblCareerKarmaLabel.TabIndex = 27;
-			this.lblCareerKarmaLabel.Tag = "String_CareerKarma";
-			this.lblCareerKarmaLabel.Text = "Career Karma:";
-			// 
-			// lblPlayerName
-			// 
-			this.lblPlayerName.AutoSize = true;
-			this.lblPlayerName.Location = new System.Drawing.Point(304, 60);
-			this.lblPlayerName.Name = "lblPlayerName";
-			this.lblPlayerName.Size = new System.Drawing.Size(33, 13);
-			this.lblPlayerName.TabIndex = 32;
-			this.lblPlayerName.Text = "None";
-			// 
-			// lblPlayerNameLabel
-			// 
-			this.lblPlayerNameLabel.AutoSize = true;
-			this.lblPlayerNameLabel.Location = new System.Drawing.Point(208, 60);
-			this.lblPlayerNameLabel.Name = "lblPlayerNameLabel";
-			this.lblPlayerNameLabel.Size = new System.Drawing.Size(70, 13);
-			this.lblPlayerNameLabel.TabIndex = 31;
-			this.lblPlayerNameLabel.Tag = "Label_PlayerName";
-			this.lblPlayerNameLabel.Text = "Player Name:";
-			// 
-			// lblCharacterAlias
-			// 
-			this.lblCharacterAlias.AutoSize = true;
-			this.lblCharacterAlias.Location = new System.Drawing.Point(304, 34);
-			this.lblCharacterAlias.Name = "lblCharacterAlias";
-			this.lblCharacterAlias.Size = new System.Drawing.Size(33, 13);
-			this.lblCharacterAlias.TabIndex = 34;
-			this.lblCharacterAlias.Text = "None";
-			// 
-			// lblCharacterAliasLabel
-			// 
-			this.lblCharacterAliasLabel.AutoSize = true;
-			this.lblCharacterAliasLabel.Location = new System.Drawing.Point(208, 34);
-			this.lblCharacterAliasLabel.Name = "lblCharacterAliasLabel";
-			this.lblCharacterAliasLabel.Size = new System.Drawing.Size(32, 13);
-			this.lblCharacterAliasLabel.TabIndex = 33;
-			this.lblCharacterAliasLabel.Tag = "Label_Alias";
-			this.lblCharacterAliasLabel.Text = "Alias:";
-			// 
-			// lblEssence
-			// 
-			this.lblEssence.AutoSize = true;
-			this.lblEssence.Location = new System.Drawing.Point(304, 138);
-			this.lblEssence.Name = "lblEssence";
-			this.lblEssence.Size = new System.Drawing.Size(33, 13);
-			this.lblEssence.TabIndex = 36;
-			this.lblEssence.Text = "None";
-			// 
-			// lblEssenceLabel
-			// 
-			this.lblEssenceLabel.AutoSize = true;
-			this.lblEssenceLabel.Location = new System.Drawing.Point(208, 138);
-			this.lblEssenceLabel.Name = "lblEssenceLabel";
-			this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
-			this.lblEssenceLabel.TabIndex = 35;
-			this.lblEssenceLabel.Tag = "Label_Essence";
-			this.lblEssenceLabel.Text = "Essence:";
-			// 
-			// frmCharacterRoster
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(786, 552);
-			this.Controls.Add(this.lblEssence);
-			this.Controls.Add(this.lblEssenceLabel);
-			this.Controls.Add(this.lblCharacterAlias);
-			this.Controls.Add(this.lblCharacterAliasLabel);
-			this.Controls.Add(this.lblPlayerName);
-			this.Controls.Add(this.lblPlayerNameLabel);
-			this.Controls.Add(this.lblCareerKarma);
-			this.Controls.Add(this.lblCareerKarmaLabel);
-			this.Controls.Add(this.lblMetatype);
-			this.Controls.Add(this.lblMetatypeLabel);
-			this.Controls.Add(this.lblCharacterName);
-			this.Controls.Add(this.lblCharacterNameLabel);
-			this.Controls.Add(this.tabCharacterText);
-			this.Controls.Add(this.picMugshot);
-			this.Controls.Add(this.treCharacterList);
-			this.Name = "frmCharacterRoster";
-			this.Text = "Character Roster";
-			((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
-			this.tabCharacterText.ResumeLayout(false);
-			this.panCharacterBio.ResumeLayout(false);
-			this.panCharacterBio.PerformLayout();
-			this.panCharacterConcept.ResumeLayout(false);
-			this.panCharacterConcept.PerformLayout();
-			this.panCharacterBackground.ResumeLayout(false);
-			this.panCharacterBackground.PerformLayout();
-			this.panCharacterNotes.ResumeLayout(false);
-			this.panCharacterNotes.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.tabCharacterText.Controls.Add(this.panCharacterBio);
+            this.tabCharacterText.Controls.Add(this.panCharacterConcept);
+            this.tabCharacterText.Controls.Add(this.panCharacterBackground);
+            this.tabCharacterText.Controls.Add(this.panCharacterNotes);
+            this.tabCharacterText.Location = new System.Drawing.Point(208, 336);
+            this.tabCharacterText.Name = "tabCharacterText";
+            this.tabCharacterText.SelectedIndex = 0;
+            this.tabCharacterText.Size = new System.Drawing.Size(568, 208);
+            this.tabCharacterText.TabIndex = 22;
+            // 
+            // panCharacterBio
+            // 
+            this.panCharacterBio.Controls.Add(this.txtCharacterBio);
+            this.panCharacterBio.Location = new System.Drawing.Point(4, 22);
+            this.panCharacterBio.Name = "panCharacterBio";
+            this.panCharacterBio.Padding = new System.Windows.Forms.Padding(3);
+            this.panCharacterBio.Size = new System.Drawing.Size(560, 182);
+            this.panCharacterBio.TabIndex = 0;
+            this.panCharacterBio.Tag = "Label_Biography";
+            this.panCharacterBio.Text = "Biography";
+            this.panCharacterBio.UseVisualStyleBackColor = true;
+            // 
+            // txtCharacterBio
+            // 
+            this.txtCharacterBio.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterBio.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterBio.Multiline = true;
+            this.txtCharacterBio.Name = "txtCharacterBio";
+            this.txtCharacterBio.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtCharacterBio.Size = new System.Drawing.Size(554, 176);
+            this.txtCharacterBio.TabIndex = 1;
+            // 
+            // panCharacterConcept
+            // 
+            this.panCharacterConcept.Controls.Add(this.txtCharacterConcept);
+            this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
+            this.panCharacterConcept.Name = "panCharacterConcept";
+            this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
+            this.panCharacterConcept.Size = new System.Drawing.Size(560, 182);
+            this.panCharacterConcept.TabIndex = 1;
+            this.panCharacterConcept.Tag = "Label_Concept";
+            this.panCharacterConcept.Text = "Concept";
+            this.panCharacterConcept.UseVisualStyleBackColor = true;
+            // 
+            // txtCharacterConcept
+            // 
+            this.txtCharacterConcept.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterConcept.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterConcept.Multiline = true;
+            this.txtCharacterConcept.Name = "txtCharacterConcept";
+            this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtCharacterConcept.Size = new System.Drawing.Size(554, 176);
+            this.txtCharacterConcept.TabIndex = 2;
+            this.txtCharacterConcept.Tag = "";
+            // 
+            // panCharacterBackground
+            // 
+            this.panCharacterBackground.Controls.Add(this.txtCharacterBackground);
+            this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
+            this.panCharacterBackground.Name = "panCharacterBackground";
+            this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
+            this.panCharacterBackground.Size = new System.Drawing.Size(560, 182);
+            this.panCharacterBackground.TabIndex = 2;
+            this.panCharacterBackground.Tag = "Label_Background";
+            this.panCharacterBackground.Text = "Background";
+            this.panCharacterBackground.UseVisualStyleBackColor = true;
+            // 
+            // txtCharacterBackground
+            // 
+            this.txtCharacterBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterBackground.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterBackground.Multiline = true;
+            this.txtCharacterBackground.Name = "txtCharacterBackground";
+            this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtCharacterBackground.Size = new System.Drawing.Size(554, 176);
+            this.txtCharacterBackground.TabIndex = 0;
+            this.txtCharacterBackground.Tag = "";
+            // 
+            // panCharacterNotes
+            // 
+            this.panCharacterNotes.Controls.Add(this.txtCharacterNotes);
+            this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
+            this.panCharacterNotes.Name = "panCharacterNotes";
+            this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
+            this.panCharacterNotes.Size = new System.Drawing.Size(560, 182);
+            this.panCharacterNotes.TabIndex = 3;
+            this.panCharacterNotes.Tag = "Label_Notes";
+            this.panCharacterNotes.Text = "Notes";
+            this.panCharacterNotes.UseVisualStyleBackColor = true;
+            // 
+            // txtCharacterNotes
+            // 
+            this.txtCharacterNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterNotes.Location = new System.Drawing.Point(3, 3);
+            this.txtCharacterNotes.Multiline = true;
+            this.txtCharacterNotes.Name = "txtCharacterNotes";
+            this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtCharacterNotes.Size = new System.Drawing.Size(554, 176);
+            this.txtCharacterNotes.TabIndex = 2;
+            this.txtCharacterNotes.Tag = "";
+            // 
+            // lblCharacterName
+            // 
+            this.lblCharacterName.AutoSize = true;
+            this.lblCharacterName.Location = new System.Drawing.Point(304, 8);
+            this.lblCharacterName.Name = "lblCharacterName";
+            this.lblCharacterName.Size = new System.Drawing.Size(33, 13);
+            this.lblCharacterName.TabIndex = 24;
+            this.lblCharacterName.Text = "None";
+            // 
+            // lblCharacterNameLabel
+            // 
+            this.lblCharacterNameLabel.AutoSize = true;
+            this.lblCharacterNameLabel.Location = new System.Drawing.Point(208, 8);
+            this.lblCharacterNameLabel.Name = "lblCharacterNameLabel";
+            this.lblCharacterNameLabel.Size = new System.Drawing.Size(87, 13);
+            this.lblCharacterNameLabel.TabIndex = 23;
+            this.lblCharacterNameLabel.Tag = "Label_CharacterName";
+            this.lblCharacterNameLabel.Text = "Character Name:";
+            // 
+            // lblMetatype
+            // 
+            this.lblMetatype.AutoSize = true;
+            this.lblMetatype.Location = new System.Drawing.Point(304, 86);
+            this.lblMetatype.Name = "lblMetatype";
+            this.lblMetatype.Size = new System.Drawing.Size(33, 13);
+            this.lblMetatype.TabIndex = 26;
+            this.lblMetatype.Text = "None";
+            // 
+            // lblMetatypeLabel
+            // 
+            this.lblMetatypeLabel.AutoSize = true;
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(208, 86);
+            this.lblMetatypeLabel.Name = "lblMetatypeLabel";
+            this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
+            this.lblMetatypeLabel.TabIndex = 25;
+            this.lblMetatypeLabel.Tag = "Label_Metatype";
+            this.lblMetatypeLabel.Text = "Metatype:";
+            // 
+            // lblCareerKarma
+            // 
+            this.lblCareerKarma.AutoSize = true;
+            this.lblCareerKarma.Location = new System.Drawing.Point(304, 112);
+            this.lblCareerKarma.Name = "lblCareerKarma";
+            this.lblCareerKarma.Size = new System.Drawing.Size(33, 13);
+            this.lblCareerKarma.TabIndex = 28;
+            this.lblCareerKarma.Text = "None";
+            // 
+            // lblCareerKarmaLabel
+            // 
+            this.lblCareerKarmaLabel.AutoSize = true;
+            this.lblCareerKarmaLabel.Location = new System.Drawing.Point(208, 112);
+            this.lblCareerKarmaLabel.Name = "lblCareerKarmaLabel";
+            this.lblCareerKarmaLabel.Size = new System.Drawing.Size(74, 13);
+            this.lblCareerKarmaLabel.TabIndex = 27;
+            this.lblCareerKarmaLabel.Tag = "String_CareerKarma";
+            this.lblCareerKarmaLabel.Text = "Career Karma:";
+            // 
+            // lblPlayerName
+            // 
+            this.lblPlayerName.AutoSize = true;
+            this.lblPlayerName.Location = new System.Drawing.Point(304, 60);
+            this.lblPlayerName.Name = "lblPlayerName";
+            this.lblPlayerName.Size = new System.Drawing.Size(33, 13);
+            this.lblPlayerName.TabIndex = 32;
+            this.lblPlayerName.Text = "None";
+            // 
+            // lblPlayerNameLabel
+            // 
+            this.lblPlayerNameLabel.AutoSize = true;
+            this.lblPlayerNameLabel.Location = new System.Drawing.Point(208, 60);
+            this.lblPlayerNameLabel.Name = "lblPlayerNameLabel";
+            this.lblPlayerNameLabel.Size = new System.Drawing.Size(39, 13);
+            this.lblPlayerNameLabel.TabIndex = 31;
+            this.lblPlayerNameLabel.Tag = "Label_Player";
+            this.lblPlayerNameLabel.Text = "Player:";
+            // 
+            // lblCharacterAlias
+            // 
+            this.lblCharacterAlias.AutoSize = true;
+            this.lblCharacterAlias.Location = new System.Drawing.Point(304, 34);
+            this.lblCharacterAlias.Name = "lblCharacterAlias";
+            this.lblCharacterAlias.Size = new System.Drawing.Size(33, 13);
+            this.lblCharacterAlias.TabIndex = 34;
+            this.lblCharacterAlias.Text = "None";
+            // 
+            // lblCharacterAliasLabel
+            // 
+            this.lblCharacterAliasLabel.AutoSize = true;
+            this.lblCharacterAliasLabel.Location = new System.Drawing.Point(208, 34);
+            this.lblCharacterAliasLabel.Name = "lblCharacterAliasLabel";
+            this.lblCharacterAliasLabel.Size = new System.Drawing.Size(32, 13);
+            this.lblCharacterAliasLabel.TabIndex = 33;
+            this.lblCharacterAliasLabel.Tag = "Label_Alias";
+            this.lblCharacterAliasLabel.Text = "Alias:";
+            // 
+            // lblEssence
+            // 
+            this.lblEssence.AutoSize = true;
+            this.lblEssence.Location = new System.Drawing.Point(304, 138);
+            this.lblEssence.Name = "lblEssence";
+            this.lblEssence.Size = new System.Drawing.Size(33, 13);
+            this.lblEssence.TabIndex = 36;
+            this.lblEssence.Text = "None";
+            // 
+            // lblEssenceLabel
+            // 
+            this.lblEssenceLabel.AutoSize = true;
+            this.lblEssenceLabel.Location = new System.Drawing.Point(208, 138);
+            this.lblEssenceLabel.Name = "lblEssenceLabel";
+            this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblEssenceLabel.TabIndex = 35;
+            this.lblEssenceLabel.Tag = "Label_Essence";
+            this.lblEssenceLabel.Text = "Essence:";
+            // 
+            // frmCharacterRoster
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(786, 552);
+            this.Controls.Add(this.lblEssence);
+            this.Controls.Add(this.lblEssenceLabel);
+            this.Controls.Add(this.lblCharacterAlias);
+            this.Controls.Add(this.lblCharacterAliasLabel);
+            this.Controls.Add(this.lblPlayerName);
+            this.Controls.Add(this.lblPlayerNameLabel);
+            this.Controls.Add(this.lblCareerKarma);
+            this.Controls.Add(this.lblCareerKarmaLabel);
+            this.Controls.Add(this.lblMetatype);
+            this.Controls.Add(this.lblMetatypeLabel);
+            this.Controls.Add(this.lblCharacterName);
+            this.Controls.Add(this.lblCharacterNameLabel);
+            this.Controls.Add(this.tabCharacterText);
+            this.Controls.Add(this.picMugshot);
+            this.Controls.Add(this.treCharacterList);
+            this.Name = "frmCharacterRoster";
+            this.Text = "Character Roster";
+            ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
+            this.tabCharacterText.ResumeLayout(false);
+            this.panCharacterBio.ResumeLayout(false);
+            this.panCharacterBio.PerformLayout();
+            this.panCharacterConcept.ResumeLayout(false);
+            this.panCharacterConcept.PerformLayout();
+            this.panCharacterBackground.ResumeLayout(false);
+            this.panCharacterBackground.PerformLayout();
+            this.panCharacterNotes.ResumeLayout(false);
+            this.panCharacterNotes.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

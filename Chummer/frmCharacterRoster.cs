@@ -14,8 +14,9 @@ namespace Chummer
 		
 		public frmCharacterRoster()
 		{
-			InitializeComponent();
-			LoadCharacters();
+            InitializeComponent();
+            LanguageManager.Instance.Load(GlobalOptions.Instance.Language, this);
+            LoadCharacters();
 			MoveControls();
 		}
 
@@ -143,9 +144,9 @@ namespace Chummer
 			string strName = objCache.CharacterName;
 			if (string.IsNullOrEmpty(strName))
 			{
-				strName = "Unnamed Character";
+                strName = LanguageManager.Instance.GetString("String_UnnamedCharacter");
 			}
-			string strBuildMethod = objCache.BuildMethod ?? "Unknown build method";
+			string strBuildMethod = LanguageManager.Instance.GetString("String_"+objCache.BuildMethod) ?? "Unknown build method";
 			bool blnCreated = objCache.Created;
 			string strCreated = "";
 			strCreated = LanguageManager.Instance.GetString(blnCreated ? "Title_CareerMode" : "Title_CreateMode");

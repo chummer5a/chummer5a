@@ -4324,8 +4324,12 @@ Only one attribute may be at its Maximum value during character creation.</text>
 		<string>
 			<key>Label_Description</key>
 			<text>Description:</text>
-		</string>
-		<string>
+		</string>    
+    <string>
+      <key>Label_Biography</key>
+      <text>Biography:</text>
+    </string>
+    <string>
 			<key>Label_Background</key>
 			<text>Background:</text>
 		</string>

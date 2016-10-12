@@ -1,6 +1,10 @@
 Build 186:
 Data Changes:
 - Fixed missing values for Metahuman adjustment on several vehicles.
+- Properly applied localisation to the character roster form.
+
+New Strings:
+- Label_Biography
 
 Build 185:
 Application CHanges: 
