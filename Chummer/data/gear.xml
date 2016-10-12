@@ -190,7 +190,7 @@
 				<avail>4</avail>
 				<cost>5</cost>
 				<bonus>
-					<selectweapon />
+					<selectweapon excludecategory="Melee" />
 				</bonus>
 				<source>SR5</source>
 				<page>433</page>

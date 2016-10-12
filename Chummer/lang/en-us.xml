@@ -4283,6 +4283,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
 			<key>String_VehicleWeaponModification</key>
 			<text>Vehicle Weapon Modification</text>
 		</string>
+		<string>
+			<key>Label_VehicleSeats</key>
+			<text>Seats:</text>
+		</string>
 		<!-- End Region-->
 		<!-- Region Character Info Tab -->
 		<string>

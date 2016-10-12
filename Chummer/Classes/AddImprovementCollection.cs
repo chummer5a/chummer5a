@@ -3629,13 +3629,19 @@ namespace Chummer.Classes
 			}
 			else
 			{
-				List<ListItem> lstWeapons = new List<ListItem>();
+				string strExclude = "";
+				List <ListItem> lstWeapons = new List<ListItem>();
+				strExclude = bonusNode.Attributes["excludecategory"]?.InnerText;
 				foreach (Weapon objWeapon in _objCharacter.Weapons)
 				{
-					ListItem objItem = new ListItem();
-					objItem.Value = objWeapon.Name;
-					objItem.Name = objWeapon.DisplayName;
-					lstWeapons.Add(objItem);
+					bool blnAdd = !(strExclude != "" && objWeapon.WeaponType == strExclude);
+					if (blnAdd)
+					{
+						ListItem objItem = new ListItem();
+						objItem.Value = objWeapon.Name;
+						objItem.Name = objWeapon.DisplayName;
+						lstWeapons.Add(objItem);
+					}
 				}
 
 				frmSelectItem frmPickItem = new frmSelectItem();
